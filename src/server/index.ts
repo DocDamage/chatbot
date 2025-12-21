@@ -559,6 +559,71 @@ app.post('/api/knowledge/github', requireAuth, asyncHandler(async (req, res) => 
   res.json({ results });
 }));
 
+app.post('/api/knowledge/stackoverflow', asyncHandler(async (req, res) => {
+  const { StackOverflowSource } = require('../core/knowledge/StackOverflowSource');
+  const source = new StackOverflowSource(process.env.STACKOVERFLOW_API_KEY);
+  
+  const { query, tagged, limit, sort } = req.body;
+  const results = await source.search(query, { tagged, limit: limit || 10, sort: sort || 'relevance' });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/news', asyncHandler(async (req, res) => {
+  const { NewsSource } = require('../core/knowledge/NewsSource');
+  const source = new NewsSource(
+    req.body.provider || 'all',
+    process.env.NEWS_API_KEY,
+    process.env.GUARDIAN_API_KEY,
+    process.env.NYTIMES_API_KEY
+  );
+  
+  const { query, limit, provider, language } = req.body;
+  const results = await source.search(query, { limit: limit || 10, provider, language });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/medium', asyncHandler(async (req, res) => {
+  const { MediumSource } = require('../core/knowledge/MediumSource');
+  const source = new MediumSource();
+  
+  const { query, limit, tag } = req.body;
+  const results = await source.search(query, { limit: limit || 10, tag });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/quora', asyncHandler(async (req, res) => {
+  const { QuoraSource } = require('../core/knowledge/QuoraSource');
+  const source = new QuoraSource();
+  
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/gutenberg', asyncHandler(async (req, res) => {
+  const { ProjectGutenbergSource } = require('../core/knowledge/ProjectGutenbergSource');
+  const source = new ProjectGutenbergSource();
+  
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/docs', asyncHandler(async (req, res) => {
+  const { DocumentationSource } = require('../core/knowledge/DocumentationSource');
+  const { site, query, limit } = req.body;
+  
+  const source = new DocumentationSource(site || 'all');
+  const results = await source.search(query, { limit: limit || 10, site: site || 'all' });
+  
+  res.json({ results });
+}));
+
 app.post('/api/knowledge/load-telegram', requireAuth, asyncHandler(async (req, res) => {
   if (!services?.documentManager) {
     return res.status(503).json({ error: 'Document manager not available' });
@@ -705,6 +770,26 @@ app.post('/api/knowledge/fuse', requireAuth, asyncHandler(async (req, res) => {
   if (sources.includes('papers')) {
     const { ScientificPapersSource } = require('../core/knowledge/ScientificPapersSource');
     sourceInstances.push(new ScientificPapersSource('all'));
+  }
+  if (sources.includes('stackoverflow')) {
+    const { StackOverflowSource } = require('../core/knowledge/StackOverflowSource');
+    sourceInstances.push(new StackOverflowSource(process.env.STACKOVERFLOW_API_KEY));
+  }
+  if (sources.includes('news')) {
+    const { NewsSource } = require('../core/knowledge/NewsSource');
+    sourceInstances.push(new NewsSource('all', process.env.NEWS_API_KEY, process.env.GUARDIAN_API_KEY, process.env.NYTIMES_API_KEY));
+  }
+  if (sources.includes('medium')) {
+    const { MediumSource } = require('../core/knowledge/MediumSource');
+    sourceInstances.push(new MediumSource());
+  }
+  if (sources.includes('quora')) {
+    const { QuoraSource } = require('../core/knowledge/QuoraSource');
+    sourceInstances.push(new QuoraSource());
+  }
+  if (sources.includes('docs')) {
+    const { DocumentationSource } = require('../core/knowledge/DocumentationSource');
+    sourceInstances.push(new DocumentationSource('all'));
   }
   
   const results = await fusion.fuse({
