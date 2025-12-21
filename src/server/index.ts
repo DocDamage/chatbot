@@ -6,6 +6,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { createServer } from 'http';
+import multer from 'multer';
 import { ServiceInitializer } from '../core/initialization/ServiceInitializer';
 import { StableDiffusionAdapter } from '../core/providers/StableDiffusionAdapter';
 import { ConfigValidator } from '../core/config/ConfigValidator';
@@ -29,7 +31,22 @@ try {
 }
 
 const app = express();
+const server = createServer(app);
 const PORT = process.env.PORT || 3001;
+
+// Initialize WebSocket server
+let wsServer: any;
+if (process.env.ENABLE_WEBSOCKET !== 'false') {
+  const { WebSocketServer } = require('../core/realtime/WebSocketServer');
+  wsServer = new WebSocketServer(server);
+  logger.info('WebSocket server initialized');
+}
+
+// Configure multer for file uploads
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+});
 
 // Security middleware
 app.use(securityHeaders);
@@ -342,6 +359,166 @@ app.use('/api/export', (req, res, next) => {
   const { createExportRouter } = require('./routes/export');
   const router = createExportRouter(services);
   router(req, res, next);
+}));
+
+// File upload endpoint
+app.post('/api/upload', requireAuth, upload.single('file'), asyncHandler(async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+
+  if (!services?.documentManager) {
+    return res.status(503).json({ error: 'Document manager not available' });
+  }
+
+  const { FileProcessor } = require('../core/upload/FileProcessor');
+  const processor = new FileProcessor();
+  const result = await processor.processFile(req.file, services.documentManager, {
+    uploadedBy: req.user?.userId,
+  });
+
+  if (result.success) {
+    res.json({
+      success: true,
+      chunks: result.chunks,
+      metadata: result.metadata,
+    });
+  } else {
+    res.status(400).json({ error: result.error });
+  }
+}));
+
+// Feedback endpoints
+app.post('/api/feedback', requireAuth, asyncHandler(async (req, res) => {
+  const { FeedbackService } = require('../core/feedback/FeedbackService');
+  const feedbackService = new FeedbackService();
+  
+  const { messageId, sessionId, reaction, rating, comment } = req.body;
+  const feedback = await feedbackService.submitFeedback({
+    messageId,
+    sessionId,
+    userId: req.user?.userId,
+    reaction,
+    rating,
+    comment,
+  });
+
+  res.json({ success: true, feedback });
+}));
+
+app.get('/api/feedback/:messageId', asyncHandler(async (req, res) => {
+  const { FeedbackService } = require('../core/feedback/FeedbackService');
+  const feedbackService = new FeedbackService();
+  
+  const feedback = feedbackService.getFeedback(req.params.messageId);
+  const stats = feedbackService.getStats(req.params.messageId);
+  
+  res.json({ feedback, stats });
+}));
+
+// Custom instructions endpoints
+app.get('/api/user/instructions', requireAuth, asyncHandler(async (req, res) => {
+  const { CustomInstructionsService } = require('../core/user/CustomInstructions');
+  const instructionsService = new CustomInstructionsService();
+  
+  const instructions = await instructionsService.getInstructions(req.user!.userId);
+  res.json({ instructions });
+}));
+
+app.put('/api/user/instructions', requireAuth, asyncHandler(async (req, res) => {
+  const { CustomInstructionsService } = require('../core/user/CustomInstructions');
+  const instructionsService = new CustomInstructionsService();
+  
+  const instructions = await instructionsService.updateInstructions(
+    req.user!.userId,
+    req.body
+  );
+  res.json({ success: true, instructions });
+}));
+
+// Quick replies endpoint
+app.get('/api/chat/quick-replies', asyncHandler(async (req, res) => {
+  if (!services?.orchestrator) {
+    return res.status(503).json({ error: 'Orchestrator not available' });
+  }
+
+  const { QuickRepliesService } = require('../core/suggestions/QuickReplies');
+  const { lastMessage, lastResponse, context } = req.query;
+  
+  // Get primary adapter from orchestrator
+  const primaryAdapter = (services.orchestrator as any).llmAdapter;
+  const quickRepliesService = new QuickRepliesService(primaryAdapter);
+  
+  const replies = await quickRepliesService.generateQuickReplies(
+    lastMessage as string,
+    lastResponse as string,
+    context ? JSON.parse(context as string) : undefined
+  );
+
+  res.json({ replies });
+}));
+
+// Conversation sharing endpoints
+app.post('/api/conversations/:sessionId/share', requireAuth, asyncHandler(async (req, res) => {
+  const { ConversationSharingService } = require('../core/sharing/ConversationSharing');
+  const sharingService = new ConversationSharingService(process.env.BASE_URL || `http://localhost:${PORT}`);
+  
+  const { title, description, public: isPublic, password, expiresInDays } = req.body;
+  const result = await sharingService.createShare(req.params.sessionId, {
+    userId: req.user?.userId,
+    title,
+    description,
+    public: isPublic,
+    password,
+    expiresInDays,
+  });
+
+  res.json({ success: true, ...result });
+}));
+
+app.get('/api/share/:shareId', asyncHandler(async (req, res) => {
+  const { ConversationSharingService } = require('../core/sharing/ConversationSharing');
+  const { ConversationManager } = require('../core/conversation/ConversationManager');
+  
+  const sharingService = new ConversationSharingService();
+  const conversationManager = new ConversationManager();
+  
+  const share = await sharingService.getShare(req.params.shareId, req.query.password as string);
+  if (!share) {
+    return res.status(404).json({ error: 'Share not found or expired' });
+  }
+
+  const conversation = await conversationManager.getConversation(share.sessionId);
+  res.json({ share, conversation });
+}));
+
+// Document search endpoint
+app.get('/api/documents/search', requireAuth, asyncHandler(async (req, res) => {
+  const { DocumentMetadataManager } = require('../core/documents/DocumentMetadata');
+  const metadataManager = new DocumentMetadataManager();
+  
+  const filters = {
+    tags: req.query.tags ? (req.query.tags as string).split(',') : undefined,
+    category: req.query.category as string,
+    source: req.query.source as string,
+    searchQuery: req.query.q as string,
+  };
+
+  const documents = metadataManager.search(filters, parseInt(req.query.limit as string) || 20);
+  res.json({ documents });
+}));
+
+// Debug endpoint
+app.get('/api/debug/:requestId', requireAuth, asyncHandler(async (req, res) => {
+  const { DebugMode } = require('../core/debug/DebugMode');
+  const debugMode = new DebugMode();
+  
+  const debugInfo = debugMode.getDebugInfo(req.params.requestId);
+  if (!debugInfo) {
+    return res.status(404).json({ error: 'Debug info not found' });
+  }
+
+  res.json({ debugInfo });
 }));
 
 // Conversation management endpoints
