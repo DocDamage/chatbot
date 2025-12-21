@@ -690,6 +690,22 @@ app.post('/api/knowledge/fuse', requireAuth, asyncHandler(async (req, res) => {
   if (sources.includes('web')) {
     sourceInstances.push(new WebScraperSource());
   }
+  if (sources.includes('reddit')) {
+    const { RedditSource } = require('../core/knowledge/RedditSource');
+    sourceInstances.push(new RedditSource());
+  }
+  if (sources.includes('youtube')) {
+    const { YouTubeSource } = require('../core/knowledge/YouTubeSource');
+    sourceInstances.push(new YouTubeSource(process.env.YOUTUBE_API_KEY));
+  }
+  if (sources.includes('github')) {
+    const { GitHubSource } = require('../core/knowledge/GitHubSource');
+    sourceInstances.push(new GitHubSource(process.env.GITHUB_TOKEN));
+  }
+  if (sources.includes('papers')) {
+    const { ScientificPapersSource } = require('../core/knowledge/ScientificPapersSource');
+    sourceInstances.push(new ScientificPapersSource('all'));
+  }
   
   const results = await fusion.fuse({
     sources: sourceInstances,
