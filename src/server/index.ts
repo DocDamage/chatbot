@@ -213,25 +213,28 @@ app.use(errorHandler);
 
 // Start server (wait for initialization)
 const startServer = async () => {
-  // Wait for services to initialize
-  while (!orchestrator) {
-    await new Promise(resolve => setTimeout(resolve, 100));
-  }
+  try {
+    // Wait for services to initialize
+    logger.info('Waiting for services to initialize...');
+    while (!orchestrator) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
 
-  app.listen(PORT, () => {
-    logger.info(`🚀 Server running on port ${PORT}`);
-    logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
-    logger.info(`📚 Knowledge base: ${process.env.KNOWLEDGE_BASE_DIR || './knowledge-base'}`);
-    logger.info(`🔧 Features enabled:`);
-    logger.info(`   - RAG: ${process.env.ENABLE_RAG !== 'false' ? '✅' : '❌'}`);
-    logger.info(`   - Model Routing: ${process.env.ENABLE_MODEL_ROUTING !== 'false' ? '✅' : '❌'}`);
-    logger.info(`   - Safety Pipeline: ${process.env.ENABLE_SAFETY_PIPELINE !== 'false' ? '✅' : '❌'}`);
-    logger.info(`   - Semantic Cache: ${process.env.ENABLE_SEMANTIC_CACHE !== 'false' ? '✅' : '❌'}`);
-  });
+    app.listen(PORT, () => {
+      logger.info(`🚀 Server running on port ${PORT}`);
+      logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      logger.info(`📚 Knowledge base: ${process.env.KNOWLEDGE_BASE_DIR || './knowledge-base'}`);
+      logger.info(`🔧 Features enabled:`);
+      logger.info(`   - RAG: ${process.env.ENABLE_RAG !== 'false' ? '✅' : '❌'}`);
+      logger.info(`   - Model Routing: ${process.env.ENABLE_MODEL_ROUTING !== 'false' ? '✅' : '❌'}`);
+      logger.info(`   - Safety Pipeline: ${process.env.ENABLE_SAFETY_PIPELINE !== 'false' ? '✅' : '❌'}`);
+      logger.info(`   - Semantic Cache: ${process.env.ENABLE_SEMANTIC_CACHE !== 'false' ? '✅' : '❌'}`);
+    });
+  } catch (error: any) {
+    logger.error('Failed to start server', { error: error.message });
+    process.exit(1);
+  }
 };
 
-startServer().catch((error) => {
-  logger.error('Failed to start server', { error: error.message });
-  process.exit(1);
-});
+startServer();
 
