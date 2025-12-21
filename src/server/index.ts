@@ -509,6 +509,77 @@ app.get('/api/documents/search', requireAuth, asyncHandler(async (req, res) => {
 }));
 
 // Knowledge sources endpoints
+app.post('/api/knowledge/reddit', asyncHandler(async (req, res) => {
+  const { RedditSource } = require('../core/knowledge/RedditSource');
+  const source = new RedditSource();
+  
+  const { query, subreddit, limit, sort } = req.body;
+  const results = await source.search(query, { subreddit, limit: limit || 10, sort: sort || 'relevance' });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/youtube', asyncHandler(async (req, res) => {
+  const { YouTubeSource } = require('../core/knowledge/YouTubeSource');
+  const source = new YouTubeSource(process.env.YOUTUBE_API_KEY);
+  
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/university', asyncHandler(async (req, res) => {
+  const { UniversitySource } = require('../core/knowledge/UniversitySource');
+  const { university, query, limit, type } = req.body;
+  
+  const source = new UniversitySource(university);
+  const results = await source.search(query, { limit: limit || 10, type: type || 'all' });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/papers', asyncHandler(async (req, res) => {
+  const { ScientificPapersSource } = require('../core/knowledge/ScientificPapersSource');
+  const { query, limit, source } = req.body;
+  
+  const paperSource = new ScientificPapersSource(source || 'all');
+  const results = await paperSource.search(query, { limit: limit || 10, source: source || 'all' });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/github', requireAuth, asyncHandler(async (req, res) => {
+  const { GitHubSource } = require('../core/knowledge/GitHubSource');
+  const source = new GitHubSource(process.env.GITHUB_TOKEN);
+  
+  const { query, limit, type } = req.body;
+  const results = await source.search(query, { limit: limit || 10, type: type || 'all' });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/load-telegram', requireAuth, asyncHandler(async (req, res) => {
+  if (!services?.documentManager) {
+    return res.status(503).json({ error: 'Document manager not available' });
+  }
+
+  const { TelegramSource } = require('../core/knowledge/TelegramSource');
+  const loader = new TelegramSource(services.embeddingService);
+  const { filePath, generateEmbeddings, chunkSize } = req.body;
+  
+  const chunks = await loader.loadTelegramExport(filePath, {
+    generateEmbeddings: generateEmbeddings !== false,
+    chunkSize: chunkSize || 20,
+  });
+
+  for (const chunk of chunks) {
+    await services.documentManager.addText(chunk.content, chunk.metadata);
+  }
+
+  res.json({ success: true, chunks: chunks.length });
+}));
+
 app.post('/api/knowledge/wikipedia', asyncHandler(async (req, res) => {
   const { WikipediaSource } = require('../core/knowledge/WikipediaSource');
   const source = new WikipediaSource();
