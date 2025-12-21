@@ -122,6 +122,18 @@ app.post('/api/chat',
   rateLimiter.middleware(),
   validateChatRequest,
   asyncHandler(async (req, res) => {
+    // Wait for services to initialize
+    if (!orchestrator) {
+      await new Promise(resolve => {
+        const checkInterval = setInterval(() => {
+          if (orchestrator) {
+            clearInterval(checkInterval);
+            resolve(undefined);
+          }
+        }, 100);
+      });
+    }
+
     const { message, sessionId, userId } = req.body;
 
     // Sanitize input
@@ -139,12 +151,87 @@ app.post('/api/chat',
   })
 );
 
+// Knowledge base management endpoints
+app.post('/api/knowledge-base/add', asyncHandler(async (req, res) => {
+  if (!services?.documentManager) {
+    return res.status(503).json({ error: 'Document manager not initialized' });
+  }
+
+  const { text, metadata } = req.body;
+  const chunks = await services.documentManager.addText(text, metadata || {});
+  res.json({ success: true, chunksCount: chunks.length });
+}));
+
+app.post('/api/knowledge-base/file', asyncHandler(async (req, res) => {
+  if (!services?.documentManager) {
+    return res.status(503).json({ error: 'Document manager not initialized' });
+  }
+
+  const { filePath } = req.body;
+  const chunks = await services.documentManager.addFile(filePath);
+  res.json({ success: true, chunksCount: chunks.length });
+}));
+
+app.get('/api/knowledge-base/stats', asyncHandler(async (req, res) => {
+  if (!services?.ragService) {
+    return res.status(503).json({ error: 'RAG service not initialized' });
+  }
+
+  const stats = services.documentManager?.getStats() || {};
+  res.json(stats);
+}));
+
+// Tools endpoint
+app.get('/api/tools', asyncHandler(async (req, res) => {
+  if (!services?.toolRegistry) {
+    return res.status(503).json({ error: 'Tool registry not initialized' });
+  }
+
+  res.json({
+    tools: services.toolRegistry.getAll().map(tool => ({
+      id: tool.id,
+      name: tool.name,
+      description: tool.description,
+      category: tool.category
+    })),
+    stats: services.toolRegistry.getStats()
+  });
+}));
+
+// Free models endpoint
+app.get('/api/models/free', asyncHandler(async (req, res) => {
+  const { FreeModelRegistry } = require('../core/providers/FreeModelRegistry');
+  res.json({
+    llm: FreeModelRegistry.getByCategory('llm'),
+    vision: FreeModelRegistry.getByCategory('vision'),
+    embedding: FreeModelRegistry.getByCategory('embedding')
+  });
+}));
+
 // Error handler (must be last)
 app.use(errorHandler);
 
-// Start server
-app.listen(PORT, () => {
-  logger.info(`Server running on port ${PORT}`);
-  logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+// Start server (wait for initialization)
+const startServer = async () => {
+  // Wait for services to initialize
+  while (!orchestrator) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+
+  app.listen(PORT, () => {
+    logger.info(`🚀 Server running on port ${PORT}`);
+    logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    logger.info(`📚 Knowledge base: ${process.env.KNOWLEDGE_BASE_DIR || './knowledge-base'}`);
+    logger.info(`🔧 Features enabled:`);
+    logger.info(`   - RAG: ${process.env.ENABLE_RAG !== 'false' ? '✅' : '❌'}`);
+    logger.info(`   - Model Routing: ${process.env.ENABLE_MODEL_ROUTING !== 'false' ? '✅' : '❌'}`);
+    logger.info(`   - Safety Pipeline: ${process.env.ENABLE_SAFETY_PIPELINE !== 'false' ? '✅' : '❌'}`);
+    logger.info(`   - Semantic Cache: ${process.env.ENABLE_SEMANTIC_CACHE !== 'false' ? '✅' : '❌'}`);
+  });
+};
+
+startServer().catch((error) => {
+  logger.error('Failed to start server', { error: error.message });
+  process.exit(1);
 });
 
