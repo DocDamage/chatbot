@@ -674,6 +674,150 @@ app.post('/api/knowledge/specialized-topics', asyncHandler(async (req, res) => {
   res.json({ results, curatedSources });
 }));
 
+app.post('/api/knowledge/financial-advice', asyncHandler(async (req, res) => {
+  const { FinancialAdviceSource } = require('../core/knowledge/FinancialAdviceSource');
+  const source = new FinancialAdviceSource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/religion', asyncHandler(async (req, res) => {
+  const { ReligionSource } = require('../core/knowledge/ReligionSource');
+  const source = new ReligionSource();
+  const { query, limit, religion } = req.body;
+  const results = await source.search(query, { limit: limit || 10, religion });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/mental-health', asyncHandler(async (req, res) => {
+  const { MentalHealthSource } = require('../core/knowledge/MentalHealthSource');
+  const source = new MentalHealthSource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/web-design', asyncHandler(async (req, res) => {
+  const { WebDesignSource } = require('../core/knowledge/WebDesignSource');
+  const source = new WebDesignSource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/ui-design', asyncHandler(async (req, res) => {
+  const { UIDesignSource } = require('../core/knowledge/UIDesignSource');
+  const source = new UIDesignSource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/backend-design', asyncHandler(async (req, res) => {
+  const { BackendDesignSource } = require('../core/knowledge/BackendDesignSource');
+  const source = new BackendDesignSource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/music-theory', asyncHandler(async (req, res) => {
+  const { MusicTheorySource } = require('../core/knowledge/MusicTheorySource');
+  const source = new MusicTheorySource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/llm-programming', asyncHandler(async (req, res) => {
+  const { LLMProgrammingSource } = require('../core/knowledge/LLMProgrammingSource');
+  const source = new LLMProgrammingSource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/anatomy', asyncHandler(async (req, res) => {
+  const { AnatomySource } = require('../core/knowledge/AnatomySource');
+  const source = new AnatomySource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/pottery', asyncHandler(async (req, res) => {
+  const { PotterySource } = require('../core/knowledge/PotterySource');
+  const source = new PotterySource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/gardening', asyncHandler(async (req, res) => {
+  const { GardeningSource } = require('../core/knowledge/GardeningSource');
+  const source = new GardeningSource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/cna', asyncHandler(async (req, res) => {
+  const { CNASource } = require('../core/knowledge/CNASource');
+  const source = new CNASource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/dsp', asyncHandler(async (req, res) => {
+  const { DSPSource } = require('../core/knowledge/DSPSource');
+  const source = new DSPSource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/rn', asyncHandler(async (req, res) => {
+  const { RNSource } = require('../core/knowledge/RNSource');
+  const source = new RNSource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/astronomy', asyncHandler(async (req, res) => {
+  const { AstronomySource } = require('../core/knowledge/AstronomySource');
+  const source = new AstronomySource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/astrology', asyncHandler(async (req, res) => {
+  const { AstrologySource } = require('../core/knowledge/AstrologySource');
+  const source = new AstrologySource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/botany', asyncHandler(async (req, res) => {
+  const { BotanySource } = require('../core/knowledge/BotanySource');
+  const source = new BotanySource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/marijuana-growing', asyncHandler(async (req, res) => {
+  const { MarijuanaGrowingSource } = require('../core/knowledge/MarijuanaGrowingSource');
+  const source = new MarijuanaGrowingSource();
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 10 });
+  res.json({ results });
+}));
+
 app.post('/api/knowledge/load-telegram', requireAuth, asyncHandler(async (req, res) => {
   if (!services?.documentManager) {
     return res.status(503).json({ error: 'Document manager not available' });
@@ -856,6 +1000,78 @@ app.post('/api/knowledge/fuse', requireAuth, asyncHandler(async (req, res) => {
   if (sources.includes('specialized') || sources.includes('civil_rights') || sources.includes('compliance') || sources.includes('hip_hop') || sources.includes('connecticut')) {
     const { SpecializedTopicSource } = require('../core/knowledge/SpecializedTopicSource');
     sourceInstances.push(new SpecializedTopicSource('all'));
+  }
+  if (sources.includes('financial') || sources.includes('financial_advice')) {
+    const { FinancialAdviceSource } = require('../core/knowledge/FinancialAdviceSource');
+    sourceInstances.push(new FinancialAdviceSource());
+  }
+  if (sources.includes('religion')) {
+    const { ReligionSource } = require('../core/knowledge/ReligionSource');
+    sourceInstances.push(new ReligionSource());
+  }
+  if (sources.includes('mental_health')) {
+    const { MentalHealthSource } = require('../core/knowledge/MentalHealthSource');
+    sourceInstances.push(new MentalHealthSource());
+  }
+  if (sources.includes('web_design')) {
+    const { WebDesignSource } = require('../core/knowledge/WebDesignSource');
+    sourceInstances.push(new WebDesignSource());
+  }
+  if (sources.includes('ui_design')) {
+    const { UIDesignSource } = require('../core/knowledge/UIDesignSource');
+    sourceInstances.push(new UIDesignSource());
+  }
+  if (sources.includes('backend_design')) {
+    const { BackendDesignSource } = require('../core/knowledge/BackendDesignSource');
+    sourceInstances.push(new BackendDesignSource());
+  }
+  if (sources.includes('music_theory')) {
+    const { MusicTheorySource } = require('../core/knowledge/MusicTheorySource');
+    sourceInstances.push(new MusicTheorySource());
+  }
+  if (sources.includes('llm') || sources.includes('llm_programming')) {
+    const { LLMProgrammingSource } = require('../core/knowledge/LLMProgrammingSource');
+    sourceInstances.push(new LLMProgrammingSource());
+  }
+  if (sources.includes('anatomy')) {
+    const { AnatomySource } = require('../core/knowledge/AnatomySource');
+    sourceInstances.push(new AnatomySource());
+  }
+  if (sources.includes('pottery')) {
+    const { PotterySource } = require('../core/knowledge/PotterySource');
+    sourceInstances.push(new PotterySource());
+  }
+  if (sources.includes('gardening')) {
+    const { GardeningSource } = require('../core/knowledge/GardeningSource');
+    sourceInstances.push(new GardeningSource());
+  }
+  if (sources.includes('cna')) {
+    const { CNASource } = require('../core/knowledge/CNASource');
+    sourceInstances.push(new CNASource());
+  }
+  if (sources.includes('dsp')) {
+    const { DSPSource } = require('../core/knowledge/DSPSource');
+    sourceInstances.push(new DSPSource());
+  }
+  if (sources.includes('rn')) {
+    const { RNSource } = require('../core/knowledge/RNSource');
+    sourceInstances.push(new RNSource());
+  }
+  if (sources.includes('astronomy')) {
+    const { AstronomySource } = require('../core/knowledge/AstronomySource');
+    sourceInstances.push(new AstronomySource());
+  }
+  if (sources.includes('astrology')) {
+    const { AstrologySource } = require('../core/knowledge/AstrologySource');
+    sourceInstances.push(new AstrologySource());
+  }
+  if (sources.includes('botany')) {
+    const { BotanySource } = require('../core/knowledge/BotanySource');
+    sourceInstances.push(new BotanySource());
+  }
+  if (sources.includes('marijuana') || sources.includes('cannabis') || sources.includes('growing')) {
+    const { MarijuanaGrowingSource } = require('../core/knowledge/MarijuanaGrowingSource');
+    sourceInstances.push(new MarijuanaGrowingSource());
   }
   
   const results = await fusion.fuse({

@@ -1,0 +1,70 @@
+/**
+ * DSP Source - Direct Support Professional training, skills, resources
+ */
+
+import axios from 'axios';
+import { KnowledgeSource, KnowledgeResult } from './KnowledgeSource';
+import { logger } from '../observability/logger';
+
+export class DSPSource implements KnowledgeSource {
+  name = 'dsp';
+  private curatedSources = [
+    { name: 'NADSP', url: 'https://www.nadsp.org', description: 'National Alliance for Direct Support Professionals' },
+    { name: 'DSP Training', url: 'https://www.dsptraining.org', description: 'DSP training resources' },
+    { name: 'College of Direct Support', url: 'https://www.collegeofdirectsupport.com', description: 'DSP education and training' },
+  ];
+
+  async isAvailable(): Promise<boolean> {
+    return true;
+  }
+
+  async search(query: string, options: { limit?: number } = {}): Promise<KnowledgeResult[]> {
+    const { limit = 10 } = options;
+    const results: KnowledgeResult[] = [];
+
+    try {
+      // Search Wikipedia
+      const wikiQuery = `${query} direct support professional DSP`;
+      try {
+        const wikiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiQuery)}`;
+        const wikiResponse = await axios.get(wikiUrl);
+        const wiki = wikiResponse.data;
+
+        results.push({
+          id: `dsp_wiki_${wikiQuery}`,
+          title: wiki.title,
+          content: wiki.extract || '',
+          source: 'wikipedia',
+          url: wiki.content_urls?.desktop?.page,
+          metadata: { topic: 'dsp' },
+          confidence: 0.85,
+        });
+      } catch {
+        // Wikipedia not found
+      }
+
+      // Add curated sources
+      for (const source of this.curatedSources.slice(0, limit - results.length)) {
+        results.push({
+          id: `dsp_${source.name.replace(/\s+/g, '_')}`,
+          title: `${source.name}: ${query}`,
+          content: `${source.description}. Visit ${source.url} for information about "${query}".`,
+          source: 'dsp',
+          url: source.url,
+          metadata: { sourceName: source.name },
+          confidence: 0.9,
+        });
+      }
+
+      return results.slice(0, limit);
+    } catch (error: any) {
+      logger.error('DSP search failed', { error: error.message });
+      return [];
+    }
+  }
+
+  async getById(id: string): Promise<KnowledgeResult | null> {
+    return null;
+  }
+}
+
