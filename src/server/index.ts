@@ -330,6 +330,52 @@ app.get('/api-docs', (req, res) => {
   }
 });
 
+// Admin routes
+app.use('/api/admin', (req, res, next) => {
+  const { createAdminRouter } = require('./routes/admin');
+  const router = createAdminRouter(services);
+  router(req, res, next);
+}));
+
+// Export/Import routes
+app.use('/api/export', (req, res, next) => {
+  const { createExportRouter } = require('./routes/export');
+  const router = createExportRouter(services);
+  router(req, res, next);
+}));
+
+// Conversation management endpoints
+app.get('/api/conversations', requireAuth, asyncHandler(async (req, res) => {
+  const { ConversationManager } = require('../core/conversation/ConversationManager');
+  const conversationManager = new ConversationManager();
+  
+  const userId = req.user?.userId;
+  const limit = parseInt(req.query.limit as string) || 20;
+  
+  const conversations = await conversationManager.listConversations(userId, limit);
+  res.json({ conversations });
+}));
+
+app.get('/api/conversations/:sessionId', requireAuth, asyncHandler(async (req, res) => {
+  const { ConversationManager } = require('../core/conversation/ConversationManager');
+  const conversationManager = new ConversationManager();
+  
+  const conversation = await conversationManager.getConversation(req.params.sessionId);
+  if (!conversation) {
+    return res.status(404).json({ error: 'Conversation not found' });
+  }
+  
+  res.json({ conversation });
+}));
+
+app.delete('/api/conversations/:sessionId', requireAuth, asyncHandler(async (req, res) => {
+  const { ConversationManager } = require('../core/conversation/ConversationManager');
+  const conversationManager = new ConversationManager();
+  
+  const deleted = await conversationManager.deleteConversation(req.params.sessionId);
+  res.json({ success: deleted });
+}));
+
 // Webhook management endpoints
 app.post('/api/webhooks', asyncHandler(async (req, res) => {
   const { WebhookService } = require('../core/webhooks/WebhookService');

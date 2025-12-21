@@ -291,6 +291,19 @@ export class EnhancedOrchestrator {
           metricsCollector.recordRequest(true, intent.intent);
           metricsCollector.recordLatency(chatResponse.latency);
 
+          // Track analytics if available
+          if ((this as any).analytics) {
+            (this as any).analytics.trackRequest({
+              userId: request.userId,
+              sessionId: request.sessionId,
+              model: selectedModel,
+              intent: intent.intent,
+              latency: chatResponse.latency,
+              success: true,
+              query: request.message,
+            });
+          }
+
           logger.info('Request processed successfully', {
             sessionId: request.sessionId,
             latency: chatResponse.latency,
