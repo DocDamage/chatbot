@@ -594,7 +594,7 @@ const startServer = async () => {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
       logger.info(`🚀 Server running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
       logger.info(`📚 Knowledge base: ${process.env.KNOWLEDGE_BASE_DIR || './knowledge-base'}`);
@@ -603,6 +603,7 @@ const startServer = async () => {
       logger.info(`   - Model Routing: ${process.env.ENABLE_MODEL_ROUTING !== 'false' ? '✅' : '❌'}`);
       logger.info(`   - Safety Pipeline: ${process.env.ENABLE_SAFETY_PIPELINE !== 'false' ? '✅' : '❌'}`);
       logger.info(`   - Semantic Cache: ${process.env.ENABLE_SEMANTIC_CACHE !== 'false' ? '✅' : '❌'}`);
+      logger.info(`   - WebSocket: ${wsServer ? '✅' : '❌'}`);
     });
   } catch (error: any) {
     logger.error('Failed to start server', { error: error.message });
