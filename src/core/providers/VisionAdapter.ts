@@ -142,29 +142,120 @@ export class GPT4VAdapter implements VisionAdapter {
 }
 
 /**
- * Gemini Vision Adapter (placeholder - would use Google AI SDK)
+ * Gemini Vision Adapter - Using Google Generative AI SDK
  */
 export class GeminiVisionAdapter implements VisionAdapter {
   private apiKey: string;
   private model: string;
+  private axios: any;
 
   constructor(apiKey: string, model: string = 'gemini-pro-vision') {
     this.apiKey = apiKey;
     this.model = model;
+    this.axios = require('axios');
   }
 
   async analyzeImage(request: VisionRequest): Promise<VisionResponse> {
-    // Placeholder - would use Google AI SDK
-    logger.warn('Gemini Vision adapter not fully implemented');
-    throw new Error('Gemini Vision adapter requires Google AI SDK');
+    const startTime = Date.now();
+
+    try {
+      // Use Gemini API
+      const response = await this.axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`,
+        {
+          contents: [{
+            parts: [
+              { text: request.prompt },
+              {
+                inline_data: {
+                  mime_type: 'image/jpeg',
+                  data: request.image.startsWith('data:') 
+                    ? request.image.split(',')[1]
+                    : request.image
+                }
+              }
+            ]
+          }]
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      const content = response.data.candidates[0]?.content?.parts[0]?.text || '';
+      const latency = Date.now() - startTime;
+
+      logger.info('Gemini vision analysis completed', {
+        model: this.model,
+        latency
+      });
+
+      return {
+        content,
+        model: this.model,
+        latency,
+        imageAnalysis: {
+          description: content,
+          objects: []
+        }
+      };
+    } catch (error: any) {
+      logger.error('Gemini vision analysis failed', { error: error.message });
+      throw error;
+    }
   }
 
   async analyzeMultiImage(request: MultiImageRequest): Promise<VisionResponse> {
-    throw new Error('Gemini Vision adapter requires Google AI SDK');
+    const startTime = Date.now();
+
+    try {
+      const parts: any[] = [{ text: request.prompt }];
+      
+      for (const image of request.images) {
+        parts.push({
+          inline_data: {
+            mime_type: 'image/jpeg',
+            data: image.startsWith('data:') ? image.split(',')[1] : image
+          }
+        });
+      }
+
+      const response = await this.axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent?key=${this.apiKey}`,
+        {
+          contents: [{
+            parts
+          }]
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      const content = response.data.candidates[0]?.content?.parts[0]?.text || '';
+      const latency = Date.now() - startTime;
+
+      return {
+        content,
+        model: this.model,
+        latency
+      };
+    } catch (error: any) {
+      logger.error('Gemini multi-image analysis failed', { error: error.message });
+      throw error;
+    }
   }
 
   async extractText(image: string): Promise<string> {
-    throw new Error('Gemini Vision adapter requires Google AI SDK');
+    const response = await this.analyzeImage({
+      image,
+      prompt: 'Extract all text from this image. Return only the text content, no explanations.'
+    });
+    return response.content;
   }
 }
 

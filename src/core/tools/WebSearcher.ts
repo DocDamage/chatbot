@@ -77,9 +77,50 @@ export class WebSearcher {
    * Search using DuckDuckGo (no API key needed)
    */
   private async searchDuckDuckGo(query: string, maxResults: number): Promise<any[]> {
-    // Placeholder - would use duckduckgo-search or similar library
-    logger.warn('DuckDuckGo search not fully implemented - requires search library');
-    return [];
+    try {
+      // Use DuckDuckGo Instant Answer API
+      const response = await this.axios.get('https://api.duckduckgo.com/', {
+        params: {
+          q: query,
+          format: 'json',
+          no_html: '1',
+          skip_disambig: '1'
+        },
+        timeout: 5000
+      });
+
+      const results: any[] = [];
+
+      // Extract instant answer
+      if (response.data.AbstractText) {
+        results.push({
+          title: response.data.Heading || query,
+          snippet: response.data.AbstractText,
+          url: response.data.AbstractURL,
+          source: 'DuckDuckGo'
+        });
+      }
+
+      // Extract related topics
+      if (response.data.RelatedTopics) {
+        for (const topic of response.data.RelatedTopics.slice(0, maxResults - 1)) {
+          if (topic.Text) {
+            results.push({
+              title: topic.Text.split(' - ')[0] || query,
+              snippet: topic.Text,
+              url: topic.FirstURL,
+              source: 'DuckDuckGo'
+            });
+          }
+        }
+      }
+
+      return results.slice(0, maxResults);
+    } catch (error: any) {
+      logger.warn('DuckDuckGo search failed', { error: error.message });
+      // Fallback: return empty results
+      return [];
+    }
   }
 
   /**

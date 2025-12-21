@@ -8,6 +8,7 @@ import { ReRanker } from './ReRanker';
 import { QueryExpander } from './QueryExpander';
 import { ContextCompressor } from './ContextCompressor';
 import { CitationTracker } from './CitationTracker';
+import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { DocumentChunk, Citation } from '../../types/rag';
 import { LLMAdapter } from '../providers/LLMAdapter';
 import { logger } from '../observability/logger';
@@ -31,10 +32,12 @@ export class RAGService {
   private contextCompressor: ContextCompressor;
   private citationTracker: CitationTracker;
   private llmAdapter: LLMAdapter;
+  private embeddingService?: EmbeddingService;
 
-  constructor(llmAdapter: LLMAdapter) {
+  constructor(llmAdapter: LLMAdapter, embeddingService?: EmbeddingService) {
     this.llmAdapter = llmAdapter;
-    this.retriever = new HybridRetriever();
+    this.embeddingService = embeddingService;
+    this.retriever = new HybridRetriever(embeddingService);
     this.reranker = new ReRanker();
     this.queryExpander = new QueryExpander(llmAdapter);
     this.contextCompressor = new ContextCompressor(llmAdapter);

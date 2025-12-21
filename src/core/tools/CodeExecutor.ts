@@ -117,13 +117,24 @@ export class CodeExecutor {
     const dangerousPatterns = [
       /import\s+os\s*$/m,
       /import\s+subprocess/m,
+      /import\s+sys/m,
       /eval\(/,
       /exec\(/,
       /__import__/,
       /open\(['"]\/etc\//,
+      /open\(['"]\/usr\//,
+      /open\(['"]\/var\//,
       /rm\s+-rf/,
-      /delete\s+.*from/,
-      /DROP\s+TABLE/i
+      /rm\s+-r/,
+      /delete\s+.*from/i,
+      /DROP\s+TABLE/i,
+      /TRUNCATE/i,
+      /DELETE\s+FROM/i,
+      /fs\./,
+      /child_process/,
+      /process\.exit/,
+      /require\(['"]fs['"]\)/,
+      /require\(['"]child_process['"]\)/
     ];
 
     for (const pattern of dangerousPatterns) {
@@ -133,6 +144,14 @@ export class CodeExecutor {
           reason: `Dangerous pattern detected: ${pattern}`
         };
       }
+    }
+
+    // Check for file system operations
+    if (/\.(readFile|writeFile|unlink|rmdir|mkdir)/.test(code)) {
+      return {
+        safe: false,
+        reason: 'File system operations not allowed'
+      };
     }
 
     return { safe: true };

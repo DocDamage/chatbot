@@ -5,6 +5,7 @@
 
 import { DocumentChunk, RetrievalResult } from '../../types/rag';
 import { logger } from '../observability/logger';
+import { EmbeddingService } from '../embeddings/EmbeddingService';
 import natural from 'natural';
 
 export class HybridRetriever {
@@ -12,15 +13,29 @@ export class HybridRetriever {
   private bm25Index: natural.TfIdf | null = null;
   private embeddings: Map<string, number[]> = new Map();
   private tokenizer = new natural.WordTokenizer();
+  private embeddingService?: EmbeddingService;
+
+  constructor(embeddingService?: EmbeddingService) {
+    this.embeddingService = embeddingService;
+  }
 
   /**
    * Add documents to the knowledge base
    */
   addDocuments(chunks: DocumentChunk[]): void {
     this.documents.push(...chunks);
+    
+    // Store embeddings if available
+    for (const chunk of chunks) {
+      if (chunk.embedding) {
+        this.embeddings.set(chunk.id, chunk.embedding);
+      }
+    }
+    
     this.rebuildIndexes();
     logger.info(`Added ${chunks.length} documents to knowledge base`, {
-      totalDocuments: this.documents.length
+      totalDocuments: this.documents.length,
+      withEmbeddings: chunks.filter(c => c.embedding).length
     });
   }
 
@@ -207,11 +222,19 @@ export class HybridRetriever {
   }
 
   /**
-   * Get query embedding (placeholder - would use embedding model)
+   * Get query embedding using embedding service
    */
   private async getQueryEmbedding(query: string): Promise<number[] | null> {
-    // Placeholder - in production, use @xenova/transformers or OpenAI embeddings
-    return null;
+    if (!this.embeddingService) {
+      return null;
+    }
+
+    try {
+      return await this.embeddingService.embed(query);
+    } catch (error: any) {
+      logger.warn('Query embedding failed', { error: error.message });
+      return null;
+    }
   }
 
   /**

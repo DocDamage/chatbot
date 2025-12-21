@@ -4,6 +4,8 @@
  */
 
 import { CacheManager } from '../../utils/cache';
+import { RedisCache } from './RedisCache';
+import { DiskCache } from './DiskCache';
 import { logger } from '../observability/logger';
 
 export interface CacheLevel {
@@ -16,23 +18,65 @@ export interface CacheLevel {
 
 export class MultiLevelCache<T> {
   private levels: CacheLevel[] = [];
+  private l1Cache: CacheManager;
+  private l2Cache?: RedisCache;
+  private l3Cache?: DiskCache;
 
-  constructor() {
+  constructor(redisUrl?: string, diskCacheDir?: string) {
     // Initialize L1 (in-memory)
-    const l1Cache = new CacheManager(3600);
+    this.l1Cache = new CacheManager(3600);
     this.levels.push({
       level: 1,
       name: 'memory',
-      get: async <T>(key: string) => l1Cache.get<T>(key),
+      get: async <T>(key: string) => this.l1Cache.get<T>(key),
       set: async <T>(key: string, value: T, ttl?: number) => {
-        l1Cache.set(key, value, ttl);
+        this.l1Cache.set(key, value, ttl);
       },
       delete: async (key: string) => {
-        l1Cache.delete(key);
+        this.l1Cache.delete(key);
       }
     });
 
-    // L2 and L3 would be initialized with Redis/disk adapters
+    // Initialize L2 (Redis) if URL provided
+    if (redisUrl) {
+      this.l2Cache = new RedisCache(redisUrl);
+      this.l2Cache.initialize(redisUrl).then(() => {
+        if (this.l2Cache?.isEnabled()) {
+          this.levels.push({
+            level: 2,
+            name: 'redis',
+            get: async <T>(key: string) => this.l2Cache!.get<T>(key),
+            set: async <T>(key: string, value: T, ttl?: number) => {
+              await this.l2Cache!.set(key, value, ttl);
+            },
+            delete: async (key: string) => {
+              await this.l2Cache!.delete(key);
+            }
+          });
+          logger.info('Redis cache (L2) added to multi-level cache');
+        }
+      });
+    }
+
+    // Initialize L3 (Disk) if directory provided
+    if (diskCacheDir) {
+      this.l3Cache = new DiskCache(diskCacheDir);
+      if (this.l3Cache.isEnabled()) {
+        this.levels.push({
+          level: 3,
+          name: 'disk',
+          get: async <T>(key: string) => this.l3Cache!.get<T>(key),
+          set: async <T>(key: string, value: T, ttl?: number) => {
+            await this.l3Cache!.set(key, value, ttl);
+          },
+          delete: async (key: string) => {
+            await this.l3Cache!.delete(key);
+          }
+        });
+        logger.info('Disk cache (L3) added to multi-level cache');
+      }
+    }
+
     logger.info('Multi-level cache initialized', { levels: this.levels.length });
   }
 
