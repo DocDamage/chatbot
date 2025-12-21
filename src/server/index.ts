@@ -8,6 +8,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { ServiceInitializer } from '../core/initialization/ServiceInitializer';
 import { StableDiffusionAdapter } from '../core/providers/StableDiffusionAdapter';
+import { ConfigValidator } from '../core/config/ConfigValidator';
 import { logger } from '../core/observability/logger';
 import { metricsCollector } from '../core/observability/metrics';
 import { ChatRequest } from '../core/orchestrator/Orchestrator';
@@ -17,6 +18,15 @@ import { errorHandler, asyncHandler } from '../middleware/errorHandler';
 import { securityHeaders, corsOptions } from '../middleware/security';
 
 dotenv.config();
+
+// Validate configuration on startup
+try {
+  ConfigValidator.getValidatedConfig();
+  logger.info('Configuration validated successfully');
+} catch (error: any) {
+  logger.error('Configuration validation failed', { error: error.message });
+  process.exit(1);
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -63,8 +73,8 @@ let orchestrator: any;
 })();
 
 // Health check with detailed status
-app.get('/health', (req, res) => {
-  const health = {
+app.get('/health', asyncHandler(async (req, res) => {
+  const health: any = {
     status: orchestrator ? 'ready' : 'initializing',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
@@ -74,13 +84,67 @@ app.get('/health', (req, res) => {
       orchestrator: !!orchestrator,
       rag: !!services?.ragService,
       tools: !!services?.toolRegistry,
-      vision: !!services?.visionAdapter
-    }
+      vision: !!services?.visionAdapter,
+    },
+    dependencies: {},
   };
+
+  // Check Ollama
+  if (process.env.USE_OLLAMA !== 'false') {
+    try {
+      const axios = require('axios');
+      const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
+      await axios.get(`${ollamaUrl}/api/tags`, { timeout: 2000 });
+      health.dependencies.ollama = 'healthy';
+    } catch (error) {
+      health.dependencies.ollama = 'unhealthy';
+    }
+  }
+
+  // Check Redis
+  if (process.env.ENABLE_REDIS_CACHE === 'true' && process.env.REDIS_URL) {
+    try {
+      const Redis = require('ioredis');
+      const redis = new Redis(process.env.REDIS_URL);
+      await redis.ping();
+      redis.disconnect();
+      health.dependencies.redis = 'healthy';
+    } catch (error) {
+      health.dependencies.redis = 'unhealthy';
+    }
+  }
+
+  // Check disk space
+  try {
+    const fs = require('fs');
+    const stats = fs.statSync(process.cwd());
+    health.dependencies.disk = 'healthy';
+  } catch (error) {
+    health.dependencies.disk = 'unhealthy';
+  }
+
+  const allHealthy = Object.values(health.dependencies).every(status => status === 'healthy');
+  if (!allHealthy && orchestrator) {
+    health.status = 'degraded';
+  }
+
   res.json(health);
+}));
+
+// Kubernetes readiness probe
+app.get('/health/ready', asyncHandler(async (req, res) => {
+  if (!orchestrator) {
+    return res.status(503).json({ status: 'not ready' });
+  }
+  res.json({ status: 'ready' });
+}));
+
+// Kubernetes liveness probe
+app.get('/health/live', (req, res) => {
+  res.json({ status: 'alive' });
 });
 
-// Metrics endpoint
+// Metrics endpoint (JSON)
 app.get('/api/metrics', asyncHandler(async (req, res) => {
   if (!orchestrator) {
     return res.status(503).json({ error: 'Services not initialized yet' });
@@ -102,7 +166,64 @@ app.get('/api/metrics', asyncHandler(async (req, res) => {
   res.json(metrics);
 }));
 
-// Chat endpoint with rate limiting and validation
+// Prometheus metrics endpoint
+app.get('/metrics', asyncHandler(async (req, res) => {
+  const { PrometheusExporter } = require('../observability/prometheus');
+  const metrics = PrometheusExporter.getApplicationMetrics();
+  res.setHeader('Content-Type', 'text/plain');
+  res.send(metrics);
+}));
+
+// API Versioning
+// Determine API version from header or URL
+const getApiVersion = (req: any): string => {
+  const versionHeader = req.headers['api-version'];
+  if (versionHeader) return versionHeader;
+
+  const urlVersion = req.path.match(/\/api\/v(\d+)\//);
+  if (urlVersion) return urlVersion[1];
+
+  return '1'; // Default to v1
+};
+
+// Versioned API routes
+app.use('/api/v1', asyncHandler(async (req, res, next) => {
+  if (!orchestrator) {
+    await new Promise(resolve => {
+      const checkInterval = setInterval(() => {
+        if (orchestrator) {
+          clearInterval(checkInterval);
+          resolve(undefined);
+        }
+      }, 100);
+    });
+  }
+  next();
+}), (req, res, next) => {
+  const { createChatRouter } = require('./routes/v1/chat');
+  const router = createChatRouter(orchestrator);
+  router(req, res, next);
+}));
+
+app.use('/api/v2', asyncHandler(async (req, res, next) => {
+  if (!orchestrator) {
+    await new Promise(resolve => {
+      const checkInterval = setInterval(() => {
+        if (orchestrator) {
+          clearInterval(checkInterval);
+          resolve(undefined);
+        }
+      }, 100);
+    });
+  }
+  next();
+}), (req, res, next) => {
+  const { createChatRouterV2 } = require('./routes/v2/chat');
+  const router = createChatRouterV2(orchestrator);
+  router(req, res, next);
+}));
+
+// Legacy endpoint (defaults to v1)
 app.post('/api/chat', 
   rateLimiter.middleware(),
   validateChatRequest,
@@ -191,6 +312,51 @@ app.get('/api/models/free', asyncHandler(async (req, res) => {
     vision: FreeModelRegistry.getByCategory('vision'),
     embedding: FreeModelRegistry.getByCategory('embedding')
   });
+}));
+
+// API Documentation endpoint
+app.get('/api-docs', (req, res) => {
+  const fs = require('fs');
+  const path = require('path');
+  try {
+    const openapiSpec = fs.readFileSync(
+      path.join(__dirname, '../docs/openapi.yaml'),
+      'utf8'
+    );
+    res.setHeader('Content-Type', 'text/yaml');
+    res.send(openapiSpec);
+  } catch (error) {
+    res.status(404).json({ error: 'API documentation not found' });
+  }
+});
+
+// Webhook management endpoints
+app.post('/api/webhooks', asyncHandler(async (req, res) => {
+  const { WebhookService } = require('../core/webhooks/WebhookService');
+  const webhookService = new WebhookService();
+  
+  const { url, events, secret } = req.body;
+  const webhook = webhookService.register({
+    url,
+    events: events || ['*'],
+    secret,
+    active: true,
+  });
+
+  res.json({ success: true, webhook });
+}));
+
+app.get('/api/webhooks', asyncHandler(async (req, res) => {
+  const { WebhookService } = require('../core/webhooks/WebhookService');
+  const webhookService = new WebhookService();
+  res.json({ webhooks: webhookService.list() });
+}));
+
+app.delete('/api/webhooks/:id', asyncHandler(async (req, res) => {
+  const { WebhookService } = require('../core/webhooks/WebhookService');
+  const webhookService = new WebhookService();
+  const deleted = webhookService.unregister(req.params.id);
+  res.json({ success: deleted });
 }));
 
 // Error handler (must be last)

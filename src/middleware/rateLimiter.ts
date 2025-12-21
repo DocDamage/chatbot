@@ -1,10 +1,12 @@
 /**
  * Rate Limiting Middleware
+ * Supports IP-based, user-based, and API key-based rate limiting
  */
 
 import { Request, Response, NextFunction } from 'express';
 import { RateLimitError } from '../utils/errors';
 import { logger } from '../core/observability/logger';
+import Redis from 'ioredis';
 
 interface RateLimitStore {
   [key: string]: {
@@ -13,22 +15,65 @@ interface RateLimitStore {
   };
 }
 
+interface RateLimitConfig {
+  windowMs: number;
+  maxRequests: number;
+  keyGenerator?: (req: Request) => string;
+}
+
 class RateLimiter {
   private store: RateLimitStore = {};
   private windowMs: number;
   private maxRequests: number;
+  private redisClient?: Redis;
+  private useRedis: boolean;
+  private keyGenerator: (req: Request) => string;
 
-  constructor(windowMs: number = 60000, maxRequests: number = 60) {
+  constructor(
+    windowMs: number = 60000,
+    maxRequests: number = 60,
+    redisUrl?: string,
+    keyGenerator?: (req: Request) => string
+  ) {
     this.windowMs = windowMs;
     this.maxRequests = maxRequests;
+    this.keyGenerator = keyGenerator || this.defaultKeyGenerator;
+    this.useRedis = !!redisUrl;
+
+    if (redisUrl) {
+      try {
+        this.redisClient = new Redis(redisUrl);
+        this.redisClient.on('error', (err) => {
+          logger.warn('Redis connection error, falling back to memory', { error: err.message });
+          this.useRedis = false;
+        });
+        logger.info('Rate limiter using Redis');
+      } catch (error) {
+        logger.warn('Failed to connect to Redis, using memory store', { error });
+        this.useRedis = false;
+      }
+    }
     
     // Clean up old entries every minute
     setInterval(() => this.cleanup(), 60000);
   }
 
+  private defaultKeyGenerator(req: Request): string {
+    // Priority: userId > apiKey > sessionId > IP
+    if (req.user?.userId) {
+      return `user:${req.user.userId}`;
+    }
+    if (req.apiKey?.id) {
+      return `apikey:${req.apiKey.id}`;
+    }
+    if (req.body?.sessionId) {
+      return `session:${req.body.sessionId}`;
+    }
+    return `ip:${req.ip || req.headers['x-forwarded-for'] || 'unknown'}`;
+  }
+
   private getKey(req: Request): string {
-    // Use IP address or session ID
-    return req.ip || req.headers['x-forwarded-for'] as string || 'unknown';
+    return this.keyGenerator(req);
   }
 
   private cleanup(): void {
@@ -41,44 +86,103 @@ class RateLimiter {
   }
 
   middleware() {
-    return (req: Request, res: Response, next: NextFunction) => {
+    return async (req: Request, res: Response, next: NextFunction) => {
       const key = this.getKey(req);
       const now = Date.now();
 
-      // Get or create rate limit entry
-      let entry = this.store[key];
-      
-      if (!entry || entry.resetTime < now) {
-        entry = {
-          count: 0,
-          resetTime: now + this.windowMs
-        };
-        this.store[key] = entry;
+      try {
+        let count: number;
+        let resetTime: number;
+
+        if (this.useRedis && this.redisClient) {
+          // Use Redis for distributed rate limiting
+          const redisKey = `ratelimit:${key}`;
+          const current = await this.redisClient.incr(redisKey);
+          
+          if (current === 1) {
+            // First request in window, set expiry
+            await this.redisClient.pexpire(redisKey, this.windowMs);
+            resetTime = now + this.windowMs;
+          } else {
+            const ttl = await this.redisClient.pttl(redisKey);
+            resetTime = now + ttl;
+          }
+
+          count = current;
+        } else {
+          // Use in-memory store
+          let entry = this.store[key];
+          
+          if (!entry || entry.resetTime < now) {
+            entry = {
+              count: 0,
+              resetTime: now + this.windowMs
+            };
+            this.store[key] = entry;
+          }
+
+          entry.count++;
+          count = entry.count;
+          resetTime = entry.resetTime;
+        }
+
+        // Check API key rate limit if present
+        if (req.apiKey?.rateLimit) {
+          const apiKeyLimit = req.apiKey.rateLimit;
+          if (count > apiKeyLimit) {
+            const retryAfter = Math.ceil((resetTime - now) / 1000);
+            logger.warn('API key rate limit exceeded', { 
+              key, 
+              count, 
+              limit: apiKeyLimit,
+              retryAfter 
+            });
+            throw new RateLimitError('API key rate limit exceeded', retryAfter);
+          }
+        }
+
+        // Set rate limit headers
+        const remaining = Math.max(0, this.maxRequests - count);
+        const resetTimeSeconds = Math.ceil(resetTime / 1000);
+        
+        res.setHeader('X-RateLimit-Limit', this.maxRequests.toString());
+        res.setHeader('X-RateLimit-Remaining', remaining.toString());
+        res.setHeader('X-RateLimit-Reset', resetTimeSeconds.toString());
+
+        if (count > this.maxRequests) {
+          const retryAfter = Math.ceil((resetTime - now) / 1000);
+          logger.warn('Rate limit exceeded', { key, count, retryAfter });
+          throw new RateLimitError('Too many requests', retryAfter);
+        }
+
+        next();
+      } catch (error) {
+        if (error instanceof RateLimitError) {
+          throw error;
+        }
+        logger.error('Rate limit check failed', { error });
+        // Allow request on error (fail open)
+        next();
       }
-
-      entry.count++;
-
-      // Set rate limit headers
-      const remaining = Math.max(0, this.maxRequests - entry.count);
-      const resetTime = Math.ceil(entry.resetTime / 1000);
-      
-      res.setHeader('X-RateLimit-Limit', this.maxRequests.toString());
-      res.setHeader('X-RateLimit-Remaining', remaining.toString());
-      res.setHeader('X-RateLimit-Reset', resetTime.toString());
-
-      if (entry.count > this.maxRequests) {
-        const retryAfter = Math.ceil((entry.resetTime - now) / 1000);
-        logger.warn('Rate limit exceeded', { key, count: entry.count, retryAfter });
-        throw new RateLimitError('Too many requests', retryAfter);
-      }
-
-      next();
     };
+  }
+
+  /**
+   * Create rate limiter with custom config
+   */
+  static create(config: RateLimitConfig, redisUrl?: string): RateLimiter {
+    return new RateLimiter(
+      config.windowMs,
+      config.maxRequests,
+      redisUrl,
+      config.keyGenerator
+    );
   }
 }
 
 export const rateLimiter = new RateLimiter(
   parseInt(process.env.RATE_LIMIT_WINDOW_MS || '60000'),
-  parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '60')
+  parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '60'),
+  process.env.REDIS_URL
 );
 

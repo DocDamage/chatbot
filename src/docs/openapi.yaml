@@ -1,0 +1,194 @@
+openapi: 3.0.0
+info:
+  title: AI Chatbot API
+  version: 1.0.0
+  description: Production-grade AI chatbot with RAG, multi-model routing, and safety features
+  contact:
+    name: API Support
+
+servers:
+  - url: http://localhost:3001
+    description: Development server
+  - url: https://api.example.com
+    description: Production server
+
+paths:
+  /api/chat:
+    post:
+      summary: Send a chat message
+      description: Process a chat message and return AI response
+      tags:
+        - Chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - message
+                - sessionId
+              properties:
+                message:
+                  type: string
+                  minLength: 1
+                  maxLength: 10000
+                  description: The user's message
+                sessionId:
+                  type: string
+                  description: Session identifier
+                userId:
+                  type: string
+                  description: User identifier (optional)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: AI generated response
+                  sessionId:
+                    type: string
+                  timestamp:
+                    type: string
+                    format: date-time
+        '400':
+          description: Bad request
+        '429':
+          description: Rate limit exceeded
+        '500':
+          description: Internal server error
+
+  /api/knowledge-base/add:
+    post:
+      summary: Add text to knowledge base
+      description: Add text content to the RAG knowledge base
+      tags:
+        - Knowledge Base
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - text
+              properties:
+                text:
+                  type: string
+                  description: Text content to add
+                metadata:
+                  type: object
+                  description: Optional metadata
+      responses:
+        '200':
+          description: Text added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  chunksCount:
+                    type: number
+
+  /api/knowledge-base/stats:
+    get:
+      summary: Get knowledge base statistics
+      description: Retrieve statistics about the knowledge base
+      tags:
+        - Knowledge Base
+      responses:
+        '200':
+          description: Knowledge base statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalDocuments:
+                    type: number
+                  totalChunks:
+                    type: number
+
+  /api/tools:
+    get:
+      summary: List available tools
+      description: Get list of all available tools
+      tags:
+        - Tools
+      responses:
+        '200':
+          description: List of tools
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tools:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        category:
+                          type: string
+
+  /health:
+    get:
+      summary: Health check
+      description: Check application health status
+      tags:
+        - System
+      responses:
+        '200':
+          description: Application is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ready, initializing, degraded]
+                  timestamp:
+                    type: string
+                    format: date-time
+                  services:
+                    type: object
+
+  /metrics:
+    get:
+      summary: Prometheus metrics
+      description: Export metrics in Prometheus format
+      tags:
+        - System
+      responses:
+        '200':
+          description: Metrics in Prometheus format
+          content:
+            text/plain:
+              schema:
+                type: string
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+

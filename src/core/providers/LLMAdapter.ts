@@ -4,6 +4,7 @@
  */
 
 import OpenAI from 'openai';
+import axios, { AxiosInstance } from 'axios';
 import { logger } from '../observability/logger';
 
 export interface LLMGenerateOptions {
@@ -33,6 +34,7 @@ export interface LLMAdapter {
  */
 export class OpenAIAdapter implements LLMAdapter {
   private client: OpenAI;
+  private httpClient: AxiosInstance;
   private model: string;
   private defaultModel = 'gpt-3.5-turbo';
   private fallbackModel = 'gpt-3.5-turbo';
@@ -41,6 +43,26 @@ export class OpenAIAdapter implements LLMAdapter {
     this.client = new OpenAI({ apiKey });
     this.model = model;
     this.defaultModel = model;
+
+    // Create HTTP client with connection pooling
+    this.httpClient = axios.create({
+      baseURL: 'https://api.openai.com',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+      },
+      httpAgent: new (require('http').Agent)({
+        keepAlive: true,
+        keepAliveMsecs: 30000,
+        maxSockets: 50,
+        maxFreeSockets: 10,
+      }),
+      httpsAgent: new (require('https').Agent)({
+        keepAlive: true,
+        keepAliveMsecs: 30000,
+        maxSockets: 50,
+        maxFreeSockets: 10,
+      }),
+    });
   }
 
   async generate(options: LLMGenerateOptions): Promise<LLMResponse> {

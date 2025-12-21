@@ -6,6 +6,7 @@
 import { CacheManager } from '../../utils/cache';
 import { RedisCache } from './RedisCache';
 import { DiskCache } from './DiskCache';
+import { CacheAnalytics } from './CacheAnalytics';
 import { logger } from '../observability/logger';
 
 export interface CacheLevel {
@@ -21,8 +22,12 @@ export class MultiLevelCache<T> {
   private l1Cache: CacheManager;
   private l2Cache?: RedisCache;
   private l3Cache?: DiskCache;
+  private analytics: CacheAnalytics;
+  private cacheTags: Map<string, Set<string>> = new Map(); // key -> tags
+  private tagKeys: Map<string, Set<string>> = new Map(); // tag -> keys
 
   constructor(redisUrl?: string, diskCacheDir?: string) {
+    this.analytics = new CacheAnalytics();
     // Initialize L1 (in-memory)
     this.l1Cache = new CacheManager(3600);
     this.levels.push({
@@ -84,25 +89,24 @@ export class MultiLevelCache<T> {
    * Get value from cache (check all levels)
    */
   async get(key: string): Promise<T | undefined> {
-    // Check each level in order
+    // Try each level in order
     for (const level of this.levels) {
       try {
         const value = await level.get<T>(key);
         if (value !== undefined) {
+          this.analytics.recordHit(level.name);
           // Promote to L1 if found in lower level
-          if (level.level > 1) {
-            await this.levels[0].set(key, value);
+          if (level.level > 1 && this.l1Cache) {
+            await this.l1Cache.set(key, value);
           }
-          logger.debug('Cache hit', { key, level: level.name });
           return value;
         }
-      } catch (error: any) {
-        logger.warn(`Cache level ${level.name} failed`, { error: error.message });
-        // Continue to next level
+      } catch (error) {
+        logger.warn(`Cache get failed at level ${level.level}`, { error, key });
       }
     }
 
-    logger.debug('Cache miss', { key });
+    this.analytics.recordMiss('all');
     return undefined;
   }
 
@@ -141,10 +145,101 @@ export class MultiLevelCache<T> {
    * Get statistics
    */
   getStats() {
+    const analytics = this.analytics.getMetrics();
     return {
-      levels: this.levels.length,
-      levelNames: this.levels.map(l => l.name)
+      levels: this.levels.map(l => l.name),
+      hits: analytics.hits,
+      misses: analytics.misses,
+      hitRate: analytics.hitRate.toFixed(2) + '%',
+      size: analytics.size,
+      evictions: analytics.evictions,
+      levelStats: Object.fromEntries(analytics.levelStats),
     };
+  }
+
+  /**
+   * Get cache analytics
+   */
+  getAnalytics() {
+    return this.analytics.getMetrics();
+  }
+
+  /**
+   * Set value with tags for invalidation
+   */
+  async setWithTags(key: string, value: T, ttl?: number, tags?: string[]): Promise<void> {
+    await this.set(key, value, ttl);
+    
+    if (tags && tags.length > 0) {
+      this.cacheTags.set(key, new Set(tags));
+      for (const tag of tags) {
+        if (!this.tagKeys.has(tag)) {
+          this.tagKeys.set(tag, new Set());
+        }
+        this.tagKeys.get(tag)!.add(key);
+      }
+    }
+  }
+
+  /**
+   * Invalidate cache by tag
+   */
+  async invalidateByTag(tag: string): Promise<number> {
+    const keys = this.tagKeys.get(tag);
+    if (!keys) return 0;
+
+    let count = 0;
+    for (const key of keys) {
+      await this.delete(key);
+      count++;
+    }
+
+    this.tagKeys.delete(tag);
+    logger.info('Cache invalidated by tag', { tag, count });
+    return count;
+  }
+
+  /**
+   * Invalidate cache by tags
+   */
+  async invalidateByTags(tags: string[]): Promise<number> {
+    let total = 0;
+    for (const tag of tags) {
+      total += await this.invalidateByTag(tag);
+    }
+    return total;
+  }
+
+  /**
+   * Remove tags for a key
+   */
+  private removeKeyTags(key: string): void {
+    const tags = this.cacheTags.get(key);
+    if (tags) {
+      for (const tag of tags) {
+        const keys = this.tagKeys.get(tag);
+        if (keys) {
+          keys.delete(key);
+          if (keys.size === 0) {
+            this.tagKeys.delete(tag);
+          }
+        }
+      }
+      this.cacheTags.delete(key);
+    }
+  }
+
+  /**
+   * Warm cache with frequently accessed data
+   */
+  async warmCache(entries: Array<{ key: string; value: T; ttl?: number }>): Promise<void> {
+    logger.info('Warming cache', { entries: entries.length });
+    
+    for (const entry of entries) {
+      await this.set(entry.key, entry.value, entry.ttl);
+    }
+
+    logger.info('Cache warmed', { entries: entries.length });
   }
 }
 
