@@ -6,6 +6,7 @@ import { logger } from '../observability/logger';
 import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { RAGService } from '../rag/RAGService';
 import { DocumentManager } from '../rag/DocumentManager';
+import { AnalyticsService } from '../analytics/AnalyticsService';
 import { ModelRouter, ModelProvider } from '../providers/ModelRouter';
 import { OpenAIAdapter } from '../providers/LLMAdapter';
 import { OllamaAdapter } from '../providers/OllamaAdapter';
@@ -32,6 +33,7 @@ export interface InitializedServices {
   visionAdapter?: any;
   embeddingService?: EmbeddingService;
   cache?: MultiLevelCache<any>;
+  analytics?: AnalyticsService;
 }
 
 export class ServiceInitializer {
@@ -113,6 +115,10 @@ export class ServiceInitializer {
       }
     );
 
+    // 11. Initialize Analytics Service
+    const analytics = new AnalyticsService();
+    logger.info('Analytics service initialized');
+
     logger.info('✅ All services initialized successfully');
 
     return {
@@ -123,7 +129,8 @@ export class ServiceInitializer {
       toolRegistry,
       visionAdapter,
       embeddingService,
-      cache
+      cache,
+      analytics
     };
   }
 
