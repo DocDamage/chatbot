@@ -624,6 +624,56 @@ app.post('/api/knowledge/docs', asyncHandler(async (req, res) => {
   res.json({ results });
 }));
 
+app.post('/api/knowledge/library-of-congress', asyncHandler(async (req, res) => {
+  const { LibraryOfCongressSource } = require('../core/knowledge/LibraryOfCongressSource');
+  const source = new LibraryOfCongressSource();
+  
+  const { query, limit, format, dateRange } = req.body;
+  const results = await source.search(query, { limit: limit || 10, format, dateRange });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/entertainment', asyncHandler(async (req, res) => {
+  const { EntertainmentSource } = require('../core/knowledge/EntertainmentSource');
+  const source = new EntertainmentSource(
+    req.body.type || 'all',
+    process.env.TMDB_API_KEY,
+    process.env.OMDB_API_KEY
+  );
+  
+  const { query, limit, type, year } = req.body;
+  const results = await source.search(query, { limit: limit || 10, type: type || 'all', year });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/books', asyncHandler(async (req, res) => {
+  const { BookSource } = require('../core/knowledge/BookSource');
+  const source = new BookSource(
+    req.body.source || 'all',
+    process.env.GOOGLE_BOOKS_API_KEY
+  );
+  
+  const { query, limit, author, isbn } = req.body;
+  const results = await source.search(query, { limit: limit || 10, author, isbn });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/specialized-topics', asyncHandler(async (req, res) => {
+  const { SpecializedTopicSource } = require('../core/knowledge/SpecializedTopicSource');
+  const { topic, query, limit } = req.body;
+  
+  const source = new SpecializedTopicSource(topic || 'all');
+  const results = await source.search(query, { limit: limit || 10, topic: topic || 'all' });
+  
+  // Also return curated sources for the topic
+  const curatedSources = source.getCuratedSources(topic || 'all');
+  
+  res.json({ results, curatedSources });
+}));
+
 app.post('/api/knowledge/load-telegram', requireAuth, asyncHandler(async (req, res) => {
   if (!services?.documentManager) {
     return res.status(503).json({ error: 'Document manager not available' });
@@ -790,6 +840,22 @@ app.post('/api/knowledge/fuse', requireAuth, asyncHandler(async (req, res) => {
   if (sources.includes('docs')) {
     const { DocumentationSource } = require('../core/knowledge/DocumentationSource');
     sourceInstances.push(new DocumentationSource('all'));
+  }
+  if (sources.includes('library_of_congress') || sources.includes('loc')) {
+    const { LibraryOfCongressSource } = require('../core/knowledge/LibraryOfCongressSource');
+    sourceInstances.push(new LibraryOfCongressSource());
+  }
+  if (sources.includes('entertainment') || sources.includes('movies') || sources.includes('comics')) {
+    const { EntertainmentSource } = require('../core/knowledge/EntertainmentSource');
+    sourceInstances.push(new EntertainmentSource('all', process.env.TMDB_API_KEY));
+  }
+  if (sources.includes('books') || sources.includes('novels')) {
+    const { BookSource } = require('../core/knowledge/BookSource');
+    sourceInstances.push(new BookSource('all', process.env.GOOGLE_BOOKS_API_KEY));
+  }
+  if (sources.includes('specialized') || sources.includes('civil_rights') || sources.includes('compliance') || sources.includes('hip_hop') || sources.includes('connecticut')) {
+    const { SpecializedTopicSource } = require('../core/knowledge/SpecializedTopicSource');
+    sourceInstances.push(new SpecializedTopicSource('all'));
   }
   
   const results = await fusion.fuse({
