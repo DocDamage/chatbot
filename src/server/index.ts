@@ -1,14 +1,12 @@
 /**
  * API Gateway - Entry point for all requests
+ * Auto-loads all services on startup
  */
 
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { Orchestrator } from '../core/orchestrator/Orchestrator';
-import { OpenAIAdapter, TemplateAdapter } from '../core/providers/LLMAdapter';
-import { OllamaAdapter } from '../core/providers/OllamaAdapter';
-import { HuggingFaceAdapter } from '../core/providers/HuggingFaceAdapter';
+import { ServiceInitializer } from '../core/initialization/ServiceInitializer';
 import { StableDiffusionAdapter } from '../core/providers/StableDiffusionAdapter';
 import { logger } from '../core/observability/logger';
 import { metricsCollector } from '../core/observability/metrics';
@@ -29,78 +27,65 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Initialize services
-// Try Ollama first (free, local), fallback to OpenAI or template
-const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
-const ollamaModel = process.env.OLLAMA_MODEL || 'llama2';
+// Initialize all services automatically
+let services: any;
+let orchestrator: any;
 
-let llmAdapter;
-const useOllama = process.env.USE_OLLAMA !== 'false'; // Default to true
-const useHuggingFace = process.env.USE_HUGGINGFACE === 'true';
-const hfModel = process.env.HUGGINGFACE_MODEL || 'mistralai/Mistral-7B-Instruct-v0.2';
-const hfApiKey = process.env.HUGGINGFACE_API_KEY;
-
-if (useOllama) {
-  logger.info('Using Ollama for LLM (free, local)', { url: ollamaUrl, model: ollamaModel });
-  llmAdapter = new OllamaAdapter(ollamaUrl, ollamaModel);
-  
-  // Check if Ollama is available
-  (llmAdapter as OllamaAdapter).checkAvailability().then(({ available, models }) => {
-    if (available) {
-      logger.info('Ollama is available', { models });
-    } else {
-      logger.warn('Ollama is not available, responses may fail. Install from https://ollama.ai');
+// Start initialization immediately
+(async () => {
+  try {
+    logger.info('🚀 Initializing all services...');
+    services = await ServiceInitializer.initialize();
+    orchestrator = services.orchestrator;
+    
+    // Also initialize Stable Diffusion for image generation (if enabled)
+    const sdUrl = process.env.STABLE_DIFFUSION_URL || 'http://localhost:7860';
+    const useStableDiffusion = process.env.USE_STABLE_DIFFUSION !== 'false';
+    
+    if (useStableDiffusion) {
+      logger.info('Using Stable Diffusion for image generation', { url: sdUrl });
+      const imageAdapter = new StableDiffusionAdapter(sdUrl);
+      
+      imageAdapter.checkAvailability().then((available) => {
+        if (available) {
+          logger.info('Stable Diffusion is available');
+        } else {
+          logger.warn('Stable Diffusion is not available. Install Automatic1111 WebUI or similar.');
+        }
+      });
     }
-  });
-} else if (useHuggingFace) {
-  logger.info('Using Hugging Face for LLM (free, API)', { model: hfModel });
-  llmAdapter = new HuggingFaceAdapter(hfApiKey, hfModel);
-} else {
-  const apiKey = process.env.OPENAI_API_KEY || '';
-  if (apiKey) {
-    logger.info('Using OpenAI for LLM');
-    llmAdapter = new OpenAIAdapter(apiKey, 'gpt-3.5-turbo');
-  } else {
-    logger.warn('No LLM configured, using template fallback');
-    llmAdapter = new TemplateAdapter();
+    
+    logger.info('✅ All services initialized and ready');
+  } catch (error: any) {
+    logger.error('Failed to initialize services', { error: error.message });
+    process.exit(1);
   }
-}
-
-// Initialize Stable Diffusion adapter (optional)
-const sdUrl = process.env.STABLE_DIFFUSION_URL || 'http://localhost:7860';
-let imageAdapter;
-const useStableDiffusion = process.env.USE_STABLE_DIFFUSION !== 'false'; // Default to true
-
-if (useStableDiffusion) {
-  logger.info('Using Stable Diffusion for image generation', { url: sdUrl });
-  imageAdapter = new StableDiffusionAdapter(sdUrl);
-  
-  // Check if Stable Diffusion is available
-  imageAdapter.checkAvailability().then((available) => {
-    if (available) {
-      logger.info('Stable Diffusion is available');
-    } else {
-      logger.warn('Stable Diffusion is not available. Install Automatic1111 WebUI or similar.');
-    }
-  });
-}
-
-const orchestrator = new Orchestrator(llmAdapter, imageAdapter);
+})();
 
 // Health check with detailed status
 app.get('/health', (req, res) => {
   const health = {
-    status: 'ok',
+    status: orchestrator ? 'ready' : 'initializing',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || 'development',
-    version: process.env.npm_package_version || '1.0.0'
+    version: process.env.npm_package_version || '1.0.0',
+    services: {
+      orchestrator: !!orchestrator,
+      rag: !!services?.ragService,
+      tools: !!services?.toolRegistry,
+      vision: !!services?.visionAdapter
+    }
   };
   res.json(health);
 });
 
 // Metrics endpoint
 app.get('/api/metrics', asyncHandler(async (req, res) => {
+  if (!orchestrator) {
+    return res.status(503).json({ error: 'Services not initialized yet' });
+  }
+
   const metrics = {
     timestamp: new Date().toISOString(),
     system: {
@@ -112,7 +97,7 @@ app.get('/api/metrics', asyncHandler(async (req, res) => {
       uptime: process.uptime()
     },
     application: metricsCollector.getMetrics(),
-    cache: orchestrator.getCacheStats()
+    cache: services?.cache?.getStats() || {}
   };
   res.json(metrics);
 }));
@@ -237,4 +222,3 @@ const startServer = async () => {
 };
 
 startServer();
-
