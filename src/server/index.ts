@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import { Orchestrator } from '../core/orchestrator/Orchestrator';
 import { OpenAIAdapter, TemplateAdapter } from '../core/providers/LLMAdapter';
 import { OllamaAdapter } from '../core/providers/OllamaAdapter';
+import { HuggingFaceAdapter } from '../core/providers/HuggingFaceAdapter';
 import { StableDiffusionAdapter } from '../core/providers/StableDiffusionAdapter';
 import { logger } from '../core/observability/logger';
 import { metricsCollector } from '../core/observability/metrics';
@@ -35,6 +36,9 @@ const ollamaModel = process.env.OLLAMA_MODEL || 'llama2';
 
 let llmAdapter;
 const useOllama = process.env.USE_OLLAMA !== 'false'; // Default to true
+const useHuggingFace = process.env.USE_HUGGINGFACE === 'true';
+const hfModel = process.env.HUGGINGFACE_MODEL || 'mistralai/Mistral-7B-Instruct-v0.2';
+const hfApiKey = process.env.HUGGINGFACE_API_KEY;
 
 if (useOllama) {
   logger.info('Using Ollama for LLM (free, local)', { url: ollamaUrl, model: ollamaModel });
@@ -48,6 +52,9 @@ if (useOllama) {
       logger.warn('Ollama is not available, responses may fail. Install from https://ollama.ai');
     }
   });
+} else if (useHuggingFace) {
+  logger.info('Using Hugging Face for LLM (free, API)', { model: hfModel });
+  llmAdapter = new HuggingFaceAdapter(hfApiKey, hfModel);
 } else {
   const apiKey = process.env.OPENAI_API_KEY || '';
   if (apiKey) {

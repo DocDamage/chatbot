@@ -14,6 +14,26 @@ export interface VisionAdapter {
 }
 
 /**
+ * Get available free vision models
+ */
+export function getFreeVisionModels(): Array<{ id: string; name: string; description: string; requires: string }> {
+  return [
+    {
+      id: 'llava',
+      name: 'LLaVA (via Ollama)',
+      description: 'Free, local vision model - requires Ollama with LLaVA model',
+      requires: 'ollama pull llava'
+    },
+    {
+      id: 'llava-llama3',
+      name: 'LLaVA Llama 3 (via Ollama)',
+      description: 'Free, local vision model with Llama 3 - requires Ollama',
+      requires: 'ollama pull llava:llama3'
+    }
+  ];
+}
+
+/**
  * GPT-4V Adapter
  */
 export class GPT4VAdapter implements VisionAdapter {
@@ -138,6 +158,99 @@ export class GPT4VAdapter implements VisionAdapter {
   private estimateCost(tokens: number): number {
     // GPT-4V pricing (rough estimate)
     return (tokens / 1000) * 0.01; // $0.01 per 1K tokens
+  }
+}
+
+/**
+ * LLaVA Adapter - Free vision model via Ollama
+ */
+export class LLaVAAdapter implements VisionAdapter {
+  private ollamaUrl: string;
+  private model: string;
+  private axios: any;
+
+  constructor(ollamaUrl: string = 'http://localhost:11434', model: string = 'llava') {
+    this.ollamaUrl = ollamaUrl;
+    this.model = model;
+    this.axios = require('axios');
+  }
+
+  async analyzeImage(request: VisionRequest): Promise<VisionResponse> {
+    const startTime = Date.now();
+
+    try {
+      // Ollama LLaVA supports vision
+      const response = await this.axios.post(
+        `${this.ollamaUrl}/api/generate`,
+        {
+          model: this.model,
+          prompt: request.prompt,
+          images: [request.image.startsWith('data:') 
+            ? request.image.split(',')[1]
+            : request.image],
+          stream: false
+        }
+      );
+
+      const content = response.data.response || '';
+      const latency = Date.now() - startTime;
+
+      logger.info('LLaVA vision analysis completed', {
+        model: this.model,
+        latency
+      });
+
+      return {
+        content,
+        model: this.model,
+        latency,
+        imageAnalysis: {
+          description: content,
+          objects: []
+        }
+      };
+    } catch (error: any) {
+      logger.error('LLaVA vision analysis failed', { error: error.message });
+      throw error;
+    }
+  }
+
+  async analyzeMultiImage(request: MultiImageRequest): Promise<VisionResponse> {
+    // LLaVA via Ollama supports multiple images
+    const startTime = Date.now();
+
+    try {
+      const images = request.images.map(img => 
+        img.startsWith('data:') ? img.split(',')[1] : img
+      );
+
+      const response = await this.axios.post(
+        `${this.ollamaUrl}/api/generate`,
+        {
+          model: this.model,
+          prompt: request.prompt,
+          images: images,
+          stream: false
+        }
+      );
+
+      return {
+        content: response.data.response || '',
+        model: this.model,
+        latency: Date.now() - startTime
+      };
+    } catch (error: any) {
+      logger.error('LLaVA multi-image analysis failed', { error: error.message });
+      throw error;
+    }
+  }
+
+  async extractText(image: string): Promise<string> {
+    const response = await this.analyzeImage({
+      image,
+      prompt: 'Extract all text from this image. Return only the text content.'
+    });
+    return response.content;
   }
 }
 

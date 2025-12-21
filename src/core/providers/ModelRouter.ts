@@ -5,6 +5,7 @@
 
 import { ModelProvider, TaskType, ModelCapability, ModelSelection } from '../../types/model-routing';
 import { LLMAdapter, LLMGenerateOptions } from './LLMAdapter';
+import { HuggingFaceAdapter } from './HuggingFaceAdapter';
 import { logger } from '../observability/logger';
 
 export class ModelRouter {
@@ -122,9 +123,12 @@ export class ModelRouter {
 
   /**
    * Initialize model capabilities based on research
+   * Includes both paid and free alternatives
    */
   private initializeCapabilities(): void {
-    // GPT-4 - Best for complex reasoning
+    // ===== PAID MODELS =====
+    
+    // GPT-4 - Best for complex reasoning (PAID)
     this.capabilities.set('gpt-4', {
       provider: ModelProvider.OPENAI,
       model: 'gpt-4',
@@ -136,7 +140,7 @@ export class ModelRouter {
       qualityScore: 0.95
     });
 
-    // GPT-3.5-turbo - Good for simple queries, cost-effective
+    // GPT-3.5-turbo - Good for simple queries, cost-effective (PAID)
     this.capabilities.set('gpt-3.5-turbo', {
       provider: ModelProvider.OPENAI,
       model: 'gpt-3.5-turbo',
@@ -148,7 +152,7 @@ export class ModelRouter {
       qualityScore: 0.80
     });
 
-    // Claude 3.5 Sonnet - Excellent for analysis and creative tasks
+    // Claude 3.5 Sonnet - Excellent for analysis and creative tasks (PAID)
     this.capabilities.set('claude-3-5-sonnet', {
       provider: ModelProvider.ANTHROPIC,
       model: 'claude-3-5-sonnet-20241022',
@@ -160,11 +164,13 @@ export class ModelRouter {
       qualityScore: 0.92
     });
 
-    // Ollama - Free, local, good for general tasks
+    // ===== FREE MODELS (Ollama) =====
+    
+    // Ollama Llama 2 - Free, local, good for general tasks
     this.capabilities.set('ollama-llama2', {
       provider: ModelProvider.OLLAMA,
       model: 'llama2',
-      taskTypes: [TaskType.GENERAL, TaskType.SIMPLE_QUERY],
+      taskTypes: [TaskType.GENERAL, TaskType.SIMPLE_QUERY, TaskType.CREATIVE_WRITING],
       maxTokens: 4096,
       supportsStreaming: true,
       costPer1kTokens: 0,
@@ -172,7 +178,105 @@ export class ModelRouter {
       qualityScore: 0.70
     });
 
-    // Template - Fallback
+    // Ollama Mistral - Free, better quality than Llama 2
+    this.capabilities.set('ollama-mistral', {
+      provider: ModelProvider.OLLAMA,
+      model: 'mistral',
+      taskTypes: [TaskType.GENERAL, TaskType.ANALYSIS, TaskType.CREATIVE_WRITING],
+      maxTokens: 8192,
+      supportsStreaming: true,
+      costPer1kTokens: 0,
+      latencyMs: 2500,
+      qualityScore: 0.75
+    });
+
+    // Ollama Llama 3 - Free, latest and best quality
+    this.capabilities.set('ollama-llama3', {
+      provider: ModelProvider.OLLAMA,
+      model: 'llama3',
+      taskTypes: [TaskType.GENERAL, TaskType.ANALYSIS, TaskType.CREATIVE_WRITING, TaskType.CODE_GENERATION],
+      maxTokens: 8192,
+      supportsStreaming: true,
+      costPer1kTokens: 0,
+      latencyMs: 2500,
+      qualityScore: 0.80
+    });
+
+    // Ollama CodeLlama - Free, specialized for code
+    this.capabilities.set('ollama-codellama', {
+      provider: ModelProvider.OLLAMA,
+      model: 'codellama',
+      taskTypes: [TaskType.CODE_GENERATION, TaskType.ANALYSIS],
+      maxTokens: 4096,
+      supportsStreaming: true,
+      costPer1kTokens: 0,
+      latencyMs: 3000,
+      qualityScore: 0.75
+    });
+
+    // Ollama Phi-2 - Free, small but efficient
+    this.capabilities.set('ollama-phi2', {
+      provider: ModelProvider.OLLAMA,
+      model: 'phi',
+      taskTypes: [TaskType.SIMPLE_QUERY, TaskType.GENERAL],
+      maxTokens: 2048,
+      supportsStreaming: true,
+      costPer1kTokens: 0,
+      latencyMs: 2000,
+      qualityScore: 0.65
+    });
+
+    // Ollama Gemma - Free, Google's open model
+    this.capabilities.set('ollama-gemma', {
+      provider: ModelProvider.OLLAMA,
+      model: 'gemma',
+      taskTypes: [TaskType.GENERAL, TaskType.SIMPLE_QUERY, TaskType.CREATIVE_WRITING],
+      maxTokens: 4096,
+      supportsStreaming: true,
+      costPer1kTokens: 0,
+      latencyMs: 2500,
+      qualityScore: 0.72
+    });
+
+    // ===== FREE MODELS (Hugging Face) =====
+    
+    // Hugging Face Mistral - Free via Inference API
+    this.capabilities.set('hf-mistral', {
+      provider: ModelProvider.HUGGINGFACE,
+      model: 'mistralai/Mistral-7B-Instruct-v0.2',
+      taskTypes: [TaskType.GENERAL, TaskType.ANALYSIS, TaskType.CREATIVE_WRITING],
+      maxTokens: 4096,
+      supportsStreaming: false,
+      costPer1kTokens: 0,
+      latencyMs: 4000,
+      qualityScore: 0.75
+    });
+
+    // Hugging Face Llama 2 - Free via Inference API
+    this.capabilities.set('hf-llama2', {
+      provider: ModelProvider.HUGGINGFACE,
+      model: 'meta-llama/Llama-2-7b-chat-hf',
+      taskTypes: [TaskType.GENERAL, TaskType.SIMPLE_QUERY, TaskType.CREATIVE_WRITING],
+      maxTokens: 4096,
+      supportsStreaming: false,
+      costPer1kTokens: 0,
+      latencyMs: 5000,
+      qualityScore: 0.70
+    });
+
+    // Hugging Face Zephyr - Free via Inference API
+    this.capabilities.set('hf-zephyr', {
+      provider: ModelProvider.HUGGINGFACE,
+      model: 'HuggingFaceH4/zephyr-7b-beta',
+      taskTypes: [TaskType.GENERAL, TaskType.CREATIVE_WRITING],
+      maxTokens: 4096,
+      supportsStreaming: false,
+      costPer1kTokens: 0,
+      latencyMs: 4000,
+      qualityScore: 0.73
+    });
+
+    // Template - Fallback (Free)
     this.capabilities.set('template', {
       provider: ModelProvider.TEMPLATE,
       model: 'template',

@@ -152,5 +152,43 @@ export class EmbeddingService {
         return 384;
     }
   }
+
+  /**
+   * Get available free embedding models
+   */
+  static getFreeModels(): Array<{ provider: string; model: string; dimensions: number; description: string }> {
+    return [
+      {
+        provider: 'xenova',
+        model: 'Xenova/all-MiniLM-L6-v2',
+        dimensions: 384,
+        description: 'Fast, efficient, local embeddings (default)'
+      },
+      {
+        provider: 'xenova',
+        model: 'Xenova/multilingual-e5-base',
+        dimensions: 768,
+        description: 'Multilingual embeddings'
+      },
+      {
+        provider: 'xenova',
+        model: 'Xenova/bge-small-en-v1.5',
+        dimensions: 384,
+        description: 'BGE small English embeddings'
+      },
+      {
+        provider: 'ollama',
+        model: 'llama2',
+        dimensions: 4096,
+        description: 'Ollama Llama 2 embeddings (requires Ollama)'
+      },
+      {
+        provider: 'ollama',
+        model: 'nomic-embed-text',
+        dimensions: 768,
+        description: 'Ollama Nomic embeddings (specialized for embeddings)'
+      }
+    ];
+  }
 }
 
