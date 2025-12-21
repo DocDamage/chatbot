@@ -508,6 +508,145 @@ app.get('/api/documents/search', requireAuth, asyncHandler(async (req, res) => {
   res.json({ documents });
 }));
 
+// Knowledge sources endpoints
+app.post('/api/knowledge/wikipedia', asyncHandler(async (req, res) => {
+  const { WikipediaSource } = require('../core/knowledge/WikipediaSource');
+  const source = new WikipediaSource();
+  
+  const { query, limit } = req.body;
+  const results = await source.search(query, { limit: limit || 5 });
+  
+  res.json({ results });
+}));
+
+app.post('/api/knowledge/scrape', requireAuth, asyncHandler(async (req, res) => {
+  const { WebScraperSource } = require('../core/knowledge/WebScraperSource');
+  const { urls, allowedDomains } = req.body;
+  
+  const source = new WebScraperSource(allowedDomains || []);
+  const results = await source.search('', { urls, limit: urls?.length || 5 });
+  
+  res.json({ results });
+}));
+
+// Dataset loading endpoints
+app.post('/api/knowledge/load-csv', requireAuth, asyncHandler(async (req, res) => {
+  if (!services?.documentManager) {
+    return res.status(503).json({ error: 'Document manager not available' });
+  }
+
+  const { DatasetLoader } = require('../core/knowledge/DatasetLoader');
+  const { EmbeddingService } = require('../core/embeddings/EmbeddingService');
+  
+  const loader = new DatasetLoader(services.embeddingService);
+  const { filePath, generateEmbeddings, chunkSize } = req.body;
+  
+  const chunks = await loader.loadCSV(filePath, {
+    generateEmbeddings: generateEmbeddings !== false,
+    chunkSize: chunkSize || 10,
+  });
+
+  // Add to knowledge base
+  for (const chunk of chunks) {
+    await services.documentManager.addText(chunk.content, chunk.metadata);
+  }
+
+  res.json({ success: true, chunks: chunks.length });
+}));
+
+app.post('/api/knowledge/load-json', requireAuth, asyncHandler(async (req, res) => {
+  if (!services?.documentManager) {
+    return res.status(503).json({ error: 'Document manager not available' });
+  }
+
+  const { DatasetLoader } = require('../core/knowledge/DatasetLoader');
+  const loader = new DatasetLoader(services.embeddingService);
+  const { filePath, generateEmbeddings, chunkSize } = req.body;
+  
+  const chunks = await loader.loadJSON(filePath, {
+    generateEmbeddings: generateEmbeddings !== false,
+    chunkSize: chunkSize || 5,
+  });
+
+  for (const chunk of chunks) {
+    await services.documentManager.addText(chunk.content, chunk.metadata);
+  }
+
+  res.json({ success: true, chunks: chunks.length });
+}));
+
+// Knowledge graph endpoints
+app.post('/api/knowledge/graph/entity', requireAuth, asyncHandler(async (req, res) => {
+  const { KnowledgeGraph } = require('../core/knowledge/KnowledgeGraph');
+  const graph = new KnowledgeGraph();
+  
+  const { id, name, type, properties } = req.body;
+  graph.addEntity({ id, name, type, properties });
+  
+  res.json({ success: true });
+}));
+
+app.get('/api/knowledge/graph/query', requireAuth, asyncHandler(async (req, res) => {
+  const { KnowledgeGraph } = require('../core/knowledge/KnowledgeGraph');
+  const graph = new KnowledgeGraph();
+  
+  const { entityId, entityName, relationshipType, limit } = req.query;
+  const entities = graph.queryEntities({ entityId: entityId as string, entityName: entityName as string, limit: parseInt(limit as string) || 50 });
+  const relationships = graph.queryRelationships({ entityId: entityId as string, relationshipType: relationshipType as string, limit: parseInt(limit as string) || 50 });
+  
+  res.json({ entities, relationships, stats: graph.getStats() });
+}));
+
+// Knowledge fusion endpoint
+app.post('/api/knowledge/fuse', requireAuth, asyncHandler(async (req, res) => {
+  if (!services?.orchestrator) {
+    return res.status(503).json({ error: 'Orchestrator not available' });
+  }
+
+  const { KnowledgeFusion } = require('../core/knowledge/KnowledgeFusion');
+  const { WikipediaSource } = require('../core/knowledge/WikipediaSource');
+  const { WebScraperSource } = require('../core/knowledge/WebScraperSource');
+  
+  const primaryAdapter = (services.orchestrator as any).llmAdapter;
+  const fusion = new KnowledgeFusion(primaryAdapter);
+  
+  const { query, sources, maxResults, minConfidence } = req.body;
+  
+  const sourceInstances = [];
+  if (sources.includes('wikipedia')) {
+    sourceInstances.push(new WikipediaSource());
+  }
+  if (sources.includes('web')) {
+    sourceInstances.push(new WebScraperSource());
+  }
+  
+  const results = await fusion.fuse({
+    sources: sourceInstances,
+    query,
+    maxResults: maxResults || 10,
+    minConfidence: minConfidence || 0.5,
+    summarize: true,
+  });
+  
+  res.json({ results });
+}));
+
+// Reasoning endpoint
+app.post('/api/reasoning/chain-of-thought', requireAuth, asyncHandler(async (req, res) => {
+  if (!services?.orchestrator) {
+    return res.status(503).json({ error: 'Orchestrator not available' });
+  }
+
+  const { ReasoningEngine } = require('../core/knowledge/ReasoningEngine');
+  const primaryAdapter = (services.orchestrator as any).llmAdapter;
+  const engine = new ReasoningEngine(primaryAdapter);
+  
+  const { question, context, maxSteps } = req.body;
+  const result = await engine.chainOfThought(question, context, maxSteps || 5);
+  
+  res.json({ result });
+}));
+
 // Debug endpoint
 app.get('/api/debug/:requestId', requireAuth, asyncHandler(async (req, res) => {
   const { DebugMode } = require('../core/debug/DebugMode');
