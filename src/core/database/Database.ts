@@ -72,8 +72,10 @@ export class Database {
   }
 
   /**
-   * Execute a query
+   * Execute a query - OPTIMIZED with prepared statement caching
    */
+  private preparedStatements: Map<string, any> = new Map();
+
   async query(sql: string, params?: any[]): Promise<QueryResult> {
     if (!this.initialized) {
       await this.initialize();
@@ -81,16 +83,24 @@ export class Database {
 
     try {
       if (this.config.type === 'sqlite') {
+        // Cache prepared statements for better performance
+        const cacheKey = sql.trim();
+        let stmt = this.preparedStatements.get(cacheKey);
+        
+        if (!stmt) {
+          stmt = this.db.prepare(sql);
+          this.preparedStatements.set(cacheKey, stmt);
+        }
+
         if (sql.trim().toUpperCase().startsWith('SELECT')) {
-          const stmt = this.db.prepare(sql);
           const rows = params ? stmt.all(...params) : stmt.all();
           return { rows, rowCount: rows.length };
         } else {
-          const stmt = this.db.prepare(sql);
           const result = params ? stmt.run(...params) : stmt.run();
           return { rows: [], rowCount: result.changes || 0 };
         }
       } else {
+        // PostgreSQL connection pooling is handled by pg library
         const result = await this.db.query(sql, params);
         return {
           rows: result.rows,
@@ -99,6 +109,63 @@ export class Database {
       }
     } catch (error: any) {
       logger.error('Database query failed', { error: error.message, sql });
+      throw error;
+    }
+  }
+
+  /**
+   * Execute multiple queries in a transaction (batch operation)
+   */
+  async batchQuery(queries: Array<{ sql: string; params?: any[] }>): Promise<QueryResult[]> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
+    const results: QueryResult[] = [];
+    
+    try {
+      if (this.config.type === 'sqlite') {
+        const transaction = this.db.transaction((queries: Array<{ sql: string; params?: any[] }>) => {
+          return queries.map(({ sql, params }) => {
+            const cacheKey = sql.trim();
+            let stmt = this.preparedStatements.get(cacheKey);
+            
+            if (!stmt) {
+              stmt = this.db.prepare(sql);
+              this.preparedStatements.set(cacheKey, stmt);
+            }
+
+            if (sql.trim().toUpperCase().startsWith('SELECT')) {
+              const rows = params ? stmt.all(...params) : stmt.all();
+              return { rows, rowCount: rows.length };
+            } else {
+              const result = params ? stmt.run(...params) : stmt.run();
+              return { rows: [], rowCount: result.changes || 0 };
+            }
+          });
+        });
+        
+        return transaction(queries);
+      } else {
+        // PostgreSQL: Use transaction
+        await this.db.query('BEGIN');
+        try {
+          for (const { sql, params } of queries) {
+            const result = await this.db.query(sql, params);
+            results.push({
+              rows: result.rows,
+              rowCount: result.rowCount,
+            });
+          }
+          await this.db.query('COMMIT');
+          return results;
+        } catch (error) {
+          await this.db.query('ROLLBACK');
+          throw error;
+        }
+      }
+    } catch (error: any) {
+      logger.error('Batch query failed', { error: error.message });
       throw error;
     }
   }

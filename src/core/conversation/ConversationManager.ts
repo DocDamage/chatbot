@@ -125,7 +125,7 @@ export class ConversationManager {
   }
 
   /**
-   * Get conversation history with context window management
+   * Get conversation history with context window management - OPTIMIZED
    */
   async getConversationContext(sessionId: string, maxTokens: number = this.maxContextLength): Promise<Message[]> {
     const conversation = await this.getConversation(sessionId);

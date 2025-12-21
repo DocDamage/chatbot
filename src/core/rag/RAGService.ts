@@ -60,11 +60,14 @@ export class RAGService {
       expansions: expansion.expandedQueries.length
     });
 
-    // 2. Hybrid retrieval (use expanded queries)
-    const allResults: Array<{ chunk: DocumentChunk; score: number; retrievalMethod: string }> = [];
+    // 2. Hybrid retrieval (use expanded queries) - PARALLELIZED
+    const retrievalPromises = expansion.expandedQueries.map(expandedQuery =>
+      this.retriever.retrieve(expandedQuery, 10)
+    );
+    const retrievalResults = await Promise.all(retrievalPromises);
     
-    for (const expandedQuery of expansion.expandedQueries) {
-      const results = await this.retriever.retrieve(expandedQuery, 10);
+    const allResults: Array<{ chunk: DocumentChunk; score: number; retrievalMethod: string }> = [];
+    for (const results of retrievalResults) {
       allResults.push(...results.map(r => ({
         chunk: r.chunk,
         score: r.score,

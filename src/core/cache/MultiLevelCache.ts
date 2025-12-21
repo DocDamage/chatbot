@@ -200,14 +200,13 @@ export class MultiLevelCache<T> {
   }
 
   /**
-   * Invalidate cache by tags
+   * Invalidate cache by tags - OPTIMIZED with parallel execution
    */
   async invalidateByTags(tags: string[]): Promise<number> {
-    let total = 0;
-    for (const tag of tags) {
-      total += await this.invalidateByTag(tag);
-    }
-    return total;
+    const results = await Promise.all(
+      tags.map(tag => this.invalidateByTag(tag))
+    );
+    return results.reduce((sum, count) => sum + count, 0);
   }
 
   /**

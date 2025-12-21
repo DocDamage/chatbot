@@ -171,26 +171,31 @@ export class EnhancedOrchestrator {
       selectedModel = 'ensemble';
     }
 
-    // 6. RAG retrieval (if enabled)
+    // 6. Parallelize RAG retrieval and memory context building
     let ragContext = '';
     let citations: any[] = [];
-    if (this.ragService && this.shouldUseRAG(request.message)) {
-      try {
-        const ragResult = await this.ragService.processQuery(request.message, false);
-        ragContext = ragResult.compressedContext;
-        citations = ragResult.citations;
-        logger.info('RAG retrieval completed', {
-          chunksRetrieved: ragResult.retrievedChunks.length,
-          citationsCount: citations.length
-        });
-      } catch (error: any) {
-        logger.warn('RAG retrieval failed', { error: error.message });
-      }
-    }
+    const [ragResult, memoryContext, contextSummary] = await Promise.all([
+      // RAG retrieval (if enabled)
+      this.ragService && this.shouldUseRAG(request.message)
+        ? this.ragService.processQuery(request.message, false).catch((error: any) => {
+            logger.warn('RAG retrieval failed', { error: error.message });
+            return null;
+          })
+        : Promise.resolve(null),
+      // Memory context (parallel)
+      Promise.resolve(this.memoryService.getMemoryContext(request.sessionId)),
+      // Memory summary (parallel)
+      Promise.resolve(this.memoryService.summarizeMemories(request.sessionId))
+    ]);
 
-    // 7. Build context from memory
-    const memoryContext = this.memoryService.getMemoryContext(request.sessionId);
-    const contextSummary = this.memoryService.summarizeMemories(request.sessionId);
+    if (ragResult) {
+      ragContext = ragResult.compressedContext;
+      citations = ragResult.citations;
+      logger.info('RAG retrieval completed', {
+        chunksRetrieved: ragResult.retrievedChunks.length,
+        citationsCount: citations.length
+      });
+    }
 
     // 8. Build prompt with all context
     const systemPrompt = this.buildSystemPrompt(contract, contextSummary, ragContext);

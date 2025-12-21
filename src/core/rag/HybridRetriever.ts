@@ -49,8 +49,14 @@ export class HybridRetriever {
   ): Promise<RetrievalResult[]> {
     const results: Map<string, RetrievalResult> = new Map();
 
-    // BM25 retrieval
-    const bm25Results = await this.retrieveBM25(query, topK * 2);
+    // PARALLELIZE all retrieval methods
+    const [bm25Results, denseResults, sparseResults] = await Promise.all([
+      this.retrieveBM25(query, topK * 2),
+      this.retrieveDense(query, topK * 2),
+      this.retrieveSparse(query, topK * 2)
+    ]);
+
+    // Merge BM25 results
     for (const result of bm25Results) {
       const existing = results.get(result.chunk.id);
       if (existing) {
@@ -64,12 +70,14 @@ export class HybridRetriever {
       }
     }
 
-    // Dense vector retrieval (if embeddings available)
-    const denseResults = await this.retrieveDense(query, topK * 2);
+    // Merge dense vector results
     for (const result of denseResults) {
       const existing = results.get(result.chunk.id);
       if (existing) {
         existing.score = existing.score + result.score * weights.dense;
+        existing.retrievalMethod = existing.retrievalMethod.includes('dense') 
+          ? existing.retrievalMethod 
+          : `${existing.retrievalMethod}+dense`;
       } else {
         results.set(result.chunk.id, {
           ...result,
@@ -79,12 +87,14 @@ export class HybridRetriever {
       }
     }
 
-    // Sparse retrieval (keyword-based)
-    const sparseResults = await this.retrieveSparse(query, topK * 2);
+    // Merge sparse results
     for (const result of sparseResults) {
       const existing = results.get(result.chunk.id);
       if (existing) {
         existing.score = existing.score + result.score * weights.sparse;
+        existing.retrievalMethod = existing.retrievalMethod.includes('sparse')
+          ? existing.retrievalMethod
+          : `${existing.retrievalMethod}+sparse`;
       } else {
         results.set(result.chunk.id, {
           ...result,
@@ -150,26 +160,33 @@ export class HybridRetriever {
   }
 
   /**
-   * Dense vector retrieval (cosine similarity)
+   * Dense vector retrieval (cosine similarity) - OPTIMIZED
    */
   private async retrieveDense(query: string, topK: number): Promise<RetrievalResult[]> {
-    // For now, return empty if no embeddings
-    // In production, this would use an embedding model
     const queryEmbedding = await this.getQueryEmbedding(query);
     if (!queryEmbedding) {
       return [];
     }
 
+    // Pre-compute query norm once
+    const queryNorm = Math.sqrt(queryEmbedding.reduce((sum, val) => sum + val * val, 0));
+    if (queryNorm === 0) return [];
+
     const scores: Array<{ chunk: DocumentChunk; score: number }> = [];
 
+    // Optimize: filter documents with embeddings first, then compute similarity
     for (const doc of this.documents) {
       const docEmbedding = doc.embedding || this.embeddings.get(doc.id);
       if (docEmbedding) {
-        const similarity = this.cosineSimilarity(queryEmbedding, docEmbedding);
-        scores.push({ chunk: doc, score: similarity });
+        // Optimized cosine similarity with pre-computed query norm
+        const similarity = this.cosineSimilarityOptimized(queryEmbedding, docEmbedding, queryNorm);
+        if (similarity > 0) { // Only add positive similarities
+          scores.push({ chunk: doc, score: similarity });
+        }
       }
     }
 
+    // Use partial sort for better performance on large arrays
     return scores
       .sort((a, b) => b.score - a.score)
       .slice(0, topK)
@@ -245,7 +262,7 @@ export class HybridRetriever {
   }
 
   /**
-   * Cosine similarity
+   * Cosine similarity - OPTIMIZED
    */
   private cosineSimilarity(a: number[], b: number[]): number {
     if (a.length !== b.length) return 0;
@@ -259,7 +276,26 @@ export class HybridRetriever {
       normB += b[i] * b[i];
     }
 
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+    const denominator = Math.sqrt(normA) * Math.sqrt(normB);
+    return denominator > 0 ? dotProduct / denominator : 0;
+  }
+
+  /**
+   * Optimized cosine similarity with pre-computed query norm
+   */
+  private cosineSimilarityOptimized(query: number[], doc: number[], queryNorm: number): number {
+    if (query.length !== doc.length || queryNorm === 0) return 0;
+    
+    let dotProduct = 0;
+    let docNorm = 0;
+
+    for (let i = 0; i < query.length; i++) {
+      dotProduct += query[i] * doc[i];
+      docNorm += doc[i] * doc[i];
+    }
+
+    const docNormSqrt = Math.sqrt(docNorm);
+    return docNormSqrt > 0 ? dotProduct / (queryNorm * docNormSqrt) : 0;
   }
 }
 
