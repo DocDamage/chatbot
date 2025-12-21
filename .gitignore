@@ -1,0 +1,12 @@
+node_modules/
+dist/
+client/node_modules/
+client/dist/
+client/.next/
+.env
+*.log
+.DS_Store
+*.tsbuildinfo
+.vscode/
+.idea/
+

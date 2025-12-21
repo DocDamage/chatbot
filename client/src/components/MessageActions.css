@@ -1,0 +1,42 @@
+.message-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.message:hover .message-actions {
+  opacity: 1;
+}
+
+.action-button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.action-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #333;
+}
+
+.action-button:active {
+  transform: scale(0.95);
+}
+
+.message-assistant .action-button {
+  color: #999;
+}
+
+.message-assistant .action-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
