@@ -142,7 +142,7 @@ export class BookSource implements KnowledgeSource {
     try {
       // Use Gutenberg search (basic implementation)
       const url = `https://www.gutenberg.org/ebooks/search/?query=${encodeURIComponent(query)}`;
-      
+
       return [{
         id: `gutenberg_search_${query}`,
         title: `Project Gutenberg: ${query}`,
@@ -182,7 +182,48 @@ export class BookSource implements KnowledgeSource {
   }
 
   private async getOpenLibraryBook(bookId: string): Promise<KnowledgeResult | null> {
-    return null;
+    try {
+      const url = `https://openlibrary.org/works/${bookId}.json`;
+      const response = await axios.get(url);
+      const book = response.data;
+
+      // Get author details
+      let authorNames: string[] = [];
+      if (book.authors && book.authors.length > 0) {
+        for (const author of book.authors.slice(0, 3)) {
+          const authorKey = author.author?.key;
+          if (authorKey) {
+            try {
+              const authorResponse = await axios.get(`https://openlibrary.org${authorKey}.json`);
+              authorNames.push(authorResponse.data.name || 'Unknown');
+            } catch {
+              authorNames.push('Unknown');
+            }
+          }
+        }
+      }
+
+      const description = typeof book.description === 'string'
+        ? book.description
+        : book.description?.value || '';
+
+      return {
+        id: `openlib_${bookId}`,
+        title: book.title,
+        content: `${book.title}\n\nAuthors: ${authorNames.join(', ')}\n\n${description}`.substring(0, 5000),
+        source: 'open_library',
+        url: `https://openlibrary.org/works/${bookId}`,
+        metadata: {
+          subjects: book.subjects?.slice(0, 10) || [],
+          firstPublishDate: book.first_publish_date,
+          covers: book.covers?.slice(0, 3).map((c: number) => `https://covers.openlibrary.org/b/id/${c}-M.jpg`)
+        },
+        confidence: 0.85
+      };
+    } catch (error: any) {
+      logger.warn('Failed to fetch Open Library book', { bookId, error: error.message });
+      return null;
+    }
   }
 }
 

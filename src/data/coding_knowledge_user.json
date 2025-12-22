@@ -1,0 +1,53 @@
+[
+  {
+    "id": "user_1766355671098_caz7fwa93",
+    "category": "general",
+    "title": "How Do I Create A React Component (Auto-Captured)",
+    "content": "\n```javascript\nfunction MyComponent() {\n  return <div>Hello</div>;\n}\n```\n\nContext: How do I create a React component?",
+    "tags": [
+      "auto-learned",
+      "javascript",
+      "user-generated"
+    ],
+    "source": "user"
+  },
+  {
+    "id": "user_1766355990462_nuwdgg4pi",
+    "category": "general",
+    "title": "How Do I Create A React Component (Auto-Captured)",
+    "content": "\n```javascript\nfunction MyComponent() {\n  return <div>Hello</div>;\n}\n```\n\nContext: How do I create a React component?",
+    "tags": [
+      "auto-learned",
+      "javascript",
+      "user-generated"
+    ],
+    "source": "user"
+  },
+  {
+    "id": "user_1766357016939_1g9un4su5",
+    "category": "general",
+    "title": "How Do I Create A React Component (Auto-Captured)",
+    "content": "\n```javascript\nfunction MyComponent() {\n  return <div>Hello</div>;\n}\n```\n\nContext: How do I create a React component?",
+    "tags": [
+      "auto-learned",
+      "javascript",
+      "user-generated"
+    ],
+    "source": "user"
+  }
+},
+{
+  "id": "user_writing_style_1766355671098_xyz",
+  "category": "personal_preference",
+  "title": "My Writing Style (Lyrics & Songs)",
+  "content": "This document contains the user's specific writing style for songs and lyrics, characterized by dark, gritty themes, intricate rhyme schemes, and personal storytelling. It includes examples of lyrics focused on struggles, defiance, and intense emotional expression. Use this as a reference when generating creative writing or lyrics for the user.",
+  "tags": [
+    "user-preference",
+    "writing-style",
+    "lyrics",
+    "creative",
+    "personal"
+  ],
+  "source": "docs/My Writing Style.txt"
+}
+]

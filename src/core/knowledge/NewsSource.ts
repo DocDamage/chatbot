@@ -72,8 +72,66 @@ export class NewsSource implements KnowledgeSource {
   }
 
   async getById(id: string): Promise<KnowledgeResult | null> {
-    // Implementation would fetch specific article
-    return null;
+    try {
+      if (id.startsWith('newsapi_')) {
+        // NewsAPI doesn't support fetching by ID, so search with URL fragment
+        const urlFragment = id.replace('newsapi_', '');
+        const results = await this.search(urlFragment, { limit: 1, provider: 'newsapi' });
+        return results.find(r => r.id === id) || results[0] || null;
+      }
+
+      if (id.startsWith('guardian_')) {
+        if (!this.guardianApiKey) return null;
+        const articleId = id.replace('guardian_', '');
+        const url = `https://content.guardianapis.com/${articleId}?api-key=${this.guardianApiKey}&show-fields=body,trailText`;
+        const response = await axios.get(url);
+        const article = response.data.response?.content;
+
+        if (!article) return null;
+
+        return {
+          id,
+          title: article.webTitle || '',
+          content: `${article.fields?.trailText || ''}\n\n${article.fields?.body || ''}`.substring(0, 5000),
+          source: 'guardian',
+          url: article.webUrl,
+          metadata: {
+            section: article.sectionName,
+            publishedAt: article.webPublicationDate
+          },
+          confidence: 0.85
+        };
+      }
+
+      if (id.startsWith('nytimes_')) {
+        // NYTimes doesn't have a direct article fetch API, use search
+        const articleId = id.replace('nytimes_', '');
+        const url = `https://api.nytimes.com/svc/search/v2/articlesearch.json?fq=_id:("${articleId}")&api-key=${this.nytimesApiKey}`;
+        const response = await axios.get(url);
+        const article = response.data.response?.docs?.[0];
+
+        if (!article) return null;
+
+        return {
+          id,
+          title: article.headline?.main || '',
+          content: `${article.abstract || ''}\n\n${article.lead_paragraph || ''}`.substring(0, 5000),
+          source: 'nytimes',
+          url: article.web_url,
+          metadata: {
+            section: article.section_name,
+            publishedAt: article.pub_date,
+            byline: article.byline?.original
+          },
+          confidence: 0.9
+        };
+      }
+
+      return null;
+    } catch (error: any) {
+      logger.warn('Failed to fetch news article by ID', { id, error: error.message });
+      return null;
+    }
   }
 
   /**

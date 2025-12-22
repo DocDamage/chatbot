@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect, KeyboardEvent } from 'react';
+import ModeSelector, { ChatMode } from './ModeSelector';
 import './MessageInput.css';
 
 interface MessageInputProps {
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string, mode: ChatMode) => void;
   disabled?: boolean;
 }
 
 const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) => {
   const [input, setInput] = useState('');
+  const [mode, setMode] = useState<ChatMode>('ask');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-resize textarea
@@ -20,7 +22,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
 
   const handleSend = () => {
     if (input.trim() && !disabled) {
-      onSendMessage(input.trim());
+      onSendMessage(input.trim(), mode);
       setInput('');
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
@@ -43,8 +45,27 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
     }
   };
 
+  // Mode-specific placeholders
+  const placeholders: Record<ChatMode, string> = {
+    ask: 'Ask a question...',
+    plan: 'Describe what you want to build...',
+    implement: 'Tell me what code to write...',
+    debug: 'Describe the problem or paste error...',
+    explain: 'What code do you want me to explain?'
+  };
+
   return (
     <div className="message-input-container">
+      <div className="message-input-header">
+        <ModeSelector mode={mode} onModeChange={setMode} />
+        <div className="mode-hint">
+          {mode === 'ask' && '💡 I\'ll answer your questions'}
+          {mode === 'plan' && '📋 I\'ll create a step-by-step plan'}
+          {mode === 'implement' && '⚡ I\'ll write code and create files'}
+          {mode === 'debug' && '🔧 I\'ll find and fix the problem'}
+          {mode === 'explain' && '📖 I\'ll explain in simple terms'}
+        </div>
+      </div>
       <div className="message-input-wrapper">
         <textarea
           ref={textareaRef}
@@ -53,7 +74,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
           onKeyDown={handleKeyDown}
-          placeholder="Type your message... (Enter to send, Shift+Enter for new line, Cmd/Ctrl+Enter to send)"
+          placeholder={placeholders[mode]}
           rows={1}
           disabled={disabled}
           maxLength={10000}
@@ -62,6 +83,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
           className="send-button"
           onClick={handleSend}
           disabled={!input.trim() || disabled}
+          title={`Send (${mode} mode)`}
         >
           <svg
             width="20"
@@ -83,4 +105,3 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
 };
 
 export default MessageInput;
-

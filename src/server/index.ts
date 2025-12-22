@@ -64,15 +64,15 @@ let orchestrator: any;
     logger.info('🚀 Initializing all services...');
     services = await ServiceInitializer.initialize();
     orchestrator = services.orchestrator;
-    
+
     // Also initialize Stable Diffusion for image generation (if enabled)
     const sdUrl = process.env.STABLE_DIFFUSION_URL || 'http://localhost:7860';
     const useStableDiffusion = process.env.USE_STABLE_DIFFUSION !== 'false';
-    
+
     if (useStableDiffusion) {
       logger.info('Using Stable Diffusion for image generation', { url: sdUrl });
       const imageAdapter = new StableDiffusionAdapter(sdUrl);
-      
+
       imageAdapter.checkAvailability().then((available) => {
         if (available) {
           logger.info('Stable Diffusion is available');
@@ -81,7 +81,7 @@ let orchestrator: any;
         }
       });
     }
-    
+
     logger.info('✅ All services initialized and ready');
   } catch (error: any) {
     logger.error('Failed to initialize services', { error: error.message });
@@ -220,7 +220,7 @@ app.use('/api/v1', asyncHandler(async (req, res, next) => {
   const { createChatRouter } = require('./routes/v1/chat');
   const router = createChatRouter(orchestrator);
   router(req, res, next);
-}));
+});
 
 app.use('/api/v2', asyncHandler(async (req, res, next) => {
   if (!orchestrator) {
@@ -238,10 +238,10 @@ app.use('/api/v2', asyncHandler(async (req, res, next) => {
   const { createChatRouterV2 } = require('./routes/v2/chat');
   const router = createChatRouterV2(orchestrator);
   router(req, res, next);
-}));
+});
 
 // Legacy endpoint (defaults to v1)
-app.post('/api/chat', 
+app.post('/api/chat',
   rateLimiter.middleware(),
   validateChatRequest,
   asyncHandler(async (req, res) => {
@@ -352,14 +352,14 @@ app.use('/api/admin', (req, res, next) => {
   const { createAdminRouter } = require('./routes/admin');
   const router = createAdminRouter(services);
   router(req, res, next);
-}));
+});
 
 // Export/Import routes
 app.use('/api/export', (req, res, next) => {
   const { createExportRouter } = require('./routes/export');
   const router = createExportRouter(services);
   router(req, res, next);
-}));
+});
 
 // File upload endpoint
 app.post('/api/upload', requireAuth, upload.single('file'), asyncHandler(async (req, res) => {
@@ -392,7 +392,7 @@ app.post('/api/upload', requireAuth, upload.single('file'), asyncHandler(async (
 app.post('/api/feedback', requireAuth, asyncHandler(async (req, res) => {
   const { FeedbackService } = require('../core/feedback/FeedbackService');
   const feedbackService = new FeedbackService();
-  
+
   const { messageId, sessionId, reaction, rating, comment } = req.body;
   const feedback = await feedbackService.submitFeedback({
     messageId,
@@ -409,10 +409,10 @@ app.post('/api/feedback', requireAuth, asyncHandler(async (req, res) => {
 app.get('/api/feedback/:messageId', asyncHandler(async (req, res) => {
   const { FeedbackService } = require('../core/feedback/FeedbackService');
   const feedbackService = new FeedbackService();
-  
+
   const feedback = feedbackService.getFeedback(req.params.messageId);
   const stats = feedbackService.getStats(req.params.messageId);
-  
+
   res.json({ feedback, stats });
 }));
 
@@ -420,7 +420,7 @@ app.get('/api/feedback/:messageId', asyncHandler(async (req, res) => {
 app.get('/api/user/instructions', requireAuth, asyncHandler(async (req, res) => {
   const { CustomInstructionsService } = require('../core/user/CustomInstructions');
   const instructionsService = new CustomInstructionsService();
-  
+
   const instructions = await instructionsService.getInstructions(req.user!.userId);
   res.json({ instructions });
 }));
@@ -428,7 +428,7 @@ app.get('/api/user/instructions', requireAuth, asyncHandler(async (req, res) => 
 app.put('/api/user/instructions', requireAuth, asyncHandler(async (req, res) => {
   const { CustomInstructionsService } = require('../core/user/CustomInstructions');
   const instructionsService = new CustomInstructionsService();
-  
+
   const instructions = await instructionsService.updateInstructions(
     req.user!.userId,
     req.body
@@ -444,11 +444,11 @@ app.get('/api/chat/quick-replies', asyncHandler(async (req, res) => {
 
   const { QuickRepliesService } = require('../core/suggestions/QuickReplies');
   const { lastMessage, lastResponse, context } = req.query;
-  
+
   // Get primary adapter from orchestrator
   const primaryAdapter = (services.orchestrator as any).llmAdapter;
   const quickRepliesService = new QuickRepliesService(primaryAdapter);
-  
+
   const replies = await quickRepliesService.generateQuickReplies(
     lastMessage as string,
     lastResponse as string,
@@ -462,7 +462,7 @@ app.get('/api/chat/quick-replies', asyncHandler(async (req, res) => {
 app.post('/api/conversations/:sessionId/share', requireAuth, asyncHandler(async (req, res) => {
   const { ConversationSharingService } = require('../core/sharing/ConversationSharing');
   const sharingService = new ConversationSharingService(process.env.BASE_URL || `http://localhost:${PORT}`);
-  
+
   const { title, description, public: isPublic, password, expiresInDays } = req.body;
   const result = await sharingService.createShare(req.params.sessionId, {
     userId: req.user?.userId,
@@ -479,10 +479,10 @@ app.post('/api/conversations/:sessionId/share', requireAuth, asyncHandler(async 
 app.get('/api/share/:shareId', asyncHandler(async (req, res) => {
   const { ConversationSharingService } = require('../core/sharing/ConversationSharing');
   const { ConversationManager } = require('../core/conversation/ConversationManager');
-  
+
   const sharingService = new ConversationSharingService();
   const conversationManager = new ConversationManager();
-  
+
   const share = await sharingService.getShare(req.params.shareId, req.query.password as string);
   if (!share) {
     return res.status(404).json({ error: 'Share not found or expired' });
@@ -496,7 +496,7 @@ app.get('/api/share/:shareId', asyncHandler(async (req, res) => {
 app.get('/api/documents/search', requireAuth, asyncHandler(async (req, res) => {
   const { DocumentMetadataManager } = require('../core/documents/DocumentMetadata');
   const metadataManager = new DocumentMetadataManager();
-  
+
   const filters = {
     tags: req.query.tags ? (req.query.tags as string).split(',') : undefined,
     category: req.query.category as string,
@@ -512,60 +512,60 @@ app.get('/api/documents/search', requireAuth, asyncHandler(async (req, res) => {
 app.post('/api/knowledge/reddit', asyncHandler(async (req, res) => {
   const { RedditSource } = require('../core/knowledge/RedditSource');
   const source = new RedditSource();
-  
+
   const { query, subreddit, limit, sort } = req.body;
   const results = await source.search(query, { subreddit, limit: limit || 10, sort: sort || 'relevance' });
-  
+
   res.json({ results });
 }));
 
 app.post('/api/knowledge/youtube', asyncHandler(async (req, res) => {
   const { YouTubeSource } = require('../core/knowledge/YouTubeSource');
   const source = new YouTubeSource(process.env.YOUTUBE_API_KEY);
-  
+
   const { query, limit } = req.body;
   const results = await source.search(query, { limit: limit || 10 });
-  
+
   res.json({ results });
 }));
 
 app.post('/api/knowledge/university', asyncHandler(async (req, res) => {
   const { UniversitySource } = require('../core/knowledge/UniversitySource');
   const { university, query, limit, type } = req.body;
-  
+
   const source = new UniversitySource(university);
   const results = await source.search(query, { limit: limit || 10, type: type || 'all' });
-  
+
   res.json({ results });
 }));
 
 app.post('/api/knowledge/papers', asyncHandler(async (req, res) => {
   const { ScientificPapersSource } = require('../core/knowledge/ScientificPapersSource');
   const { query, limit, source } = req.body;
-  
+
   const paperSource = new ScientificPapersSource(source || 'all');
   const results = await paperSource.search(query, { limit: limit || 10, source: source || 'all' });
-  
+
   res.json({ results });
 }));
 
 app.post('/api/knowledge/github', requireAuth, asyncHandler(async (req, res) => {
   const { GitHubSource } = require('../core/knowledge/GitHubSource');
   const source = new GitHubSource(process.env.GITHUB_TOKEN);
-  
+
   const { query, limit, type } = req.body;
   const results = await source.search(query, { limit: limit || 10, type: type || 'all' });
-  
+
   res.json({ results });
 }));
 
 app.post('/api/knowledge/stackoverflow', asyncHandler(async (req, res) => {
   const { StackOverflowSource } = require('../core/knowledge/StackOverflowSource');
   const source = new StackOverflowSource(process.env.STACKOVERFLOW_API_KEY);
-  
+
   const { query, tagged, limit, sort } = req.body;
   const results = await source.search(query, { tagged, limit: limit || 10, sort: sort || 'relevance' });
-  
+
   res.json({ results });
 }));
 
@@ -577,60 +577,60 @@ app.post('/api/knowledge/news', asyncHandler(async (req, res) => {
     process.env.GUARDIAN_API_KEY,
     process.env.NYTIMES_API_KEY
   );
-  
+
   const { query, limit, provider, language } = req.body;
   const results = await source.search(query, { limit: limit || 10, provider, language });
-  
+
   res.json({ results });
 }));
 
 app.post('/api/knowledge/medium', asyncHandler(async (req, res) => {
   const { MediumSource } = require('../core/knowledge/MediumSource');
   const source = new MediumSource();
-  
+
   const { query, limit, tag } = req.body;
   const results = await source.search(query, { limit: limit || 10, tag });
-  
+
   res.json({ results });
 }));
 
 app.post('/api/knowledge/quora', asyncHandler(async (req, res) => {
   const { QuoraSource } = require('../core/knowledge/QuoraSource');
   const source = new QuoraSource();
-  
+
   const { query, limit } = req.body;
   const results = await source.search(query, { limit: limit || 10 });
-  
+
   res.json({ results });
 }));
 
 app.post('/api/knowledge/gutenberg', asyncHandler(async (req, res) => {
   const { ProjectGutenbergSource } = require('../core/knowledge/ProjectGutenbergSource');
   const source = new ProjectGutenbergSource();
-  
+
   const { query, limit } = req.body;
   const results = await source.search(query, { limit: limit || 10 });
-  
+
   res.json({ results });
 }));
 
 app.post('/api/knowledge/docs', asyncHandler(async (req, res) => {
   const { DocumentationSource } = require('../core/knowledge/DocumentationSource');
   const { site, query, limit } = req.body;
-  
+
   const source = new DocumentationSource(site || 'all');
   const results = await source.search(query, { limit: limit || 10, site: site || 'all' });
-  
+
   res.json({ results });
 }));
 
 app.post('/api/knowledge/library-of-congress', asyncHandler(async (req, res) => {
   const { LibraryOfCongressSource } = require('../core/knowledge/LibraryOfCongressSource');
   const source = new LibraryOfCongressSource();
-  
+
   const { query, limit, format, dateRange } = req.body;
   const results = await source.search(query, { limit: limit || 10, format, dateRange });
-  
+
   res.json({ results });
 }));
 
@@ -641,10 +641,10 @@ app.post('/api/knowledge/entertainment', asyncHandler(async (req, res) => {
     process.env.TMDB_API_KEY,
     process.env.OMDB_API_KEY
   );
-  
+
   const { query, limit, type, year } = req.body;
   const results = await source.search(query, { limit: limit || 10, type: type || 'all', year });
-  
+
   res.json({ results });
 }));
 
@@ -654,23 +654,23 @@ app.post('/api/knowledge/books', asyncHandler(async (req, res) => {
     req.body.source || 'all',
     process.env.GOOGLE_BOOKS_API_KEY
   );
-  
+
   const { query, limit, author, isbn } = req.body;
   const results = await source.search(query, { limit: limit || 10, author, isbn });
-  
+
   res.json({ results });
 }));
 
 app.post('/api/knowledge/specialized-topics', asyncHandler(async (req, res) => {
   const { SpecializedTopicSource } = require('../core/knowledge/SpecializedTopicSource');
   const { topic, query, limit } = req.body;
-  
+
   const source = new SpecializedTopicSource(topic || 'all');
   const results = await source.search(query, { limit: limit || 10, topic: topic || 'all' });
-  
+
   // Also return curated sources for the topic
   const curatedSources = source.getCuratedSources(topic || 'all');
-  
+
   res.json({ results, curatedSources });
 }));
 
@@ -826,7 +826,7 @@ app.post('/api/knowledge/load-telegram', requireAuth, asyncHandler(async (req, r
   const { TelegramSource } = require('../core/knowledge/TelegramSource');
   const loader = new TelegramSource(services.embeddingService);
   const { filePath, generateEmbeddings, chunkSize } = req.body;
-  
+
   const chunks = await loader.loadTelegramExport(filePath, {
     generateEmbeddings: generateEmbeddings !== false,
     chunkSize: chunkSize || 20,
@@ -842,20 +842,20 @@ app.post('/api/knowledge/load-telegram', requireAuth, asyncHandler(async (req, r
 app.post('/api/knowledge/wikipedia', asyncHandler(async (req, res) => {
   const { WikipediaSource } = require('../core/knowledge/WikipediaSource');
   const source = new WikipediaSource();
-  
+
   const { query, limit } = req.body;
   const results = await source.search(query, { limit: limit || 5 });
-  
+
   res.json({ results });
 }));
 
 app.post('/api/knowledge/scrape', requireAuth, asyncHandler(async (req, res) => {
   const { WebScraperSource } = require('../core/knowledge/WebScraperSource');
   const { urls, allowedDomains } = req.body;
-  
+
   const source = new WebScraperSource(allowedDomains || []);
   const results = await source.search('', { urls, limit: urls?.length || 5 });
-  
+
   res.json({ results });
 }));
 
@@ -867,10 +867,10 @@ app.post('/api/knowledge/load-csv', requireAuth, asyncHandler(async (req, res) =
 
   const { DatasetLoader } = require('../core/knowledge/DatasetLoader');
   const { EmbeddingService } = require('../core/embeddings/EmbeddingService');
-  
+
   const loader = new DatasetLoader(services.embeddingService);
   const { filePath, generateEmbeddings, chunkSize } = req.body;
-  
+
   const chunks = await loader.loadCSV(filePath, {
     generateEmbeddings: generateEmbeddings !== false,
     chunkSize: chunkSize || 10,
@@ -892,7 +892,7 @@ app.post('/api/knowledge/load-json', requireAuth, asyncHandler(async (req, res) 
   const { DatasetLoader } = require('../core/knowledge/DatasetLoader');
   const loader = new DatasetLoader(services.embeddingService);
   const { filePath, generateEmbeddings, chunkSize } = req.body;
-  
+
   const chunks = await loader.loadJSON(filePath, {
     generateEmbeddings: generateEmbeddings !== false,
     chunkSize: chunkSize || 5,
@@ -909,21 +909,21 @@ app.post('/api/knowledge/load-json', requireAuth, asyncHandler(async (req, res) 
 app.post('/api/knowledge/graph/entity', requireAuth, asyncHandler(async (req, res) => {
   const { KnowledgeGraph } = require('../core/knowledge/KnowledgeGraph');
   const graph = new KnowledgeGraph();
-  
+
   const { id, name, type, properties } = req.body;
   graph.addEntity({ id, name, type, properties });
-  
+
   res.json({ success: true });
 }));
 
 app.get('/api/knowledge/graph/query', requireAuth, asyncHandler(async (req, res) => {
   const { KnowledgeGraph } = require('../core/knowledge/KnowledgeGraph');
   const graph = new KnowledgeGraph();
-  
+
   const { entityId, entityName, relationshipType, limit } = req.query;
   const entities = graph.queryEntities({ entityId: entityId as string, entityName: entityName as string, limit: parseInt(limit as string) || 50 });
   const relationships = graph.queryRelationships({ entityId: entityId as string, relationshipType: relationshipType as string, limit: parseInt(limit as string) || 50 });
-  
+
   res.json({ entities, relationships, stats: graph.getStats() });
 }));
 
@@ -936,12 +936,12 @@ app.post('/api/knowledge/fuse', requireAuth, asyncHandler(async (req, res) => {
   const { KnowledgeFusion } = require('../core/knowledge/KnowledgeFusion');
   const { WikipediaSource } = require('../core/knowledge/WikipediaSource');
   const { WebScraperSource } = require('../core/knowledge/WebScraperSource');
-  
+
   const primaryAdapter = (services.orchestrator as any).llmAdapter;
   const fusion = new KnowledgeFusion(primaryAdapter);
-  
+
   const { query, sources, maxResults, minConfidence } = req.body;
-  
+
   const sourceInstances = [];
   if (sources.includes('wikipedia')) {
     sourceInstances.push(new WikipediaSource());
@@ -1073,7 +1073,7 @@ app.post('/api/knowledge/fuse', requireAuth, asyncHandler(async (req, res) => {
     const { MarijuanaGrowingSource } = require('../core/knowledge/MarijuanaGrowingSource');
     sourceInstances.push(new MarijuanaGrowingSource());
   }
-  
+
   const results = await fusion.fuse({
     sources: sourceInstances,
     query,
@@ -1081,7 +1081,7 @@ app.post('/api/knowledge/fuse', requireAuth, asyncHandler(async (req, res) => {
     minConfidence: minConfidence || 0.5,
     summarize: true,
   });
-  
+
   res.json({ results });
 }));
 
@@ -1094,10 +1094,10 @@ app.post('/api/reasoning/chain-of-thought', requireAuth, asyncHandler(async (req
   const { ReasoningEngine } = require('../core/knowledge/ReasoningEngine');
   const primaryAdapter = (services.orchestrator as any).llmAdapter;
   const engine = new ReasoningEngine(primaryAdapter);
-  
+
   const { question, context, maxSteps } = req.body;
   const result = await engine.chainOfThought(question, context, maxSteps || 5);
-  
+
   res.json({ result });
 }));
 
@@ -1105,7 +1105,7 @@ app.post('/api/reasoning/chain-of-thought', requireAuth, asyncHandler(async (req
 app.get('/api/debug/:requestId', requireAuth, asyncHandler(async (req, res) => {
   const { DebugMode } = require('../core/debug/DebugMode');
   const debugMode = new DebugMode();
-  
+
   const debugInfo = debugMode.getDebugInfo(req.params.requestId);
   if (!debugInfo) {
     return res.status(404).json({ error: 'Debug info not found' });
@@ -1118,10 +1118,10 @@ app.get('/api/debug/:requestId', requireAuth, asyncHandler(async (req, res) => {
 app.get('/api/conversations', requireAuth, asyncHandler(async (req, res) => {
   const { ConversationManager } = require('../core/conversation/ConversationManager');
   const conversationManager = new ConversationManager();
-  
+
   const userId = req.user?.userId;
   const limit = parseInt(req.query.limit as string) || 20;
-  
+
   const conversations = await conversationManager.listConversations(userId, limit);
   res.json({ conversations });
 }));
@@ -1129,19 +1129,19 @@ app.get('/api/conversations', requireAuth, asyncHandler(async (req, res) => {
 app.get('/api/conversations/:sessionId', requireAuth, asyncHandler(async (req, res) => {
   const { ConversationManager } = require('../core/conversation/ConversationManager');
   const conversationManager = new ConversationManager();
-  
+
   const conversation = await conversationManager.getConversation(req.params.sessionId);
   if (!conversation) {
     return res.status(404).json({ error: 'Conversation not found' });
   }
-  
+
   res.json({ conversation });
 }));
 
 app.delete('/api/conversations/:sessionId', requireAuth, asyncHandler(async (req, res) => {
   const { ConversationManager } = require('../core/conversation/ConversationManager');
   const conversationManager = new ConversationManager();
-  
+
   const deleted = await conversationManager.deleteConversation(req.params.sessionId);
   res.json({ success: deleted });
 }));
@@ -1150,7 +1150,7 @@ app.delete('/api/conversations/:sessionId', requireAuth, asyncHandler(async (req
 app.post('/api/webhooks', asyncHandler(async (req, res) => {
   const { WebhookService } = require('../core/webhooks/WebhookService');
   const webhookService = new WebhookService();
-  
+
   const { url, events, secret } = req.body;
   const webhook = webhookService.register({
     url,

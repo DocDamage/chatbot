@@ -67,7 +67,19 @@ export class BackendDesignSource implements KnowledgeSource {
   }
 
   async getById(id: string): Promise<KnowledgeResult | null> {
-    return null;
+    try {
+      if (id.includes('_so_')) {
+        const questionId = id.split('_so_')[1];
+        const url = `https://api.stackexchange.com/2.3/questions/${questionId}?site=stackoverflow&filter=withbody`;
+        const response = await axios.get(url);
+        const question = response.data.items?.[0];
+        if (question) return { id, title: question.title, content: question.body?.substring(0, 3000) || '', source: 'stackoverflow', url: question.link, metadata: { topic: 'backend_design' }, confidence: 0.85 };
+      }
+      const sourceName = id.replace('backend_', '').replace(/_/g, ' ');
+      const matched = this.curatedSources.find(s => s.name.toLowerCase().includes(sourceName.toLowerCase()));
+      if (matched) return { id, title: matched.name, content: matched.description, source: 'backend_design', url: matched.url, metadata: { sourceName: matched.name }, confidence: 0.9 };
+      return null;
+    } catch (error: any) { logger.warn('Failed to get backend resource', { id, error: error.message }); return null; }
   }
 }
 

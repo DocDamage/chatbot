@@ -2,10 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import StatusBar from './StatusBar';
+import { ChatMode } from './ModeSelector';
 import './ChatInterface.css';
 
 const uuidv4 = () => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     const r = Math.random() * 16 | 0;
     const v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
@@ -18,8 +19,9 @@ export interface Message {
   content: string;
   timestamp: Date;
   loading?: boolean;
-  image?: string; // Base64 encoded image
+  image?: string;
   imageUrl?: string;
+  mode?: ChatMode;
 }
 
 const ChatInterface: React.FC = () => {
@@ -36,30 +38,35 @@ const ChatInterface: React.FC = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = async (content: string) => {
+  const handleSendMessage = async (content: string, mode: ChatMode = 'ask') => {
     if (!content.trim() || isLoading) return;
 
     const userMessage: Message = {
       id: uuidv4(),
       role: 'user',
       content,
-      timestamp: new Date()
+      timestamp: new Date(),
+      mode
     };
 
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
 
-    // Add loading message
+    // Add loading message with thinking indicator
     const loadingMessage: Message = {
       id: uuidv4(),
       role: 'assistant',
-      content: '',
+      content: getLoadingText(mode),
       timestamp: new Date(),
-      loading: true
+      loading: true,
+      mode
     };
     setMessages(prev => [...prev, loadingMessage]);
 
     try {
+      // Build system prompt based on mode
+      const systemPrompt = getSystemPrompt(mode);
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -67,7 +74,9 @@ const ChatInterface: React.FC = () => {
         },
         body: JSON.stringify({
           message: content,
-          sessionId
+          sessionId,
+          mode,
+          systemPrompt
         })
       });
 
@@ -84,25 +93,25 @@ const ChatInterface: React.FC = () => {
         return [
           ...filtered,
           {
-            id: data.artifactId,
+            id: data.artifactId || uuidv4(),
             role: 'assistant',
             content: data.response,
             timestamp: new Date(),
             image: data.image,
-            imageUrl: data.imageUrl
+            imageUrl: data.imageUrl,
+            mode
           }
         ];
       });
     } catch (error: any) {
-      // Remove loading message and add error
       setMessages(prev => {
         const filtered = prev.filter(msg => !msg.loading);
-        const errorMessage = error.message?.includes('Rate limit') 
+        const errorMessage = error.message?.includes('Rate limit')
           ? 'Too many requests. Please wait a moment and try again.'
           : error.message?.includes('Network') || error.message?.includes('Failed to fetch')
-          ? 'Network error. Please check your connection and try again.'
-          : `Sorry, I encountered an error: ${error.message || 'Unknown error'}. Please try again.`;
-        
+            ? 'Network error. Please check your connection and try again.'
+            : `Sorry, I encountered an error: ${error.message || 'Unknown error'}. Please try again.`;
+
         return [
           ...filtered,
           {
@@ -129,5 +138,68 @@ const ChatInterface: React.FC = () => {
   );
 };
 
-export default ChatInterface;
+// Mode-specific loading text
+function getLoadingText(mode: ChatMode): string {
+  switch (mode) {
+    case 'ask': return '🤔 Thinking...';
+    case 'plan': return '📋 Creating a plan...';
+    case 'implement': return '⚡ Writing code...';
+    case 'debug': return '🔧 Analyzing the problem...';
+    case 'explain': return '📖 Preparing explanation...';
+    default: return 'Thinking...';
+  }
+}
 
+// Mode-specific system prompts
+function getSystemPrompt(mode: ChatMode): string {
+  switch (mode) {
+    case 'ask':
+      return `You are a helpful AI assistant. Answer questions clearly and concisely. 
+If the user asks about code, provide explanations that a non-programmer can understand.`;
+
+    case 'plan':
+      return `You are a project planning assistant. When the user describes what they want to build:
+1. Break it down into clear, numbered steps
+2. Explain each step in simple terms
+3. Identify what files or components need to be created
+4. Estimate complexity (simple/medium/complex)
+5. Ask clarifying questions if needed
+
+Format your response as a clear plan that anyone can follow.`;
+
+    case 'implement':
+      return `You are an expert coding assistant. When the user asks you to implement something:
+1. Write clean, working code
+2. Create complete files, not just snippets
+3. Include helpful comments
+4. Explain what the code does after showing it
+5. If creating multiple files, clearly label each one
+
+Always provide complete, runnable code. The user is not a programmer, so make it easy to use.`;
+
+    case 'debug':
+      return `You are a debugging expert. When the user describes a problem:
+1. Identify the likely cause
+2. Explain the problem in simple terms
+3. Provide a fix with complete code
+4. Explain what was wrong and why the fix works
+5. Suggest how to prevent similar issues
+
+Be patient and thorough. The user may not understand technical terms.`;
+
+    case 'explain':
+      return `You are a coding teacher explaining things to a complete beginner. When explaining code:
+1. Use simple, everyday language
+2. Avoid jargon - if you must use technical terms, define them
+3. Use analogies to explain concepts
+4. Break complex things into small, digestible parts
+5. Be encouraging and supportive
+
+Remember: the user knows NOTHING about programming. Explain like you're talking to a curious friend.`;
+
+    default:
+      return 'You are a helpful AI assistant.';
+  }
+}
+
+export default ChatInterface;

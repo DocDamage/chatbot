@@ -67,7 +67,19 @@ export class WebDesignSource implements KnowledgeSource {
   }
 
   async getById(id: string): Promise<KnowledgeResult | null> {
-    return null;
+    try {
+      if (id.includes('_mdn_')) {
+        const slug = id.split('_mdn_')[1];
+        const url = `https://developer.mozilla.org/api/v1/doc/en-US/docs/${slug}`;
+        const response = await axios.get(url, { timeout: 5000 });
+        const doc = response.data.doc;
+        return { id, title: doc.title, content: doc.summary || '', source: 'mdn', url: `https://developer.mozilla.org/en-US/docs/${slug}`, metadata: { topic: 'web_design' }, confidence: 0.95 };
+      }
+      const sourceName = id.replace('web_design_', '').replace(/_/g, ' ');
+      const matched = this.curatedSources.find(s => s.name.toLowerCase().includes(sourceName.toLowerCase()));
+      if (matched) return { id, title: matched.name, content: matched.description, source: 'web_design', url: matched.url, metadata: { sourceName: matched.name }, confidence: 0.9 };
+      return null;
+    } catch (error: any) { logger.warn('Failed to get web design resource', { id, error: error.message }); return null; }
   }
 }
 

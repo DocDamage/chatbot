@@ -211,13 +211,85 @@ export class GitHubSource implements KnowledgeSource {
   }
 
   private async getIssue(issueId: string): Promise<KnowledgeResult | null> {
-    // Implementation similar to searchIssues but for single issue
-    return null;
+    try {
+      // issueId format: owner/repo_number
+      const [repoPath, number] = issueId.split('_');
+      if (!repoPath || !number) return null;
+
+      const url = `${this.baseUrl}/repos/${repoPath}/issues/${number}`;
+      const response = await axios.get(url, { headers: this.getHeaders() });
+      const issue = response.data;
+
+      // Get comments for additional context
+      let comments = '';
+      try {
+        const commentsUrl = `${this.baseUrl}/repos/${repoPath}/issues/${number}/comments`;
+        const commentsResponse = await axios.get(commentsUrl, { headers: this.getHeaders() });
+        comments = commentsResponse.data
+          .slice(0, 5)
+          .map((c: any) => `@${c.user.login}: ${c.body}`)
+          .join('\n\n');
+      } catch {
+        // Comments not available
+      }
+
+      const content = `${issue.body || ''}\n\n--- Comments ---\n${comments}`.substring(0, 5000);
+
+      return {
+        id: `issue_${issueId}`,
+        title: issue.title,
+        content,
+        source: 'github',
+        url: issue.html_url,
+        metadata: {
+          repository: repoPath,
+          number: issue.number,
+          state: issue.state,
+          labels: issue.labels?.map((l: any) => l.name) || [],
+          author: issue.user?.login,
+          createdAt: issue.created_at,
+          comments: issue.comments
+        },
+        confidence: issue.state === 'closed' ? 0.9 : 0.7
+      };
+    } catch (error: any) {
+      logger.warn('Failed to fetch GitHub issue', { issueId, error: error.message });
+      return null;
+    }
   }
 
   private async getCodeFile(fileId: string): Promise<KnowledgeResult | null> {
-    // Implementation similar to searchCode but for single file
-    return null;
+    try {
+      // fileId format: owner/repo_path/to/file.ext
+      const parts = fileId.split('_');
+      if (parts.length < 2) return null;
+
+      const repoPath = parts[0];
+      const filePath = parts.slice(1).join('_');
+
+      const url = `${this.baseUrl}/repos/${repoPath}/contents/${filePath}`;
+      const response = await axios.get(url, { headers: this.getHeaders() });
+
+      const content = Buffer.from(response.data.content, 'base64').toString('utf-8');
+
+      return {
+        id: `code_${fileId}`,
+        title: `${repoPath}/${filePath}`,
+        content: content.substring(0, 10000),
+        source: 'github',
+        url: response.data.html_url,
+        metadata: {
+          repository: repoPath,
+          path: filePath,
+          size: response.data.size,
+          sha: response.data.sha
+        },
+        confidence: 0.85
+      };
+    } catch (error: any) {
+      logger.warn('Failed to fetch GitHub code file', { fileId, error: error.message });
+      return null;
+    }
   }
 
   private calculateRepoConfidence(repo: any): number {

@@ -1,5 +1,5 @@
 /**
- * Analytics Service - Track usage patterns and generate insights
+ * Analytics Service - Track usage patterns, collect feedback, and generate insights
  */
 
 import { logger } from '../observability/logger';
@@ -30,12 +30,33 @@ export interface UserBehavior {
   preferredTimeOfDay: string[];
   commonIntents: string[];
   satisfactionScore: number;
+  feedbackCount: number;
+  lastFeedback?: UserFeedback;
+}
+
+export interface UserFeedback {
+  userId: string;
+  sessionId?: string;
+  rating: number; // 1-5
+  comment?: string;
+  messageId?: string;
+  timestamp: Date;
+  categories?: string[]; // 'helpful', 'accurate', 'fast', etc.
+}
+
+export interface TrendData {
+  query: string;
+  currentCount: number;
+  previousCount: number;
+  growth: number; // percentage
+  growthRate: 'rising' | 'stable' | 'falling';
 }
 
 export class AnalyticsService {
   private events: AnalyticsEvent[] = [];
-  private maxEvents: number = 10000; // Keep last 10k events
+  private maxEvents: number = 10000;
   private queryCounts: Map<string, number> = new Map();
+  private queryTimeframes: Map<string, number[]> = new Map(); // query -> timestamps
   private modelUsage: Map<string, number> = new Map();
   private intentUsage: Map<string, number> = new Map();
   private userUsage: Map<string, number> = new Map();
@@ -43,6 +64,11 @@ export class AnalyticsService {
   private errors: number = 0;
   private requests: number = 0;
   private hourlyRequests: Map<number, number> = new Map();
+
+  // Feedback tracking
+  private feedbackStore: Map<string, UserFeedback[]> = new Map(); // userId -> feedbacks
+  private globalFeedback: UserFeedback[] = [];
+  private satisfactionScores: Map<string, number[]> = new Map(); // userId -> ratings
 
   /**
    * Track an event
@@ -55,12 +81,10 @@ export class AnalyticsService {
 
     this.events.push(fullEvent);
 
-    // Maintain max events
     if (this.events.length > this.maxEvents) {
       this.events.shift();
     }
 
-    // Update aggregations
     this.updateAggregations(fullEvent);
   }
 
@@ -77,24 +101,21 @@ export class AnalyticsService {
     query?: string;
   }): void {
     this.requests++;
-    
+
     if (!data.success) {
       this.errors++;
     }
 
-    // Track model usage
     this.modelUsage.set(
       data.model,
       (this.modelUsage.get(data.model) || 0) + 1
     );
 
-    // Track intent usage
     this.intentUsage.set(
       data.intent,
       (this.intentUsage.get(data.intent) || 0) + 1
     );
 
-    // Track user usage
     if (data.userId) {
       this.userUsage.set(
         data.userId,
@@ -102,22 +123,29 @@ export class AnalyticsService {
       );
     }
 
-    // Track latency
     this.latencies.push(data.latency);
     if (this.latencies.length > 1000) {
       this.latencies.shift();
     }
 
-    // Track query popularity
     if (data.query) {
       const normalized = data.query.toLowerCase().trim();
       this.queryCounts.set(
         normalized,
         (this.queryCounts.get(normalized) || 0) + 1
       );
+
+      // Track query timestamps for trending analysis
+      const timestamps = this.queryTimeframes.get(normalized) || [];
+      timestamps.push(Date.now());
+      // Keep only last 24 hours
+      const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+      this.queryTimeframes.set(
+        normalized,
+        timestamps.filter(t => t > oneDayAgo)
+      );
     }
 
-    // Track hourly usage
     const hour = new Date().getHours();
     this.hourlyRequests.set(
       hour,
@@ -138,6 +166,51 @@ export class AnalyticsService {
   }
 
   /**
+   * Record user feedback
+   */
+  recordFeedback(feedback: Omit<UserFeedback, 'timestamp'>): void {
+    const fullFeedback: UserFeedback = {
+      ...feedback,
+      timestamp: new Date()
+    };
+
+    // Store globally
+    this.globalFeedback.push(fullFeedback);
+    if (this.globalFeedback.length > 5000) {
+      this.globalFeedback.shift();
+    }
+
+    // Store per user
+    if (feedback.userId) {
+      const userFeedback = this.feedbackStore.get(feedback.userId) || [];
+      userFeedback.push(fullFeedback);
+      this.feedbackStore.set(feedback.userId, userFeedback);
+
+      // Update satisfaction scores
+      const scores = this.satisfactionScores.get(feedback.userId) || [];
+      scores.push(feedback.rating);
+      // Keep last 20 ratings
+      if (scores.length > 20) scores.shift();
+      this.satisfactionScores.set(feedback.userId, scores);
+    }
+
+    this.track({
+      type: 'feedback',
+      userId: feedback.userId,
+      sessionId: feedback.sessionId,
+      metadata: {
+        rating: feedback.rating,
+        categories: feedback.categories
+      }
+    });
+
+    logger.info('Feedback recorded', {
+      userId: feedback.userId,
+      rating: feedback.rating
+    });
+  }
+
+  /**
    * Get usage statistics
    */
   getUsageStats(): UsageStats {
@@ -149,7 +222,6 @@ export class AnalyticsService {
       ? (this.errors / this.requests) * 100
       : 0;
 
-    // Find peak usage hour
     let peakHour = 0;
     let peakRequests = 0;
     for (const [hour, requests] of this.hourlyRequests.entries()) {
@@ -159,7 +231,6 @@ export class AnalyticsService {
       }
     }
 
-    // Get popular queries
     const popularQueries = Array.from(this.queryCounts.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10)
@@ -181,7 +252,7 @@ export class AnalyticsService {
   }
 
   /**
-   * Get user behavior insights
+   * Get user behavior insights with real satisfaction scoring
    */
   getUserBehavior(userId: string): UserBehavior | null {
     const userEvents = this.events.filter(e => e.userId === userId);
@@ -203,10 +274,19 @@ export class AnalyticsService {
       .map(([intent]) => intent);
 
     const hours = userEvents.map(e => e.timestamp.getHours());
-    const timeOfDay = hours.map(h => 
+    const timeOfDay = hours.map(h =>
       h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening'
     );
     const preferredTimeOfDay = Array.from(new Set(timeOfDay));
+
+    // Calculate real satisfaction score from feedback
+    const userScores = this.satisfactionScores.get(userId) || [];
+    const satisfactionScore = userScores.length > 0
+      ? userScores.reduce((a, b) => a + b, 0) / userScores.length / 5 // Normalize to 0-1
+      : 0.5; // Default to neutral if no feedback
+
+    // Get feedback data
+    const userFeedback = this.feedbackStore.get(userId) || [];
 
     return {
       userId,
@@ -214,29 +294,113 @@ export class AnalyticsService {
       averageSessionLength: userEvents.length / sessions,
       preferredTimeOfDay,
       commonIntents,
-      satisfactionScore: 0.8, // Placeholder - would come from feedback
+      satisfactionScore,
+      feedbackCount: userFeedback.length,
+      lastFeedback: userFeedback.length > 0 ? userFeedback[userFeedback.length - 1] : undefined
     };
   }
 
   /**
-   * Get query pattern analysis
+   * Get query pattern analysis with real trending data
    */
   getQueryPatterns(): {
     mostCommon: Array<{ query: string; count: number }>;
-    trending: Array<{ query: string; growth: number }>;
+    trending: TrendData[];
   } {
     const mostCommon = Array.from(this.queryCounts.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 20)
       .map(([query, count]) => ({ query, count }));
 
-    // Simple trending (would need time-based tracking for real trending)
-    const trending = mostCommon.slice(0, 5).map(q => ({
-      query: q.query,
-      growth: 0, // Placeholder
-    }));
+    // Calculate real trending based on timeframe comparison
+    const now = Date.now();
+    const sixHoursAgo = now - 6 * 60 * 60 * 1000;
+    const twelveHoursAgo = now - 12 * 60 * 60 * 1000;
 
-    return { mostCommon, trending };
+    const trending: TrendData[] = [];
+
+    for (const [query, timestamps] of this.queryTimeframes.entries()) {
+      const currentPeriod = timestamps.filter(t => t > sixHoursAgo).length;
+      const previousPeriod = timestamps.filter(t => t > twelveHoursAgo && t <= sixHoursAgo).length;
+
+      if (currentPeriod > 0 || previousPeriod > 0) {
+        const growth = previousPeriod > 0
+          ? ((currentPeriod - previousPeriod) / previousPeriod) * 100
+          : currentPeriod > 0 ? 100 : 0;
+
+        let growthRate: 'rising' | 'stable' | 'falling';
+        if (growth > 20) growthRate = 'rising';
+        else if (growth < -20) growthRate = 'falling';
+        else growthRate = 'stable';
+
+        trending.push({
+          query,
+          currentCount: currentPeriod,
+          previousCount: previousPeriod,
+          growth: Math.round(growth),
+          growthRate
+        });
+      }
+    }
+
+    // Sort by growth rate
+    trending.sort((a, b) => b.growth - a.growth);
+
+    return { mostCommon, trending: trending.slice(0, 10) };
+  }
+
+  /**
+   * Get overall satisfaction metrics
+   */
+  getSatisfactionMetrics(): {
+    averageRating: number;
+    totalFeedback: number;
+    ratingDistribution: Record<number, number>;
+    categoryBreakdown: Record<string, number>;
+    recentTrend: 'improving' | 'stable' | 'declining';
+  } {
+    const ratings = this.globalFeedback.map(f => f.rating);
+    const averageRating = ratings.length > 0
+      ? ratings.reduce((a, b) => a + b, 0) / ratings.length
+      : 0;
+
+    // Rating distribution
+    const ratingDistribution: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    for (const rating of ratings) {
+      ratingDistribution[rating] = (ratingDistribution[rating] || 0) + 1;
+    }
+
+    // Category breakdown
+    const categoryBreakdown: Record<string, number> = {};
+    for (const feedback of this.globalFeedback) {
+      if (feedback.categories) {
+        for (const cat of feedback.categories) {
+          categoryBreakdown[cat] = (categoryBreakdown[cat] || 0) + 1;
+        }
+      }
+    }
+
+    // Recent trend - compare last 50 to previous 50
+    let recentTrend: 'improving' | 'stable' | 'declining' = 'stable';
+    if (this.globalFeedback.length >= 20) {
+      const recent = this.globalFeedback.slice(-10).map(f => f.rating);
+      const previous = this.globalFeedback.slice(-20, -10).map(f => f.rating);
+
+      const recentAvg = recent.reduce((a, b) => a + b, 0) / recent.length;
+      const prevAvg = previous.reduce((a, b) => a + b, 0) / previous.length;
+
+      const diff = recentAvg - prevAvg;
+      if (diff > 0.3) recentTrend = 'improving';
+      else if (diff < -0.3) recentTrend = 'declining';
+    }
+
+    return {
+      averageRating,
+      totalFeedback: this.globalFeedback.length,
+      ratingDistribution,
+      categoryBreakdown,
+      recentTrend
+    };
   }
 
   /**
@@ -252,6 +416,7 @@ export class AnalyticsService {
   clear(): void {
     this.events = [];
     this.queryCounts.clear();
+    this.queryTimeframes.clear();
     this.modelUsage.clear();
     this.intentUsage.clear();
     this.userUsage.clear();
@@ -259,7 +424,24 @@ export class AnalyticsService {
     this.errors = 0;
     this.requests = 0;
     this.hourlyRequests.clear();
+    this.feedbackStore.clear();
+    this.globalFeedback = [];
+    this.satisfactionScores.clear();
     logger.info('Analytics data cleared');
   }
-}
 
+  /**
+   * Export analytics data
+   */
+  export(): {
+    stats: UsageStats;
+    satisfaction: ReturnType<typeof this.getSatisfactionMetrics>;
+    patterns: ReturnType<typeof this.getQueryPatterns>;
+  } {
+    return {
+      stats: this.getUsageStats(),
+      satisfaction: this.getSatisfactionMetrics(),
+      patterns: this.getQueryPatterns()
+    };
+  }
+}

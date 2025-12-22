@@ -21,6 +21,10 @@ import { ToolRegistry } from '../tools/ToolRegistry';
 import { CodeExecutor } from '../tools/CodeExecutor';
 import { WebSearcher } from '../tools/WebSearcher';
 import { FunctionCaller } from '../tools/FunctionCaller';
+import { CodingKnowledgeBase } from '../knowledge/CodingKnowledgeBase';
+import { CodingKnowledgeTool } from '../tools/CodingKnowledgeTool';
+import { PersonalKnowledgeTool } from '../tools/PersonalKnowledgeTool';
+import { KnowledgeLearner } from '../learning/KnowledgeLearner';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -34,6 +38,7 @@ export interface InitializedServices {
   embeddingService?: EmbeddingService;
   cache?: MultiLevelCache<any>;
   analytics?: AnalyticsService;
+  knowledgeLearner?: KnowledgeLearner;
 }
 
 export class ServiceInitializer {
@@ -89,10 +94,11 @@ export class ServiceInitializer {
       });
     }
 
-    // 9. Initialize Tools
-    const toolRegistry = this.initializeTools();
+    // 9. Initialize Tools & Coding Knowledge
+    const { toolRegistry, knowledgeLearner } = await this.initializeTools(embeddingService);
     logger.info('Tools initialized', {
-      toolsCount: toolRegistry.getStats().totalTools
+      toolsCount: toolRegistry.getStats().totalTools,
+      learner: !!knowledgeLearner
     });
 
     // 10. Initialize Enhanced Orchestrator
@@ -130,7 +136,8 @@ export class ServiceInitializer {
       visionAdapter,
       embeddingService,
       cache,
-      analytics
+      analytics,
+      knowledgeLearner
     };
   }
 
@@ -164,7 +171,7 @@ export class ServiceInitializer {
       const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
       const ollamaModel = process.env.OLLAMA_MODEL || 'llama2';
       const ollamaAdapter = new OllamaAdapter(ollamaUrl, ollamaModel);
-      
+
       // Check availability
       const { available } = await ollamaAdapter.checkAvailability();
       if (available) {
@@ -238,11 +245,11 @@ export class ServiceInitializer {
    */
   private static async loadKnowledgeBase(documentManager: DocumentManager): Promise<void> {
     const kbDir = process.env.KNOWLEDGE_BASE_DIR || './knowledge-base';
-    
+
     if (!fs.existsSync(kbDir)) {
       logger.info('Knowledge base directory not found, creating...', { dir: kbDir });
       fs.mkdirSync(kbDir, { recursive: true });
-      
+
       // Create example file
       const exampleFile = path.join(kbDir, 'example.txt');
       fs.writeFileSync(exampleFile, `Welcome to the Knowledge Base!
@@ -278,7 +285,7 @@ The system will automatically:
       }
 
       logger.info('Loading knowledge base documents...', { dir: kbDir, filesCount: files.length });
-      
+
       await documentManager.addDirectory(kbDir, {
         generateEmbeddings: process.env.RAG_GENERATE_EMBEDDINGS !== 'false',
         chunkSize: parseInt(process.env.RAG_CHUNK_SIZE || '500')
@@ -350,30 +357,46 @@ The system will automatically:
   }
 
   /**
-   * Initialize tools
+   * Initialize tools and coding knowledge
    */
-  private static initializeTools(): ToolRegistry {
+  private static async initializeTools(embeddingService: EmbeddingService): Promise<{ toolRegistry: ToolRegistry; knowledgeLearner: KnowledgeLearner }> {
     const registry = new ToolRegistry();
 
-    // Code executor
+    // 1. Coding Knowledge Base
+    const codingKB = new CodingKnowledgeBase(embeddingService);
+    // Initialize in background to not block startup if large, but await for now for safety
+    await codingKB.initialize();
+
+    // 2. Coding Knowledge Tool
+    const codingTool = new CodingKnowledgeTool(codingKB);
+    registry.register(codingTool);
+
+    // 3. Knowledge Learner
+    const knowledgeLearner = new KnowledgeLearner(codingKB);
+
+    // 4. Code executor
     const codeExecutor = new CodeExecutor(
       parseInt(process.env.CODE_EXECUTOR_TIMEOUT || '5000'),
       ['python', 'javascript', 'bash']
     );
     registry.register(codeExecutor.createTool());
 
-    // Web searcher
+    // 5. Web searcher
     const webSearcher = new WebSearcher(
       process.env.SEARCH_API_KEY,
       (process.env.SEARCH_ENGINE as any) || 'duckduckgo'
     );
     registry.register(webSearcher.createTool());
 
+    // 6. Personal Knowledge Tool
+    const personalKnowledgeTool = new PersonalKnowledgeTool();
+    registry.register(personalKnowledgeTool);
+
     logger.info('Tools registered', {
       tools: registry.getAll().map(t => t.name)
     });
 
-    return registry;
+    return { toolRegistry: registry, knowledgeLearner };
   }
 }
 

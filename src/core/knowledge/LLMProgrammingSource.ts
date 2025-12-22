@@ -71,7 +71,21 @@ export class LLMProgrammingSource implements KnowledgeSource {
   }
 
   async getById(id: string): Promise<KnowledgeResult | null> {
-    return null;
+    try {
+      if (id.includes('_github_')) {
+        const repoId = id.split('_github_')[1];
+        if (process.env.GITHUB_TOKEN) {
+          const url = `https://api.github.com/repositories/${repoId}`;
+          const response = await axios.get(url, { headers: { Authorization: `token ${process.env.GITHUB_TOKEN}` } });
+          const repo = response.data;
+          return { id, title: repo.full_name, content: repo.description || '', source: 'github', url: repo.html_url, metadata: { topic: 'llm_programming', stars: repo.stargazers_count }, confidence: 0.85 };
+        }
+      }
+      const sourceName = id.replace('llm_', '').replace(/_/g, ' ');
+      const matched = this.curatedSources.find(s => s.name.toLowerCase().includes(sourceName.toLowerCase()));
+      if (matched) return { id, title: matched.name, content: matched.description, source: 'llm_programming', url: matched.url, metadata: { sourceName: matched.name }, confidence: 0.9 };
+      return null;
+    } catch (error: any) { logger.warn('Failed to get LLM resource', { id, error: error.message }); return null; }
   }
 }
 

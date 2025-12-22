@@ -122,7 +122,7 @@ export class UniversitySource implements KnowledgeSource {
     try {
       // Search university repositories and ArXiv
       // MIT: DSpace, Harvard: DASH, Stanford: SDR, Brown: Digital Repository
-      
+
       const searchQueries = [
         `site:${this.getDomain()} ${query}`,
         `"${this.university}" ${query} site:arxiv.org`,
@@ -132,7 +132,7 @@ export class UniversitySource implements KnowledgeSource {
         // Use Google Custom Search API or similar
         // For now, provide structured search URLs
         const searchUrl = this.getPaperSearchUrl(query);
-        
+
         results.push({
           id: `paper_${this.university}_${Date.now()}`,
           title: `${this.university.toUpperCase()} Research: ${query}`,
@@ -155,13 +155,109 @@ export class UniversitySource implements KnowledgeSource {
   }
 
   private async getCourse(courseId: string): Promise<KnowledgeResult | null> {
-    // Implementation would fetch specific course details
-    return null;
+    try {
+      // Parse the course ID to extract university and query
+      const parts = courseId.split('_');
+      if (parts.length < 2) return null;
+
+      const query = parts.slice(1).join('_');
+
+      // For MIT OCW, try to fetch from their API-like endpoints
+      if (this.university === 'mit') {
+        const url = `https://ocw.mit.edu/search/?q=${encodeURIComponent(query)}`;
+
+        return {
+          id: `course_${courseId}`,
+          title: `MIT OpenCourseWare: ${query}`,
+          content: `MIT offers free course materials on this topic. Visit ${url} to access lectures, assignments, and exams.`,
+          source: `university_${this.university}`,
+          url,
+          metadata: {
+            university: 'MIT',
+            type: 'course',
+            query
+          },
+          confidence: 0.7
+        };
+      }
+
+      // For other universities, return search URLs
+      const searchUrl = this.getBaseUrl() + `/search?q=${encodeURIComponent(query)}`;
+
+      return {
+        id: `course_${courseId}`,
+        title: `${this.university.toUpperCase()} Course: ${query}`,
+        content: `Course materials from ${this.university.toUpperCase()}. Search at ${searchUrl}`,
+        source: `university_${this.university}`,
+        url: searchUrl,
+        metadata: {
+          university: this.university,
+          type: 'course'
+        },
+        confidence: 0.6
+      };
+    } catch (error: any) {
+      logger.warn('Failed to get course', { courseId, error: error.message });
+      return null;
+    }
   }
 
   private async getPaper(paperId: string): Promise<KnowledgeResult | null> {
-    // Implementation would fetch specific paper details
-    return null;
+    try {
+      // Try to fetch from university digital repositories
+      const searchUrl = this.getPaperSearchUrl(paperId);
+
+      // Try ArXiv API for academic papers
+      const arxivUrl = `https://export.arxiv.org/api/query?search_query=all:${encodeURIComponent(paperId)}&max_results=1`;
+
+      try {
+        const response = await axios.get(arxivUrl, { timeout: 5000 });
+        const data = response.data;
+
+        // Simple XML parsing for ArXiv response
+        const titleMatch = data.match(/<title>([^<]+)<\/title>/g);
+        const summaryMatch = data.match(/<summary>([^<]+)<\/summary>/);
+        const linkMatch = data.match(/<id>([^<]+)<\/id>/);
+
+        if (titleMatch && titleMatch.length > 1) {
+          const title = titleMatch[1].replace(/<\/?title>/g, '').trim();
+          const summary = summaryMatch ? summaryMatch[1].trim() : '';
+          const link = linkMatch ? linkMatch[1].trim() : arxivUrl;
+
+          return {
+            id: `paper_${paperId}`,
+            title,
+            content: summary,
+            source: `university_${this.university}`,
+            url: link,
+            metadata: {
+              type: 'paper',
+              arxivId: paperId,
+              university: this.university
+            },
+            confidence: 0.85
+          };
+        }
+      } catch (arxivError) {
+        // ArXiv fetch failed, fall back to search URL
+      }
+
+      return {
+        id: `paper_${paperId}`,
+        title: `Research Paper: ${paperId}`,
+        content: `Academic research paper. Search at ${searchUrl}`,
+        source: `university_${this.university}`,
+        url: searchUrl,
+        metadata: {
+          type: 'paper',
+          searchId: paperId
+        },
+        confidence: 0.6
+      };
+    } catch (error: any) {
+      logger.warn('Failed to get paper', { paperId, error: error.message });
+      return null;
+    }
   }
 
   private getBaseUrl(): string {

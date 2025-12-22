@@ -26,6 +26,8 @@ export enum ToolCategory {
   API = 'api',
   FILE_OPERATIONS = 'file_operations',
   CALCULATION = 'calculation',
+  KNOWLEDGE = 'knowledge',
+  CODING = 'coding',
   OTHER = 'other'
 }
 

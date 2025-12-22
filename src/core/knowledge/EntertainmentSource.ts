@@ -238,7 +238,25 @@ export class EntertainmentSource implements KnowledgeSource {
   }
 
   private async getComic(comicId: string): Promise<KnowledgeResult | null> {
-    return null;
+    try {
+      if (process.env.COMICVINE_API_KEY) {
+        const url = `https://comicvine.gamespot.com/api/issue/4000-${comicId}/?api_key=${process.env.COMICVINE_API_KEY}&format=json`;
+        const response = await axios.get(url);
+        const comic = response.data.results;
+        if (comic) {
+          return {
+            id: `comic_${comicId}`,
+            title: comic.name || comic.volume?.name || 'Unknown Comic',
+            content: (comic.description || '').replace(/<[^>]*>/g, '').substring(0, 3000),
+            source: 'comicvine',
+            url: comic.site_detail_url,
+            metadata: { publisher: comic.publisher?.name, issueNumber: comic.issue_number },
+            confidence: 0.85
+          };
+        }
+      }
+      return null;
+    } catch (error: any) { logger.warn('Failed to get comic', { comicId, error: error.message }); return null; }
   }
 }
 

@@ -65,7 +65,19 @@ export class PotterySource implements KnowledgeSource {
   }
 
   async getById(id: string): Promise<KnowledgeResult | null> {
-    return null;
+    try {
+      if (id.includes('_wiki_')) {
+        const query = id.split('_wiki_')[1].replace(/_/g, ' ');
+        const wikiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
+        const response = await axios.get(wikiUrl, { timeout: 5000 });
+        const wiki = response.data;
+        return { id, title: wiki.title, content: wiki.extract || '', source: 'wikipedia', url: wiki.content_urls?.desktop?.page, metadata: { topic: 'pottery' }, confidence: 0.85 };
+      }
+      const sourceName = id.replace('pottery_', '').replace(/_/g, ' ');
+      const matched = this.curatedSources.find(s => s.name.toLowerCase().includes(sourceName.toLowerCase()));
+      if (matched) return { id, title: matched.name, content: matched.description, source: 'pottery', url: matched.url, metadata: { sourceName: matched.name }, confidence: 0.9 };
+      return null;
+    } catch (error: any) { logger.warn('Failed to get pottery resource', { id, error: error.message }); return null; }
   }
 }
 

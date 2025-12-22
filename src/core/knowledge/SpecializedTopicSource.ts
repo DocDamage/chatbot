@@ -56,7 +56,7 @@ export class SpecializedTopicSource implements KnowledgeSource {
     const results: KnowledgeResult[] = [];
 
     try {
-      const topicsToSearch: SpecializedTopic[] = topic === 'all' 
+      const topicsToSearch: SpecializedTopic[] = topic === 'all'
         ? ['civil_rights', 'compliance', 'hip_hop_history', 'connecticut_history']
         : [topic];
 
@@ -79,7 +79,73 @@ export class SpecializedTopicSource implements KnowledgeSource {
   }
 
   async getById(id: string): Promise<KnowledgeResult | null> {
-    return null;
+    try {
+      // ID format: topic_sourcename or wiki_topic_query or loc_topic_id
+      const parts = id.split('_');
+
+      if (parts[0] === 'wiki') {
+        // It's a Wikipedia reference
+        const topic = parts[1] as SpecializedTopic;
+        const query = parts.slice(2).join('_');
+
+        const wikiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
+        try {
+          const response = await axios.get(wikiUrl);
+          const wiki = response.data;
+          return {
+            id,
+            title: wiki.title,
+            content: wiki.extract || '',
+            source: 'wikipedia',
+            url: wiki.content_urls?.desktop?.page,
+            metadata: { topic },
+            confidence: 0.85
+          };
+        } catch {
+          // Continue to fallback
+        }
+      }
+
+      if (parts[0] === 'loc') {
+        // It's a Library of Congress reference
+        const topic = parts[1] as SpecializedTopic;
+        return {
+          id,
+          title: `Library of Congress: ${parts.slice(2).join(' ')}`,
+          content: 'Library of Congress resource. Visit loc.gov for full content.',
+          source: 'library_of_congress',
+          url: `https://www.loc.gov/item/${parts.slice(2).join('/')}/`,
+          metadata: { topic },
+          confidence: 0.8
+        };
+      }
+
+      // It's a curated source reference
+      const topic = parts[0] as SpecializedTopic;
+      const sourceName = parts.slice(1).join('_').replace(/_/g, ' ');
+
+      const sources = this.topicSources[topic] || [];
+      const matchedSource = sources.find(s =>
+        s.name.toLowerCase().includes(sourceName.toLowerCase())
+      );
+
+      if (matchedSource) {
+        return {
+          id,
+          title: matchedSource.name,
+          content: matchedSource.description,
+          source: `specialized_${topic}`,
+          url: matchedSource.url,
+          metadata: { topic, sourceName: matchedSource.name },
+          confidence: 0.9
+        };
+      }
+
+      return null;
+    } catch (error: any) {
+      logger.warn('Failed to get specialized topic by ID', { id, error: error.message });
+      return null;
+    }
   }
 
   /**
@@ -93,7 +159,7 @@ export class SpecializedTopicSource implements KnowledgeSource {
       try {
         // Try to fetch content from source
         const content = await this.fetchFromSource(source.url, query);
-        
+
         results.push({
           id: `${topic}_${source.name.replace(/\s+/g, '_')}`,
           title: `${source.name}: ${query}`,
@@ -124,7 +190,7 @@ export class SpecializedTopicSource implements KnowledgeSource {
       // Search Wikipedia with topic-specific query
       const wikiQuery = this.enhanceQueryForTopic(query, topic);
       const wikiUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(wikiQuery)}`;
-      
+
       try {
         const wikiResponse = await axios.get(wikiUrl);
         const wiki = wikiResponse.data;

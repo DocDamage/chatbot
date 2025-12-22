@@ -282,8 +282,43 @@ export class ScientificPapersSource implements KnowledgeSource {
   }
 
   private async getBioRxivPaper(paperId: string): Promise<KnowledgeResult | null> {
-    // Similar implementation to getArXivPaper
-    return null;
+    try {
+      // Try to fetch from BioRxiv API
+      const url = `https://api.biorxiv.org/details/biorxiv/${paperId}`;
+      const response = await axios.get(url);
+
+      const paper = response.data.collection?.[0];
+      if (!paper) {
+        // Fallback to DOI lookup
+        return {
+          id: `biorxiv_${paperId}`,
+          title: `BioRxiv Paper: ${paperId}`,
+          content: `View this paper at BioRxiv`,
+          source: 'biorxiv',
+          url: `https://www.biorxiv.org/content/${paperId}`,
+          metadata: { paperId },
+          confidence: 0.7
+        };
+      }
+
+      return {
+        id: `biorxiv_${paperId}`,
+        title: paper.title,
+        content: `${paper.title}\n\nAuthors: ${paper.authors}\n\n${paper.abstract || ''}`,
+        source: 'biorxiv',
+        url: `https://www.biorxiv.org/content/${paper.doi}`,
+        metadata: {
+          doi: paper.doi,
+          authors: paper.authors,
+          date: paper.date,
+          category: paper.category
+        },
+        confidence: 0.85
+      };
+    } catch (error: any) {
+      logger.warn('Failed to fetch BioRxiv paper', { paperId, error: error.message });
+      return null;
+    }
   }
 }
 

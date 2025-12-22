@@ -176,5 +176,5 @@ export class DocumentMetadataManager {
       }
     }
     return Array.from(categorySet).sort();
+  }
 }
-

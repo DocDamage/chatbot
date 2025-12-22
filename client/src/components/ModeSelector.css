@@ -1,0 +1,142 @@
+.mode-selector {
+  position: relative;
+}
+
+.mode-selector-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.mode-selector-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--mode-color, #00d4ff);
+}
+
+.mode-icon {
+  font-size: 16px;
+}
+
+.mode-label {
+  color: var(--mode-color, #00d4ff);
+}
+
+.mode-chevron {
+  font-size: 10px;
+  opacity: 0.6;
+  margin-left: 2px;
+}
+
+.mode-dropdown {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 8px;
+  background: #1a1a2e;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 6px;
+  min-width: 280px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.15s ease;
+  z-index: 1000;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mode-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.mode-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mode-option.active {
+  background: rgba(var(--mode-color, 0, 212, 255), 0.15);
+  border-left: 3px solid var(--mode-color, #00d4ff);
+}
+
+.mode-option-icon {
+  font-size: 20px;
+  min-width: 28px;
+  text-align: center;
+}
+
+.mode-option-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mode-option-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--mode-color, #00d4ff);
+}
+
+.mode-option-description {
+  font-size: 12px;
+  color: #888;
+}
+
+.mode-shortcut {
+  font-size: 11px;
+  color: #666;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: light) {
+  .mode-dropdown {
+    background: #fff;
+    border-color: #ddd;
+  }
+  
+  .mode-selector-button {
+    background: #f5f5f5;
+    border-color: #ddd;
+    color: #333;
+  }
+  
+  .mode-option {
+    color: #333;
+  }
+  
+  .mode-option-description {
+    color: #666;
+  }
+}
