@@ -3,10 +3,12 @@
  */
 
 import { RAGService } from './RAGService';
-import { DocumentIngester } from './DocumentIngester';
+import { DocumentIngester, IngestOptions } from './DocumentIngester';
 import { DocumentChunk } from '../../types/rag';
 import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { logger } from '../observability/logger';
+
+export type DocumentManagerIngestOptions = IngestOptions;
 
 export class DocumentManager {
   private ragService: RAGService;
@@ -27,14 +29,11 @@ export class DocumentManager {
    */
   async addFile(
     filePath: string,
-    options: {
-      generateEmbeddings?: boolean;
-      chunkSize?: number;
-    } = {}
+    options: DocumentManagerIngestOptions = {}
   ): Promise<DocumentChunk[]> {
     const chunks = await this.ingester.ingestFile(filePath, {
-      generateEmbeddings: options.generateEmbeddings ?? true,
-      chunkSize: options.chunkSize
+      ...options,
+      generateEmbeddings: options.generateEmbeddings ?? true
     });
 
     this.ragService.addDocuments(chunks);
@@ -53,14 +52,11 @@ export class DocumentManager {
   async addText(
     text: string,
     metadata: Record<string, any> = {},
-    options: {
-      generateEmbeddings?: boolean;
-      chunkSize?: number;
-    } = {}
+    options: DocumentManagerIngestOptions = {}
   ): Promise<DocumentChunk[]> {
     const chunks = await this.ingester.ingestText(text, metadata, {
-      generateEmbeddings: options.generateEmbeddings ?? true,
-      chunkSize: options.chunkSize
+      ...options,
+      generateEmbeddings: options.generateEmbeddings ?? true
     });
 
     this.ragService.addDocuments(chunks);
@@ -73,14 +69,11 @@ export class DocumentManager {
    */
   async addDirectory(
     directoryPath: string,
-    options: {
-      generateEmbeddings?: boolean;
-      chunkSize?: number;
-    } = {}
+    options: DocumentManagerIngestOptions = {}
   ): Promise<DocumentChunk[]> {
     const chunks = await this.ingester.ingestDirectory(directoryPath, {
-      generateEmbeddings: options.generateEmbeddings ?? true,
-      chunkSize: options.chunkSize
+      ...options,
+      generateEmbeddings: options.generateEmbeddings ?? true
     });
 
     this.ragService.addDocuments(chunks);
@@ -94,15 +87,20 @@ export class DocumentManager {
   }
 
   /**
+   * Return the file extensions this manager can route into RAG ingestion.
+   */
+  getSupportedExtensions(): string[] {
+    return this.ingester.getSupportedExtensions();
+  }
+
+  /**
    * Get knowledge base statistics
    */
   getStats() {
-    const retriever = this.ragService.getRetriever();
-    // Would need to expose document count from retriever
     return {
       hasEmbeddings: !!this.embeddingService,
-      embeddingProvider: this.embeddingService ? 'configured' : 'none'
+      embeddingProvider: this.embeddingService ? 'configured' : 'none',
+      supportedExtensions: this.getSupportedExtensions()
     };
   }
 }
-
