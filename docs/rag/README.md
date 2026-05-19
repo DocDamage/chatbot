@@ -38,6 +38,7 @@ Use `DocumentManager.addDirectory()` or ingest individual files in the order bel
 9. `08_troubleshooting.md` — failure modes, symptoms, likely causes, and fixes.
 10. `09_decision_log.md` — architecture and documentation decisions.
 11. `10_glossary.md` — definitions of RAG terms used in this project.
+12. `11_multimodal_office_ingestion.md` — DOCX/DOC/image/GIF ingestion, OCR options, and operational limits.
 
 ## Recommended Ingestion Options
 
@@ -63,7 +64,8 @@ const files = [
   'docs/rag/07_data_schemas.md',
   'docs/rag/08_troubleshooting.md',
   'docs/rag/09_decision_log.md',
-  'docs/rag/10_glossary.md'
+  'docs/rag/10_glossary.md',
+  'docs/rag/11_multimodal_office_ingestion.md'
 ];
 
 for (const file of files) {
@@ -84,6 +86,8 @@ What does DocumentIngester do?
 What formats can the ingester read?
 What does HybridRetriever combine?
 What metadata should DocumentChunk include?
+What file handles image OCR ingestion?
+What file handles DOCX and DOC ingestion?
 ```
 
 These semantic questions should also work:
@@ -94,6 +98,7 @@ How does the chatbot retrieve project knowledge?
 Why are Markdown docs preferred for RAG?
 How should I troubleshoot bad citations?
 What are the current limitations of this RAG system?
+How does the chatbot ingest images and Office documents?
 ```
 
 ## Maintenance Rules
@@ -114,7 +119,8 @@ These docs describe the current RAG implementation honestly:
 - PDF ingestion exists but should not be trusted for critical knowledge without validation.
 - The reranker is heuristic, not a true transformer cross-encoder.
 - Citation extraction is approximate.
-- Markdown is the preferred canonical source format.
+- Markdown is still the preferred canonical source format.
+- DOCX/DOC/image/GIF support converts files into extracted text/OCR/metadata chunks; it is not true multimodal vector search yet.
 
 ## Rule For Future Agents
 
