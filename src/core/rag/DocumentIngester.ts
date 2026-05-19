@@ -1,6 +1,6 @@
 /**
  * Document Ingester - Parse and chunk documents for RAG
- * Supports: Text, PDF, Markdown, JSON
+ * Supports: Text, Markdown, JSON, PDF, DOCX/DOC conversion hooks, and OCR-based image/GIF ingestion.
  */
 
 import { DocumentChunk } from '../../types/rag';
@@ -8,8 +8,10 @@ import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { logger } from '../observability/logger';
 import * as fs from 'fs';
 import * as path from 'path';
+import { FileExtractionOptions } from './ingestion/ExtractedDocument';
+import { FileTypeRouter } from './ingestion/FileTypeRouter';
 
-export interface IngestOptions {
+export interface IngestOptions extends FileExtractionOptions {
   chunkSize?: number;
   chunkOverlap?: number;
   generateEmbeddings?: boolean;
@@ -18,11 +20,13 @@ export interface IngestOptions {
 
 export class DocumentIngester {
   private embeddingService?: EmbeddingService;
+  private fileTypeRouter: FileTypeRouter;
   private defaultChunkSize: number = 500;
   private defaultChunkOverlap: number = 50;
 
-  constructor(embeddingService?: EmbeddingService) {
+  constructor(embeddingService?: EmbeddingService, fileTypeRouter: FileTypeRouter = new FileTypeRouter()) {
     this.embeddingService = embeddingService;
+    this.fileTypeRouter = fileTypeRouter;
   }
 
   /**
@@ -32,25 +36,30 @@ export class DocumentIngester {
     filePath: string,
     options: IngestOptions = {}
   ): Promise<DocumentChunk[]> {
-    const ext = path.extname(filePath).toLowerCase();
-    const content = await this.readFile(filePath, ext);
+    const content = await this.fileTypeRouter.extract(filePath, options);
 
     const chunks = this.chunkText(
       content.text,
-      content.metadata,
+      {
+        ...content.metadata,
+        extractionWarnings: content.warnings,
+        supportedExtensions: this.fileTypeRouter.getSupportedExtensions()
+      },
       options.chunkSize || this.defaultChunkSize,
       options.chunkOverlap || this.defaultChunkOverlap
     );
 
     // Generate embeddings if requested
-    if (options.generateEmbeddings && this.embeddingService) {
+    if (options.generateEmbeddings && this.embeddingService && chunks.length > 0) {
       await this.generateEmbeddings(chunks, options.embeddingProvider);
     }
 
     logger.info('File ingested', {
       filePath,
       chunksCount: chunks.length,
-      hasEmbeddings: chunks[0]?.embedding !== undefined
+      hasEmbeddings: chunks[0]?.embedding !== undefined,
+      warnings: content.warnings?.length || 0,
+      type: content.metadata.type
     });
 
     return chunks;
@@ -71,7 +80,7 @@ export class DocumentIngester {
       options.chunkOverlap || this.defaultChunkOverlap
     );
 
-    if (options.generateEmbeddings && this.embeddingService) {
+    if (options.generateEmbeddings && this.embeddingService && chunks.length > 0) {
       await this.generateEmbeddings(chunks, options.embeddingProvider);
     }
 
@@ -112,73 +121,10 @@ export class DocumentIngester {
   }
 
   /**
-   * Read file based on extension
+   * Return supported extensions exposed by the file type router.
    */
-  private async readFile(filePath: string, ext: string): Promise<{
-    text: string;
-    metadata: Record<string, any>;
-  }> {
-    switch (ext) {
-      case '.txt':
-      case '.md':
-        return {
-          text: fs.readFileSync(filePath, 'utf-8'),
-          metadata: {
-            source: filePath,
-            title: path.basename(filePath),
-            type: ext === '.md' ? 'markdown' : 'text'
-          }
-        };
-
-      case '.json':
-        const json = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-        return {
-          text: typeof json === 'string' ? json : JSON.stringify(json, null, 2),
-          metadata: {
-            source: filePath,
-            title: path.basename(filePath),
-            type: 'json'
-          }
-        };
-
-      case '.pdf':
-        try {
-          const pdfParse = require('pdf-parse');
-          const dataBuffer = fs.readFileSync(filePath);
-          const pdfData = await pdfParse(dataBuffer);
-          return {
-            text: pdfData.text,
-            metadata: {
-              source: filePath,
-              title: pdfData.info?.Title || path.basename(filePath),
-              type: 'pdf',
-              pages: pdfData.numpages
-            }
-          };
-        } catch (error: any) {
-          logger.warn('PDF parsing failed', { filePath, error: error.message });
-          return {
-            text: '',
-            metadata: {
-              source: filePath,
-              title: path.basename(filePath),
-              type: 'pdf',
-              error: 'Failed to parse PDF'
-            }
-          };
-        }
-
-      default:
-        // Try to read as text
-        return {
-          text: fs.readFileSync(filePath, 'utf-8'),
-          metadata: {
-            source: filePath,
-            title: path.basename(filePath),
-            type: 'text'
-          }
-        };
-    }
+  getSupportedExtensions(): string[] {
+    return this.fileTypeRouter.getSupportedExtensions();
   }
 
   /**
@@ -191,10 +137,29 @@ export class DocumentIngester {
     chunkOverlap: number
   ): DocumentChunk[] {
     const chunks: DocumentChunk[] = [];
-    const words = text.split(/\s+/);
+    const words = text.split(/\s+/).filter(word => word.trim().length > 0);
     let currentChunk: string[] = [];
     let currentLength = 0;
     let chunkIndex = 0;
+
+    if (words.length === 0) {
+      const diagnostic = metadata.error || (metadata.extractionWarnings || []).join('; ');
+      if (!diagnostic) {
+        return [];
+      }
+
+      return [{
+        id: `${metadata.source || 'doc'}-chunk-0`,
+        content: `Extraction warning for ${metadata.source || 'unknown source'}: ${diagnostic}`,
+        metadata: {
+          ...metadata,
+          chunkIndex: 0,
+          startChar: 0,
+          endChar: 0,
+          emptyExtraction: true
+        }
+      }];
+    }
 
     for (let i = 0; i < words.length; i++) {
       const word = words[i];
@@ -216,8 +181,8 @@ export class DocumentIngester {
         chunkIndex++;
 
         // Start new chunk with overlap
-        const overlapWords = Math.floor(chunkOverlap / 10); // Rough estimate
-        currentChunk = currentChunk.slice(-overlapWords);
+        const overlapWords = Math.max(0, Math.floor(chunkOverlap / 10)); // Rough estimate
+        currentChunk = overlapWords > 0 ? currentChunk.slice(-overlapWords) : [];
         currentLength = currentChunk.join(' ').length;
       }
 
@@ -264,4 +229,3 @@ export class DocumentIngester {
     logger.debug('Embeddings generated', { chunksCount: chunks.length });
   }
 }
-
