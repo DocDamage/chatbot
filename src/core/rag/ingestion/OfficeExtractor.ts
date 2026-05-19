@@ -22,19 +22,26 @@ export class OfficeExtractor implements FileExtractor {
 
   async extract(filePath: string, options: FileExtractionOptions = {}): Promise<ExtractedDocument> {
     const ext = path.extname(filePath).toLowerCase();
+    const warnings: string[] = [];
 
     if (ext === '.docx') {
       const mammothResult = await this.extractDocxWithMammoth(filePath);
-      if (mammothResult.text.trim().length > 0 || mammothResult.warnings?.length) {
+      warnings.push(...(mammothResult.warnings || []));
+
+      if (mammothResult.text.trim().length > 0) {
         return mammothResult;
       }
     }
 
     if (options.enableOfficeConversion === false) {
-      return this.unsupported(filePath, ext, 'Office conversion disabled');
+      return this.unsupported(filePath, ext, 'Office conversion disabled', warnings);
     }
 
-    return this.extractWithLibreOffice(filePath, ext);
+    const libreOfficeResult = await this.extractWithLibreOffice(filePath, ext);
+    return {
+      ...libreOfficeResult,
+      warnings: [...warnings, ...(libreOfficeResult.warnings || [])]
+    };
   }
 
   private async extractDocxWithMammoth(filePath: string): Promise<ExtractedDocument> {
@@ -114,7 +121,7 @@ export class OfficeExtractor implements FileExtractor {
     }
   }
 
-  private unsupported(filePath: string, ext: string, reason: string): ExtractedDocument {
+  private unsupported(filePath: string, ext: string, reason: string, priorWarnings: string[] = []): ExtractedDocument {
     return {
       text: '',
       metadata: {
@@ -123,7 +130,7 @@ export class OfficeExtractor implements FileExtractor {
         type: ext.replace('.', '') || 'office',
         error: reason
       },
-      warnings: [reason]
+      warnings: [...priorWarnings, reason]
     };
   }
 }
