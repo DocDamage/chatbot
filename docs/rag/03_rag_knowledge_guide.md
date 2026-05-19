@@ -28,8 +28,43 @@ Preferred order:
 1. Markdown (`.md`)
 2. Structured JSON (`.json`)
 3. Plain text (`.txt`)
-4. Text-based PDF (`.pdf`)
-5. CSV/SQLite through `DatasetLoader` when the data is tabular
+4. Word documents (`.docx`) when the source exists only in Office form
+5. Text-based PDF (`.pdf`)
+6. CSV/SQLite through `DatasetLoader` when the data is tabular
+7. OCR-backed images (`.png`, `.jpg`, `.jpeg`, `.bmp`) when the source is visual text
+8. Sampled OCR-backed GIFs (`.gif`) when the source is an animated visual reference
+9. Legacy Word (`.doc`) only when LibreOffice conversion is available
+
+## Supported Routed File Types
+
+`DocumentIngester` now routes files through `FileTypeRouter` and focused extractors.
+
+Advertised extensions:
+
+```txt
+.txt
+.md
+.json
+.pdf
+.docx
+.doc
+.png
+.jpg
+.jpeg
+.bmp
+.gif
+```
+
+Primary router files:
+
+```txt
+src/core/rag/ingestion/FileTypeRouter.ts
+src/core/rag/ingestion/TextLikeExtractor.ts
+src/core/rag/ingestion/PdfExtractor.ts
+src/core/rag/ingestion/OfficeExtractor.ts
+src/core/rag/ingestion/ImageOcrExtractor.ts
+src/core/rag/ingestion/ExtractedDocument.ts
+```
 
 ## Why Markdown Is Preferred
 
@@ -41,6 +76,8 @@ Markdown works well because it provides:
 - Easy source control diffs.
 - Better keyword matching.
 - Better chunk boundaries once heading-aware chunking is added.
+
+Markdown remains the best canonical format even though Office/image ingestion is now supported.
 
 ## Standard Document Frontmatter
 
@@ -72,6 +109,31 @@ When using `DocumentManager.addText()` or generating chunks manually, include:
   tags: ['rag', 'docs'],
   lastUpdated: '2026-05-19',
   authority: 'canonical'
+}
+```
+
+For Office and image extraction, the extractors should add source-specific metadata such as:
+
+```ts
+{
+  source: 'docs/design/spec.docx',
+  title: 'spec.docx',
+  type: 'docx',
+  extractor: 'mammoth'
+}
+```
+
+```ts
+{
+  source: 'assets/reference/screen.png',
+  title: 'screen.png',
+  type: 'image',
+  originalExtension: '.png',
+  width: 1280,
+  height: 720,
+  format: 'png',
+  ocrLanguage: 'eng',
+  ocrConfidence: 92
 }
 ```
 
@@ -224,6 +286,20 @@ Why:
 
 Glossaries help retrieval when terminology varies.
 
+### 11. Office and Visual References
+
+Examples:
+
+- `.docx` design docs from users or stakeholders
+- `.doc` legacy specs when conversion is available
+- screenshots with readable text
+- diagram images with labels
+- GIF demos with sampled readable frames
+
+Why:
+
+These sources often contain important project information that never makes it into Markdown. Treat them as secondary inputs and convert important results into canonical Markdown when possible.
+
 ## What Not To Feed
 
 Do not feed:
@@ -233,12 +309,39 @@ Do not feed:
 - compiled files
 - lockfiles as knowledge docs
 - giant logs
-- random screenshots
+- random unreviewed image dumps
 - scanned PDFs without OCR
 - old docs that contradict current code
 - duplicate docs with different answers
 - secrets, tokens, API keys, credentials, or private user data
 - private production data unless the system is designed and secured for it
+
+## Office Document Rules
+
+DOCX files are acceptable when:
+
+- They are the original source of a design/spec/process document.
+- The extraction output is reviewed or later converted into Markdown.
+- Direct extraction through `mammoth` or fallback conversion through LibreOffice is available.
+
+Legacy DOC files are acceptable only when:
+
+- LibreOffice conversion is available.
+- The converted text is reviewed.
+- The document is not better represented as a converted Markdown file.
+
+If Office extraction fails, the ingester returns a diagnostic chunk rather than silently dropping the source.
+
+## Image and GIF Rules
+
+Images and GIFs are acceptable when:
+
+- They contain readable text.
+- They are UI references, diagrams, scanned notes, or visual specs.
+- OCR output is useful enough to retrieve.
+- The source path and dimensions matter.
+
+Images and GIFs are not a replacement for true multimodal search. Current support converts visual files into OCR text and metadata chunks.
 
 ## PDF Rules
 
@@ -368,6 +471,7 @@ docs/rag/07_data_schemas.md
 docs/rag/08_troubleshooting.md
 docs/rag/09_decision_log.md
 docs/rag/10_glossary.md
+docs/rag/11_multimodal_office_ingestion.md
 ```
 
 ## Best Practice
