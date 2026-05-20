@@ -25,6 +25,10 @@ export class Database {
     this.config = config;
   }
 
+  getType(): DatabaseConfig['type'] {
+    return this.config.type;
+  }
+
   /**
    * Initialize database connection
    */
@@ -63,9 +67,10 @@ export class Database {
         logger.info('PostgreSQL database initialized');
       }
 
-      await this.runMigrations();
       this.initialized = true;
+      await this.runMigrations();
     } catch (error: any) {
+      this.initialized = false;
       logger.error('Database initialization failed', { error: error.message });
       throw error;
     }
@@ -174,47 +179,195 @@ export class Database {
    * Run database migrations
    */
   private async runMigrations(): Promise<void> {
-    const migrations = [
-      // Sessions table
-      `CREATE TABLE IF NOT EXISTS sessions (
-        id TEXT PRIMARY KEY,
-        user_id TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )`,
+    const baseMigrations = this.config.type === 'postgresql'
+      ? [
+          `CREATE TABLE IF NOT EXISTS sessions (
+            id TEXT PRIMARY KEY,
+            user_id TEXT,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE TABLE IF NOT EXISTS messages (
+            id TEXT PRIMARY KEY,
+            session_id TEXT NOT NULL,
+            role TEXT NOT NULL,
+            content TEXT NOT NULL,
+            metadata JSONB,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (session_id) REFERENCES sessions(id)
+          )`,
+          `CREATE TABLE IF NOT EXISTS episodic_memory (
+            id TEXT PRIMARY KEY,
+            session_id TEXT,
+            content TEXT NOT NULL,
+            embedding JSONB,
+            importance REAL,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE TABLE IF NOT EXISTS documents (
+            id TEXT PRIMARY KEY,
+            source TEXT NOT NULL,
+            title TEXT,
+            content_hash TEXT,
+            chunk_count INTEGER,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+          )`
+        ]
+      : [
+          `CREATE TABLE IF NOT EXISTS sessions (
+            id TEXT PRIMARY KEY,
+            user_id TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE TABLE IF NOT EXISTS messages (
+            id TEXT PRIMARY KEY,
+            session_id TEXT NOT NULL,
+            role TEXT NOT NULL,
+            content TEXT NOT NULL,
+            metadata TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (session_id) REFERENCES sessions(id)
+          )`,
+          `CREATE TABLE IF NOT EXISTS episodic_memory (
+            id TEXT PRIMARY KEY,
+            session_id TEXT,
+            content TEXT NOT NULL,
+            embedding BLOB,
+            importance REAL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE TABLE IF NOT EXISTS documents (
+            id TEXT PRIMARY KEY,
+            source TEXT NOT NULL,
+            title TEXT,
+            content_hash TEXT,
+            chunk_count INTEGER,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )`
+        ];
 
-      // Messages table
-      `CREATE TABLE IF NOT EXISTS messages (
-        id TEXT PRIMARY KEY,
-        session_id TEXT NOT NULL,
-        role TEXT NOT NULL,
-        content TEXT NOT NULL,
-        metadata TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (session_id) REFERENCES sessions(id)
-      )`,
+    const ragMigrations = this.config.type === 'postgresql'
+      ? [
+          `CREATE EXTENSION IF NOT EXISTS vector`,
+          `CREATE TABLE IF NOT EXISTS knowledge_sources (
+            id TEXT PRIMARY KEY,
+            source TEXT NOT NULL UNIQUE,
+            source_type TEXT,
+            title TEXT,
+            content_hash TEXT,
+            metadata JSONB,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE TABLE IF NOT EXISTS ingestion_runs (
+            id TEXT PRIMARY KEY,
+            source_id TEXT,
+            status TEXT NOT NULL DEFAULT 'completed',
+            chunks_count INTEGER DEFAULT 0,
+            error TEXT,
+            metadata JSONB,
+            started_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            completed_at TIMESTAMPTZ,
+            FOREIGN KEY (source_id) REFERENCES knowledge_sources(id)
+          )`,
+          `CREATE TABLE IF NOT EXISTS document_chunks (
+            id TEXT PRIMARY KEY,
+            source_id TEXT,
+            ingestion_run_id TEXT,
+            content TEXT NOT NULL,
+            chunk_index INTEGER,
+            token_count INTEGER,
+            metadata JSONB,
+            parent_id TEXT,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (source_id) REFERENCES knowledge_sources(id),
+            FOREIGN KEY (ingestion_run_id) REFERENCES ingestion_runs(id),
+            FOREIGN KEY (parent_id) REFERENCES document_chunks(id)
+          )`,
+          `CREATE TABLE IF NOT EXISTS chunk_embeddings (
+            chunk_id TEXT PRIMARY KEY,
+            provider TEXT,
+            model TEXT,
+            dimensions INTEGER,
+            embedding_json JSONB NOT NULL,
+            embedding_vector vector,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (chunk_id) REFERENCES document_chunks(id) ON DELETE CASCADE
+          )`,
+          `CREATE TABLE IF NOT EXISTS source_citations (
+            id TEXT PRIMARY KEY,
+            chunk_id TEXT NOT NULL,
+            source_id TEXT,
+            citation_text TEXT,
+            metadata JSONB,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (chunk_id) REFERENCES document_chunks(id) ON DELETE CASCADE,
+            FOREIGN KEY (source_id) REFERENCES knowledge_sources(id)
+          )`
+        ]
+      : [
+          `CREATE TABLE IF NOT EXISTS knowledge_sources (
+            id TEXT PRIMARY KEY,
+            source TEXT NOT NULL UNIQUE,
+            source_type TEXT,
+            title TEXT,
+            content_hash TEXT,
+            metadata TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE TABLE IF NOT EXISTS ingestion_runs (
+            id TEXT PRIMARY KEY,
+            source_id TEXT,
+            status TEXT NOT NULL DEFAULT 'completed',
+            chunks_count INTEGER DEFAULT 0,
+            error TEXT,
+            metadata TEXT,
+            started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            completed_at DATETIME,
+            FOREIGN KEY (source_id) REFERENCES knowledge_sources(id)
+          )`,
+          `CREATE TABLE IF NOT EXISTS document_chunks (
+            id TEXT PRIMARY KEY,
+            source_id TEXT,
+            ingestion_run_id TEXT,
+            content TEXT NOT NULL,
+            chunk_index INTEGER,
+            token_count INTEGER,
+            metadata TEXT,
+            parent_id TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (source_id) REFERENCES knowledge_sources(id),
+            FOREIGN KEY (ingestion_run_id) REFERENCES ingestion_runs(id),
+            FOREIGN KEY (parent_id) REFERENCES document_chunks(id)
+          )`,
+          `CREATE TABLE IF NOT EXISTS chunk_embeddings (
+            chunk_id TEXT PRIMARY KEY,
+            provider TEXT,
+            model TEXT,
+            dimensions INTEGER,
+            embedding_json TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (chunk_id) REFERENCES document_chunks(id) ON DELETE CASCADE
+          )`,
+          `CREATE TABLE IF NOT EXISTS source_citations (
+            id TEXT PRIMARY KEY,
+            chunk_id TEXT NOT NULL,
+            source_id TEXT,
+            citation_text TEXT,
+            metadata TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (chunk_id) REFERENCES document_chunks(id) ON DELETE CASCADE,
+            FOREIGN KEY (source_id) REFERENCES knowledge_sources(id)
+          )`
+        ];
 
-      // Episodic memory table
-      `CREATE TABLE IF NOT EXISTS episodic_memory (
-        id TEXT PRIMARY KEY,
-        session_id TEXT,
-        content TEXT NOT NULL,
-        embedding BLOB,
-        importance REAL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )`,
-
-      // Document metadata table
-      `CREATE TABLE IF NOT EXISTS documents (
-        id TEXT PRIMARY KEY,
-        source TEXT NOT NULL,
-        title TEXT,
-        content_hash TEXT,
-        chunk_count INTEGER,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )`,
-    ];
+    const migrations = [...baseMigrations, ...ragMigrations];
 
     for (const migration of migrations) {
       try {

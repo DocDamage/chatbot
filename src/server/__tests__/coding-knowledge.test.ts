@@ -6,6 +6,7 @@ import { CodingKnowledgeBase } from '../../core/knowledge/CodingKnowledgeBase';
 import { KnowledgeLearner } from '../../core/learning/KnowledgeLearner';
 import { CodingKnowledgeTool } from '../../core/tools/CodingKnowledgeTool';
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 
 // Mock the EmbeddingService to avoid loading real models during test
@@ -31,38 +32,37 @@ describe('Coding Knowledge System', () => {
     let learner: KnowledgeLearner;
     let tool: CodingKnowledgeTool;
     let mockEmbeddingService: EmbeddingService;
+    let tempDir: string;
 
     beforeAll(async () => {
-        // Ensure test data directory exists
-        if (!fs.existsSync('src/data')) {
-            fs.mkdirSync('src/data', { recursive: true });
-        }
-
-        // Create dummy static data for test if not exists
-        const testDataPath = 'src/data/coding_knowledge_static.json';
-        // Clean up previous test run artifacts
-        if (fs.existsSync(testDataPath)) {
-            // We don't delete it if it's the real one, but for testing we might want a known state.
-            // However, loading the real one (160KB) is fine and better for integration test.
-        } else {
-            fs.writeFileSync(testDataPath, JSON.stringify([
-                {
-                    id: 'test_1',
-                    category: 'backend',
-                    title: 'Test Backup Pattern',
-                    content: 'Always backup before deploy.',
-                    tags: ['deployment', 'safety'],
-                    source: 'test'
-                }
-            ]));
-        }
+        tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'coding-knowledge-test-'));
+        const testDataPath = path.join(tempDir, 'coding_knowledge_static.json');
+        const userDataPath = path.join(tempDir, 'coding_knowledge_user.json');
+        fs.writeFileSync(testDataPath, JSON.stringify([
+            {
+                id: 'test_1',
+                category: 'frontend',
+                title: 'React Component Pattern',
+                content: 'Use components to split UI into reusable pieces.',
+                tags: ['react', 'component'],
+                source: 'test'
+            }
+        ]));
+        fs.writeFileSync(userDataPath, JSON.stringify([]));
 
         mockEmbeddingService = new EmbeddingService(); // This is now the mocked class
-        knowledgeBase = new CodingKnowledgeBase(mockEmbeddingService);
+        knowledgeBase = new CodingKnowledgeBase(mockEmbeddingService, {
+            staticDataPath: testDataPath,
+            userDataPath
+        });
         await knowledgeBase.initialize();
 
         learner = new KnowledgeLearner(knowledgeBase);
         tool = new CodingKnowledgeTool(knowledgeBase);
+    });
+
+    afterAll(() => {
+        fs.rmSync(tempDir, { recursive: true, force: true });
     });
 
     describe('CodingKnowledgeBase', () => {

@@ -51,6 +51,10 @@ const configSchema = z.object({
   KNOWLEDGE_BASE_DIR: z.string().optional(),
   RAG_GENERATE_EMBEDDINGS: z.string().optional(),
   RAG_CHUNK_SIZE: z.string().regex(/^\d+$/).transform(Number).optional(),
+  RAG_PERSISTENCE: z.string().optional(),
+  RAG_SQLITE_PATH: z.string().optional(),
+  RAG_DATABASE_URL: z.string().optional(),
+  DATABASE_URL: z.string().optional(),
 
   // Features
   ENABLE_RAG: z.string().optional(),

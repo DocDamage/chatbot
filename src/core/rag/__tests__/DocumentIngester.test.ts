@@ -64,4 +64,26 @@ describe('DocumentIngester', () => {
     expect(chunks[0].metadata.emptyExtraction).toBe(true);
     expect(chunks[0].metadata.extractionWarnings).toEqual(expect.arrayContaining(['Office conversion disabled']));
   });
+
+  it('recursively ingests supported files from nested directories', async () => {
+    const nestedDir = path.join(tempDir, 'characters', 'allies');
+    fs.mkdirSync(nestedDir, { recursive: true });
+    fs.writeFileSync(path.join(tempDir, 'overview.md'), 'The project brief explains the main RAG flow.', 'utf-8');
+    fs.writeFileSync(path.join(nestedDir, 'ronin.md'), 'Ronin is a playable character with a silence ability.', 'utf-8');
+
+    const ingester = new DocumentIngester();
+    const chunks = await ingester.ingestDirectory(tempDir, {
+      generateEmbeddings: false,
+      chunkSize: 500
+    });
+
+    expect(chunks.map(chunk => chunk.content)).toEqual(expect.arrayContaining([
+      expect.stringContaining('project brief'),
+      expect.stringContaining('Ronin is a playable character')
+    ]));
+    expect(chunks.map(chunk => chunk.metadata.source)).toEqual(expect.arrayContaining([
+      path.join(tempDir, 'overview.md'),
+      path.join(nestedDir, 'ronin.md')
+    ]));
+  });
 });

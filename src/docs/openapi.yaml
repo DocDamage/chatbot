@@ -116,6 +116,60 @@ paths:
                   totalChunks:
                     type: number
 
+  /api/rag/query:
+    post:
+      summary: Query the RAG knowledge base directly
+      description: Run retrieval, reranking, compression, and optional response generation without going through chat orchestration.
+      tags:
+        - Knowledge Base
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - query
+              properties:
+                query:
+                  type: string
+                  minLength: 1
+                  description: Search or question text
+                generateResponse:
+                  type: boolean
+                  default: true
+                  description: When false, return compressed context instead of an LLM-generated answer
+                includeEmbeddings:
+                  type: boolean
+                  default: false
+                  description: Include raw chunk embedding arrays in retrievedChunks
+      responses:
+        '200':
+          description: RAG query result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                  citations:
+                    type: array
+                    items:
+                      type: object
+                  retrievedChunks:
+                    type: array
+                    items:
+                      type: object
+                  compressedContext:
+                    type: string
+                  metadata:
+                    type: object
+        '400':
+          description: Query is missing or blank
+        '503':
+          description: RAG service is not initialized
+
   /api/tools:
     get:
       summary: List available tools

@@ -6,6 +6,8 @@ import { logger } from '../observability/logger';
 import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { RAGService } from '../rag/RAGService';
 import { DocumentManager } from '../rag/DocumentManager';
+import { Database } from '../database/Database';
+import { RAGDocumentStore } from '../rag/RAGDocumentStore';
 import { AnalyticsService } from '../analytics/AnalyticsService';
 import { ModelRouter, ModelProvider } from '../providers/ModelRouter';
 import { AnthropicAdapter, GeminiAdapter, OpenAIAdapter, OpenAICompatibleAdapter } from '../providers/LLMAdapter';
@@ -36,6 +38,8 @@ export interface InitializedServices {
   toolRegistry?: ToolRegistry;
   visionAdapter?: any;
   embeddingService?: EmbeddingService;
+  database?: Database;
+  ragDocumentStore?: RAGDocumentStore;
   cache?: MultiLevelCache<any>;
   analytics?: AnalyticsService;
   knowledgeLearner?: KnowledgeLearner;
@@ -70,7 +74,18 @@ export class ServiceInitializer {
 
     // 4. Initialize RAG Service
     const ragService = this.initializeRAGService(primaryAdapter, embeddingService);
-    const documentManager = new DocumentManager(ragService, embeddingService);
+    const database = await this.initializeDatabase();
+    const ragDocumentStore = database ? new RAGDocumentStore(database) : undefined;
+
+    if (ragDocumentStore) {
+      const persistedChunks = await ragDocumentStore.loadChunks();
+      if (persistedChunks.length > 0) {
+        ragService.addDocuments(persistedChunks);
+        logger.info('Loaded persisted RAG chunks', { chunksCount: persistedChunks.length });
+      }
+    }
+
+    const documentManager = new DocumentManager(ragService, embeddingService, ragDocumentStore);
 
     // 5. Load knowledge base documents
     await this.loadKnowledgeBase(documentManager);
@@ -135,6 +150,8 @@ export class ServiceInitializer {
       toolRegistry,
       visionAdapter,
       embeddingService,
+      database,
+      ragDocumentStore,
       cache,
       analytics,
       knowledgeLearner
@@ -281,6 +298,28 @@ export class ServiceInitializer {
     embeddingService: EmbeddingService
   ): RAGService {
     return new RAGService(llmAdapter, embeddingService);
+  }
+
+  private static async initializeDatabase(): Promise<Database | undefined> {
+    if (process.env.RAG_PERSISTENCE === 'false') {
+      logger.info('RAG persistence disabled');
+      return undefined;
+    }
+
+    const connectionString = process.env.RAG_DATABASE_URL || process.env.DATABASE_URL;
+    const database = connectionString
+      ? new Database({ type: 'postgresql', connectionString })
+      : new Database({
+          type: 'sqlite',
+          filePath: process.env.RAG_SQLITE_PATH || path.join(process.cwd(), 'data', 'chatbot.db')
+        });
+
+    await database.initialize();
+    logger.info('RAG persistence initialized', {
+      type: connectionString ? 'postgresql' : 'sqlite'
+    });
+
+    return database;
   }
 
   /**

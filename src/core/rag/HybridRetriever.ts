@@ -23,19 +23,22 @@ export class HybridRetriever {
    * Add documents to the knowledge base
    */
   addDocuments(chunks: DocumentChunk[]): void {
-    this.documents.push(...chunks);
+    const existingIds = new Set(this.documents.map(doc => doc.id));
+    const newChunks = chunks.filter(chunk => !existingIds.has(chunk.id));
+
+    this.documents.push(...newChunks);
     
     // Store embeddings if available
-    for (const chunk of chunks) {
+    for (const chunk of newChunks) {
       if (chunk.embedding) {
         this.embeddings.set(chunk.id, chunk.embedding);
       }
     }
     
     this.rebuildIndexes();
-    logger.info(`Added ${chunks.length} documents to knowledge base`, {
+    logger.info(`Added ${newChunks.length} documents to knowledge base`, {
       totalDocuments: this.documents.length,
-      withEmbeddings: chunks.filter(c => c.embedding).length
+      withEmbeddings: newChunks.filter(c => c.embedding).length
     });
   }
 

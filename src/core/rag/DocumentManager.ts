@@ -7,6 +7,7 @@ import { DocumentIngester, IngestOptions } from './DocumentIngester';
 import { DocumentChunk } from '../../types/rag';
 import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { logger } from '../observability/logger';
+import { RAGDocumentStore } from './RAGDocumentStore';
 
 export type DocumentManagerIngestOptions = IngestOptions;
 
@@ -14,13 +15,16 @@ export class DocumentManager {
   private ragService: RAGService;
   private ingester: DocumentIngester;
   private embeddingService?: EmbeddingService;
+  private documentStore?: RAGDocumentStore;
 
   constructor(
     ragService: RAGService,
-    embeddingService?: EmbeddingService
+    embeddingService?: EmbeddingService,
+    documentStore?: RAGDocumentStore
   ) {
     this.ragService = ragService;
     this.embeddingService = embeddingService;
+    this.documentStore = documentStore;
     this.ingester = new DocumentIngester(embeddingService);
   }
 
@@ -36,6 +40,10 @@ export class DocumentManager {
       generateEmbeddings: options.generateEmbeddings ?? true
     });
 
+    await this.persistChunks(chunks, {
+      sourceType: chunks[0]?.metadata.type || 'file',
+      embeddingProvider: options.embeddingProvider
+    });
     this.ragService.addDocuments(chunks);
 
     logger.info('File added to knowledge base', {
@@ -59,6 +67,10 @@ export class DocumentManager {
       generateEmbeddings: options.generateEmbeddings ?? true
     });
 
+    await this.persistChunks(chunks, {
+      sourceType: metadata.type || 'text',
+      embeddingProvider: options.embeddingProvider
+    });
     this.ragService.addDocuments(chunks);
 
     return chunks;
@@ -76,6 +88,10 @@ export class DocumentManager {
       generateEmbeddings: options.generateEmbeddings ?? true
     });
 
+    await this.persistChunks(chunks, {
+      sourceType: 'directory',
+      embeddingProvider: options.embeddingProvider
+    });
     this.ragService.addDocuments(chunks);
 
     logger.info('Directory added to knowledge base', {
@@ -100,7 +116,19 @@ export class DocumentManager {
     return {
       hasEmbeddings: !!this.embeddingService,
       embeddingProvider: this.embeddingService ? 'configured' : 'none',
+      persistentStore: !!this.documentStore,
       supportedExtensions: this.getSupportedExtensions()
     };
+  }
+
+  private async persistChunks(chunks: DocumentChunk[], options: {
+    sourceType?: string;
+    embeddingProvider?: string;
+  }): Promise<void> {
+    if (!this.documentStore) {
+      return;
+    }
+
+    await this.documentStore.saveChunks(chunks, options);
   }
 }

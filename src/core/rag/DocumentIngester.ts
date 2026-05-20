@@ -95,19 +95,14 @@ export class DocumentIngester {
     options: IngestOptions = {}
   ): Promise<DocumentChunk[]> {
     const allChunks: DocumentChunk[] = [];
-    const files = fs.readdirSync(directoryPath);
+    const files = this.listFilesRecursively(directoryPath);
 
-    for (const file of files) {
-      const filePath = path.join(directoryPath, file);
-      const stats = fs.statSync(filePath);
-
-      if (stats.isFile()) {
-        try {
-          const chunks = await this.ingestFile(filePath, options);
-          allChunks.push(...chunks);
-        } catch (error: any) {
-          logger.warn('Failed to ingest file', { filePath, error: error.message });
-        }
+    for (const filePath of files) {
+      try {
+        const chunks = await this.ingestFile(filePath, options);
+        allChunks.push(...chunks);
+      } catch (error: any) {
+        logger.warn('Failed to ingest file', { filePath, error: error.message });
       }
     }
 
@@ -118,6 +113,23 @@ export class DocumentIngester {
     });
 
     return allChunks;
+  }
+
+  private listFilesRecursively(directoryPath: string): string[] {
+    const entries = fs.readdirSync(directoryPath, { withFileTypes: true });
+    const files: string[] = [];
+
+    for (const entry of entries) {
+      const entryPath = path.join(directoryPath, entry.name);
+
+      if (entry.isDirectory()) {
+        files.push(...this.listFilesRecursively(entryPath));
+      } else if (entry.isFile()) {
+        files.push(entryPath);
+      }
+    }
+
+    return files;
   }
 
   /**

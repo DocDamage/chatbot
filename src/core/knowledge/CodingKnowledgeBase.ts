@@ -14,6 +14,11 @@ export interface KnowledgeResult {
     score: number;
 }
 
+export interface CodingKnowledgeBaseOptions {
+    staticDataPath?: string;
+    userDataPath?: string;
+}
+
 export class CodingKnowledgeBase {
     private staticDataPath: string;
     private userDataPath: string;
@@ -23,10 +28,10 @@ export class CodingKnowledgeBase {
     private embeddings: number[][] = [];
     private isInitialized: boolean = false;
 
-    constructor(embeddingService: EmbeddingService) {
+    constructor(embeddingService: EmbeddingService, options: CodingKnowledgeBaseOptions = {}) {
         this.embeddingService = embeddingService;
-        this.staticDataPath = path.resolve(process.cwd(), 'src/data/coding_knowledge_static.json');
-        this.userDataPath = path.resolve(process.cwd(), 'src/data/coding_knowledge_user.json');
+        this.staticDataPath = options.staticDataPath || path.resolve(process.cwd(), 'src/data/coding_knowledge_static.json');
+        this.userDataPath = options.userDataPath || path.resolve(process.cwd(), 'src/data/coding_knowledge_user.json');
     }
 
     /**

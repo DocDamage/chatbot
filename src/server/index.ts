@@ -21,6 +21,7 @@ import { validateChatRequest, sanitizeInput } from '../middleware/validator';
 import { errorHandler, asyncHandler } from '../middleware/errorHandler';
 import { securityHeaders, corsOptions } from '../middleware/security';
 import { requireAuth } from '../middleware/auth';
+import { createRagQueryRouter } from './routes/rag-query';
 
 // Validate configuration on startup
 try {
@@ -593,6 +594,12 @@ app.get('/api-docs', (req, res) => {
   } catch (error) {
     res.status(404).json({ error: 'API documentation not found' });
   }
+});
+
+// Direct RAG query route
+app.use((req, res, next) => {
+  const router = createRagQueryRouter(services);
+  router(req, res, next);
 });
 
 // Admin routes
