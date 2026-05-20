@@ -38,7 +38,7 @@ export class ContextCompressor {
     if (totalLength <= this.maxLength) {
       return {
         originalChunks: chunks,
-        compressedContent: chunks.map(c => c.content).join('\n\n'),
+        compressedContent: this.formatAnchoredChunks(chunks),
         compressionRatio: 1.0,
         preservedChunks: chunks
       };
@@ -61,9 +61,7 @@ export class ContextCompressor {
     query: string
   ): Promise<CompressedContext> {
     try {
-      const context = chunks.map((chunk, i) => 
-        `[Document ${i + 1}]\n${chunk.content}`
-      ).join('\n\n');
+      const context = this.formatAnchoredChunks(chunks);
 
       const prompt = `Given the following query and retrieved documents, create a concise summary that preserves all relevant information.
 
@@ -77,6 +75,7 @@ Create a compressed summary that:
 2. Maintains key facts and details
 3. Removes redundant information
 4. Keeps the summary under ${this.maxLength} characters
+5. Preserves citation anchors in the format [chunk:<id> source:<source>] before each sourced fact
 
 Compressed summary:`;
 
@@ -90,6 +89,11 @@ Compressed summary:`;
       const compressed = response.content.trim();
       const originalLength = context.length;
       const compressionRatio = compressed.length / originalLength;
+
+      if (!compressed.includes('[chunk:')) {
+        logger.warn('LLM compression dropped citation anchors, using anchored truncation');
+        return this.truncateCompress(chunks);
+      }
 
       // Determine which chunks were preserved (heuristic: check if key terms appear)
       const preservedChunks = chunks.filter(chunk => {
@@ -125,13 +129,16 @@ Compressed summary:`;
 
     for (const chunk of chunks) {
       if (compressed.length + chunk.content.length <= this.maxLength) {
-        compressed += (compressed ? '\n\n' : '') + chunk.content;
+          compressed += (compressed ? '\n\n' : '') + this.formatAnchoredChunk(chunk);
         preserved.push(chunk);
       } else {
         // Truncate last chunk
         const remaining = this.maxLength - compressed.length;
         if (remaining > 100) {
-          const truncated = chunk.content.substring(0, remaining) + '...';
+          const truncated = this.formatAnchoredChunk({
+            ...chunk,
+            content: chunk.content.substring(0, remaining) + '...'
+          });
           compressed += '\n\n' + truncated;
           preserved.push(chunk);
         }
@@ -148,6 +155,14 @@ Compressed summary:`;
       compressionRatio,
       preservedChunks: preserved
     };
+  }
+
+  private formatAnchoredChunks(chunks: DocumentChunk[]): string {
+    return chunks.map(chunk => this.formatAnchoredChunk(chunk)).join('\n\n');
+  }
+
+  private formatAnchoredChunk(chunk: DocumentChunk): string {
+    return `[chunk:${chunk.id} source:${chunk.metadata.source || 'unknown'}] ${chunk.content}`;
   }
 }
 

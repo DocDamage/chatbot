@@ -86,6 +86,51 @@ describe('Coding Knowledge System', () => {
                 expect(results[0].entry.category).toBe('frontend');
             }
         });
+
+        it('should persist and reuse embedding cache between initializations', async () => {
+            const cacheDir = fs.mkdtempSync(path.join(os.tmpdir(), 'coding-knowledge-cache-test-'));
+            const staticDataPath = path.join(cacheDir, 'static.json');
+            const userDataPath = path.join(cacheDir, 'user.json');
+            const embeddingCachePath = path.join(cacheDir, 'embeddings.json');
+            fs.writeFileSync(staticDataPath, JSON.stringify([
+                {
+                    id: 'cached_1',
+                    category: 'backend',
+                    title: 'Route Mounting',
+                    content: 'Mount Express routers from server index.',
+                    tags: ['express', 'routes'],
+                    source: 'test',
+                    metadata: {
+                        project: 'chatbot',
+                        sourceType: 'repo-doc',
+                        authority: 'canonical'
+                    }
+                }
+            ]));
+            fs.writeFileSync(userDataPath, JSON.stringify([]));
+
+            const firstEmbedBatch = jest.fn().mockResolvedValue([[0.1, 0.2]]);
+            const firstKb = new CodingKnowledgeBase({
+                embed: jest.fn().mockResolvedValue([0.1, 0.2]),
+                embedBatch: firstEmbedBatch,
+                getDimensions: () => 2
+            } as any, { staticDataPath, userDataPath, embeddingCachePath });
+            await firstKb.initialize();
+
+            const secondEmbedBatch = jest.fn().mockResolvedValue([[0.9, 0.9]]);
+            const secondKb = new CodingKnowledgeBase({
+                embed: jest.fn().mockResolvedValue([0.1, 0.2]),
+                embedBatch: secondEmbedBatch,
+                getDimensions: () => 2
+            } as any, { staticDataPath, userDataPath, embeddingCachePath });
+            await secondKb.initialize();
+
+            expect(firstEmbedBatch).toHaveBeenCalledTimes(1);
+            expect(secondEmbedBatch).not.toHaveBeenCalled();
+            expect(fs.existsSync(embeddingCachePath)).toBe(true);
+
+            fs.rmSync(cacheDir, { recursive: true, force: true });
+        });
     });
 
     describe('KnowledgeLearner', () => {

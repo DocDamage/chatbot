@@ -23,6 +23,7 @@ import { securityHeaders, corsOptions } from '../middleware/security';
 import { requireAuth } from '../middleware/auth';
 import { createRagQueryRouter } from './routes/rag-query';
 import { createKnowledgeBaseRouter } from './routes/knowledge-base';
+import { createCodeRouter } from './routes/code';
 
 // Validate configuration on startup
 try {
@@ -596,6 +597,11 @@ app.get('/api-docs', (req, res) => {
 // Direct RAG query route
 app.use((req, res, next) => {
   const router = createRagQueryRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createCodeRouter(services);
   router(req, res, next);
 });
 

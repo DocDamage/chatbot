@@ -56,6 +56,9 @@ const configSchema = z.object({
   RAG_DATABASE_URL: z.string().optional(),
   DATABASE_URL: z.string().optional(),
   RAG_RETRIEVAL_MODE: z.enum(['memory', 'database', 'hybrid']).optional(),
+  GROUNDING_MODE: z.enum(['off', 'strict']).optional(),
+  GROUNDING_REQUIRED_COVERAGE: z.string().regex(/^\d+\.?\d*$/).transform(Number).optional(),
+  RERANKER_MODE: z.enum(['heuristic', 'llm', 'embedding', 'cross_encoder']).optional(),
 
   // Features
   ENABLE_RAG: z.string().optional(),

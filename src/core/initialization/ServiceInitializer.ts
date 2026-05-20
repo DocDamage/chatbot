@@ -21,12 +21,16 @@ import { EnhancedOrchestrator } from '../orchestrator/EnhancedOrchestrator';
 import { GPT4VAdapter, GeminiVisionAdapter, LLaVAAdapter } from '../providers/VisionAdapter';
 import { ToolRegistry } from '../tools/ToolRegistry';
 import { CodeExecutor } from '../tools/CodeExecutor';
+import { CommandRunner } from '../tools/CommandRunner';
+import { createRepoTools } from '../tools/RepoTools';
 import { WebSearcher } from '../tools/WebSearcher';
 import { FunctionCaller } from '../tools/FunctionCaller';
 import { CodingKnowledgeBase } from '../knowledge/CodingKnowledgeBase';
 import { CodingKnowledgeTool } from '../tools/CodingKnowledgeTool';
 import { PersonalKnowledgeTool } from '../tools/PersonalKnowledgeTool';
 import { KnowledgeLearner } from '../learning/KnowledgeLearner';
+import { CodingAgent } from '../agents/CodingAgent';
+import { VerificationRunner } from '../agents/VerificationRunner';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -36,6 +40,8 @@ export interface InitializedServices {
   documentManager?: DocumentManager;
   modelRouter?: ModelRouter;
   toolRegistry?: ToolRegistry;
+  functionCaller?: FunctionCaller;
+  codingAgent?: CodingAgent;
   visionAdapter?: any;
   embeddingService?: EmbeddingService;
   database?: Database;
@@ -110,7 +116,7 @@ export class ServiceInitializer {
     }
 
     // 9. Initialize Tools & Coding Knowledge
-    const { toolRegistry, knowledgeLearner } = await this.initializeTools(embeddingService);
+    const { toolRegistry, functionCaller, knowledgeLearner, codingAgent } = await this.initializeTools(embeddingService);
     logger.info('Tools initialized', {
       toolsCount: toolRegistry.getStats().totalTools,
       learner: !!knowledgeLearner
@@ -129,6 +135,10 @@ export class ServiceInitializer {
         ragService: ragService,
         modelRouter: modelRouter,
         safetyPipeline: safetyPipeline,
+        toolRegistry,
+        functionCaller,
+        codingAgent,
+        useToolCalling: process.env.ENABLE_TOOL_CALLING !== 'false',
         semanticCache: new SemanticCache<any>(
           parseInt(process.env.SEMANTIC_CACHE_TTL || '3600'),
           parseFloat(process.env.SEMANTIC_CACHE_SIMILARITY_THRESHOLD || '0.7')
@@ -148,6 +158,8 @@ export class ServiceInitializer {
       documentManager,
       modelRouter,
       toolRegistry,
+      functionCaller,
+      codingAgent,
       visionAdapter,
       embeddingService,
       database,
@@ -300,7 +312,8 @@ export class ServiceInitializer {
   ): RAGService {
     return new RAGService(llmAdapter, embeddingService, {
       documentStore,
-      retrievalMode: (process.env.RAG_RETRIEVAL_MODE || 'memory') as any
+      retrievalMode: (process.env.RAG_RETRIEVAL_MODE || 'memory') as any,
+      rerankerMode: (process.env.RERANKER_MODE || 'heuristic') as any
     });
   }
 
@@ -445,7 +458,12 @@ The system will automatically:
   /**
    * Initialize tools and coding knowledge
    */
-  private static async initializeTools(embeddingService: EmbeddingService): Promise<{ toolRegistry: ToolRegistry; knowledgeLearner: KnowledgeLearner }> {
+  private static async initializeTools(embeddingService: EmbeddingService): Promise<{
+    toolRegistry: ToolRegistry;
+    functionCaller: FunctionCaller;
+    knowledgeLearner: KnowledgeLearner;
+    codingAgent: CodingAgent;
+  }> {
     const registry = new ToolRegistry();
 
     // 1. Coding Knowledge Base
@@ -463,15 +481,29 @@ The system will automatically:
     // 4. Code executor
     const codeExecutor = new CodeExecutor(
       parseInt(process.env.CODE_EXECUTOR_TIMEOUT || '5000'),
-      ['python', 'javascript', 'bash']
+      process.env.ENABLE_BASH_EXECUTOR === 'true' ? ['python', 'javascript', 'bash'] : ['python', 'javascript']
     );
     registry.register(codeExecutor.createTool());
 
-    // 5. Web searcher
+    // 5. Repo-aware coding tools
+    const commandRunner = new CommandRunner(process.cwd());
+    for (const repoTool of createRepoTools(process.cwd(), commandRunner)) {
+      registry.register(repoTool);
+    }
+
+    const functionCaller = new FunctionCaller(registry);
+    const codingAgent = new CodingAgent({
+      workspaceRoot: process.cwd(),
+      toolRegistry: registry,
+      functionCaller,
+      verificationRunner: new VerificationRunner(commandRunner)
+    });
+
+    // 6. Web searcher
     const webSearcher = WebSearcher.fromEnv();
     registry.register(webSearcher.createTool());
 
-    // 6. Personal Knowledge Tool
+    // 7. Personal Knowledge Tool
     const personalKnowledgeTool = new PersonalKnowledgeTool();
     registry.register(personalKnowledgeTool);
 
@@ -479,7 +511,7 @@ The system will automatically:
       tools: registry.getAll().map(t => t.name)
     });
 
-    return { toolRegistry: registry, knowledgeLearner };
+    return { toolRegistry: registry, functionCaller, knowledgeLearner, codingAgent };
   }
 }
 

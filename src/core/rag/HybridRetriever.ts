@@ -7,9 +7,17 @@ import { DocumentChunk, RetrievalResult } from '../../types/rag';
 import { logger } from '../observability/logger';
 import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { RAGDocumentStore } from './RAGDocumentStore';
+import { RAGInjectionScanner } from './RAGInjectionScanner';
 import natural from 'natural';
 
 export type RetrievalMode = 'memory' | 'database' | 'hybrid';
+export interface RetrievalFilters {
+  authority?: string[];
+  excludeDeprecated?: boolean;
+  project?: string;
+  visibility?: string[];
+  minTrustScore?: number;
+}
 
 export class HybridRetriever {
   private documents: DocumentChunk[] = [];
@@ -35,7 +43,20 @@ export class HybridRetriever {
    */
   addDocuments(chunks: DocumentChunk[]): void {
     const existingIds = new Set(this.documents.map(doc => doc.id));
-    const newChunks = chunks.filter(chunk => !existingIds.has(chunk.id));
+    const newChunks = chunks
+      .filter(chunk => !existingIds.has(chunk.id))
+      .map(chunk => {
+        const scan = RAGInjectionScanner.scan(chunk.content);
+        return scan.safe ? chunk : {
+          ...chunk,
+          metadata: {
+            ...chunk.metadata,
+            injectionRisk: scan.risk,
+            injectionMatches: scan.matches,
+            excludedFromRetrieval: true
+          }
+        };
+      });
 
     this.documents.push(...newChunks);
     
@@ -59,37 +80,39 @@ export class HybridRetriever {
   async retrieve(
     query: string,
     topK: number = 10,
-    weights: { bm25: number; dense: number; sparse: number } = { bm25: 0.4, dense: 0.4, sparse: 0.2 }
+    weights: { bm25: number; dense: number; sparse: number } = { bm25: 0.4, dense: 0.4, sparse: 0.2 },
+    filters: RetrievalFilters = {}
   ): Promise<RetrievalResult[]> {
     if (this.retrievalMode === 'database' && this.documentStore) {
       const queryEmbedding = await this.getQueryEmbedding(query);
-      return this.documentStore.hybridSearch(query, queryEmbedding || undefined, topK);
+      return this.documentStore.hybridSearch(query, queryEmbedding || undefined, topK, filters);
     }
 
     if (this.retrievalMode === 'hybrid' && this.documentStore) {
       const [memoryResults, queryEmbedding] = await Promise.all([
-        this.retrieveFromMemory(query, topK, weights),
+        this.retrieveFromMemory(query, topK, weights, filters),
         this.getQueryEmbedding(query)
       ]);
-      const databaseResults = await this.documentStore.hybridSearch(query, queryEmbedding || undefined, topK);
+      const databaseResults = await this.documentStore.hybridSearch(query, queryEmbedding || undefined, topK, filters);
       return this.mergeResults([...memoryResults, ...databaseResults], topK);
     }
 
-    return this.retrieveFromMemory(query, topK, weights);
+    return this.retrieveFromMemory(query, topK, weights, filters);
   }
 
   private async retrieveFromMemory(
     query: string,
     topK: number,
-    weights: { bm25: number; dense: number; sparse: number }
+    weights: { bm25: number; dense: number; sparse: number },
+    filters: RetrievalFilters
   ): Promise<RetrievalResult[]> {
     const results: Map<string, RetrievalResult> = new Map();
 
     // PARALLELIZE all retrieval methods
     const [bm25Results, denseResults, sparseResults] = await Promise.all([
-      this.retrieveBM25(query, topK * 2),
-      this.retrieveDense(query, topK * 2),
-      this.retrieveSparse(query, topK * 2)
+      this.retrieveBM25(query, topK * 2, filters),
+      this.retrieveDense(query, topK * 2, filters),
+      this.retrieveSparse(query, topK * 2, filters)
     ]);
 
     // Merge BM25 results
@@ -180,7 +203,7 @@ export class HybridRetriever {
   /**
    * BM25 retrieval
    */
-  private async retrieveBM25(query: string, topK: number): Promise<RetrievalResult[]> {
+  private async retrieveBM25(query: string, topK: number, filters: RetrievalFilters): Promise<RetrievalResult[]> {
     if (!this.bm25Index || this.documents.length === 0) {
       return [];
     }
@@ -188,7 +211,7 @@ export class HybridRetriever {
     const queryTokens = this.tokenizer.tokenize(query.toLowerCase()) || [];
     const scores = new Map<string, number>();
 
-    for (const doc of this.documents) {
+    for (const doc of this.filterDocuments(filters)) {
       const docTokens = this.tokenizer.tokenize(doc.content.toLowerCase()) || [];
       let score = 0;
 
@@ -217,7 +240,7 @@ export class HybridRetriever {
   /**
    * Dense vector retrieval (cosine similarity) - OPTIMIZED
    */
-  private async retrieveDense(query: string, topK: number): Promise<RetrievalResult[]> {
+  private async retrieveDense(query: string, topK: number, filters: RetrievalFilters): Promise<RetrievalResult[]> {
     const queryEmbedding = await this.getQueryEmbedding(query);
     if (!queryEmbedding) {
       return [];
@@ -230,7 +253,7 @@ export class HybridRetriever {
     const scores: Array<{ chunk: DocumentChunk; score: number }> = [];
 
     // Optimize: filter documents with embeddings first, then compute similarity
-    for (const doc of this.documents) {
+    for (const doc of this.filterDocuments(filters)) {
       const docEmbedding = doc.embedding || this.embeddings.get(doc.id);
       if (docEmbedding) {
         // Optimized cosine similarity with pre-computed query norm
@@ -254,13 +277,13 @@ export class HybridRetriever {
   /**
    * Sparse retrieval (keyword matching)
    */
-  private async retrieveSparse(query: string, topK: number): Promise<RetrievalResult[]> {
+  private async retrieveSparse(query: string, topK: number, filters: RetrievalFilters): Promise<RetrievalResult[]> {
     const queryTokens = new Set(
       this.tokenizer.tokenize(query.toLowerCase()) || []
     );
     const scores: Array<{ chunk: DocumentChunk; score: number }> = [];
 
-    for (const doc of this.documents) {
+    for (const doc of this.filterDocuments(filters)) {
       const docTokens = new Set(
         this.tokenizer.tokenize(doc.content.toLowerCase()) || []
       );
@@ -291,6 +314,18 @@ export class HybridRetriever {
     for (const doc of this.documents) {
       this.bm25Index.addDocument(doc.content);
     }
+  }
+
+  private filterDocuments(filters: RetrievalFilters): DocumentChunk[] {
+    return this.documents.filter(doc => {
+      if (doc.metadata.excludedFromRetrieval) return false;
+      if (filters.excludeDeprecated && doc.metadata.authority === 'deprecated') return false;
+      if (filters.authority && !filters.authority.includes(doc.metadata.authority)) return false;
+      if (filters.project && doc.metadata.project !== filters.project) return false;
+      if (filters.visibility && !filters.visibility.includes(doc.metadata.visibility || 'public')) return false;
+      if (filters.minTrustScore !== undefined && (doc.metadata.trustScore ?? 1) < filters.minTrustScore) return false;
+      return true;
+    });
   }
 
   /**

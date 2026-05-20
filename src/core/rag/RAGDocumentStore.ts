@@ -3,6 +3,7 @@ import { Database } from '../database/Database';
 import { logger } from '../observability/logger';
 import { DocumentChunk } from '../../types/rag';
 import { RetrievalResult } from '../../types/rag';
+import type { RetrievalFilters } from './HybridRetriever';
 
 export interface SaveChunkOptions {
   runId?: string;
@@ -87,7 +88,7 @@ export class RAGDocumentStore {
     };
   }
 
-  async searchKeyword(query: string, topK: number = 10): Promise<RetrievalResult[]> {
+  async searchKeyword(query: string, topK: number = 10, filters: RetrievalFilters = {}): Promise<RetrievalResult[]> {
     if (this.database.getType() === 'postgresql') {
       const result = await this.database.query(
         `SELECT dc.id, dc.content, dc.metadata, dc.parent_id, ce.embedding_json,
@@ -104,10 +105,10 @@ export class RAGDocumentStore {
         chunk: this.rowToChunk(row),
         score: Number(row.score || 0),
         retrievalMethod: 'keyword'
-      }));
+      })).filter(result => this.matchesFilters(result.chunk, filters));
     }
 
-    const chunks = await this.loadChunks();
+    const chunks = (await this.loadChunks()).filter(chunk => this.matchesFilters(chunk, filters));
     const queryTokens = this.tokenize(query);
     const scored = chunks
       .map(chunk => ({
@@ -122,7 +123,7 @@ export class RAGDocumentStore {
     return scored;
   }
 
-  async searchSimilar(queryEmbedding: number[], topK: number = 10): Promise<RetrievalResult[]> {
+  async searchSimilar(queryEmbedding: number[], topK: number = 10, filters: RetrievalFilters = {}): Promise<RetrievalResult[]> {
     if (queryEmbedding.length === 0) {
       return [];
     }
@@ -143,10 +144,10 @@ export class RAGDocumentStore {
         chunk: this.rowToChunk(row),
         score: Number(row.score || 0),
         retrievalMethod: 'vector'
-      }));
+      })).filter(result => this.matchesFilters(result.chunk, filters));
     }
 
-    const chunks = await this.loadChunks();
+    const chunks = (await this.loadChunks()).filter(chunk => this.matchesFilters(chunk, filters));
     return chunks
       .filter(chunk => chunk.embedding)
       .map(chunk => ({
@@ -159,10 +160,15 @@ export class RAGDocumentStore {
       .slice(0, topK);
   }
 
-  async hybridSearch(query: string, queryEmbedding?: number[], topK: number = 10): Promise<RetrievalResult[]> {
+  async hybridSearch(
+    query: string,
+    queryEmbedding?: number[],
+    topK: number = 10,
+    filters: RetrievalFilters = {}
+  ): Promise<RetrievalResult[]> {
     const [keywordResults, vectorResults] = await Promise.all([
-      this.searchKeyword(query, topK * 2),
-      queryEmbedding ? this.searchSimilar(queryEmbedding, topK * 2) : Promise.resolve([])
+      this.searchKeyword(query, topK * 2, filters),
+      queryEmbedding ? this.searchSimilar(queryEmbedding, topK * 2, filters) : Promise.resolve([])
     ]);
 
     const merged = new Map<string, RetrievalResult>();
@@ -382,5 +388,15 @@ export class RAGDocumentStore {
     }
 
     return `[${embedding.join(',')}]`;
+  }
+
+  private matchesFilters(chunk: DocumentChunk, filters: RetrievalFilters): boolean {
+    if (chunk.metadata.excludedFromRetrieval) return false;
+    if (filters.excludeDeprecated && chunk.metadata.authority === 'deprecated') return false;
+    if (filters.authority && !filters.authority.includes(chunk.metadata.authority)) return false;
+    if (filters.project && chunk.metadata.project !== filters.project) return false;
+    if (filters.visibility && !filters.visibility.includes(chunk.metadata.visibility || 'public')) return false;
+    if (filters.minTrustScore !== undefined && (chunk.metadata.trustScore ?? 1) < filters.minTrustScore) return false;
+    return true;
   }
 }

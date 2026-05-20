@@ -1,0 +1,22 @@
+{
+  "id": "coding-security-001",
+  "query": "Harden code execution so arbitrary shell commands cannot run.",
+  "intent": "security_review",
+  "must_inspect": [
+    "src/core/tools/CodeExecutor.ts",
+    "src/core/tools/CommandRunner.ts"
+  ],
+  "must_contain": [
+    "spawn",
+    "allowlist",
+    "shell: false"
+  ],
+  "must_not_contain": [
+    "child_process.exec"
+  ],
+  "verification": [
+    "npm run type-check",
+    "npm run lint",
+    "npm test -- --runInBand"
+  ]
+}

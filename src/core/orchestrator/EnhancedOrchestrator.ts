@@ -23,6 +23,9 @@ import { RAGService } from '../rag/RAGService';
 import { SafetyPipeline } from '../safety/SafetyPipeline';
 import { SemanticCache } from '../cache/SemanticCache';
 import { ChatRequest, ChatResponse } from './Orchestrator';
+import { ToolRegistry } from '../tools/ToolRegistry';
+import { FunctionCaller } from '../tools/FunctionCaller';
+import { CodingAgent } from '../agents/CodingAgent';
 
 export interface EnhancedOrchestratorConfig {
   useRAG?: boolean;
@@ -34,6 +37,10 @@ export interface EnhancedOrchestratorConfig {
   modelRouter?: ModelRouter;
   safetyPipeline?: SafetyPipeline;
   semanticCache?: SemanticCache<ChatResponse>;
+  toolRegistry?: ToolRegistry;
+  functionCaller?: FunctionCaller;
+  codingAgent?: CodingAgent;
+  useToolCalling?: boolean;
 }
 
 export class EnhancedOrchestrator {
@@ -52,6 +59,7 @@ export class EnhancedOrchestrator {
   private ensembleAdapter?: EnsembleAdapter;
   private safetyPipeline?: SafetyPipeline;
   private semanticCache?: SemanticCache<ChatResponse>;
+  private codingAgent?: CodingAgent;
 
   constructor(
     llmAdapter: LLMAdapter,
@@ -119,6 +127,13 @@ export class EnhancedOrchestrator {
       this.semanticCache = this.config.semanticCache || new SemanticCache<ChatResponse>(3600, 0.7);
       logger.info('Semantic cache enabled');
     }
+
+    if (this.config.useToolCalling !== false) {
+      this.codingAgent = this.config.codingAgent;
+      if (this.codingAgent) {
+        logger.info('Coding agent tool pipeline enabled');
+      }
+    }
   }
 
   /**
@@ -159,6 +174,23 @@ export class EnhancedOrchestrator {
 
     // 4. Determine task type for model routing
     const taskType = this.inferTaskType(request.message);
+
+    if (taskType === TaskType.CODE_GENERATION && this.codingAgent) {
+      const codingResult = await this.codingAgent.handle({
+        message: request.message,
+        runVerification: false
+      });
+      const artifactId = uuidv4();
+      const response = this.formatCodingResponse(codingResult);
+      return {
+        response,
+        artifactId,
+        contractVersion: contract.version,
+        latency: Date.now() - startTime,
+        model: 'coding-agent',
+        warnings: codingResult.risks
+      };
+    }
 
     // 5. Select model (if routing enabled)
     let adapter = this.llmAdapter;
@@ -363,7 +395,27 @@ export class EnhancedOrchestrator {
   private inferTaskType(message: string): TaskType {
     const lower = message.toLowerCase();
 
-    if (lower.includes('code') || lower.includes('function') || lower.includes('program')) {
+    const codingPatterns = [
+      'code',
+      'function',
+      'program',
+      'bug',
+      'stack trace',
+      'typescript',
+      'javascript',
+      'route',
+      'endpoint',
+      'diff',
+      'patch',
+      'test',
+      'lint',
+      'type-check',
+      'refactor',
+      'repository',
+      'repo'
+    ];
+
+    if (codingPatterns.some(pattern => lower.includes(pattern))) {
       return TaskType.CODE_GENERATION;
     }
     if (lower.includes('analyze') || lower.includes('compare') || lower.includes('evaluate')) {
@@ -380,6 +432,23 @@ export class EnhancedOrchestrator {
     }
 
     return TaskType.GENERAL;
+  }
+
+  private formatCodingResponse(result: Awaited<ReturnType<CodingAgent['handle']>>): string {
+    const sections = [
+      `Summary\n${result.summary}`,
+      `Intent\n${result.intent}`,
+      `Files inspected\n${result.filesInspected.length ? result.filesInspected.map(file => `- ${file}`).join('\n') : '- none'}`,
+      `Plan\n${result.plan.steps.map(step => `- ${step}`).join('\n')}`,
+      `Patch\n${result.patch.diff || '(no patch generated)'}`,
+      `Verification\n${result.verification.status}${result.commandsRun.length ? `: ${result.commandsRun.join(', ')}` : ''}`
+    ];
+
+    if (result.review.findings.length > 0) {
+      sections.push(`Review findings\n${result.review.findings.map(finding => `- ${finding.severity}: ${finding.issue}`).join('\n')}`);
+    }
+
+    return sections.join('\n\n');
   }
 
   /**

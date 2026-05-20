@@ -17,11 +17,22 @@ export interface KnowledgeResult {
 export interface CodingKnowledgeBaseOptions {
     staticDataPath?: string;
     userDataPath?: string;
+    embeddingCachePath?: string;
+    project?: string;
+}
+
+interface EmbeddingCacheFile {
+    version: number;
+    fingerprint: string;
+    dimensions: number;
+    embeddings: number[][];
 }
 
 export class CodingKnowledgeBase {
     private staticDataPath: string;
     private userDataPath: string;
+    private embeddingCachePath: string;
+    private project: string;
     private embeddingService: EmbeddingService;
 
     private entries: StaticKnowledgeEntry[] = [];
@@ -32,6 +43,8 @@ export class CodingKnowledgeBase {
         this.embeddingService = embeddingService;
         this.staticDataPath = options.staticDataPath || path.resolve(process.cwd(), 'src/data/coding_knowledge_static.json');
         this.userDataPath = options.userDataPath || path.resolve(process.cwd(), 'src/data/coding_knowledge_user.json');
+        this.embeddingCachePath = options.embeddingCachePath || path.resolve(process.cwd(), 'data/coding_knowledge_embeddings.json');
+        this.project = options.project || 'chatbot';
     }
 
     /**
@@ -56,25 +69,15 @@ export class CodingKnowledgeBase {
                 logger.info('Loaded user coding knowledge', { count: userData.length });
             }
 
-            // Generate embeddings for all entries
-            // In a production system, we would cache these to disk to avoid re-computing
-            logger.info('Generating embeddings for knowledge base...');
+            this.applyDefaultMetadata();
 
-            // Batch processing to avoid rate limits or memory issues
-            const batchSize = 10;
-            for (let i = 0; i < this.entries.length; i += batchSize) {
-                const batch = this.entries.slice(i, i + batchSize);
-                const batchTexts = batch.map(e => `${e.title}\n${e.category}\n${e.tags.join(' ')}\n${e.content.substring(0, 1000)}`);
-
-                try {
-                    const batchEmbeddings = await this.embeddingService.embedBatch(batchTexts);
-                    this.embeddings.push(...batchEmbeddings);
-                } catch (error) {
-                    logger.warn('Failed to embed batch', { start: i, error });
-                    // Push empty embeddings or zeros to maintain index alignment
-                    const dim = this.embeddingService.getDimensions();
-                    this.embeddings.push(...Array(batch.length).fill(Array(dim).fill(0)));
-                }
+            const cached = this.loadEmbeddingCache();
+            if (cached) {
+                this.embeddings = cached;
+                logger.info('Loaded cached coding knowledge embeddings', { count: cached.length });
+            } else {
+                await this.generateEmbeddings();
+                this.persistEmbeddingCache();
             }
 
             this.isInitialized = true;
@@ -135,7 +138,12 @@ export class CodingKnowledgeBase {
             title,
             content,
             tags: [...tags, 'user-generated'],
-            source: 'user'
+            source: 'user',
+            metadata: {
+                project: this.project,
+                sourceType: 'past-fix',
+                authority: 'learned'
+            }
         };
 
         // Add to memory
@@ -148,6 +156,7 @@ export class CodingKnowledgeBase {
 
         // Save to disk
         await this.persistUserData();
+        this.persistEmbeddingCache();
 
         logger.info('Added new coding knowledge snippet', { title, category });
         return entry;
@@ -166,6 +175,84 @@ export class CodingKnowledgeBase {
     private async persistUserData(): Promise<void> {
         const userEntries = this.entries.filter(e => e.source === 'user' || e.tags.includes('user-generated'));
         fs.writeFileSync(this.userDataPath, JSON.stringify(userEntries, null, 2));
+    }
+
+    private applyDefaultMetadata(): void {
+        this.entries = this.entries.map(entry => ({
+            ...entry,
+            metadata: {
+                project: this.project,
+                sourceType: entry.source === 'user' ? 'past-fix' : 'external',
+                authority: entry.source === 'user' ? 'learned' : 'external',
+                ...entry.metadata
+            }
+        }));
+    }
+
+    private async generateEmbeddings(): Promise<void> {
+        logger.info('Generating embeddings for knowledge base...');
+
+        const batchSize = 10;
+        for (let i = 0; i < this.entries.length; i += batchSize) {
+            const batch = this.entries.slice(i, i + batchSize);
+            const batchTexts = batch.map(e => `${e.title}\n${e.category}\n${e.tags.join(' ')}\n${e.content.substring(0, 1000)}`);
+
+            try {
+                const batchEmbeddings = await this.embeddingService.embedBatch(batchTexts);
+                this.embeddings.push(...batchEmbeddings);
+            } catch (error) {
+                logger.warn('Failed to embed batch', { start: i, error });
+                const dim = this.embeddingService.getDimensions();
+                this.embeddings.push(...Array(batch.length).fill(Array(dim).fill(0)));
+            }
+        }
+    }
+
+    private loadEmbeddingCache(): number[][] | undefined {
+        if (!fs.existsSync(this.embeddingCachePath)) return undefined;
+
+        try {
+            const cache = JSON.parse(fs.readFileSync(this.embeddingCachePath, 'utf-8')) as EmbeddingCacheFile;
+            if (
+                cache.version === 1 &&
+                cache.fingerprint === this.fingerprintEntries() &&
+                cache.dimensions === this.embeddingService.getDimensions() &&
+                cache.embeddings.length === this.entries.length
+            ) {
+                return cache.embeddings;
+            }
+        } catch (error: any) {
+            logger.warn('Failed to load coding knowledge embedding cache', { error: error.message });
+        }
+
+        return undefined;
+    }
+
+    private persistEmbeddingCache(): void {
+        try {
+            fs.mkdirSync(path.dirname(this.embeddingCachePath), { recursive: true });
+            const cache: EmbeddingCacheFile = {
+                version: 1,
+                fingerprint: this.fingerprintEntries(),
+                dimensions: this.embeddingService.getDimensions(),
+                embeddings: this.embeddings
+            };
+            fs.writeFileSync(this.embeddingCachePath, JSON.stringify(cache));
+        } catch (error: any) {
+            logger.warn('Failed to persist coding knowledge embedding cache', { error: error.message });
+        }
+    }
+
+    private fingerprintEntries(): string {
+        return JSON.stringify(this.entries.map(entry => ({
+            id: entry.id,
+            title: entry.title,
+            category: entry.category,
+            content: entry.content,
+            tags: entry.tags,
+            source: entry.source,
+            metadata: entry.metadata
+        })));
     }
 
     /**

@@ -1,0 +1,11 @@
+[
+  {
+    "id": "memory-001",
+    "query": "What persistent memory tables are planned for conversation history?",
+    "must_contain": ["conversation", "memory"],
+    "must_not_contain": ["Redis only"],
+    "answer_type": "grounded",
+    "max_latency_ms": 5000,
+    "max_cost": 0.05
+  }
+]

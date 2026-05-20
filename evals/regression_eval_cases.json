@@ -1,0 +1,11 @@
+[
+  {
+    "id": "regression-001",
+    "query": "What can you do for me?",
+    "must_contain": ["answer questions"],
+    "must_not_contain": ["technical difficulties", "example.txt"],
+    "answer_type": "general",
+    "max_latency_ms": 5000,
+    "max_cost": 0.05
+  }
+]

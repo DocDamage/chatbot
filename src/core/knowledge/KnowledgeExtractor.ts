@@ -14,6 +14,13 @@ export interface StaticKnowledgeEntry {
     content: string;
     tags: string[];
     source: string;
+    metadata?: {
+        language?: string;
+        framework?: string;
+        project?: string;
+        sourceType?: 'repo-doc' | 'code' | 'test' | 'past-fix' | 'external';
+        authority?: 'canonical' | 'learned' | 'external';
+    };
 }
 
 export class KnowledgeExtractor {

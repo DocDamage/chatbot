@@ -14,6 +14,8 @@ import { LLMAdapter } from '../providers/LLMAdapter';
 import { logger } from '../observability/logger';
 import { RAGDocumentStore } from './RAGDocumentStore';
 import { RetrievalMode } from './HybridRetriever';
+import { GroundingVerifier, GroundingVerificationResult } from './GroundingVerifier';
+import { ReRankerMode } from './ReRanker';
 
 export interface RAGResult {
   response: string;
@@ -24,6 +26,7 @@ export interface RAGResult {
     retrievalMethod: string;
     compressionRatio: number;
     numChunksRetrieved: number;
+    grounding?: GroundingVerificationResult;
   };
 }
 
@@ -39,7 +42,7 @@ export class RAGService {
   constructor(
     llmAdapter: LLMAdapter,
     embeddingService?: EmbeddingService,
-    options: { documentStore?: RAGDocumentStore; retrievalMode?: RetrievalMode } = {}
+    options: { documentStore?: RAGDocumentStore; retrievalMode?: RetrievalMode; rerankerMode?: ReRankerMode } = {}
   ) {
     this.llmAdapter = llmAdapter;
     this.embeddingService = embeddingService;
@@ -48,7 +51,10 @@ export class RAGService {
       options.documentStore,
       options.retrievalMode
     );
-    this.reranker = new ReRanker();
+    this.reranker = new ReRanker({
+      mode: options.rerankerMode,
+      llmAdapter
+    });
     this.queryExpander = new QueryExpander(llmAdapter);
     this.contextCompressor = new ContextCompressor(llmAdapter);
     this.citationTracker = new CitationTracker();
@@ -138,6 +144,10 @@ export class RAGService {
 
     // 5. Generate response (if requested)
     let response = '';
+    const strictGrounding = process.env.GROUNDING_MODE === 'strict';
+    if (strictGrounding && reranked.length === 0) {
+      response = "I don't have that in the knowledge base.";
+    } else
     if (generateResponse) {
       const prompt = `Based on the following context, answer the question. If the context doesn't contain enough information, say so.
 
@@ -160,6 +170,16 @@ Answer:`;
       response = compressed.compressedContent;
     }
 
+    const grounding = GroundingVerifier.verify({
+      answer: response,
+      retrievedChunks: reranked.map(r => r.chunk),
+      requiredCitationCoverage: parseFloat(process.env.GROUNDING_REQUIRED_COVERAGE || '0.8')
+    });
+
+    if (strictGrounding && !grounding.grounded && generateResponse) {
+      response = `${response}\n\nGrounding warning: some claims are not fully supported by the retrieved knowledge base.`;
+    }
+
     // 6. Extract citations
     const citations = this.citationTracker.extractCitations(response, reranked.map(r => r.chunk));
 
@@ -176,7 +196,8 @@ Answer:`;
       metadata: {
         retrievalMethod: 'hybrid',
         compressionRatio: compressed.compressionRatio,
-        numChunksRetrieved: retrievedChunks.length
+        numChunksRetrieved: retrievedChunks.length,
+        grounding
       }
     };
   }

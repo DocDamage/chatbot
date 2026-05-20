@@ -1,0 +1,12 @@
+[
+  {
+    "id": "rag-001",
+    "query": "What file handles durable RAG chunk storage?",
+    "expected_sources": ["src/core/rag/RAGDocumentStore.ts"],
+    "must_contain": ["RAGDocumentStore", "document_chunks", "chunk_embeddings"],
+    "must_not_contain": ["Chroma", "Pinecone"],
+    "answer_type": "grounded",
+    "max_latency_ms": 5000,
+    "max_cost": 0.05
+  }
+]

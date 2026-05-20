@@ -5,10 +5,25 @@
 
 import { RetrievalResult, DocumentChunk } from '../../types/rag';
 import { logger } from '../observability/logger';
+import { LLMAdapter } from '../providers/LLMAdapter';
 import natural from 'natural';
+
+export type ReRankerMode = 'heuristic' | 'llm' | 'embedding' | 'cross_encoder';
+
+export interface ReRankerOptions {
+  mode?: ReRankerMode;
+  llmAdapter?: LLMAdapter;
+}
 
 export class ReRanker {
   private tokenizer = new natural.WordTokenizer();
+  private mode: ReRankerMode;
+  private llmAdapter?: LLMAdapter;
+
+  constructor(options: ReRankerOptions = {}) {
+    this.mode = options.mode || (process.env.RERANKER_MODE as ReRankerMode) || 'heuristic';
+    this.llmAdapter = options.llmAdapter;
+  }
 
   /**
    * Re-rank retrieval results using cross-encoder approach
@@ -20,10 +35,16 @@ export class ReRanker {
   ): Promise<RetrievalResult[]> {
     if (results.length === 0) return [];
 
+    if (this.mode === 'llm' && this.llmAdapter) {
+      return this.llmRerank(query, results, topK);
+    }
+
     // Calculate cross-encoder scores
     const reranked = results.map(result => ({
       ...result,
-      score: this.calculateCrossEncoderScore(query, result.chunk)
+      score: this.mode === 'embedding'
+        ? this.calculateEmbeddingScore(query, result.chunk)
+        : this.calculateCrossEncoderScore(query, result.chunk)
     }));
 
     // Sort by new score
@@ -37,6 +58,71 @@ export class ReRanker {
     });
 
     return reranked.slice(0, topK);
+  }
+
+  private async llmRerank(
+    query: string,
+    results: RetrievalResult[],
+    topK: number
+  ): Promise<RetrievalResult[]> {
+    const prompt = `Rank these chunks for the query. Return strict JSON with a scores array.
+
+Query: ${query}
+
+Chunks:
+${results.map(result => `- ${result.chunk.id}: ${result.chunk.content.substring(0, 500)}`).join('\n')}
+
+JSON format:
+{"scores":[{"chunkId":"abc","score":0.91,"reason":"why"}]}`;
+
+    try {
+      const response = await this.llmAdapter!.generate({
+        prompt,
+        systemPrompt: 'You are a relevance reranker. Return only JSON.',
+        temperature: 0,
+        maxTokens: 700
+      });
+      const parsed = JSON.parse(response.content);
+      const scores = new Map<string, { score: number; reason?: string }>();
+      for (const item of parsed.scores || []) {
+        scores.set(item.chunkId, {
+          score: Number(item.score) || 0,
+          reason: item.reason
+        });
+      }
+
+      return results
+        .map(result => {
+          const scored = scores.get(result.chunk.id);
+          return {
+            ...result,
+            score: scored?.score ?? result.score,
+            chunk: {
+              ...result.chunk,
+              metadata: {
+                ...result.chunk.metadata,
+                rerankReason: scored?.reason
+              }
+            }
+          };
+        })
+        .sort((a, b) => b.score - a.score)
+        .slice(0, topK);
+    } catch (error: any) {
+      logger.warn('LLM rerank failed, falling back to heuristic', { error: error.message });
+      const fallback = new ReRanker({ mode: 'heuristic' });
+      return fallback.rerank(query, results, topK);
+    }
+  }
+
+  private calculateEmbeddingScore(query: string, chunk: DocumentChunk): number {
+    const queryTokens = new Set(this.tokenizer.tokenize(query.toLowerCase()) || []);
+    const docTokens = new Set(this.tokenizer.tokenize(chunk.content.toLowerCase()) || []);
+    const intersection = [...queryTokens].filter(token => docTokens.has(token)).length;
+    const union = new Set([...queryTokens, ...docTokens]).size;
+    const lexical = union > 0 ? intersection / union : 0;
+    const trust = typeof chunk.metadata.trustScore === 'number' ? chunk.metadata.trustScore : 0.7;
+    return lexical * 0.8 + trust * 0.2;
   }
 
   /**

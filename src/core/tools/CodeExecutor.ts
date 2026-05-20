@@ -5,16 +5,16 @@
 
 import { Tool, ToolResult } from '../../types/tools';
 import { logger } from '../observability/logger';
-import { exec } from 'child_process';
-import { promisify } from 'util';
-
-const execAsync = promisify(exec);
+import { spawn } from 'child_process';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
 
 export class CodeExecutor {
   private timeout: number;
   private allowedLanguages: Set<string>;
 
-  constructor(timeout: number = 5000, allowedLanguages: string[] = ['python', 'javascript', 'bash']) {
+  constructor(timeout: number = 5000, allowedLanguages: string[] = ['python', 'javascript']) {
     this.timeout = timeout;
     this.allowedLanguages = new Set(allowedLanguages);
   }
@@ -43,18 +43,22 @@ export class CodeExecutor {
     }
 
     try {
-      // Execute based on language
-      let command: string;
+      let executable: string;
+      let args: string[];
       switch (language) {
         case 'python':
-          command = `python3 -c ${JSON.stringify(code)}`;
+          executable = process.platform === 'win32' ? 'python' : 'python3';
+          args = ['-c', code];
           break;
         case 'javascript':
-          command = `node -e ${JSON.stringify(code)}`;
+          executable = 'node';
+          args = ['-e', code];
           break;
         case 'bash':
-          command = code;
-          break;
+          return {
+            success: false,
+            error: 'Bash execution is disabled by default. Use CommandRunner for allowlisted repository commands.'
+          };
         default:
           return {
             success: false,
@@ -62,11 +66,8 @@ export class CodeExecutor {
           };
       }
 
-      const { stdout, stderr } = await execAsync(command, {
-        timeout: this.timeout,
-        maxBuffer: 1024 * 1024 // 1MB
-      });
-
+      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'chatbot-code-'));
+      const { stdout, stderr } = await this.spawnCode(executable, args, tempDir);
       const executionTime = Date.now() - startTime;
 
       logger.info('Code execution completed', {
@@ -157,6 +158,55 @@ export class CodeExecutor {
     return { safe: true };
   }
 
+  private spawnCode(executable: string, args: string[], cwd: string): Promise<{ stdout: string; stderr: string }> {
+    return new Promise((resolve, reject) => {
+      let stdout = '';
+      let stderr = '';
+      let settled = false;
+      const child = spawn(executable, args, {
+        cwd,
+        shell: false,
+        windowsHide: true,
+        env: {
+          PATH: process.env.PATH,
+          NODE_OPTIONS: process.env.NODE_OPTIONS
+        }
+      });
+
+      const timeout = setTimeout(() => {
+        child.kill('SIGTERM');
+        if (!settled) {
+          settled = true;
+          reject(new Error(`Execution timed out after ${this.timeout}ms`));
+        }
+      }, this.timeout);
+
+      child.stdout?.on('data', chunk => {
+        stdout += chunk.toString();
+      });
+      child.stderr?.on('data', chunk => {
+        stderr += chunk.toString();
+      });
+      child.on('error', error => {
+        clearTimeout(timeout);
+        if (!settled) {
+          settled = true;
+          reject(error);
+        }
+      });
+      child.on('close', code => {
+        clearTimeout(timeout);
+        if (settled) return;
+        settled = true;
+        if (code === 0) {
+          resolve({ stdout, stderr });
+        } else {
+          reject(new Error(stderr || `Execution exited with code ${code}`));
+        }
+      });
+    });
+  }
+
   /**
    * Create a code execution tool
    */
@@ -164,7 +214,7 @@ export class CodeExecutor {
     return {
       id: 'code_executor',
       name: 'execute_code',
-      description: 'Execute code in a safe sandbox environment. Supports Python, JavaScript, and Bash.',
+      description: 'Execute code in a constrained temp workspace. Supports Python and JavaScript by default.',
       category: require('../../types/tools').ToolCategory.CODE_EXECUTION,
       parameters: [
         {
@@ -176,7 +226,7 @@ export class CodeExecutor {
         {
           name: 'language',
           type: 'string',
-          description: 'Programming language (python, javascript, bash)',
+          description: 'Programming language (python or javascript)',
           required: false,
           default: 'python'
         }
