@@ -10,6 +10,7 @@ export type ChatMode =
     | 'pop_culture'
     | 'history'
     | 'science'
+    | 'gaming'
     | 'music'
     | 'suno'
     | 'fl_studio'
@@ -72,6 +73,12 @@ const modeConfig: Record<ChatMode, { icon: string; label: string; description: s
         label: 'Science',
         description: 'Inventions, papers, and patents',
         color: '#2aa7a5'
+    },
+    gaming: {
+        icon: '🎮',
+        label: 'Gaming',
+        description: 'Games, game dev, engines, lore, modding, strategy',
+        color: '#60a5fa'
     },
     music: {
         icon: '🎛️',

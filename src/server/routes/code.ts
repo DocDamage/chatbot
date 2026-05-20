@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { asyncHandler } from '../../middleware/errorHandler';
 import { sanitizeInput } from '../../middleware/validator';
+import { canDebug, canGeneratePatch, canRunCommands, isDebugLikeCommand } from '../../core/modes/ModePolicy';
 
 export function createCodeRouter(services: any): Router {
   const router = Router();
@@ -29,6 +30,9 @@ export function createCodeRouter(services: any): Router {
   }));
 
   router.post('/api/code/patch', asyncHandler(async (req, res) => {
+    if (!canGeneratePatch(req.body.mode)) {
+      return res.status(403).json({ error: 'Patch generation is only available in Implement mode.' });
+    }
     const message = sanitizeInput(String(req.body.message || ''));
     if (!message.trim()) {
       return res.status(400).json({ error: 'message is required' });
@@ -46,6 +50,11 @@ export function createCodeRouter(services: any): Router {
 
   router.post('/api/code/verify', asyncHandler(async (req, res) => {
     const commands = Array.isArray(req.body.commands) ? req.body.commands.map(String) : ['npm run type-check'];
+    const mode = String(req.body.mode || '');
+    const debugLike = commands.some(isDebugLikeCommand);
+    if (!canRunCommands(mode) || (debugLike && mode !== 'implement' && !canDebug(mode))) {
+      return res.status(403).json({ error: 'Command verification is only available in Debug mode, or as safe verification from Implement mode.' });
+    }
     res.json(await getAgent().verify(commands));
   }));
 

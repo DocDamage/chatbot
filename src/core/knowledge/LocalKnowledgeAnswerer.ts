@@ -2,14 +2,20 @@ import { RetrievalResult } from '../../types/rag';
 import { RAGDocumentStore } from '../rag/RAGDocumentStore';
 import fs from 'fs';
 import path from 'path';
+import { KnowledgeMiss } from './KnowledgeMiss';
+import { KnowledgeMissHandler } from './KnowledgeMissHandler';
 
-export type LocalKnowledgeMode = 'ask' | 'pop_culture' | 'history' | 'science';
+export type LocalKnowledgeMode = 'ask' | 'pop_culture' | 'history' | 'science' | 'gaming';
 
 export interface LocalKnowledgeAnswer {
   response: string;
   sources: string[];
   mode: LocalKnowledgeMode;
   model: 'local-knowledge-base';
+  knowledgeMiss?: true;
+  miss?: KnowledgeMiss;
+  canSearchOnline?: true;
+  proposedWebQuery?: string;
 }
 
 export class LocalKnowledgeAnswerer {
@@ -305,11 +311,16 @@ export class LocalKnowledgeAnswerer {
 
   private noLocalRecord(message: string, mode: LocalKnowledgeMode): LocalKnowledgeAnswer {
     const label = mode === 'ask' ? 'knowledge-base' : mode.replace('_', ' ');
+    const miss = new KnowledgeMissHandler().createMiss(message, mode);
     return {
-      response: `I do not have a matching ${label} record in the local database for: "${message}". I am not going to make up a generic answer. Add or import records for that topic and I can answer from the knowledge base without internet.`,
+      response: `I do not have this in the local ${label} database.\n\nSearch online and learn it?`,
       sources: [],
       mode,
-      model: 'local-knowledge-base'
+      model: 'local-knowledge-base',
+      knowledgeMiss: true,
+      miss,
+      canSearchOnline: true,
+      proposedWebQuery: miss.proposedWebQuery
     };
   }
 

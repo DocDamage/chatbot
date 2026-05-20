@@ -19,7 +19,8 @@ describe('code routes', () => {
 
     await request(app).post('/api/code/ask').send({ message: 'where is x?' }).expect(200);
     await request(app).post('/api/code/review').send({ diff: 'diff --git a/a b/a' }).expect(200);
-    await request(app).post('/api/code/verify').send({ commands: ['npm run type-check'] }).expect(200);
+    await request(app).post('/api/code/verify').send({ commands: ['npm run type-check'] }).expect(403);
+    await request(app).post('/api/code/verify').send({ mode: 'implement', commands: ['npm run type-check'] }).expect(200);
     await request(app).get('/api/code/files/search?q=index').expect(200);
     await request(app).get('/api/code/symbols?file=src/index.ts').expect(200);
   });

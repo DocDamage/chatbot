@@ -36,7 +36,10 @@ describe('LocalKnowledgeAnswerer', () => {
     const answer = await answerer.answer('tell me the biggest story of 1984', 'ask');
 
     expect(answer?.model).toBe('local-knowledge-base');
-    expect(answer?.response).toContain('I do not have a matching knowledge-base record');
+    expect(answer?.response).toContain('I do not have this in the local knowledge-base database');
+    expect(answer?.knowledgeMiss).toBe(true);
+    expect(answer?.canSearchOnline).toBe(true);
+    expect(answer?.proposedWebQuery).toBe('tell me the biggest story of 1984');
     expect(answer?.response).not.toContain('connect an external model provider');
   });
 
@@ -118,7 +121,8 @@ describe('LocalKnowledgeAnswerer', () => {
     const answerer = new LocalKnowledgeAnswerer(store as any);
     const answer = await answerer.answer('what do you know about 1821?', 'ask');
 
-    expect(answer?.response).toContain('I do not have a matching knowledge-base record');
+    expect(answer?.response).toContain('I do not have this in the local knowledge-base database');
+    expect(answer?.knowledgeMiss).toBe(true);
     expect(answer?.response).not.toContain('DMAIC project charters');
     expect(answer?.sources).toEqual([]);
   });

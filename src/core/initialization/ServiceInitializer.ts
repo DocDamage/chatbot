@@ -34,6 +34,7 @@ import { VerificationRunner } from '../agents/VerificationRunner';
 import { MathGeniusAgent } from '../agents/math/MathGeniusAgent';
 import { MarketGeniusAgent } from '../agents/market/MarketGeniusAgent';
 import { GameDevGeniusAgent } from '../agents/gamedev/GameDevGeniusAgent';
+import { GamingGeniusAgent } from '../agents/gaming/GamingGeniusAgent';
 import { SixSigmaBlackBeltAgent } from '../agents/sixsigma/SixSigmaBlackBeltAgent';
 import { ChronoKnowledgeEngine } from '../chrono/ChronoKnowledgeEngine';
 import { PopCultureGeniusAgent } from '../agents/culture/PopCultureGeniusAgent';
@@ -91,6 +92,7 @@ export interface InitializedServices {
   mathGeniusAgent?: MathGeniusAgent;
   marketGeniusAgent?: MarketGeniusAgent;
   gameDevGeniusAgent?: GameDevGeniusAgent;
+  gamingGeniusAgent?: GamingGeniusAgent;
   sixSigmaBlackBeltAgent?: SixSigmaBlackBeltAgent;
   chronoKnowledgeEngine?: ChronoKnowledgeEngine;
   popCultureGeniusAgent?: PopCultureGeniusAgent;
@@ -247,6 +249,7 @@ export class ServiceInitializer {
     const mathGeniusAgent = new MathGeniusAgent();
     const marketGeniusAgent = new MarketGeniusAgent();
     const gameDevGeniusAgent = new GameDevGeniusAgent();
+    const gamingGeniusAgent = new GamingGeniusAgent(gameDevGeniusAgent);
     const sixSigmaBlackBeltAgent = new SixSigmaBlackBeltAgent();
     const chronoKnowledgeEngine = new ChronoKnowledgeEngine();
     const popCultureGeniusAgent = new PopCultureGeniusAgent(chronoKnowledgeEngine);
@@ -284,6 +287,7 @@ export class ServiceInitializer {
       math: true,
       market: true,
       gamedev: true,
+      gaming: true,
       sixsigma: true,
       chrono: true,
       music: true,
@@ -317,6 +321,7 @@ export class ServiceInitializer {
       mathGeniusAgent,
       marketGeniusAgent,
       gameDevGeniusAgent,
+      gamingGeniusAgent,
       sixSigmaBlackBeltAgent,
       chronoKnowledgeEngine,
       popCultureGeniusAgent,

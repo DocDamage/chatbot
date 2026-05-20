@@ -55,6 +55,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
     pop_culture: 'Ask about eras, works, influence, or franchises...',
     history: 'Ask about periods, causes, timelines, or sources...',
     science: 'Ask about inventions, discoveries, papers, or patents...',
+    gaming: 'Ask about games, engines, design, modding, lore, or strategy...',
     music: 'Ask about beats, chords, arrangements, vocals, or DAWs...',
     suno: 'Describe the Suno prompt, hook, revision, or style blend...',
     fl_studio: 'Ask about Channel Rack, Piano Roll, 808s, mixer, or export...',
@@ -78,6 +79,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
           {mode === 'pop_culture' && '🎬 I\'ll map culture through time'}
           {mode === 'history' && '🏛️ I\'ll handle dates and sources carefully'}
           {mode === 'science' && '🔬 I\'ll trace inventions and discoveries'}
+          {mode === 'gaming' && '🎮 I\'ll cover games, engines, lore, modding, speedruns, and strategy'}
           {mode === 'music' && '🎛️ I\'ll help produce, arrange, mix, and translate DAW workflows'}
           {mode === 'suno' && '🎤 I\'ll build safe Suno prompts and revision plans'}
           {mode === 'fl_studio' && '🎹 I\'ll guide FL Studio patterns, 808s, mixer, and export'}

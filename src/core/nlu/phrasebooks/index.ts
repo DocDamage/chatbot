@@ -4,6 +4,7 @@ import { chronoPhrasebook } from './chrono.phrasebook';
 import { codingPhrasebook } from './coding.phrasebook';
 import { engineeringPhrasebook } from './engineering.phrasebook';
 import { gamedevPhrasebook } from './gamedev.phrasebook';
+import { gamingPhrasebook } from './gaming.phrasebook';
 import { generalPhrasebook } from './general.phrasebook';
 import { geographyPhrasebook } from './geography.phrasebook';
 import { healthPhrasebook } from './health.phrasebook';
@@ -22,6 +23,7 @@ export const allPhrasebooks: Phrasebook = [
   ...codingPhrasebook,
   ...marketPhrasebook,
   ...gamedevPhrasebook,
+  ...gamingPhrasebook,
   ...mathPhrasebook,
   ...storyPhrasebook,
   ...legalPhrasebook,

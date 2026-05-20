@@ -4,6 +4,7 @@ export type NluDomain =
   | 'coding'
   | 'market'
   | 'gamedev'
+  | 'gaming'
   | 'math'
   | 'story'
   | 'legal'

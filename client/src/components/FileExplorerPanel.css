@@ -1,0 +1,130 @@
+.file-explorer-panel {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  min-width: 260px;
+  border-right: 1px solid #262626;
+  background: #080808;
+  color: #ffffff;
+  min-height: 0;
+}
+
+.file-explorer-header {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid #262626;
+}
+
+.file-explorer-header input {
+  border: 1px solid #333333;
+  border-radius: 8px;
+  background: #000000;
+  color: #ffffff;
+  padding: 8px 10px;
+}
+
+.file-explorer-error {
+  margin: 10px 12px 0;
+  color: #ffb4a8;
+  font-size: 12px;
+}
+
+.file-explorer-body {
+  flex: 1;
+  min-height: 150px;
+  overflow: auto;
+  padding: 10px 12px;
+}
+
+.file-tree button,
+.file-results button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: #d4d4d4;
+  text-align: left;
+  cursor: pointer;
+  padding: 5px 4px;
+  font: inherit;
+  font-size: 12px;
+}
+
+.file-tree button:hover,
+.file-results button:hover {
+  background: #181818;
+  color: #ffffff;
+}
+
+.file-node-group summary {
+  cursor: pointer;
+  color: #f5f5f5;
+  font-size: 12px;
+  padding: 5px 0;
+}
+
+.file-node-group div {
+  padding-left: 12px;
+}
+
+.file-results small {
+  display: block;
+  color: #8ec5ff;
+}
+
+.file-preview-pane {
+  border-top: 1px solid #262626;
+  min-height: 230px;
+  max-height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.file-preview-header {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-bottom: 1px solid #262626;
+}
+
+.file-preview-header strong,
+.file-preview-header span {
+  display: block;
+  font-size: 12px;
+}
+
+.file-preview-header span,
+.file-preview-empty {
+  color: #a3a3a3;
+}
+
+.file-preview-header button {
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #000000;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.file-preview-pane pre {
+  margin: 0;
+  padding: 12px;
+  overflow: auto;
+  color: #e5e5e5;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.file-preview-empty {
+  padding: 12px;
+  border-top: 1px solid #262626;
+  font-size: 12px;
+}
+
+@media (max-width: 980px) {
+  .file-explorer-panel {
+    display: none;
+  }
+}

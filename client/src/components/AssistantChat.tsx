@@ -14,6 +14,12 @@ import ModeSelector, { ChatMode } from './ModeSelector';
 import StatusBar from './StatusBar';
 import FLStudioControlPanel from './FLStudioControlPanel';
 import KnowledgeOSPanel from './KnowledgeOSPanel';
+import FileExplorerPanel from './FileExplorerPanel';
+import LoadedFilesBar from './LoadedFilesBar';
+import AudioPreviewBrowser from './AudioPreviewBrowser';
+import { LoadedFileContext } from '../api/files';
+import { AudioFileContext } from '../api/audio';
+import { ingestOnlineKnowledge, searchOnlineKnowledge } from '../api/knowledge';
 import './AssistantChat.css';
 
 const uuidv4 = () => {
@@ -43,6 +49,7 @@ const modeHints: Record<ChatMode, string> = {
   history: 'History mode',
   science: 'Science & Inventions mode',
   music: 'Music Production mode',
+  gaming: 'Gaming mode',
   suno: 'Suno prompt mode',
   fl_studio: 'FL Studio mode',
   fl_studio_control: 'FL Studio dry-run control',
@@ -62,6 +69,7 @@ const placeholders: Record<ChatMode, string> = {
   history: 'Ask about periods, causes, timelines, or sources...',
   science: 'Ask about inventions, discoveries, papers, or patents...',
   music: 'Ask about beats, chords, arrangements, vocals, or DAWs...',
+  gaming: 'Ask about games, engines, design, modding, lore, or strategy...',
   suno: 'Describe the Suno prompt, hook, revision, or style blend...',
   fl_studio: 'Ask about Channel Rack, Piano Roll, 808s, mixer, or export...',
   fl_studio_control: 'Ask me to plan FL Studio control actions...',
@@ -107,7 +115,13 @@ function AssistantChat() {
   const [mode, setMode] = useState<ChatMode>('ask');
   const [sessionId] = useState(() => uuidv4());
   const [isRunning, setIsRunning] = useState(false);
+  const [loadedFiles, setLoadedFiles] = useState<LoadedFileContext[]>([]);
+  const [loadedAudio, setLoadedAudio] = useState<AudioFileContext[]>([]);
+  const [planAction, setPlanAction] = useState<{ planId: string; planPath: string } | null>(null);
+  const [knowledgePreview, setKnowledgePreview] = useState<any>(null);
+  const [knowledgeMiss, setKnowledgeMiss] = useState<{ query: string; domain: string } | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const showAudioBrowser = ['music', 'fl_studio', 'fl_studio_control', 'pro_tools', 'logic', 'mix_master'].includes(mode);
 
   const sendToBackend = async (input: string, selectedMode: ChatMode) => {
     const controller = new AbortController();
@@ -137,7 +151,11 @@ function AssistantChat() {
           message: input,
           sessionId,
           mode: selectedMode,
-          systemPrompt: getSystemPrompt(selectedMode)
+          systemPrompt: getSystemPrompt(selectedMode),
+          loadedFiles,
+          loadedAudio,
+          activePlanId: planAction?.planId,
+          activeFileBrowserMode: 'workspace'
         })
       });
 
@@ -147,6 +165,15 @@ function AssistantChat() {
       }
 
       const data = await response.json();
+      if (data.planId && data.planPath) {
+        setPlanAction({ planId: data.planId, planPath: data.planPath });
+      }
+      if (data.knowledgeMiss || data.miss?.knowledgeMiss) {
+        setKnowledgeMiss({
+          query: data.proposedWebQuery || data.miss?.proposedWebQuery || input,
+          domain: data.mode || selectedMode
+        });
+      }
       setMessages(prev => prev.map(message => message.id === assistantId
         ? {
             ...message,
@@ -214,54 +241,103 @@ function AssistantChat() {
     [messages]
   );
 
+  const addLoadedFile = (file: LoadedFileContext) => {
+    setLoadedFiles(prev => [file, ...prev.filter(item => item.path !== file.path)].slice(0, 8));
+  };
+
+  const addLoadedAudio = (audio: AudioFileContext) => {
+    setLoadedAudio(prev => [audio, ...prev.filter(item => item.path !== audio.path)].slice(0, 8));
+  };
+
+  const runOnlineSearch = async () => {
+    if (!knowledgeMiss) return;
+    setKnowledgePreview(await searchOnlineKnowledge(knowledgeMiss.query, knowledgeMiss.domain));
+  };
+
+  const ingestPreview = async () => {
+    if (!knowledgePreview) return;
+    await ingestOnlineKnowledge(knowledgePreview, sessionId);
+    setKnowledgePreview(null);
+    setKnowledgeMiss(null);
+  };
+
   return (
     <AssistantRuntimeProvider runtime={runtime}>
-      <section className="assistant-chat" aria-label="AI chat">
-        <div className="assistant-toolbar">
-          <ModeSelector mode={mode} onModeChange={setMode} />
-          <span className="assistant-mode-hint">{modeHints[mode]}</span>
-        </div>
-        <KnowledgeOSPanel />
-        {mode === 'fl_studio_control' && (
-          <FLStudioControlPanel onSendCommand={command => sendUserMessage(command, 'fl_studio_control')} />
-        )}
-        <ThreadPrimitive.Root className="assistant-thread">
-          <ThreadPrimitive.Viewport className="assistant-viewport">
-            <ThreadPrimitive.Empty>
-              <div className="assistant-empty">
-                <div className="assistant-empty-icon">AI</div>
-                <h2>Start a conversation</h2>
-                <p>Ask a question, plan a feature, debug an issue, or explain code.</p>
-              </div>
-            </ThreadPrimitive.Empty>
-            <ThreadPrimitive.Messages
-              components={{
-                UserMessage: UserBubble,
-                AssistantMessage: AssistantBubble
-              }}
+      <div className="assistant-workspace">
+        <FileExplorerPanel onLoadFile={addLoadedFile} />
+        <section className="assistant-chat" aria-label="AI chat">
+          <div className="assistant-toolbar">
+            <ModeSelector mode={mode} onModeChange={setMode} />
+            <span className="assistant-mode-hint">{modeHints[mode]}</span>
+          </div>
+          <KnowledgeOSPanel />
+          {showAudioBrowser && <AudioPreviewBrowser onLoadAudio={addLoadedAudio} />}
+          {mode === 'fl_studio_control' && (
+            <FLStudioControlPanel onSendCommand={command => sendUserMessage(command, 'fl_studio_control')} />
+          )}
+          {planAction && (
+            <div className="assistant-cta-bar">
+              <span>Plan saved: {planAction.planPath}</span>
+              <button type="button" onClick={() => setMode('implement')}>Switch to Implement</button>
+            </div>
+          )}
+          {knowledgeMiss && (
+            <div className="assistant-cta-bar">
+              <span>I do not have this in local knowledge.</span>
+              <button type="button" onClick={runOnlineSearch}>Search Online</button>
+              <button type="button" onClick={() => setKnowledgeMiss(null)}>Cancel</button>
+            </div>
+          )}
+          {knowledgePreview && (
+            <div className="assistant-knowledge-preview">
+              <pre>{knowledgePreview.answerPreview}</pre>
+              <button type="button" onClick={ingestPreview}>Ingest into Knowledge Base</button>
+            </div>
+          )}
+          <ThreadPrimitive.Root className="assistant-thread">
+            <ThreadPrimitive.Viewport className="assistant-viewport">
+              <ThreadPrimitive.Empty>
+                <div className="assistant-empty">
+                  <div className="assistant-empty-icon">AI</div>
+                  <h2>Start a conversation</h2>
+                  <p>Ask a question, plan a feature, debug an issue, or explain code.</p>
+                </div>
+              </ThreadPrimitive.Empty>
+              <ThreadPrimitive.Messages
+                components={{
+                  UserMessage: UserBubble,
+                  AssistantMessage: AssistantBubble
+                }}
+              />
+            </ThreadPrimitive.Viewport>
+            <StatusBar isConnected={true} messageCount={completedMessageCount} />
+            <LoadedFilesBar
+              files={loadedFiles}
+              audio={loadedAudio}
+              onRemoveFile={path => setLoadedFiles(prev => prev.filter(file => file.path !== path))}
+              onRemoveAudio={path => setLoadedAudio(prev => prev.filter(file => file.path !== path))}
             />
-          </ThreadPrimitive.Viewport>
-          <StatusBar isConnected={true} messageCount={completedMessageCount} />
-          <ComposerPrimitive.Root className="assistant-composer">
-            <ComposerPrimitive.Input
-              className="assistant-input"
-              placeholder={placeholders[mode]}
-              submitMode="enter"
-              rows={1}
-            />
-            {isRunning && (
-              <ComposerPrimitive.Cancel className="assistant-stop-button">
-                Stop
-              </ComposerPrimitive.Cancel>
-            )}
-            <ComposerPrimitive.Send className="assistant-send-button" aria-label="Send message">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M3.6 20.4 21 12 3.6 3.6l2.2 7.1L14 12l-8.2 1.3-2.2 7.1Z" />
-              </svg>
-            </ComposerPrimitive.Send>
-          </ComposerPrimitive.Root>
-        </ThreadPrimitive.Root>
-      </section>
+            <ComposerPrimitive.Root className="assistant-composer">
+              <ComposerPrimitive.Input
+                className="assistant-input"
+                placeholder={placeholders[mode]}
+                submitMode="enter"
+                rows={1}
+              />
+              {isRunning && (
+                <ComposerPrimitive.Cancel className="assistant-stop-button">
+                  Stop
+                </ComposerPrimitive.Cancel>
+              )}
+              <ComposerPrimitive.Send className="assistant-send-button" aria-label="Send message">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3.6 20.4 21 12 3.6 3.6l2.2 7.1L14 12l-8.2 1.3-2.2 7.1Z" />
+                </svg>
+              </ComposerPrimitive.Send>
+            </ComposerPrimitive.Root>
+          </ThreadPrimitive.Root>
+        </section>
+      </div>
     </AssistantRuntimeProvider>
   );
 }
@@ -314,6 +390,8 @@ function getSystemPrompt(mode: ChatMode): string {
       return 'You are a science and inventions specialist. Separate invention, discovery, popularization, commercialization, and prior art; flag uncertainty and obsolete theories; include dates, contributors, predecessors, principles, impact, disputes, and sources.';
     case 'music':
       return 'You are a Music Production Genius. Help with original beats, song structure, music theory, vocals, mixing, mastering, DAW workflows, and collaboration. Avoid copyrighted lyric continuation and artist cloning.';
+    case 'gaming':
+      return 'You are a broad gaming specialist. Help with games, engines, lore, modding, speedrunning, platform questions, strategy, game analysis, and game development routing.';
     case 'suno':
       return 'You are a Suno prompt specialist. Return safe prompts with style tags, structure, vocal direction, revision guidance, avoid list, and rights/copyright note. Do not impersonate living artists or continue copyrighted lyrics.';
     case 'fl_studio':

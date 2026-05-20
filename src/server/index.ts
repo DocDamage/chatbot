@@ -24,6 +24,11 @@ import { requireAuth } from '../middleware/auth';
 import { createRagQueryRouter } from './routes/rag-query';
 import { createKnowledgeBaseRouter } from './routes/knowledge-base';
 import { createCodeRouter } from './routes/code';
+import { createPlansRouter } from './routes/plans';
+import { createFilesRouter } from './routes/files';
+import { createAudioRouter } from './routes/audio';
+import { createGamingRouter } from './routes/gaming';
+import { createKnowledgeOnlineRouter } from './routes/knowledge-online';
 import { createMathRouter } from './routes/math';
 import { createMarketRouter } from './routes/market';
 import { createGameDevRouter } from './routes/gamedev';
@@ -47,6 +52,8 @@ import { createEngineeringGeniusRouter } from './routes/engineering';
 import { createKnowledgeOsRouter } from './routes/knowledge-os';
 import { HumanLanguageRoute, HumanLanguageRouter } from '../core/nlu/HumanLanguageRouter';
 import { KnowledgeOsChatAgent } from '../core/knowledge-os/KnowledgeOsChatAgent';
+import { detectUserIntent, requiresSwitchForIntent } from '../core/modes/ModePolicy';
+import { PlanDocumentService } from '../core/planning/PlanDocumentService';
 
 // Validate configuration on startup
 try {
@@ -89,6 +96,7 @@ const humanLanguageRouter = new HumanLanguageRouter();
 type ChatSpecialistMode =
   | 'coding'
   | 'math'
+  | 'gaming'
   | 'market'
   | 'gamedev'
   | 'pop_culture'
@@ -115,6 +123,7 @@ type ChatSpecialistMode =
 const specialistModes = new Set([
   'coding',
   'math',
+  'gaming',
   'market',
   'gamedev',
   'pop_culture',
@@ -147,6 +156,9 @@ function inferChatSpecialistMode(message: string, mode?: string): ChatSpecialist
   const text = message.toLowerCase();
   if (/\b(knowledge os|knowledge system|local database|database status|how many chunks|how many sources|knowledge graph|graph centrality|private memory|local wiki)\b/.test(text)) {
     return 'knowledge_os';
+  }
+  if (/\b(video game|gaming|game lore|speedrun|speedrunning|modding|rom hack|emulation|save editor|esports|competitive mechanics|game platform|steam deck|nintendo|playstation|xbox)\b/.test(text)) {
+    return 'gaming';
   }
   if (/\b(connect to fl|control fl|fl studio control|piano roll|channel rack|mixer track|send chord|send notes|step sequence|solo the drums|turn down track|transport)\b/.test(text)) {
     return 'fl_studio_control';
@@ -226,6 +238,11 @@ async function processSpecialistChat(message: string, mode: ChatSpecialistMode, 
 
   if (mode === 'gamedev' && services.gameDevGeniusAgent) {
     const result = await services.gameDevGeniusAgent.answer(message);
+    return { ...result, nlu };
+  }
+
+  if (mode === 'gaming' && services.gamingGeniusAgent) {
+    const result = await services.gamingGeniusAgent.ask(message);
     return { ...result, nlu };
   }
 
@@ -652,6 +669,42 @@ app.post('/api/chat',
 
     // Sanitize input
     const sanitizedMessage = sanitizeInput(message);
+    const detectedIntent = detectUserIntent(sanitizedMessage);
+    const switchRequirement = requiresSwitchForIntent(mode, detectedIntent);
+    if (switchRequirement.required && !(mode === 'plan' && detectedIntent === 'implement')) {
+      return res.json({
+        response: switchRequirement.message,
+        sources: [],
+        mode,
+        model: 'mode-policy',
+        modeSwitch: {
+          targetMode: switchRequirement.targetMode,
+          reason: detectedIntent
+        }
+      });
+    }
+
+    if (mode === 'plan') {
+      const plan = await new PlanDocumentService(process.cwd()).createPlan({
+        userRequest: sanitizedMessage,
+        mode: 'plan'
+      });
+      return res.json({
+        response: `${plan.summary}\n\nSaved plan: ${plan.planPath}\n\nSwitch to Implement when you want to turn this plan into code.`,
+        sources: [plan.planPath],
+        mode: 'plan',
+        model: 'plan-document-service',
+        planId: plan.planId,
+        planPath: plan.planPath,
+        savedMarkdown: true,
+        suggestedNextMode: 'implement',
+        actions: [
+          { type: 'switch_mode', label: 'Switch to Implement', mode: 'implement' },
+          { type: 'open_plan', label: 'Open Plan', planId: plan.planId }
+        ]
+      });
+    }
+
     const nlu = humanLanguageRouter.route({
       message: sanitizedMessage,
       explicitMode: mode
@@ -897,6 +950,21 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
+  const router = createPlansRouter(process.cwd());
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createFilesRouter(process.cwd());
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createAudioRouter(process.cwd());
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
   const router = createMathRouter(services);
   router(req, res, next);
 });
@@ -908,6 +976,11 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   const router = createGameDevRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createGamingRouter(services);
   router(req, res, next);
 });
 
@@ -988,6 +1061,11 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   const router = createEngineeringGeniusRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createKnowledgeOnlineRouter(services);
   router(req, res, next);
 });
 
