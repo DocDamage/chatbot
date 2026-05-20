@@ -161,7 +161,7 @@ export class TemplateAdapter implements LLMAdapter {
     
     // Simple keyword matching for fallback responses
     for (const [keyword, response] of this.responses.entries()) {
-      if (prompt.includes(keyword.toLowerCase())) {
+      if (this.matchesKeyword(prompt, keyword)) {
         return {
           content: response,
           model: 'template',
@@ -204,6 +204,11 @@ export class TemplateAdapter implements LLMAdapter {
       'your capabilities',
       'what do you do'
     ].some(phrase => prompt.includes(phrase));
+  }
+
+  private matchesKeyword(prompt: string, keyword: string): boolean {
+    const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`\\b${escapedKeyword}\\b`, 'i').test(prompt);
   }
 }
 

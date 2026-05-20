@@ -42,6 +42,15 @@ describe('LLM Adapters', () => {
       expect(response.model).toBe('template');
     });
 
+    it('should not match short greeting keywords inside longer words', async () => {
+      const response = await adapter.generate({
+        prompt: 'tell me something from 1995',
+      });
+
+      expect(response.content).not.toBe('Hi there! What would you like to know?');
+      expect(response.model).toBe('template');
+    });
+
     it('should estimate zero cost', () => {
       const cost = adapter.estimateCost({
         prompt: 'test',

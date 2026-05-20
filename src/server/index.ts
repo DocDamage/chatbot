@@ -70,6 +70,68 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 let services: any;
 let orchestrator: any;
 
+type ChatSpecialistMode = 'pop_culture' | 'history' | 'science';
+
+const specialistModes = new Set(['pop_culture', 'history', 'science']);
+
+function inferChatSpecialistMode(message: string, mode?: string): ChatSpecialistMode | undefined {
+  if (mode && specialistModes.has(mode)) {
+    return mode as ChatSpecialistMode;
+  }
+
+  const text = message.toLowerCase();
+  if (/(pop culture|movie|film|tv|television|music|album|song|radio|comic|animation|video game|celebrity|award|franchise|meme)/.test(text)) {
+    return 'pop_culture';
+  }
+  if (/(history|historical|ancient|medieval|empire|war|civilization|archaeolog|dynasty|revolution|bc|bce|ce\b)/.test(text)) {
+    return 'history';
+  }
+  if (/(invention|invented|discovery|science|scientific|paper|patent|technology|physics|chemistry|biology|astronomy|medicine)/.test(text)) {
+    return 'science';
+  }
+  if (/(tell me something from|something from|what happened in)\s+(19[2-9]\d|20[0-2]\d)\b/.test(text)) {
+    return 'pop_culture';
+  }
+
+  return undefined;
+}
+
+async function processSpecialistChat(message: string, mode: ChatSpecialistMode) {
+  if (!services) return undefined;
+
+  if (mode === 'pop_culture' && services.popCultureGeniusAgent) {
+    const result = await services.popCultureGeniusAgent.ask(message);
+    return {
+      response: result.response,
+      sources: result.sources,
+      mode,
+      model: 'pop-culture-specialist'
+    };
+  }
+
+  if (mode === 'history' && services.historyGeniusAgent) {
+    const result = await services.historyGeniusAgent.ask(message);
+    return {
+      response: result.response,
+      sources: result.sources,
+      mode,
+      model: 'history-specialist'
+    };
+  }
+
+  if (mode === 'science' && services.scienceInventionGeniusAgent) {
+    const result = await services.scienceInventionGeniusAgent.ask(message);
+    return {
+      response: result.response,
+      sources: result.sources,
+      mode,
+      model: 'science-specialist'
+    };
+  }
+
+  return undefined;
+}
+
 const ENV_PATH = path.join(process.cwd(), '.env');
 const SETTINGS_KEYS = [
   'LLM_PROVIDER',
@@ -400,10 +462,17 @@ app.post('/api/chat',
       });
     }
 
-    const { message, sessionId, userId } = req.body;
+    const { message, sessionId, userId, mode } = req.body;
 
     // Sanitize input
     const sanitizedMessage = sanitizeInput(message);
+    const specialistMode = inferChatSpecialistMode(sanitizedMessage, mode);
+    if (specialistMode) {
+      const specialistResponse = await processSpecialistChat(sanitizedMessage, specialistMode);
+      if (specialistResponse) {
+        return res.json(specialistResponse);
+      }
+    }
 
     const request: ChatRequest = {
       message: sanitizedMessage,
