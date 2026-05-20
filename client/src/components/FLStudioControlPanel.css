@@ -1,0 +1,388 @@
+.fl-control-panel {
+  display: grid;
+  gap: 12px;
+  max-height: min(58vh, 560px);
+  overflow: auto;
+  padding: 14px 18px;
+  border-bottom: 1px solid #262626;
+  background: #080808;
+  color: #ffffff;
+}
+
+.fl-cockpit-top {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #262626;
+  border-radius: 12px;
+  background: #0d0d0d;
+}
+
+.fl-control-status,
+.fl-mode-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.fl-control-status > div:first-child,
+.fl-mode-strip {
+  min-width: 0;
+}
+
+.fl-control-status > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fl-control-status strong {
+  font-size: 13px;
+}
+
+.fl-control-status span:last-child,
+.fl-module-header span,
+.fl-warning {
+  color: #a3a3a3;
+  font-size: 12px;
+}
+
+.fl-control-dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #737373;
+}
+
+.fl-control-dot.connected {
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.14);
+}
+
+.fl-control-actions,
+.fl-transport-buttons,
+.fl-command-actions,
+.fl-control-chips,
+.fl-control-tools,
+.fl-toggle-row,
+.fl-log-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fl-mode-strip {
+  justify-content: flex-start;
+}
+
+.fl-mode-strip label,
+.fl-confirm-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #d4d4d4;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.fl-confirm-toggle input,
+.fl-toggle-row input {
+  min-height: auto !important;
+}
+
+.fl-control-panel button,
+.fl-control-panel select,
+.fl-control-panel input,
+.fl-control-panel textarea {
+  border: 1px solid #3f3f46;
+  border-radius: 9px;
+  background: #111111;
+  color: #ffffff;
+  font: inherit;
+}
+
+.fl-control-panel button {
+  min-height: 34px;
+  padding: 0 11px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.fl-control-panel button:hover:not(:disabled) {
+  border-color: #ffffff;
+}
+
+.fl-control-panel button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.fl-control-panel select,
+.fl-control-panel input,
+.fl-control-panel textarea {
+  min-height: 36px;
+  min-width: 0;
+  padding: 0 10px;
+  outline: none;
+}
+
+.fl-control-panel textarea {
+  min-height: 92px;
+  resize: vertical;
+  padding: 9px 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.fl-control-panel select:focus,
+.fl-control-panel input:focus,
+.fl-control-panel textarea:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+}
+
+.fl-control-board {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.8fr) minmax(260px, 1.2fr) minmax(270px, 1fr);
+  gap: 12px;
+}
+
+.fl-module {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+  border: 1px solid #262626;
+  border-radius: 12px;
+  background: #0d0d0d;
+  padding: 12px;
+}
+
+.fl-module-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.fl-module h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+.fl-module label {
+  display: grid;
+  gap: 6px;
+  color: #d4d4d4;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.fl-module.command,
+.fl-module.tools,
+.fl-module.inspector,
+.fl-module.mix-pass,
+.fl-module.tool-console {
+  grid-column: span 2;
+}
+
+.fl-transport-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.fl-transport-buttons button,
+.fl-control-primary {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+.fl-inline-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  align-items: end;
+}
+
+.fl-step-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.fl-step {
+  min-height: 30px !important;
+  padding: 0 !important;
+  color: #a3a3a3;
+}
+
+.fl-step.beat {
+  border-color: #737373;
+}
+
+.fl-step.active {
+  border-color: #ffffff;
+  background: #ffffff;
+  color: #000000;
+}
+
+.fl-toggle-row label {
+  display: flex;
+  grid-template-columns: none;
+  align-items: center;
+}
+
+.fl-command-actions {
+  align-items: center;
+}
+
+.fl-control-chips button {
+  max-width: 100%;
+  color: #d4d4d4;
+  font-weight: 650;
+}
+
+.fl-preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.fl-preset-row button {
+  min-height: 28px;
+  color: #d4d4d4;
+  font-size: 11px;
+}
+
+.fl-meter-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.fl-meter-grid span {
+  display: grid;
+  gap: 4px;
+  border: 1px solid #262626;
+  border-radius: 10px;
+  background: #050505;
+  color: #a3a3a3;
+  padding: 8px;
+  font-size: 11px;
+}
+
+.fl-meter-grid strong {
+  color: #ffffff;
+  font-size: 16px;
+}
+
+.fl-control-tools {
+  align-items: center;
+}
+
+.fl-control-tools code {
+  border: 1px solid #2f2f2f;
+  border-radius: 999px;
+  background: #050505;
+  color: #e5e5e5;
+  padding: 4px 8px;
+  font-size: 11px;
+}
+
+.fl-log-list {
+  display: grid;
+  gap: 5px;
+}
+
+.fl-log-list span {
+  overflow: hidden;
+  color: #a3a3a3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+}
+
+.fl-inspector-buttons {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.fl-inspector-output {
+  max-height: 180px;
+  min-height: 112px;
+  overflow: auto;
+  margin: 0;
+  border: 1px solid #262626;
+  border-radius: 10px;
+  background: #050505;
+  color: #e5e5e5;
+  padding: 10px;
+  white-space: pre-wrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.fl-control-message {
+  max-height: 180px;
+  overflow: auto;
+  margin: 0;
+  border: 1px solid #262626;
+  border-radius: 12px;
+  background: #050505;
+  color: #e5e5e5;
+  padding: 10px;
+  white-space: pre-wrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+@media (max-width: 980px) {
+  .fl-control-board {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fl-module.command,
+  .fl-module.tools,
+  .fl-module.inspector,
+  .fl-module.mix-pass,
+  .fl-module.tool-console {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 720px) {
+  .fl-control-panel {
+    max-height: 62vh;
+    padding: 12px;
+  }
+
+  .fl-control-status,
+  .fl-mode-strip {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .fl-control-board,
+  .fl-inline-controls,
+  .fl-inspector-buttons,
+  .fl-meter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fl-module.command,
+  .fl-module.tools,
+  .fl-module.inspector,
+  .fl-module.mix-pass,
+  .fl-module.tool-console {
+    grid-column: auto;
+  }
+}

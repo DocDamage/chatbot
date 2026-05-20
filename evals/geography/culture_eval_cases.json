@@ -1,0 +1,10 @@
+[
+  {
+    "id": "geography-culture-001",
+    "query": "Geography / World Cultures Genius culture test",
+    "must_contain": [
+      "Geography"
+    ],
+    "answer_type": "geography_culture"
+  }
+]

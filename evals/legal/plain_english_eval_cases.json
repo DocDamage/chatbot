@@ -1,0 +1,10 @@
+[
+  {
+    "id": "legal-plain_english-001",
+    "query": "Legal / Civic Genius plain english test",
+    "must_contain": [
+      "Legal"
+    ],
+    "answer_type": "legal_plain_english"
+  }
+]

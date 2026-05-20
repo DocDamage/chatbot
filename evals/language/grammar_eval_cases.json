@@ -1,0 +1,10 @@
+[
+  {
+    "id": "language-grammar-001",
+    "query": "Language / Communication Genius grammar test",
+    "must_contain": [
+      "Language"
+    ],
+    "answer_type": "language_grammar"
+  }
+]

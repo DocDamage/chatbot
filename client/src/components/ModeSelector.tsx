@@ -1,7 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ModeSelector.css';
 
-export type ChatMode = 'ask' | 'plan' | 'implement' | 'debug' | 'explain' | 'pop_culture' | 'history' | 'science';
+export type ChatMode =
+    | 'ask'
+    | 'plan'
+    | 'implement'
+    | 'debug'
+    | 'explain'
+    | 'pop_culture'
+    | 'history'
+    | 'science'
+    | 'music'
+    | 'suno'
+    | 'fl_studio'
+    | 'fl_studio_control'
+    | 'pro_tools'
+    | 'logic'
+    | 'mix_master';
 
 interface ModeSelectorProps {
     mode: ChatMode;
@@ -56,6 +71,48 @@ const modeConfig: Record<ChatMode, { icon: string; label: string; description: s
         label: 'Science',
         description: 'Inventions, papers, and patents',
         color: '#2aa7a5'
+    },
+    music: {
+        icon: '🎛️',
+        label: 'Music',
+        description: 'Production, beats, mix, and DAWs',
+        color: '#22c55e'
+    },
+    suno: {
+        icon: '🎤',
+        label: 'Suno',
+        description: 'Prompts, hooks, revisions, rights',
+        color: '#f97316'
+    },
+    fl_studio: {
+        icon: '🎹',
+        label: 'FL Studio',
+        description: 'Patterns, 808s, mixer, export',
+        color: '#f59e0b'
+    },
+    fl_studio_control: {
+        icon: '🎛️',
+        label: 'FL Control',
+        description: 'Dry-run DAW control plans',
+        color: '#fb923c'
+    },
+    pro_tools: {
+        icon: '🎚️',
+        label: 'Pro Tools',
+        description: 'Recording, comping, stems, post',
+        color: '#38bdf8'
+    },
+    logic: {
+        icon: '🎼',
+        label: 'Logic Pro',
+        description: 'MIDI, vocals, stock plugins',
+        color: '#a78bfa'
+    },
+    mix_master: {
+        icon: '📊',
+        label: 'Mix/Master',
+        description: 'Diagnostics, loudness, chains',
+        color: '#14b8a6'
     }
 };
 
@@ -89,7 +146,8 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onModeChange }) => {
                     '5': 'explain',
                     '6': 'pop_culture',
                     '7': 'history',
-                    '8': 'science'
+                    '8': 'science',
+                    '9': 'music'
                 };
 
                 if (modeMap[e.key]) {
@@ -135,7 +193,7 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onModeChange }) => {
                                     <span className="mode-option-label">{config.label}</span>
                                     <span className="mode-option-description">{config.description}</span>
                                 </div>
-                                <span className="mode-shortcut">⌘{index + 1}</span>
+                                {index < 9 && <span className="mode-shortcut">⌘{index + 1}</span>}
                             </button>
                         );
                     })}

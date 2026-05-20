@@ -1,0 +1,10 @@
+[
+  {
+    "id": "health-medication_safety-001",
+    "query": "Medical / Health / Anatomy Genius medication safety test",
+    "must_contain": [
+      "Medical"
+    ],
+    "answer_type": "health_medication_safety"
+  }
+]

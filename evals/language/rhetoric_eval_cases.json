@@ -1,0 +1,10 @@
+[
+  {
+    "id": "language-rhetoric-001",
+    "query": "Language / Communication Genius rhetoric test",
+    "must_contain": [
+      "Language"
+    ],
+    "answer_type": "language_rhetoric"
+  }
+]

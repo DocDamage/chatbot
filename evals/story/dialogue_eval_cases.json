@@ -1,0 +1,10 @@
+[
+  {
+    "id": "story-dialogue-001",
+    "query": "Story / Worldbuilding Genius dialogue test",
+    "must_contain": [
+      "Story"
+    ],
+    "answer_type": "story_dialogue"
+  }
+]

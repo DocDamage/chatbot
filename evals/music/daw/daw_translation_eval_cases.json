@@ -1,0 +1,8 @@
+[
+  {
+    "id": "daw-nested-001",
+    "query": "Translate FL Studio Channel Rack workflow into Logic Pro.",
+    "must_contain": ["Channel Rack", "Logic", "software instrument"],
+    "answer_type": "daw_translation"
+  }
+]

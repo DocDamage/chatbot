@@ -39,6 +39,28 @@ import { ChronoKnowledgeEngine } from '../chrono/ChronoKnowledgeEngine';
 import { PopCultureGeniusAgent } from '../agents/culture/PopCultureGeniusAgent';
 import { HistoryGeniusAgent } from '../agents/history/HistoryGeniusAgent';
 import { ScienceInventionGeniusAgent } from '../agents/science/ScienceInventionGeniusAgent';
+import { MusicProductionGeniusAgent } from '../agents/music/MusicProductionGeniusAgent';
+import { MixGeniusAgent } from '../agents/music/mix/MixGeniusAgent';
+import { SunoGeniusAgent } from '../agents/music/suno/SunoGeniusAgent';
+import { FLStudioGeniusAgent } from '../agents/music/flstudio/FLStudioGeniusAgent';
+import { ProToolsGeniusAgent } from '../agents/music/protools/ProToolsGeniusAgent';
+import { LogicProGeniusAgent } from '../agents/music/logic/LogicProGeniusAgent';
+import { FLStudioControlAgent } from '../integrations/flstudio/FLStudioControlAgent';
+import { FLStudioMcpClient } from '../integrations/flstudio/FLStudioMcpClient';
+import { FLStudioCommandPlanner } from '../integrations/flstudio/FLStudioCommandPlanner';
+import { FLStudioSafetyGate } from '../integrations/flstudio/FLStudioSafetyGate';
+import { FLStudioSessionState } from '../integrations/flstudio/FLStudioSessionState';
+import { McpAuditLogger } from '../mcp/McpAuditLogger';
+import { McpClientService } from '../mcp/McpClientService';
+import { StoryGeniusAgent } from '../agents/story/StoryGeniusAgent';
+import { LegalCivicGeniusAgent } from '../agents/legal/LegalCivicGeniusAgent';
+import { HealthGeniusAgent } from '../agents/health/HealthGeniusAgent';
+import { SecurityGeniusAgent } from '../agents/security/SecurityGeniusAgent';
+import { BusinessGeniusAgent } from '../agents/business/BusinessGeniusAgent';
+import { PhilosophyGeniusAgent } from '../agents/philosophy/PhilosophyGeniusAgent';
+import { LanguageGeniusAgent } from '../agents/language/LanguageGeniusAgent';
+import { GeoCultureGeniusAgent } from '../agents/geography/GeoCultureGeniusAgent';
+import { EngineeringGeniusAgent } from '../agents/engineering/EngineeringGeniusAgent';
 import { CpkCalculatorTool } from '../tools/sixsigma/CpkCalculatorTool';
 import { SampleSizeTool } from '../tools/sixsigma/SampleSizeTool';
 import { GageRRTool } from '../tools/sixsigma/GageRRTool';
@@ -47,6 +69,7 @@ import { CopqTool } from '../tools/sixsigma/CopqTool';
 import { AnovaTool } from '../tools/sixsigma/AnovaTool';
 import { RegressionTool } from '../tools/sixsigma/RegressionTool';
 import { ControlChartConstantsTool } from '../tools/sixsigma/ControlChartConstantsTool';
+import { createMusicTools } from '../tools/music/createMusicTools';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -66,6 +89,22 @@ export interface InitializedServices {
   popCultureGeniusAgent?: PopCultureGeniusAgent;
   historyGeniusAgent?: HistoryGeniusAgent;
   scienceInventionGeniusAgent?: ScienceInventionGeniusAgent;
+  musicProductionGeniusAgent?: MusicProductionGeniusAgent;
+  mixGeniusAgent?: MixGeniusAgent;
+  sunoGeniusAgent?: SunoGeniusAgent;
+  flStudioGeniusAgent?: FLStudioGeniusAgent;
+  flStudioControlAgent?: FLStudioControlAgent;
+  proToolsGeniusAgent?: ProToolsGeniusAgent;
+  logicProGeniusAgent?: LogicProGeniusAgent;
+  storyGeniusAgent?: StoryGeniusAgent;
+  legalCivicGeniusAgent?: LegalCivicGeniusAgent;
+  healthGeniusAgent?: HealthGeniusAgent;
+  securityGeniusAgent?: SecurityGeniusAgent;
+  businessGeniusAgent?: BusinessGeniusAgent;
+  philosophyGeniusAgent?: PhilosophyGeniusAgent;
+  languageGeniusAgent?: LanguageGeniusAgent;
+  geoCultureGeniusAgent?: GeoCultureGeniusAgent;
+  engineeringGeniusAgent?: EngineeringGeniusAgent;
   visionAdapter?: any;
   embeddingService?: EmbeddingService;
   database?: Database;
@@ -117,8 +156,9 @@ export class ServiceInitializer {
 
     const documentManager = new DocumentManager(ragService, embeddingService, ragDocumentStore);
 
-    // 5. Load knowledge base documents
+    // 5. Load private and committed public knowledge base documents
     await this.loadKnowledgeBase(documentManager);
+    await this.loadPublicKnowledgeBase(documentManager);
     logger.info('RAG service initialized');
 
     // 6. Initialize Safety Pipeline
@@ -182,12 +222,56 @@ export class ServiceInitializer {
     const popCultureGeniusAgent = new PopCultureGeniusAgent(chronoKnowledgeEngine);
     const historyGeniusAgent = new HistoryGeniusAgent(chronoKnowledgeEngine);
     const scienceInventionGeniusAgent = new ScienceInventionGeniusAgent(chronoKnowledgeEngine);
+    const sunoGeniusAgent = new SunoGeniusAgent();
+    const flStudioGeniusAgent = new FLStudioGeniusAgent();
+    const flStudioControlAgent = new FLStudioControlAgent(
+      new FLStudioMcpClient(new McpClientService()),
+      new FLStudioCommandPlanner(),
+      new FLStudioSafetyGate(),
+      new FLStudioSessionState(),
+      new McpAuditLogger()
+    );
+    const proToolsGeniusAgent = new ProToolsGeniusAgent();
+    const logicProGeniusAgent = new LogicProGeniusAgent();
+    const musicProductionGeniusAgent = new MusicProductionGeniusAgent({
+      documentStore: ragDocumentStore,
+      suno: sunoGeniusAgent,
+      flStudio: flStudioGeniusAgent,
+      proTools: proToolsGeniusAgent,
+      logic: logicProGeniusAgent
+    });
+    const mixGeniusAgent = new MixGeniusAgent(flStudioControlAgent);
+    const storyGeniusAgent = new StoryGeniusAgent(ragDocumentStore);
+    const legalCivicGeniusAgent = new LegalCivicGeniusAgent(ragDocumentStore);
+    const healthGeniusAgent = new HealthGeniusAgent(ragDocumentStore);
+    const securityGeniusAgent = new SecurityGeniusAgent(ragDocumentStore);
+    const businessGeniusAgent = new BusinessGeniusAgent(ragDocumentStore);
+    const philosophyGeniusAgent = new PhilosophyGeniusAgent(ragDocumentStore);
+    const languageGeniusAgent = new LanguageGeniusAgent(ragDocumentStore);
+    const geoCultureGeniusAgent = new GeoCultureGeniusAgent(ragDocumentStore);
+    const engineeringGeniusAgent = new EngineeringGeniusAgent(ragDocumentStore);
     logger.info('Specialist agents initialized', {
       math: true,
       market: true,
       gamedev: true,
       sixsigma: true,
-      chrono: true
+      chrono: true,
+      music: true,
+      mixGenius: true,
+      suno: true,
+      flStudio: true,
+      flStudioControl: true,
+      proTools: true,
+      logicPro: true,
+      story: true,
+      legal: true,
+      health: true,
+      security: true,
+      business: true,
+      philosophy: true,
+      language: true,
+      geography: true,
+      engineering: true
     });
 
     logger.info('✅ All services initialized successfully');
@@ -208,6 +292,22 @@ export class ServiceInitializer {
       popCultureGeniusAgent,
       historyGeniusAgent,
       scienceInventionGeniusAgent,
+      musicProductionGeniusAgent,
+      mixGeniusAgent,
+      sunoGeniusAgent,
+      flStudioGeniusAgent,
+      flStudioControlAgent,
+      proToolsGeniusAgent,
+      logicProGeniusAgent,
+      storyGeniusAgent,
+      legalCivicGeniusAgent,
+      healthGeniusAgent,
+      securityGeniusAgent,
+      businessGeniusAgent,
+      philosophyGeniusAgent,
+      languageGeniusAgent,
+      geoCultureGeniusAgent,
+      engineeringGeniusAgent,
       visionAdapter,
       embeddingService,
       database,
@@ -447,6 +547,50 @@ The system will automatically:
     }
   }
 
+  private static async loadPublicKnowledgeBase(documentManager: DocumentManager): Promise<void> {
+    const publicKbDir = process.env.PUBLIC_KNOWLEDGE_BASE_DIR || './knowledge-base-public';
+
+    if (!fs.existsSync(publicKbDir)) {
+      logger.info('Public knowledge base directory not found, skipping', { dir: publicKbDir });
+      return;
+    }
+
+    try {
+      const stats = fs.statSync(publicKbDir);
+      if (!stats.isDirectory()) {
+        logger.warn('Public knowledge base path is not a directory', { path: publicKbDir });
+        return;
+      }
+
+      const files = this.countFiles(publicKbDir);
+      if (files === 0) {
+        logger.info('Public knowledge base directory is empty', { dir: publicKbDir });
+        return;
+      }
+
+      logger.info('Loading public knowledge base documents...', { dir: publicKbDir, filesCount: files });
+
+      await documentManager.addDirectory(publicKbDir, {
+        generateEmbeddings: process.env.RAG_GENERATE_EMBEDDINGS !== 'false',
+        chunkSize: parseInt(process.env.RAG_CHUNK_SIZE || '500')
+      });
+
+      logger.info('Public knowledge base loaded successfully', {
+        dir: publicKbDir,
+        filesCount: files
+      });
+    } catch (error: any) {
+      logger.error('Failed to load public knowledge base', { error: error.message, dir: publicKbDir });
+    }
+  }
+
+  private static countFiles(directoryPath: string): number {
+    return fs.readdirSync(directoryPath, { withFileTypes: true }).reduce((count, entry) => {
+      const entryPath = path.join(directoryPath, entry.name);
+      return count + (entry.isDirectory() ? this.countFiles(entryPath) : entry.isFile() ? 1 : 0);
+    }, 0);
+  }
+
   /**
    * Initialize safety pipeline
    */
@@ -566,6 +710,11 @@ The system will automatically:
     registry.register(new AnovaTool());
     registry.register(new RegressionTool());
     registry.register(new ControlChartConstantsTool());
+
+    // 9. Music production and DAW deterministic tools
+    for (const musicTool of createMusicTools()) {
+      registry.register(musicTool);
+    }
 
     logger.info('Tools registered', {
       tools: registry.getAll().map(t => t.name)

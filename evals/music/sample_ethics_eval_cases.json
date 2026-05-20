@@ -1,0 +1,10 @@
+[
+  {
+    "id": "music-sample_ethics-001",
+    "query": "Music Production Genius sample ethics test",
+    "must_contain": [
+      "Music"
+    ],
+    "answer_type": "music_sample_ethics"
+  }
+]

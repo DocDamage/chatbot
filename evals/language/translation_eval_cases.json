@@ -1,0 +1,10 @@
+[
+  {
+    "id": "language-translation-001",
+    "query": "Language / Communication Genius translation test",
+    "must_contain": [
+      "Language"
+    ],
+    "answer_type": "language_translation"
+  }
+]

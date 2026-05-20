@@ -1,0 +1,10 @@
+[
+  {
+    "id": "music-theory-001",
+    "query": "Music Production Genius theory test",
+    "must_contain": [
+      "Music"
+    ],
+    "answer_type": "music_theory"
+  }
+]

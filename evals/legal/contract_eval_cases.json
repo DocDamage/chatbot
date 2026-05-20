@@ -1,0 +1,10 @@
+[
+  {
+    "id": "legal-contract-001",
+    "query": "Legal / Civic Genius contract test",
+    "must_contain": [
+      "Legal"
+    ],
+    "answer_type": "legal_contract"
+  }
+]

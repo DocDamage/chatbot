@@ -1,0 +1,10 @@
+[
+  {
+    "id": "story-continuity-001",
+    "query": "Story / Worldbuilding Genius continuity test",
+    "must_contain": [
+      "Story"
+    ],
+    "answer_type": "story_continuity"
+  }
+]

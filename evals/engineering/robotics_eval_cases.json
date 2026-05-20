@@ -1,0 +1,10 @@
+[
+  {
+    "id": "engineering-robotics-001",
+    "query": "Engineering / Maker / Robotics Genius robotics test",
+    "must_contain": [
+      "Engineering"
+    ],
+    "answer_type": "engineering_robotics"
+  }
+]

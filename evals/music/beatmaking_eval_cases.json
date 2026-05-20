@@ -1,0 +1,10 @@
+[
+  {
+    "id": "music-beatmaking-001",
+    "query": "Music Production Genius beatmaking test",
+    "must_contain": [
+      "Music"
+    ],
+    "answer_type": "music_beatmaking"
+  }
+]

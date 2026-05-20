@@ -1,0 +1,10 @@
+[
+  {
+    "id": "business-unit_economics-001",
+    "query": "Business / Product / Startup Genius unit economics test",
+    "must_contain": [
+      "Business"
+    ],
+    "answer_type": "business_unit_economics"
+  }
+]

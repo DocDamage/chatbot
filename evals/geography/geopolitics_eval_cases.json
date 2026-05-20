@@ -1,0 +1,10 @@
+[
+  {
+    "id": "geography-geopolitics-001",
+    "query": "Geography / World Cultures Genius geopolitics test",
+    "must_contain": [
+      "Geography"
+    ],
+    "answer_type": "geography_geopolitics"
+  }
+]

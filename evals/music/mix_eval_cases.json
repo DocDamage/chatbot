@@ -1,0 +1,9 @@
+[
+  {
+    "id": "mix-001",
+    "query": "My 808 and kick are fighting. What do I do?",
+    "must_contain": ["masking", "EQ", "sidechain", "tuning", "gain"],
+    "must_not_contain": ["just make it louder"],
+    "answer_type": "mix_diagnostic"
+  }
+]

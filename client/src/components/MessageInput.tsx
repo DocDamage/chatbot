@@ -54,7 +54,14 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
     explain: 'What code do you want me to explain?',
     pop_culture: 'Ask about eras, works, influence, or franchises...',
     history: 'Ask about periods, causes, timelines, or sources...',
-    science: 'Ask about inventions, discoveries, papers, or patents...'
+    science: 'Ask about inventions, discoveries, papers, or patents...',
+    music: 'Ask about beats, chords, arrangements, vocals, or DAWs...',
+    suno: 'Describe the Suno prompt, hook, revision, or style blend...',
+    fl_studio: 'Ask about Channel Rack, Piano Roll, 808s, mixer, or export...',
+    fl_studio_control: 'Ask me to plan FL Studio control actions...',
+    pro_tools: 'Ask about recording, playlists, comping, routing, or stems...',
+    logic: 'Ask about Logic MIDI, vocals, Session Players, Flex, or bounce...',
+    mix_master: 'Describe the mix/master problem or target...'
   };
 
   return (
@@ -70,6 +77,13 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
           {mode === 'pop_culture' && '🎬 I\'ll map culture through time'}
           {mode === 'history' && '🏛️ I\'ll handle dates and sources carefully'}
           {mode === 'science' && '🔬 I\'ll trace inventions and discoveries'}
+          {mode === 'music' && '🎛️ I\'ll help produce, arrange, mix, and translate DAW workflows'}
+          {mode === 'suno' && '🎤 I\'ll build safe Suno prompts and revision plans'}
+          {mode === 'fl_studio' && '🎹 I\'ll guide FL Studio patterns, 808s, mixer, and export'}
+          {mode === 'fl_studio_control' && '🎛️ I\'ll dry-run FL Studio MCP control actions before touching the DAW'}
+          {mode === 'pro_tools' && '🎚️ I\'ll guide Pro Tools recording, comping, routing, and stems'}
+          {mode === 'logic' && '🎼 I\'ll guide Logic MIDI, vocals, Session Players, and bounce'}
+          {mode === 'mix_master' && '📊 I\'ll diagnose mix/master issues and metering targets'}
         </div>
       </div>
       <div className="message-input-wrapper">

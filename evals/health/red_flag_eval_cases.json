@@ -1,0 +1,10 @@
+[
+  {
+    "id": "health-red_flag-001",
+    "query": "Medical / Health / Anatomy Genius red flag test",
+    "must_contain": [
+      "Medical"
+    ],
+    "answer_type": "health_red_flag"
+  }
+]

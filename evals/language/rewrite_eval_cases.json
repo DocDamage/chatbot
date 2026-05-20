@@ -1,0 +1,10 @@
+[
+  {
+    "id": "language-rewrite-001",
+    "query": "Language / Communication Genius rewrite test",
+    "must_contain": [
+      "Language"
+    ],
+    "answer_type": "language_rewrite"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "id": "business-strategy-001",
+    "query": "Business / Product / Startup Genius strategy test",
+    "must_contain": [
+      "Business"
+    ],
+    "answer_type": "business_strategy"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "id": "philosophy-ethics-001",
+    "query": "Philosophy / Logic / Debate Genius ethics test",
+    "must_contain": [
+      "Philosophy"
+    ],
+    "answer_type": "philosophy_ethics"
+  }
+]

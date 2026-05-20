@@ -1,0 +1,10 @@
+[
+  {
+    "id": "business-pricing-001",
+    "query": "Business / Product / Startup Genius pricing test",
+    "must_contain": [
+      "Business"
+    ],
+    "answer_type": "business_pricing"
+  }
+]

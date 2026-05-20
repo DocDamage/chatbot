@@ -1,0 +1,9 @@
+[
+  {
+    "id": "fl-808-001",
+    "query": "My 808 sounds off-key in FL Studio. What should I check?",
+    "must_contain": ["root note", "piano roll", "tuning", "sampler", "key"],
+    "must_not_contain": ["just turn it up"],
+    "answer_type": "fl_studio_workflow"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "id": "story-character-001",
+    "query": "Story / Worldbuilding Genius character test",
+    "must_contain": [
+      "Story"
+    ],
+    "answer_type": "story_character"
+  }
+]

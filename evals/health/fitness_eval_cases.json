@@ -1,0 +1,10 @@
+[
+  {
+    "id": "health-fitness-001",
+    "query": "Medical / Health / Anatomy Genius fitness test",
+    "must_contain": [
+      "Medical"
+    ],
+    "answer_type": "health_fitness"
+  }
+]

@@ -1,0 +1,13 @@
+# Barack Obama
+
+Domain: general
+Topic: Barack Obama
+Authority: reference
+Trust score: 0.72
+Source: Wikipedia summary API
+Source URL: https://en.wikipedia.org/wiki/Barack_Obama
+Last updated: 2026-05-20
+
+## Summary
+
+Barack Hussein Obama II is an American politician who served as the 44th president of the United States from 2009 to 2017. A member of the Democratic Party, he was the first African American president. Obama previously served as a U.S. senator representing Illinois from 2005 to 2008 and as an Illinois state senator from 1997 to 2004.

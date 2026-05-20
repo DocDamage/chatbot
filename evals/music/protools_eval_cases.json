@@ -1,0 +1,9 @@
+[
+  {
+    "id": "pt-vocal-001",
+    "query": "How should I set up a Pro Tools vocal recording session?",
+    "must_contain": ["sample rate", "audio track", "input", "playlist", "low latency", "record arm"],
+    "must_not_contain": ["MIDI track only"],
+    "answer_type": "pro_tools_recording"
+  }
+]

@@ -32,6 +32,18 @@ import { createChronoRouter } from './routes/chrono';
 import { createPopCultureRouter } from './routes/pop-culture';
 import { createHistoryRouter } from './routes/history';
 import { createScienceRouter } from './routes/science';
+import { LocalKnowledgeAnswerer } from '../core/knowledge/LocalKnowledgeAnswerer';
+import { createMusicProductionGeniusRouter } from './routes/music';
+import { createFLStudioControlRouter } from './routes/flstudio';
+import { createStoryGeniusRouter } from './routes/story';
+import { createLegalCivicGeniusRouter } from './routes/legal';
+import { createHealthGeniusRouter } from './routes/health';
+import { createSecurityGeniusRouter } from './routes/security';
+import { createBusinessGeniusRouter } from './routes/business';
+import { createPhilosophyGeniusRouter } from './routes/philosophy';
+import { createLanguageGeniusRouter } from './routes/language';
+import { createGeoCultureGeniusRouter } from './routes/geography';
+import { createEngineeringGeniusRouter } from './routes/engineering';
 
 // Validate configuration on startup
 try {
@@ -70,9 +82,48 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 let services: any;
 let orchestrator: any;
 
-type ChatSpecialistMode = 'pop_culture' | 'history' | 'science';
+type ChatSpecialistMode =
+  | 'pop_culture'
+  | 'history'
+  | 'science'
+  | 'music'
+  | 'suno'
+  | 'fl_studio'
+  | 'fl_studio_control'
+  | 'pro_tools'
+  | 'logic'
+  | 'mix_master'
+  | 'story'
+  | 'legal'
+  | 'health'
+  | 'security'
+  | 'business'
+  | 'philosophy'
+  | 'language'
+  | 'geography'
+  | 'engineering';
 
-const specialistModes = new Set(['pop_culture', 'history', 'science']);
+const specialistModes = new Set([
+  'pop_culture',
+  'history',
+  'science',
+  'music',
+  'suno',
+  'fl_studio',
+  'fl_studio_control',
+  'pro_tools',
+  'logic',
+  'mix_master',
+  'story',
+  'legal',
+  'health',
+  'security',
+  'business',
+  'philosophy',
+  'language',
+  'geography',
+  'engineering'
+]);
 
 function inferChatSpecialistMode(message: string, mode?: string): ChatSpecialistMode | undefined {
   if (mode && specialistModes.has(mode)) {
@@ -80,16 +131,49 @@ function inferChatSpecialistMode(message: string, mode?: string): ChatSpecialist
   }
 
   const text = message.toLowerCase();
+  if (/\b(connect to fl|control fl|fl studio control|piano roll|channel rack|mixer track|send chord|send notes|step sequence|solo the drums|turn down track|transport)\b/.test(text)) {
+    return 'fl_studio_control';
+  }
+  if (/\b(suno|fl studio|pro tools|logic pro|logic|daw|loop|beat|808|bpm|mix|mastering|muddy|chord|drum pattern|sample|soundtrack|neptunes|genre timeline|vocal chain|channel rack|piano roll)\b/.test(text)) {
+    return 'music';
+  }
   if (/(pop culture|movie|film|tv|television|music|album|song|radio|comic|animation|video game|celebrity|award|franchise|meme)/.test(text)) {
     return 'pop_culture';
   }
-  if (/(history|historical|ancient|medieval|empire|war|civilization|archaeolog|dynasty|revolution|bc|bce|ce\b)/.test(text)) {
+  if (/\b(plot|character|dialogue|worldbuild|worldbuilding|lore|quest|faction|scene|story|backstory)\b/.test(text)) {
+    return 'story';
+  }
+  if (/\b(threat model|secure code|security|privacy|dependency audit|secrets scan|auth flow|auth|authentication|login|jwt|oauth|session|cookie|password reset|csrf|vulnerability)\b/.test(text)) {
+    return 'security';
+  }
+  if (/\b(contract|clause|legal|civic|jurisdiction|statute|case law|rights|obligations|non-compete|noncompete|enforceable|indemnification|liability|lawsuit|sued)\b/.test(text)) {
+    return 'legal';
+  }
+  if (/\b(symptom|anatomy|nutrition|fitness|medication|medicine|drug interaction|side effect|red flag|health|chest pain|shortness of breath|workout|calories|macros|protein|knee pain|shoulder pain|back pain)\b/.test(text)) {
+    return 'health';
+  }
+  if (/\b(pricing|unit economics|business model|startup|product strategy|market research|kpi|kpis|metric|metrics|mrr|arpu|cac|ltv|payback|activation|retention)\b/.test(text)) {
+    return 'business';
+  }
+  if (/\b(argument|fallacy|ethics|debate|socratic|philosophy)\b/.test(text)) {
+    return 'philosophy';
+  }
+  if (/\b(translate|rewrite|tone|grammar|rhetoric|speech|readability)\b/.test(text)) {
+    return 'language';
+  }
+  if (/\b(country|culture|map|geography|demographics|geopolitical|language region)\b/.test(text)) {
+    return 'geography';
+  }
+  if (/\b(ohm|circuit|motor|robot|robotics|mechanical|beam load|cad|bom|electronics)\b/.test(text)) {
+    return 'engineering';
+  }
+  if (/\b(history|historical|ancient|medieval|empire|war|civilization|archaeology|archaeological|dynasty|revolution|bc|bce|ce)\b/.test(text)) {
     return 'history';
   }
   if (/(invention|invented|discovery|science|scientific|paper|patent|technology|physics|chemistry|biology|astronomy|medicine)/.test(text)) {
     return 'science';
   }
-  if (/(tell me something from|something from|what happened in)\s+(19[2-9]\d|20[0-2]\d)\b/.test(text)) {
+  if (/(tell me (something|the biggest story|a story)|biggest story|top story|major event|what happened|what was big|what was popular|pop culture reference).{0,24}\b(19[2-9]\d|20[0-2]\d)\b/.test(text)) {
     return 'pop_culture';
   }
 
@@ -98,6 +182,14 @@ function inferChatSpecialistMode(message: string, mode?: string): ChatSpecialist
 
 async function processSpecialistChat(message: string, mode: ChatSpecialistMode) {
   if (!services) return undefined;
+
+  if (mode === 'pop_culture' || mode === 'history' || mode === 'science') {
+    const localKnowledge = new LocalKnowledgeAnswerer(services.ragDocumentStore);
+    const localAnswer = await localKnowledge.answer(message, mode);
+    if (localAnswer.sources.length > 0 || /\b(?:19[2-9]\d|20[0-2]\d)\b/.test(message)) {
+      return localAnswer;
+    }
+  }
 
   if (mode === 'pop_culture' && services.popCultureGeniusAgent) {
     const result = await services.popCultureGeniusAgent.ask(message);
@@ -129,6 +221,36 @@ async function processSpecialistChat(message: string, mode: ChatSpecialistMode) 
     };
   }
 
+  if (mode === 'fl_studio_control' && services.flStudioControlAgent) {
+    return services.flStudioControlAgent.command(message, { mode: 'dry_run' });
+  }
+
+  if (['suno', 'fl_studio', 'pro_tools', 'logic', 'mix_master'].includes(mode)) {
+    const musicAgent = services.musicProductionGeniusAgent;
+    if (mode === 'suno') return musicAgent.sunoPrompt(message);
+    if (mode === 'fl_studio') return musicAgent.flStudioWorkflow(message);
+    if (mode === 'pro_tools') return musicAgent.proToolsWorkflow(message);
+    if (mode === 'logic') return musicAgent.logicWorkflow(message);
+    if (mode === 'mix_master') return musicAgent.mix(message);
+  }
+
+  const genericAgents: Record<string, any> = {
+    music: services.musicProductionGeniusAgent,
+    story: services.storyGeniusAgent,
+    legal: services.legalCivicGeniusAgent,
+    health: services.healthGeniusAgent,
+    security: services.securityGeniusAgent,
+    business: services.businessGeniusAgent,
+    philosophy: services.philosophyGeniusAgent,
+    language: services.languageGeniusAgent,
+    geography: services.geoCultureGeniusAgent,
+    engineering: services.engineeringGeniusAgent
+  };
+
+  if (genericAgents[mode]) {
+    return genericAgents[mode].ask(message);
+  }
+
   return undefined;
 }
 
@@ -155,7 +277,10 @@ const SETTINGS_KEYS = [
   'STABLE_DIFFUSION_URL',
   'EMBEDDING_PROVIDER',
   'EMBEDDING_MODEL',
-  'EMBEDDING_USE_TRANSFORMERS'
+  'EMBEDDING_USE_TRANSFORMERS',
+  'FL_STUDIO_MCP_COMMAND',
+  'FL_STUDIO_MCP_ARGS',
+  'FL_STUDIO_MCP_CWD'
 ];
 
 const PUBLIC_SETTINGS_KEYS = SETTINGS_KEYS.filter(key => !key.endsWith('_API_KEY'));
@@ -467,10 +592,16 @@ app.post('/api/chat',
     // Sanitize input
     const sanitizedMessage = sanitizeInput(message);
     const specialistMode = inferChatSpecialistMode(sanitizedMessage, mode);
+
     if (specialistMode) {
-      const specialistResponse = await processSpecialistChat(sanitizedMessage, specialistMode);
-      if (specialistResponse) {
-        return res.json(specialistResponse);
+      return res.json(await processSpecialistChat(sanitizedMessage, specialistMode));
+    }
+
+    if (!mode || mode === 'ask') {
+      const localKnowledge = new LocalKnowledgeAnswerer(services?.ragDocumentStore);
+      const localResponse = await localKnowledge.answer(sanitizedMessage, 'ask');
+      if (localResponse) {
+        return res.json(localResponse);
       }
     }
 
@@ -719,6 +850,61 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   const router = createScienceRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createMusicProductionGeniusRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createFLStudioControlRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createStoryGeniusRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createLegalCivicGeniusRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createHealthGeniusRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createSecurityGeniusRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createBusinessGeniusRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createPhilosophyGeniusRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createLanguageGeniusRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createGeoCultureGeniusRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createEngineeringGeniusRouter(services);
   router(req, res, next);
 });
 

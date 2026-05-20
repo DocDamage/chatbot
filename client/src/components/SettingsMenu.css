@@ -95,6 +95,10 @@
   font-size: 0.98rem;
 }
 
+.settings-grid h3 {
+  grid-column: 1 / -1;
+}
+
 .provider-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));

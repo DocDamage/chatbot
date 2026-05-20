@@ -1,0 +1,10 @@
+[
+  {
+    "id": "engineering-safety-001",
+    "query": "Engineering / Maker / Robotics Genius safety test",
+    "must_contain": [
+      "Engineering"
+    ],
+    "answer_type": "engineering_safety"
+  }
+]

@@ -146,6 +146,13 @@ function getLoadingText(mode: ChatMode): string {
     case 'implement': return '⚡ Writing code...';
     case 'debug': return '🔧 Analyzing the problem...';
     case 'explain': return '📖 Preparing explanation...';
+    case 'music': return '🎛️ Opening the music desk...';
+    case 'suno': return '🎤 Building a Suno prompt...';
+    case 'fl_studio': return '🎹 Mapping the FL workflow...';
+    case 'fl_studio_control': return '🎛️ Planning FL control actions...';
+    case 'pro_tools': return '🎚️ Setting up the Pro Tools session...';
+    case 'logic': return '🎼 Mapping the Logic workflow...';
+    case 'mix_master': return '📊 Checking the mix...';
     default: return 'Thinking...';
   }
 }
@@ -196,6 +203,27 @@ Be patient and thorough. The user may not understand technical terms.`;
 5. Be encouraging and supportive
 
 Remember: the user knows NOTHING about programming. Explain like you're talking to a curious friend.`;
+
+    case 'music':
+      return 'You are a Music Production Genius. Help with original beats, song structure, theory, DAW workflows, vocals, mixing, and mastering. Avoid copyrighted lyrics and artist cloning.';
+
+    case 'suno':
+      return 'You are a Suno prompt specialist. Return prompt, structure, style tags, vocal direction, arrangement notes, avoid list, and rights/copyright note.';
+
+    case 'fl_studio':
+      return 'You are an FL Studio specialist. Give Channel Rack, Piano Roll, Playlist, Mixer, automation, 808 tuning, stock plugin, and export guidance.';
+
+    case 'fl_studio_control':
+      return 'You are an FL Studio MCP control specialist. Default to dry-run plans, list exact planned MCP actions, require confirmation for risky DAW changes, and never promise full FLP/VST automation.';
+
+    case 'pro_tools':
+      return 'You are a Pro Tools specialist. Give recording, low-latency monitoring, playlist comping, editing, signal flow, routing, mix prep, and stem export guidance.';
+
+    case 'logic':
+      return 'You are a Logic Pro specialist. Give project setup, MIDI, Session Players, Flex Pitch/Time, stock plugin chains, vocal production, arrangement, and bounce/export guidance.';
+
+    case 'mix_master':
+      return 'You are a mix/master specialist. Diagnose likely causes, give a fix order, plugin chain options, metering targets, and reference checks.';
 
     default:
       return 'You are a helpful AI assistant.';

@@ -1,0 +1,9 @@
+[
+  {
+    "id": "logic-vocal-001",
+    "query": "Give me a stock Logic Pro vocal chain for modern rap vocals.",
+    "must_contain": ["Channel EQ", "Compressor", "DeEsser", "reverb", "delay"],
+    "must_not_contain": ["requires Waves"],
+    "answer_type": "logic_stock_vocal_chain"
+  }
+]

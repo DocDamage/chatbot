@@ -1,0 +1,10 @@
+[
+  {
+    "id": "geography-map-001",
+    "query": "Geography / World Cultures Genius map test",
+    "must_contain": [
+      "Geography"
+    ],
+    "answer_type": "geography_map"
+  }
+]

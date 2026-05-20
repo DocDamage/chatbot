@@ -1,0 +1,10 @@
+[
+  {
+    "id": "philosophy-argument-001",
+    "query": "Philosophy / Logic / Debate Genius argument test",
+    "must_contain": [
+      "Philosophy"
+    ],
+    "answer_type": "philosophy_argument"
+  }
+]

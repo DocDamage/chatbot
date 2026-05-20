@@ -1,0 +1,10 @@
+[
+  {
+    "id": "story-plot-001",
+    "query": "Story / Worldbuilding Genius plot test",
+    "must_contain": [
+      "Story"
+    ],
+    "answer_type": "story_plot"
+  }
+]

@@ -1,7 +1,24 @@
 import fs from 'fs';
 import path from 'path';
 
-type Domain = 'math' | 'market' | 'gamedev' | 'sixsigma' | 'popculture' | 'history' | 'science';
+type Domain =
+  | 'math'
+  | 'market'
+  | 'gamedev'
+  | 'sixsigma'
+  | 'popculture'
+  | 'history'
+  | 'science'
+  | 'music'
+  | 'story'
+  | 'legal'
+  | 'health'
+  | 'security'
+  | 'business'
+  | 'philosophy'
+  | 'language'
+  | 'geography'
+  | 'engineering';
 
 interface EvalCase {
   id: string;
@@ -15,15 +32,46 @@ interface EvalCase {
   must_verify?: boolean;
 }
 
-const requested = (process.argv[2] || 'all') as Domain | 'all';
-const domains: Domain[] = requested === 'all' ? ['math', 'market', 'gamedev', 'sixsigma', 'popculture', 'history', 'science'] : [requested];
+const requested = process.argv[2] || 'all';
+const domains: Domain[] = requested === 'all'
+  ? [
+      'math',
+      'market',
+      'gamedev',
+      'sixsigma',
+      'popculture',
+      'history',
+      'science',
+      'music',
+      'story',
+      'legal',
+      'health',
+      'security',
+      'business',
+      'philosophy',
+      'language',
+      'geography',
+      'engineering'
+    ]
+  : requested.includes('/')
+    ? []
+    : [requested as Domain];
 
-function loadCases(domain: Domain): EvalCase[] {
-  const dir = path.join(process.cwd(), 'evals', domain);
+function loadCases(domainOrPath: string): EvalCase[] {
+  const dir = path.join(process.cwd(), 'evals', ...domainOrPath.split('/'));
   if (!fs.existsSync(dir)) return [];
-  return fs.readdirSync(dir)
-    .filter(file => file.endsWith('.json'))
-    .flatMap(file => JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8')) as EvalCase[]);
+  return fs.readdirSync(dir, { withFileTypes: true })
+    .flatMap(entry => {
+      const entryPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        return fs.readdirSync(entryPath)
+          .filter(file => file.endsWith('.json'))
+          .flatMap(file => JSON.parse(fs.readFileSync(path.join(entryPath, file), 'utf8')) as EvalCase[]);
+      }
+      return entry.name.endsWith('.json')
+        ? JSON.parse(fs.readFileSync(entryPath, 'utf8')) as EvalCase[]
+        : [];
+    });
 }
 
 function scoreCase(testCase: EvalCase): { passed: boolean; reasons: string[] } {
@@ -53,7 +101,8 @@ function scoreCase(testCase: EvalCase): { passed: boolean; reasons: string[] } {
 let total = 0;
 let passed = 0;
 
-for (const domain of domains) {
+const evalTargets = requested.includes('/') ? [requested] : domains;
+for (const domain of evalTargets) {
   const cases = loadCases(domain);
   for (const testCase of cases) {
     total += 1;

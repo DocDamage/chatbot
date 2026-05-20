@@ -1,0 +1,9 @@
+[
+  {
+    "id": "suno-nested-001",
+    "query": "Make a Suno prompt for cinematic trap.",
+    "must_contain": ["Suno", "prompt", "structure", "avoid"],
+    "must_not_contain": ["clone"],
+    "answer_type": "suno_prompt"
+  }
+]

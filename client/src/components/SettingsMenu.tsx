@@ -30,7 +30,10 @@ const defaultSettings = {
   STABLE_DIFFUSION_URL: 'http://localhost:7860',
   EMBEDDING_PROVIDER: 'xenova',
   EMBEDDING_MODEL: 'Xenova/all-MiniLM-L6-v2',
-  EMBEDDING_USE_TRANSFORMERS: 'false'
+  EMBEDDING_USE_TRANSFORMERS: 'false',
+  FL_STUDIO_MCP_COMMAND: 'fl-studio-mcp.cmd',
+  FL_STUDIO_MCP_ARGS: '',
+  FL_STUDIO_MCP_CWD: ''
 };
 
 const compatibleProviders = [
@@ -424,6 +427,22 @@ const SettingsMenu: React.FC = () => {
                       onChange={event => updateSetting('EMBEDDING_USE_TRANSFORMERS', event.target.checked ? 'true' : 'false')}
                     />
                     Use native Transformers.js
+                  </label>
+                </div>
+
+                <div className="settings-section settings-grid">
+                  <h3>FL Studio MCP Bridge</h3>
+                  <label>
+                    MCP command
+                    <input value={settings.FL_STUDIO_MCP_COMMAND || ''} onChange={event => updateSetting('FL_STUDIO_MCP_COMMAND', event.target.value)} placeholder="fl-studio-mcp.cmd" />
+                  </label>
+                  <label>
+                    MCP arguments
+                    <input value={settings.FL_STUDIO_MCP_ARGS || ''} onChange={event => updateSetting('FL_STUDIO_MCP_ARGS', event.target.value)} placeholder="Optional command arguments" />
+                  </label>
+                  <label>
+                    MCP working directory
+                    <input value={settings.FL_STUDIO_MCP_CWD || ''} onChange={event => updateSetting('FL_STUDIO_MCP_CWD', event.target.value)} placeholder="Optional path to bridge repo" />
                   </label>
                 </div>
               </div>

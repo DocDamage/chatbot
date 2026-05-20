@@ -1,0 +1,10 @@
+[
+  {
+    "id": "music-genre-001",
+    "query": "Music Production Genius genre test",
+    "must_contain": [
+      "Music"
+    ],
+    "answer_type": "music_genre"
+  }
+]

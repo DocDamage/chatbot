@@ -1,0 +1,9 @@
+[
+  {
+    "id": "suno-001",
+    "query": "Make a Suno prompt for a dark cinematic trap song with female vocals.",
+    "must_contain": ["genre", "mood", "structure", "vocal", "avoid"],
+    "must_not_contain": ["sound exactly like", "copy this artist"],
+    "answer_type": "suno_prompt"
+  }
+]

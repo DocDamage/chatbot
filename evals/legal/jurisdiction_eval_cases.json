@@ -1,0 +1,10 @@
+[
+  {
+    "id": "legal-jurisdiction-001",
+    "query": "Legal / Civic Genius jurisdiction test",
+    "must_contain": [
+      "Legal"
+    ],
+    "answer_type": "legal_jurisdiction"
+  }
+]

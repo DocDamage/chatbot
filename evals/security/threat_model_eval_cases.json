@@ -1,0 +1,10 @@
+[
+  {
+    "id": "security-threat_model-001",
+    "query": "Cybersecurity / Privacy Genius threat model test",
+    "must_contain": [
+      "Cybersecurity"
+    ],
+    "answer_type": "security_threat_model"
+  }
+]

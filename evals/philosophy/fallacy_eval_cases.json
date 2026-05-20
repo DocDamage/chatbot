@@ -1,0 +1,10 @@
+[
+  {
+    "id": "philosophy-fallacy-001",
+    "query": "Philosophy / Logic / Debate Genius fallacy test",
+    "must_contain": [
+      "Philosophy"
+    ],
+    "answer_type": "philosophy_fallacy"
+  }
+]

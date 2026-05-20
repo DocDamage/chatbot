@@ -12,6 +12,7 @@ import {
 } from '@assistant-ui/react';
 import ModeSelector, { ChatMode } from './ModeSelector';
 import StatusBar from './StatusBar';
+import FLStudioControlPanel from './FLStudioControlPanel';
 import './AssistantChat.css';
 
 const uuidv4 = () => {
@@ -39,7 +40,14 @@ const modeHints: Record<ChatMode, string> = {
   explain: 'Explain mode',
   pop_culture: 'Pop Culture mode',
   history: 'History mode',
-  science: 'Science & Inventions mode'
+  science: 'Science & Inventions mode',
+  music: 'Music Production mode',
+  suno: 'Suno prompt mode',
+  fl_studio: 'FL Studio mode',
+  fl_studio_control: 'FL Studio dry-run control',
+  pro_tools: 'Pro Tools mode',
+  logic: 'Logic Pro mode',
+  mix_master: 'Mix/Master mode'
 };
 
 const placeholders: Record<ChatMode, string> = {
@@ -50,7 +58,14 @@ const placeholders: Record<ChatMode, string> = {
   explain: 'What should I explain?',
   pop_culture: 'Ask about eras, works, influence, or franchises...',
   history: 'Ask about periods, causes, timelines, or sources...',
-  science: 'Ask about inventions, discoveries, papers, or patents...'
+  science: 'Ask about inventions, discoveries, papers, or patents...',
+  music: 'Ask about beats, chords, arrangements, vocals, or DAWs...',
+  suno: 'Describe the Suno prompt, hook, revision, or style blend...',
+  fl_studio: 'Ask about Channel Rack, Piano Roll, 808s, mixer, or export...',
+  fl_studio_control: 'Ask me to plan FL Studio control actions...',
+  pro_tools: 'Ask about recording, playlists, comping, routing, or stems...',
+  logic: 'Ask about Logic MIDI, vocals, Session Players, Flex, or bounce...',
+  mix_master: 'Describe the mix/master problem or target...'
 };
 
 const convertMessage = (message: ChatMessage): ThreadMessageLike => {
@@ -153,6 +168,24 @@ function AssistantChat() {
     }
   };
 
+  const sendUserMessage = async (text: string, selectedMode: ChatMode) => {
+    if (!text || isRunning) return;
+
+    setMessages(prev => [
+      ...prev,
+      {
+        id: uuidv4(),
+        role: 'user',
+        content: text,
+        mode: selectedMode,
+        createdAt: new Date().toISOString(),
+        status: 'complete'
+      }
+    ]);
+    setIsRunning(true);
+    await sendToBackend(text, selectedMode);
+  };
+
   const runtime = useExternalStoreRuntime({
     messages,
     isRunning,
@@ -163,20 +196,7 @@ function AssistantChat() {
       const text = message.content.find(part => part.type === 'text')?.text?.trim();
       if (!text || isRunning) return;
 
-      const selectedMode = mode;
-      setMessages(prev => [
-        ...prev,
-        {
-          id: uuidv4(),
-          role: 'user',
-          content: text,
-          mode: selectedMode,
-          createdAt: new Date().toISOString(),
-          status: 'complete'
-        }
-      ]);
-      setIsRunning(true);
-      await sendToBackend(text, selectedMode);
+      await sendUserMessage(text, mode);
     },
     onCancel: async () => {
       abortRef.current?.abort();
@@ -198,6 +218,9 @@ function AssistantChat() {
           <ModeSelector mode={mode} onModeChange={setMode} />
           <span className="assistant-mode-hint">{modeHints[mode]}</span>
         </div>
+        {mode === 'fl_studio_control' && (
+          <FLStudioControlPanel onSendCommand={command => sendUserMessage(command, 'fl_studio_control')} />
+        )}
         <ThreadPrimitive.Root className="assistant-thread">
           <ThreadPrimitive.Viewport className="assistant-viewport">
             <ThreadPrimitive.Empty>
@@ -285,6 +308,20 @@ function getSystemPrompt(mode: ChatMode): string {
       return 'You are a history specialist. Use approximate dates when appropriate, separate primary/secondary/reference evidence, flag disputes, and include period/place, timeline, actors, causes, consequences, evidence quality, disputes, and sources.';
     case 'science':
       return 'You are a science and inventions specialist. Separate invention, discovery, popularization, commercialization, and prior art; flag uncertainty and obsolete theories; include dates, contributors, predecessors, principles, impact, disputes, and sources.';
+    case 'music':
+      return 'You are a Music Production Genius. Help with original beats, song structure, music theory, vocals, mixing, mastering, DAW workflows, and collaboration. Avoid copyrighted lyric continuation and artist cloning.';
+    case 'suno':
+      return 'You are a Suno prompt specialist. Return safe prompts with style tags, structure, vocal direction, revision guidance, avoid list, and rights/copyright note. Do not impersonate living artists or continue copyrighted lyrics.';
+    case 'fl_studio':
+      return 'You are an FL Studio specialist. Give Channel Rack, Piano Roll, Playlist, Mixer, automation, stock plugin, 808 tuning, sidechain, and export guidance.';
+    case 'fl_studio_control':
+      return 'You are an FL Studio MCP control specialist. Default to dry-run plans, list exact planned MCP actions, require confirmation for risky DAW changes, and never promise full FLP/VST automation.';
+    case 'pro_tools':
+      return 'You are a Pro Tools specialist. Give recording, session setup, low-latency monitoring, playlists, vocal comping, editing, signal flow, bus routing, mix prep, and stem export guidance.';
+    case 'logic':
+      return 'You are a Logic Pro specialist. Give project setup, MIDI/Piano Roll, Session Players, Flex Pitch/Time, stock instruments/effects, vocal production, arrangement, and bounce/export guidance.';
+    case 'mix_master':
+      return 'You are a mix and mastering specialist. Diagnose likely causes, provide a fix order, plugin chain suggestions, metering targets, reference checks, and safety/copyright boundaries.';
     default:
       return 'You are a helpful AI assistant.';
   }
