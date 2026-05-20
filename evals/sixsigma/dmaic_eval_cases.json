@@ -1,0 +1,8 @@
+[
+  {
+    "id": "sixsigma-dmaic-001",
+    "query": "Help me define a DMAIC project for reducing customer complaints.",
+    "must_contain": ["project charter", "problem statement", "CTQ", "SIPOC"],
+    "answer_type": "project_coaching"
+  }
+]

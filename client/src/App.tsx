@@ -1,4 +1,4 @@
-import ChatInterface from './components/ChatInterface';
+import AssistantChat from './components/AssistantChat';
 import SettingsMenu from './components/SettingsMenu';
 import './App.css';
 
@@ -10,7 +10,7 @@ function App() {
         <p className="subtitle">Ask me anything</p>
         <SettingsMenu />
       </header>
-      <ChatInterface />
+      <AssistantChat />
     </div>
   );
 }

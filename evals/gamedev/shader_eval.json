@@ -1,0 +1,8 @@
+[
+  {
+    "id": "shader-001",
+    "query": "Make a shield hit shader",
+    "must_contain": ["shader", "performance", "test"],
+    "answer_type": "shader"
+  }
+]

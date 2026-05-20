@@ -24,6 +24,10 @@ import { requireAuth } from '../middleware/auth';
 import { createRagQueryRouter } from './routes/rag-query';
 import { createKnowledgeBaseRouter } from './routes/knowledge-base';
 import { createCodeRouter } from './routes/code';
+import { createMathRouter } from './routes/math';
+import { createMarketRouter } from './routes/market';
+import { createGameDevRouter } from './routes/gamedev';
+import { createSixSigmaRouter } from './routes/sixsigma';
 
 // Validate configuration on startup
 try {
@@ -602,6 +606,26 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   const router = createCodeRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createMathRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createMarketRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createGameDevRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createSixSigmaRouter(services);
   router(req, res, next);
 });
 

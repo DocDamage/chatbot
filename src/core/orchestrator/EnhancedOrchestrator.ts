@@ -418,6 +418,31 @@ export class EnhancedOrchestrator {
     if (codingPatterns.some(pattern => lower.includes(pattern))) {
       return TaskType.CODE_GENERATION;
     }
+    if (/\b(derivative|differentiate|integral|limit|solve equation|matrix|proof|theorem|probability|statistics|optimization)\b/.test(lower)) {
+      if (/\b(proof|theorem|prove)\b/.test(lower)) return TaskType.MATH_PROOF;
+      if (/\b(numeric|approximate|simulation|monte carlo|optimization)\b/.test(lower)) return TaskType.MATH_NUMERIC;
+      return TaskType.MATH_SYMBOLIC;
+    }
+    if (/\b(stock|ticker|shares|options|calls|puts|valuation|10-k|10-q|sec|fred|macro|backtest|portfolio)\b/.test(lower)) {
+      if (/\b(backtest|strategy|sharpe|drawdown)\b/.test(lower)) return TaskType.MARKET_BACKTEST;
+      if (/\b(risk|options|calls|puts|all in|all my money)\b/.test(lower)) return TaskType.MARKET_RISK;
+      return TaskType.MARKET_RESEARCH;
+    }
+    if (/\b(game|godot|unity|unreal|phaser|pygame|boss|enemy|level|shader|dps|time-to-kill|prototype)\b/.test(lower)) {
+      if (/\b(dps|time-to-kill|ttk|hp|damage|cooldown|drop rate|xp curve|balance)\b/.test(lower)) return TaskType.GAME_BALANCE;
+      if (/\b(prototype|playable|scene)\b/.test(lower)) return TaskType.GAME_PROTOTYPE;
+      if (/\b(code|script|gdscript|c#|typescript|blueprint)\b/.test(lower)) return TaskType.GAME_CODE;
+      return TaskType.GAME_DESIGN;
+    }
+    if (/\b(six sigma|dmaic|cpk|gage r&r|dpmo|sipoc|ctq|cssbb|black belt|control chart|doe|rohs|reach|prop 65|tsca)\b/.test(lower)) {
+      if (/\b(calculate|cpk|cp\b|sample size|gage r&r|dpmo|copq|anova|regression)\b/.test(lower)) return TaskType.SIXSIGMA_CALCULATION;
+      if (/\b(project|charter|sipoc|ctq|define|measure|analyze|improve|control)\b/.test(lower)) return TaskType.SIXSIGMA_PROJECT_COACHING;
+      if (/\b(reach|rohs|prop 65|tsca|sds|supplier|compliance)\b/.test(lower)) return TaskType.SIXSIGMA_COMPLIANCE;
+      if (/\b(cssbb|certification|exam|study|belt)\b/.test(lower)) return TaskType.SIXSIGMA_CERTIFICATION;
+      if (/\b(control chart|doe|simulation|process map)\b/.test(lower)) return TaskType.SIXSIGMA_SIMULATION;
+      if (/\b(export|excel|minitab|python|jupyter|spss|jmp)\b/.test(lower)) return TaskType.SIXSIGMA_EXPORT;
+      return TaskType.SIXSIGMA_QA;
+    }
     if (lower.includes('analyze') || lower.includes('compare') || lower.includes('evaluate')) {
       return TaskType.ANALYSIS;
     }

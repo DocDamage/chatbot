@@ -1,0 +1,10 @@
+[
+  {
+    "id": "prob-001",
+    "query": "What is the expected value of a fair six-sided die?",
+    "expected_answer": "3.5",
+    "requires_tool": "numeric",
+    "must_show_steps": true,
+    "must_verify": true
+  }
+]

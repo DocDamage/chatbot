@@ -31,6 +31,18 @@ import { PersonalKnowledgeTool } from '../tools/PersonalKnowledgeTool';
 import { KnowledgeLearner } from '../learning/KnowledgeLearner';
 import { CodingAgent } from '../agents/CodingAgent';
 import { VerificationRunner } from '../agents/VerificationRunner';
+import { MathGeniusAgent } from '../agents/math/MathGeniusAgent';
+import { MarketGeniusAgent } from '../agents/market/MarketGeniusAgent';
+import { GameDevGeniusAgent } from '../agents/gamedev/GameDevGeniusAgent';
+import { SixSigmaBlackBeltAgent } from '../agents/sixsigma/SixSigmaBlackBeltAgent';
+import { CpkCalculatorTool } from '../tools/sixsigma/CpkCalculatorTool';
+import { SampleSizeTool } from '../tools/sixsigma/SampleSizeTool';
+import { GageRRTool } from '../tools/sixsigma/GageRRTool';
+import { SigmaDpmoTool } from '../tools/sixsigma/SigmaDpmoTool';
+import { CopqTool } from '../tools/sixsigma/CopqTool';
+import { AnovaTool } from '../tools/sixsigma/AnovaTool';
+import { RegressionTool } from '../tools/sixsigma/RegressionTool';
+import { ControlChartConstantsTool } from '../tools/sixsigma/ControlChartConstantsTool';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -42,6 +54,10 @@ export interface InitializedServices {
   toolRegistry?: ToolRegistry;
   functionCaller?: FunctionCaller;
   codingAgent?: CodingAgent;
+  mathGeniusAgent?: MathGeniusAgent;
+  marketGeniusAgent?: MarketGeniusAgent;
+  gameDevGeniusAgent?: GameDevGeniusAgent;
+  sixSigmaBlackBeltAgent?: SixSigmaBlackBeltAgent;
   visionAdapter?: any;
   embeddingService?: EmbeddingService;
   database?: Database;
@@ -150,6 +166,17 @@ export class ServiceInitializer {
     const analytics = new AnalyticsService();
     logger.info('Analytics service initialized');
 
+    const mathGeniusAgent = new MathGeniusAgent();
+    const marketGeniusAgent = new MarketGeniusAgent();
+    const gameDevGeniusAgent = new GameDevGeniusAgent();
+    const sixSigmaBlackBeltAgent = new SixSigmaBlackBeltAgent();
+    logger.info('Specialist agents initialized', {
+      math: true,
+      market: true,
+      gamedev: true,
+      sixsigma: true
+    });
+
     logger.info('✅ All services initialized successfully');
 
     return {
@@ -160,6 +187,10 @@ export class ServiceInitializer {
       toolRegistry,
       functionCaller,
       codingAgent,
+      mathGeniusAgent,
+      marketGeniusAgent,
+      gameDevGeniusAgent,
+      sixSigmaBlackBeltAgent,
       visionAdapter,
       embeddingService,
       database,
@@ -506,6 +537,18 @@ The system will automatically:
     // 7. Personal Knowledge Tool
     const personalKnowledgeTool = new PersonalKnowledgeTool();
     registry.register(personalKnowledgeTool);
+
+    // 8. Six Sigma deterministic calculator tools
+    const sampleSizeTool = new SampleSizeTool();
+    registry.register(new CpkCalculatorTool());
+    registry.register(sampleSizeTool);
+    registry.register(sampleSizeTool.createProportionTool());
+    registry.register(new GageRRTool());
+    registry.register(new SigmaDpmoTool());
+    registry.register(new CopqTool());
+    registry.register(new AnovaTool());
+    registry.register(new RegressionTool());
+    registry.register(new ControlChartConstantsTool());
 
     logger.info('Tools registered', {
       tools: registry.getAll().map(t => t.name)

@@ -1,0 +1,8 @@
+[
+  {
+    "id": "sixsigma-industry-001",
+    "query": "How would Six Sigma apply to game development bug reduction?",
+    "must_contain": ["IT/software", "defect reduction", "MTTR", "DMAIC"],
+    "answer_type": "industry_playbook"
+  }
+]

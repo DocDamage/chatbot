@@ -1,0 +1,8 @@
+[
+  {
+    "id": "market-sec-001",
+    "query": "Summarize AAPL 10-K risks",
+    "must_contain": ["SEC EDGAR", "risk"],
+    "answer_type": "filing"
+  }
+]

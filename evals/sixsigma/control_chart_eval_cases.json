@@ -1,0 +1,8 @@
+[
+  {
+    "id": "sixsigma-control-001",
+    "query": "Make a control chart for these process values.",
+    "must_contain": ["center line", "UCL", "LCL", "Western Electric"],
+    "answer_type": "simulation"
+  }
+]

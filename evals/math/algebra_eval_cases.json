@@ -1,0 +1,10 @@
+[
+  {
+    "id": "alg-001",
+    "query": "Solve x^2 - 4 = 0",
+    "expected_answer": "x = -2, 2",
+    "requires_tool": "sympy",
+    "must_show_steps": true,
+    "must_verify": true
+  }
+]

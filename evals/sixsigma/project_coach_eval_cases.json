@@ -1,0 +1,8 @@
+[
+  {
+    "id": "sixsigma-project-001",
+    "query": "Help me start a DMAIC project for late deliveries.",
+    "must_contain": ["project charter", "SIPOC", "data needed", "Measure"],
+    "answer_type": "project_coaching"
+  }
+]

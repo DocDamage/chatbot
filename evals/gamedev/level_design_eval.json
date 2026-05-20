@@ -1,0 +1,8 @@
+[
+  {
+    "id": "level-001",
+    "query": "Review this boss arena",
+    "must_contain": ["goal", "readability", "failure"],
+    "answer_type": "level"
+  }
+]

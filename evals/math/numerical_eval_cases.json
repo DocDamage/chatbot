@@ -1,0 +1,10 @@
+[
+  {
+    "id": "num-001",
+    "query": "Approximate sqrt(2)",
+    "expected_answer": "1.414",
+    "requires_tool": "numeric",
+    "must_show_steps": true,
+    "must_verify": true
+  }
+]

@@ -1,0 +1,8 @@
+[
+  {
+    "id": "prototype-001",
+    "query": "Generate a Phaser prototype for dodging bullets",
+    "must_contain": ["Phaser", "playable", "test plan"],
+    "answer_type": "prototype"
+  }
+]

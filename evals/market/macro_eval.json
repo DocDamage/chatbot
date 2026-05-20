@@ -1,0 +1,8 @@
+[
+  {
+    "id": "market-macro-001",
+    "query": "Give me a macro snapshot",
+    "must_contain": ["FRED", "FEDFUNDS", "CPIAUCSL"],
+    "answer_type": "macro"
+  }
+]

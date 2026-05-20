@@ -1,0 +1,8 @@
+[
+  {
+    "id": "godot-001",
+    "query": "Write a Godot 4 dash script",
+    "must_contain": ["Godot", "Godot 4", "test plan"],
+    "answer_type": "engine code"
+  }
+]

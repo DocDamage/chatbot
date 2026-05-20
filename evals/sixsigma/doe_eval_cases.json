@@ -1,0 +1,8 @@
+[
+  {
+    "id": "sixsigma-doe-001",
+    "query": "Design an experiment with two factors.",
+    "must_contain": ["design matrix", "main effects", "ANOVA"],
+    "answer_type": "simulation"
+  }
+]

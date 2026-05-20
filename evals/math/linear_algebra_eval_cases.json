@@ -1,0 +1,10 @@
+[
+  {
+    "id": "linalg-001",
+    "query": "Multiply [[1,2],[3,4]] by [[1],[1]]",
+    "expected_answer": "[[3],[7]]",
+    "requires_tool": "sympy",
+    "must_show_steps": true,
+    "must_verify": true
+  }
+]

@@ -1,0 +1,8 @@
+[
+  {
+    "id": "market-backtest-001",
+    "query": "Backtest a moving average strategy",
+    "must_contain": ["CAGR", "max drawdown", "Sharpe"],
+    "answer_type": "backtest"
+  }
+]

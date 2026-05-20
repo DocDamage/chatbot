@@ -1,0 +1,9 @@
+[
+  {
+    "id": "balance-001",
+    "query": "My enemy has 500 HP and the player does 20 damage every 0.5 seconds. Is that too tanky?",
+    "must_contain": ["time-to-kill", "12.5 seconds"],
+    "requires_tool": "BalanceSimTool",
+    "answer_type": "calculated"
+  }
+]

@@ -1,0 +1,9 @@
+[
+  {
+    "id": "proof-001",
+    "query": "Prove that the sum of two even integers is even.",
+    "requires_tool": "lean",
+    "must_show_steps": true,
+    "must_verify": true
+  }
+]

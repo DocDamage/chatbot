@@ -1,0 +1,9 @@
+[
+  {
+    "id": "sixsigma-cpk-001",
+    "query": "Calculate Cpk if mean=10, USL=10.5, LSL=9.5, std dev=0.1",
+    "requires_tool": "calculate_cpk",
+    "must_contain": ["Cpk = 1.67", "Cp", "Cpu", "Cpl"],
+    "must_not_contain": ["estimated without calculation"]
+  }
+]

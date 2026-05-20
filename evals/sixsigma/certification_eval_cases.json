@@ -1,0 +1,8 @@
+[
+  {
+    "id": "sixsigma-cert-001",
+    "query": "Prepare me for CSSBB certification.",
+    "must_contain": ["study plan", "mock exam", "weak topics"],
+    "answer_type": "certification_coaching"
+  }
+]

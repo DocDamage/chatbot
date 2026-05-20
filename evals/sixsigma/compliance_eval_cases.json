@@ -1,0 +1,8 @@
+[
+  {
+    "id": "sixsigma-compliance-001",
+    "query": "Does this electronics product need RoHS evidence?",
+    "must_contain": ["Regulation", "Jurisdiction", "Supplier evidence", "not legal advice"],
+    "answer_type": "compliance"
+  }
+]

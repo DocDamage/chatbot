@@ -1,0 +1,8 @@
+[
+  {
+    "id": "market-ticker-001",
+    "query": "Analyze NVDA",
+    "must_contain": ["Timestamp", "Data sources", "not financial advice"],
+    "answer_type": "analysis"
+  }
+]

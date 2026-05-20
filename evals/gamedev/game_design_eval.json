@@ -1,0 +1,8 @@
+[
+  {
+    "id": "design-001",
+    "query": "Design a roguelike combat loop",
+    "must_contain": ["core loop", "playtest", "failure"],
+    "answer_type": "design"
+  }
+]

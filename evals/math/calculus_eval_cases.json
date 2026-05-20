@@ -1,0 +1,10 @@
+[
+  {
+    "id": "calc-001",
+    "query": "Differentiate x^2 sin(x)",
+    "expected_answer": "2*x*sin(x) + x^2*cos(x)",
+    "requires_tool": "sympy",
+    "must_show_steps": true,
+    "must_verify": true
+  }
+]

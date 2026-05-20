@@ -1,0 +1,8 @@
+[
+  {
+    "id": "unreal-001",
+    "query": "Plan an Unreal Blueprint door interaction",
+    "must_contain": ["Unreal", "Blueprint", "version"],
+    "answer_type": "engine code"
+  }
+]
