@@ -23,7 +23,9 @@ export function createAudioRouter(workspaceRoot = process.cwd()): Router {
   }));
 
   router.get('/api/audio/waveform', asyncHandler(async (_req, res) => {
-    res.json({ points: [], ffmpegAvailable: false, notice: 'Waveform extraction requires FFmpeg and is not available in fallback mode.' });
+    const filePath = String(_req.query.path || '');
+    if (!filePath.trim()) return res.status(400).json({ error: 'path is required' });
+    res.json(await audio.getWaveform(filePath));
   }));
 
   router.post('/api/audio/load-into-chat', asyncHandler(async (req, res) => {

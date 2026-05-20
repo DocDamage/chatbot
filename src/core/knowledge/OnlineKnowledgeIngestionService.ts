@@ -17,7 +17,7 @@ export interface OnlineKnowledgePreview {
 export class OnlineKnowledgeIngestionService {
   constructor(
     private readonly documentManager: { addText: (text: string, metadata: Record<string, any>) => Promise<any> },
-    private readonly searcher: { search?: (query: string, options?: any) => Promise<OnlineSearchResult[]>; searchWeb?: (query: string, limit?: number) => Promise<OnlineSearchResult[]> }
+    private readonly searcher: { search?: (query: string, options?: any) => Promise<any>; searchWeb?: (query: string, limit?: number) => Promise<any> }
   ) {}
 
   async searchAndSummarize(query: string, domain = 'ask'): Promise<OnlineKnowledgePreview> {
@@ -63,8 +63,16 @@ export class OnlineKnowledgeIngestionService {
   }
 
   private async search(query: string): Promise<OnlineSearchResult[]> {
-    if (this.searcher.search) return this.searcher.search(query, { limit: 5 });
-    if (this.searcher.searchWeb) return this.searcher.searchWeb(query, 5);
+    if (this.searcher.search) {
+      const result = await this.searcher.search(query, 5);
+      if (Array.isArray(result)) return result;
+      return result?.data?.results || [];
+    }
+    if (this.searcher.searchWeb) {
+      const result = await this.searcher.searchWeb(query, 5);
+      if (Array.isArray(result)) return result;
+      return result?.data?.results || [];
+    }
     return [];
   }
 }
