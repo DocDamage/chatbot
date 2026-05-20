@@ -1,0 +1,10 @@
+[
+  {
+    "id": "music-slang-001",
+    "query": "make the 808 slap but stop it from eating the kick",
+    "expected_domain": "music",
+    "expected_intent": "mix.low_end_masking",
+    "must_route_to": "MixGeniusAgent",
+    "must_contain": ["808", "kick", "masking", "EQ", "sidechain"]
+  }
+]

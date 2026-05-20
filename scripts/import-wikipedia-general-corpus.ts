@@ -22,7 +22,29 @@ const requestedTopics = process.env.GENERAL_CORPUS_TOPICS
   .map(topic => topic.trim())
   .filter(Boolean);
 
-const yearTopics = Array.from({ length: 2026 - 1900 + 1 }, (_, index) => String(1900 + index));
+const ceYearTopics = Array.from({ length: 2026 - 1500 + 1 }, (_, index) => String(1500 + index));
+const bcEraTopics = [
+  '10000 BC',
+  '9000 BC',
+  '8000 BC',
+  '7000 BC',
+  '6000 BC',
+  '5000 BC',
+  '4000 BC',
+  '3000 BC',
+  '2000 BC',
+  '1000 BC',
+  '10th millennium BC',
+  '9th millennium BC',
+  '8th millennium BC',
+  '7th millennium BC',
+  '6th millennium BC',
+  '5th millennium BC',
+  '4th millennium BC',
+  '3rd millennium BC',
+  '2nd millennium BC',
+  '1st millennium BC'
+];
 const coreTopics = [
   'Barack Obama',
   'George W. Bush',
@@ -108,10 +130,10 @@ const coreTopics = [
 
 const topics = requestedTopics?.length
   ? Array.from(new Set(requestedTopics))
-  : Array.from(new Set([...yearTopics, ...coreTopics])).slice(0, maxTopics > 0 ? maxTopics : undefined);
+  : Array.from(new Set([...bcEraTopics, ...ceYearTopics, ...coreTopics])).slice(0, maxTopics > 0 ? maxTopics : undefined);
 
 async function fetchSummary(topic: string): Promise<WikiSummaryRecord | undefined> {
-  if (/^\d{4}$/.test(topic)) {
+  if (/^\d{1,5}\s*(?:BC|BCE)?$/i.test(topic) || /^\d+(?:st|nd|rd|th)\s+millennium\s+BC$/i.test(topic)) {
     const yearRecord = await fetchYearRecord(topic);
     if (yearRecord) return yearRecord;
   }
@@ -154,11 +176,12 @@ async function fetchSummary(topic: string): Promise<WikiSummaryRecord | undefine
 }
 
 async function fetchYearRecord(year: string): Promise<WikiSummaryRecord | undefined> {
+  const title = normalizeYearTopic(year);
   const params = new URLSearchParams({
     action: 'query',
     prop: 'extracts',
     explaintext: '1',
-    titles: year,
+    titles: title,
     format: 'json',
     redirects: '1'
   });
@@ -194,13 +217,34 @@ async function fetchYearRecord(year: string): Promise<WikiSummaryRecord | undefi
   const summary = extract.split(/\n==\s*Events\s*==/)[0]?.trim() || `${year} historical record.`;
   const events = extractYearEvents(extract).slice(0, maxYearEvents);
   return {
-    title: year,
+    title: page?.title || title,
     source: 'Wikipedia full extract API',
-    url: `https://en.wikipedia.org/wiki/${year}`,
+    url: `https://en.wikipedia.org/wiki/${encodeURIComponent((page?.title || title).replace(/\s+/g, '_'))}`,
     extract: summary,
     events,
     lastUpdated: new Date().toISOString().slice(0, 10)
   };
+}
+
+function normalizeYearTopic(topic: string): string {
+  const bcYear = topic.match(/^(\d{1,5})\s*(?:BC|BCE)$/i);
+  if (!bcYear) return topic;
+  const year = Number(bcYear[1]);
+  if (year >= 1000) {
+    return `${ordinal(Math.ceil(year / 1000))} millennium BC`;
+  }
+  return `${year} BC`;
+}
+
+function ordinal(value: number): string {
+  const mod100 = value % 100;
+  if (mod100 >= 11 && mod100 <= 13) return `${value}th`;
+  switch (value % 10) {
+    case 1: return `${value}st`;
+    case 2: return `${value}nd`;
+    case 3: return `${value}rd`;
+    default: return `${value}th`;
+  }
 }
 
 function extractYearEvents(extract: string): string[] {

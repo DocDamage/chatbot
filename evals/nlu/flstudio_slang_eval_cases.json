@@ -1,0 +1,9 @@
+[
+  {
+    "id": "fl-slang-001",
+    "query": "turn my drums down a lil and throw the melody left",
+    "expected_domain": "fl_studio_control",
+    "expected_intent": "mixer.adjust",
+    "must_contain": ["mixer", "volume", "pan", "dry_run"]
+  }
+]

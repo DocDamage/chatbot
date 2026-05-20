@@ -1,0 +1,20 @@
+[
+  {
+    "id": "coding-slang-001",
+    "query": "this thing is buggin, find where it broke",
+    "expected_domain": "coding",
+    "expected_intent": "debug_error"
+  },
+  {
+    "id": "market-slang-001",
+    "query": "is NVDA cooked or still got juice?",
+    "expected_domain": "market",
+    "expected_intent": "market_risk"
+  },
+  {
+    "id": "story-slang-001",
+    "query": "make this villain less corny",
+    "expected_domain": "story",
+    "expected_intent": "character.revision"
+  }
+]

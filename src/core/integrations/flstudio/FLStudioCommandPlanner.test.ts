@@ -26,4 +26,20 @@ describe('FLStudioCommandPlanner', () => {
     expect(actions[0].args.track).toBe(3);
     expect(actions[1].args.pan).toBeLessThan(0);
   });
+
+  it('plans combined producer slang mixer moves', () => {
+    const planner = new FLStudioCommandPlanner();
+    const actions = planner.plan('turn my drums down a lil and throw the melody left');
+
+    expect(actions).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        tool: 'fl_set_track_volume',
+        args: { track: 12, dbChange: -3 }
+      }),
+      expect.objectContaining({
+        tool: 'fl_set_track_pan',
+        args: { track: 6, pan: -0.35 }
+      })
+    ]));
+  });
 });

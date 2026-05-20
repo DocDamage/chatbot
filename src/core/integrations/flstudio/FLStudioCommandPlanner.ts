@@ -21,15 +21,19 @@ export class FLStudioCommandPlanner {
     if (/\bstop\b/.test(text)) return [{ tool: 'fl_stop', args: {}, description: 'Stop FL Studio playback.' }];
     if (/\brecord\b/.test(text)) return [{ tool: 'fl_record', args: {}, description: 'Toggle or start recording in FL Studio.' }];
 
-    if (/\b(turn down|volume|pan|left|right|mixer|track)\b/.test(text)) {
+    if (/\b(kill|mute|take out|solo)\b/.test(text) && /\b(melody|drums?|beat|bass|808|kick|snare|hat)\b/.test(text)) {
+      return this.planTrackState(input);
+    }
+
+    if (/\b(turn down|turn up|volume|pan|left|right|mixer|track|throw|bring up)\b/.test(text)) {
       return this.planMixer(input);
     }
 
-    if (/\b(kick|snare|clap|hat|hi-hat|step sequence|channel rack)\b/.test(text)) {
+    if (/\b(kick|snare|clap|hat|hi-hat|step sequence|channel rack|drums? knock|hats? bounce|make.*bounce)\b/.test(text)) {
       return this.planStepSequence(input);
     }
 
-    if (/\b(chord|progression|melody|piano roll|notes?|808|bass)\b/.test(text)) {
+    if (/\b(chord|progression|melody|piano roll|notes?|808|bass|slap)\b/.test(text)) {
       return this.planPianoRoll(input);
     }
 
@@ -122,7 +126,7 @@ export class FLStudioCommandPlanner {
         : 'kick';
 
     const steps = channel === 'hi-hat'
-      ? [0, 2, 4, 6, 8, 10, 12, 14]
+      ? (/\bbounce|pocket|busy\b/.test(text) ? [0, 3, 6, 8, 11, 14] : [0, 2, 4, 6, 8, 10, 12, 14])
       : channel === 'snare'
         ? [4, 12]
         : [0, 6, 10, 14];
@@ -139,11 +143,14 @@ export class FLStudioCommandPlanner {
 
   private planMixer(input: string): FLStudioToolAction[] {
     const text = input.toLowerCase();
-    const track = Number(text.match(/track\s+(\d+)/)?.[1] || text.match(/mixer\s+(\d+)/)?.[1] || 1);
+    const combinedActions = this.planCombinedMixerMoves(text);
+    if (combinedActions.length > 0) return combinedActions;
+
+    const track = this.inferTrack(text);
     const actions: FLStudioToolAction[] = [];
 
-    const dbChange = Number(text.match(/(-?\d+(?:\.\d+)?)\s*dB/i)?.[1] || (text.includes('turn down') ? -3 : 0));
-    if (text.includes('volume') || text.includes('turn down') || /\d+\s*dB/i.test(input)) {
+    const dbChange = Number(text.match(/(-?\d+(?:\.\d+)?)\s*dB/i)?.[1] || (text.includes('turn down') ? -3 : text.includes('turn up') || text.includes('bring up') ? 2 : 0));
+    if (text.includes('volume') || text.includes('turn down') || text.includes('turn up') || text.includes('bring up') || /\d+\s*dB/i.test(input)) {
       actions.push({
         tool: 'fl_set_track_volume',
         args: { track, dbChange },
@@ -169,5 +176,65 @@ export class FLStudioCommandPlanner {
     }
 
     return actions.length > 0 ? actions : [{ tool: 'fl_get_transport_status', args: {}, description: 'Check FL Studio before mixer edits.' }];
+  }
+
+  private planCombinedMixerMoves(text: string): FLStudioToolAction[] {
+    const actions: FLStudioToolAction[] = [];
+    if (/\bdrums?\b/.test(text) && /\b(turn down|down|lower|quieter|little)\b/.test(text)) {
+      actions.push({
+        tool: 'fl_set_track_volume',
+        args: { track: 12, dbChange: -3 },
+        description: 'Turn the drum bus down by 3 dB.'
+      });
+    }
+
+    if (/\bmelody\b/.test(text) && /\bleft\b/.test(text)) {
+      actions.push({
+        tool: 'fl_set_track_pan',
+        args: { track: 6, pan: -0.35 },
+        description: 'Pan the melody track left.'
+      });
+    }
+
+    if (/\bmelody\b/.test(text) && /\bright\b/.test(text)) {
+      actions.push({
+        tool: 'fl_set_track_pan',
+        args: { track: 6, pan: 0.35 },
+        description: 'Pan the melody track right.'
+      });
+    }
+
+    return actions;
+  }
+
+  private planTrackState(input: string): FLStudioToolAction[] {
+    const text = input.toLowerCase();
+    const track = this.inferTrack(text);
+    const actions: FLStudioToolAction[] = [
+      { tool: 'fl_get_all_channels', args: {}, description: 'Read channels before changing track state.' },
+      { tool: 'fl_get_all_mixer_tracks', args: {}, description: 'Read mixer tracks before changing track state.' }
+    ];
+
+    if (text.includes('solo')) {
+      actions.push({ tool: 'fl_solo_track', args: { track, solo: true }, description: `Solo inferred mixer track ${track}.` });
+    } else {
+      actions.push({ tool: 'fl_mute_track', args: { track, muted: true }, description: `Mute inferred mixer track ${track}; no notes are deleted.` });
+    }
+
+    return actions;
+  }
+
+  private inferTrack(text: string): number {
+    const explicit = Number(text.match(/track\s+(\d+)/)?.[1] || text.match(/mixer\s+(\d+)/)?.[1]);
+    if (Number.isFinite(explicit) && explicit > 0) return explicit;
+    if (/\bkick\b/.test(text)) return 1;
+    if (/\bsnare|clap\b/.test(text)) return 2;
+    if (/\bhat|hi-hat|hats\b/.test(text)) return 3;
+    if (/\b808|bass\b/.test(text)) return 5;
+    if (/\bmelody\b/.test(text)) return 6;
+    if (/\bvocal|hook\b/.test(text)) return 8;
+    if (/\bdrums?\b/.test(text)) return 12;
+    if (/\bbeat|music\b/.test(text)) return 13;
+    return 1;
   }
 }

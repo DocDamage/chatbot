@@ -189,7 +189,7 @@ export class MusicProductionGeniusAgent extends GenericSpecialistAgent {
       ]);
     }
 
-    if (mode === 'mix' || /\b(mix|muddy|lufs|loud|low-mid|clipping)\b/.test(text)) {
+    if (mode === 'mix' || /\b(mix|muddy|lufs|loud|low-mid|clipping|slap|knock|bang|boxy|harsh|buried|sitting|expensive|eating the kick|low end cooked)\b/.test(text)) {
       return this.formatToolResult(query, mode, [
         this.mixDiagnostic.run({ query, problem: query }),
         this.mixChecklist.run({ issue: query }),
@@ -198,7 +198,7 @@ export class MusicProductionGeniusAgent extends GenericSpecialistAgent {
       ]);
     }
 
-    if (mode === 'beat' || /\b(808|drum|beat|trap|pattern|bpm)\b/.test(text)) {
+    if (mode === 'beat' || /\b(808|drum|beat|trap|pattern|bpm|bounce|pocket|cook up|lay down drums)\b/.test(text)) {
       return this.formatToolResult(query, mode, [
         this.bpmTool.run({ query }),
         this.drumPattern.run({

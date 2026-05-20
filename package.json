@@ -42,6 +42,7 @@
     "eval:language": "tsx scripts/run-domain-evals.ts language",
     "eval:geography": "tsx scripts/run-domain-evals.ts geography",
     "eval:engineering": "tsx scripts/run-domain-evals.ts engineering",
+    "eval:nlu": "tsx scripts/run-domain-evals.ts nlu",
     "import:general": "tsx scripts/import-wikipedia-general-corpus.ts",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",

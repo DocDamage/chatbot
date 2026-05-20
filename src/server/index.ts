@@ -44,6 +44,7 @@ import { createPhilosophyGeniusRouter } from './routes/philosophy';
 import { createLanguageGeniusRouter } from './routes/language';
 import { createGeoCultureGeniusRouter } from './routes/geography';
 import { createEngineeringGeniusRouter } from './routes/engineering';
+import { HumanLanguageRoute, HumanLanguageRouter } from '../core/nlu/HumanLanguageRouter';
 
 // Validate configuration on startup
 try {
@@ -81,8 +82,13 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Initialize all services automatically
 let services: any;
 let orchestrator: any;
+const humanLanguageRouter = new HumanLanguageRouter();
 
 type ChatSpecialistMode =
+  | 'coding'
+  | 'math'
+  | 'market'
+  | 'gamedev'
   | 'pop_culture'
   | 'history'
   | 'science'
@@ -104,6 +110,10 @@ type ChatSpecialistMode =
   | 'engineering';
 
 const specialistModes = new Set([
+  'coding',
+  'math',
+  'market',
+  'gamedev',
   'pop_culture',
   'history',
   'science',
@@ -180,14 +190,38 @@ function inferChatSpecialistMode(message: string, mode?: string): ChatSpecialist
   return undefined;
 }
 
-async function processSpecialistChat(message: string, mode: ChatSpecialistMode) {
+function isRecognizedSpecialistMode(mode: string | undefined): mode is ChatSpecialistMode {
+  return !!mode && specialistModes.has(mode);
+}
+
+async function processSpecialistChat(message: string, mode: ChatSpecialistMode, nlu?: HumanLanguageRoute) {
   if (!services) return undefined;
+
+  if (mode === 'coding' && services.codingAgent) {
+    const result = await services.codingAgent.handle({ message, runVerification: false });
+    return { ...result, nlu };
+  }
+
+  if (mode === 'math' && services.mathGeniusAgent) {
+    const result = await services.mathGeniusAgent.solve(message);
+    return { ...result, nlu };
+  }
+
+  if (mode === 'market' && services.marketGeniusAgent) {
+    const result = await services.marketGeniusAgent.analyze(message);
+    return { ...result, nlu };
+  }
+
+  if (mode === 'gamedev' && services.gameDevGeniusAgent) {
+    const result = await services.gameDevGeniusAgent.answer(message);
+    return { ...result, nlu };
+  }
 
   if (mode === 'pop_culture' || mode === 'history' || mode === 'science') {
     const localKnowledge = new LocalKnowledgeAnswerer(services.ragDocumentStore);
     const localAnswer = await localKnowledge.answer(message, mode);
-    if (localAnswer.sources.length > 0 || /\b(?:19[2-9]\d|20[0-2]\d)\b/.test(message)) {
-      return localAnswer;
+    if (localAnswer.sources.length > 0 || /\b(?:\d{1,5}\s*(?:bc|bce)|1[0-9]{3}|20[0-2]\d)\b/i.test(message)) {
+      return { ...localAnswer, nlu };
     }
   }
 
@@ -197,7 +231,8 @@ async function processSpecialistChat(message: string, mode: ChatSpecialistMode) 
       response: result.response,
       sources: result.sources,
       mode,
-      model: 'pop-culture-specialist'
+      model: 'pop-culture-specialist',
+      nlu
     };
   }
 
@@ -207,7 +242,8 @@ async function processSpecialistChat(message: string, mode: ChatSpecialistMode) 
       response: result.response,
       sources: result.sources,
       mode,
-      model: 'history-specialist'
+      model: 'history-specialist',
+      nlu
     };
   }
 
@@ -217,21 +253,28 @@ async function processSpecialistChat(message: string, mode: ChatSpecialistMode) 
       response: result.response,
       sources: result.sources,
       mode,
-      model: 'science-specialist'
+      model: 'science-specialist',
+      nlu
     };
   }
 
   if (mode === 'fl_studio_control' && services.flStudioControlAgent) {
-    return services.flStudioControlAgent.command(message, { mode: 'dry_run' });
+    const result = await services.flStudioControlAgent.command(message, { mode: 'dry_run' });
+    return { ...result, nlu };
   }
 
   if (['suno', 'fl_studio', 'pro_tools', 'logic', 'mix_master'].includes(mode)) {
     const musicAgent = services.musicProductionGeniusAgent;
-    if (mode === 'suno') return musicAgent.sunoPrompt(message);
-    if (mode === 'fl_studio') return musicAgent.flStudioWorkflow(message);
-    if (mode === 'pro_tools') return musicAgent.proToolsWorkflow(message);
-    if (mode === 'logic') return musicAgent.logicWorkflow(message);
-    if (mode === 'mix_master') return musicAgent.mix(message);
+    if (mode === 'suno') return { ...(await musicAgent.sunoPrompt(message)), nlu };
+    if (mode === 'fl_studio') return { ...(await musicAgent.flStudioWorkflow(message)), nlu };
+    if (mode === 'pro_tools') return { ...(await musicAgent.proToolsWorkflow(message)), nlu };
+    if (mode === 'logic') return { ...(await musicAgent.logicWorkflow(message)), nlu };
+    if (mode === 'mix_master') {
+      const mixResult = services.mixGeniusAgent
+        ? await services.mixGeniusAgent.plan({ query: message })
+        : await musicAgent.mix(message);
+      return { ...mixResult, nlu };
+    }
   }
 
   const genericAgents: Record<string, any> = {
@@ -247,8 +290,14 @@ async function processSpecialistChat(message: string, mode: ChatSpecialistMode) 
     engineering: services.engineeringGeniusAgent
   };
 
+  if (mode === 'music' && services.mixGeniusAgent && nlu?.intent?.startsWith('mix.')) {
+    const result = await services.mixGeniusAgent.plan({ query: message });
+    return { ...result, nlu };
+  }
+
   if (genericAgents[mode]) {
-    return genericAgents[mode].ask(message);
+    const result = await genericAgents[mode].ask(message);
+    return { ...result, nlu };
   }
 
   return undefined;
@@ -591,10 +640,27 @@ app.post('/api/chat',
 
     // Sanitize input
     const sanitizedMessage = sanitizeInput(message);
-    const specialistMode = inferChatSpecialistMode(sanitizedMessage, mode);
+    const nlu = humanLanguageRouter.route({
+      message: sanitizedMessage,
+      explicitMode: mode
+    });
+    const nluRoute = nlu.confidence >= 0.75 && isRecognizedSpecialistMode(nlu.route)
+      ? nlu.route
+      : undefined;
+    const specialistMode = nluRoute || inferChatSpecialistMode(sanitizedMessage, mode);
+
+    if (!specialistMode && nlu.clarification) {
+      return res.json({
+        response: nlu.clarification,
+        sources: [],
+        mode: 'clarify',
+        model: 'human-language-router',
+        nlu
+      });
+    }
 
     if (specialistMode) {
-      return res.json(await processSpecialistChat(sanitizedMessage, specialistMode));
+      return res.json(await processSpecialistChat(sanitizedMessage, specialistMode, nlu));
     }
 
     if (!mode || mode === 'ask') {

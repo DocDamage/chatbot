@@ -1,0 +1,8 @@
+[
+  {
+    "id": "ambiguous-logic-001",
+    "query": "logic",
+    "expected_confidence_below": 0.45,
+    "answer_type": "clarify_or_general"
+  }
+]

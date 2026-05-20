@@ -99,6 +99,99 @@ describe('LocalKnowledgeAnswerer', () => {
     expect(answer?.response).not.toContain('common year starting on Wednesday');
   });
 
+  it('does not answer an exact year query from unrelated chunks', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: 'sixsigma-unrelated-chunk-0',
+          content: 'DMAIC project charters include goals, scope, timeline, team members, resources, and risks.',
+          metadata: {
+            source: 'knowledge-base-public/sixsigma/imported/blackbelt-knowledge-records.json',
+            title: 'blackbelt-knowledge-records.json'
+          }
+        },
+        score: 0.9,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answerer = new LocalKnowledgeAnswerer(store as any);
+    const answer = await answerer.answer('what do you know about 1821?', 'ask');
+
+    expect(answer?.response).toContain('I do not have a matching knowledge-base record');
+    expect(answer?.response).not.toContain('DMAIC project charters');
+    expect(answer?.sources).toEqual([]);
+  });
+
+  it('answers older year records when the local source contains that year', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: '1821-general-chunk-0',
+          content: [
+            '# 1821',
+            'Domain: general',
+            '## Summary',
+            '1821 was a common year.',
+            '',
+            '## Events',
+            '- March 25 - Greece declares independence from the Ottoman Empire, beginning the Greek War of Independence.',
+            '- July 28 - Peru declares independence from Spain.',
+            '- September 27 - The Army of the Three Guarantees enters Mexico City, completing Mexican independence.'
+          ].join('\n'),
+          metadata: {
+            source: 'knowledge-base-public/general/wikipedia-summaries/1821.md',
+            title: '1821.md'
+          }
+        },
+        score: 0.9,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answerer = new LocalKnowledgeAnswerer(store as any);
+    const answer = await answerer.answer('what do you know about 1821?', 'ask');
+
+    expect(answer?.response).toContain('notable things that happened in 1821');
+    expect(answer?.response).toContain('Greece');
+    expect(answer?.response).toMatch(/Mexico|Central America|Gran Colombia|Peru/);
+  });
+
+  it('answers BCE prehistory records with approximate-date context', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: '10000-bc-history-chunk-0',
+          content: [
+            '# 10000 BC',
+            'Domain: history',
+            '## Summary',
+            '10000 BC falls in the 10th millennium BC. Dates this far back are approximate.',
+            '',
+            '## Events',
+            '- Around 10000 BC - The world was warming after the last Ice Age, and glaciers were retreating in many regions.',
+            '- Around 10000 BC - The transition toward settled life and early food production began in some regions.',
+            '- Around 10000 BC - Natufian communities in the Levant supported sedentary or semi-sedentary settlements before full agriculture.'
+          ].join('\n'),
+          metadata: {
+            source: 'knowledge-base-public/history/10000-bc.md',
+            title: '10000-bc.md'
+          }
+        },
+        score: 0.9,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answerer = new LocalKnowledgeAnswerer(store as any);
+    const answer = await answerer.answer('what do you know about 10000 BC?', 'ask');
+
+    expect(answer?.response).toContain('notable things that happened in 10000 BC');
+    expect(answer?.response).toContain('Around 10000 BC');
+    expect(answer?.response).toContain('Ice Age');
+    expect(answer?.sources).toContain('knowledge-base-public/history/10000-bc.md');
+  });
+
   it('falls back to the broad corpus when a specialist domain has no matching source', async () => {
     const store = {
       searchKeyword: jest.fn().mockResolvedValue([{

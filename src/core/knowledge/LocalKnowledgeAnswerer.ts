@@ -55,7 +55,8 @@ export class LocalKnowledgeAnswerer {
     const queries = Array.from(new Set([
       message,
       year ? `${year} ${domainLabel}` : undefined,
-      year ? `${year}` : undefined
+      year ? `${year}` : undefined,
+      year ? this.millenniumQuery(year) : undefined
     ].filter(Boolean) as string[]));
 
     const resultSets = await Promise.all(queries.map(query => this.documentStore!.searchKeyword(query, 50)));
@@ -71,10 +72,11 @@ export class LocalKnowledgeAnswerer {
       }
     }
 
+    const allMerged = Array.from(merged.values());
     const yearFiltered = year
-      ? Array.from(merged.values()).filter(result => result.chunk.content.includes(year) || String(result.chunk.metadata.source || '').includes(year))
+      ? Array.from(merged.values()).filter(result => this.containsTemporalMarker(result, year))
       : Array.from(merged.values());
-    const candidates = yearFiltered.length > 0 ? yearFiltered : Array.from(merged.values());
+    const candidates = year ? yearFiltered : allMerged;
 
     return candidates
       .filter(result => this.hasImportantMatch(message, result, year))
@@ -121,7 +123,9 @@ export class LocalKnowledgeAnswerer {
       return undefined;
     }
 
-    const uniqueEventLines = Array.from(new Map(eventLines.map(line => [line.toLowerCase(), line])).values());
+    const uniqueEventLines = this.removeTruncatedDuplicates(
+      Array.from(new Map(eventLines.map(line => [line.toLowerCase(), line])).values())
+    );
     const ranked = uniqueEventLines
       .map(line => ({ line, score: this.eventScore(line, message) }))
       .sort((a, b) => b.score - a.score)
@@ -170,12 +174,34 @@ export class LocalKnowledgeAnswerer {
       || cleaned.match(/==\s*Events\s*==([\s\S]*?)(?:\n==\s*(?:Births|Deaths|Nobel|References|Further reading|External links)\s*==|$)/i)?.[1]
       || '';
 
-    return eventsSection
+    const normalizedEvents = eventsSection.replace(
+      /\s+-\s+(?=(?:Around|About|Circa|c\.|January|February|March|April|May|June|July|August|September|October|November|December|\d{1,5}\s*(?:BC|BCE)))/gi,
+      '\n- '
+    );
+
+    return normalizedEvents
       .split('\n')
       .map(line => line.trim())
-      .filter(line => line.startsWith('- ') || /[–-]/.test(line))
+      .filter(line => line.startsWith('- ') || this.looksLikeEventLine(line))
       .map(line => line.replace(/^[-*]\s*/, '').replace(/\s+/g, ' ').trim())
       .filter(line => line.length > 20);
+  }
+
+  private looksLikeEventLine(line: string): boolean {
+    return /^(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d+\b/.test(line)
+      || /^(?:Around|About|Circa|c\.)\s+\d{1,5}\s*(?:BC|BCE)?\s+[–-]\s+/i.test(line)
+      || /^\d{1,5}\s*(?:BC|BCE)\s+[–-]\s+/i.test(line);
+  }
+
+  private removeTruncatedDuplicates(lines: string[]): string[] {
+    return lines.filter((line, index) => {
+      const normalized = line.toLowerCase();
+      return !lines.some((other, otherIndex) =>
+        otherIndex !== index &&
+        other.length > line.length + 20 &&
+        other.toLowerCase().startsWith(normalized)
+      );
+    });
   }
 
   private eventScore(line: string, message: string): number {
@@ -259,7 +285,7 @@ export class LocalKnowledgeAnswerer {
     const source = String(result.chunk.metadata.source || '').toLowerCase();
     const searchable = `${content} ${title} ${source}`;
     const hasToken = importantTokens.some(token => searchable.includes(token));
-    const hasYear = !year || searchable.includes(year);
+    const hasYear = !year || this.searchableContainsTemporalMarker(searchable, year);
 
     return hasToken && hasYear;
   }
@@ -274,7 +300,7 @@ export class LocalKnowledgeAnswerer {
   }
 
   private isYearEventQuestion(message: string): boolean {
-    return /\b(what happened|happen|biggest|top story|major event|main event|something from|story|popular|pop culture reference)\b/i.test(message);
+    return /\b(what happened|happen|biggest|top story|major event|main event|something from|story|popular|pop culture reference|know about)\b/i.test(message);
   }
 
   private noLocalRecord(message: string, mode: LocalKnowledgeMode): LocalKnowledgeAnswer {
@@ -288,6 +314,57 @@ export class LocalKnowledgeAnswerer {
   }
 
   private extractYear(message: string): string | undefined {
-    return message.match(/\b(?:19[2-9]\d|20[0-2]\d)\b/)?.[0];
+    const bcMatch = message.match(/\b(\d{1,5})\s*(?:bc|bce)\b/i);
+    if (bcMatch) {
+      return `${bcMatch[1]} BC`;
+    }
+    return message.match(/\b(?:1[0-9]{3}|20[0-2]\d)\b/)?.[0];
+  }
+
+  private containsTemporalMarker(result: RetrievalResult, marker: string): boolean {
+    const searchable = `${result.chunk.content} ${result.chunk.metadata.title || ''} ${result.chunk.metadata.source || ''}`;
+    return this.searchableContainsTemporalMarker(searchable, marker);
+  }
+
+  private searchableContainsTemporalMarker(searchable: string, marker: string): boolean {
+    const normalizedSearchable = this.normalizeTemporalText(searchable);
+    const markers = [
+      marker,
+      marker.replace(/\s+/g, ''),
+      this.withThousandsComma(marker),
+      this.millenniumQuery(marker)
+    ].filter(Boolean) as string[];
+
+    return markers.some(candidate => normalizedSearchable.includes(this.normalizeTemporalText(candidate)));
+  }
+
+  private normalizeTemporalText(value: string): string {
+    return value.toLowerCase().replace(/,/g, '').replace(/\s+/g, ' ').trim();
+  }
+
+  private withThousandsComma(marker: string): string | undefined {
+    const match = marker.match(/^(\d{4,5})\s+BC$/i);
+    if (!match) return undefined;
+    return `${Number(match[1]).toLocaleString('en-US')} BC`;
+  }
+
+  private millenniumQuery(marker: string): string | undefined {
+    const match = marker.match(/^(\d{1,5})\s+BC$/i);
+    if (!match) return undefined;
+    const year = Number(match[1]);
+    if (!Number.isFinite(year) || year < 1000) return undefined;
+    const millennium = Math.ceil(year / 1000);
+    return `${this.ordinal(millennium)} millennium BC`;
+  }
+
+  private ordinal(value: number): string {
+    const mod100 = value % 100;
+    if (mod100 >= 11 && mod100 <= 13) return `${value}th`;
+    switch (value % 10) {
+      case 1: return `${value}st`;
+      case 2: return `${value}nd`;
+      case 3: return `${value}rd`;
+      default: return `${value}th`;
+    }
   }
 }
