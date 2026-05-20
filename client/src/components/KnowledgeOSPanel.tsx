@@ -1,4 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from 'react';
+import { isStaticPagesBuild } from '../api/runtime';
 import './KnowledgeOSPanel.css';
 
 type Summary = {
@@ -43,6 +44,11 @@ function KnowledgeOSPanel() {
   const mountedRef = useRef(true);
 
   const loadSummary = async () => {
+    if (isStaticPagesBuild) {
+      setSummary({ knowledgeBase: { persistentStore: false } });
+      setAction({ label: 'Knowledge OS APIs require the local backend.', kind: 'idle' });
+      return;
+    }
     setLoading(true);
     try {
       const response = await fetch('/api/knowledge-os/summary');
@@ -70,6 +76,9 @@ function KnowledgeOSPanel() {
   }, []);
 
   const requestJson = async (url: string, options: RequestInit = {}) => {
+    if (isStaticPagesBuild) {
+      throw new Error('Knowledge OS APIs require the local backend.');
+    }
     const response = await fetch(url, {
       headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
       ...options
