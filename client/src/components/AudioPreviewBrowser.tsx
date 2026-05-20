@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AudioFileContext, listAudioFiles, loadAudioMetadata } from '../api/audio';
+import { isStaticPagesBuild } from '../api/runtime';
 import './AudioPreviewBrowser.css';
 
 interface AudioPreviewBrowserProps {
@@ -14,6 +15,11 @@ function AudioPreviewBrowser({ onLoadAudio }: AudioPreviewBrowserProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const refresh = async () => {
+    if (isStaticPagesBuild) {
+      setFiles([]);
+      setError('Audio preview APIs require the local backend.');
+      return;
+    }
     try {
       setFiles(await listAudioFiles('.', query));
       setError('');
@@ -27,6 +33,7 @@ function AudioPreviewBrowser({ onLoadAudio }: AudioPreviewBrowserProps) {
   }, []);
 
   const preview = (path: string) => {
+    if (isStaticPagesBuild) return;
     setActive(path);
     if (audioRef.current) {
       audioRef.current.src = `/api/audio/preview?path=${encodeURIComponent(path)}`;
@@ -35,6 +42,7 @@ function AudioPreviewBrowser({ onLoadAudio }: AudioPreviewBrowserProps) {
   };
 
   const load = async (path: string) => {
+    if (isStaticPagesBuild) return;
     try {
       onLoadAudio(await loadAudioMetadata(path));
     } catch (error: any) {

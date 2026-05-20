@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fetchFileTree, LoadedFileContext, readFile, searchFiles } from '../api/files';
+import { isStaticPagesBuild } from '../api/runtime';
 import FilePreviewPane from './FilePreviewPane';
 import './FileExplorerPanel.css';
 
@@ -22,10 +23,15 @@ function FileExplorerPanel({ onLoadFile }: FileExplorerPanelProps) {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    if (isStaticPagesBuild) {
+      setError('Workspace file APIs require the local backend.');
+      return;
+    }
     fetchFileTree('.', 3).then(setTree).catch(error => setError(error.message));
   }, []);
 
   const openPreview = async (path: string) => {
+    if (isStaticPagesBuild) return;
     try {
       setPreview(await readFile(path));
       setError('');
@@ -35,6 +41,7 @@ function FileExplorerPanel({ onLoadFile }: FileExplorerPanelProps) {
   };
 
   const runSearch = async () => {
+    if (isStaticPagesBuild) return;
     if (!query.trim()) {
       setResults([]);
       return;
