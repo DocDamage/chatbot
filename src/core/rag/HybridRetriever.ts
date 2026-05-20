@@ -6,7 +6,10 @@
 import { DocumentChunk, RetrievalResult } from '../../types/rag';
 import { logger } from '../observability/logger';
 import { EmbeddingService } from '../embeddings/EmbeddingService';
+import { RAGDocumentStore } from './RAGDocumentStore';
 import natural from 'natural';
+
+export type RetrievalMode = 'memory' | 'database' | 'hybrid';
 
 export class HybridRetriever {
   private documents: DocumentChunk[] = [];
@@ -14,9 +17,17 @@ export class HybridRetriever {
   private embeddings: Map<string, number[]> = new Map();
   private tokenizer = new natural.WordTokenizer();
   private embeddingService?: EmbeddingService;
+  private documentStore?: RAGDocumentStore;
+  private retrievalMode: RetrievalMode;
 
-  constructor(embeddingService?: EmbeddingService) {
+  constructor(
+    embeddingService?: EmbeddingService,
+    documentStore?: RAGDocumentStore,
+    retrievalMode: RetrievalMode = 'memory'
+  ) {
     this.embeddingService = embeddingService;
+    this.documentStore = documentStore;
+    this.retrievalMode = documentStore ? retrievalMode : 'memory';
   }
 
   /**
@@ -49,6 +60,28 @@ export class HybridRetriever {
     query: string,
     topK: number = 10,
     weights: { bm25: number; dense: number; sparse: number } = { bm25: 0.4, dense: 0.4, sparse: 0.2 }
+  ): Promise<RetrievalResult[]> {
+    if (this.retrievalMode === 'database' && this.documentStore) {
+      const queryEmbedding = await this.getQueryEmbedding(query);
+      return this.documentStore.hybridSearch(query, queryEmbedding || undefined, topK);
+    }
+
+    if (this.retrievalMode === 'hybrid' && this.documentStore) {
+      const [memoryResults, queryEmbedding] = await Promise.all([
+        this.retrieveFromMemory(query, topK, weights),
+        this.getQueryEmbedding(query)
+      ]);
+      const databaseResults = await this.documentStore.hybridSearch(query, queryEmbedding || undefined, topK);
+      return this.mergeResults([...memoryResults, ...databaseResults], topK);
+    }
+
+    return this.retrieveFromMemory(query, topK, weights);
+  }
+
+  private async retrieveFromMemory(
+    query: string,
+    topK: number,
+    weights: { bm25: number; dense: number; sparse: number }
   ): Promise<RetrievalResult[]> {
     const results: Map<string, RetrievalResult> = new Map();
 
@@ -123,6 +156,25 @@ export class HybridRetriever {
     });
 
     return finalResults;
+  }
+
+  private mergeResults(results: RetrievalResult[], topK: number): RetrievalResult[] {
+    const merged = new Map<string, RetrievalResult>();
+
+    for (const result of results) {
+      const existing = merged.get(result.chunk.id);
+      if (existing) {
+        existing.score = Math.max(existing.score, result.score);
+        const methods = new Set(`${existing.retrievalMethod}+${result.retrievalMethod}`.split('+'));
+        existing.retrievalMethod = Array.from(methods).join('+');
+      } else {
+        merged.set(result.chunk.id, { ...result });
+      }
+    }
+
+    return Array.from(merged.values())
+      .sort((a, b) => b.score - a.score)
+      .slice(0, topK);
   }
 
   /**

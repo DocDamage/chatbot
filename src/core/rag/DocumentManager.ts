@@ -8,6 +8,7 @@ import { DocumentChunk } from '../../types/rag';
 import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { logger } from '../observability/logger';
 import { RAGDocumentStore } from './RAGDocumentStore';
+import { randomUUID } from 'crypto';
 
 export type DocumentManagerIngestOptions = IngestOptions;
 
@@ -62,13 +63,18 @@ export class DocumentManager {
     metadata: Record<string, any> = {},
     options: DocumentManagerIngestOptions = {}
   ): Promise<DocumentChunk[]> {
-    const chunks = await this.ingester.ingestText(text, metadata, {
+    const enrichedMetadata: Record<string, any> = {
+      ...metadata,
+      source: metadata.source || `manual-${Date.now()}-${randomUUID()}`
+    };
+
+    const chunks = await this.ingester.ingestText(text, enrichedMetadata, {
       ...options,
       generateEmbeddings: options.generateEmbeddings ?? true
     });
 
     await this.persistChunks(chunks, {
-      sourceType: metadata.type || 'text',
+      sourceType: enrichedMetadata.type || 'text',
       embeddingProvider: options.embeddingProvider
     });
     this.ragService.addDocuments(chunks);
@@ -112,11 +118,16 @@ export class DocumentManager {
   /**
    * Get knowledge base statistics
    */
-  getStats() {
+  async getStats() {
+    const persistence = this.documentStore
+      ? await this.documentStore.getStats()
+      : undefined;
+
     return {
       hasEmbeddings: !!this.embeddingService,
       embeddingProvider: this.embeddingService ? 'configured' : 'none',
       persistentStore: !!this.documentStore,
+      persistence,
       supportedExtensions: this.getSupportedExtensions()
     };
   }

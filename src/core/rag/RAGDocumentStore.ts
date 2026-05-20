@@ -2,6 +2,7 @@ import { createHash, randomUUID } from 'crypto';
 import { Database } from '../database/Database';
 import { logger } from '../observability/logger';
 import { DocumentChunk } from '../../types/rag';
+import { RetrievalResult } from '../../types/rag';
 
 export interface SaveChunkOptions {
   runId?: string;
@@ -84,6 +85,110 @@ export class RAGDocumentStore {
       chunks: Number(chunks.rows[0]?.count || 0),
       embeddings: Number(embeddings.rows[0]?.count || 0)
     };
+  }
+
+  async searchKeyword(query: string, topK: number = 10): Promise<RetrievalResult[]> {
+    if (this.database.getType() === 'postgresql') {
+      const result = await this.database.query(
+        `SELECT dc.id, dc.content, dc.metadata, dc.parent_id, ce.embedding_json,
+                ts_rank(to_tsvector('english', dc.content), plainto_tsquery('english', $1)) AS score
+         FROM document_chunks dc
+         LEFT JOIN chunk_embeddings ce ON ce.chunk_id = dc.id
+         WHERE to_tsvector('english', dc.content) @@ plainto_tsquery('english', $1)
+         ORDER BY score DESC
+         LIMIT $2`,
+        [query, topK]
+      );
+
+      return result.rows.map(row => ({
+        chunk: this.rowToChunk(row),
+        score: Number(row.score || 0),
+        retrievalMethod: 'keyword'
+      }));
+    }
+
+    const chunks = await this.loadChunks();
+    const queryTokens = this.tokenize(query);
+    const scored = chunks
+      .map(chunk => ({
+        chunk,
+        score: this.keywordScore(queryTokens, this.tokenize(chunk.content)),
+        retrievalMethod: 'keyword'
+      }))
+      .filter(result => result.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, topK);
+
+    return scored;
+  }
+
+  async searchSimilar(queryEmbedding: number[], topK: number = 10): Promise<RetrievalResult[]> {
+    if (queryEmbedding.length === 0) {
+      return [];
+    }
+
+    if (this.database.getType() === 'postgresql') {
+      const result = await this.database.query(
+        `SELECT dc.id, dc.content, dc.metadata, dc.parent_id, ce.embedding_json,
+                1 - (ce.embedding_vector <=> $1) AS score
+         FROM document_chunks dc
+         JOIN chunk_embeddings ce ON ce.chunk_id = dc.id
+         WHERE ce.embedding_vector IS NOT NULL
+         ORDER BY ce.embedding_vector <=> $1
+         LIMIT $2`,
+        [this.toPgVector(queryEmbedding), topK]
+      );
+
+      return result.rows.map(row => ({
+        chunk: this.rowToChunk(row),
+        score: Number(row.score || 0),
+        retrievalMethod: 'vector'
+      }));
+    }
+
+    const chunks = await this.loadChunks();
+    return chunks
+      .filter(chunk => chunk.embedding)
+      .map(chunk => ({
+        chunk,
+        score: this.cosineSimilarity(queryEmbedding, chunk.embedding || []),
+        retrievalMethod: 'vector'
+      }))
+      .filter(result => result.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, topK);
+  }
+
+  async hybridSearch(query: string, queryEmbedding?: number[], topK: number = 10): Promise<RetrievalResult[]> {
+    const [keywordResults, vectorResults] = await Promise.all([
+      this.searchKeyword(query, topK * 2),
+      queryEmbedding ? this.searchSimilar(queryEmbedding, topK * 2) : Promise.resolve([])
+    ]);
+
+    const merged = new Map<string, RetrievalResult>();
+    for (const result of keywordResults) {
+      merged.set(result.chunk.id, {
+        ...result,
+        score: result.score * 0.5
+      });
+    }
+
+    for (const result of vectorResults) {
+      const existing = merged.get(result.chunk.id);
+      if (existing) {
+        existing.score += result.score * 0.5;
+        existing.retrievalMethod = `${existing.retrievalMethod}+vector`;
+      } else {
+        merged.set(result.chunk.id, {
+          ...result,
+          score: result.score * 0.5
+        });
+      }
+    }
+
+    return Array.from(merged.values())
+      .sort((a, b) => b.score - a.score)
+      .slice(0, topK);
   }
 
   private async upsertSource(
@@ -223,6 +328,52 @@ export class RAGDocumentStore {
     }
 
     return JSON.parse(value);
+  }
+
+  private rowToChunk(row: any): DocumentChunk {
+    return {
+      id: row.id,
+      content: row.content,
+      metadata: this.parseJson(row.metadata) || {},
+      parentId: row.parent_id || undefined,
+      embedding: row.embedding_json ? this.parseJson(row.embedding_json) : undefined
+    };
+  }
+
+  private tokenize(text: string): string[] {
+    return text
+      .toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .filter(token => token.length > 1);
+  }
+
+  private keywordScore(queryTokens: string[], documentTokens: string[]): number {
+    if (queryTokens.length === 0 || documentTokens.length === 0) {
+      return 0;
+    }
+
+    const documentTokenSet = new Set(documentTokens);
+    const matches = queryTokens.filter(token => documentTokenSet.has(token)).length;
+    return matches / queryTokens.length;
+  }
+
+  private cosineSimilarity(a: number[], b: number[]): number {
+    if (a.length !== b.length) {
+      return 0;
+    }
+
+    let dotProduct = 0;
+    let normA = 0;
+    let normB = 0;
+
+    for (let i = 0; i < a.length; i++) {
+      dotProduct += a[i] * b[i];
+      normA += a[i] * a[i];
+      normB += b[i] * b[i];
+    }
+
+    const denominator = Math.sqrt(normA) * Math.sqrt(normB);
+    return denominator > 0 ? dotProduct / denominator : 0;
   }
 
   private toPgVector(embedding: number[]): string | null {

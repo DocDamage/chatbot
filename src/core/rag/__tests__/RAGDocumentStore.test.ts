@@ -51,4 +51,40 @@ describe('RAGDocumentStore', () => {
       embedding: [0.1, 0.2, 0.3]
     });
   });
+
+  it('searches persisted chunks by keyword, vector similarity, and hybrid score', async () => {
+    const store = new RAGDocumentStore(db);
+    await store.saveChunks([
+      {
+        id: 'alpha-chunk-0',
+        content: 'Alpha project uses durable vector retrieval.',
+        metadata: { source: 'alpha.md', chunkIndex: 0 },
+        embedding: [1, 0, 0]
+      },
+      {
+        id: 'beta-chunk-0',
+        content: 'Beta project talks about unrelated cooking notes.',
+        metadata: { source: 'beta.md', chunkIndex: 0 },
+        embedding: [0, 1, 0]
+      }
+    ], { runId: 'run-search' });
+
+    const keyword = await store.searchKeyword('durable retrieval', 5);
+    expect(keyword[0]).toMatchObject({
+      chunk: expect.objectContaining({ id: 'alpha-chunk-0' }),
+      retrievalMethod: 'keyword'
+    });
+
+    const similar = await store.searchSimilar([0.9, 0.1, 0], 5);
+    expect(similar[0]).toMatchObject({
+      chunk: expect.objectContaining({ id: 'alpha-chunk-0' }),
+      retrievalMethod: 'vector'
+    });
+
+    const hybrid = await store.hybridSearch('durable retrieval', [0.9, 0.1, 0], 5);
+    expect(hybrid[0]).toMatchObject({
+      chunk: expect.objectContaining({ id: 'alpha-chunk-0' }),
+      retrievalMethod: expect.stringContaining('keyword')
+    });
+  });
 });

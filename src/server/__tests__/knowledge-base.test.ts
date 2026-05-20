@@ -29,6 +29,16 @@ describe('Knowledge Base Integration', () => {
     expect(chunks.length).toBeGreaterThan(0);
   });
 
+  it('assigns unique manual sources when text metadata has no source', async () => {
+    const first = await documentManager.addText('First manual knowledge entry.');
+    const second = await documentManager.addText('Second manual knowledge entry.');
+
+    expect(first[0].metadata.source).toMatch(/^manual-/);
+    expect(second[0].metadata.source).toMatch(/^manual-/);
+    expect(first[0].metadata.source).not.toBe(second[0].metadata.source);
+    expect(first[0].id).not.toBe(second[0].id);
+  });
+
   it('should retrieve information from knowledge base', async () => {
     await documentManager.addText(
       'The capital of France is Paris.',

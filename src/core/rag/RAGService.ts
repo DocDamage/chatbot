@@ -12,6 +12,8 @@ import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { DocumentChunk, Citation } from '../../types/rag';
 import { LLMAdapter } from '../providers/LLMAdapter';
 import { logger } from '../observability/logger';
+import { RAGDocumentStore } from './RAGDocumentStore';
+import { RetrievalMode } from './HybridRetriever';
 
 export interface RAGResult {
   response: string;
@@ -34,10 +36,18 @@ export class RAGService {
   private llmAdapter: LLMAdapter;
   private embeddingService?: EmbeddingService;
 
-  constructor(llmAdapter: LLMAdapter, embeddingService?: EmbeddingService) {
+  constructor(
+    llmAdapter: LLMAdapter,
+    embeddingService?: EmbeddingService,
+    options: { documentStore?: RAGDocumentStore; retrievalMode?: RetrievalMode } = {}
+  ) {
     this.llmAdapter = llmAdapter;
     this.embeddingService = embeddingService;
-    this.retriever = new HybridRetriever(embeddingService);
+    this.retriever = new HybridRetriever(
+      embeddingService,
+      options.documentStore,
+      options.retrievalMode
+    );
     this.reranker = new ReRanker();
     this.queryExpander = new QueryExpander(llmAdapter);
     this.contextCompressor = new ContextCompressor(llmAdapter);

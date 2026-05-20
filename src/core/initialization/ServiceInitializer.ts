@@ -73,9 +73,9 @@ export class ServiceInitializer {
     });
 
     // 4. Initialize RAG Service
-    const ragService = this.initializeRAGService(primaryAdapter, embeddingService);
     const database = await this.initializeDatabase();
     const ragDocumentStore = database ? new RAGDocumentStore(database) : undefined;
+    const ragService = this.initializeRAGService(primaryAdapter, embeddingService, ragDocumentStore);
 
     if (ragDocumentStore) {
       const persistedChunks = await ragDocumentStore.loadChunks();
@@ -295,9 +295,13 @@ export class ServiceInitializer {
    */
   private static initializeRAGService(
     llmAdapter: any,
-    embeddingService: EmbeddingService
+    embeddingService: EmbeddingService,
+    documentStore?: RAGDocumentStore
   ): RAGService {
-    return new RAGService(llmAdapter, embeddingService);
+    return new RAGService(llmAdapter, embeddingService, {
+      documentStore,
+      retrievalMode: (process.env.RAG_RETRIEVAL_MODE || 'memory') as any
+    });
   }
 
   private static async initializeDatabase(): Promise<Database | undefined> {

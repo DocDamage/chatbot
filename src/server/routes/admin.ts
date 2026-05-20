@@ -52,7 +52,7 @@ export function createAdminRouter(services: any) {
 
     // Add RAG stats
     if (services?.documentManager) {
-      stats.knowledgeBase = services.documentManager.getStats();
+      stats.knowledgeBase = await services.documentManager.getStats();
     }
 
     // Add analytics

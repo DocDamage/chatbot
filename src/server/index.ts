@@ -22,6 +22,7 @@ import { errorHandler, asyncHandler } from '../middleware/errorHandler';
 import { securityHeaders, corsOptions } from '../middleware/security';
 import { requireAuth } from '../middleware/auth';
 import { createRagQueryRouter } from './routes/rag-query';
+import { createKnowledgeBaseRouter } from './routes/knowledge-base';
 
 // Validate configuration on startup
 try {
@@ -428,14 +429,10 @@ app.post('/api/knowledge-base/file', asyncHandler(async (req, res) => {
   res.json({ success: true, chunksCount: chunks.length });
 }));
 
-app.get('/api/knowledge-base/stats', asyncHandler(async (req, res) => {
-  if (!services?.ragService) {
-    return res.status(503).json({ error: 'RAG service not initialized' });
-  }
-
-  const stats = services.documentManager?.getStats() || {};
-  res.json(stats);
-}));
+app.use((req, res, next) => {
+  const router = createKnowledgeBaseRouter(services);
+  router(req, res, next);
+});
 
 // Tools endpoint
 app.get('/api/tools', asyncHandler(async (req, res) => {

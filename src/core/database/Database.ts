@@ -298,6 +298,13 @@ export class Database {
             created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (chunk_id) REFERENCES document_chunks(id) ON DELETE CASCADE
           )`,
+          `CREATE INDEX IF NOT EXISTS idx_document_chunks_fts
+            ON document_chunks
+            USING GIN (to_tsvector('english', content))`,
+          `CREATE INDEX IF NOT EXISTS idx_chunk_embeddings_vector
+            ON chunk_embeddings
+            USING ivfflat (embedding_vector vector_cosine_ops)
+            WITH (lists = 100)`,
           `CREATE TABLE IF NOT EXISTS source_citations (
             id TEXT PRIMARY KEY,
             chunk_id TEXT NOT NULL,

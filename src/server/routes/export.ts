@@ -22,7 +22,7 @@ export function createExportRouter(services: any) {
       return res.status(503).json({ error: 'Document manager not available' });
     }
 
-    const stats = services.documentManager.getStats();
+    const stats = await services.documentManager.getStats();
     
     // In a full implementation, this would export actual document data
     // For now, return metadata
@@ -30,8 +30,8 @@ export function createExportRouter(services: any) {
       version: '1.0',
       timestamp: new Date().toISOString(),
       metadata: {
-        totalDocuments: stats.totalDocuments || 0,
-        totalChunks: stats.totalChunks || 0,
+        totalDocuments: stats.persistence?.sources || 0,
+        totalChunks: stats.persistence?.chunks || 0,
       },
       documents: [], // Would contain actual document data
     };

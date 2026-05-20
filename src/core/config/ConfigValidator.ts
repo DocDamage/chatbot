@@ -55,6 +55,7 @@ const configSchema = z.object({
   RAG_SQLITE_PATH: z.string().optional(),
   RAG_DATABASE_URL: z.string().optional(),
   DATABASE_URL: z.string().optional(),
+  RAG_RETRIEVAL_MODE: z.enum(['memory', 'database', 'hybrid']).optional(),
 
   // Features
   ENABLE_RAG: z.string().optional(),

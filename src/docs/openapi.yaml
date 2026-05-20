@@ -111,10 +111,19 @@ paths:
               schema:
                 type: object
                 properties:
-                  totalDocuments:
-                    type: number
-                  totalChunks:
-                    type: number
+                  hasEmbeddings:
+                    type: boolean
+                  persistentStore:
+                    type: boolean
+                  persistence:
+                    type: object
+                    properties:
+                      sources:
+                        type: number
+                      chunks:
+                        type: number
+                      embeddings:
+                        type: number
 
   /api/rag/query:
     post:

@@ -37,4 +37,23 @@ describe('Database migrations', () => {
 
     await db.close();
   });
+
+  const postgresIt = process.env.POSTGRES_VECTOR_TEST_URL ? it : it.skip;
+
+  postgresIt('runs PostgreSQL pgvector migrations when an integration database is provided', async () => {
+    const db = new Database({
+      type: 'postgresql',
+      connectionString: process.env.POSTGRES_VECTOR_TEST_URL
+    });
+
+    await db.initialize();
+
+    const result = await db.query(
+      "SELECT indexname FROM pg_indexes WHERE tablename = 'chunk_embeddings' AND indexname = 'idx_chunk_embeddings_vector'"
+    );
+
+    expect(result.rowCount).toBe(1);
+
+    await db.close();
+  });
 });
