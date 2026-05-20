@@ -1,0 +1,3 @@
+[
+  { "id": "pop-music-001", "query": "Give me a timeline of hip-hop from 1973 to 1999.", "must_contain": ["timeline", "influence", "sources"], "answer_type": "timeline" }
+]

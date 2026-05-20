@@ -36,7 +36,10 @@ const modeHints: Record<ChatMode, string> = {
   plan: 'Planning mode',
   implement: 'Implementation mode',
   debug: 'Debug mode',
-  explain: 'Explain mode'
+  explain: 'Explain mode',
+  pop_culture: 'Pop Culture mode',
+  history: 'History mode',
+  science: 'Science & Inventions mode'
 };
 
 const placeholders: Record<ChatMode, string> = {
@@ -44,7 +47,10 @@ const placeholders: Record<ChatMode, string> = {
   plan: 'Describe what you want to build...',
   implement: 'Tell me what code to write...',
   debug: 'Paste an error or describe the bug...',
-  explain: 'What should I explain?'
+  explain: 'What should I explain?',
+  pop_culture: 'Ask about eras, works, influence, or franchises...',
+  history: 'Ask about periods, causes, timelines, or sources...',
+  science: 'Ask about inventions, discoveries, papers, or patents...'
 };
 
 const convertMessage = (message: ChatMessage): ThreadMessageLike => {
@@ -273,6 +279,12 @@ function getSystemPrompt(mode: ChatMode): string {
       return 'You are a debugging expert. Identify likely causes, evidence, minimal fixes, and verification steps.';
     case 'explain':
       return 'You are a coding teacher. Explain concepts in simple language with clear examples.';
+    case 'pop_culture':
+      return 'You are a pop culture specialist. Use time-aware retrieval, separate facts from subjective ranking, avoid copyrighted lyrics/scripts, and include era, key works, context, influence, legacy, disputes, and sources.';
+    case 'history':
+      return 'You are a history specialist. Use approximate dates when appropriate, separate primary/secondary/reference evidence, flag disputes, and include period/place, timeline, actors, causes, consequences, evidence quality, disputes, and sources.';
+    case 'science':
+      return 'You are a science and inventions specialist. Separate invention, discovery, popularization, commercialization, and prior art; flag uncertainty and obsolete theories; include dates, contributors, predecessors, principles, impact, disputes, and sources.';
     default:
       return 'You are a helpful AI assistant.';
   }

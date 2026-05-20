@@ -443,6 +443,15 @@ export class EnhancedOrchestrator {
       if (/\b(export|excel|minitab|python|jupyter|spss|jmp)\b/.test(lower)) return TaskType.SIXSIGMA_EXPORT;
       return TaskType.SIXSIGMA_QA;
     }
+    if (/\b(pop culture|film|movie|tv|album|music|hip-hop|franchise|celebrity|awards|comics|video games|meme)\b/.test(lower)) {
+      return lower.includes('timeline') ? TaskType.CHRONO_TIMELINE : TaskType.POP_CULTURE_QA;
+    }
+    if (/\b(prehistory|ancient|medieval|empire|civilization|war|dynasty|archaeology|primary source|history)\b/.test(lower)) {
+      return lower.includes('timeline') ? TaskType.CHRONO_TIMELINE : TaskType.HISTORY_QA;
+    }
+    if (/\b(invention|discovery|patent|scientific paper|openalex|uspto|gbif|wheel|metallurgy|astronomy|medicine|physics|chemistry|biology)\b/.test(lower)) {
+      return lower.includes('timeline') ? TaskType.CHRONO_TIMELINE : TaskType.SCIENCE_INVENTION_QA;
+    }
     if (lower.includes('analyze') || lower.includes('compare') || lower.includes('evaluate')) {
       return TaskType.ANALYSIS;
     }

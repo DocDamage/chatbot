@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-type Domain = 'math' | 'market' | 'gamedev' | 'sixsigma';
+type Domain = 'math' | 'market' | 'gamedev' | 'sixsigma' | 'popculture' | 'history' | 'science';
 
 interface EvalCase {
   id: string;
@@ -16,7 +16,7 @@ interface EvalCase {
 }
 
 const requested = (process.argv[2] || 'all') as Domain | 'all';
-const domains: Domain[] = requested === 'all' ? ['math', 'market', 'gamedev', 'sixsigma'] : [requested];
+const domains: Domain[] = requested === 'all' ? ['math', 'market', 'gamedev', 'sixsigma', 'popculture', 'history', 'science'] : [requested];
 
 function loadCases(domain: Domain): EvalCase[] {
   const dir = path.join(process.cwd(), 'evals', domain);

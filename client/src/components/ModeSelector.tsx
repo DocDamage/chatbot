@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ModeSelector.css';
 
-export type ChatMode = 'ask' | 'plan' | 'implement' | 'debug' | 'explain';
+export type ChatMode = 'ask' | 'plan' | 'implement' | 'debug' | 'explain' | 'pop_culture' | 'history' | 'science';
 
 interface ModeSelectorProps {
     mode: ChatMode;
@@ -38,6 +38,24 @@ const modeConfig: Record<ChatMode, { icon: string; label: string; description: s
         label: 'Explain',
         description: 'Explain code in simple terms',
         color: '#9966ff'
+    },
+    pop_culture: {
+        icon: '🎬',
+        label: 'Pop Culture',
+        description: 'Culture timelines and influence',
+        color: '#f45b69'
+    },
+    history: {
+        icon: '🏛️',
+        label: 'History',
+        description: 'Time-aware historical analysis',
+        color: '#8b6f47'
+    },
+    science: {
+        icon: '🔬',
+        label: 'Science',
+        description: 'Inventions, papers, and patents',
+        color: '#2aa7a5'
     }
 };
 
@@ -68,7 +86,10 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onModeChange }) => {
                     '2': 'plan',
                     '3': 'implement',
                     '4': 'debug',
-                    '5': 'explain'
+                    '5': 'explain',
+                    '6': 'pop_culture',
+                    '7': 'history',
+                    '8': 'science'
                 };
 
                 if (modeMap[e.key]) {

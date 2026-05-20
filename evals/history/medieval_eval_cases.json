@@ -1,0 +1,3 @@
+[
+  { "id": "history-medieval-001", "query": "Explain medieval trade cities.", "must_contain": ["period", "location", "sources"], "answer_type": "historical_context" }
+]

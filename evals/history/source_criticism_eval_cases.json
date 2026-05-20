@@ -1,0 +1,3 @@
+[
+  { "id": "history-source-001", "query": "How should I read a primary source?", "must_contain": ["primary", "secondary", "bias", "audience"], "answer_type": "primary_source_explanation" }
+]

@@ -51,7 +51,10 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
     plan: 'Describe what you want to build...',
     implement: 'Tell me what code to write...',
     debug: 'Describe the problem or paste error...',
-    explain: 'What code do you want me to explain?'
+    explain: 'What code do you want me to explain?',
+    pop_culture: 'Ask about eras, works, influence, or franchises...',
+    history: 'Ask about periods, causes, timelines, or sources...',
+    science: 'Ask about inventions, discoveries, papers, or patents...'
   };
 
   return (
@@ -64,6 +67,9 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
           {mode === 'implement' && '⚡ I\'ll write code and create files'}
           {mode === 'debug' && '🔧 I\'ll find and fix the problem'}
           {mode === 'explain' && '📖 I\'ll explain in simple terms'}
+          {mode === 'pop_culture' && '🎬 I\'ll map culture through time'}
+          {mode === 'history' && '🏛️ I\'ll handle dates and sources carefully'}
+          {mode === 'science' && '🔬 I\'ll trace inventions and discoveries'}
         </div>
       </div>
       <div className="message-input-wrapper">

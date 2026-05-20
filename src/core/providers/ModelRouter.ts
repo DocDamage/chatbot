@@ -154,7 +154,11 @@ export class ModelRouter {
         TaskType.SIXSIGMA_COMPLIANCE,
         TaskType.SIXSIGMA_CERTIFICATION,
         TaskType.SIXSIGMA_SIMULATION,
-        TaskType.SIXSIGMA_EXPORT
+        TaskType.SIXSIGMA_EXPORT,
+        TaskType.POP_CULTURE_QA,
+        TaskType.HISTORY_QA,
+        TaskType.SCIENCE_INVENTION_QA,
+        TaskType.CHRONO_TIMELINE
       ],
       maxTokens: 8192,
       supportsStreaming: true,
@@ -191,7 +195,11 @@ export class ModelRouter {
         TaskType.SIXSIGMA_QA,
         TaskType.SIXSIGMA_PROJECT_COACHING,
         TaskType.SIXSIGMA_COMPLIANCE,
-        TaskType.SIXSIGMA_CERTIFICATION
+        TaskType.SIXSIGMA_CERTIFICATION,
+        TaskType.POP_CULTURE_QA,
+        TaskType.HISTORY_QA,
+        TaskType.SCIENCE_INVENTION_QA,
+        TaskType.CHRONO_TIMELINE
       ],
       maxTokens: 8192,
       supportsStreaming: true,

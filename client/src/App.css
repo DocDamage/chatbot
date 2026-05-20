@@ -4,22 +4,20 @@
   height: calc(100vh - 36px);
   min-height: 640px;
   max-height: 920px;
-  background: white;
-  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: #050505;
+  border: 1px solid #262626;
   border-radius: 20px;
-  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.16);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.8);
   overflow: hidden;
 }
 
 .app-header {
   position: relative;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.96)),
-    linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #111827;
+  background: #050505;
+  color: #ffffff;
   padding: 22px 28px;
   text-align: center;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid #262626;
 }
 
 .app-header h1 {
@@ -31,7 +29,7 @@
 
 .app-header .subtitle {
   font-size: 0.9rem;
-  color: #64748b;
+  color: #d4d4d4;
 }
 
 /* Accessibility improvements */

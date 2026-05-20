@@ -1,0 +1,3 @@
+[
+  { "id": "pop-film-001", "query": "Rank important films of the 1970s.", "must_contain": ["criteria", "sources", "subjective"], "answer_type": "historical_pop_culture" }
+]

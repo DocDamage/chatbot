@@ -1,0 +1,3 @@
+[
+  { "id": "history-ancient-001", "query": "Compare Bronze Age trade routes.", "must_contain": ["timeline", "place", "evidence quality"], "answer_type": "historical_context" }
+]

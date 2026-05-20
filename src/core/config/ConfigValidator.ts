@@ -5,6 +5,8 @@
 import { z } from 'zod';
 import { logger } from '../observability/logger';
 
+const optionalUrl = z.preprocess(value => value === '' ? undefined : value, z.string().url().optional());
+
 // Configuration schema
 const configSchema = z.object({
   // Server
@@ -13,7 +15,7 @@ const configSchema = z.object({
 
   // LLM Providers
   USE_OLLAMA: z.string().optional(),
-  OLLAMA_URL: z.string().url().optional(),
+  OLLAMA_URL: optionalUrl,
   OLLAMA_MODEL: z.string().optional(),
   USE_HUGGINGFACE: z.string().optional(),
   HUGGINGFACE_MODEL: z.string().optional(),
@@ -22,7 +24,7 @@ const configSchema = z.object({
   OPENAI_MODEL: z.string().optional(),
   LLM_PROVIDER: z.string().optional(),
   OPENAI_COMPATIBLE_API_KEY: z.string().optional(),
-  OPENAI_COMPATIBLE_BASE_URL: z.string().url().optional(),
+  OPENAI_COMPATIBLE_BASE_URL: optionalUrl,
   OPENAI_COMPATIBLE_MODEL: z.string().optional(),
   OPENAI_COMPATIBLE_PROVIDER_NAME: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
@@ -42,7 +44,7 @@ const configSchema = z.object({
   USE_GPT4V: z.string().optional(),
 
   // Cache
-  REDIS_URL: z.string().url().optional(),
+  REDIS_URL: optionalUrl,
   DISK_CACHE_DIR: z.string().optional(),
   ENABLE_REDIS_CACHE: z.string().optional(),
   ENABLE_DISK_CACHE: z.string().optional(),

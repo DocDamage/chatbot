@@ -28,6 +28,10 @@ import { createMathRouter } from './routes/math';
 import { createMarketRouter } from './routes/market';
 import { createGameDevRouter } from './routes/gamedev';
 import { createSixSigmaRouter } from './routes/sixsigma';
+import { createChronoRouter } from './routes/chrono';
+import { createPopCultureRouter } from './routes/pop-culture';
+import { createHistoryRouter } from './routes/history';
+import { createScienceRouter } from './routes/science';
 
 // Validate configuration on startup
 try {
@@ -626,6 +630,26 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   const router = createSixSigmaRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createChronoRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createPopCultureRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createHistoryRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createScienceRouter(services);
   router(req, res, next);
 });
 

@@ -1,0 +1,3 @@
+[
+  { "id": "pop-awards-001", "query": "Who won major film awards in 1977?", "must_contain": ["award", "metadata", "source"], "answer_type": "historical_pop_culture" }
+]

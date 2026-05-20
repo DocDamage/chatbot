@@ -35,6 +35,10 @@ export enum TaskType {
   SIXSIGMA_CERTIFICATION = 'sixsigma_certification',
   SIXSIGMA_SIMULATION = 'sixsigma_simulation',
   SIXSIGMA_EXPORT = 'sixsigma_export',
+  POP_CULTURE_QA = 'pop_culture_qa',
+  HISTORY_QA = 'history_qa',
+  SCIENCE_INVENTION_QA = 'science_invention_qa',
+  CHRONO_TIMELINE = 'chrono_timeline',
   GENERAL = 'general'
 }
 

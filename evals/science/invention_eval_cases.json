@@ -1,0 +1,9 @@
+[
+  {
+    "id": "science-wheel-001",
+    "query": "Explain why assigning a single inventor to the wheel is misleading.",
+    "must_contain": ["approximate", "archaeological", "multiple", "evidence"],
+    "must_not_contain": ["invented by one person"],
+    "answer_type": "uncertainty_aware"
+  }
+]

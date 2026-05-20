@@ -1,0 +1,3 @@
+[
+  { "id": "science-paper-001", "query": "Find papers about CRISPR.", "must_contain": ["OpenAlex", "works", "DOI"], "answer_type": "paper_lookup" }
+]

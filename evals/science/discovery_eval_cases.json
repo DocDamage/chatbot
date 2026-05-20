@@ -1,0 +1,3 @@
+[
+  { "id": "science-discovery-001", "query": "Trace discovery history of DNA.", "must_contain": ["predecessors", "contributors", "timeline"], "answer_type": "scientific_timeline" }
+]

@@ -1,0 +1,24 @@
+[
+  {
+    "id": "wikidata-wheel",
+    "type": "invention",
+    "name": "Wheel",
+    "domains": [
+      "science",
+      "invention"
+    ],
+    "source": "Wikidata curated spine",
+    "confidence": 0.7
+  },
+  {
+    "id": "wikidata-bronze-age",
+    "type": "event",
+    "name": "Bronze Age",
+    "domains": [
+      "history",
+      "science"
+    ],
+    "source": "Wikidata curated spine",
+    "confidence": 0.7
+  }
+]

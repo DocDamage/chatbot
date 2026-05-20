@@ -1,0 +1,9 @@
+[
+  {
+    "id": "history-prehistory-001",
+    "query": "What kinds of evidence do we use for human history around 20000 BC?",
+    "must_contain": ["archaeology", "radiocarbon", "material culture", "approximate"],
+    "must_not_contain": ["written records from 20000 BC"],
+    "answer_type": "uncertainty_aware"
+  }
+]

@@ -1,0 +1,3 @@
+[
+  { "id": "pop-tv-001", "query": "Explain 1990s television culture.", "must_contain": ["era", "key works", "context"], "answer_type": "historical_pop_culture" }
+]

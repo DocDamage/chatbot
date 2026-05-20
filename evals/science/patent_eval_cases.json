@@ -1,0 +1,3 @@
+[
+  { "id": "science-patent-001", "query": "Find transistor patent context.", "must_contain": ["USPTO", "patent", "metadata"], "answer_type": "patent_lookup" }
+]

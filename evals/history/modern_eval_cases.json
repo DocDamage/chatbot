@@ -1,0 +1,3 @@
+[
+  { "id": "history-modern-001", "query": "Explain causes of World War I.", "must_contain": ["causes", "consequences", "disputed"], "answer_type": "cause_effect" }
+]

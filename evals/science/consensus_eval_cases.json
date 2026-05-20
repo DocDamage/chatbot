@@ -1,0 +1,3 @@
+[
+  { "id": "science-consensus-001", "query": "Is phlogiston accepted science?", "must_contain": ["obsolete", "consensus", "fringe"], "answer_type": "consensus" }
+]

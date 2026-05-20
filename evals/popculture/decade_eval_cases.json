@@ -1,0 +1,9 @@
+[
+  {
+    "id": "pop-1920s-film-001",
+    "query": "Explain why the late 1920s mattered for movies.",
+    "must_contain": ["sound", "silent film", "transition"],
+    "must_include_timeline": true,
+    "answer_type": "historical_pop_culture"
+  }
+]

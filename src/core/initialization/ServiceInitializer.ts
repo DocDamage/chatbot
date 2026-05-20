@@ -35,6 +35,10 @@ import { MathGeniusAgent } from '../agents/math/MathGeniusAgent';
 import { MarketGeniusAgent } from '../agents/market/MarketGeniusAgent';
 import { GameDevGeniusAgent } from '../agents/gamedev/GameDevGeniusAgent';
 import { SixSigmaBlackBeltAgent } from '../agents/sixsigma/SixSigmaBlackBeltAgent';
+import { ChronoKnowledgeEngine } from '../chrono/ChronoKnowledgeEngine';
+import { PopCultureGeniusAgent } from '../agents/culture/PopCultureGeniusAgent';
+import { HistoryGeniusAgent } from '../agents/history/HistoryGeniusAgent';
+import { ScienceInventionGeniusAgent } from '../agents/science/ScienceInventionGeniusAgent';
 import { CpkCalculatorTool } from '../tools/sixsigma/CpkCalculatorTool';
 import { SampleSizeTool } from '../tools/sixsigma/SampleSizeTool';
 import { GageRRTool } from '../tools/sixsigma/GageRRTool';
@@ -58,6 +62,10 @@ export interface InitializedServices {
   marketGeniusAgent?: MarketGeniusAgent;
   gameDevGeniusAgent?: GameDevGeniusAgent;
   sixSigmaBlackBeltAgent?: SixSigmaBlackBeltAgent;
+  chronoKnowledgeEngine?: ChronoKnowledgeEngine;
+  popCultureGeniusAgent?: PopCultureGeniusAgent;
+  historyGeniusAgent?: HistoryGeniusAgent;
+  scienceInventionGeniusAgent?: ScienceInventionGeniusAgent;
   visionAdapter?: any;
   embeddingService?: EmbeddingService;
   database?: Database;
@@ -170,11 +178,16 @@ export class ServiceInitializer {
     const marketGeniusAgent = new MarketGeniusAgent();
     const gameDevGeniusAgent = new GameDevGeniusAgent();
     const sixSigmaBlackBeltAgent = new SixSigmaBlackBeltAgent();
+    const chronoKnowledgeEngine = new ChronoKnowledgeEngine();
+    const popCultureGeniusAgent = new PopCultureGeniusAgent(chronoKnowledgeEngine);
+    const historyGeniusAgent = new HistoryGeniusAgent(chronoKnowledgeEngine);
+    const scienceInventionGeniusAgent = new ScienceInventionGeniusAgent(chronoKnowledgeEngine);
     logger.info('Specialist agents initialized', {
       math: true,
       market: true,
       gamedev: true,
-      sixsigma: true
+      sixsigma: true,
+      chrono: true
     });
 
     logger.info('✅ All services initialized successfully');
@@ -191,6 +204,10 @@ export class ServiceInitializer {
       marketGeniusAgent,
       gameDevGeniusAgent,
       sixSigmaBlackBeltAgent,
+      chronoKnowledgeEngine,
+      popCultureGeniusAgent,
+      historyGeniusAgent,
+      scienceInventionGeniusAgent,
       visionAdapter,
       embeddingService,
       database,
