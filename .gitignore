@@ -4,9 +4,11 @@ client/node_modules/
 client/dist/
 client/.next/
 .env
+cache/
+knowledge-base/
 *.log
 .DS_Store
 *.tsbuildinfo
 .vscode/
 .idea/
-
+.playwright-cli/

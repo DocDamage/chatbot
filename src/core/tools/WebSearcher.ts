@@ -431,18 +431,18 @@ export class WebSearcher {
   /**
    * Create from environment variables
    */
-  static fromEnv(): WebSearcher {
+  static fromEnv(searchEngine?: 'google' | 'duckduckgo' | 'bing'): WebSearcher {
     const config: SearchConfig = {
-      googleApiKey: process.env.GOOGLE_API_KEY,
+      googleApiKey: process.env.GOOGLE_API_KEY || process.env.SEARCH_API_KEY,
       googleCseId: process.env.GOOGLE_CSE_ID,
-      bingApiKey: process.env.BING_API_KEY
+      bingApiKey: process.env.BING_API_KEY || process.env.SEARCH_API_KEY
     };
 
     // Choose best available engine
-    let engine: 'google' | 'bing' | 'duckduckgo' = 'duckduckgo';
-    if (config.googleApiKey && config.googleCseId) {
+    let engine: 'google' | 'bing' | 'duckduckgo' = searchEngine || (process.env.SEARCH_ENGINE as any) || 'duckduckgo';
+    if (!searchEngine && config.googleApiKey && config.googleCseId) {
       engine = 'google';
-    } else if (config.bingApiKey) {
+    } else if (!searchEngine && config.bingApiKey) {
       engine = 'bing';
     }
 

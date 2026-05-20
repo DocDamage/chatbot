@@ -142,5 +142,9 @@ export class SafetyPipeline {
 
     return result;
   }
+
+  async validate(content: string, checkFacts: boolean = false): Promise<SafetyPipelineResult> {
+    return this.check(content, checkFacts);
+  }
 }
 

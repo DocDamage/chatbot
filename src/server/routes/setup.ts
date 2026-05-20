@@ -4,7 +4,7 @@
  */
 
 import { Router, Request, Response } from 'express';
-import { apiKeyManager, LLM_PROVIDERS, LLMProviderInfo } from '../core/config/APIKeyManager';
+import { apiKeyManager, LLM_PROVIDERS, LLMProviderInfo } from '../../core/config/APIKeyManager';
 
 const router = Router();
 

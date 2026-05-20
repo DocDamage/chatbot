@@ -6,8 +6,8 @@ export interface Tool {
   id: string;
   name: string;
   description: string;
-  parameters: ToolParameter[];
-  category: ToolCategory;
+  parameters?: ToolParameter[];
+  category: ToolCategory | string;
   execute: (params: Record<string, any>) => Promise<ToolResult>;
 }
 
@@ -28,6 +28,7 @@ export enum ToolCategory {
   CALCULATION = 'calculation',
   KNOWLEDGE = 'knowledge',
   CODING = 'coding',
+  UTILITY = 'utility',
   OTHER = 'other'
 }
 
@@ -39,6 +40,7 @@ export interface ToolResult {
     executionTime: number;
     tokensUsed?: number;
     cost?: number;
+    errors?: string[];
   };
 }
 

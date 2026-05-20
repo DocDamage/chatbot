@@ -120,6 +120,7 @@ export class DiskCache {
       const files = fs.readdirSync(this.cacheDir, { recursive: true });
       
       for (const file of files) {
+        if (typeof file !== 'string') continue;
         const filePath = path.join(this.cacheDir, file);
         if (fs.statSync(filePath).isFile()) {
           try {

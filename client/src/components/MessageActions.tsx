@@ -9,7 +9,6 @@ interface MessageActionsProps {
 }
 
 const MessageActions: React.FC<MessageActionsProps> = ({ 
-  messageId, 
   content, 
   onCopy,
   onRegenerate 

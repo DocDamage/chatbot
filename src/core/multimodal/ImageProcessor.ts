@@ -495,3 +495,12 @@ export class ImageProcessor {
     }
   }
 }
+
+let imageProcessor: ImageProcessor | null = null;
+
+export function getImageProcessor(): ImageProcessor {
+  if (!imageProcessor) {
+    imageProcessor = new ImageProcessor();
+  }
+  return imageProcessor;
+}

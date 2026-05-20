@@ -5,8 +5,8 @@
  */
 
 import { logger } from '../observability/logger';
-import { MultiAgentOrchestrator, ConsensusResult } from './MultiAgentOrchestrator';
-import { ReasoningController, ReasoningLevel } from './ReasoningController';
+import { MultiAgentOrchestrator, ConsensusResult } from '../agents/MultiAgentOrchestrator';
+import { ReasoningController, ReasoningLevel } from '../agents/ReasoningController';
 
 export interface Task {
     id: string;

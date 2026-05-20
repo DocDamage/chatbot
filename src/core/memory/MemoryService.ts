@@ -2,7 +2,7 @@
  * Memory Service - Stratified memory management (Session / Episodic / Canon)
  */
 
-import { MemoryType, MemoryEntry, SessionMemory, EpisodicMemory, CanonicalMemory, MemoryContext } from '../../types/memory';
+import { MemoryType, MemoryEntry, SessionMemory, EpisodicMemory, CanonicalMemory, MemoryContext, CanonLevel } from '../../types/memory';
 import { logger } from '../observability/logger';
 
 export class MemoryService {
@@ -109,7 +109,7 @@ export class MemoryService {
         type: MemoryType.CANONICAL,
         timestamp: new Date(),
         content: 'This is an AI chatbot that can answer general questions and engage in conversation.',
-        canon_level: 'CANON',
+        canon_level: CanonLevel.CANON,
         immutable: false
       }
     ];

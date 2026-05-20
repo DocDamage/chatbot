@@ -69,7 +69,7 @@ export class GraphMemory {
     private entityIndex: Map<string, Set<string>> = new Map(); // type -> entity ids
     private config: GraphMemoryConfig;
     private persistPath: string;
-    private saveTimer?: NodeJS.Timer;
+    private saveTimer?: NodeJS.Timeout;
 
     constructor(config?: Partial<GraphMemoryConfig>) {
         this.config = {

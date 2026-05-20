@@ -8,7 +8,7 @@ import { RAGService } from '../rag/RAGService';
 import { DocumentManager } from '../rag/DocumentManager';
 import { AnalyticsService } from '../analytics/AnalyticsService';
 import { ModelRouter, ModelProvider } from '../providers/ModelRouter';
-import { OpenAIAdapter } from '../providers/LLMAdapter';
+import { AnthropicAdapter, GeminiAdapter, OpenAIAdapter, OpenAICompatibleAdapter } from '../providers/LLMAdapter';
 import { OllamaAdapter } from '../providers/OllamaAdapter';
 import { HuggingFaceAdapter } from '../providers/HuggingFaceAdapter';
 import { EnsembleAdapter } from '../providers/EnsembleAdapter';
@@ -195,8 +195,31 @@ export class ServiceInitializer {
       logger.info('Hugging Face adapter ready', { model: hfModel });
     }
 
+    const configuredProvider = process.env.LLM_PROVIDER
+      || (process.env.OPENAI_API_KEY ? 'openai' : undefined)
+      || (process.env.ANTHROPIC_API_KEY ? 'anthropic' : undefined)
+      || (process.env.GEMINI_API_KEY ? 'gemini' : undefined)
+      || (process.env.USE_HUGGINGFACE === 'true' ? 'huggingface' : undefined)
+      || (process.env.USE_OLLAMA !== 'false' ? 'ollama' : 'template');
+
+    if (configuredProvider === 'openai-compatible' && process.env.OPENAI_COMPATIBLE_API_KEY && process.env.OPENAI_COMPATIBLE_BASE_URL) {
+      const compatibleAdapter = new OpenAICompatibleAdapter(
+        process.env.OPENAI_COMPATIBLE_PROVIDER_NAME || 'openai-compatible',
+        process.env.OPENAI_COMPATIBLE_API_KEY,
+        process.env.OPENAI_COMPATIBLE_BASE_URL,
+        process.env.OPENAI_COMPATIBLE_MODEL || 'default'
+      );
+      adapters[ModelProvider.OPENAI] = compatibleAdapter;
+      primary = primary || compatibleAdapter;
+      logger.info('OpenAI-compatible adapter ready', {
+        provider: process.env.OPENAI_COMPATIBLE_PROVIDER_NAME,
+        model: process.env.OPENAI_COMPATIBLE_MODEL,
+        baseUrl: process.env.OPENAI_COMPATIBLE_BASE_URL
+      });
+    }
+
     // OpenAI (paid)
-    if (process.env.OPENAI_API_KEY) {
+    if (configuredProvider === 'openai' && process.env.OPENAI_API_KEY) {
       const openaiAdapter = new OpenAIAdapter(
         process.env.OPENAI_API_KEY,
         process.env.OPENAI_MODEL || 'gpt-3.5-turbo'
@@ -206,11 +229,31 @@ export class ServiceInitializer {
       logger.info('OpenAI adapter ready');
     }
 
+    if (configuredProvider === 'anthropic' && process.env.ANTHROPIC_API_KEY) {
+      const anthropicAdapter = new AnthropicAdapter(
+        process.env.ANTHROPIC_API_KEY,
+        process.env.ANTHROPIC_MODEL || 'claude-3-5-sonnet-20241022'
+      );
+      adapters[ModelProvider.ANTHROPIC] = anthropicAdapter;
+      primary = primary || anthropicAdapter;
+      logger.info('Anthropic adapter ready', { model: process.env.ANTHROPIC_MODEL });
+    }
+
+    if (configuredProvider === 'gemini' && process.env.GEMINI_API_KEY) {
+      const geminiAdapter = new GeminiAdapter(
+        process.env.GEMINI_API_KEY,
+        process.env.GEMINI_MODEL || 'gemini-1.5-flash'
+      );
+      adapters[ModelProvider.GOOGLE] = geminiAdapter;
+      primary = primary || geminiAdapter;
+      logger.info('Gemini adapter ready', { model: process.env.GEMINI_MODEL });
+    }
+
     // Fallback to template if nothing available
     if (!primary) {
       const { TemplateAdapter } = require('../providers/LLMAdapter');
       primary = new TemplateAdapter();
-      logger.warn('No LLM adapters available, using template fallback');
+      logger.info('No external LLM adapters enabled, using template fallback');
     }
 
     return { primary, all: adapters };
@@ -382,10 +425,7 @@ The system will automatically:
     registry.register(codeExecutor.createTool());
 
     // 5. Web searcher
-    const webSearcher = new WebSearcher(
-      process.env.SEARCH_API_KEY,
-      (process.env.SEARCH_ENGINE as any) || 'duckduckgo'
-    );
+    const webSearcher = WebSearcher.fromEnv();
     registry.register(webSearcher.createTool());
 
     // 6. Personal Knowledge Tool

@@ -8,6 +8,8 @@ import { LLMAdapter, LLMGenerateOptions } from './LLMAdapter';
 import { HuggingFaceAdapter } from './HuggingFaceAdapter';
 import { logger } from '../observability/logger';
 
+export { ModelProvider, TaskType };
+
 export class ModelRouter {
   private capabilities: Map<string, ModelCapability> = new Map();
   private adapters: Map<ModelProvider, LLMAdapter> = new Map();
@@ -280,7 +282,7 @@ export class ModelRouter {
     this.capabilities.set('template', {
       provider: ModelProvider.TEMPLATE,
       model: 'template',
-      taskTypes: [TaskType.GENERAL],
+      taskTypes: [TaskType.GENERAL, TaskType.SIMPLE_QUERY],
       maxTokens: 1000,
       supportsStreaming: false,
       costPer1kTokens: 0,

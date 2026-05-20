@@ -236,7 +236,7 @@ export class VoiceAgent {
 
         // Poll for completion
         let transcript;
-        while (true) {
+        while (!transcript || transcript.status !== 'completed') {
             const statusResponse = await axios.get(
                 `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
                 { headers: { 'authorization': apiKey } }
@@ -245,7 +245,7 @@ export class VoiceAgent {
             transcript = statusResponse.data;
 
             if (transcript.status === 'completed') {
-                break;
+                continue;
             } else if (transcript.status === 'error') {
                 throw new Error(`Transcription failed: ${transcript.error}`);
             }

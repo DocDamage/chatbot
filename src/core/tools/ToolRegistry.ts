@@ -8,7 +8,7 @@ import { logger } from '../observability/logger';
 
 export class ToolRegistry {
   private tools: Map<string, Tool> = new Map();
-  private toolsByCategory: Map<ToolCategory, Tool[]> = new Map();
+  private toolsByCategory: Map<string, Tool[]> = new Map();
 
   constructor() {
     // Initialize categories
@@ -80,14 +80,14 @@ export class ToolRegistry {
       description: tool.description,
       parameters: {
         type: 'object',
-        properties: tool.parameters.reduce((props, param) => {
+        properties: (tool.parameters || []).reduce((props, param) => {
           props[param.name] = {
             type: param.type,
             description: param.description
           };
           return props;
         }, {} as Record<string, any>),
-        required: tool.parameters.filter(p => p.required).map(p => p.name)
+        required: (tool.parameters || []).filter(p => p.required).map(p => p.name)
       }
     }));
   }

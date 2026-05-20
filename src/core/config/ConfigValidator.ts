@@ -20,17 +20,25 @@ const configSchema = z.object({
   HUGGINGFACE_API_KEY: z.string().optional(),
   OPENAI_API_KEY: z.string().optional(),
   OPENAI_MODEL: z.string().optional(),
+  LLM_PROVIDER: z.string().optional(),
+  OPENAI_COMPATIBLE_API_KEY: z.string().optional(),
+  OPENAI_COMPATIBLE_BASE_URL: z.string().url().optional(),
+  OPENAI_COMPATIBLE_MODEL: z.string().optional(),
+  OPENAI_COMPATIBLE_PROVIDER_NAME: z.string().optional(),
+  ANTHROPIC_API_KEY: z.string().optional(),
+  ANTHROPIC_MODEL: z.string().optional(),
+  GEMINI_API_KEY: z.string().optional(),
+  GEMINI_MODEL: z.string().optional(),
 
   // Embeddings
   EMBEDDING_PROVIDER: z.enum(['openai', 'xenova', 'ollama']).optional(),
   EMBEDDING_MODEL: z.string().optional(),
+  EMBEDDING_USE_TRANSFORMERS: z.string().optional(),
 
   // Vision
   USE_LLAVA: z.string().optional(),
   LLAVA_MODEL: z.string().optional(),
   USE_GEMINI_VISION: z.string().optional(),
-  GEMINI_API_KEY: z.string().optional(),
-  GEMINI_MODEL: z.string().optional(),
   USE_GPT4V: z.string().optional(),
 
   // Cache

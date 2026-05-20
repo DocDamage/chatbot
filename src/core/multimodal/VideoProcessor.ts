@@ -420,3 +420,12 @@ export class VideoProcessor {
     }
   }
 }
+
+let videoProcessor: VideoProcessor | null = null;
+
+export function getVideoProcessor(): VideoProcessor {
+  if (!videoProcessor) {
+    videoProcessor = new VideoProcessor();
+  }
+  return videoProcessor;
+}

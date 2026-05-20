@@ -1,10 +1,9 @@
 /**
  * Embedding Service - Generate embeddings for text
- * Supports multiple providers: OpenAI, Xenova Transformers (local), Ollama
+ * Supports multiple providers: OpenAI, local Transformers.js, Ollama
  */
 
 import OpenAI from 'openai';
-import { pipeline, Pipeline } from '@xenova/transformers';
 import { logger } from '../observability/logger';
 
 export interface EmbeddingOptions {
@@ -14,7 +13,7 @@ export interface EmbeddingOptions {
 
 export class EmbeddingService {
   private openaiClient?: OpenAI;
-  private xenovaPipeline?: Pipeline;
+  private localPipeline?: any;
   private ollamaUrl?: string;
   private defaultProvider: 'openai' | 'xenova' | 'ollama';
   private defaultModel: string;
@@ -33,8 +32,8 @@ export class EmbeddingService {
       this.openaiClient = new OpenAI({ apiKey: openaiApiKey });
     }
 
-    // Initialize Xenova pipeline (local, free)
-    this.initializeXenova();
+    // Initialize local Transformers.js pipeline (free, local)
+    this.initializeLocalTransformers();
   }
 
   /**
@@ -49,17 +48,17 @@ export class EmbeddingService {
         case 'openai':
           return await this.embedOpenAI(text, model);
         case 'xenova':
-          return await this.embedXenova(text, model);
+          return await this.embedLocal(text, model);
         case 'ollama':
           return await this.embedOllama(text, model);
         default:
-          return await this.embedXenova(text, model);
+          return await this.embedLocal(text, model);
       }
     } catch (error: any) {
       logger.error('Embedding generation failed', { provider, error: error.message });
-      // Fallback to Xenova
+      // Fallback to local embeddings
       if (provider !== 'xenova') {
-        return await this.embedXenova(text, model);
+        return await this.embedLocal(text, model);
       }
       throw error;
     }
@@ -89,36 +88,52 @@ export class EmbeddingService {
   }
 
   /**
-   * Xenova Transformers (local, free)
+   * Local Transformers.js embeddings.
+   * The provider name remains "xenova" for existing config compatibility.
    */
-  private async embedXenova(text: string, model: string): Promise<number[]> {
-    if (!this.xenovaPipeline) {
-      await this.initializeXenova();
+  private async embedLocal(text: string, model: string): Promise<number[]> {
+    if (!this.localPipeline) {
+      await this.initializeLocalTransformers();
     }
 
-    if (!this.xenovaPipeline) {
-      throw new Error('Xenova pipeline not initialized');
+    if (!this.localPipeline) {
+      if (process.env.EMBEDDING_USE_TRANSFORMERS === 'true') {
+        logger.warn('Local embedding pipeline not initialized, using deterministic fallback embeddings');
+      }
+      return this.fallbackEmbedding(text);
     }
 
-    const result = await this.xenovaPipeline(text, { pooling: 'mean', normalize: true });
-    return Array.from(result.data);
+    try {
+      const result = await this.localPipeline(text, { pooling: 'mean', normalize: true });
+      return Array.from(result.data);
+    } catch (error: any) {
+      logger.warn('Local embedding pipeline failed, using deterministic fallback embeddings', {
+        error: error.message
+      });
+      this.localPipeline = undefined;
+      return this.fallbackEmbedding(text);
+    }
   }
 
   /**
-   * Initialize Xenova pipeline
+   * Initialize local Transformers.js pipeline
    */
-  private async initializeXenova(): Promise<void> {
+  private async initializeLocalTransformers(): Promise<void> {
+    if (process.env.EMBEDDING_USE_TRANSFORMERS !== 'true') {
+      return;
+    }
+
     try {
-      if (!this.xenovaPipeline) {
-        this.xenovaPipeline = await pipeline(
+      if (!this.localPipeline) {
+        const { pipeline } = await import('@huggingface/transformers');
+        this.localPipeline = await pipeline(
           'feature-extraction',
-          this.defaultModel,
-          { quantized: true } // Use quantized model for faster loading
+          this.defaultModel
         );
-        logger.info('Xenova embedding pipeline initialized', { model: this.defaultModel });
+        logger.info('Local embedding pipeline initialized', { model: this.defaultModel });
       }
     } catch (error: any) {
-      logger.warn('Failed to initialize Xenova pipeline', { error: error.message });
+      logger.warn('Failed to initialize local embedding pipeline', { error: error.message });
       // Will fallback to other providers
     }
   }
@@ -151,6 +166,27 @@ export class EmbeddingService {
       default:
         return 384;
     }
+  }
+
+  private fallbackEmbedding(text: string, dimensions: number = 384): number[] {
+    const vector = new Array(dimensions).fill(0);
+    const tokens = text.toLowerCase().split(/\W+/).filter(Boolean);
+
+    for (const token of tokens) {
+      let hash = 0;
+      for (let i = 0; i < token.length; i++) {
+        hash = ((hash << 5) - hash + token.charCodeAt(i)) | 0;
+      }
+      const index = Math.abs(hash) % dimensions;
+      vector[index] += 1;
+    }
+
+    const norm = Math.sqrt(vector.reduce((sum, value) => sum + value * value, 0));
+    return norm > 0 ? vector.map((value) => value / norm) : vector;
+  }
+
+  async generateEmbedding(text: string, options?: EmbeddingOptions): Promise<number[]> {
+    return this.embed(text, options);
   }
 
   /**

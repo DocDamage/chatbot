@@ -56,7 +56,7 @@ export async function streamChat(
     res.write(`data: ${JSON.stringify({
       type: 'complete',
       response: response.response,
-      sessionId: response.sessionId,
+      sessionId,
     })}\n\n`);
 
     res.end();

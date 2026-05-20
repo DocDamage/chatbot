@@ -6,14 +6,14 @@ import axios from 'axios';
 import { KnowledgeSource, KnowledgeResult } from './KnowledgeSource';
 import { logger } from '../observability/logger';
 
-export type BookSource = 'google_books' | 'open_library' | 'gutenberg' | 'all';
+export type BookSourceProvider = 'google_books' | 'open_library' | 'gutenberg' | 'all';
 
 export class BookSource implements KnowledgeSource {
   name = 'books';
-  private source: BookSource;
+  private source: BookSourceProvider;
   private googleBooksApiKey?: string;
 
-  constructor(source: BookSource = 'all', googleBooksApiKey?: string) {
+  constructor(source: BookSourceProvider = 'all', googleBooksApiKey?: string) {
     this.source = source;
     this.googleBooksApiKey = googleBooksApiKey || process.env.GOOGLE_BOOKS_API_KEY;
   }
@@ -22,7 +22,7 @@ export class BookSource implements KnowledgeSource {
     return true; // At least one source is always available
   }
 
-  async search(query: string, options: { limit?: number; source?: BookSource; author?: string; isbn?: string } = {}): Promise<KnowledgeResult[]> {
+  async search(query: string, options: { limit?: number; source?: BookSourceProvider; author?: string; isbn?: string } = {}): Promise<KnowledgeResult[]> {
     const { limit = 10, source = this.source, author, isbn } = options;
     const results: KnowledgeResult[] = [];
 

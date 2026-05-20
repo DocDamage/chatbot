@@ -32,6 +32,12 @@ export interface CRAGConfig {
     enableWebSearch: boolean;
 }
 
+export interface CRAGStats {
+    configuredThreshold: number;
+    minDocs: number;
+    maxIter: number;
+}
+
 const DEFAULT_CONFIG: CRAGConfig = {
     confidenceThreshold: 0.7,
     maxIterations: 3,
@@ -176,9 +182,10 @@ export class CorrectiveRetriever {
         }
 
         try {
-            const results = await this.retriever.retrieve(query, {
-                maxResults: k,
-                hybridWeight: 0.6
+            const results = await this.retriever.retrieve(query, k, {
+                bm25: 0.4,
+                dense: 0.4,
+                sparse: 0.2
             });
 
             return results.map((r: any, i: number) => ({
@@ -210,7 +217,15 @@ export class CorrectiveRetriever {
             try {
                 const reranked = await this.reranker.rerank(
                     query,
-                    documents.map(d => ({ text: d.content, metadata: d.metadata }))
+                    documents.map((d) => ({
+                        chunk: {
+                            id: d.id,
+                            content: d.content,
+                            metadata: d.metadata || {}
+                        },
+                        score: d.score,
+                        retrievalMethod: 'crag'
+                    }))
                 );
 
                 return reranked.map((r: any, i: number) => ({

@@ -32,6 +32,16 @@ describe('LLM Adapters', () => {
       expect(response.model).toBe('template');
     });
 
+    it('should answer capability questions without technical-difficulty language', async () => {
+      const response = await adapter.generate({
+        prompt: 'what can you do for me?',
+      });
+
+      expect(response.content).toContain('I can');
+      expect(response.content).not.toContain('technical difficulties');
+      expect(response.model).toBe('template');
+    });
+
     it('should estimate zero cost', () => {
       const cost = adapter.estimateCost({
         prompt: 'test',

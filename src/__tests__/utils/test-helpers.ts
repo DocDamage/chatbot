@@ -21,7 +21,9 @@ export class MockLLMAdapter implements LLMAdapter {
 
   async generate(options: LLMGenerateOptions): Promise<LLMResponse> {
     const key = options.prompt.substring(0, 50);
-    const content = this.responses.get(key) || 'Mock response';
+    const content = this.responses.get(key)
+      || Array.from(this.responses.entries()).find(([storedKey]) => options.prompt.includes(storedKey))?.[1]
+      || 'Mock response';
     
     return {
       content,

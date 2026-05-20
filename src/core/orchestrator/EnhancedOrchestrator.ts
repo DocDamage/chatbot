@@ -84,7 +84,17 @@ export class EnhancedOrchestrator {
     // Model Router
     if (this.config.useModelRouting !== false) {
       this.modelRouter = this.config.modelRouter || new ModelRouter();
-      this.modelRouter.registerAdapter(ModelProvider.OLLAMA, this.llmAdapter);
+      const configuredProvider = process.env.LLM_PROVIDER || 'template';
+      const provider = this.llmAdapter.getModelName() === 'template'
+        ? ModelProvider.TEMPLATE
+        : configuredProvider === 'openai' || configuredProvider === 'openai-compatible'
+          ? ModelProvider.OPENAI
+          : configuredProvider === 'anthropic'
+            ? ModelProvider.ANTHROPIC
+            : configuredProvider === 'gemini'
+              ? ModelProvider.GOOGLE
+              : ModelProvider.OLLAMA;
+      this.modelRouter.registerAdapter(provider, this.llmAdapter);
       // Register other adapters as needed
       
       if (this.config.useEnsemble) {
@@ -158,10 +168,10 @@ export class EnhancedOrchestrator {
         const { adapter: routedAdapter, selection } = await this.modelRouter.route(
           taskType,
           { prompt: request.message },
-          contract.maxCostPerRequest
+          contract.max_cost_per_request
         );
         adapter = routedAdapter;
-        selectedModel = selection.model;
+        selectedModel = routedAdapter.getModelName();
         logger.info('Model routed', { model: selectedModel, confidence: selection.confidence });
       } catch (error: any) {
         logger.warn('Model routing failed, using default', { error: error.message });
@@ -262,6 +272,7 @@ export class EnhancedOrchestrator {
           // 13. Store in memory
           this.memoryService.addSessionMemory(request.sessionId, {
             content: `User: ${request.message}\nAssistant: ${response}`,
+            turn_number: 0,
             metadata: {
               salience: 1.0
             }
@@ -375,9 +386,22 @@ export class EnhancedOrchestrator {
    * Determine if RAG should be used
    */
   private shouldUseRAG(message: string): boolean {
+    const lower = message.toLowerCase();
+    const conversationalPatterns = [
+      'what can you do',
+      'what are you able to do',
+      'how can you help',
+      'what can you help',
+      'your capabilities',
+      'what do you do'
+    ];
+
+    if (conversationalPatterns.some(pattern => lower.includes(pattern))) {
+      return false;
+    }
+
     // Use RAG for questions and information queries
     const questionWords = ['what', 'who', 'when', 'where', 'why', 'how', 'explain', 'tell me about'];
-    const lower = message.toLowerCase();
     return questionWords.some(word => lower.startsWith(word) || lower.includes(` ${word} `));
   }
 

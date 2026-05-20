@@ -24,7 +24,7 @@ export class CollaborativeFilter {
    */
   findSimilarUsers(userId: string, topK: number = 5): SimilarUser[] {
     const userProfile = this.profiler.getProfile(userId);
-    const allProfiles = Array.from((this.profiler as any).profiles.values())
+    const allProfiles = Array.from((this.profiler as any).profiles.values() as Iterable<UserProfile>)
       .filter((p: UserProfile) => p.userId !== userId);
 
     const similarities = allProfiles.map(profile => ({

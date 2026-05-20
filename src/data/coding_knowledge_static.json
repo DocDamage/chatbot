@@ -1401,8 +1401,7 @@
       "css"
     ],
     "source": "https://github.com/onwidget/astrowind/blob/main/tailwind.config.js"
-  }
-},
+  },
 {
   "id": "liveterm_shell_ts",
   "category": "frontend",

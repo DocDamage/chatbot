@@ -110,7 +110,11 @@ export class PrometheusExporter {
     if (appMetrics.cache) {
       exporter.recordGauge('chatbot_cache_hits', appMetrics.cache.hits);
       exporter.recordGauge('chatbot_cache_misses', appMetrics.cache.misses);
-      exporter.recordGauge('chatbot_cache_hit_rate', appMetrics.cache.hitRate);
+      const totalCacheLookups = appMetrics.cache.hits + appMetrics.cache.misses;
+      exporter.recordGauge(
+        'chatbot_cache_hit_rate',
+        totalCacheLookups > 0 ? appMetrics.cache.hits / totalCacheLookups : 0
+      );
     }
 
     return exporter.export();

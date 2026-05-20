@@ -6,7 +6,7 @@ export interface DocumentChunk {
   id: string;
   content: string;
   metadata: {
-    source: string;
+    source?: string;
     title?: string;
     author?: string;
     date?: Date;
@@ -22,7 +22,7 @@ export interface DocumentChunk {
 export interface RetrievalResult {
   chunk: DocumentChunk;
   score: number;
-  retrievalMethod: 'bm25' | 'dense' | 'sparse' | 'hybrid';
+  retrievalMethod: string;
 }
 
 export interface QueryExpansion {

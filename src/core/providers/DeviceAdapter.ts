@@ -41,7 +41,7 @@ export interface MemoryStatus {
 
 export class DeviceAdapter {
     private lastDeviceInfo: DeviceInfo | null = null;
-    private memoryCheckInterval: NodeJS.Timer | null = null;
+    private memoryCheckInterval: NodeJS.Timeout | null = null;
     private memoryWarningCallback?: (status: MemoryStatus) => void;
     private readonly MEMORY_WARNING_THRESHOLD = 80; // percent
     private readonly MEMORY_CRITICAL_THRESHOLD = 90; // percent

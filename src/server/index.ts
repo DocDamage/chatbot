@@ -3,9 +3,11 @@
  * Auto-loads all services on startup
  */
 
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
 import { createServer } from 'http';
 import multer from 'multer';
 import { ServiceInitializer } from '../core/initialization/ServiceInitializer';
@@ -18,8 +20,7 @@ import { rateLimiter } from '../middleware/rateLimiter';
 import { validateChatRequest, sanitizeInput } from '../middleware/validator';
 import { errorHandler, asyncHandler } from '../middleware/errorHandler';
 import { securityHeaders, corsOptions } from '../middleware/security';
-
-dotenv.config();
+import { requireAuth } from '../middleware/auth';
 
 // Validate configuration on startup
 try {
@@ -58,12 +59,143 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 let services: any;
 let orchestrator: any;
 
+const ENV_PATH = path.join(process.cwd(), '.env');
+const SETTINGS_KEYS = [
+  'LLM_PROVIDER',
+  'USE_OLLAMA',
+  'OLLAMA_URL',
+  'OLLAMA_MODEL',
+  'USE_HUGGINGFACE',
+  'HUGGINGFACE_MODEL',
+  'HUGGINGFACE_API_KEY',
+  'OPENAI_API_KEY',
+  'OPENAI_MODEL',
+  'OPENAI_COMPATIBLE_API_KEY',
+  'OPENAI_COMPATIBLE_BASE_URL',
+  'OPENAI_COMPATIBLE_MODEL',
+  'OPENAI_COMPATIBLE_PROVIDER_NAME',
+  'ANTHROPIC_API_KEY',
+  'ANTHROPIC_MODEL',
+  'GEMINI_API_KEY',
+  'GEMINI_MODEL',
+  'USE_STABLE_DIFFUSION',
+  'STABLE_DIFFUSION_URL',
+  'EMBEDDING_PROVIDER',
+  'EMBEDDING_MODEL',
+  'EMBEDDING_USE_TRANSFORMERS'
+];
+
+const PUBLIC_SETTINGS_KEYS = SETTINGS_KEYS.filter(key => !key.endsWith('_API_KEY'));
+
+function maskSecret(value?: string): string {
+  if (!value) return '';
+  if (value.length <= 8) return '********';
+  return `${value.slice(0, 4)}...${value.slice(-4)}`;
+}
+
+function parseEnvFile(filePath: string): Record<string, string> {
+  if (!fs.existsSync(filePath)) return {};
+
+  return fs.readFileSync(filePath, 'utf8')
+    .split(/\r?\n/)
+    .reduce<Record<string, string>>((acc, line) => {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) return acc;
+
+      const separatorIndex = trimmed.indexOf('=');
+      if (separatorIndex === -1) return acc;
+
+      const key = trimmed.slice(0, separatorIndex).trim();
+      const value = trimmed.slice(separatorIndex + 1).trim();
+      acc[key] = value.replace(/^["']|["']$/g, '');
+      return acc;
+    }, {});
+}
+
+function serializeEnvValue(value: string): string {
+  return /[\s#"'\\]/.test(value) ? JSON.stringify(value) : value;
+}
+
+function writeEnvUpdates(updates: Record<string, string>): void {
+  const existing = parseEnvFile(ENV_PATH);
+  const merged = { ...existing, ...updates };
+  const lines: string[] = [
+    'PORT=3001',
+    'NODE_ENV=development',
+    `JWT_SECRET=${serializeEnvValue(merged.JWT_SECRET || process.env.JWT_SECRET || 'local-dev-jwt-secret-5c17f8b96a514fc9a8c9b51d')}`,
+    '',
+    '# Model provider settings managed from the app settings menu'
+  ];
+
+  for (const key of SETTINGS_KEYS) {
+    if (merged[key] !== undefined) {
+      lines.push(`${key}=${serializeEnvValue(merged[key])}`);
+    }
+  }
+
+  lines.push(
+    '',
+    'ENABLE_RAG=true',
+    'ENABLE_MODEL_ROUTING=true',
+    'ENABLE_ENSEMBLE=false',
+    'ENABLE_SAFETY_PIPELINE=true',
+    'ENABLE_SEMANTIC_CACHE=true',
+    'ENABLE_REDIS_CACHE=false',
+    'ENABLE_DISK_CACHE=true',
+    'LOG_LEVEL=info'
+  );
+
+  fs.writeFileSync(ENV_PATH, `${lines.join('\n')}\n`);
+
+  for (const [key, value] of Object.entries(merged)) {
+    process.env[key] = value;
+  }
+}
+
+function getProviderStatus() {
+  const configured = {
+    ollama: process.env.USE_OLLAMA !== 'false',
+    huggingface: process.env.USE_HUGGINGFACE === 'true' && !!process.env.HUGGINGFACE_API_KEY,
+    openai: !!process.env.OPENAI_API_KEY,
+    openaiCompatible: !!process.env.OPENAI_COMPATIBLE_API_KEY && !!process.env.OPENAI_COMPATIBLE_BASE_URL,
+    anthropic: !!process.env.ANTHROPIC_API_KEY,
+    gemini: !!process.env.GEMINI_API_KEY,
+    stableDiffusion: process.env.USE_STABLE_DIFFUSION === 'true',
+    transformers: process.env.EMBEDDING_USE_TRANSFORMERS === 'true'
+  };
+
+  const selectedProvider = process.env.LLM_PROVIDER || 'template';
+  const activeProvider = selectedProvider === 'openai-compatible' && configured.openaiCompatible
+    ? 'openai-compatible'
+    : selectedProvider === 'openai' && configured.openai
+    ? 'openai'
+    : selectedProvider === 'anthropic' && configured.anthropic
+      ? 'anthropic'
+    : selectedProvider === 'gemini' && configured.gemini
+      ? 'gemini'
+    : selectedProvider === 'huggingface' && configured.huggingface
+      ? 'huggingface'
+      : selectedProvider === 'ollama' && configured.ollama
+        ? 'ollama'
+        : 'template';
+
+  return {
+    activeProvider,
+    configured,
+    model: orchestrator ? 'ready' : 'initializing'
+  };
+}
+
+async function reinitializeServices(): Promise<void> {
+  services = await ServiceInitializer.initialize();
+  orchestrator = services.orchestrator;
+}
+
 // Start initialization immediately
 (async () => {
   try {
     logger.info('🚀 Initializing all services...');
-    services = await ServiceInitializer.initialize();
-    orchestrator = services.orchestrator;
+    await reinitializeServices();
 
     // Also initialize Stable Diffusion for image generation (if enabled)
     const sdUrl = process.env.STABLE_DIFFUSION_URL || 'http://localhost:7860';
@@ -328,6 +460,122 @@ app.get('/api/models/free', asyncHandler(async (req, res) => {
     llm: FreeModelRegistry.getByCategory('llm'),
     vision: FreeModelRegistry.getByCategory('vision'),
     embedding: FreeModelRegistry.getByCategory('embedding')
+  });
+}));
+
+app.get('/api/settings', asyncHandler(async (_req, res) => {
+  const envFile = parseEnvFile(ENV_PATH);
+  const settings: Record<string, string> = {};
+
+  for (const key of PUBLIC_SETTINGS_KEYS) {
+    settings[key] = process.env[key] || envFile[key] || '';
+  }
+
+  res.json({
+    settings,
+    secrets: {
+      OPENAI_API_KEY: {
+        configured: !!(process.env.OPENAI_API_KEY || envFile.OPENAI_API_KEY),
+        preview: maskSecret(process.env.OPENAI_API_KEY || envFile.OPENAI_API_KEY)
+      },
+      HUGGINGFACE_API_KEY: {
+        configured: !!(process.env.HUGGINGFACE_API_KEY || envFile.HUGGINGFACE_API_KEY),
+        preview: maskSecret(process.env.HUGGINGFACE_API_KEY || envFile.HUGGINGFACE_API_KEY)
+      },
+      OPENAI_COMPATIBLE_API_KEY: {
+        configured: !!(process.env.OPENAI_COMPATIBLE_API_KEY || envFile.OPENAI_COMPATIBLE_API_KEY),
+        preview: maskSecret(process.env.OPENAI_COMPATIBLE_API_KEY || envFile.OPENAI_COMPATIBLE_API_KEY)
+      },
+      ANTHROPIC_API_KEY: {
+        configured: !!(process.env.ANTHROPIC_API_KEY || envFile.ANTHROPIC_API_KEY),
+        preview: maskSecret(process.env.ANTHROPIC_API_KEY || envFile.ANTHROPIC_API_KEY)
+      },
+      GEMINI_API_KEY: {
+        configured: !!(process.env.GEMINI_API_KEY || envFile.GEMINI_API_KEY),
+        preview: maskSecret(process.env.GEMINI_API_KEY || envFile.GEMINI_API_KEY)
+      }
+    },
+    status: getProviderStatus()
+  });
+}));
+
+app.put('/api/settings', asyncHandler(async (req, res) => {
+  const body = req.body || {};
+  const current = parseEnvFile(ENV_PATH);
+  const updates: Record<string, string> = {};
+
+  const selectedProvider = String(body.provider || 'template');
+
+  for (const key of PUBLIC_SETTINGS_KEYS) {
+    if (body[key] !== undefined) {
+      updates[key] = String(body[key]);
+    }
+  }
+
+  if (body.OPENAI_API_KEY !== undefined && String(body.OPENAI_API_KEY).trim()) {
+    updates.OPENAI_API_KEY = String(body.OPENAI_API_KEY).trim();
+  } else if (current.OPENAI_API_KEY) {
+    updates.OPENAI_API_KEY = current.OPENAI_API_KEY;
+  }
+
+  if (body.HUGGINGFACE_API_KEY !== undefined && String(body.HUGGINGFACE_API_KEY).trim()) {
+    updates.HUGGINGFACE_API_KEY = String(body.HUGGINGFACE_API_KEY).trim();
+  } else if (current.HUGGINGFACE_API_KEY) {
+    updates.HUGGINGFACE_API_KEY = current.HUGGINGFACE_API_KEY;
+  }
+
+  if (body.OPENAI_COMPATIBLE_API_KEY !== undefined && String(body.OPENAI_COMPATIBLE_API_KEY).trim()) {
+    updates.OPENAI_COMPATIBLE_API_KEY = String(body.OPENAI_COMPATIBLE_API_KEY).trim();
+  } else if (current.OPENAI_COMPATIBLE_API_KEY) {
+    updates.OPENAI_COMPATIBLE_API_KEY = current.OPENAI_COMPATIBLE_API_KEY;
+  }
+
+  if (body.ANTHROPIC_API_KEY !== undefined && String(body.ANTHROPIC_API_KEY).trim()) {
+    updates.ANTHROPIC_API_KEY = String(body.ANTHROPIC_API_KEY).trim();
+  } else if (current.ANTHROPIC_API_KEY) {
+    updates.ANTHROPIC_API_KEY = current.ANTHROPIC_API_KEY;
+  }
+
+  if (body.GEMINI_API_KEY !== undefined && String(body.GEMINI_API_KEY).trim()) {
+    updates.GEMINI_API_KEY = String(body.GEMINI_API_KEY).trim();
+  } else if (current.GEMINI_API_KEY) {
+    updates.GEMINI_API_KEY = current.GEMINI_API_KEY;
+  }
+
+  updates.USE_OLLAMA = selectedProvider === 'ollama' ? 'true' : 'false';
+  updates.USE_HUGGINGFACE = selectedProvider === 'huggingface' ? 'true' : 'false';
+  updates.LLM_PROVIDER = selectedProvider;
+
+  if (selectedProvider === 'openai' && !updates.OPENAI_API_KEY && !process.env.OPENAI_API_KEY) {
+    return res.status(400).json({ error: 'OPENAI_API_KEY is required when OpenAI is selected' });
+  }
+
+  if (selectedProvider === 'openai-compatible' && !updates.OPENAI_COMPATIBLE_API_KEY && !process.env.OPENAI_COMPATIBLE_API_KEY) {
+    return res.status(400).json({ error: 'An API key is required for this provider' });
+  }
+
+  if (selectedProvider === 'openai-compatible' && !updates.OPENAI_COMPATIBLE_BASE_URL) {
+    return res.status(400).json({ error: 'A base URL is required for this provider' });
+  }
+
+  if (selectedProvider === 'anthropic' && !updates.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_API_KEY) {
+    return res.status(400).json({ error: 'ANTHROPIC_API_KEY is required when Claude is selected' });
+  }
+
+  if (selectedProvider === 'gemini' && !updates.GEMINI_API_KEY && !process.env.GEMINI_API_KEY) {
+    return res.status(400).json({ error: 'GEMINI_API_KEY is required when Gemini is selected' });
+  }
+
+  if (selectedProvider === 'huggingface' && !updates.HUGGINGFACE_API_KEY && !process.env.HUGGINGFACE_API_KEY) {
+    return res.status(400).json({ error: 'HUGGINGFACE_API_KEY is required when Hugging Face is selected' });
+  }
+
+  writeEnvUpdates(updates);
+  await reinitializeServices();
+
+  res.json({
+    success: true,
+    status: getProviderStatus()
   });
 }));
 

@@ -13,7 +13,7 @@ describe('MultiLevelCache', () => {
 
   it('should initialize with L1 cache', () => {
     const stats = cache.getStats();
-    expect(stats.levels).toBeGreaterThanOrEqual(1);
+    expect(stats.levels.length).toBeGreaterThanOrEqual(1);
     expect(stats.levels).toContain('memory');
   });
 

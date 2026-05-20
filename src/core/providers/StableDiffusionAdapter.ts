@@ -149,10 +149,8 @@ export class BrowserStableDiffusionAdapter implements ImageAdapter {
       // Lazy load the pipeline
       if (!this.pipeline) {
         logger.info('Loading Stable Diffusion pipeline...');
-        const { pipeline } = await import('@xenova/transformers');
-        this.pipeline = await pipeline('image-to-image', this.model, {
-          quantized: true, // Use quantized model for faster loading
-        });
+        const { pipeline } = await import('@huggingface/transformers');
+        this.pipeline = await pipeline('image-to-image', this.model);
       }
 
       // Generate image

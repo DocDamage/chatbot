@@ -117,13 +117,14 @@ export abstract class SmartKnowledgeSource implements KnowledgeSource {
         
         Enhanced query:`;
 
-        const response = await this.llmAdapter.generate(prompt, {
+        const response = await this.llmAdapter.generate({
+          prompt,
           maxTokens: 50,
           temperature: 0.3,
         });
 
-        if (response && response.trim()) {
-          return response.trim();
+        if (response.content && response.content.trim()) {
+          return response.content.trim();
         }
       }
 

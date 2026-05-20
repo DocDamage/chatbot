@@ -139,7 +139,7 @@ export class HybridRetriever {
 
       for (const token of queryTokens) {
         const tf = docTokens.filter(t => t === token).length;
-        const idf = this.bm25Index.idf(token, this.documents.length);
+        const idf = this.bm25Index.idf(token, false);
         score += tf * idf;
       }
 

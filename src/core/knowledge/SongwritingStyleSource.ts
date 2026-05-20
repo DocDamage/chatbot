@@ -115,6 +115,7 @@ ${content}
                 content: trimmed,
                 metadata: {
                     ...metadata,
+                    lyricalDevices: metadata.devices || [],
                     yearWritten: '2023-2024',
                     version
                 }

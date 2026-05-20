@@ -110,12 +110,13 @@ Format as JSON:
 }`;
 
     try {
-      const response = await this.llmAdapter!.generate(prompt, {
+      const response = await this.llmAdapter!.generate({
+        prompt,
         maxTokens: 200,
         temperature: 0.3,
       });
 
-      const parsed = this.parseLLMResponse(response);
+      const parsed = this.parseLLMResponse(response.content);
 
       // Use NLP to enhance entity extraction
       const nlpEntities = await this.extractEntitiesNLP(query);

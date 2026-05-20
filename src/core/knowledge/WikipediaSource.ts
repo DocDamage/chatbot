@@ -150,5 +150,15 @@ export class WikipediaSource implements KnowledgeSource {
       return null;
     }
   }
+
+  private deduplicateResults(results: KnowledgeResult[]): KnowledgeResult[] {
+    const seen = new Set<string>();
+    return results.filter((result) => {
+      const key = result.url || result.id || result.title.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
 }
 

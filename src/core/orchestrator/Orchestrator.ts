@@ -13,7 +13,7 @@ import { ValidationPipeline } from '../validator/Validators';
 import { ProvenanceLedger } from '../provenance/ProvenanceLedger';
 import { ArtifactType } from '../../types/provenance';
 import { logger } from '../observability/logger';
-import { CacheManager } from '../utils/cache';
+import { CacheManager } from '../../utils/cache';
 import { metricsCollector } from '../observability/metrics';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -151,6 +151,7 @@ export class Orchestrator {
           // 10. Store in memory
           this.memoryService.addSessionMemory(request.sessionId, {
             content: `User: ${request.message}\nAssistant: ${response}`,
+            turn_number: 0,
             metadata: {
               salience: 1.0
             }

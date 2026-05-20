@@ -88,7 +88,7 @@ export class RAGRouter {
                 }
                 break;
 
-            case 'hybrid':
+            case 'hybrid': {
                 const [ragResult, sqlResult] = await Promise.all([
                     this.ragHandler(query),
                     this.sqlHandler ? this.executeSQLQuery(query, classification) : null
@@ -96,6 +96,7 @@ export class RAGRouter {
                 result = this.mergeResults(ragResult, sqlResult);
                 sources = ['rag', 'sql'];
                 break;
+            }
 
             case 'direct':
                 result = { answer: 'This question can be answered directly without database lookup.' };

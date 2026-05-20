@@ -80,12 +80,12 @@ export class SemanticCache<T> {
   /**
    * Find semantically similar entry
    */
-  private findSemanticMatch(query: string): { value: T; similarity: number; key: string } | null {
+  private findSemanticMatch(query: string): (SemanticCacheEntry<T> & { similarity: number }) | null {
     const queryTokens = new Set(
       this.tokenizer.tokenize(query.toLowerCase()) || []
     );
 
-    let bestMatch: { value: T; similarity: number; key: string } | null = null;
+    let bestMatch: (SemanticCacheEntry<T> & { similarity: number }) | null = null;
     let bestSimilarity = 0;
 
     for (const [key, entry] of this.cache.entries()) {
@@ -102,11 +102,7 @@ export class SemanticCache<T> {
       // If using embeddings, could use cosine similarity here
       if (similarity > bestSimilarity && similarity >= this.similarityThreshold) {
         bestSimilarity = similarity;
-        bestMatch = {
-          value: entry.value,
-          similarity,
-          key
-        };
+        bestMatch = { ...entry, similarity };
       }
     }
 

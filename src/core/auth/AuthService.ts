@@ -3,6 +3,7 @@
  */
 
 import * as jwt from 'jsonwebtoken';
+import { SignOptions } from 'jsonwebtoken';
 import { logger } from '../observability/logger';
 
 export interface User {
@@ -43,9 +44,11 @@ export class AuthService {
       roles: user.roles || [],
     };
 
-    return jwt.sign(payload, this.secretKey, {
-      expiresIn: this.tokenExpiry,
-    });
+    const options: SignOptions = {
+      expiresIn: this.tokenExpiry as SignOptions['expiresIn'],
+    };
+
+    return jwt.sign(payload, this.secretKey, options);
   }
 
   /**
