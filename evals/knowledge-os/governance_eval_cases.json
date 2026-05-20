@@ -1,0 +1,8 @@
+[
+  {
+    "id": "kos-gov-001",
+    "query": "Create an evidence report for a grounded answer.",
+    "must_contain": ["sources", "checks", "score"],
+    "answer_type": "governance_evidence"
+  }
+]

@@ -17,6 +17,7 @@ export type NluDomain =
   | 'history'
   | 'science'
   | 'pop_culture'
+  | 'knowledge_os'
   | 'general';
 
 export interface PhrasebookEntry {

@@ -70,6 +70,13 @@ import { AnovaTool } from '../tools/sixsigma/AnovaTool';
 import { RegressionTool } from '../tools/sixsigma/RegressionTool';
 import { ControlChartConstantsTool } from '../tools/sixsigma/ControlChartConstantsTool';
 import { createMusicTools } from '../tools/music/createMusicTools';
+import { EntityLinkingService } from '../entity/EntityLinkingService';
+import { KnowledgeGraphIndexer } from '../graph/KnowledgeGraphIndexer';
+import { LocalKnowledgeWiki } from '../wiki/LocalKnowledgeWiki';
+import { PrivateMemoryStore } from '../memory/PrivateMemoryStore';
+import { SafeDatabaseQuestionAgent } from '../database/SafeDatabaseQuestionAgent';
+import { GovernanceEvidenceService } from '../governance/GovernanceEvidenceService';
+import { GitHubRepoKnowledgeImporter } from '../importers/GitHubRepoKnowledgeImporter';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -109,6 +116,13 @@ export interface InitializedServices {
   embeddingService?: EmbeddingService;
   database?: Database;
   ragDocumentStore?: RAGDocumentStore;
+  entityLinkingService?: EntityLinkingService;
+  knowledgeGraphIndexer?: KnowledgeGraphIndexer;
+  localKnowledgeWiki?: LocalKnowledgeWiki;
+  privateMemoryStore?: PrivateMemoryStore;
+  safeDatabaseQuestionAgent?: SafeDatabaseQuestionAgent;
+  governanceEvidenceService?: GovernanceEvidenceService;
+  githubRepoKnowledgeImporter?: GitHubRepoKnowledgeImporter;
   cache?: MultiLevelCache<any>;
   analytics?: AnalyticsService;
   knowledgeLearner?: KnowledgeLearner;
@@ -154,7 +168,23 @@ export class ServiceInitializer {
       }
     }
 
-    const documentManager = new DocumentManager(ragService, embeddingService, ragDocumentStore);
+    const entityLinkingService = new EntityLinkingService(database);
+    const documentManager = new DocumentManager(ragService, embeddingService, ragDocumentStore, entityLinkingService);
+    const knowledgeGraphIndexer = new KnowledgeGraphIndexer({
+      workspaceRoot: process.cwd(),
+      ragDocumentStore,
+      database,
+      maxFiles: parseInt(process.env.KNOWLEDGE_GRAPH_MAX_FILES || '250')
+    });
+    const localKnowledgeWiki = new LocalKnowledgeWiki(process.env.LOCAL_KNOWLEDGE_WIKI_DIR || path.join(process.cwd(), 'knowledge-base-public', 'wiki'));
+    const privateMemoryStore = new PrivateMemoryStore(database);
+    const safeDatabaseQuestionAgent = new SafeDatabaseQuestionAgent(database);
+    const governanceEvidenceService = new GovernanceEvidenceService(database);
+    const githubRepoKnowledgeImporter = new GitHubRepoKnowledgeImporter({
+      wiki: localKnowledgeWiki,
+      documentManager,
+      token: process.env.GITHUB_TOKEN
+    });
 
     // 5. Load private and committed public knowledge base documents
     await this.loadKnowledgeBase(documentManager);
@@ -312,6 +342,13 @@ export class ServiceInitializer {
       embeddingService,
       database,
       ragDocumentStore,
+      entityLinkingService,
+      knowledgeGraphIndexer,
+      localKnowledgeWiki,
+      privateMemoryStore,
+      safeDatabaseQuestionAgent,
+      governanceEvidenceService,
+      githubRepoKnowledgeImporter,
       cache,
       analytics,
       knowledgeLearner

@@ -61,7 +61,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
     fl_studio_control: 'Ask me to plan FL Studio control actions...',
     pro_tools: 'Ask about recording, playlists, comping, routing, or stems...',
     logic: 'Ask about Logic MIDI, vocals, Session Players, Flex, or bounce...',
-    mix_master: 'Describe the mix/master problem or target...'
+    mix_master: 'Describe the mix/master problem or target...',
+    knowledge_os: 'Ask about local DB, graph, wiki, memory, or evidence...'
   };
 
   return (
@@ -84,6 +85,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage, disabled }) 
           {mode === 'pro_tools' && '🎚️ I\'ll guide Pro Tools recording, comping, routing, and stems'}
           {mode === 'logic' && '🎼 I\'ll guide Logic MIDI, vocals, Session Players, and bounce'}
           {mode === 'mix_master' && '📊 I\'ll diagnose mix/master issues and metering targets'}
+          {mode === 'knowledge_os' && '🧠 I\'ll inspect the local DB, graph, wiki, memory, and evidence'}
         </div>
       </div>
       <div className="message-input-wrapper">

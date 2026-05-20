@@ -1,0 +1,14 @@
+[
+  {
+    "id": "kos-entity-001",
+    "query": "Use Fruity Loops with a knowledge graph for local memory.",
+    "must_contain": ["fl_studio", "knowledge_graph", "private_memory"],
+    "answer_type": "entity_linking"
+  },
+  {
+    "id": "kos-entity-002",
+    "query": "What happened around 10000 BC?",
+    "must_contain": ["-10000", "date", "approximate"],
+    "answer_type": "temporal_entity"
+  }
+]

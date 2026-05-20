@@ -43,6 +43,14 @@ describe('HumanLanguageRouter', () => {
     expect(result.intent).toBe('character.revision');
   });
 
+  it('routes local knowledge system questions to Knowledge OS', () => {
+    const result = router.route({ message: 'how many chunks are in your local database?' });
+
+    expect(result.route).toBe('knowledge_os');
+    expect(result.intent).toBe('knowledge_os.status');
+    expect(result.confidence).toBeGreaterThanOrEqual(0.75);
+  });
+
   it('returns low confidence instead of forcing unrelated routes', () => {
     const result = router.route({ message: 'hello there' });
 

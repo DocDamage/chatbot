@@ -1,0 +1,254 @@
+.knowledge-os {
+  border-bottom: 1px solid #262626;
+  background: #050505;
+  color: #ffffff;
+}
+
+.knowledge-os-toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  border: 0;
+  background: #080808;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 10px 20px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.knowledge-os-toggle:hover {
+  background: #111111;
+}
+
+.knowledge-os-pill {
+  border: 1px solid #404040;
+  border-radius: 999px;
+  color: #d4d4d4;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.knowledge-os-body {
+  display: grid;
+  gap: 12px;
+  padding: 14px 20px 16px;
+  border-top: 1px solid #1f1f1f;
+  background: #030303;
+}
+
+.knowledge-os-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+}
+
+.knowledge-os-tabs button {
+  min-height: 32px;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  background: #0d0d0d;
+  color: #d4d4d4;
+  cursor: pointer;
+  padding: 0 10px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.knowledge-os-tabs button.active,
+.knowledge-os-tabs button:hover {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.knowledge-os-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(88px, 1fr));
+  gap: 8px;
+}
+
+.knowledge-os-stat {
+  display: grid;
+  min-height: 70px;
+  align-content: center;
+  gap: 4px;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  background: #0d0d0d;
+  padding: 10px;
+}
+
+.knowledge-os-stat span,
+.knowledge-os-stat small {
+  color: #a3a3a3;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.knowledge-os-stat strong {
+  color: #ffffff;
+  font-size: 19px;
+  line-height: 1;
+}
+
+.knowledge-os-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.knowledge-os-screen {
+  display: grid;
+  gap: 10px;
+}
+
+.knowledge-os-screen h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.knowledge-os-control-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.knowledge-os-control-row input,
+.knowledge-os-editor input,
+.knowledge-os-editor textarea {
+  min-height: 34px;
+  border: 1px solid #333333;
+  border-radius: 8px;
+  background: #050505;
+  color: #ffffff;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 12px;
+  outline: none;
+}
+
+.knowledge-os-control-row input:focus,
+.knowledge-os-editor input:focus,
+.knowledge-os-editor textarea:focus {
+  border-color: #ffffff;
+}
+
+.knowledge-os-editor {
+  display: grid;
+  gap: 8px;
+}
+
+.knowledge-os-editor textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.knowledge-os-editor button,
+.knowledge-os-control-row button {
+  min-height: 34px;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  background: #141414;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.knowledge-os-editor button:hover,
+.knowledge-os-control-row button:hover {
+  border-color: #ffffff;
+}
+
+.knowledge-os-list {
+  display: grid;
+  max-height: 220px;
+  overflow: auto;
+  gap: 6px;
+}
+
+.knowledge-os-row {
+  display: grid;
+  gap: 4px;
+  border: 1px solid #252525;
+  border-radius: 8px;
+  background: #0a0a0a;
+  color: #f5f5f5;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.knowledge-os-row small,
+.knowledge-os-empty {
+  color: #a3a3a3;
+  font-size: 11px;
+}
+
+.knowledge-os-row-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.knowledge-os-row-actions button {
+  min-height: 28px;
+  border: 1px solid #404040;
+  border-radius: 7px;
+  background: #151515;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0 9px;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.knowledge-os-actions button {
+  min-height: 34px;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  background: #141414;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.knowledge-os-actions button:hover:not(:disabled) {
+  border-color: #ffffff;
+}
+
+.knowledge-os-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.knowledge-os-status {
+  color: #d4d4d4;
+  font-size: 12px;
+}
+
+.knowledge-os-status.success {
+  color: #86efac;
+}
+
+.knowledge-os-status.error {
+  color: #fca5a5;
+}
+
+@media (max-width: 840px) {
+  .knowledge-os-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

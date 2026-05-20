@@ -18,7 +18,8 @@ type Domain =
   | 'philosophy'
   | 'language'
   | 'geography'
-  | 'engineering';
+  | 'engineering'
+  | 'knowledge-os';
 
 interface EvalCase {
   id: string;
@@ -51,7 +52,8 @@ const domains: Domain[] = requested === 'all'
       'philosophy',
       'language',
       'geography',
-      'engineering'
+      'engineering',
+      'knowledge-os'
     ]
   : requested.includes('/')
     ? []

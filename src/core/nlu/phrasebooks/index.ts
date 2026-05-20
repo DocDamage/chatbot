@@ -9,6 +9,7 @@ import { geographyPhrasebook } from './geography.phrasebook';
 import { healthPhrasebook } from './health.phrasebook';
 import { languagePhrasebook } from './language.phrasebook';
 import { legalPhrasebook } from './legal.phrasebook';
+import { knowledgeOsPhrasebook } from './knowledge-os.phrasebook';
 import { marketPhrasebook } from './market.phrasebook';
 import { mathPhrasebook } from './math.phrasebook';
 import { musicPhrasebook } from './music.phrasebook';
@@ -32,5 +33,6 @@ export const allPhrasebooks: Phrasebook = [
   ...geographyPhrasebook,
   ...engineeringPhrasebook,
   ...chronoPhrasebook,
+  ...knowledgeOsPhrasebook,
   ...generalPhrasebook
 ];

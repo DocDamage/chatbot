@@ -13,6 +13,7 @@ import {
 import ModeSelector, { ChatMode } from './ModeSelector';
 import StatusBar from './StatusBar';
 import FLStudioControlPanel from './FLStudioControlPanel';
+import KnowledgeOSPanel from './KnowledgeOSPanel';
 import './AssistantChat.css';
 
 const uuidv4 = () => {
@@ -47,7 +48,8 @@ const modeHints: Record<ChatMode, string> = {
   fl_studio_control: 'FL Studio dry-run control',
   pro_tools: 'Pro Tools mode',
   logic: 'Logic Pro mode',
-  mix_master: 'Mix/Master mode'
+  mix_master: 'Mix/Master mode',
+  knowledge_os: 'Knowledge OS mode'
 };
 
 const placeholders: Record<ChatMode, string> = {
@@ -65,7 +67,8 @@ const placeholders: Record<ChatMode, string> = {
   fl_studio_control: 'Ask me to plan FL Studio control actions...',
   pro_tools: 'Ask about recording, playlists, comping, routing, or stems...',
   logic: 'Ask about Logic MIDI, vocals, Session Players, Flex, or bounce...',
-  mix_master: 'Describe the mix/master problem or target...'
+  mix_master: 'Describe the mix/master problem or target...',
+  knowledge_os: 'Ask about the local DB, graph, wiki, memory, or evidence...'
 };
 
 const convertMessage = (message: ChatMessage): ThreadMessageLike => {
@@ -218,6 +221,7 @@ function AssistantChat() {
           <ModeSelector mode={mode} onModeChange={setMode} />
           <span className="assistant-mode-hint">{modeHints[mode]}</span>
         </div>
+        <KnowledgeOSPanel />
         {mode === 'fl_studio_control' && (
           <FLStudioControlPanel onSendCommand={command => sendUserMessage(command, 'fl_studio_control')} />
         )}
@@ -322,6 +326,8 @@ function getSystemPrompt(mode: ChatMode): string {
       return 'You are a Logic Pro specialist. Give project setup, MIDI/Piano Roll, Session Players, Flex Pitch/Time, stock instruments/effects, vocal production, arrangement, and bounce/export guidance.';
     case 'mix_master':
       return 'You are a mix and mastering specialist. Diagnose likely causes, provide a fix order, plugin chain suggestions, metering targets, reference checks, and safety/copyright boundaries.';
+    case 'knowledge_os':
+      return 'You are a Knowledge OS specialist. Answer using local database, graph, wiki, memory, and governance state. Prefer counts, sources, central nodes, schema, and concrete local evidence.';
     default:
       return 'You are a helpful AI assistant.';
   }

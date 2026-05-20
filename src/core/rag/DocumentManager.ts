@@ -9,6 +9,7 @@ import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { logger } from '../observability/logger';
 import { RAGDocumentStore } from './RAGDocumentStore';
 import { randomUUID } from 'crypto';
+import { EntityLinkingService } from '../entity/EntityLinkingService';
 
 export type DocumentManagerIngestOptions = IngestOptions;
 
@@ -17,15 +18,18 @@ export class DocumentManager {
   private ingester: DocumentIngester;
   private embeddingService?: EmbeddingService;
   private documentStore?: RAGDocumentStore;
+  private entityLinkingService?: EntityLinkingService;
 
   constructor(
     ragService: RAGService,
     embeddingService?: EmbeddingService,
-    documentStore?: RAGDocumentStore
+    documentStore?: RAGDocumentStore,
+    entityLinkingService?: EntityLinkingService
   ) {
     this.ragService = ragService;
     this.embeddingService = embeddingService;
     this.documentStore = documentStore;
+    this.entityLinkingService = entityLinkingService;
     this.ingester = new DocumentIngester(embeddingService);
   }
 
@@ -141,5 +145,20 @@ export class DocumentManager {
     }
 
     await this.documentStore.saveChunks(chunks, options);
+    await this.persistEntityLinks(chunks);
+  }
+
+  private async persistEntityLinks(chunks: DocumentChunk[]): Promise<void> {
+    if (!this.entityLinkingService) {
+      return;
+    }
+
+    for (const chunk of chunks) {
+      await this.entityLinkingService.linkAndPersist([
+        chunk.metadata.source,
+        chunk.metadata.title,
+        chunk.content
+      ].filter(Boolean).join('\n'));
+    }
   }
 }

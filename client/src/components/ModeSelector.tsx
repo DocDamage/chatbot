@@ -16,7 +16,8 @@ export type ChatMode =
     | 'fl_studio_control'
     | 'pro_tools'
     | 'logic'
-    | 'mix_master';
+    | 'mix_master'
+    | 'knowledge_os';
 
 interface ModeSelectorProps {
     mode: ChatMode;
@@ -113,6 +114,12 @@ const modeConfig: Record<ChatMode, { icon: string; label: string; description: s
         label: 'Mix/Master',
         description: 'Diagnostics, loudness, chains',
         color: '#14b8a6'
+    },
+    knowledge_os: {
+        icon: '🧠',
+        label: 'Knowledge OS',
+        description: 'Database, graph, wiki, memory',
+        color: '#ffffff'
     }
 };
 

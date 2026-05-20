@@ -44,7 +44,9 @@ import { createPhilosophyGeniusRouter } from './routes/philosophy';
 import { createLanguageGeniusRouter } from './routes/language';
 import { createGeoCultureGeniusRouter } from './routes/geography';
 import { createEngineeringGeniusRouter } from './routes/engineering';
+import { createKnowledgeOsRouter } from './routes/knowledge-os';
 import { HumanLanguageRoute, HumanLanguageRouter } from '../core/nlu/HumanLanguageRouter';
+import { KnowledgeOsChatAgent } from '../core/knowledge-os/KnowledgeOsChatAgent';
 
 // Validate configuration on startup
 try {
@@ -107,7 +109,8 @@ type ChatSpecialistMode =
   | 'philosophy'
   | 'language'
   | 'geography'
-  | 'engineering';
+  | 'engineering'
+  | 'knowledge_os';
 
 const specialistModes = new Set([
   'coding',
@@ -132,7 +135,8 @@ const specialistModes = new Set([
   'philosophy',
   'language',
   'geography',
-  'engineering'
+  'engineering',
+  'knowledge_os'
 ]);
 
 function inferChatSpecialistMode(message: string, mode?: string): ChatSpecialistMode | undefined {
@@ -141,6 +145,9 @@ function inferChatSpecialistMode(message: string, mode?: string): ChatSpecialist
   }
 
   const text = message.toLowerCase();
+  if (/\b(knowledge os|knowledge system|local database|database status|how many chunks|how many sources|knowledge graph|graph centrality|private memory|local wiki)\b/.test(text)) {
+    return 'knowledge_os';
+  }
   if (/\b(connect to fl|control fl|fl studio control|piano roll|channel rack|mixer track|send chord|send notes|step sequence|solo the drums|turn down track|transport)\b/.test(text)) {
     return 'fl_studio_control';
   }
@@ -196,6 +203,11 @@ function isRecognizedSpecialistMode(mode: string | undefined): mode is ChatSpeci
 
 async function processSpecialistChat(message: string, mode: ChatSpecialistMode, nlu?: HumanLanguageRoute) {
   if (!services) return undefined;
+
+  if (mode === 'knowledge_os') {
+    const result = await new KnowledgeOsChatAgent(services).ask(message);
+    return { ...result, nlu };
+  }
 
   if (mode === 'coding' && services.codingAgent) {
     const result = await services.codingAgent.handle({ message, runVerification: false });
@@ -706,6 +718,11 @@ app.post('/api/knowledge-base/file', asyncHandler(async (req, res) => {
 
 app.use((req, res, next) => {
   const router = createKnowledgeBaseRouter(services);
+  router(req, res, next);
+});
+
+app.use((req, res, next) => {
+  const router = createKnowledgeOsRouter(services);
   router(req, res, next);
 });
 

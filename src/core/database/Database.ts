@@ -374,7 +374,117 @@ export class Database {
           )`
         ];
 
-    const migrations = [...baseMigrations, ...ragMigrations];
+    const knowledgeOsMigrations = this.config.type === 'postgresql'
+      ? [
+          `CREATE TABLE IF NOT EXISTS linked_entities (
+            id TEXT PRIMARY KEY,
+            label TEXT NOT NULL,
+            normalized TEXT NOT NULL,
+            entity_type TEXT NOT NULL,
+            aliases JSONB,
+            confidence REAL DEFAULT 0,
+            source TEXT,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE TABLE IF NOT EXISTS knowledge_graph_nodes (
+            id TEXT PRIMARY KEY,
+            node_type TEXT NOT NULL,
+            label TEXT NOT NULL,
+            metadata JSONB,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE TABLE IF NOT EXISTS knowledge_graph_edges (
+            id TEXT PRIMARY KEY,
+            from_node_id TEXT NOT NULL,
+            to_node_id TEXT NOT NULL,
+            edge_type TEXT NOT NULL,
+            weight REAL DEFAULT 1,
+            metadata JSONB,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE TABLE IF NOT EXISTS private_memories (
+            id TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL,
+            content TEXT NOT NULL,
+            tags JSONB,
+            confidence REAL DEFAULT 0,
+            importance REAL DEFAULT 0,
+            visibility TEXT NOT NULL DEFAULT 'private',
+            status TEXT NOT NULL DEFAULT 'approved',
+            expires_at TIMESTAMPTZ,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE INDEX IF NOT EXISTS idx_private_memories_user_status
+            ON private_memories (user_id, status)`,
+          `CREATE TABLE IF NOT EXISTS governance_evidence_reports (
+            id TEXT PRIMARY KEY,
+            request TEXT NOT NULL,
+            answer TEXT NOT NULL,
+            sources JSONB,
+            checks JSONB,
+            score REAL DEFAULT 0,
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+          )`
+        ]
+      : [
+          `CREATE TABLE IF NOT EXISTS linked_entities (
+            id TEXT PRIMARY KEY,
+            label TEXT NOT NULL,
+            normalized TEXT NOT NULL,
+            entity_type TEXT NOT NULL,
+            aliases TEXT,
+            confidence REAL DEFAULT 0,
+            source TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE TABLE IF NOT EXISTS knowledge_graph_nodes (
+            id TEXT PRIMARY KEY,
+            node_type TEXT NOT NULL,
+            label TEXT NOT NULL,
+            metadata TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE TABLE IF NOT EXISTS knowledge_graph_edges (
+            id TEXT PRIMARY KEY,
+            from_node_id TEXT NOT NULL,
+            to_node_id TEXT NOT NULL,
+            edge_type TEXT NOT NULL,
+            weight REAL DEFAULT 1,
+            metadata TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE TABLE IF NOT EXISTS private_memories (
+            id TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL,
+            content TEXT NOT NULL,
+            tags TEXT,
+            confidence REAL DEFAULT 0,
+            importance REAL DEFAULT 0,
+            visibility TEXT NOT NULL DEFAULT 'private',
+            status TEXT NOT NULL DEFAULT 'approved',
+            expires_at DATETIME,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )`,
+          `CREATE INDEX IF NOT EXISTS idx_private_memories_user_status
+            ON private_memories (user_id, status)`,
+          `CREATE TABLE IF NOT EXISTS governance_evidence_reports (
+            id TEXT PRIMARY KEY,
+            request TEXT NOT NULL,
+            answer TEXT NOT NULL,
+            sources TEXT,
+            checks TEXT,
+            score REAL DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )`
+        ];
+
+    const migrations = [...baseMigrations, ...ragMigrations, ...knowledgeOsMigrations];
 
     for (const migration of migrations) {
       try {
