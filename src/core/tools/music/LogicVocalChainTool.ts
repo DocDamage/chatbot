@@ -5,9 +5,9 @@ export class LogicVocalChainTool {
 
   run(input: Record<string, any> = {}) {
     return {
+      ...this.vocalChain.run({ ...input, daw: 'logic' }),
       domain: 'music',
-      tool: 'LogicVocalChainTool',
-      ...this.vocalChain.run({ ...input, daw: 'logic' })
+      tool: 'LogicVocalChainTool'
     };
   }
 }

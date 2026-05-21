@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { fetchFileTree, LoadedFileContext, readFile, searchFiles } from '../api/files';
 import { isStaticPagesBuild } from '../api/runtime';
 import FilePreviewPane from './FilePreviewPane';
@@ -19,8 +19,10 @@ function FileExplorerPanel({ onLoadFile }: FileExplorerPanelProps) {
   const [tree, setTree] = useState<FileNode | null>(null);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Array<{ path: string; match: string }>>([]);
+  const [nextOffset, setNextOffset] = useState<number | undefined>();
   const [preview, setPreview] = useState<LoadedFileContext | undefined>();
   const [error, setError] = useState('');
+  const searchAbortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     if (isStaticPagesBuild) {
@@ -40,17 +42,37 @@ function FileExplorerPanel({ onLoadFile }: FileExplorerPanelProps) {
     }
   };
 
-  const runSearch = async () => {
+  useEffect(() => {
+    if (isStaticPagesBuild) return;
+    const handle = window.setTimeout(() => {
+      if (query.trim()) void runSearch(0);
+      else {
+        searchAbortRef.current?.abort();
+        setResults([]);
+        setNextOffset(undefined);
+      }
+    }, 250);
+
+    return () => window.clearTimeout(handle);
+  }, [query]);
+
+  const runSearch = async (offset = 0) => {
     if (isStaticPagesBuild) return;
     if (!query.trim()) {
       setResults([]);
+      setNextOffset(undefined);
       return;
     }
     try {
-      const data = await searchFiles(query, 'both');
-      setResults(data.results || []);
+      searchAbortRef.current?.abort();
+      const controller = new AbortController();
+      searchAbortRef.current = controller;
+      const data = await searchFiles(query, 'both', { limit: 50, offset, signal: controller.signal });
+      setResults(prev => offset > 0 ? [...prev, ...(data.results || [])] : data.results || []);
+      setNextOffset(data.nextOffset);
       setError('');
     } catch (error: any) {
+      if (error.name === 'AbortError') return;
       setError(error.message);
     }
   };
@@ -59,7 +81,7 @@ function FileExplorerPanel({ onLoadFile }: FileExplorerPanelProps) {
     <aside className="file-explorer-panel" aria-label="Workspace files">
       <div className="file-explorer-header">
         <strong>Files</strong>
-        <input value={query} onChange={event => setQuery(event.target.value)} onKeyDown={event => event.key === 'Enter' && runSearch()} placeholder="Search files" />
+        <input value={query} onChange={event => setQuery(event.target.value)} onKeyDown={event => event.key === 'Enter' && runSearch(0)} placeholder="Search files" />
       </div>
       {error && <div className="file-explorer-error">{error}</div>}
       <div className="file-explorer-body">
@@ -71,6 +93,11 @@ function FileExplorerPanel({ onLoadFile }: FileExplorerPanelProps) {
                 <small>{result.match}</small>
               </button>
             ))}
+            {nextOffset !== undefined && (
+              <button type="button" onClick={() => runSearch(nextOffset)}>
+                More results
+              </button>
+            )}
           </div>
         ) : (
           <div className="file-tree">{tree && <TreeNode node={tree} onOpenFile={openPreview} />}</div>

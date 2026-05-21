@@ -265,11 +265,11 @@ export const LLM_PROVIDERS: LLMProviderInfo[] = [
 export class APIKeyManager {
     private configPath: string;
     private keys: Map<string, StoredAPIKey> = new Map();
-    private encryptionKey: string;
+    private encryptionSecret?: string;
 
     constructor(configPath?: string) {
         this.configPath = configPath || path.join(process.cwd(), 'config', 'api_keys.json');
-        this.encryptionKey = process.env.API_KEY_ENCRYPTION_SECRET || 'default-key-change-me';
+        this.encryptionSecret = process.env.API_KEY_ENCRYPTION_SECRET;
     }
 
     /**
@@ -499,18 +499,7 @@ export class APIKeyManager {
      * Export configuration to .env format
      */
     exportToEnv(): string {
-        const lines: string[] = ['# LLM API Keys', ''];
-
-        for (const [providerId, stored] of this.keys) {
-            const provider = this.getProviderInfo(providerId);
-            if (provider) {
-                lines.push(`# ${provider.name}`);
-                lines.push(`${provider.envVar}=${this.decrypt(stored.key)}`);
-                lines.push('');
-            }
-        }
-
-        return lines.join('\n');
+        throw new Error('Plaintext API key export is disabled');
     }
 
     /**
@@ -539,29 +528,48 @@ export class APIKeyManager {
      * Encrypt a key for storage
      */
     private encrypt(text: string): string {
-        const iv = crypto.randomBytes(16);
-        const key = crypto.createHash('sha256').update(this.encryptionKey).digest();
-        const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+        const iv = crypto.randomBytes(12);
+        const key = this.getEncryptionKey();
+        const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
         let encrypted = cipher.update(text, 'utf8', 'hex');
         encrypted += cipher.final('hex');
-        return `${iv.toString('hex')}:${encrypted}`;
+        const tag = cipher.getAuthTag();
+        return `v2:${iv.toString('hex')}:${tag.toString('hex')}:${encrypted}`;
     }
 
     /**
      * Decrypt a stored key
      */
     private decrypt(text: string): string {
-        try {
-            const [ivHex, encrypted] = text.split(':');
-            const iv = Buffer.from(ivHex, 'hex');
-            const key = crypto.createHash('sha256').update(this.encryptionKey).digest();
-            const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+        const parts = text.split(':');
+        const key = this.getEncryptionKey();
+
+        if (parts[0] === 'v2' && parts.length === 4) {
+            const [, ivHex, tagHex, encrypted] = parts;
+            const decipher = crypto.createDecipheriv('aes-256-gcm', key, Buffer.from(ivHex, 'hex'));
+            decipher.setAuthTag(Buffer.from(tagHex, 'hex'));
             let decrypted = decipher.update(encrypted, 'hex', 'utf8');
             decrypted += decipher.final('utf8');
             return decrypted;
-        } catch {
-            return text; // Return as-is if not encrypted
         }
+
+        if (parts.length === 2) {
+            const [ivHex, encrypted] = parts;
+            const decipher = crypto.createDecipheriv('aes-256-cbc', key, Buffer.from(ivHex, 'hex'));
+            let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+            decrypted += decipher.final('utf8');
+            return decrypted;
+        }
+
+        throw new Error('Stored API key is not encrypted');
+    }
+
+    private getEncryptionKey(): Buffer {
+        if (!this.encryptionSecret || this.encryptionSecret.length < 32 || this.encryptionSecret === 'default-key-change-me') {
+            throw new Error('API_KEY_ENCRYPTION_SECRET must be configured with at least 32 characters before storing API keys');
+        }
+
+        return crypto.createHash('sha256').update(this.encryptionSecret).digest();
     }
 
     /**

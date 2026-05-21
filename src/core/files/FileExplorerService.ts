@@ -4,6 +4,13 @@ import crypto from 'crypto';
 
 export type FileSearchKind = 'name' | 'content' | 'both';
 
+export interface FileSearchOptions {
+  limit?: number;
+  offset?: number;
+  maxFiles?: number;
+  maxContentBytes?: number;
+}
+
 export interface FileTreeNode {
   name: string;
   path: string;
@@ -26,6 +33,11 @@ const ignoredDirs = new Set(['.git', 'node_modules', 'dist', 'coverage', '.next'
 const secretNames = new Set(['.env', '.env.local', '.env.development', '.env.production']);
 const previewExtensions = new Set(['.ts', '.tsx', '.js', '.jsx', '.json', '.md', '.txt', '.css', '.html', '.yml', '.yaml']);
 
+function clamp(value: number, min: number, max: number): number {
+  if (!Number.isFinite(value)) return min;
+  return Math.max(min, Math.min(max, value));
+}
+
 export class FileExplorerService {
   constructor(
     private readonly workspaceRoot = process.cwd(),
@@ -42,25 +54,52 @@ export class FileExplorerService {
     return this.buildTree(absolute, Math.max(0, maxDepth));
   }
 
-  async search(query: string, kind: FileSearchKind = 'both'): Promise<Array<{ path: string; type: 'file'; match: string }>> {
+  async search(query: string, kind: FileSearchKind = 'both', options: FileSearchOptions = {}) {
     const lower = query.toLowerCase();
-    const files = await this.listFiles(this.workspaceRoot, 1000);
+    const limit = clamp(Number(options.limit || 50), 1, 100);
+    const offset = Math.max(0, Number(options.offset || 0));
+    const maxFiles = clamp(Number(options.maxFiles || process.env.FILE_SEARCH_MAX_FILES || 1000), 1, 10000);
+    const maxContentBytes = clamp(Number(options.maxContentBytes || process.env.FILE_SEARCH_MAX_CONTENT_BYTES || 64 * 1024), 1024, this.maxBytes);
+    const files = await this.listFiles(this.workspaceRoot, maxFiles);
     const results: Array<{ path: string; type: 'file'; match: string }> = [];
+    let matched = 0;
+    let skippedLargeFiles = 0;
+
     for (const file of files) {
       const relative = this.relative(file);
+      let match: 'name' | 'content' | undefined;
+
       if ((kind === 'name' || kind === 'both') && relative.toLowerCase().includes(lower)) {
-        results.push({ path: relative, type: 'file', match: 'name' });
-        continue;
+        match = 'name';
       }
-      if ((kind === 'content' || kind === 'both') && this.isPreviewable(relative)) {
+
+      if (!match && (kind === 'content' || kind === 'both') && this.isPreviewable(relative)) {
+        const stats = await fs.stat(file).catch(() => undefined);
+        if (!stats || !stats.isFile()) continue;
+        if (stats.size > maxContentBytes) {
+          skippedLargeFiles += 1;
+          continue;
+        }
+
         const content = await fs.readFile(file, 'utf8').catch(() => '');
         if (content.toLowerCase().includes(lower)) {
-          results.push({ path: relative, type: 'file', match: 'content' });
+          match = 'content';
         }
       }
-      if (results.length >= 50) break;
+
+      if (!match) continue;
+      if (matched++ < offset) continue;
+      results.push({ path: relative, type: 'file', match });
+      if (results.length >= limit) break;
     }
-    return results;
+
+    return {
+      results,
+      nextOffset: results.length === limit ? matched : undefined,
+      scannedFiles: files.length,
+      skippedLargeFiles,
+      truncated: files.length >= maxFiles
+    };
   }
 
   async readFile(workspacePath: string, startLine?: number, endLine?: number): Promise<FileReadResult> {

@@ -11,6 +11,7 @@ import { CodeReviewer, CodeReviewResult } from './CodeReviewer';
 import { PatchGenerator, GeneratedPatch } from './PatchGenerator';
 import { VerificationRunner, VerificationSummary } from './VerificationRunner';
 import { CodeContext, CodeContextBudgeter } from './CodeContextBudgeter';
+import { ChatContextBundle, renderChatContext } from '../../types/chat';
 
 export interface CodingAgentConfig {
   workspaceRoot?: string;
@@ -22,6 +23,7 @@ export interface CodingAgentConfig {
 export interface CodingAgentRequest {
   message: string;
   runVerification?: boolean;
+  context?: ChatContextBundle;
 }
 
 export interface CodingAgentResult {
@@ -68,17 +70,18 @@ export class CodingAgent {
   }
 
   async handle(request: CodingAgentRequest): Promise<CodingAgentResult> {
-    const plan = this.planner.createPlan(request.message);
+    const contextualMessage = this.messageWithContext(request.message, request.context);
+    const plan = this.planner.createPlan(contextualMessage);
     const evidence = await this.gatherEvidence(request.message);
     const filesInspected = evidence.filesInspected;
     const context = this.contextBudgeter.build({
-      userRequest: request.message,
+      userRequest: contextualMessage,
       fileExcerpts: evidence.fileExcerpts,
       relatedTests: evidence.relatedTests,
       packageScripts: evidence.packageScripts,
       architectureNotes: evidence.architectureNotes
     });
-    const summary = this.summarizeFromEvidence(request.message, filesInspected, evidence);
+    const summary = this.summarizeFromEvidence(contextualMessage, filesInspected, evidence);
     const patch = this.patchGenerator.createEmptyPatch();
     const verification = request.runVerification
       ? await this.verificationRunner.runStandardSuite()
@@ -105,8 +108,8 @@ export class CodingAgent {
     return this.planner.createPlan(message);
   }
 
-  async createPatch(_message: string): Promise<GeneratedPatch> {
-    return this.patchGenerator.createEmptyPatch('Patch generation is routed through the dedicated coding pipeline.');
+  async createPatch(message: string): Promise<GeneratedPatch> {
+    return this.patchGenerator.createPatchFromInstruction(message, this.workspaceRoot);
   }
 
   async verify(commands: string[] = ['npm run type-check']): Promise<VerificationSummary> {
@@ -227,6 +230,14 @@ export class CodingAgent {
       .split(/[^A-Za-z0-9_]+/)
       .filter(token => token.length > 3);
     return tokens.find(token => /^[A-Z]/.test(token)) || tokens[0] || 'router';
+  }
+
+  private messageWithContext(message: string, context?: ChatContextBundle): string {
+    if (!context) return message;
+    const rendered = renderChatContext(context);
+    return rendered.trim()
+      ? `${rendered}\n\nUser request:\n${message}`
+      : message;
   }
 
   private extractArchitectureNotes(files: string[]): string[] {

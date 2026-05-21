@@ -5,9 +5,9 @@ export class DawWorkflowMapTool {
 
   run(input: Record<string, any> = {}) {
     return {
+      ...this.translator.translate(String(input.query || '')),
       domain: 'music',
-      tool: 'DawWorkflowMapTool',
-      ...this.translator.translate(String(input.query || ''))
+      tool: 'DawWorkflowMapTool'
     };
   }
 }

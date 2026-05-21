@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActionBarPrimitive,
   AppendMessage,
@@ -17,9 +17,14 @@ import KnowledgeOSPanel from './KnowledgeOSPanel';
 import FileExplorerPanel from './FileExplorerPanel';
 import LoadedFilesBar from './LoadedFilesBar';
 import AudioPreviewBrowser from './AudioPreviewBrowser';
+import CodeWorkflowPanel from './CodeWorkflowPanel';
+import ConversationToolsPanel from './ConversationToolsPanel';
 import { LoadedFileContext } from '../api/files';
 import { AudioFileContext } from '../api/audio';
+import type { ConversationDetail } from '../api/conversations';
 import { ingestOnlineKnowledge, searchOnlineKnowledge } from '../api/knowledge';
+import { isStaticPagesBuild } from '../api/runtime';
+import { throwApiError } from '../api/errors';
 import './AssistantChat.css';
 
 const uuidv4 = () => {
@@ -39,6 +44,35 @@ type ChatMessage = {
   status?: 'running' | 'complete' | 'error';
 };
 
+type ConnectionState = 'connected' | 'degraded' | 'connecting' | 'disconnected';
+
+type KnowledgeMissDetail = {
+  knowledgeMiss: true;
+  type?: 'knowledge_miss';
+  message: string;
+  domain: string;
+  proposedWebQuery: string;
+  recommendedSources: string[];
+  canSearchOnline: true;
+  suggestedNextAction: 'search_online';
+};
+
+export function resolveKnowledgeMissState(
+  data: any,
+  input: string,
+  selectedMode: ChatMode
+): { query: string; domain: string; recommendedSources?: string[] } | null {
+  const missDetail: KnowledgeMissDetail | undefined = data.knowledgeMissDetail || data.miss;
+  if (missDetail?.knowledgeMiss || data.knowledgeMiss === true) {
+    return {
+      query: missDetail?.proposedWebQuery || data.proposedWebQuery || input,
+      domain: missDetail?.domain || data.mode || selectedMode,
+      recommendedSources: missDetail?.recommendedSources
+    };
+  }
+  return null;
+}
+
 const modeHints: Record<ChatMode, string> = {
   ask: 'General Q&A',
   plan: 'Planning mode',
@@ -50,12 +84,24 @@ const modeHints: Record<ChatMode, string> = {
   science: 'Science & Inventions mode',
   music: 'Music Production mode',
   gaming: 'Gaming mode',
+  math: 'Math mode',
+  market: 'Market mode',
+  gamedev: 'Game Dev mode',
   suno: 'Suno prompt mode',
   fl_studio: 'FL Studio mode',
   fl_studio_control: 'FL Studio dry-run control',
   pro_tools: 'Pro Tools mode',
   logic: 'Logic Pro mode',
   mix_master: 'Mix/Master mode',
+  story: 'Story mode',
+  legal: 'Legal/Civic mode',
+  health: 'Health mode',
+  security: 'Security mode',
+  business: 'Business mode',
+  philosophy: 'Philosophy mode',
+  language: 'Language mode',
+  geography: 'Geography mode',
+  engineering: 'Engineering mode',
   knowledge_os: 'Knowledge OS mode'
 };
 
@@ -70,12 +116,24 @@ const placeholders: Record<ChatMode, string> = {
   science: 'Ask about inventions, discoveries, papers, or patents...',
   music: 'Ask about beats, chords, arrangements, vocals, or DAWs...',
   gaming: 'Ask about games, engines, design, modding, lore, or strategy...',
+  math: 'Ask for calculations, symbolic math, or proof help...',
+  market: 'Ask about market risks, filings, macro, or scenarios...',
+  gamedev: 'Ask about game mechanics, balance, engines, or playtests...',
   suno: 'Describe the Suno prompt, hook, revision, or style blend...',
   fl_studio: 'Ask about Channel Rack, Piano Roll, 808s, mixer, or export...',
   fl_studio_control: 'Ask me to plan FL Studio control actions...',
   pro_tools: 'Ask about recording, playlists, comping, routing, or stems...',
   logic: 'Ask about Logic MIDI, vocals, Session Players, Flex, or bounce...',
   mix_master: 'Describe the mix/master problem or target...',
+  story: 'Ask about characters, worlds, scenes, quests, or continuity...',
+  legal: 'Ask a legal/civic question with jurisdiction...',
+  health: 'Ask about fitness, nutrition, anatomy, or safety boundaries...',
+  security: 'Ask about threat models, auth, privacy, or code risk...',
+  business: 'Ask about strategy, pricing, KPIs, or unit economics...',
+  philosophy: 'Ask about arguments, ethics, debate, or philosophy history...',
+  language: 'Ask for translation, tone, grammar, rhetoric, or speech help...',
+  geography: 'Ask about countries, culture, maps, or demographics...',
+  engineering: 'Ask about circuits, robotics, mechanics, or prototypes...',
   knowledge_os: 'Ask about the local DB, graph, wiki, memory, or evidence...'
 };
 
@@ -119,9 +177,37 @@ function AssistantChat() {
   const [loadedAudio, setLoadedAudio] = useState<AudioFileContext[]>([]);
   const [planAction, setPlanAction] = useState<{ planId: string; planPath: string } | null>(null);
   const [knowledgePreview, setKnowledgePreview] = useState<any>(null);
-  const [knowledgeMiss, setKnowledgeMiss] = useState<{ query: string; domain: string } | null>(null);
+  const [knowledgeMiss, setKnowledgeMiss] = useState<{ query: string; domain: string; recommendedSources?: string[] } | null>(null);
+  const [knowledgeActionError, setKnowledgeActionError] = useState('');
+  const [connectionState, setConnectionState] = useState<ConnectionState>('connecting');
   const abortRef = useRef<AbortController | null>(null);
-  const showAudioBrowser = ['music', 'fl_studio', 'fl_studio_control', 'pro_tools', 'logic', 'mix_master'].includes(mode);
+  const showBackendPanels = !isStaticPagesBuild;
+  const showAudioBrowser = showBackendPanels && ['music', 'fl_studio', 'fl_studio_control', 'pro_tools', 'logic', 'mix_master'].includes(mode);
+  const showCodeWorkflows = showBackendPanels && ['ask', 'plan', 'implement', 'debug', 'explain'].includes(mode);
+
+  useEffect(() => {
+    let active = true;
+
+    const checkHealth = async () => {
+      try {
+        const response = await fetch('/health/ready', { cache: 'no-store' });
+        if (!active) return;
+        setConnectionState(response.ok ? 'connected' : 'degraded');
+      } catch {
+        if (active) {
+          setConnectionState('disconnected');
+        }
+      }
+    };
+
+    void checkHealth();
+    const timer = window.setInterval(checkHealth, 10000);
+
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, []);
 
   const sendToBackend = async (input: string, selectedMode: ChatMode) => {
     const controller = new AbortController();
@@ -160,19 +246,21 @@ function AssistantChat() {
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error?.message || `HTTP ${response.status}: ${response.statusText}`);
+        await throwApiError(response, `HTTP ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
       if (data.planId && data.planPath) {
         setPlanAction({ planId: data.planId, planPath: data.planPath });
       }
-      if (data.knowledgeMiss || data.miss?.knowledgeMiss) {
-        setKnowledgeMiss({
-          query: data.proposedWebQuery || data.miss?.proposedWebQuery || input,
-          domain: data.mode || selectedMode
-        });
+      const nextKnowledgeMiss = resolveKnowledgeMissState(data, input, selectedMode);
+      if (nextKnowledgeMiss) {
+        setKnowledgeMiss(nextKnowledgeMiss);
+        setKnowledgeActionError('');
+      } else {
+        setKnowledgeMiss(null);
+        setKnowledgePreview(null);
+        setKnowledgeActionError('');
       }
       setMessages(prev => prev.map(message => message.id === assistantId
         ? {
@@ -240,6 +328,14 @@ function AssistantChat() {
     () => messages.filter(message => message.status !== 'running').length,
     [messages]
   );
+  const lastUserMessage = useMemo(
+    () => [...messages].reverse().find(message => message.role === 'user')?.content || '',
+    [messages]
+  );
+  const lastAssistantMessage = useMemo(
+    () => [...messages].reverse().find(message => message.role === 'assistant' && message.status !== 'running')?.content || '',
+    [messages]
+  );
 
   const addLoadedFile = (file: LoadedFileContext) => {
     setLoadedFiles(prev => [file, ...prev.filter(item => item.path !== file.path)].slice(0, 8));
@@ -249,28 +345,59 @@ function AssistantChat() {
     setLoadedAudio(prev => [audio, ...prev.filter(item => item.path !== audio.path)].slice(0, 8));
   };
 
+  const loadConversation = (conversation: ConversationDetail) => {
+    setMessages(conversation.messages.map(message => ({
+      id: message.id,
+      role: message.role,
+      content: message.content,
+      mode: (message.metadata?.mode as ChatMode | undefined) || mode,
+      createdAt: message.timestamp,
+      status: 'complete'
+    })));
+  };
+
   const runOnlineSearch = async () => {
     if (!knowledgeMiss) return;
-    setKnowledgePreview(await searchOnlineKnowledge(knowledgeMiss.query, knowledgeMiss.domain));
+    try {
+      setKnowledgeActionError('');
+      setKnowledgePreview(await searchOnlineKnowledge(knowledgeMiss.query, knowledgeMiss.domain));
+    } catch (error: any) {
+      setKnowledgeActionError(error.message || 'Online search failed');
+    }
   };
 
   const ingestPreview = async () => {
     if (!knowledgePreview) return;
-    await ingestOnlineKnowledge(knowledgePreview, sessionId);
-    setKnowledgePreview(null);
-    setKnowledgeMiss(null);
+    try {
+      setKnowledgeActionError('');
+      await ingestOnlineKnowledge(knowledgePreview, sessionId);
+      setKnowledgePreview(null);
+      setKnowledgeMiss(null);
+    } catch (error: any) {
+      setKnowledgeActionError(error.message || 'Knowledge ingestion failed');
+    }
   };
 
   return (
     <AssistantRuntimeProvider runtime={runtime}>
       <div className="assistant-workspace">
-        <FileExplorerPanel onLoadFile={addLoadedFile} />
+        {showBackendPanels && <FileExplorerPanel onLoadFile={addLoadedFile} />}
         <section className="assistant-chat" aria-label="AI chat">
           <div className="assistant-toolbar">
             <ModeSelector mode={mode} onModeChange={setMode} />
             <span className="assistant-mode-hint">{modeHints[mode]}</span>
           </div>
-          <KnowledgeOSPanel />
+          {showBackendPanels && <KnowledgeOSPanel />}
+          {showBackendPanels && (
+            <ConversationToolsPanel
+              sessionId={sessionId}
+              lastUserMessage={lastUserMessage}
+              lastAssistantMessage={lastAssistantMessage}
+              onLoadConversation={loadConversation}
+              onUseQuickReply={reply => sendUserMessage(reply, mode)}
+            />
+          )}
+          {showCodeWorkflows && <CodeWorkflowPanel mode={mode} />}
           {showAudioBrowser && <AudioPreviewBrowser onLoadAudio={addLoadedAudio} />}
           {mode === 'fl_studio_control' && (
             <FLStudioControlPanel onSendCommand={command => sendUserMessage(command, 'fl_studio_control')} />
@@ -287,6 +414,9 @@ function AssistantChat() {
               <button type="button" onClick={runOnlineSearch}>Search Online</button>
               <button type="button" onClick={() => setKnowledgeMiss(null)}>Cancel</button>
             </div>
+          )}
+          {knowledgeActionError && (
+            <div className="assistant-error-bar" role="alert">{knowledgeActionError}</div>
           )}
           {knowledgePreview && (
             <div className="assistant-knowledge-preview">
@@ -310,7 +440,7 @@ function AssistantChat() {
                 }}
               />
             </ThreadPrimitive.Viewport>
-            <StatusBar isConnected={true} messageCount={completedMessageCount} />
+            <StatusBar connectionState={connectionState} messageCount={completedMessageCount} />
             <LoadedFilesBar
               files={loadedFiles}
               audio={loadedAudio}
@@ -392,6 +522,12 @@ function getSystemPrompt(mode: ChatMode): string {
       return 'You are a Music Production Genius. Help with original beats, song structure, music theory, vocals, mixing, mastering, DAW workflows, and collaboration. Avoid copyrighted lyric continuation and artist cloning.';
     case 'gaming':
       return 'You are a broad gaming specialist. Help with games, engines, lore, modding, speedrunning, platform questions, strategy, game analysis, and game development routing.';
+    case 'math':
+      return 'You are a math specialist. Show the calculation path, define assumptions, and use symbolic or numeric methods when useful.';
+    case 'market':
+      return 'You are a market specialist. Analyze risks, filings, macro context, valuation scenarios, and uncertainty. Do not provide personalized financial advice.';
+    case 'gamedev':
+      return 'You are a game development specialist. Help with mechanics, balance, engine choices, implementation plans, playtesting, and production tradeoffs.';
     case 'suno':
       return 'You are a Suno prompt specialist. Return safe prompts with style tags, structure, vocal direction, revision guidance, avoid list, and rights/copyright note. Do not impersonate living artists or continue copyrighted lyrics.';
     case 'fl_studio':
@@ -404,6 +540,24 @@ function getSystemPrompt(mode: ChatMode): string {
       return 'You are a Logic Pro specialist. Give project setup, MIDI/Piano Roll, Session Players, Flex Pitch/Time, stock instruments/effects, vocal production, arrangement, and bounce/export guidance.';
     case 'mix_master':
       return 'You are a mix and mastering specialist. Diagnose likely causes, provide a fix order, plugin chain suggestions, metering targets, reference checks, and safety/copyright boundaries.';
+    case 'story':
+      return 'You are a story specialist. Help with worldbuilding, character arcs, scenes, quests, dialogue, lore, and continuity.';
+    case 'legal':
+      return 'You are a legal and civic information specialist. Require jurisdiction for specific legal framing, explain risks plainly, and avoid acting as a lawyer.';
+    case 'health':
+      return 'You are a health information specialist. Stay within education, fitness, anatomy, and nutrition boundaries, and escalate urgent red flags.';
+    case 'security':
+      return 'You are a security specialist. Help with threat modeling, auth, privacy, dependency risk, secure code review, and practical mitigations.';
+    case 'business':
+      return 'You are a business specialist. Help with strategy, pricing, market research structure, KPIs, unit economics, and startup planning.';
+    case 'philosophy':
+      return 'You are a philosophy specialist. Map arguments charitably, compare frameworks, avoid dismissive fallacy labels, and provide balanced counterarguments.';
+    case 'language':
+      return 'You are a language specialist. Help with translation, grammar, tone, rhetoric, speeches, readability, and rewriting.';
+    case 'geography':
+      return 'You are a geography and culture specialist. Handle maps, countries, demographics, cultural etiquette, and contested claims carefully.';
+    case 'engineering':
+      return 'You are an engineering specialist. Help with circuits, robotics, mechanics, BOMs, prototypes, and calculations with safety caveats.';
     case 'knowledge_os':
       return 'You are a Knowledge OS specialist. Answer using local database, graph, wiki, memory, and governance state. Prefer counts, sources, central nodes, schema, and concrete local evidence.';
     default:

@@ -14,7 +14,7 @@ export interface ConstitutionalPrinciple {
 
 export class ConstitutionalAI {
   private llmAdapter: LLMAdapter;
-  private principles: ConstitutionalPrinciple[];
+  private principles: ConstitutionalPrinciple[] = [];
 
   constructor(llmAdapter: LLMAdapter) {
     this.llmAdapter = llmAdapter;

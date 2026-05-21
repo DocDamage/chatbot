@@ -155,7 +155,7 @@ Question: `
         const answerMatch = response.match(/<answer>([\s\S]*?)<\/answer>/);
 
         let reasoning: string | undefined;
-        let answer: string;
+        let answer = '';
         let thinkingSteps: string[] = [];
 
         if (thinkingMatch && answerMatch) {

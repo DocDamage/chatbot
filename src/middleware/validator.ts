@@ -5,13 +5,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ValidationError } from '../utils/errors';
 import { z } from 'zod';
-
-const chatRequestSchema = z.object({
-  message: z.string().min(1).max(10000).trim(),
-  sessionId: z.string().min(1).max(100),
-  userId: z.string().max(100).optional(),
-  contract: z.any().optional()
-});
+import { chatRequestSchema } from '../types/chat';
 
 export const validateChatRequest = (
   req: Request,

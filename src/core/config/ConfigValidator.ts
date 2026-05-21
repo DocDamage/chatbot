@@ -78,7 +78,10 @@ const configSchema = z.object({
   SEMANTIC_CACHE_SIMILARITY_THRESHOLD: z.string().regex(/^\d+\.?\d*$/).transform(Number).optional(),
 
   // Auth
-  JWT_SECRET: z.string().min(32).optional(),
+  JWT_SECRET: z.string().min(32),
+
+  // Network security
+  CORS_ORIGIN: z.string().optional(),
 
   // Logging
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'debug']).optional(),
@@ -179,7 +182,7 @@ export class ConfigValidator {
   ): void {
     if (config.NODE_ENV === 'production') {
       // Production requires JWT secret
-      if (!config.JWT_SECRET || config.JWT_SECRET === 'change-me-in-production') {
+      if (config.JWT_SECRET === 'change-me-in-production') {
         errors.push('JWT_SECRET must be set in production (minimum 32 characters)');
       }
 
@@ -192,6 +195,14 @@ export class ConfigValidator {
       if (config.PORT === 3001) {
         warnings.push('Using default port 3001 in production');
       }
+
+      if (!config.CORS_ORIGIN || config.CORS_ORIGIN === '*') {
+        errors.push('CORS_ORIGIN must be explicit in production when credentials are enabled');
+      }
+    }
+
+    if (config.CORS_ORIGIN === '*' && config.NODE_ENV === 'production') {
+      errors.push('Wildcard CORS origin is not allowed in production');
     }
   }
 

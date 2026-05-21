@@ -16,11 +16,17 @@ declare global {
         email?: string;
         roles?: string[];
       };
+      apiKey?: {
+        id: string;
+        userId?: string;
+        scopes: string[];
+        rateLimit?: number;
+      };
     }
   }
 }
 
-const authService = new AuthService();
+const getAuthService = () => new AuthService();
 
 /**
  * Middleware to require authentication
@@ -32,6 +38,7 @@ export const requireAuth = (
 ): void => {
   try {
     const authHeader = req.headers.authorization;
+    const authService = getAuthService();
     const token = authService.extractTokenFromHeader(authHeader);
 
     if (!token) {
@@ -70,6 +77,7 @@ export const optionalAuth = (
 ): void => {
   try {
     const authHeader = req.headers.authorization;
+    const authService = getAuthService();
     const token = authService.extractTokenFromHeader(authHeader);
 
     if (token) {
@@ -80,11 +88,21 @@ export const optionalAuth = (
           email: payload.email,
           roles: payload.roles,
         };
+      } else {
+        logger.warn('Optional auth token rejected', {
+          path: req.path,
+          method: req.method,
+          ip: req.ip
+        });
       }
     }
   } catch (error) {
-    // Silently fail for optional auth
-    logger.debug('Optional auth failed', { error });
+    logger.warn('Optional auth failed', {
+      error,
+      path: req.path,
+      method: req.method,
+      ip: req.ip
+    });
   }
 
   next();
@@ -106,6 +124,49 @@ export const requireRole = (...roles: string[]) => {
       throw new AuthenticationError('Insufficient permissions');
     }
 
+    next();
+  };
+};
+
+/**
+ * Middleware to require a CSRF token for browser-originated state changes.
+ * Bearer-only API calls may omit it, but cookie/session requests must present
+ * a token that matches CSRF_TOKEN.
+ */
+export const requireCsrfForStateChange = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const hasCookie = Boolean(req.headers.cookie);
+  const expectedToken = process.env.CSRF_TOKEN;
+
+  if (!hasCookie) {
+    next();
+    return;
+  }
+
+  if (!expectedToken) {
+    throw new AuthenticationError('CSRF protection is not configured');
+  }
+
+  const providedToken = req.headers['x-csrf-token'];
+  if (providedToken !== expectedToken) {
+    throw new AuthenticationError('Invalid CSRF token');
+  }
+
+  next();
+};
+
+export const auditPrivilegedRequest = (action: string) => {
+  return (req: Request, _res: Response, next: NextFunction): void => {
+    logger.info('Privileged route access', {
+      action,
+      method: req.method,
+      path: req.path,
+      userId: req.user?.userId,
+      roles: req.user?.roles || [],
+    });
     next();
   };
 };

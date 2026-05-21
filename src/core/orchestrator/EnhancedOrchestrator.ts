@@ -26,6 +26,7 @@ import { ChatRequest, ChatResponse } from './Orchestrator';
 import { ToolRegistry } from '../tools/ToolRegistry';
 import { FunctionCaller } from '../tools/FunctionCaller';
 import { CodingAgent } from '../agents/CodingAgent';
+import { buildChatContextBundle, renderChatContext } from '../../types/chat';
 
 export interface EnhancedOrchestratorConfig {
   useRAG?: boolean;
@@ -178,7 +179,8 @@ export class EnhancedOrchestrator {
     if (taskType === TaskType.CODE_GENERATION && this.codingAgent) {
       const codingResult = await this.codingAgent.handle({
         message: request.message,
-        runVerification: false
+        runVerification: false,
+        context: buildChatContextBundle(request)
       });
       const artifactId = uuidv4();
       const response = this.formatCodingResponse(codingResult);
@@ -240,8 +242,9 @@ export class EnhancedOrchestrator {
     }
 
     // 8. Build prompt with all context
-    const systemPrompt = this.buildSystemPrompt(contract, contextSummary, ragContext);
-    const userPrompt = this.buildUserPrompt(request.message, memoryContext, ragContext);
+    const explicitContext = renderChatContext(buildChatContextBundle(request));
+    const systemPrompt = this.buildSystemPrompt(contract, contextSummary, ragContext, request.systemPrompt);
+    const userPrompt = this.buildUserPrompt(request.message, memoryContext, ragContext, explicitContext);
 
     // 9. Generate response
     let response: string;
@@ -514,9 +517,12 @@ export class EnhancedOrchestrator {
   private buildSystemPrompt(
     contract: AIContract,
     contextSummary: string,
-    ragContext?: string
+    ragContext?: string,
+    systemInstruction?: string
   ): string {
     let prompt = `You are a helpful AI assistant. You can answer questions, engage in conversation, and provide information on a wide variety of topics.
+
+${systemInstruction ? `User-selected system instruction: ${systemInstruction}\n` : ''}
 
 Context from previous conversation: ${contextSummary}`;
 
@@ -539,9 +545,12 @@ Context from previous conversation: ${contextSummary}`;
   private buildUserPrompt(
     message: string,
     memoryContext: any,
-    ragContext?: string
+    ragContext?: string,
+    explicitContext?: string
   ): string {
-    return message;
+    return explicitContext?.trim()
+      ? `Explicit user-provided context:\n${explicitContext}\n\nUser request:\n${message}`
+      : message;
   }
 
   /**

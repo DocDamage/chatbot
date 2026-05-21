@@ -21,11 +21,22 @@ const globals = {
   require: 'readonly',
   setInterval: 'readonly',
   setTimeout: 'readonly',
+  AbortController: 'readonly',
+  alert: 'readonly',
+  document: 'readonly',
+  EventSource: 'readonly',
+  fetch: 'readonly',
+  File: 'readonly',
+  FormData: 'readonly',
+  localStorage: 'readonly',
+  navigator: 'readonly',
+  URLSearchParams: 'readonly',
+  window: 'readonly',
 };
 
 module.exports = [
   {
-    ignores: ['dist/**', 'node_modules/**', 'coverage/**', 'client/**'],
+    ignores: ['dist/**', 'node_modules/**', 'coverage/**', 'client/dist/**'],
   },
   js.configs.recommended,
   {
@@ -56,6 +67,31 @@ module.exports = [
       'no-useless-escape': 'off',
       'no-var': 'off',
       'prefer-const': 'off',
+    },
+  },
+  {
+    files: ['client/src/**/*.ts', 'client/src/**/*.tsx'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      globals,
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+    },
+    rules: {
+      ...tsPlugin.configs.recommended.rules,
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      'no-console': 'warn',
+      'no-undef': 'off',
+      'no-unused-vars': 'off',
     },
   },
 ];

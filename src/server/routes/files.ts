@@ -13,7 +13,12 @@ export function createFilesRouter(workspaceRoot = process.cwd()): Router {
   router.get('/api/files/search', asyncHandler(async (req, res) => {
     const q = String(req.query.q || '');
     if (!q.trim()) return res.status(400).json({ error: 'q is required' });
-    res.json({ results: await files.search(q, String(req.query.kind || 'both') as FileSearchKind) });
+    res.json(await files.search(q, String(req.query.kind || 'both') as FileSearchKind, {
+      limit: req.query.limit ? Number(req.query.limit) : undefined,
+      offset: req.query.offset ? Number(req.query.offset) : undefined,
+      maxFiles: req.query.maxFiles ? Number(req.query.maxFiles) : undefined,
+      maxContentBytes: req.query.maxContentBytes ? Number(req.query.maxContentBytes) : undefined
+    }));
   }));
 
   router.get('/api/files/read', asyncHandler(async (req, res) => {

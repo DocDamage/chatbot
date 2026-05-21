@@ -78,7 +78,12 @@ export class WebhookService {
    * Send webhook with retry logic
    */
   private async sendWebhook(webhook: Webhook, event: WebhookEvent): Promise<void> {
-    const payload = {
+    const payload: {
+      event: string;
+      data: any;
+      timestamp: string;
+      signature?: string;
+    } = {
       event: event.type,
       data: event.payload,
       timestamp: event.timestamp.toISOString(),

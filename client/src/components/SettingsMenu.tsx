@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './SettingsMenu.css';
 
 type Provider = 'template' | 'ollama' | 'openai' | 'huggingface' | 'openai-compatible' | 'anthropic' | 'gemini';
@@ -26,8 +26,6 @@ const defaultSettings = {
   OPENAI_COMPATIBLE_MODEL: 'deepseek-chat',
   ANTHROPIC_MODEL: 'claude-3-5-sonnet-20241022',
   GEMINI_MODEL: 'gemini-1.5-flash',
-  USE_STABLE_DIFFUSION: 'false',
-  STABLE_DIFFUSION_URL: 'http://localhost:7860',
   EMBEDDING_PROVIDER: 'xenova',
   EMBEDDING_MODEL: 'Xenova/all-MiniLM-L6-v2',
   EMBEDDING_USE_TRANSFORMERS: 'false',
@@ -111,6 +109,10 @@ const SettingsMenu: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const restoreFocusRef = useRef<HTMLElement | null>(null);
 
   const providerLabel = useMemo(() => {
     switch (provider) {
@@ -131,8 +133,46 @@ const SettingsMenu: React.FC = () => {
 
   useEffect(() => {
     if (open) {
+      restoreFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
       loadSettings();
+      requestAnimationFrame(() => closeRef.current?.focus());
     }
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) {
+      restoreFocusRef.current?.focus();
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setOpen(false);
+        return;
+      }
+
+      if (event.key !== 'Tab' || !dialogRef.current) return;
+
+      const focusable = Array.from(dialogRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      ));
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [open]);
 
   const loadSettings = async () => {
@@ -212,19 +252,19 @@ const SettingsMenu: React.FC = () => {
 
   return (
     <>
-      <button className="settings-button" type="button" onClick={() => setOpen(true)} aria-label="Open settings">
+      <button ref={triggerRef} className="settings-button" type="button" onClick={() => setOpen(true)} aria-label="Open settings">
         ⚙
       </button>
 
       {open && (
         <div className="settings-backdrop" role="presentation" onMouseDown={() => setOpen(false)}>
-          <section className="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title" onMouseDown={event => event.stopPropagation()}>
+          <section ref={dialogRef} className="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title" onMouseDown={event => event.stopPropagation()}>
             <div className="settings-header">
               <div>
                 <h2 id="settings-title">Settings</h2>
                 <p>Active provider: {providerLabel}</p>
               </div>
-              <button className="settings-close" type="button" onClick={() => setOpen(false)} aria-label="Close settings">×</button>
+              <button ref={closeRef} className="settings-close" type="button" onClick={() => setOpen(false)} aria-label="Close settings">×</button>
             </div>
 
             {loading ? (
@@ -397,21 +437,6 @@ const SettingsMenu: React.FC = () => {
                 )}
 
                 <div className="settings-section settings-grid">
-                  <label className="settings-toggle">
-                    <input
-                      type="checkbox"
-                      checked={settings.USE_STABLE_DIFFUSION === 'true'}
-                      onChange={event => updateSetting('USE_STABLE_DIFFUSION', event.target.checked ? 'true' : 'false')}
-                    />
-                    Enable Stable Diffusion
-                  </label>
-                  <label>
-                    Stable Diffusion URL
-                    <input value={settings.STABLE_DIFFUSION_URL || ''} onChange={event => updateSetting('STABLE_DIFFUSION_URL', event.target.value)} />
-                  </label>
-                </div>
-
-                <div className="settings-section settings-grid">
                   <label>
                     Embedding provider
                     <select value={settings.EMBEDDING_PROVIDER || 'xenova'} onChange={event => updateSetting('EMBEDDING_PROVIDER', event.target.value)}>
@@ -431,7 +456,10 @@ const SettingsMenu: React.FC = () => {
                 </div>
 
                 <div className="settings-section settings-grid">
-                  <h3>FL Studio MCP Bridge</h3>
+                  <h3>FL Studio MCP Bridge (dry-run first)</h3>
+                  <p className="settings-help">
+                    These settings configure the optional MCP bridge launch command. Control actions remain dry-run unless the bridge is connected and a live-capable mode passes confirmation checks.
+                  </p>
                   <label>
                     MCP command
                     <input value={settings.FL_STUDIO_MCP_COMMAND || ''} onChange={event => updateSetting('FL_STUDIO_MCP_COMMAND', event.target.value)} placeholder="fl-studio-mcp.cmd" />

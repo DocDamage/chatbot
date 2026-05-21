@@ -4,7 +4,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
-import { RateLimitError } from '../utils/errors';
+import { RateLimitError, ServiceUnavailableError } from '../utils/errors';
 import { logger } from '../core/observability/logger';
 import Redis from 'ioredis';
 
@@ -19,30 +19,40 @@ interface RateLimitConfig {
   windowMs: number;
   maxRequests: number;
   keyGenerator?: (req: Request) => string;
+  failOpen?: boolean;
 }
 
-class RateLimiter {
+export class RateLimiter {
   private store: RateLimitStore = {};
   private windowMs: number;
   private maxRequests: number;
   private redisClient?: Redis;
   private useRedis: boolean;
   private keyGenerator: (req: Request) => string;
+  private failOpen: boolean;
 
   constructor(
     windowMs: number = 60000,
     maxRequests: number = 60,
     redisUrl?: string,
-    keyGenerator?: (req: Request) => string
+    keyGenerator?: (req: Request) => string,
+    failOpen: boolean = process.env.RATE_LIMIT_FAIL_OPEN
+      ? process.env.RATE_LIMIT_FAIL_OPEN === 'true'
+      : process.env.NODE_ENV !== 'production'
   ) {
     this.windowMs = windowMs;
     this.maxRequests = maxRequests;
     this.keyGenerator = keyGenerator || this.defaultKeyGenerator;
+    this.failOpen = failOpen;
     this.useRedis = !!redisUrl;
 
     if (redisUrl) {
       try {
-        this.redisClient = new Redis(redisUrl);
+        this.redisClient = new Redis(redisUrl, {
+          enableOfflineQueue: false,
+          maxRetriesPerRequest: 1,
+          lazyConnect: true
+        });
         this.redisClient.on('error', (err) => {
           logger.warn('Redis connection error, falling back to memory', { error: err.message });
           this.useRedis = false;
@@ -55,7 +65,8 @@ class RateLimiter {
     }
     
     // Clean up old entries every minute
-    setInterval(() => this.cleanup(), 60000);
+    const cleanupTimer = setInterval(() => this.cleanup(), 60000);
+    cleanupTimer.unref?.();
   }
 
   private defaultKeyGenerator(req: Request): string {
@@ -158,11 +169,18 @@ class RateLimiter {
         next();
       } catch (error) {
         if (error instanceof RateLimitError) {
-          throw error;
+          next(error);
+          return;
         }
-        logger.error('Rate limit check failed', { error });
-        // Allow request on error (fail open)
-        next();
+        logger.error('Rate limit check failed', {
+          error,
+          failOpen: this.failOpen
+        });
+        if (this.failOpen) {
+          next();
+          return;
+        }
+        next(new ServiceUnavailableError('rate-limiter', 'Rate limiter unavailable'));
       }
     };
   }
@@ -175,7 +193,8 @@ class RateLimiter {
       config.windowMs,
       config.maxRequests,
       redisUrl,
-      config.keyGenerator
+      config.keyGenerator,
+      config.failOpen
     );
   }
 }

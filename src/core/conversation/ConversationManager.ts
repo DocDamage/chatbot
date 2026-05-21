@@ -59,6 +59,7 @@ export class ConversationManager {
     if (!conversation) {
       conversation = {
         sessionId,
+        userId: metadata?.userId,
         messages: [],
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -67,11 +68,13 @@ export class ConversationManager {
     }
 
     conversation.messages.push(message);
+    conversation.userId = metadata?.userId || conversation.userId;
     conversation.updatedAt = new Date();
 
     // Persist to database if available
     if (this.db) {
       try {
+        await this.ensureSession(sessionId, metadata?.userId);
         await this.db.query(
           'INSERT INTO messages (id, session_id, role, content, metadata) VALUES (?, ?, ?, ?, ?)',
           [message.id, sessionId, role, content, JSON.stringify(metadata || {})]
@@ -83,6 +86,19 @@ export class ConversationManager {
 
     logger.debug('Message added to conversation', { sessionId, role, messageId: message.id });
     return message;
+  }
+
+  private async ensureSession(sessionId: string, userId?: string): Promise<void> {
+    if (!this.db) return;
+
+    await this.db.query(
+      `INSERT INTO sessions (id, user_id, updated_at)
+       VALUES (?, ?, CURRENT_TIMESTAMP)
+       ON CONFLICT(id) DO UPDATE SET
+         user_id = COALESCE(excluded.user_id, sessions.user_id),
+         updated_at = CURRENT_TIMESTAMP`,
+      [sessionId, userId || null]
+    );
   }
 
   /**

@@ -26,12 +26,13 @@ export class AuthService {
   private tokenExpiry: string;
 
   constructor(secretKey?: string, tokenExpiry: string = '24h') {
-    this.secretKey = secretKey || process.env.JWT_SECRET || 'change-me-in-production';
-    this.tokenExpiry = tokenExpiry;
-
-    if (!secretKey && !process.env.JWT_SECRET) {
-      logger.warn('JWT_SECRET not set, using default (INSECURE FOR PRODUCTION)');
+    const configuredSecret = secretKey || process.env.JWT_SECRET;
+    if (!configuredSecret) {
+      throw new Error('JWT_SECRET is required for authentication');
     }
+
+    this.secretKey = configuredSecret;
+    this.tokenExpiry = tokenExpiry;
   }
 
   /**

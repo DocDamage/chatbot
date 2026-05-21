@@ -20,8 +20,8 @@ export interface ToxicityResult {
 }
 
 export class ToxicityDetector {
-  private toxicWords: Set<string>;
-  private profanityWords: Set<string>;
+  private toxicWords: Set<string> = new Set();
+  private profanityWords: Set<string> = new Set();
 
   constructor() {
     this.initializeToxicWords();
