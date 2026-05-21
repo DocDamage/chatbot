@@ -1,4 +1,5 @@
 import AssistantChat from './components/AssistantChat';
+import GamingPlaybookPanel from './components/GamingPlaybookPanel';
 import LocalToolsWorkspace from './components/LocalToolsWorkspace';
 import SettingsMenu from './components/SettingsMenu';
 import './App.css';
@@ -12,6 +13,7 @@ function App() {
         <SettingsMenu />
       </header>
       <AssistantChat />
+      <GamingPlaybookPanel />
       <LocalToolsWorkspace />
     </div>
   );
