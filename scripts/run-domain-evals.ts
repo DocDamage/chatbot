@@ -15,6 +15,7 @@ type Domain =
   | 'health'
   | 'security'
   | 'business'
+  | 'creative'
   | 'philosophy'
   | 'language'
   | 'geography'
@@ -49,6 +50,7 @@ const domains: Domain[] = requested === 'all'
       'health',
       'security',
       'business',
+      'creative',
       'philosophy',
       'language',
       'geography',

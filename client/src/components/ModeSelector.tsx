@@ -22,6 +22,8 @@ export type ChatMode =
     | 'logic'
     | 'mix_master'
     | 'story'
+    | 'creative_writing'
+    | 'roleplay'
     | 'legal'
     | 'health'
     | 'security'
@@ -29,6 +31,7 @@ export type ChatMode =
     | 'philosophy'
     | 'language'
     | 'geography'
+    | 'gis'
     | 'engineering'
     | 'knowledge_os';
 
@@ -158,6 +161,18 @@ const modeConfig: Record<ChatMode, { icon: string; label: string; description: s
         description: 'Worldbuilding, scenes, arcs, continuity',
         color: '#ec4899'
     },
+    creative_writing: {
+        icon: 'CW',
+        label: 'Creative Writing',
+        description: 'Fiction drafts, revision, projects, and export',
+        color: '#db2777'
+    },
+    roleplay: {
+        icon: 'RP',
+        label: 'Roleplay',
+        description: 'Stateful scenes, characters, boundaries, and turns',
+        color: '#7c2d12'
+    },
     legal: {
         icon: '§',
         label: 'Legal/Civic',
@@ -199,6 +214,12 @@ const modeConfig: Record<ChatMode, { icon: string; label: string; description: s
         label: 'Geography',
         description: 'Countries, culture, maps, demographics',
         color: '#16a34a'
+    },
+    gis: {
+        icon: 'GIS',
+        label: 'GIS',
+        description: 'Geocoding, routes, layers, parcels, spatial analysis',
+        color: '#38bdf8'
     },
     engineering: {
         icon: '⚙',

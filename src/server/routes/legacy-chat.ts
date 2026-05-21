@@ -4,6 +4,7 @@ import { ConversationManager } from '../../core/conversation/ConversationManager
 import { LocalKnowledgeAnswerer } from '../../core/knowledge/LocalKnowledgeAnswerer';
 import { KnowledgeOsChatAgent } from '../../core/knowledge-os/KnowledgeOsChatAgent';
 import { PlanDocumentService } from '../../core/planning/PlanDocumentService';
+import { CreativeWritingAgent } from '../../core/creative/CreativeWritingAgent';
 import { detectUserIntent, requiresSwitchForIntent } from '../../core/modes/ModePolicy';
 import { HumanLanguageRoute, HumanLanguageRouter } from '../../core/nlu/HumanLanguageRouter';
 import { asyncHandler } from '../../middleware/errorHandler';
@@ -29,6 +30,8 @@ type ChatSpecialistMode =
   | 'logic'
   | 'mix_master'
   | 'story'
+  | 'creative_writing'
+  | 'roleplay'
   | 'legal'
   | 'health'
   | 'security'
@@ -56,6 +59,8 @@ const specialistModes = new Set([
   'logic',
   'mix_master',
   'story',
+  'creative_writing',
+  'roleplay',
   'legal',
   'health',
   'security',
@@ -72,6 +77,7 @@ export interface LegacyChatRouteDeps {
   getOrchestrator: () => any;
   waitForReady: (timeoutMs?: number) => Promise<void>;
   getConversationManager: () => ConversationManager;
+  workspaceRoot?: string;
 }
 
 export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHandler[] {
@@ -85,6 +91,19 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
   ) => {
     const services = deps.getServices();
     if (!services) return undefined;
+
+    if (mode === 'creative_writing' || mode === 'roleplay') {
+      const agent = services.creativeWritingAgent || new CreativeWritingAgent();
+      const creativeRequest = {
+        prompt: message,
+        ...(request?.creative || {}),
+        operation: mode === 'roleplay' ? 'roleplay_turn' : request?.creative?.operation,
+      };
+      const result = mode === 'roleplay'
+        ? await agent.roleplayTurn(creativeRequest)
+        : await agent.ask(message, creativeRequest);
+      return { ...result, nlu };
+    }
 
     if (mode === 'knowledge_os') {
       const result = await new KnowledgeOsChatAgent(services).ask(message);
@@ -208,7 +227,7 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
       }
 
       if (mode === 'plan') {
-        const plan = await new PlanDocumentService(process.cwd()).createPlan({
+        const plan = await new PlanDocumentService(deps.workspaceRoot || process.cwd()).createPlan({
           userRequest: sanitizedMessage,
           mode: 'plan'
         });
@@ -278,6 +297,8 @@ function inferChatSpecialistMode(message: string, mode?: string): ChatSpecialist
   if (/\b(connect to fl|control fl|fl studio control|piano roll|channel rack|mixer track|send chord|send notes|step sequence|solo the drums|turn down track|transport)\b/.test(text)) return 'fl_studio_control';
   if (/\b(suno|fl studio|pro tools|logic pro|logic|daw|loop|beat|808|bpm|mix|mastering|muddy|chord|drum pattern|sample|soundtrack|neptunes|genre timeline|vocal chain|channel rack|piano roll)\b/.test(text)) return 'music';
   if (/(pop culture|movie|film|tv|television|music|album|song|radio|comic|animation|video game|celebrity|award|franchise|meme)/.test(text)) return 'pop_culture';
+  if (/\b(roleplay|in character|out of character|ooc|player character|narrator mode|scene state)\b/.test(text)) return 'roleplay';
+  if (/\b(creative writing|draft scene|continue scene|revise passage|outline novel|chapter draft|short story|screenplay|fiction draft|export draft)\b/.test(text)) return 'creative_writing';
   if (/\b(plot|character|dialogue|worldbuild|worldbuilding|lore|quest|faction|scene|story|backstory)\b/.test(text)) return 'story';
   if (/\b(threat model|secure code|security|privacy|dependency audit|secrets scan|auth flow|auth|authentication|login|jwt|oauth|session|cookie|password reset|csrf|vulnerability)\b/.test(text)) return 'security';
   if (/\b(contract|clause|legal|civic|jurisdiction|statute|case law|rights|obligations|non-compete|noncompete|enforceable|indemnification|liability|lawsuit|sued)\b/.test(text)) return 'legal';

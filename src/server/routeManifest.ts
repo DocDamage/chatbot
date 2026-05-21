@@ -4,10 +4,12 @@ import { createAudioRouter } from './routes/audio';
 import { createBusinessGeniusRouter } from './routes/business';
 import { createChronoRouter } from './routes/chrono';
 import { createCodeRouter } from './routes/code';
+import { createCreativeWritingRouter } from './routes/creative';
 import { createEngineeringGeniusRouter } from './routes/engineering';
 import { createExportRouter } from './routes/export';
 import { createFilesRouter } from './routes/files';
 import { createFLStudioControlRouter } from './routes/flstudio';
+import { createGISRouter } from './routes/gis';
 import { createGameDevRouter } from './routes/gamedev';
 import { createGamingRouter } from './routes/gaming';
 import { createGeoCultureGeniusRouter } from './routes/geography';
@@ -54,6 +56,7 @@ export const routeManifest: RouteManifestEntry[] = [
   { name: 'music', readiness: true },
   { name: 'flstudio', readiness: true },
   { name: 'story', readiness: true },
+  { name: 'creative', readiness: true },
   { name: 'legal', readiness: true },
   { name: 'health', readiness: true },
   { name: 'security', readiness: true },
@@ -61,6 +64,7 @@ export const routeManifest: RouteManifestEntry[] = [
   { name: 'philosophy', readiness: true },
   { name: 'language', readiness: true },
   { name: 'geography', readiness: true },
+  { name: 'gis', readiness: true },
   { name: 'engineering', readiness: true },
   { name: 'knowledge-online', mount: '/api/knowledge-online', readiness: true, privilege: 'developer', auditAction: 'knowledge-online' },
   { name: 'admin', mount: '/api/admin', readiness: false, privilege: 'admin', auditAction: 'admin' },
@@ -98,6 +102,7 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
     music: () => createMusicProductionGeniusRouter(deps.getServices()),
     flstudio: () => createFLStudioControlRouter(deps.getServices()),
     story: () => createStoryGeniusRouter(deps.getServices()),
+    creative: () => createCreativeWritingRouter(deps.getServices()),
     legal: () => createLegalCivicGeniusRouter(deps.getServices()),
     health: () => createHealthGeniusRouter(deps.getServices()),
     security: () => createSecurityGeniusRouter(deps.getServices()),
@@ -105,6 +110,7 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
     philosophy: () => createPhilosophyGeniusRouter(deps.getServices()),
     language: () => createLanguageGeniusRouter(deps.getServices()),
     geography: () => createGeoCultureGeniusRouter(deps.getServices()),
+    gis: () => createGISRouter(deps.getServices()),
     engineering: () => createEngineeringGeniusRouter(deps.getServices()),
     'knowledge-online': () => createKnowledgeOnlineRouter(deps.getServices()),
     admin: () => createAdminRouter(deps.getServices()),

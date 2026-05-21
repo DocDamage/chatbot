@@ -19,6 +19,10 @@ import LoadedFilesBar from './LoadedFilesBar';
 import AudioPreviewBrowser from './AudioPreviewBrowser';
 import CodeWorkflowPanel from './CodeWorkflowPanel';
 import ConversationToolsPanel from './ConversationToolsPanel';
+import CreativeComposerPanel, { buildCreativeRequestPayload, defaultCreativeComposerState } from './CreativeComposerPanel';
+import KnowledgeMissPrompt from './KnowledgeMissPrompt';
+import PlanActionBar from './PlanActionBar';
+import GISMapPanel from '../features/gis/GISMapPanel';
 import { LoadedFileContext } from '../api/files';
 import { AudioFileContext } from '../api/audio';
 import type { ConversationDetail } from '../api/conversations';
@@ -94,6 +98,8 @@ const modeHints: Record<ChatMode, string> = {
   logic: 'Logic Pro mode',
   mix_master: 'Mix/Master mode',
   story: 'Story mode',
+  creative_writing: 'Creative Writing mode',
+  roleplay: 'Roleplay mode',
   legal: 'Legal/Civic mode',
   health: 'Health mode',
   security: 'Security mode',
@@ -101,6 +107,7 @@ const modeHints: Record<ChatMode, string> = {
   philosophy: 'Philosophy mode',
   language: 'Language mode',
   geography: 'Geography mode',
+  gis: 'GIS mapping mode',
   engineering: 'Engineering mode',
   knowledge_os: 'Knowledge OS mode'
 };
@@ -126,6 +133,8 @@ const placeholders: Record<ChatMode, string> = {
   logic: 'Ask about Logic MIDI, vocals, Session Players, Flex, or bounce...',
   mix_master: 'Describe the mix/master problem or target...',
   story: 'Ask about characters, worlds, scenes, quests, or continuity...',
+  creative_writing: 'Draft, revise, outline, or export fiction...',
+  roleplay: 'Set the scene, character, action, or out-of-character note...',
   legal: 'Ask a legal/civic question with jurisdiction...',
   health: 'Ask about fitness, nutrition, anatomy, or safety boundaries...',
   security: 'Ask about threat models, auth, privacy, or code risk...',
@@ -133,6 +142,7 @@ const placeholders: Record<ChatMode, string> = {
   philosophy: 'Ask about arguments, ethics, debate, or philosophy history...',
   language: 'Ask for translation, tone, grammar, rhetoric, or speech help...',
   geography: 'Ask about countries, culture, maps, or demographics...',
+  gis: 'Ask for geocoding, routing, layer imports, parcels, or spatial analysis...',
   engineering: 'Ask about circuits, robotics, mechanics, or prototypes...',
   knowledge_os: 'Ask about the local DB, graph, wiki, memory, or evidence...'
 };
@@ -180,10 +190,13 @@ function AssistantChat() {
   const [knowledgeMiss, setKnowledgeMiss] = useState<{ query: string; domain: string; recommendedSources?: string[] } | null>(null);
   const [knowledgeActionError, setKnowledgeActionError] = useState('');
   const [connectionState, setConnectionState] = useState<ConnectionState>('connecting');
+  const [creativeConfig, setCreativeConfig] = useState(defaultCreativeComposerState);
   const abortRef = useRef<AbortController | null>(null);
   const showBackendPanels = !isStaticPagesBuild;
   const showAudioBrowser = showBackendPanels && ['music', 'fl_studio', 'fl_studio_control', 'pro_tools', 'logic', 'mix_master'].includes(mode);
   const showCodeWorkflows = showBackendPanels && ['ask', 'plan', 'implement', 'debug', 'explain'].includes(mode);
+  const showCreativeComposer = mode === 'creative_writing' || mode === 'roleplay';
+  const showGISPanel = showBackendPanels && mode === 'gis';
 
   useEffect(() => {
     let active = true;
@@ -238,6 +251,7 @@ function AssistantChat() {
           sessionId,
           mode: selectedMode,
           systemPrompt: getSystemPrompt(selectedMode),
+          creative: buildCreativeRequest(input, selectedMode, creativeConfig),
           loadedFiles,
           loadedAudio,
           activePlanId: planAction?.planId,
@@ -378,6 +392,29 @@ function AssistantChat() {
     }
   };
 
+  const openPlan = async (planId: string) => {
+    try {
+      const response = await fetch(`/api/plans/${encodeURIComponent(planId)}`);
+      if (!response.ok) {
+        await throwApiError(response, 'Unable to open plan');
+      }
+      const plan = await response.json();
+      setMessages(prev => [
+        ...prev,
+        {
+          id: uuidv4(),
+          role: 'assistant',
+          content: plan.content || plan.summary || `Plan ${planId} loaded.`,
+          mode: 'plan',
+          createdAt: new Date().toISOString(),
+          status: 'complete'
+        }
+      ]);
+    } catch (error: any) {
+      setKnowledgeActionError(error.message || 'Unable to open plan');
+    }
+  };
+
   return (
     <AssistantRuntimeProvider runtime={runtime}>
       <div className="assistant-workspace">
@@ -398,22 +435,35 @@ function AssistantChat() {
             />
           )}
           {showCodeWorkflows && <CodeWorkflowPanel mode={mode} />}
+          {showCreativeComposer && (
+            <CreativeComposerPanel
+              mode={mode}
+              value={creativeConfig}
+              onChange={setCreativeConfig}
+              onActionCommand={command => sendUserMessage(command, mode)}
+            />
+          )}
+          {showGISPanel && <GISMapPanel />}
           {showAudioBrowser && <AudioPreviewBrowser onLoadAudio={addLoadedAudio} />}
           {mode === 'fl_studio_control' && (
             <FLStudioControlPanel onSendCommand={command => sendUserMessage(command, 'fl_studio_control')} />
           )}
           {planAction && (
-            <div className="assistant-cta-bar">
-              <span>Plan saved: {planAction.planPath}</span>
-              <button type="button" onClick={() => setMode('implement')}>Switch to Implement</button>
-            </div>
+            <PlanActionBar
+              planId={planAction.planId}
+              planPath={planAction.planPath}
+              onSwitchToImplement={() => setMode('implement')}
+              onOpenPlan={openPlan}
+            />
           )}
           {knowledgeMiss && (
-            <div className="assistant-cta-bar">
-              <span>I do not have this in local knowledge.</span>
-              <button type="button" onClick={runOnlineSearch}>Search Online</button>
-              <button type="button" onClick={() => setKnowledgeMiss(null)}>Cancel</button>
-            </div>
+            <KnowledgeMissPrompt
+              query={knowledgeMiss.query}
+              domain={knowledgeMiss.domain}
+              recommendedSources={knowledgeMiss.recommendedSources}
+              onSearch={runOnlineSearch}
+              onCancel={() => setKnowledgeMiss(null)}
+            />
           )}
           {knowledgeActionError && (
             <div className="assistant-error-bar" role="alert">{knowledgeActionError}</div>
@@ -542,6 +592,10 @@ function getSystemPrompt(mode: ChatMode): string {
       return 'You are a mix and mastering specialist. Diagnose likely causes, provide a fix order, plugin chain suggestions, metering targets, reference checks, and safety/copyright boundaries.';
     case 'story':
       return 'You are a story specialist. Help with worldbuilding, character arcs, scenes, quests, dialogue, lore, and continuity.';
+    case 'creative_writing':
+      return 'You are a Creative Writing specialist. Help draft, continue, revise, outline, and export original fiction with explicit continuity, genre, rating, and copyright-safe style boundaries.';
+    case 'roleplay':
+      return 'You are a Roleplay specialist. Maintain session state, in-character turns, out-of-character controls, scene continuity, and explicit boundaries. Adult-fiction handling requires opt-in and release-safe limits.';
     case 'legal':
       return 'You are a legal and civic information specialist. Require jurisdiction for specific legal framing, explain risks plainly, and avoid acting as a lawyer.';
     case 'health':
@@ -556,6 +610,8 @@ function getSystemPrompt(mode: ChatMode): string {
       return 'You are a language specialist. Help with translation, grammar, tone, rhetoric, speeches, readability, and rewriting.';
     case 'geography':
       return 'You are a geography and culture specialist. Handle maps, countries, demographics, cultural etiquette, and contested claims carefully.';
+    case 'gis':
+      return 'You are a GIS mapping specialist. Help with geocoding, routing, layers, parcels, spatial analysis, coordinate privacy, provider attribution, and degraded-mode fallbacks.';
     case 'engineering':
       return 'You are an engineering specialist. Help with circuits, robotics, mechanics, BOMs, prototypes, and calculations with safety caveats.';
     case 'knowledge_os':
@@ -563,6 +619,11 @@ function getSystemPrompt(mode: ChatMode): string {
     default:
       return 'You are a helpful AI assistant.';
   }
+}
+
+function buildCreativeRequest(input: string, mode: ChatMode, creativeConfig: typeof defaultCreativeComposerState) {
+  if (mode !== 'creative_writing' && mode !== 'roleplay') return undefined;
+  return buildCreativeRequestPayload(input, mode, creativeConfig);
 }
 
 export default AssistantChat;

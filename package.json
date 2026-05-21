@@ -52,6 +52,8 @@
     "eval:health": "tsx scripts/run-domain-evals.ts health",
     "eval:security": "tsx scripts/run-domain-evals.ts security",
     "eval:business": "tsx scripts/run-domain-evals.ts business",
+    "eval:creative": "tsx scripts/run-domain-evals.ts creative",
+    "eval:roleplay": "tsx scripts/run-domain-evals.ts creative/roleplay",
     "eval:philosophy": "tsx scripts/run-domain-evals.ts philosophy",
     "eval:language": "tsx scripts/run-domain-evals.ts language",
     "eval:geography": "tsx scripts/run-domain-evals.ts geography",

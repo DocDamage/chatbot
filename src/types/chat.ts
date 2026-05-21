@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { AIContract } from './contract';
+import { creativeRequestSchema } from '../core/creative/CreativeTypes';
 
 export const loadedFileContextSchema = z.object({
   path: z.string().min(1),
@@ -29,6 +30,7 @@ export const chatRequestSchema = z.object({
   activePlanId: z.string().max(200).optional(),
   activePlanContent: z.string().max(50000).optional(),
   activeFileBrowserMode: z.string().max(100).optional(),
+  creative: creativeRequestSchema.omit({ prompt: true }).partial().optional(),
   contract: z.any().optional(),
 });
 
@@ -46,6 +48,7 @@ export interface ChatRequestDto {
   activePlanId?: string;
   activePlanContent?: string;
   activeFileBrowserMode?: string;
+  creative?: Partial<Omit<z.infer<typeof creativeRequestSchema>, 'prompt'>>;
   contract?: AIContract;
 }
 

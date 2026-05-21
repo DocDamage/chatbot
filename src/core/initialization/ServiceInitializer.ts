@@ -54,6 +54,7 @@ import { FLStudioSessionState } from '../integrations/flstudio/FLStudioSessionSt
 import { McpAuditLogger } from '../mcp/McpAuditLogger';
 import { McpClientService } from '../mcp/McpClientService';
 import { StoryGeniusAgent } from '../agents/story/StoryGeniusAgent';
+import { CreativeWritingAgent } from '../creative/CreativeWritingAgent';
 import { LegalCivicGeniusAgent } from '../agents/legal/LegalCivicGeniusAgent';
 import { HealthGeniusAgent } from '../agents/health/HealthGeniusAgent';
 import { SecurityGeniusAgent } from '../agents/security/SecurityGeniusAgent';
@@ -107,6 +108,7 @@ export interface InitializedServices {
   proToolsGeniusAgent?: ProToolsGeniusAgent;
   logicProGeniusAgent?: LogicProGeniusAgent;
   storyGeniusAgent?: StoryGeniusAgent;
+  creativeWritingAgent?: CreativeWritingAgent;
   legalCivicGeniusAgent?: LegalCivicGeniusAgent;
   healthGeniusAgent?: HealthGeniusAgent;
   securityGeniusAgent?: SecurityGeniusAgent;
@@ -310,6 +312,7 @@ export class ServiceInitializer {
     });
     const mixGeniusAgent = new MixGeniusAgent(flStudioControlAgent);
     const storyGeniusAgent = new StoryGeniusAgent(ragDocumentStore);
+    const creativeWritingAgent = new CreativeWritingAgent();
     const legalCivicGeniusAgent = new LegalCivicGeniusAgent(ragDocumentStore);
     const healthGeniusAgent = new HealthGeniusAgent(ragDocumentStore);
     const securityGeniusAgent = new SecurityGeniusAgent(ragDocumentStore);
@@ -333,6 +336,7 @@ export class ServiceInitializer {
       proTools: true,
       logicPro: true,
       story: true,
+      creativeWriting: true,
       legal: true,
       health: true,
       security: true,
@@ -372,6 +376,7 @@ export class ServiceInitializer {
       proToolsGeniusAgent,
       logicProGeniusAgent,
       storyGeniusAgent,
+      creativeWritingAgent,
       legalCivicGeniusAgent,
       healthGeniusAgent,
       securityGeniusAgent,
