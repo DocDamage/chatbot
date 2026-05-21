@@ -1,4 +1,5 @@
 import AssistantChat from './components/AssistantChat';
+import LocalToolsWorkspace from './components/LocalToolsWorkspace';
 import SettingsMenu from './components/SettingsMenu';
 import './App.css';
 
@@ -11,9 +12,9 @@ function App() {
         <SettingsMenu />
       </header>
       <AssistantChat />
+      <LocalToolsWorkspace />
     </div>
   );
 }
 
 export default App;
-
