@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { asyncHandler } from '../../middleware/errorHandler';
 import { sanitizeInput } from '../../middleware/validator';
-import { canDebug, canGeneratePatch, canRunCommands, isDebugLikeCommand } from '../../core/modes/ModePolicy';
+import { isDebugLikeCommand } from '../../core/modes/ModePolicy';
+import { assertActionAllowed, modeFromRequest } from '../../core/modes/ExecutionModePolicy';
 
 export function createCodeRouter(services: any): Router {
   const router = Router();
@@ -13,6 +14,11 @@ export function createCodeRouter(services: any): Router {
     return services.codingAgent;
   };
 
+  const currentMode = (req: any) => modeFromRequest({
+    headerMode: req.headers['x-work-mode'],
+    bodyMode: req.body?.mode
+  });
+
   router.post('/api/code/ask', asyncHandler(async (req, res) => {
     const message = sanitizeInput(String(req.body.message || ''));
     if (!message.trim()) {
@@ -22,6 +28,13 @@ export function createCodeRouter(services: any): Router {
   }));
 
   router.post('/api/code/plan', asyncHandler(async (req, res) => {
+    const mode = currentMode(req);
+    try {
+      assertActionAllowed(mode, 'create_plan');
+    } catch (error: any) {
+      return res.status(403).json({ error: error.message });
+    }
+
     const message = sanitizeInput(String(req.body.message || ''));
     if (!message.trim()) {
       return res.status(400).json({ error: 'message is required' });
@@ -30,9 +43,14 @@ export function createCodeRouter(services: any): Router {
   }));
 
   router.post('/api/code/patch', asyncHandler(async (req, res) => {
-    if (!canGeneratePatch(req.body.mode)) {
-      return res.status(403).json({ error: 'Patch generation is only available in Implement mode.' });
+    const mode = currentMode(req);
+    try {
+      assertActionAllowed(mode, 'create_patch');
+      assertActionAllowed(mode, 'write_files');
+    } catch (error: any) {
+      return res.status(403).json({ error: error.message });
     }
+
     const message = sanitizeInput(String(req.body.message || ''));
     if (!message.trim()) {
       return res.status(400).json({ error: 'message is required' });
@@ -50,10 +68,13 @@ export function createCodeRouter(services: any): Router {
 
   router.post('/api/code/verify', asyncHandler(async (req, res) => {
     const commands = Array.isArray(req.body.commands) ? req.body.commands.map(String) : ['npm run type-check'];
-    const mode = String(req.body.mode || '');
+    const mode = currentMode(req);
     const debugLike = commands.some(isDebugLikeCommand);
-    if (!canRunCommands(mode) || (debugLike && mode !== 'implement' && !canDebug(mode))) {
-      return res.status(403).json({ error: 'Command verification is only available in Debug mode, or as safe verification from Implement mode.' });
+    try {
+      assertActionAllowed(mode, debugLike ? 'inspect_error' : 'run_tests');
+      assertActionAllowed(mode, 'run_tests');
+    } catch (error: any) {
+      return res.status(403).json({ error: error.message });
     }
     res.json(await getAgent().verify(commands));
   }));
