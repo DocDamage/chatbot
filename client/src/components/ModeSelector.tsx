@@ -22,6 +22,8 @@ export type ChatMode =
     | 'logic'
     | 'mix_master'
     | 'story'
+    | 'creative_writing'
+    | 'roleplay'
     | 'legal'
     | 'health'
     | 'security'
@@ -157,6 +159,18 @@ const modeConfig: Record<ChatMode, { icon: string; label: string; description: s
         label: 'Story',
         description: 'Worldbuilding, scenes, arcs, continuity',
         color: '#ec4899'
+    },
+    creative_writing: {
+        icon: 'CW',
+        label: 'Creative Writing',
+        description: 'Fiction drafts, revision, projects, and export',
+        color: '#db2777'
+    },
+    roleplay: {
+        icon: 'RP',
+        label: 'Roleplay',
+        description: 'Stateful scenes, characters, boundaries, and turns',
+        color: '#7c2d12'
     },
     legal: {
         icon: '§',

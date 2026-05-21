@@ -68,6 +68,8 @@ describe('ModeSelector', () => {
       'Math',
       'Market',
       'Game Dev',
+      'Creative Writing',
+      'Roleplay',
       'Legal/Civic',
       'Engineering',
     ]));

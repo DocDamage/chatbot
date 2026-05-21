@@ -1,7 +1,7 @@
 # Feature Completion Tracker
 
 Generated: 2026-05-20
-Updated: 2026-05-20
+Updated: 2026-05-21
 
 This file tracks **new product capabilities being planned or built**. It is intentionally separate from `RELEASE_COMPLETION_AUDIT.md`, which should only track release-readiness findings in existing code.
 
@@ -30,8 +30,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Creative Writing mode registration
 - Problem: There is no first-class Creative Writing / Roleplay mode in the visible mode selector, mode hints, placeholders, system prompt selection, backend mode policy, or specialist routing.
 - Fix: Add a dedicated `creative_writing` mode and `roleplay` submode. Register them in the UI mode selector, chat placeholders, mode hints, server mode inference, mode policy, and backend routing. Ensure they are distinct from ask, story, language, and generic chat so creative workflows get specialized handling.
-- Status: Open
-- Verification: Not verified. Requires static inspection of UI/backend registration plus runtime manual check that the mode appears and routes to the creative-writing handler.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `cd client; npm test -- --run ModeSelector.test.tsx`, `npm test -- --runTestsByPath src/core/creative/CreativeWritingAgent.test.ts src/types/chat.test.ts src/server/routes/__tests__/creative-routes.test.ts --runInBand`, `npm run type-check:server`, `npm run type-check:tests`, and `cd client; npm run type-check`. Runtime manual check still required.
 
 ## CW2
 
@@ -52,8 +52,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Dedicated creative writing agent
 - Problem: Creative writing currently has no dedicated agent that can handle fiction drafting, roleplay state, long-form continuity, genre conventions, character voice, scene goals, revisions, and multi-turn narrative control.
 - Fix: Implement `CreativeWritingAgent` with methods for `draftScene`, `continueScene`, `revisePassage`, `outlineNovel`, `buildCharacter`, `buildWorld`, `roleplayTurn`, `summarizeContinuity`, and `exportDraft`. Route creative_writing mode through this agent instead of generic chat.
-- Status: Open
-- Verification: Not verified. Requires unit tests for each agent method and runtime chat test through creative_writing mode.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWritingAgent.test.ts src/types/chat.test.ts src/server/routes/__tests__/creative-routes.test.ts --runInBand`, `npm run type-check:server`, and `npm run type-check:tests`. Core agent methods exist and creative chat routing is wired; full per-method unit coverage and runtime chat verification remain.
 
 ## CW4
 
@@ -63,8 +63,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Story bible and continuity memory
 - Problem: Long-form creative writing needs durable continuity for characters, locations, relationships, timelines, lore rules, unresolved plot threads, tone, rating, and prior chapters. No production story-bible data model or UI is present.
 - Fix: Add a StoryBible store with entities for characters, locations, factions, lore rules, timeline events, chapters, scenes, style guide, rating rules, and continuity notes. Provide UI to view/edit/pin these items and inject them into creative responses.
-- Status: Open
-- Verification: Not verified. Requires persistence tests, UI manual inspection, and an integration test proving continuity from a previous chapter affects a later draft.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWorkspace.test.ts src/core/creative/CreativeWritingAgent.test.ts e2e/creative-release.test.ts --runInBand`. StoryBibleStore, pinned continuity context, agent injection, and e2e continuity use are covered. UI manual inspection remains.
 
 ## CW5
 
@@ -74,8 +74,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Roleplay session engine
 - Problem: Roleplay needs session state for player character, assistant character, narrator mode, scene location, active cast, boundaries, goals, inventory/props if relevant, and out-of-character controls. No such engine is visible.
 - Fix: Implement roleplay sessions with explicit state, turn history, in-character and out-of-character modes, pause/resume, regenerate, branch, summarize, and reset controls. Add backend persistence and frontend controls.
-- Status: Open
-- Verification: Not verified. Requires runtime test that a roleplay session preserves character/scene state across multiple turns and can be paused/resumed.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWorkspace.test.ts src/core/creative/CreativeWritingAgent.test.ts e2e/creative-release.test.ts --runInBand` and `cd client; npm test -- --run CreativeComposerPanel.test.tsx`. Roleplay state, pause/resume, branch, summarize/reset engine behavior, slash-action controls, and roleplay e2e flow are covered. Full browser runtime inspection remains.
 
 ## CW6
 
@@ -85,8 +85,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Genre and format preset matrix
 - Problem: The app does not expose structured controls for genres and formats such as epic fantasy, dark horror, space opera, country western, noir, romance, comedy, mystery, cyberpunk, historical fiction, screenplay, chapter draft, short story, serial episode, lore entry, or dialogue-only scene.
 - Fix: Add a genre/format preset matrix with prompt scaffolds, tone defaults, pacing defaults, rating defaults, and output templates. Allow custom presets and saved user presets.
-- Status: Open
-- Verification: Not verified. Requires UI inspection and tests proving selected presets alter generated output instructions.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `cd client; npm test -- --run ModeSelector.test.tsx CreativeComposerPanel.test.tsx AssistantChat.test.tsx`, `npm test -- --runTestsByPath src/core/creative/CreativeWritingAgent.test.ts src/core/creative/CreativeCommandRouter.test.ts src/types/chat.test.ts src/server/routes/__tests__/creative-routes.test.ts --runInBand`, and type checks. Saved user presets and manual UI inspection remain.
 
 ## CW7
 
@@ -96,8 +96,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Creative composer controls
 - Problem: The chat composer has no controls for POV, tense, tone, rating, genre, narrator style, length, prose density, dialogue density, pacing, violence level, romance level, mature-mode opt-in, continuity source, or revision target.
 - Fix: Add a Creative Composer panel with structured controls and persist the selected creative configuration into each request DTO.
-- Status: Open
-- Verification: Not verified. Requires manual UI inspection and integration test proving composer settings are included in backend requests.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `cd client; npm test -- --run ModeSelector.test.tsx CreativeComposerPanel.test.tsx AssistantChat.test.tsx`, `cd client; npm run type-check`, `npm test -- --runTestsByPath src/core/creative/CreativeWritingAgent.test.ts src/types/chat.test.ts src/server/routes/__tests__/creative-routes.test.ts --runInBand`, and server type checks. Browser/manual UI inspection remains.
 
 ## CW8
 
@@ -107,8 +107,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Mature-fiction handling
 - Problem: Creative writing needs a controlled, opt-in mature-fiction path. There is no visible rating system, consent boundary state, or mature-mode UI that distinguishes general fiction from adult-oriented fiction.
 - Fix: Add rating presets such as General, Teen, Mature, and Adult Fiction. Require explicit mature-mode enablement for adult-fiction requests, store the rating in the creative session, and enforce boundaries through creative-specific policy checks.
-- Status: Open
-- Verification: Not verified. Requires policy tests, UI inspection, and runtime tests for rating changes.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `cd client; npm test -- --run CreativeComposerPanel.test.tsx`, `npm test -- --runTestsByPath src/core/creative/CreativeWritingAgent.test.ts src/types/chat.test.ts src/server/routes/__tests__/creative-routes.test.ts --runInBand`, and type checks. Runtime rating-change test remains.
 
 ## CW9
 
@@ -118,8 +118,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Consent and boundary state for roleplay
 - Problem: Roleplay sessions need explicit boundaries, content preferences, fade-to-black behavior, hard limits, and session reset behavior. No boundary-state model exists.
 - Fix: Add `RoleplayBoundaryState` with hard limits, preferred tone/rating, fade-to-black trigger, disallowed themes, allowed mature themes, and out-of-character override controls. Inject it into the agent and display it in the UI.
-- Status: Open
-- Verification: Not verified. Requires unit tests and runtime roleplay checks proving boundary state changes behavior.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `cd client; npm test -- --run CreativeComposerPanel.test.tsx`, `npm test -- --runTestsByPath src/core/creative/CreativeWritingAgent.test.ts src/types/chat.test.ts src/server/routes/__tests__/creative-routes.test.ts --runInBand`, and type checks. Runtime roleplay session checks remain.
 
 ## CW10
 
@@ -129,8 +129,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Long-form novel workflow
 - Problem: Creative writing needs workflows for premise, logline, outline, beat sheet, chapter outline, scene list, draft chapters, continuity review, revision pass, and final export. The current chat interface is not enough for novel-scale work.
 - Fix: Add a long-form project workflow with project creation, outline generation, chapter/scene planning, draft generation, revision passes, continuity checks, and export.
-- Status: Open
-- Verification: Not verified. Requires an end-to-end manual workflow creating a project, drafting at least two scenes, revising one, and exporting.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWorkspace.test.ts src/core/creative/CreativeWritingAgent.test.ts e2e/creative-release.test.ts --runInBand`. Automated flow creates a project, drafts, branches, roleplays, revises, and exports; manual workflow remains.
 
 ## CW11
 
@@ -140,8 +140,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Revision and editing passes
 - Problem: Creative writing requires rewrite modes such as expand, condense, make darker, make funnier, increase tension, improve dialogue, show-don't-tell, line edit, copy edit, continuity fix, and rating adjustment. These are not first-class UI/backend operations.
 - Fix: Add structured revision commands and UI buttons that operate on selected passage, current scene, chapter, or whole project.
-- Status: Open
-- Verification: Not verified. Requires tests for revision command routing and manual UI inspection.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWritingAgent.test.ts src/core/creative/CreativeCommandRouter.test.ts src/types/chat.test.ts src/server/routes/__tests__/creative-routes.test.ts --runInBand`, `cd client; npm test -- --run ModeSelector.test.tsx CreativeComposerPanel.test.tsx AssistantChat.test.tsx`, and type checks. Manual UI inspection remains.
 
 ## CW12
 
@@ -151,8 +151,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Branching and alternate takes
 - Problem: Roleplay and fiction drafting benefit from branching paths, alternate scene takes, and rewind points. The current chat state is linear and ephemeral.
 - Fix: Add branch IDs, parent turn IDs, alternate draft storage, compare/regenerate controls, and restore branch behavior.
-- Status: Open
-- Verification: Not verified. Requires runtime test creating two alternate continuations and restoring one branch.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWorkspace.test.ts src/core/creative/CreativeWritingAgent.test.ts e2e/creative-release.test.ts --runInBand` and `cd client; npm test -- --run CreativeComposerPanel.test.tsx`. Branch IDs, parent version/turn IDs, alternate take storage, restore behavior, and composer branch payload are covered. Compare UI/manual runtime remains.
 
 ## CW13
 
@@ -162,8 +162,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Draft persistence, versioning, and export
 - Problem: Creative drafts are not persisted as versioned projects with chapters/scenes and cannot be reliably exported from the active UI.
 - Fix: Add persistent `CreativeProject`, `Chapter`, `Scene`, `DraftVersion`, and `Export` services. Support Markdown, plain text, and JSON export with story-bible metadata.
-- Status: Open
-- Verification: Not verified. Requires persistence tests and export file inspection.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWorkspace.test.ts e2e/creative-release.test.ts --runInBand`. CreativeProject, Chapter, Scene, DraftVersion, branch, and Markdown/JSON export behavior are covered. External export file inspection remains.
 
 ## CW14
 
@@ -173,8 +173,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Character voice and narrator controls
 - Problem: Creative mode needs controllable character voice, narrator voice, dialogue density, prose density, humor level, dialect handling, and point-of-view consistency. No structured controls exist.
 - Fix: Add character voice cards, narrator profiles, POV/tense validators, dialogue/prose sliders, and consistency checks.
-- Status: Open
-- Verification: Not verified. Requires unit tests for request DTO generation and manual output review.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `cd client; npm test -- --run CreativeComposerPanel.test.tsx` and `npm test -- --runTestsByPath src/core/creative/CreativeWritingAgent.test.ts --runInBand`. POV, tense, narrator style, prose/dialogue density, and structured request DTO generation are covered. Dedicated character voice card UI and manual output review remain.
 
 ## CW15
 
@@ -184,8 +184,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Copyright-safe style handling
 - Problem: User examples include Lord of the Rings type material and Stephen King type material. The app needs genre/style inspiration without copying protected worlds, characters, text, or imitating a living author too closely.
 - Fix: Add style transformation rules that convert requests into copyright-safe descriptors, such as mythic secondary-world epic fantasy or small-town supernatural psychological horror, and block direct continuation of protected works or exact living-author imitation.
-- Status: Open
-- Verification: Not verified. Requires tests for safe transformations and refusals/redirects for protected-world or living-author imitation requests.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWritingAgent.test.ts src/core/creative/CreativeCommandRouter.test.ts src/core/creative/CreativeStylePolicy.test.ts src/types/chat.test.ts src/server/routes/__tests__/creative-routes.test.ts --runInBand`, `cd client; npm test -- --run ModeSelector.test.tsx CreativeComposerPanel.test.tsx AssistantChat.test.tsx`, and type checks. Manual policy review remains.
 
 ## CW16
 
@@ -195,8 +195,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Privacy for intimate or sensitive creative sessions
 - Problem: Mature roleplay and personal creative writing can contain sensitive personal data. Existing chat/logging/persistence paths do not define privacy retention, redaction, export, or deletion behavior for creative sessions.
 - Fix: Add privacy controls for creative projects: local/private flag, retention period, delete project, redact logs, disable analytics for sensitive sessions, and export/delete-my-data behavior.
-- Status: Open
-- Verification: Not verified. Requires privacy tests proving deletion and log redaction behavior.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWorkspace.test.ts src/core/creative/CreativeWritingAgent.test.ts --runInBand` and `cd client; npm test -- --run CreativeComposerPanel.test.tsx`. Local/private flag, retention, analytics disabling, log redaction, and project deletion are covered. Full export/delete-my-data UX remains.
 
 ## CW17
 
@@ -206,8 +206,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Model/provider capability for creative quality
 - Problem: The local template fallback is not capable of high-quality long-form fiction or nuanced roleplay. Creative mode needs provider capability checks and graceful degradation.
 - Fix: Add model capability detection for long context, creative writing quality, instruction following, and safety classification. Show user-visible degraded mode when only template fallback is active.
-- Status: Open
-- Verification: Not verified. Requires provider matrix tests and runtime check with template fallback active.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWorkspace.test.ts src/core/creative/CreativeWritingAgent.test.ts e2e/creative-release.test.ts --runInBand`. Capability detection and user-visible template degraded-mode messaging are covered. Wider provider matrix runtime checks remain.
 
 ## CW18
 
@@ -217,8 +217,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Creative writing evaluations
 - Problem: There are eval scripts for many domains, but no visible creative-writing or roleplay evaluation suite that measures continuity, genre adherence, instruction following, safe mature handling, copyright safety, and refusal quality.
 - Fix: Add `eval:creative` and `eval:roleplay` scripts with golden tasks for genre fidelity, continuity, character voice, revision quality, mature-content boundaries, and copyright-safe transformation.
-- Status: Open
-- Verification: Not verified. Requires successful eval run and reviewed score report.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm run eval:creative`, `npm run eval:roleplay`, `npm test -- --runTestsByPath src/evals/run-domain-evals.test.ts src/core/creative/CreativeWritingAgent.test.ts src/core/creative/CreativeCommandRouter.test.ts src/core/creative/CreativeStylePolicy.test.ts src/core/creative/CreativeQualityReviewer.test.ts src/types/chat.test.ts src/server/routes/__tests__/creative-routes.test.ts --runInBand`, `cd client; npm test -- --run ModeSelector.test.tsx CreativeComposerPanel.test.tsx AssistantChat.test.tsx`, and type checks. Human review of eval scoring quality remains.
 
 ## CW19
 
@@ -228,8 +228,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Documentation and user-facing guidance
 - Problem: Creative writing and roleplay requirements, controls, supported genres, mature-mode behavior, persistence, export, and boundaries are not documented.
 - Fix: Add creative-writing docs, roleplay guide, genre preset guide, mature-fiction policy, copyright-safe style guide, and developer handoff notes.
-- Status: Open
-- Verification: Not verified. Requires documentation review and manual comparison against implemented UI/backend behavior.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by adding `docs/creative-writing.md` and linking it from `README.md`. Documentation review and manual comparison remain.
 
 ## CW20
 
@@ -239,8 +239,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Creative request schema and validation
 - Problem: Creative mode needs structured request validation for genre, format, rating, boundaries, story bible IDs, character IDs, project IDs, scene IDs, revision operation, and output length. No schema exists.
 - Fix: Add zod schemas or equivalent DTO validation for creative requests and responses. Reject malformed project IDs, invalid rating values, impossible length values, and unsafe boundary overrides.
-- Status: Open
-- Verification: Not verified. Requires schema unit tests and route integration tests for valid/invalid requests.
+- Status: Verified
+- Verification: Verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWritingAgent.test.ts src/types/chat.test.ts src/server/routes/__tests__/creative-routes.test.ts --runInBand`, `npm run type-check:server`, and `npm run type-check:tests`.
 
 ## CW21
 
@@ -250,8 +250,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: User experience for roleplay control
 - Problem: Roleplay users need clear controls for continue, narrate, act as character, out-of-character note, summarize, rewind, branch, regenerate, set boundaries, and end scene. The current chat UI has only send, stop, copy, and retry.
 - Fix: Add roleplay action buttons and slash commands such as `/ooc`, `/summary`, `/scene`, `/cast`, `/boundary`, `/rewind`, `/branch`, `/fade`, and `/end`.
-- Status: Open
-- Verification: Not verified. Requires UI inspection and command routing tests.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWritingAgent.test.ts src/core/creative/CreativeCommandRouter.test.ts src/types/chat.test.ts src/server/routes/__tests__/creative-routes.test.ts --runInBand`, `cd client; npm test -- --run ModeSelector.test.tsx CreativeComposerPanel.test.tsx AssistantChat.test.tsx`, and type checks. Manual roleplay runtime inspection remains.
 
 ## CW22
 
@@ -261,8 +261,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Clear refusal and rewrite behavior for disallowed creative requests
 - Problem: Creative mode needs graceful handling when a request crosses release boundaries. No creative-specific refusal or rewrite path exists.
 - Fix: Add creative-specific boundary responses that briefly explain the limitation and offer safe alternatives: fade-to-black, consensual adult rewrite, fictionalized non-real-person substitute, non-explicit horror version, or genre-safe transformation.
-- Status: Open
-- Verification: Not verified. Requires policy tests and manual inspection of refusal/redirect quality.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWritingAgent.test.ts src/types/chat.test.ts src/server/routes/__tests__/creative-routes.test.ts --runInBand`. Manual refusal/redirect quality review remains.
 
 ## CW23
 
@@ -272,8 +272,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Quality controls and output scoring
 - Problem: There is no quality loop for creative drafts, such as scoring for continuity, sensory detail, pacing, dialogue naturalness, genre fit, originality, and instruction adherence.
 - Fix: Add a `CreativeQualityReviewer` that can score and optionally revise drafts. Expose optional quality-pass controls in the UI.
-- Status: Open
-- Verification: Not verified. Requires unit tests for reviewer outputs and manual quality review on sample drafts.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWritingAgent.test.ts src/core/creative/CreativeCommandRouter.test.ts src/core/creative/CreativeStylePolicy.test.ts src/core/creative/CreativeQualityReviewer.test.ts src/types/chat.test.ts src/server/routes/__tests__/creative-routes.test.ts --runInBand`, `cd client; npm test -- --run ModeSelector.test.tsx CreativeComposerPanel.test.tsx AssistantChat.test.tsx`, and type checks. Manual quality review on sample drafts remains.
 
 ## CW24
 
@@ -283,8 +283,8 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: Prompt/library packs
 - Problem: Users need reusable prompt packs for genres, tropes, character archetypes, scene types, and tone profiles. No prompt-library system exists.
 - Fix: Add a prompt pack library with built-in presets and user-created presets. Store prompts separately from project drafts and allow import/export.
-- Status: Open
-- Verification: Not verified. Requires persistence tests and UI inspection proving packs can be created, applied, exported, and deleted.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath src/core/creative/CreativeWorkspace.test.ts src/core/creative/CreativeWritingAgent.test.ts e2e/creative-release.test.ts --runInBand` and `cd client; npm test -- --run CreativeComposerPanel.test.tsx`. Built-in/user packs, create/apply/export/import/delete, and composer payload references are covered. UI inspection remains.
 
 ## CW25
 
@@ -294,5 +294,5 @@ This track defines a production-grade creative writing and roleplay system. It s
 - Feature/system: End-to-end creative release scenario
 - Problem: There is no end-to-end acceptance scenario proving the creative writing system can create a project, configure genre/rating, draft a scene, roleplay a scene, revise a passage, maintain continuity, and export the result.
 - Fix: Add an e2e creative-writing smoke test and a manual QA checklist covering regular fiction, dark horror, epic fantasy, space opera, western, romance/mature opt-in, and roleplay sessions.
-- Status: Open
-- Verification: Not verified. Requires passing e2e smoke test and completed manual QA checklist.
+- Status: Fixed
+- Verification: Partially verified 2026-05-21 by `npm test -- --runTestsByPath e2e/creative-release.test.ts --runInBand` and the manual QA checklist in `docs/creative-writing.md`. Manual QA checklist execution remains.

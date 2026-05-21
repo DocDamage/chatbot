@@ -4,6 +4,7 @@ import { createAudioRouter } from './routes/audio';
 import { createBusinessGeniusRouter } from './routes/business';
 import { createChronoRouter } from './routes/chrono';
 import { createCodeRouter } from './routes/code';
+import { createCreativeWritingRouter } from './routes/creative';
 import { createEngineeringGeniusRouter } from './routes/engineering';
 import { createExportRouter } from './routes/export';
 import { createFilesRouter } from './routes/files';
@@ -54,6 +55,7 @@ export const routeManifest: RouteManifestEntry[] = [
   { name: 'music', readiness: true },
   { name: 'flstudio', readiness: true },
   { name: 'story', readiness: true },
+  { name: 'creative', readiness: true },
   { name: 'legal', readiness: true },
   { name: 'health', readiness: true },
   { name: 'security', readiness: true },
@@ -98,6 +100,7 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
     music: () => createMusicProductionGeniusRouter(deps.getServices()),
     flstudio: () => createFLStudioControlRouter(deps.getServices()),
     story: () => createStoryGeniusRouter(deps.getServices()),
+    creative: () => createCreativeWritingRouter(deps.getServices()),
     legal: () => createLegalCivicGeniusRouter(deps.getServices()),
     health: () => createHealthGeniusRouter(deps.getServices()),
     security: () => createSecurityGeniusRouter(deps.getServices()),

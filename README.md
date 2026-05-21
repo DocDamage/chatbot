@@ -9,6 +9,7 @@ A production-grade AI chatbot application built following a comprehensive archit
 - **AI Contract System**: Every request is bound by explicit contracts with capability gating, cost limits, and policy enforcement
 - **Memory Stratification**: Session (ephemeral), Episodic (durable), and Canonical (deterministic) memory layers
 - **Provider Abstraction**: Swappable LLM providers (Ollama, OpenAI) with graceful degradation
+- **Creative Writing & Roleplay**: Story bible continuity, long-form drafting, roleplay state, branches, prompt packs, privacy controls, and export workflows. See [docs/creative-writing.md](docs/creative-writing.md)
 - **Intent Routing**: Automatic classification and routing of user requests
 - **Validation Pipeline**: Safety, tone, and schema validation before responses
 - **Provenance Ledger**: Full content lineage tracking for every response

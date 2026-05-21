@@ -18,6 +18,8 @@ export type ChatMode =
   | 'logic'
   | 'mix_master'
   | 'story'
+  | 'creative_writing'
+  | 'roleplay'
   | 'legal'
   | 'health'
   | 'security'

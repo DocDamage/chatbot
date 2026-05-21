@@ -19,6 +19,7 @@ import LoadedFilesBar from './LoadedFilesBar';
 import AudioPreviewBrowser from './AudioPreviewBrowser';
 import CodeWorkflowPanel from './CodeWorkflowPanel';
 import ConversationToolsPanel from './ConversationToolsPanel';
+import CreativeComposerPanel, { buildCreativeRequestPayload, defaultCreativeComposerState } from './CreativeComposerPanel';
 import { LoadedFileContext } from '../api/files';
 import { AudioFileContext } from '../api/audio';
 import type { ConversationDetail } from '../api/conversations';
@@ -94,6 +95,8 @@ const modeHints: Record<ChatMode, string> = {
   logic: 'Logic Pro mode',
   mix_master: 'Mix/Master mode',
   story: 'Story mode',
+  creative_writing: 'Creative Writing mode',
+  roleplay: 'Roleplay mode',
   legal: 'Legal/Civic mode',
   health: 'Health mode',
   security: 'Security mode',
@@ -126,6 +129,8 @@ const placeholders: Record<ChatMode, string> = {
   logic: 'Ask about Logic MIDI, vocals, Session Players, Flex, or bounce...',
   mix_master: 'Describe the mix/master problem or target...',
   story: 'Ask about characters, worlds, scenes, quests, or continuity...',
+  creative_writing: 'Draft, revise, outline, or export fiction...',
+  roleplay: 'Set the scene, character, action, or out-of-character note...',
   legal: 'Ask a legal/civic question with jurisdiction...',
   health: 'Ask about fitness, nutrition, anatomy, or safety boundaries...',
   security: 'Ask about threat models, auth, privacy, or code risk...',
@@ -180,10 +185,12 @@ function AssistantChat() {
   const [knowledgeMiss, setKnowledgeMiss] = useState<{ query: string; domain: string; recommendedSources?: string[] } | null>(null);
   const [knowledgeActionError, setKnowledgeActionError] = useState('');
   const [connectionState, setConnectionState] = useState<ConnectionState>('connecting');
+  const [creativeConfig, setCreativeConfig] = useState(defaultCreativeComposerState);
   const abortRef = useRef<AbortController | null>(null);
   const showBackendPanels = !isStaticPagesBuild;
   const showAudioBrowser = showBackendPanels && ['music', 'fl_studio', 'fl_studio_control', 'pro_tools', 'logic', 'mix_master'].includes(mode);
   const showCodeWorkflows = showBackendPanels && ['ask', 'plan', 'implement', 'debug', 'explain'].includes(mode);
+  const showCreativeComposer = mode === 'creative_writing' || mode === 'roleplay';
 
   useEffect(() => {
     let active = true;
@@ -238,6 +245,7 @@ function AssistantChat() {
           sessionId,
           mode: selectedMode,
           systemPrompt: getSystemPrompt(selectedMode),
+          creative: buildCreativeRequest(input, selectedMode, creativeConfig),
           loadedFiles,
           loadedAudio,
           activePlanId: planAction?.planId,
@@ -398,6 +406,14 @@ function AssistantChat() {
             />
           )}
           {showCodeWorkflows && <CodeWorkflowPanel mode={mode} />}
+          {showCreativeComposer && (
+            <CreativeComposerPanel
+              mode={mode}
+              value={creativeConfig}
+              onChange={setCreativeConfig}
+              onActionCommand={command => sendUserMessage(command, mode)}
+            />
+          )}
           {showAudioBrowser && <AudioPreviewBrowser onLoadAudio={addLoadedAudio} />}
           {mode === 'fl_studio_control' && (
             <FLStudioControlPanel onSendCommand={command => sendUserMessage(command, 'fl_studio_control')} />
@@ -542,6 +558,10 @@ function getSystemPrompt(mode: ChatMode): string {
       return 'You are a mix and mastering specialist. Diagnose likely causes, provide a fix order, plugin chain suggestions, metering targets, reference checks, and safety/copyright boundaries.';
     case 'story':
       return 'You are a story specialist. Help with worldbuilding, character arcs, scenes, quests, dialogue, lore, and continuity.';
+    case 'creative_writing':
+      return 'You are a Creative Writing specialist. Help draft, continue, revise, outline, and export original fiction with explicit continuity, genre, rating, and copyright-safe style boundaries.';
+    case 'roleplay':
+      return 'You are a Roleplay specialist. Maintain session state, in-character turns, out-of-character controls, scene continuity, and explicit boundaries. Adult-fiction handling requires opt-in and release-safe limits.';
     case 'legal':
       return 'You are a legal and civic information specialist. Require jurisdiction for specific legal framing, explain risks plainly, and avoid acting as a lawyer.';
     case 'health':
@@ -563,6 +583,11 @@ function getSystemPrompt(mode: ChatMode): string {
     default:
       return 'You are a helpful AI assistant.';
   }
+}
+
+function buildCreativeRequest(input: string, mode: ChatMode, creativeConfig: typeof defaultCreativeComposerState) {
+  if (mode !== 'creative_writing' && mode !== 'roleplay') return undefined;
+  return buildCreativeRequestPayload(input, mode, creativeConfig);
 }
 
 export default AssistantChat;
