@@ -4,7 +4,7 @@ import { Database } from '../database/Database';
 import { LocalToolService, ExecutedLocalToolRun, PlannedLocalToolRun } from '../local-tools/LocalToolService';
 
 export type ExternalSpriteBackendSlug = 'aseprite' | 'libresprite' | 'pixelorama';
-export type ExternalSpriteWorkflow = 'spritesheet_export' | 'frame_slice' | 'manifest_generate';
+export type ExternalSpriteWorkflow = 'spritesheet_export' | 'frame_slice' | 'palette_extract' | 'manifest_generate';
 
 export interface SpriteExternalToolOptions {
   sheetType?: 'horizontal' | 'vertical' | 'rows' | 'columns' | 'packed';
@@ -64,6 +64,7 @@ interface OutputLayout {
   framePattern: string;
   frameDir: string;
   manifestPath: string;
+  palettePath: string;
 }
 
 export class SpriteExternalToolAdapter {
@@ -75,12 +76,12 @@ export class SpriteExternalToolAdapter {
   buildCommand(input: SpriteExternalToolInput): SpriteExternalToolCommand {
     this.assertBackend(input.backend);
     this.assertWorkflow(input.workflow);
-    if (input.backend === 'pixelorama') {
-      throw new Error('Pixelorama external execution is not enabled yet because its CLI export arguments vary by build. Use internal Sprite Lab actions or Aseprite/LibreSprite for approved CLI export.');
-    }
 
     const cwd = this.resolveWorkspacePath(input.cwd || '.');
     const layout = this.resolveOutputLayout(input.workflow, input.inputPath, input.outputTarget);
+    if (input.backend === 'pixelorama') {
+      return this.buildPixeloramaCommand(input.workflow, layout, cwd);
+    }
     return this.buildAsepriteCompatibleCommand(input.backend, input.workflow, layout, cwd, input.options || {});
   }
 
@@ -108,7 +109,7 @@ export class SpriteExternalToolAdapter {
       riskLevel: 'medium',
       approvedByUser: input.approvedByUser === true
     });
-    return { ...result, adapter };
+    return this.verifyExpectedOutputs(result, adapter);
   }
 
   private buildAsepriteCompatibleCommand(
@@ -135,6 +136,19 @@ export class SpriteExternalToolAdapter {
         outputFiles.push(layout.framePattern);
         outputDirectories.add(layout.frameDir);
         break;
+      case 'palette_extract':
+        if (backend !== 'aseprite') {
+          throw new Error('External palette extraction currently requires Aseprite script support. Use internal Sprite Lab palette extraction for LibreSprite.');
+        }
+        args.push(
+          '--script-param',
+          `outputPath=${layout.palettePath}`,
+          '--script',
+          path.join(this.workspaceRoot, 'src/core/sprite-lab/scripts/export-palette.lua')
+        );
+        outputFiles.push(layout.palettePath);
+        outputDirectories.add(path.dirname(layout.palettePath));
+        break;
       case 'manifest_generate':
         args.push('--sheet', layout.sheetPath, '--data', layout.manifestPath, '--format', options.dataFormat || 'json-array', '--sheet-type', options.sheetType || 'rows');
         this.appendAsepriteMetadataFlags(args);
@@ -158,7 +172,42 @@ export class SpriteExternalToolAdapter {
       outputDirectories: [...outputDirectories],
       notes: [
         `${backend} is started through LocalToolRunner only after explicit approval.`,
-        'The adapter uses batch mode, fixed allowlisted flags, and no shell invocation.'
+        'The adapter uses batch mode, fixed allowlisted flags, and no shell invocation.',
+        'The adapter verifies expected outputs after a completed run.'
+      ]
+    };
+  }
+
+  private buildPixeloramaCommand(workflow: ExternalSpriteWorkflow, layout: OutputLayout, cwd: string): SpriteExternalToolCommand {
+    const templateJson = process.env.PIXELORAMA_CLI_ARGS_JSON;
+    if (!templateJson) {
+      throw new Error('Pixelorama CLI template is not configured. Set PIXELORAMA_CLI_ARGS_JSON before enabling Pixelorama external execution.');
+    }
+
+    const template = this.parsePixeloramaTemplate(templateJson);
+    const args = template.map(arg => this.expandPixeloramaArg(arg, layout));
+    const outputFiles = workflow === 'manifest_generate'
+      ? [layout.sheetPath, layout.manifestPath]
+      : workflow === 'frame_slice'
+        ? [layout.framePattern]
+        : workflow === 'palette_extract'
+          ? [layout.palettePath]
+          : [layout.sheetPath];
+
+    return {
+      backend: 'pixelorama',
+      workflow,
+      toolSlug: 'pixelorama',
+      args,
+      cwd,
+      inputPath: layout.inputPath,
+      outputTarget: layout.outputTarget,
+      outputFiles,
+      outputDirectories: Array.from(new Set(outputFiles.map(file => path.dirname(file)))),
+      notes: [
+        'Pixelorama execution is disabled unless PIXELORAMA_CLI_ARGS_JSON is configured.',
+        'Template placeholders are expanded without shell invocation.',
+        'Expected output files are verified after execution.'
       ]
     };
   }
@@ -206,7 +255,8 @@ export class SpriteExternalToolAdapter {
       dataPath: targetIsDirectory ? `${outputBase}.sheet.json` : this.withExtension(requestedOutput, '.json'),
       framePattern: path.join(frameDir, `${parsed.name}-{frame000}.png`),
       frameDir,
-      manifestPath: targetIsDirectory ? `${outputBase}.manifest.json` : this.withExtension(requestedOutput, '.manifest.json')
+      manifestPath: targetIsDirectory ? `${outputBase}.manifest.json` : this.withExtension(requestedOutput, '.manifest.json'),
+      palettePath: targetIsDirectory ? `${outputBase}.palette.json` : this.withExtension(requestedOutput, '.palette.json')
     };
   }
 
@@ -214,12 +264,64 @@ export class SpriteExternalToolAdapter {
     switch (workflow) {
       case 'spritesheet_export': return `${defaultBase}.sheet.png`;
       case 'frame_slice': return path.join(defaultBase, 'frames');
+      case 'palette_extract': return `${defaultBase}.palette.json`;
       case 'manifest_generate': return `${defaultBase}.manifest.json`;
     }
   }
 
   private withExtension(filePath: string, extension: string): string {
     return path.join(path.dirname(filePath), `${path.parse(filePath).name}${extension}`);
+  }
+
+  private verifyExpectedOutputs(result: ExecutedLocalToolRun, adapter: SpriteExternalToolCommand): ExecutedSpriteExternalToolRun {
+    if (result.status !== 'completed') return { ...result, adapter };
+
+    const missingOutputs = adapter.outputFiles
+      .filter(file => !file.includes('{frame'))
+      .filter(file => !fs.existsSync(file));
+
+    const framePattern = adapter.outputFiles.find(file => file.includes('{frame'));
+    if (framePattern && !this.hasGeneratedFrames(path.dirname(framePattern))) {
+      missingOutputs.push(path.dirname(framePattern));
+    }
+
+    if (missingOutputs.length) {
+      return {
+        ...result,
+        status: 'failed',
+        error: `Tool completed but expected outputs were missing: ${missingOutputs.join(', ')}`,
+        adapter
+      };
+    }
+
+    return { ...result, adapter };
+  }
+
+  private hasGeneratedFrames(frameDir: string): boolean {
+    if (!fs.existsSync(frameDir)) return false;
+    return fs.readdirSync(frameDir).some(file => file.toLowerCase().endsWith('.png'));
+  }
+
+  private parsePixeloramaTemplate(templateJson: string): string[] {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(templateJson);
+    } catch {
+      throw new Error('PIXELORAMA_CLI_ARGS_JSON must be a JSON string array');
+    }
+    if (!Array.isArray(parsed) || parsed.some(value => typeof value !== 'string')) {
+      throw new Error('PIXELORAMA_CLI_ARGS_JSON must be a JSON string array');
+    }
+    return parsed as string[];
+  }
+
+  private expandPixeloramaArg(arg: string, layout: OutputLayout): string {
+    return arg
+      .replaceAll('{input}', layout.inputPath)
+      .replaceAll('{output}', layout.outputTarget)
+      .replaceAll('{sheet}', layout.sheetPath)
+      .replaceAll('{manifest}', layout.manifestPath)
+      .replaceAll('{palette}', layout.palettePath);
   }
 
   private resolveWorkspacePath(requestedPath: string): string {
@@ -238,7 +340,7 @@ export class SpriteExternalToolAdapter {
   }
 
   private assertWorkflow(workflow: string): asserts workflow is ExternalSpriteWorkflow {
-    if (!['spritesheet_export', 'frame_slice', 'manifest_generate'].includes(workflow)) {
+    if (!['spritesheet_export', 'frame_slice', 'palette_extract', 'manifest_generate'].includes(workflow)) {
       throw new Error(`Unsupported external sprite workflow: ${workflow}`);
     }
   }

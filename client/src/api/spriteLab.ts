@@ -78,7 +78,7 @@ export async function generateSpriteManifest(input: {
 
 export async function planExternalSpriteRun(input: {
   backend: ExternalSpriteBackend;
-  workflow: Exclude<SpriteWorkflow, 'palette_extract'>;
+  workflow: SpriteWorkflow;
   inputPath: string;
   outputTarget?: string;
   options?: Record<string, unknown>;
@@ -88,11 +88,21 @@ export async function planExternalSpriteRun(input: {
 
 export async function runExternalSpriteTool(input: {
   backend: ExternalSpriteBackend;
-  workflow: Exclude<SpriteWorkflow, 'palette_extract'>;
+  workflow: SpriteWorkflow;
   inputPath: string;
   outputTarget?: string;
   approvedByUser: boolean;
   options?: Record<string, unknown>;
 }): Promise<any> {
   return postJson('/api/sprite-lab/external/run', input, 'Unable to start external sprite tool run');
+}
+
+export async function approveLocalToolRun(runId: string): Promise<any> {
+  return postJson(`/api/local-tools/runs/${encodeURIComponent(runId)}/approve`, {
+    approvalNote: 'Approved from Sprite Lab'
+  }, 'Unable to approve external run');
+}
+
+export async function startLocalToolRun(runId: string): Promise<any> {
+  return postJson(`/api/local-tools/runs/${encodeURIComponent(runId)}/start`, {}, 'Unable to start external run');
 }

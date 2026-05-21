@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
+import FileExplorerPanel from './FileExplorerPanel';
 import {
+  approveLocalToolRun,
   extractSpritePalette,
   generateSpriteManifest,
   getSpriteLabStatus,
   planExternalSpriteRun,
   planSpriteWorkflow,
-  runExternalSpriteTool,
   sliceSpriteGrid,
+  startLocalToolRun,
   ExternalSpriteBackend,
   SpriteLabStatus,
   SpriteWorkflow,
@@ -37,6 +39,7 @@ export default function SpriteLabPanel() {
   const [maxColors, setMaxColors] = useState(256);
   const [animationName, setAnimationName] = useState('default');
   const [plan, setPlan] = useState<SpriteWorkflowPlan | null>(null);
+  const [plannedExternalRun, setPlannedExternalRun] = useState<any>(null);
   const [actionResult, setActionResult] = useState<any>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -67,8 +70,8 @@ export default function SpriteLabPanel() {
     return true;
   };
 
-  const runAction = async (label: string, action: () => Promise<any>) => {
-    if (!requireInputPath()) return;
+  const runAction = async (label: string, action: () => Promise<any>, needsInputPath = true) => {
+    if (needsInputPath && !requireInputPath()) return;
     try {
       setLoading(true);
       setError('');
@@ -97,11 +100,25 @@ export default function SpriteLabPanel() {
     }
   };
 
-  const externalWorkflow = () => {
-    if (workflow === 'palette_extract') {
-      throw new Error('External CLI palette extraction is not wired. Use the internal Extract Palette button.');
-    }
-    return workflow;
+  const planExternal = async () => {
+    const result = await planExternalSpriteRun({
+      backend: externalBackend,
+      workflow,
+      inputPath,
+      outputTarget: outputTarget.trim() || undefined
+    });
+    setPlannedExternalRun(result);
+    return result;
+  };
+
+  const approveExternal = async () => {
+    if (!plannedExternalRun?.runId) throw new Error('No planned external run');
+    return approveLocalToolRun(plannedExternalRun.runId);
+  };
+
+  const startExternal = async () => {
+    if (!plannedExternalRun?.runId) throw new Error('No planned external run');
+    return startLocalToolRun(plannedExternalRun.runId);
   };
 
   return (
@@ -127,6 +144,12 @@ export default function SpriteLabPanel() {
           ))}
         </div>
       )}
+
+      <FileExplorerPanel
+        mode="select"
+        accept={['.png', '.ase', '.aseprite']}
+        onSelect={(file) => setInputPath(file.path)}
+      />
 
       <div className="sprite-lab-form">
         <label className="assistant-field">
@@ -186,21 +209,20 @@ export default function SpriteLabPanel() {
             frameHeight,
             animationName: animationName.trim() || 'default'
           }))} disabled={loading}>Generate Manifest</button>
-          <button type="button" onClick={() => runAction('Plan external CLI', () => planExternalSpriteRun({
-            backend: externalBackend,
-            workflow: externalWorkflow(),
-            inputPath,
-            outputTarget: outputTarget.trim() || undefined
-          }))} disabled={loading}>Plan External CLI</button>
-          <button type="button" onClick={() => runAction('Run approved external CLI', () => runExternalSpriteTool({
-            backend: externalBackend,
-            workflow: externalWorkflow(),
-            inputPath,
-            outputTarget: outputTarget.trim() || undefined,
-            approvedByUser: true
-          }))} disabled={loading}>Run Approved External CLI</button>
+          <button type="button" onClick={() => runAction('Plan external CLI', planExternal)} disabled={loading}>Plan External CLI</button>
+          <button type="button" onClick={() => runAction('Approve external CLI', approveExternal, false)} disabled={loading || !plannedExternalRun?.runId}>Approve Planned CLI</button>
+          <button type="button" onClick={() => runAction('Start external CLI', startExternal, false)} disabled={loading || !plannedExternalRun?.runId}>Start Approved CLI</button>
         </div>
       </div>
+
+      {plannedExternalRun?.runId && (
+        <div className="sprite-plan-card">
+          <h4>Planned external run</h4>
+          <p><strong>Run ID:</strong> {plannedExternalRun.runId}</p>
+          <p><strong>Status:</strong> {plannedExternalRun.status}</p>
+          {plannedExternalRun.resolvedCommand && <pre>{JSON.stringify(plannedExternalRun.resolvedCommand, null, 2)}</pre>}
+        </div>
+      )}
 
       {plan && (
         <div className="sprite-plan-card">
