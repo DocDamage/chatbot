@@ -1,5 +1,17 @@
-import { useEffect, useState } from 'react';
-import { getSpriteLabStatus, planSpriteWorkflow, SpriteLabStatus, SpriteWorkflow, SpriteWorkflowPlan } from '../api/spriteLab';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  extractSpritePalette,
+  generateSpriteManifest,
+  getSpriteLabStatus,
+  planExternalSpriteRun,
+  planSpriteWorkflow,
+  runExternalSpriteTool,
+  sliceSpriteGrid,
+  ExternalSpriteBackend,
+  SpriteLabStatus,
+  SpriteWorkflow,
+  SpriteWorkflowPlan
+} from '../api/spriteLab';
 
 const workflows: Array<{ value: SpriteWorkflow; label: string }> = [
   { value: 'spritesheet_export', label: 'Spritesheet export' },
@@ -8,14 +20,31 @@ const workflows: Array<{ value: SpriteWorkflow; label: string }> = [
   { value: 'manifest_generate', label: 'Manifest generate' }
 ];
 
+const externalBackends: Array<{ value: ExternalSpriteBackend; label: string }> = [
+  { value: 'aseprite', label: 'Aseprite' },
+  { value: 'libresprite', label: 'LibreSprite' },
+  { value: 'pixelorama', label: 'Pixelorama' }
+];
+
 export default function SpriteLabPanel() {
   const [status, setStatus] = useState<SpriteLabStatus | null>(null);
   const [workflow, setWorkflow] = useState<SpriteWorkflow>('spritesheet_export');
+  const [externalBackend, setExternalBackend] = useState<ExternalSpriteBackend>('aseprite');
   const [inputPath, setInputPath] = useState('');
   const [outputTarget, setOutputTarget] = useState('');
+  const [frameWidth, setFrameWidth] = useState(16);
+  const [frameHeight, setFrameHeight] = useState(16);
+  const [maxColors, setMaxColors] = useState(256);
+  const [animationName, setAnimationName] = useState('default');
   const [plan, setPlan] = useState<SpriteWorkflowPlan | null>(null);
+  const [actionResult, setActionResult] = useState<any>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const baseName = useMemo(() => {
+    const name = inputPath.split(/[\\/]/).pop() || 'sprite';
+    return name.replace(/\.[^.]+$/, '') || 'sprite';
+  }, [inputPath]);
 
   const refreshStatus = async () => {
     try {
@@ -30,11 +59,29 @@ export default function SpriteLabPanel() {
     void refreshStatus();
   }, []);
 
-  const createPlan = async () => {
+  const requireInputPath = () => {
     if (!inputPath.trim()) {
       setError('Input path is required');
-      return;
+      return false;
     }
+    return true;
+  };
+
+  const runAction = async (label: string, action: () => Promise<any>) => {
+    if (!requireInputPath()) return;
+    try {
+      setLoading(true);
+      setError('');
+      setActionResult(await action());
+    } catch (err: any) {
+      setError(err.message || `${label} failed`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createPlan = async () => {
+    if (!requireInputPath()) return;
     try {
       setLoading(true);
       setError('');
@@ -48,6 +95,13 @@ export default function SpriteLabPanel() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const externalWorkflow = () => {
+    if (workflow === 'palette_extract') {
+      throw new Error('External CLI palette extraction is not wired. Use the internal Extract Palette button.');
+    }
+    return workflow;
   };
 
   return (
@@ -82,6 +136,12 @@ export default function SpriteLabPanel() {
           </select>
         </label>
         <label className="assistant-field">
+          External backend
+          <select value={externalBackend} onChange={event => setExternalBackend(event.target.value as ExternalSpriteBackend)}>
+            {externalBackends.map(item => <option key={item.value} value={item.value}>{item.label}</option>)}
+          </select>
+        </label>
+        <label className="assistant-field">
           Input path
           <input value={inputPath} onChange={event => setInputPath(event.target.value)} placeholder="assets/sprites/hero.aseprite" />
         </label>
@@ -89,7 +149,57 @@ export default function SpriteLabPanel() {
           Output target
           <input value={outputTarget} onChange={event => setOutputTarget(event.target.value)} placeholder="optional; defaults to data/sprite-lab/..." />
         </label>
-        <button type="button" onClick={createPlan} disabled={loading}>{loading ? 'Planning…' : 'Plan Sprite Workflow'}</button>
+        <label className="assistant-field">
+          Frame width
+          <input type="number" min="1" value={frameWidth} onChange={event => setFrameWidth(Number(event.target.value))} />
+        </label>
+        <label className="assistant-field">
+          Frame height
+          <input type="number" min="1" value={frameHeight} onChange={event => setFrameHeight(Number(event.target.value))} />
+        </label>
+        <label className="assistant-field">
+          Max palette colors
+          <input type="number" min="1" max="1024" value={maxColors} onChange={event => setMaxColors(Number(event.target.value))} />
+        </label>
+        <label className="assistant-field">
+          Animation name
+          <input value={animationName} onChange={event => setAnimationName(event.target.value)} placeholder="idle" />
+        </label>
+
+        <div className="sprite-lab-action-row">
+          <button type="button" onClick={createPlan} disabled={loading}>{loading ? 'Working…' : 'Plan Workflow'}</button>
+          <button type="button" onClick={() => runAction('Slice grid', () => sliceSpriteGrid({
+            inputPath,
+            outputDir: outputTarget.trim() || `data/sprite-lab/${baseName}/frames`,
+            frameWidth,
+            frameHeight
+          }))} disabled={loading}>Slice Grid</button>
+          <button type="button" onClick={() => runAction('Extract palette', () => extractSpritePalette({
+            inputPath,
+            outputPath: outputTarget.trim() || `data/sprite-lab/${baseName}.palette.json`,
+            maxColors
+          }))} disabled={loading}>Extract Palette</button>
+          <button type="button" onClick={() => runAction('Generate manifest', () => generateSpriteManifest({
+            inputPath,
+            outputPath: outputTarget.trim() || `data/sprite-lab/${baseName}.manifest.json`,
+            frameWidth,
+            frameHeight,
+            animationName: animationName.trim() || 'default'
+          }))} disabled={loading}>Generate Manifest</button>
+          <button type="button" onClick={() => runAction('Plan external CLI', () => planExternalSpriteRun({
+            backend: externalBackend,
+            workflow: externalWorkflow(),
+            inputPath,
+            outputTarget: outputTarget.trim() || undefined
+          }))} disabled={loading}>Plan External CLI</button>
+          <button type="button" onClick={() => runAction('Run approved external CLI', () => runExternalSpriteTool({
+            backend: externalBackend,
+            workflow: externalWorkflow(),
+            inputPath,
+            outputTarget: outputTarget.trim() || undefined,
+            approvedByUser: true
+          }))} disabled={loading}>Run Approved External CLI</button>
+        </div>
       </div>
 
       {plan && (
@@ -101,6 +211,13 @@ export default function SpriteLabPanel() {
           <ul>
             {plan.notes.map(note => <li key={note}>{note}</li>)}
           </ul>
+        </div>
+      )}
+
+      {actionResult && (
+        <div className="sprite-plan-card">
+          <h4>Action result</h4>
+          <pre>{JSON.stringify(actionResult, null, 2)}</pre>
         </div>
       )}
     </section>
