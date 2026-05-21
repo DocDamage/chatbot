@@ -287,6 +287,11 @@ export default function FLStudioControlPanel({ onSendCommand }: FLStudioControlP
   const lastLogs = status?.state?.log?.slice(0, 5) || [];
   const connected = !!status?.connected;
   const liveWarning = mode !== 'dry_run';
+  const modeTruth = mode === 'dry_run'
+    ? 'Dry-run: actions are planned without touching FL Studio.'
+    : connected
+      ? 'Bridge connected: live-capable actions still pass the confirmation safety gate.'
+      : 'Bridge offline: live modes fall back to blocked or dry-run safety behavior.';
 
   const renderStepButtons = () => {
     return Array.from({ length: 16 }, (_, index) => {
@@ -364,8 +369,9 @@ export default function FLStudioControlPanel({ onSendCommand }: FLStudioControlP
             Confirm risky actions
           </label>
           {liveWarning && (
-            <span className="fl-warning">Live modes can change the active FL Studio project.</span>
+            <span className="fl-warning">Live modes can change the active FL Studio project after bridge and confirmation checks.</span>
           )}
+          <span className="fl-mode-note">{modeTruth}</span>
         </div>
       </div>
 

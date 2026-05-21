@@ -45,8 +45,9 @@ export class ContextCompressor {
     }
 
     // Use LLM to compress if available
-    if (this.llmAdapter) {
-      return await this.llmCompress(chunks, query);
+    const llmAdapter = this.llmAdapter;
+    if (llmAdapter) {
+      return await this.llmCompress(chunks, query, llmAdapter);
     }
 
     // Fallback to truncation
@@ -58,7 +59,8 @@ export class ContextCompressor {
    */
   private async llmCompress(
     chunks: DocumentChunk[],
-    query: string
+    query: string,
+    llmAdapter: LLMAdapter
   ): Promise<CompressedContext> {
     try {
       const context = this.formatAnchoredChunks(chunks);
@@ -79,7 +81,7 @@ Create a compressed summary that:
 
 Compressed summary:`;
 
-      const response = await this.llmAdapter.generate({
+      const response = await llmAdapter.generate({
         prompt,
         systemPrompt: 'You are a helpful assistant that compresses information while preserving relevance.',
         maxTokens: Math.floor(this.maxLength / 4), // Rough token estimate

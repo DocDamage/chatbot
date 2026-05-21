@@ -15,6 +15,7 @@ export interface CacheLevel {
   get: <T>(key: string) => Promise<T | undefined>;
   set: <T>(key: string, value: T, ttl?: number) => Promise<void>;
   delete: (key: string) => Promise<void>;
+  clear?: () => Promise<void> | void;
 }
 
 export class MultiLevelCache<T> {
@@ -39,7 +40,10 @@ export class MultiLevelCache<T> {
       },
       delete: async (key: string) => {
         this.l1Cache.delete(key);
-      }
+      },
+      clear: () => {
+        this.l1Cache.clear();
+      },
     });
 
     // Initialize L2 (Redis) if URL provided
@@ -56,7 +60,10 @@ export class MultiLevelCache<T> {
             },
             delete: async (key: string) => {
               await this.l2Cache!.delete(key);
-            }
+            },
+            clear: async () => {
+              await this.l2Cache!.clear();
+            },
           });
           logger.info('Redis cache (L2) added to multi-level cache');
         }
@@ -76,7 +83,10 @@ export class MultiLevelCache<T> {
           },
           delete: async (key: string) => {
             await this.l3Cache!.delete(key);
-          }
+          },
+          clear: async () => {
+            await this.l3Cache!.clear();
+          },
         });
         logger.info('Disk cache (L3) added to multi-level cache');
       }
@@ -129,6 +139,22 @@ export class MultiLevelCache<T> {
       this.levels.map(level => level.delete(key))
     );
     logger.debug('Cache deleted', { key });
+  }
+
+  /**
+   * Clear all configured cache levels and tag indexes.
+   */
+  async clear(): Promise<void> {
+    await Promise.all(
+      this.levels.map(async level => {
+        if (level.clear) {
+          await level.clear();
+        }
+      })
+    );
+    this.cacheTags.clear();
+    this.tagKeys.clear();
+    logger.info('Multi-level cache cleared', { levels: this.levels.map(level => level.name) });
   }
 
   /**

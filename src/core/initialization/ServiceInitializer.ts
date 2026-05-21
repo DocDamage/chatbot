@@ -78,6 +78,7 @@ import { PrivateMemoryStore } from '../memory/PrivateMemoryStore';
 import { SafeDatabaseQuestionAgent } from '../database/SafeDatabaseQuestionAgent';
 import { GovernanceEvidenceService } from '../governance/GovernanceEvidenceService';
 import { GitHubRepoKnowledgeImporter } from '../importers/GitHubRepoKnowledgeImporter';
+import { ConversationManager } from '../conversation/ConversationManager';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -128,6 +129,19 @@ export interface InitializedServices {
   cache?: MultiLevelCache<any>;
   analytics?: AnalyticsService;
   knowledgeLearner?: KnowledgeLearner;
+  conversationManager?: ConversationManager;
+  initialization?: InitializationStatus;
+}
+
+export interface InitializationStatus {
+  criticalStartedAt: string;
+  readyAt?: string;
+  optional: Record<string, {
+    status: 'pending' | 'running' | 'ready' | 'failed' | 'skipped';
+    startedAt?: string;
+    completedAt?: string;
+    error?: string;
+  }>;
 }
 
 export class ServiceInitializer {
@@ -136,6 +150,15 @@ export class ServiceInitializer {
    */
   static async initialize(): Promise<InitializedServices> {
     logger.info('Starting service initialization...');
+    const initialization: InitializationStatus = {
+      criticalStartedAt: new Date().toISOString(),
+      optional: {
+        persistedRagRestore: { status: 'pending' },
+        privateKnowledgeBaseLoad: { status: 'pending' },
+        publicKnowledgeBaseLoad: { status: 'pending' },
+        codingKnowledgeBaseLoad: { status: 'pending' }
+      }
+    };
 
     // 1. Initialize Embedding Service
     const embeddingService = this.initializeEmbeddingService();
@@ -162,13 +185,17 @@ export class ServiceInitializer {
     const ragDocumentStore = database ? new RAGDocumentStore(database) : undefined;
     const ragService = this.initializeRAGService(primaryAdapter, embeddingService, ragDocumentStore);
 
-    if (ragDocumentStore) {
+    const restorePersistedRag = async () => {
+      if (!ragDocumentStore) {
+        initialization.optional.persistedRagRestore.status = 'skipped';
+        return;
+      }
       const persistedChunks = await ragDocumentStore.loadChunks();
       if (persistedChunks.length > 0) {
         ragService.addDocuments(persistedChunks);
         logger.info('Loaded persisted RAG chunks', { chunksCount: persistedChunks.length });
       }
-    }
+    };
 
     const entityLinkingService = new EntityLinkingService(database);
     const documentManager = new DocumentManager(ragService, embeddingService, ragDocumentStore, entityLinkingService);
@@ -188,9 +215,16 @@ export class ServiceInitializer {
       token: process.env.GITHUB_TOKEN
     });
 
-    // 5. Load private and committed public knowledge base documents
-    await this.loadKnowledgeBase(documentManager);
-    await this.loadPublicKnowledgeBase(documentManager);
+    // 5. Load RAG corpora outside the critical startup path by default.
+    if (process.env.EAGER_KNOWLEDGE_LOAD === 'true') {
+      await this.trackOptionalInitialization(initialization, 'persistedRagRestore', restorePersistedRag);
+      await this.trackOptionalInitialization(initialization, 'privateKnowledgeBaseLoad', () => this.loadKnowledgeBase(documentManager));
+      await this.trackOptionalInitialization(initialization, 'publicKnowledgeBaseLoad', () => this.loadPublicKnowledgeBase(documentManager));
+    } else {
+      void this.trackOptionalInitialization(initialization, 'persistedRagRestore', restorePersistedRag);
+      void this.trackOptionalInitialization(initialization, 'privateKnowledgeBaseLoad', () => this.loadKnowledgeBase(documentManager));
+      void this.trackOptionalInitialization(initialization, 'publicKnowledgeBaseLoad', () => this.loadPublicKnowledgeBase(documentManager));
+    }
     logger.info('RAG service initialized');
 
     // 6. Initialize Safety Pipeline
@@ -212,7 +246,7 @@ export class ServiceInitializer {
     }
 
     // 9. Initialize Tools & Coding Knowledge
-    const { toolRegistry, functionCaller, knowledgeLearner, codingAgent } = await this.initializeTools(embeddingService);
+    const { toolRegistry, functionCaller, knowledgeLearner, codingAgent } = await this.initializeTools(embeddingService, initialization);
     logger.info('Tools initialized', {
       toolsCount: toolRegistry.getStats().totalTools,
       learner: !!knowledgeLearner
@@ -245,6 +279,7 @@ export class ServiceInitializer {
     // 11. Initialize Analytics Service
     const analytics = new AnalyticsService();
     logger.info('Analytics service initialized');
+    const conversationManager = new ConversationManager(database);
 
     const mathGeniusAgent = new MathGeniusAgent();
     const marketGeniusAgent = new MarketGeniusAgent();
@@ -309,8 +344,10 @@ export class ServiceInitializer {
     });
 
     logger.info('✅ All services initialized successfully');
+    initialization.readyAt = new Date().toISOString();
 
     return {
+      initialization,
       orchestrator,
       ragService,
       documentManager,
@@ -356,7 +393,8 @@ export class ServiceInitializer {
       githubRepoKnowledgeImporter,
       cache,
       analytics,
-      knowledgeLearner
+      knowledgeLearner,
+      conversationManager
     };
   }
 
@@ -536,27 +574,7 @@ export class ServiceInitializer {
     const kbDir = process.env.KNOWLEDGE_BASE_DIR || './knowledge-base';
 
     if (!fs.existsSync(kbDir)) {
-      logger.info('Knowledge base directory not found, creating...', { dir: kbDir });
-      fs.mkdirSync(kbDir, { recursive: true });
-
-      // Create example file
-      const exampleFile = path.join(kbDir, 'example.txt');
-      fs.writeFileSync(exampleFile, `Welcome to the Knowledge Base!
-
-This is an example document. Add your own documents to the knowledge-base/ directory.
-
-Supported formats:
-- .txt files
-- .md (Markdown) files
-- .json files
-- .pdf files
-
-The system will automatically:
-- Parse and chunk documents
-- Generate embeddings
-- Make them searchable via RAG
-`);
-      logger.info('Created example knowledge base file', { file: exampleFile });
+      logger.info('Knowledge base directory not found, skipping runtime bootstrap', { dir: kbDir });
       return;
     }
 
@@ -692,7 +710,7 @@ The system will automatically:
   /**
    * Initialize tools and coding knowledge
    */
-  private static async initializeTools(embeddingService: EmbeddingService): Promise<{
+  private static async initializeTools(embeddingService: EmbeddingService, initialization?: InitializationStatus): Promise<{
     toolRegistry: ToolRegistry;
     functionCaller: FunctionCaller;
     knowledgeLearner: KnowledgeLearner;
@@ -702,8 +720,16 @@ The system will automatically:
 
     // 1. Coding Knowledge Base
     const codingKB = new CodingKnowledgeBase(embeddingService);
-    // Initialize in background to not block startup if large, but await for now for safety
-    await codingKB.initialize();
+    const initializeCodingKnowledge = () => codingKB.initialize();
+    if (process.env.EAGER_CODING_KNOWLEDGE_LOAD === 'true') {
+      if (initialization) {
+        await this.trackOptionalInitialization(initialization, 'codingKnowledgeBaseLoad', initializeCodingKnowledge);
+      } else {
+        await initializeCodingKnowledge();
+      }
+    } else if (initialization) {
+      void this.trackOptionalInitialization(initialization, 'codingKnowledgeBaseLoad', initializeCodingKnowledge);
+    }
 
     // 2. Coding Knowledge Tool
     const codingTool = new CodingKnowledgeTool(codingKB);
@@ -763,6 +789,28 @@ The system will automatically:
     });
 
     return { toolRegistry: registry, functionCaller, knowledgeLearner, codingAgent };
+  }
+
+  private static async trackOptionalInitialization(
+    initialization: InitializationStatus,
+    name: string,
+    task: () => Promise<void>
+  ): Promise<void> {
+    const status = initialization.optional[name] || { status: 'pending' };
+    initialization.optional[name] = status;
+    status.status = 'running';
+    status.startedAt = new Date().toISOString();
+
+    try {
+      await task();
+      status.status = 'ready';
+      status.completedAt = new Date().toISOString();
+    } catch (error: any) {
+      status.status = 'failed';
+      status.completedAt = new Date().toISOString();
+      status.error = error.message;
+      logger.error('Optional service initialization failed', { name, error: error.message });
+    }
   }
 }
 

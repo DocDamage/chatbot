@@ -5,6 +5,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../utils/errors';
 import { logger } from '../core/observability/logger';
+import { formatApiError } from './apiErrorSchema';
 
 export const errorHandler = (
   error: Error | AppError,
@@ -23,25 +24,23 @@ export const errorHandler = (
 
   // Handle known errors
   if (error instanceof AppError) {
-    res.status(error.statusCode).json({
-      error: {
-        message: error.message,
-        code: error.code,
-        details: error.details
-      }
-    });
+    res.status(error.statusCode).json(formatApiError(
+      error.message,
+      error.statusCode,
+      error.code,
+      error.details
+    ));
     return;
   }
 
   // Handle unknown errors
-  res.status(500).json({
-    error: {
-      message: process.env.NODE_ENV === 'production' 
-        ? 'Internal server error' 
-        : error.message,
-      code: 'INTERNAL_ERROR'
-    }
-  });
+  res.status(500).json(formatApiError(
+    process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
+      : error.message,
+    500,
+    'INTERNAL_ERROR'
+  ));
 };
 
 /**

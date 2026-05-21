@@ -64,8 +64,36 @@ export interface OCRResult {
   }>;
 }
 
+export interface ImageProcessingPolicy {
+  maxSizeMB: number;
+  maxPixels: number;
+}
+
+export interface ImageDependencyHealth {
+  sharpAvailable: boolean;
+  tesseractAvailable: boolean;
+  policy: ImageProcessingPolicy;
+}
+
+export type ImageProcessingStatus = 'ok' | 'rejected' | 'unsupported' | 'error';
+
+export interface ImageProcessingResult<T> {
+  status: ImageProcessingStatus;
+  data?: T;
+  error?: string;
+  metadata?: ImageMetadata;
+  dependency?: 'sharp' | 'tesseract';
+}
+
+const DEFAULT_IMAGE_POLICY: ImageProcessingPolicy = {
+  maxSizeMB: 10,
+  maxPixels: 24_000_000,
+};
+
 export class ImageProcessor {
   private ocrWorker: any = null;
+
+  constructor(private readonly policy: ImageProcessingPolicy = DEFAULT_IMAGE_POLICY) {}
 
   /**
    * Convert base64 to buffer
@@ -93,7 +121,19 @@ export class ImageProcessor {
   /**
    * Validate image format and size with actual image decoding
    */
-  async validateImage(imageBase64: string, maxSizeMB: number = 10): Promise<{
+  async getDependencyHealth(): Promise<ImageDependencyHealth> {
+    const [sharpAvailable, tesseractAvailable] = await Promise.all([
+      loadSharp(),
+      loadTesseract(),
+    ]);
+    return {
+      sharpAvailable,
+      tesseractAvailable,
+      policy: this.policy,
+    };
+  }
+
+  async validateImage(imageBase64: string, maxSizeMB: number = this.policy.maxSizeMB): Promise<{
     valid: boolean;
     error?: string;
     metadata?: ImageMetadata;
@@ -114,12 +154,21 @@ export class ImageProcessor {
       if (isLoaded) {
         // Use sharp for accurate metadata
         const metadata = await sharp(buffer).metadata();
+        const width = metadata.width || 0;
+        const height = metadata.height || 0;
+
+        if (width > 0 && height > 0 && width * height > this.policy.maxPixels) {
+          return {
+            valid: false,
+            error: `Image dimensions (${width}x${height}) exceed maximum pixel policy (${this.policy.maxPixels})`
+          };
+        }
 
         return {
           valid: true,
           metadata: {
-            width: metadata.width || 0,
-            height: metadata.height || 0,
+            width,
+            height,
             format: metadata.format || 'unknown',
             size: buffer.length,
             hasText: false, // Will be determined by OCR if needed
@@ -168,11 +217,36 @@ export class ImageProcessor {
     maxWidth: number = 1024,
     maxHeight: number = 1024
   ): Promise<string> {
+    const safe = await this.resizeImageSafe(imageBase64, maxWidth, maxHeight);
+    if (safe.status === 'ok' && safe.data) {
+      return safe.data;
+    }
+    logger.warn('Image resize did not complete - returning original', {
+      status: safe.status,
+      error: safe.error
+    });
+    return imageBase64;
+  }
+
+  async resizeImageSafe(
+    imageBase64: string,
+    maxWidth: number = 1024,
+    maxHeight: number = 1024
+  ): Promise<ImageProcessingResult<string>> {
+    const validation = await this.validateImage(imageBase64);
+    if (!validation.valid) {
+      return { status: 'rejected', error: validation.error, metadata: validation.metadata };
+    }
+
     const isLoaded = await loadSharp();
 
     if (!isLoaded) {
-      logger.warn('Image resizing requires sharp - returning original');
-      return imageBase64;
+      return {
+        status: 'unsupported',
+        error: 'Image resizing requires sharp.',
+        metadata: validation.metadata,
+        dependency: 'sharp'
+      };
     }
 
     try {
@@ -181,7 +255,7 @@ export class ImageProcessor {
 
       // Check if resize is needed
       if ((metadata.width || 0) <= maxWidth && (metadata.height || 0) <= maxHeight) {
-        return imageBase64;
+        return { status: 'ok', data: imageBase64, metadata: validation.metadata };
       }
 
       const resized = await sharp(buffer)
@@ -197,10 +271,14 @@ export class ImageProcessor {
         maxDimensions: `${maxWidth}x${maxHeight}`
       });
 
-      return this.bufferToBase64(resized, format);
+      return {
+        status: 'ok',
+        data: this.bufferToBase64(resized, format),
+        metadata: validation.metadata,
+      };
     } catch (error: any) {
       logger.error('Image resize failed', { error: error.message });
-      return imageBase64;
+      return { status: 'error', error: error.message, metadata: validation.metadata };
     }
   }
 
@@ -292,10 +370,28 @@ export class ImageProcessor {
    * Perform OCR to extract text from image
    */
   async extractText(imageBase64: string): Promise<OCRResult> {
+    const safe = await this.extractTextSafe(imageBase64);
+    if (safe.status === 'ok' && safe.data) {
+      return safe.data;
+    }
+    return { text: '', confidence: 0, words: [] };
+  }
+
+  async extractTextSafe(imageBase64: string): Promise<ImageProcessingResult<OCRResult>> {
+    const validation = await this.validateImage(imageBase64);
+    if (!validation.valid) {
+      return { status: 'rejected', error: validation.error, metadata: validation.metadata };
+    }
+
     const isLoaded = await loadTesseract();
 
     if (!isLoaded) {
-      return { text: '', confidence: 0, words: [] };
+      return {
+        status: 'unsupported',
+        error: 'OCR requires tesseract.js.',
+        metadata: validation.metadata,
+        dependency: 'tesseract'
+      };
     }
 
     try {
@@ -318,13 +414,17 @@ export class ImageProcessor {
       });
 
       return {
-        text: data.text,
-        confidence: data.confidence,
-        words
+        status: 'ok',
+        data: {
+          text: data.text,
+          confidence: data.confidence,
+          words
+        },
+        metadata: validation.metadata,
       };
     } catch (error: any) {
       logger.error('OCR failed', { error: error.message });
-      return { text: '', confidence: 0, words: [] };
+      return { status: 'error', error: error.message, metadata: validation.metadata };
     }
   }
 

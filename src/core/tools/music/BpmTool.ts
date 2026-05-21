@@ -5,9 +5,9 @@ export class BpmTool {
 
   run(input: Record<string, any> = {}) {
     return {
+      ...this.detector.run(input),
       domain: 'music',
       tool: 'BpmTool',
-      ...this.detector.run(input),
       usage: 'Use BPM to choose grid density, performance feel, delay timing, and arrangement energy.'
     };
   }

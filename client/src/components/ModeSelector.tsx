@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect, useMemo } from 'react';
 import './ModeSelector.css';
 
 export type ChatMode =
@@ -11,6 +11,9 @@ export type ChatMode =
     | 'history'
     | 'science'
     | 'gaming'
+    | 'math'
+    | 'market'
+    | 'gamedev'
     | 'music'
     | 'suno'
     | 'fl_studio'
@@ -18,6 +21,15 @@ export type ChatMode =
     | 'pro_tools'
     | 'logic'
     | 'mix_master'
+    | 'story'
+    | 'legal'
+    | 'health'
+    | 'security'
+    | 'business'
+    | 'philosophy'
+    | 'language'
+    | 'geography'
+    | 'engineering'
     | 'knowledge_os';
 
 interface ModeSelectorProps {
@@ -80,6 +92,24 @@ const modeConfig: Record<ChatMode, { icon: string; label: string; description: s
         description: 'Games, game dev, engines, lore, modding, strategy',
         color: '#60a5fa'
     },
+    math: {
+        icon: '∑',
+        label: 'Math',
+        description: 'Symbolic math, formulas, proofs, calculations',
+        color: '#06b6d4'
+    },
+    market: {
+        icon: '$',
+        label: 'Market',
+        description: 'Risk, filings, macro, scenarios, guardrails',
+        color: '#10b981'
+    },
+    gamedev: {
+        icon: '🕹️',
+        label: 'Game Dev',
+        description: 'Mechanics, balance, engines, playtests',
+        color: '#818cf8'
+    },
     music: {
         icon: '🎛️',
         label: 'Music',
@@ -122,6 +152,60 @@ const modeConfig: Record<ChatMode, { icon: string; label: string; description: s
         description: 'Diagnostics, loudness, chains',
         color: '#14b8a6'
     },
+    story: {
+        icon: '✍',
+        label: 'Story',
+        description: 'Worldbuilding, scenes, arcs, continuity',
+        color: '#ec4899'
+    },
+    legal: {
+        icon: '§',
+        label: 'Legal/Civic',
+        description: 'Jurisdiction-aware legal and civic framing',
+        color: '#64748b'
+    },
+    health: {
+        icon: '+',
+        label: 'Health',
+        description: 'Fitness, nutrition, anatomy, safety boundaries',
+        color: '#ef4444'
+    },
+    security: {
+        icon: '🛡️',
+        label: 'Security',
+        description: 'Threat modeling, auth, privacy, reviews',
+        color: '#0f766e'
+    },
+    business: {
+        icon: '↗',
+        label: 'Business',
+        description: 'Strategy, pricing, KPIs, unit economics',
+        color: '#2563eb'
+    },
+    philosophy: {
+        icon: 'Φ',
+        label: 'Philosophy',
+        description: 'Arguments, ethics, debate, timelines',
+        color: '#7c3aed'
+    },
+    language: {
+        icon: 'Aa',
+        label: 'Language',
+        description: 'Translation, tone, grammar, speeches',
+        color: '#0891b2'
+    },
+    geography: {
+        icon: '◎',
+        label: 'Geography',
+        description: 'Countries, culture, maps, demographics',
+        color: '#16a34a'
+    },
+    engineering: {
+        icon: '⚙',
+        label: 'Engineering',
+        description: 'Circuits, robotics, mechanics, prototypes',
+        color: '#f97316'
+    },
     knowledge_os: {
         icon: '🧠',
         label: 'Knowledge OS',
@@ -132,9 +216,15 @@ const modeConfig: Record<ChatMode, { icon: string; label: string; description: s
 
 const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onModeChange }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(0);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
     const currentMode = modeConfig[mode];
+    const modeKeys = useMemo(() => Object.keys(modeConfig) as ChatMode[], []);
+    const listboxId = 'mode-selector-listbox';
+    const isMac = typeof navigator !== 'undefined' && /mac/i.test(navigator.platform);
+    const shortcutPrefix = isMac ? '⌘' : 'Ctrl+';
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -147,6 +237,14 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onModeChange }) => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    useLayoutEffect(() => {
+        if (isOpen) {
+            const selectedIndex = Math.max(0, modeKeys.indexOf(mode));
+            setActiveIndex(selectedIndex);
+            optionRefs.current[selectedIndex]?.focus();
+        }
+    }, [isOpen, mode, modeKeys]);
 
     // Keyboard shortcuts
     useEffect(() => {
@@ -176,11 +274,62 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onModeChange }) => {
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [onModeChange]);
 
+    const selectMode = (nextMode: ChatMode) => {
+        onModeChange(nextMode);
+        setIsOpen(false);
+    };
+
+    const handleButtonKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+        if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            if (!isOpen) {
+                setIsOpen(true);
+                return;
+            }
+
+            const nextIndex = (activeIndex + 1) % modeKeys.length;
+            setActiveIndex(nextIndex);
+            optionRefs.current[nextIndex]?.focus();
+            return;
+        }
+
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            setIsOpen(true);
+        }
+    };
+
+    const handleOptionKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number, modeKey: ChatMode) => {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            setIsOpen(false);
+            return;
+        }
+
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            selectMode(modeKey);
+            return;
+        }
+
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            const direction = event.key === 'ArrowDown' ? 1 : -1;
+            const nextIndex = (index + direction + modeKeys.length) % modeKeys.length;
+            setActiveIndex(nextIndex);
+            optionRefs.current[nextIndex]?.focus();
+        }
+    };
+
     return (
         <div className="mode-selector" ref={dropdownRef}>
             <button
                 className="mode-selector-button"
                 onClick={() => setIsOpen(!isOpen)}
+                onKeyDown={handleButtonKeyDown}
+                aria-haspopup="listbox"
+                aria-expanded={isOpen}
+                aria-controls={listboxId}
                 style={{ '--mode-color': currentMode.color } as React.CSSProperties}
             >
                 <span className="mode-icon">{currentMode.icon}</span>
@@ -189,17 +338,19 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onModeChange }) => {
             </button>
 
             {isOpen && (
-                <div className="mode-dropdown">
-                    {(Object.keys(modeConfig) as ChatMode[]).map((modeKey, index) => {
+                <div className="mode-dropdown" id={listboxId} role="listbox" aria-label="Chat mode">
+                    {modeKeys.map((modeKey, index) => {
                         const config = modeConfig[modeKey];
                         return (
                             <button
                                 key={modeKey}
+                                ref={element => { optionRefs.current[index] = element; }}
+                                role="option"
+                                aria-selected={mode === modeKey}
+                                tabIndex={activeIndex === index ? 0 : -1}
                                 className={`mode-option ${mode === modeKey ? 'active' : ''}`}
-                                onClick={() => {
-                                    onModeChange(modeKey);
-                                    setIsOpen(false);
-                                }}
+                                onClick={() => selectMode(modeKey)}
+                                onKeyDown={event => handleOptionKeyDown(event, index, modeKey)}
                                 style={{ '--mode-color': config.color } as React.CSSProperties}
                             >
                                 <span className="mode-option-icon">{config.icon}</span>
@@ -207,7 +358,7 @@ const ModeSelector: React.FC<ModeSelectorProps> = ({ mode, onModeChange }) => {
                                     <span className="mode-option-label">{config.label}</span>
                                     <span className="mode-option-description">{config.description}</span>
                                 </div>
-                                {index < 9 && <span className="mode-shortcut">⌘{index + 1}</span>}
+                                {index < 9 && <span className="mode-shortcut">{shortcutPrefix}{index + 1}</span>}
                             </button>
                         );
                     })}

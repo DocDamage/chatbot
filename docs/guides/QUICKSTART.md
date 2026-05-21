@@ -1,6 +1,6 @@
 # Quick Start Guide
 
-Get the AI Chatbot Hub running with free local LLMs and image generation in 5 minutes!
+Get the AI Chatbot Hub running with free local LLM text chat in 5 minutes.
 
 ## Step 1: Install Dependencies
 
@@ -35,24 +35,7 @@ cp env.example .env
 
 The default configuration uses Ollama (free, local). No API keys needed!
 
-## Step 4: (Optional) Set Up Stable Diffusion for Images
-
-**Quick Setup with Automatic1111:**
-
-```bash
-# Clone Automatic1111 WebUI
-git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui
-cd stable-diffusion-webui
-
-# Windows: Run webui-user.bat
-# Mac/Linux: Run bash webui.sh
-
-# Enable API in Settings > API
-```
-
-See [SETUP_GUIDE.md](SETUP_GUIDE.md) for detailed instructions.
-
-## Step 5: Start the Application
+## Step 4: Start the Application
 
 ### Development Mode (Recommended)
 
@@ -69,17 +52,13 @@ npm run build
 npm start
 ```
 
-## Step 6: Open the App
+## Step 5: Open the App
 
 Open your browser to: http://localhost:3000
 
-## Step 7: Start Chatting!
+## Step 6: Start Chatting!
 
-- **Text Chat**: Just type a message and press Enter
-- **Image Generation**: Try phrases like:
-  - "Generate an image of a sunset over mountains"
-  - "Draw a cat wearing a hat"
-  - "Create a picture of a futuristic city"
+Type a message and press Enter. The active chat surface returns text responses.
 
 ## Troubleshooting
 
@@ -95,12 +74,6 @@ Pull the model:
 ```bash
 ollama pull llama2
 ```
-
-### "Stable Diffusion service is not running"
-
-- Make sure Automatic1111 WebUI is running
-- Check it's accessible at http://localhost:7860
-- Enable API in WebUI settings
 
 ### Port Already in Use
 
@@ -125,11 +98,5 @@ Change `PORT` in `.env` for the backend, or update `vite.config.ts` for frontend
 - "Tell me about artificial intelligence"
 - "What is the capital of France?"
 - "Explain quantum computing in simple terms"
-
-**Images:**
-- "Generate an image of a sunset over mountains"
-- "Draw a cat wearing a hat"
-- "Create a picture of a futuristic city"
-- "Show me an illustration of a dragon"
 
 Enjoy your free, local AI chatbot! 🚀

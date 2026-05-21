@@ -43,9 +43,14 @@
 
 .fl-control-status span:last-child,
 .fl-module-header span,
-.fl-warning {
+.fl-warning,
+.fl-mode-note {
   color: #a3a3a3;
   font-size: 12px;
+}
+
+.fl-mode-note {
+  flex: 1 1 220px;
 }
 
 .fl-control-dot {

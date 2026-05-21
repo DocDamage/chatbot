@@ -90,7 +90,7 @@ export class FunctionCaller {
     error?: string;
   } {
     // Check required parameters
-    for (const param of tool.parameters) {
+    for (const param of tool.parameters || []) {
       if (param.required && !(param.name in parameters)) {
         return {
           valid: false,

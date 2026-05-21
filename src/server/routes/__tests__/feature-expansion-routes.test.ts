@@ -26,6 +26,31 @@ jest.mock('../../../core/tools/WebSearcher', () => ({
   }
 }));
 
+function createTestWav(samples: number[], sampleRate = 8000): Buffer {
+  const bytesPerSample = 2;
+  const channels = 1;
+  const dataSize = samples.length * bytesPerSample;
+  const buffer = Buffer.alloc(44 + dataSize);
+  buffer.write('RIFF', 0);
+  buffer.writeUInt32LE(36 + dataSize, 4);
+  buffer.write('WAVE', 8);
+  buffer.write('fmt ', 12);
+  buffer.writeUInt32LE(16, 16);
+  buffer.writeUInt16LE(1, 20);
+  buffer.writeUInt16LE(channels, 22);
+  buffer.writeUInt32LE(sampleRate, 24);
+  buffer.writeUInt32LE(sampleRate * channels * bytesPerSample, 28);
+  buffer.writeUInt16LE(channels * bytesPerSample, 32);
+  buffer.writeUInt16LE(16, 34);
+  buffer.write('data', 36);
+  buffer.writeUInt32LE(dataSize, 40);
+  samples.forEach((sample, index) => {
+    const clamped = Math.max(-1, Math.min(1, sample));
+    buffer.writeInt16LE(Math.round(clamped * 32767), 44 + index * bytesPerSample);
+  });
+  return buffer;
+}
+
 describe('feature expansion routes', () => {
   it('creates, lists, reads, and loads saved Markdown plans', async () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'plans-route-'));
@@ -64,6 +89,7 @@ describe('feature expansion routes', () => {
     });
     await request(app).get('/api/files/search?q=routeValue&kind=content').expect(200).expect(response => {
       expect(response.body.results[0].path).toBe('src/app.ts');
+      expect(response.body.scannedFiles).toBeGreaterThan(0);
     });
     await request(app).get('/api/files/read?path=src/app.ts&startLine=1&endLine=1').expect(200).expect(response => {
       expect(response.body.content).toContain('routeValue');
@@ -80,20 +106,30 @@ describe('feature expansion routes', () => {
   it('serves audio file, metadata, preview, waveform, and load endpoints', async () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'audio-route-'));
     fs.mkdirSync(path.join(root, 'samples'));
-    fs.writeFileSync(path.join(root, 'samples', 'hat.wav'), Buffer.from('RIFF0000WAVE'));
+    fs.writeFileSync(path.join(root, 'samples', 'hat.wav'), createTestWav([0, 0.5, -0.75, 1, -1, 0.25]));
     const app = express();
     app.use(express.json());
     app.use(createAudioRouter(root));
 
     await request(app).get('/api/audio/files').expect(200).expect(response => {
       expect(response.body.files[0].path).toBe('samples/hat.wav');
+      expect(response.body.totalIndexed).toBe(1);
+      expect(response.body.scannedFiles).toBe(1);
     });
     await request(app).get('/api/audio/metadata?path=samples/hat.wav').expect(200).expect(response => {
       expect(response.body.format).toBe('wav');
     });
     await request(app).get('/api/audio/preview?path=samples/hat.wav').expect(200);
-    await request(app).get('/api/audio/waveform?path=samples/hat.wav').expect(200).expect(response => {
-      expect(response.body.points).toEqual([]);
+    await request(app).get('/api/audio/waveform?path=samples/hat.wav&points=3').expect(200).expect(response => {
+      expect(response.body.available).toBe(true);
+      expect(response.body.points).toHaveLength(16);
+      expect(Math.max(...response.body.points)).toBe(0.999969);
+      expect(response.body.sampleRate).toBe(8000);
+    });
+    await request(app).post('/api/audio/analyze').send({ path: 'samples/hat.wav' }).expect(200).expect(response => {
+      expect(response.body.available).toBe(true);
+      expect(response.body.peakAmplitude).toBe(0.999969);
+      expect(response.body.rmsAmplitude).toBeGreaterThan(0.6);
     });
     await request(app).post('/api/audio/load-into-chat').send({ paths: ['samples/hat.wav'] }).expect(200).expect(response => {
       expect(response.body.loadedAudio[0].path).toBe('samples/hat.wav');
@@ -123,7 +159,11 @@ describe('feature expansion routes', () => {
     });
     const search = await request(app).post('/api/knowledge-online/search').send({ query: 'Godot docs', domain: 'gaming' }).expect(200);
     expect(search.body.sources[0].url).toBe('https://example.com/godot');
-    await request(app).post('/api/knowledge-online/ingest').send({ preview: search.body, sessionId: 'session-a' }).expect(200);
-    expect(added[0].metadata.approvedBy).toBe('session-a');
+    const ingested = await request(app)
+      .post('/api/knowledge-online/ingest')
+      .send({ preview: search.body, approved: true, approvedBy: 'reviewer-a' })
+      .expect(200);
+    expect(added[0].metadata.approvedBy).toBe('reviewer-a');
+    expect(ingested.body.ingestionId).toBeTruthy();
   });
 });

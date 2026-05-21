@@ -106,7 +106,7 @@ export class Database {
         }
       } else {
         // PostgreSQL connection pooling is handled by pg library
-        const result = await this.db.query(sql, params);
+        const result = await this.db.query(this.toPostgresSql(sql), params);
         return {
           rows: result.rows,
           rowCount: result.rowCount,
@@ -156,7 +156,7 @@ export class Database {
         await this.db.query('BEGIN');
         try {
           for (const { sql, params } of queries) {
-            const result = await this.db.query(sql, params);
+            const result = await this.db.query(this.toPostgresSql(sql), params);
             results.push({
               rows: result.rows,
               rowCount: result.rowCount,
@@ -173,6 +173,11 @@ export class Database {
       logger.error('Batch query failed', { error: error.message });
       throw error;
     }
+  }
+
+  private toPostgresSql(sql: string): string {
+    let index = 0;
+    return sql.replace(/\?/g, () => `$${++index}`);
   }
 
   /**

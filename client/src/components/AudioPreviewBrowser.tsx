@@ -12,24 +12,40 @@ function AudioPreviewBrowser({ onLoadAudio }: AudioPreviewBrowserProps) {
   const [query, setQuery] = useState('');
   const [active, setActive] = useState<string>();
   const [error, setError] = useState('');
+  const [nextOffset, setNextOffset] = useState<number | undefined>();
+  const [loading, setLoading] = useState(false);
+  const searchAbortRef = useRef<AbortController | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const refresh = async () => {
+  const refresh = async (offset = 0) => {
     if (isStaticPagesBuild) {
       setFiles([]);
       setError('Audio preview APIs require the local backend.');
       return;
     }
+    searchAbortRef.current?.abort();
+    const abortController = new AbortController();
+    searchAbortRef.current = abortController;
+    setLoading(true);
     try {
-      setFiles(await listAudioFiles('.', query));
+      const result = await listAudioFiles('.', query, { limit: 50, offset, signal: abortController.signal });
+      setFiles(current => offset > 0 ? [...current, ...result.files] : result.files);
+      setNextOffset(result.nextOffset);
       setError('');
     } catch (error: any) {
+      if (error.name === 'AbortError') return;
       setError(error.message);
+    } finally {
+      if (searchAbortRef.current === abortController) {
+        searchAbortRef.current = null;
+        setLoading(false);
+      }
     }
   };
 
   useEffect(() => {
     refresh();
+    return () => searchAbortRef.current?.abort();
   }, []);
 
   const preview = (path: string) => {
@@ -55,6 +71,7 @@ function AudioPreviewBrowser({ onLoadAudio }: AudioPreviewBrowserProps) {
       <div className="audio-browser-header">
         <strong>Audio</strong>
         <input value={query} onChange={event => setQuery(event.target.value)} onKeyDown={event => event.key === 'Enter' && refresh()} placeholder="Search samples" />
+        <button type="button" onClick={() => refresh()} disabled={loading}>{loading ? 'Searching...' : 'Search'}</button>
       </div>
       {error && <div className="audio-browser-error">{error}</div>}
       <div className="audio-file-list">
@@ -66,6 +83,11 @@ function AudioPreviewBrowser({ onLoadAudio }: AudioPreviewBrowserProps) {
           </div>
         ))}
       </div>
+      {nextOffset !== undefined && (
+        <button type="button" className="audio-more-button" onClick={() => refresh(nextOffset)} disabled={loading}>
+          More audio
+        </button>
+      )}
       <audio ref={audioRef} controls />
     </section>
   );

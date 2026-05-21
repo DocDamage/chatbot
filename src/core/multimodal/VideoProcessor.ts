@@ -45,14 +45,88 @@ export interface VideoFrame {
   base64: string;
 }
 
+export interface VideoProcessingPolicy {
+  maxSizeMB: number;
+  maxDurationSeconds: number;
+  maxFrames: number;
+}
+
+export interface VideoProcessorOptions extends Partial<VideoProcessingPolicy> {
+  tempDir?: string;
+}
+
+export interface VideoDependencyHealth {
+  ffmpegAvailable: boolean;
+  policy: VideoProcessingPolicy;
+  tempDir: string;
+}
+
+export type VideoProcessingStatus = 'ok' | 'rejected' | 'unsupported' | 'error';
+
+export interface VideoProcessingResult<T> {
+  status: VideoProcessingStatus;
+  data?: T;
+  error?: string;
+  metadata?: VideoMetadata;
+  dependency?: 'ffmpeg';
+}
+
+const DEFAULT_VIDEO_POLICY: VideoProcessingPolicy = {
+  maxSizeMB: 100,
+  maxDurationSeconds: 600,
+  maxFrames: 60,
+};
+
 export class VideoProcessor {
   private tempDir: string;
+  private readonly policy: VideoProcessingPolicy;
 
-  constructor() {
-    this.tempDir = path.join(os.tmpdir(), 'chatbot-video-processor');
+  constructor(options: VideoProcessorOptions = {}) {
+    this.policy = {
+      maxSizeMB: options.maxSizeMB ?? DEFAULT_VIDEO_POLICY.maxSizeMB,
+      maxDurationSeconds: options.maxDurationSeconds ?? DEFAULT_VIDEO_POLICY.maxDurationSeconds,
+      maxFrames: options.maxFrames ?? DEFAULT_VIDEO_POLICY.maxFrames,
+    };
+    this.tempDir = options.tempDir || path.join(os.tmpdir(), 'chatbot-video-processor');
     if (!fs.existsSync(this.tempDir)) {
       fs.mkdirSync(this.tempDir, { recursive: true });
     }
+  }
+
+  async getDependencyHealth(): Promise<VideoDependencyHealth> {
+    return {
+      ffmpegAvailable: await loadFfmpeg(),
+      policy: this.policy,
+      tempDir: this.tempDir,
+    };
+  }
+
+  getTempFileCount(): number {
+    if (!fs.existsSync(this.tempDir)) return 0;
+    return fs.readdirSync(this.tempDir).length;
+  }
+
+  async validateVideo(videoBase64: string): Promise<VideoProcessingResult<{ size: number }>> {
+    const size = this.base64ToBuffer(videoBase64).length;
+    const maxBytes = this.policy.maxSizeMB * 1024 * 1024;
+    if (size > maxBytes) {
+      return {
+        status: 'rejected',
+        data: { size },
+        error: `Video size (${(size / 1024 / 1024).toFixed(2)}MB) exceeds maximum (${this.policy.maxSizeMB}MB)`,
+      };
+    }
+
+    if (!await loadFfmpeg()) {
+      return {
+        status: 'unsupported',
+        data: { size },
+        error: 'Video processing requires ffmpeg.',
+        dependency: 'ffmpeg',
+      };
+    }
+
+    return { status: 'ok', data: { size } };
   }
 
   /**
@@ -62,13 +136,11 @@ export class VideoProcessor {
     const id = uuidv4();
     const tempPath = path.join(this.tempDir, `video-${id}.mp4`);
 
-    // Handle data URL format
-    let base64Data = videoBase64;
-    if (videoBase64.startsWith('data:')) {
-      base64Data = videoBase64.split(',')[1];
+    const buffer = this.base64ToBuffer(videoBase64);
+    const maxBytes = this.policy.maxSizeMB * 1024 * 1024;
+    if (buffer.length > maxBytes) {
+      throw new Error(`Video size (${(buffer.length / 1024 / 1024).toFixed(2)}MB) exceeds maximum (${this.policy.maxSizeMB}MB)`);
     }
-
-    const buffer = Buffer.from(base64Data, 'base64');
     await fs.promises.writeFile(tempPath, buffer);
 
     return tempPath;
@@ -299,6 +371,7 @@ export class VideoProcessor {
         format: metadata.format
       });
 
+      this.assertDurationWithinPolicy(metadata);
       return metadata;
     } catch (error: any) {
       logger.error('Metadata extraction failed', { error: error.message });
@@ -338,6 +411,36 @@ export class VideoProcessor {
     };
   }
 
+  async processForVisionSafe(
+    videoBase64: string,
+    maxFrames: number = 10
+  ): Promise<VideoProcessingResult<{ frames: string[]; metadata: VideoMetadata }>> {
+    const validation = await this.validateVideo(videoBase64);
+    if (validation.status !== 'ok') {
+      return {
+        status: validation.status,
+        error: validation.error,
+        dependency: validation.dependency,
+      };
+    }
+
+    try {
+      const result = await this.processForVision(videoBase64, Math.min(maxFrames, this.policy.maxFrames));
+      return {
+        status: 'ok',
+        data: result,
+        metadata: result.metadata,
+      };
+    } catch (error: any) {
+      return {
+        status: error?.message?.includes('exceeds maximum duration') ? 'rejected' : 'error',
+        error: error?.message || 'Video processing failed',
+      };
+    } finally {
+      await this.cleanupOrphanedTempFiles();
+    }
+  }
+
   /**
    * Extract audio from video as base64
    */
@@ -372,6 +475,28 @@ export class VideoProcessor {
     } finally {
       await this.cleanupTempFile(tempVideoPath);
       await this.cleanupTempFile(audioPath);
+    }
+  }
+
+  async extractAudioSafe(videoBase64: string): Promise<VideoProcessingResult<string>> {
+    const validation = await this.validateVideo(videoBase64);
+    if (validation.status !== 'ok') {
+      return {
+        status: validation.status,
+        error: validation.error,
+        dependency: validation.dependency,
+      };
+    }
+
+    try {
+      const audio = await this.extractAudio(videoBase64);
+      return audio
+        ? { status: 'ok', data: audio }
+        : { status: 'error', error: 'Audio extraction produced no output.' };
+    } catch (error: any) {
+      return { status: 'error', error: error?.message || 'Audio extraction failed' };
+    } finally {
+      await this.cleanupOrphanedTempFiles();
     }
   }
 
@@ -417,6 +542,40 @@ export class VideoProcessor {
     } finally {
       await this.cleanupTempFile(tempVideoPath);
       await this.cleanupTempFile(thumbPath);
+    }
+  }
+
+  private base64ToBuffer(value: string): Buffer {
+    let base64Data = value;
+    if (value.startsWith('data:')) {
+      base64Data = value.split(',')[1] || '';
+    }
+    return Buffer.from(base64Data, 'base64');
+  }
+
+  private assertDurationWithinPolicy(metadata: VideoMetadata): void {
+    if (metadata.duration > this.policy.maxDurationSeconds) {
+      throw new Error(`Video duration (${metadata.duration}s) exceeds maximum duration (${this.policy.maxDurationSeconds}s)`);
+    }
+  }
+
+  private async cleanupOrphanedTempFiles(): Promise<void> {
+    try {
+      if (!fs.existsSync(this.tempDir)) {
+        return;
+      }
+      const entries = fs.readdirSync(this.tempDir);
+      await Promise.all(entries.map(async entry => {
+        const absolute = path.join(this.tempDir, entry);
+        const stat = await fs.promises.stat(absolute);
+        if (stat.isDirectory()) {
+          await fs.promises.rm(absolute, { recursive: true, force: true });
+        } else {
+          await fs.promises.unlink(absolute);
+        }
+      }));
+    } catch (error: any) {
+      logger.warn('Failed to cleanup video temp directory', { error: error.message });
     }
   }
 }

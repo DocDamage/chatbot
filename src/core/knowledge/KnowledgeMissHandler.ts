@@ -4,6 +4,7 @@ export class KnowledgeMissHandler {
   createMiss(message: string, domain = 'ask'): KnowledgeMiss {
     return {
       knowledgeMiss: true,
+      type: 'knowledge_miss',
       message,
       domain,
       proposedWebQuery: message.trim(),

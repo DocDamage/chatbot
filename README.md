@@ -5,8 +5,7 @@ A production-grade AI chatbot application built following a comprehensive archit
 ## Features
 
 - **🆓 Free Local LLMs**: Built-in Ollama support for free, local text generation (no API keys needed!)
-- **🎨 Stable Diffusion Integration**: Generate images locally using Stable Diffusion
-- **🤖 Dual Mode**: Text and image generation running in tandem
+- **Specialist Modes**: Text chat with planning, implementation, debugging, music, gaming, history, science, Knowledge OS, and other specialist modes
 - **AI Contract System**: Every request is bound by explicit contracts with capability gating, cost limits, and policy enforcement
 - **Memory Stratification**: Session (ephemeral), Episodic (durable), and Canonical (deterministic) memory layers
 - **Provider Abstraction**: Swappable LLM providers (Ollama, OpenAI) with graceful degradation
@@ -14,7 +13,7 @@ A production-grade AI chatbot application built following a comprehensive archit
 - **Validation Pipeline**: Safety, tone, and schema validation before responses
 - **Provenance Ledger**: Full content lineage tracking for every response
 - **Observability**: Structured logging and metrics
-- **Modern UI**: React-based chat interface with real-time messaging and image display
+- **Modern UI**: React-based chat interface with provider settings, workspace context, and backend health status
 
 ## Architecture
 
@@ -42,7 +41,6 @@ Validators → Persist + Provenance → Response
 
 - Node.js 18+ and npm
 - **For Text Chat**: Ollama (free, local) - [Download here](https://ollama.ai)
-- **For Image Generation** (optional): Stable Diffusion WebUI or compatible service
 - OpenAI API key (optional, if you prefer OpenAI over Ollama)
 
 ### Installation
@@ -59,15 +57,13 @@ cd client && npm install && cd ..
 ```env
 PORT=3001
 NODE_ENV=development
+JWT_SECRET=replace-with-at-least-32-random-characters
+CORS_ORIGIN=http://localhost:3000
 
 # Use Ollama (free, local LLM) - Recommended
 USE_OLLAMA=true
 OLLAMA_URL=http://localhost:11434
 OLLAMA_MODEL=llama2
-
-# Use Stable Diffusion for images (optional)
-USE_STABLE_DIFFUSION=true
-STABLE_DIFFUSION_URL=http://localhost:7860
 
 # Or use OpenAI instead (requires API key)
 # USE_OLLAMA=false
@@ -83,10 +79,7 @@ LOG_LEVEL=info
    ollama pull llama2
    ```
 
-4. **Install Stable Diffusion** (optional, for image generation):
-   - See [SETUP_GUIDE.md](SETUP_GUIDE.md) for detailed instructions
-
-5. Build the project:
+4. Build the project:
 
 ```bash
 npm run build
@@ -112,7 +105,9 @@ npm run build
 npm start
 ```
 
-Then open http://localhost:3000 in your browser.
+Then open http://localhost:3001 in your browser. The Express server serves the built React client from `client/dist` and exposes the API on the same origin.
+
+Production deployments must provide a strong `JWT_SECRET` and an explicit `CORS_ORIGIN`. Privileged routes such as settings, file browsing, code verification, plan storage, audio browsing, Knowledge OS, online ingestion, admin/export, and webhooks require a bearer token with `admin` or `developer` roles.
 
 ## Project Structure
 
@@ -147,17 +142,7 @@ Then open http://localhost:3000 in your browser.
 4. The chatbot will respond using Ollama (or configured LLM provider)
 
 ### Image Generation
-Ask for images using phrases like:
-- "Generate an image of a sunset"
-- "Draw a cat wearing a hat"
-- "Create a picture of a futuristic city"
-
-The system will automatically:
-- Detect image requests
-- Generate images using Stable Diffusion (if configured)
-- Generate text responses using the LLM
-- Run both in parallel for fast responses
-- Display images inline in the chat
+The active production chat surface renders text responses only. Legacy image-provider adapters may exist in the codebase, but Stable Diffusion is not exposed through the current settings UI or chat flow.
 
 ### System Features
 - Classifies your intent automatically
@@ -174,6 +159,8 @@ The system will automatically:
 **Server Configuration:**
 - `PORT`: Backend server port (default: 3001)
 - `NODE_ENV`: Environment (development/production)
+- `JWT_SECRET`: Required secret for bearer-token authentication, minimum 32 characters
+- `CORS_ORIGIN`: Required explicit browser origin in production
 - `LOG_LEVEL`: Logging level (debug/info/warn/error)
 
 **LLM Configuration:**
@@ -181,10 +168,6 @@ The system will automatically:
 - `OLLAMA_URL`: Ollama API URL (default: http://localhost:11434)
 - `OLLAMA_MODEL`: Model to use (default: llama2)
 - `OPENAI_API_KEY`: OpenAI API key (only if USE_OLLAMA=false)
-
-**Image Generation:**
-- `USE_STABLE_DIFFUSION`: Enable Stable Diffusion (default: true)
-- `STABLE_DIFFUSION_URL`: Stable Diffusion API URL (default: http://localhost:7860)
 
 ### Contract Configuration
 

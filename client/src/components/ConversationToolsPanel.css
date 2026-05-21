@@ -1,0 +1,164 @@
+.conversation-tools {
+  border-bottom: 1px solid #262626;
+  background: #050505;
+  color: #ffffff;
+}
+
+.conversation-tools-toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  border: 0;
+  background: #080808;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 10px 20px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.conversation-tools-toggle:hover {
+  background: #111111;
+}
+
+.conversation-tools-body {
+  display: grid;
+  gap: 12px;
+  padding: 14px 20px 16px;
+  border-top: 1px solid #1f1f1f;
+  background: #030303;
+}
+
+.conversation-tools-actions,
+.conversation-tools-replies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.conversation-tools button,
+.conversation-tools input {
+  border: 1px solid #333333;
+  border-radius: 8px;
+  background: #0d0d0d;
+  color: #ffffff;
+  font: inherit;
+}
+
+.conversation-tools button {
+  min-height: 32px;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.conversation-tools button:hover:not(:disabled) {
+  border-color: #ffffff;
+}
+
+.conversation-tools button:disabled {
+  color: #737373;
+  cursor: not-allowed;
+}
+
+.conversation-tools input {
+  min-height: 32px;
+  min-width: 0;
+  padding: 0 10px;
+}
+
+.conversation-tools-share {
+  overflow-wrap: anywhere;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  background: #080808;
+  color: #d4d4d4;
+  padding: 8px 10px;
+  font-size: 12px;
+}
+
+.conversation-tools-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.conversation-tools-list,
+.conversation-tools-documents {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.conversation-tools-list strong,
+.conversation-tools-documents label span {
+  color: #f5f5f5;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.conversation-tools-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+}
+
+.conversation-tools-row button:first-child {
+  display: grid;
+  justify-items: start;
+  min-height: 44px;
+  text-align: left;
+}
+
+.conversation-tools-row span,
+.conversation-tools-row small,
+.conversation-tools-documents article strong,
+.conversation-tools-documents article small {
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conversation-tools-row small,
+.conversation-tools-documents article small,
+.conversation-tools-muted {
+  color: #a3a3a3;
+  font-size: 11px;
+}
+
+.conversation-tools-documents label,
+.conversation-tools-documents label div {
+  display: grid;
+  gap: 6px;
+}
+
+.conversation-tools-documents label div {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.conversation-tools-documents article {
+  display: grid;
+  gap: 3px;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  background: #0d0d0d;
+  padding: 8px;
+}
+
+.conversation-tools-status {
+  color: #b7f7c2;
+  font-size: 12px;
+}
+
+.conversation-tools-error {
+  color: #ffb4a8;
+  font-size: 12px;
+}
+
+@media (max-width: 860px) {
+  .conversation-tools-grid {
+    grid-template-columns: 1fr;
+  }
+}

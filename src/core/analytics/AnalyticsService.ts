@@ -435,8 +435,8 @@ export class AnalyticsService {
    */
   export(): {
     stats: UsageStats;
-    satisfaction: ReturnType<typeof this.getSatisfactionMetrics>;
-    patterns: ReturnType<typeof this.getQueryPatterns>;
+    satisfaction: ReturnType<AnalyticsService['getSatisfactionMetrics']>;
+    patterns: ReturnType<AnalyticsService['getQueryPatterns']>;
   } {
     return {
       stats: this.getUsageStats(),

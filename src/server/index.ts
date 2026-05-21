@@ -10,50 +10,22 @@ import fs from 'fs';
 import path from 'path';
 import { createServer } from 'http';
 import multer from 'multer';
+import { RequestHandler } from 'express';
 import { ServiceInitializer } from '../core/initialization/ServiceInitializer';
-import { StableDiffusionAdapter } from '../core/providers/StableDiffusionAdapter';
 import { ConfigValidator } from '../core/config/ConfigValidator';
 import { logger } from '../core/observability/logger';
-import { metricsCollector } from '../core/observability/metrics';
-import { ChatRequest } from '../core/orchestrator/Orchestrator';
-import { rateLimiter } from '../middleware/rateLimiter';
-import { validateChatRequest, sanitizeInput } from '../middleware/validator';
 import { errorHandler, asyncHandler } from '../middleware/errorHandler';
+import { apiErrorSchema } from '../middleware/apiErrorSchema';
 import { securityHeaders, corsOptions } from '../middleware/security';
-import { requireAuth } from '../middleware/auth';
-import { createRagQueryRouter } from './routes/rag-query';
+import { auditPrivilegedRequest, requireAuth, requireCsrfForStateChange, requireRole } from '../middleware/auth';
 import { createKnowledgeBaseRouter } from './routes/knowledge-base';
-import { createCodeRouter } from './routes/code';
-import { createPlansRouter } from './routes/plans';
-import { createFilesRouter } from './routes/files';
-import { createAudioRouter } from './routes/audio';
-import { createGamingRouter } from './routes/gaming';
-import { createKnowledgeOnlineRouter } from './routes/knowledge-online';
-import { createMathRouter } from './routes/math';
-import { createMarketRouter } from './routes/market';
-import { createGameDevRouter } from './routes/gamedev';
-import { createSixSigmaRouter } from './routes/sixsigma';
-import { createChronoRouter } from './routes/chrono';
-import { createPopCultureRouter } from './routes/pop-culture';
-import { createHistoryRouter } from './routes/history';
-import { createScienceRouter } from './routes/science';
-import { LocalKnowledgeAnswerer } from '../core/knowledge/LocalKnowledgeAnswerer';
-import { createMusicProductionGeniusRouter } from './routes/music';
-import { createFLStudioControlRouter } from './routes/flstudio';
-import { createStoryGeniusRouter } from './routes/story';
-import { createLegalCivicGeniusRouter } from './routes/legal';
-import { createHealthGeniusRouter } from './routes/health';
-import { createSecurityGeniusRouter } from './routes/security';
-import { createBusinessGeniusRouter } from './routes/business';
-import { createPhilosophyGeniusRouter } from './routes/philosophy';
-import { createLanguageGeniusRouter } from './routes/language';
-import { createGeoCultureGeniusRouter } from './routes/geography';
-import { createEngineeringGeniusRouter } from './routes/engineering';
 import { createKnowledgeOsRouter } from './routes/knowledge-os';
-import { HumanLanguageRoute, HumanLanguageRouter } from '../core/nlu/HumanLanguageRouter';
-import { KnowledgeOsChatAgent } from '../core/knowledge-os/KnowledgeOsChatAgent';
-import { detectUserIntent, requiresSwitchForIntent } from '../core/modes/ModePolicy';
-import { PlanDocumentService } from '../core/planning/PlanDocumentService';
+import { validateWebhookUrl } from './security/webhookUrl';
+import { ConversationManager } from '../core/conversation/ConversationManager';
+import { createLegacyChatHandlers } from './routes/legacy-chat';
+import { registerManifestRoutes } from './routeManifest';
+import { registerHealthRoutes } from './healthRoutes';
+import { registerSettingsRoutes } from './routes/settings';
 
 // Validate configuration on startup
 try {
@@ -67,6 +39,18 @@ try {
 const app = express();
 const server = createServer(app);
 const PORT = process.env.PORT || 3001;
+const STARTUP_TIMEOUT_MS = Number(process.env.STARTUP_TIMEOUT_MS || 30000);
+const CLIENT_DIST_DIR = path.resolve(process.cwd(), 'client', 'dist');
+const adminOnly: RequestHandler[] = [
+  requireAuth,
+  requireRole('admin'),
+  requireCsrfForStateChange
+];
+const developerOnly: RequestHandler[] = [
+  requireAuth,
+  requireRole('admin', 'developer'),
+  requireCsrfForStateChange
+];
 
 // Initialize WebSocket server
 let wsServer: any;
@@ -87,384 +71,78 @@ app.use(securityHeaders);
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(apiErrorSchema);
 
 // Initialize all services automatically
 let services: any;
 let orchestrator: any;
-const humanLanguageRouter = new HumanLanguageRouter();
+let startupState: 'initializing' | 'ready' | 'failed' = 'initializing';
+let startupError: string | undefined;
 
-type ChatSpecialistMode =
-  | 'coding'
-  | 'math'
-  | 'gaming'
-  | 'market'
-  | 'gamedev'
-  | 'pop_culture'
-  | 'history'
-  | 'science'
-  | 'music'
-  | 'suno'
-  | 'fl_studio'
-  | 'fl_studio_control'
-  | 'pro_tools'
-  | 'logic'
-  | 'mix_master'
-  | 'story'
-  | 'legal'
-  | 'health'
-  | 'security'
-  | 'business'
-  | 'philosophy'
-  | 'language'
-  | 'geography'
-  | 'engineering'
-  | 'knowledge_os';
-
-const specialistModes = new Set([
-  'coding',
-  'math',
-  'gaming',
-  'market',
-  'gamedev',
-  'pop_culture',
-  'history',
-  'science',
-  'music',
-  'suno',
-  'fl_studio',
-  'fl_studio_control',
-  'pro_tools',
-  'logic',
-  'mix_master',
-  'story',
-  'legal',
-  'health',
-  'security',
-  'business',
-  'philosophy',
-  'language',
-  'geography',
-  'engineering',
-  'knowledge_os'
-]);
-
-function inferChatSpecialistMode(message: string, mode?: string): ChatSpecialistMode | undefined {
-  if (mode && specialistModes.has(mode)) {
-    return mode as ChatSpecialistMode;
+function getConversationManager(): ConversationManager {
+  if (services?.conversationManager) {
+    return services.conversationManager;
   }
-
-  const text = message.toLowerCase();
-  if (/\b(knowledge os|knowledge system|local database|database status|how many chunks|how many sources|knowledge graph|graph centrality|private memory|local wiki)\b/.test(text)) {
-    return 'knowledge_os';
-  }
-  if (/\b(video game|gaming|game lore|speedrun|speedrunning|modding|rom hack|emulation|save editor|esports|competitive mechanics|game platform|steam deck|nintendo|playstation|xbox)\b/.test(text)) {
-    return 'gaming';
-  }
-  if (/\b(connect to fl|control fl|fl studio control|piano roll|channel rack|mixer track|send chord|send notes|step sequence|solo the drums|turn down track|transport)\b/.test(text)) {
-    return 'fl_studio_control';
-  }
-  if (/\b(suno|fl studio|pro tools|logic pro|logic|daw|loop|beat|808|bpm|mix|mastering|muddy|chord|drum pattern|sample|soundtrack|neptunes|genre timeline|vocal chain|channel rack|piano roll)\b/.test(text)) {
-    return 'music';
-  }
-  if (/(pop culture|movie|film|tv|television|music|album|song|radio|comic|animation|video game|celebrity|award|franchise|meme)/.test(text)) {
-    return 'pop_culture';
-  }
-  if (/\b(plot|character|dialogue|worldbuild|worldbuilding|lore|quest|faction|scene|story|backstory)\b/.test(text)) {
-    return 'story';
-  }
-  if (/\b(threat model|secure code|security|privacy|dependency audit|secrets scan|auth flow|auth|authentication|login|jwt|oauth|session|cookie|password reset|csrf|vulnerability)\b/.test(text)) {
-    return 'security';
-  }
-  if (/\b(contract|clause|legal|civic|jurisdiction|statute|case law|rights|obligations|non-compete|noncompete|enforceable|indemnification|liability|lawsuit|sued)\b/.test(text)) {
-    return 'legal';
-  }
-  if (/\b(symptom|anatomy|nutrition|fitness|medication|medicine|drug interaction|side effect|red flag|health|chest pain|shortness of breath|workout|calories|macros|protein|knee pain|shoulder pain|back pain)\b/.test(text)) {
-    return 'health';
-  }
-  if (/\b(pricing|unit economics|business model|startup|product strategy|market research|kpi|kpis|metric|metrics|mrr|arpu|cac|ltv|payback|activation|retention)\b/.test(text)) {
-    return 'business';
-  }
-  if (/\b(argument|fallacy|ethics|debate|socratic|philosophy)\b/.test(text)) {
-    return 'philosophy';
-  }
-  if (/\b(translate|rewrite|tone|grammar|rhetoric|speech|readability)\b/.test(text)) {
-    return 'language';
-  }
-  if (/\b(country|culture|map|geography|demographics|geopolitical|language region)\b/.test(text)) {
-    return 'geography';
-  }
-  if (/\b(ohm|circuit|motor|robot|robotics|mechanical|beam load|cad|bom|electronics)\b/.test(text)) {
-    return 'engineering';
-  }
-  if (/\b(history|historical|ancient|medieval|empire|war|civilization|archaeology|archaeological|dynasty|revolution|bc|bce|ce)\b/.test(text)) {
-    return 'history';
-  }
-  if (/(invention|invented|discovery|science|scientific|paper|patent|technology|physics|chemistry|biology|astronomy|medicine)/.test(text)) {
-    return 'science';
-  }
-  if (/(tell me (something|the biggest story|a story)|biggest story|top story|major event|what happened|what was big|what was popular|pop culture reference).{0,24}\b(19[2-9]\d|20[0-2]\d)\b/.test(text)) {
-    return 'pop_culture';
-  }
-
-  return undefined;
-}
-
-function isRecognizedSpecialistMode(mode: string | undefined): mode is ChatSpecialistMode {
-  return !!mode && specialistModes.has(mode);
-}
-
-async function processSpecialistChat(message: string, mode: ChatSpecialistMode, nlu?: HumanLanguageRoute) {
-  if (!services) return undefined;
-
-  if (mode === 'knowledge_os') {
-    const result = await new KnowledgeOsChatAgent(services).ask(message);
-    return { ...result, nlu };
-  }
-
-  if (mode === 'coding' && services.codingAgent) {
-    const result = await services.codingAgent.handle({ message, runVerification: false });
-    return { ...result, nlu };
-  }
-
-  if (mode === 'math' && services.mathGeniusAgent) {
-    const result = await services.mathGeniusAgent.solve(message);
-    return { ...result, nlu };
-  }
-
-  if (mode === 'market' && services.marketGeniusAgent) {
-    const result = await services.marketGeniusAgent.analyze(message);
-    return { ...result, nlu };
-  }
-
-  if (mode === 'gamedev' && services.gameDevGeniusAgent) {
-    const result = await services.gameDevGeniusAgent.answer(message);
-    return { ...result, nlu };
-  }
-
-  if (mode === 'gaming' && services.gamingGeniusAgent) {
-    const result = await services.gamingGeniusAgent.ask(message);
-    return { ...result, nlu };
-  }
-
-  if (mode === 'pop_culture' || mode === 'history' || mode === 'science') {
-    const localKnowledge = new LocalKnowledgeAnswerer(services.ragDocumentStore);
-    const localAnswer = await localKnowledge.answer(message, mode);
-    if (localAnswer.sources.length > 0 || /\b(?:\d{1,5}\s*(?:bc|bce)|1[0-9]{3}|20[0-2]\d)\b/i.test(message)) {
-      return { ...localAnswer, nlu };
-    }
-  }
-
-  if (mode === 'pop_culture' && services.popCultureGeniusAgent) {
-    const result = await services.popCultureGeniusAgent.ask(message);
-    return {
-      response: result.response,
-      sources: result.sources,
-      mode,
-      model: 'pop-culture-specialist',
-      nlu
-    };
-  }
-
-  if (mode === 'history' && services.historyGeniusAgent) {
-    const result = await services.historyGeniusAgent.ask(message);
-    return {
-      response: result.response,
-      sources: result.sources,
-      mode,
-      model: 'history-specialist',
-      nlu
-    };
-  }
-
-  if (mode === 'science' && services.scienceInventionGeniusAgent) {
-    const result = await services.scienceInventionGeniusAgent.ask(message);
-    return {
-      response: result.response,
-      sources: result.sources,
-      mode,
-      model: 'science-specialist',
-      nlu
-    };
-  }
-
-  if (mode === 'fl_studio_control' && services.flStudioControlAgent) {
-    const result = await services.flStudioControlAgent.command(message, { mode: 'dry_run' });
-    return { ...result, nlu };
-  }
-
-  if (['suno', 'fl_studio', 'pro_tools', 'logic', 'mix_master'].includes(mode)) {
-    const musicAgent = services.musicProductionGeniusAgent;
-    if (mode === 'suno') return { ...(await musicAgent.sunoPrompt(message)), nlu };
-    if (mode === 'fl_studio') return { ...(await musicAgent.flStudioWorkflow(message)), nlu };
-    if (mode === 'pro_tools') return { ...(await musicAgent.proToolsWorkflow(message)), nlu };
-    if (mode === 'logic') return { ...(await musicAgent.logicWorkflow(message)), nlu };
-    if (mode === 'mix_master') {
-      const mixResult = services.mixGeniusAgent
-        ? await services.mixGeniusAgent.plan({ query: message })
-        : await musicAgent.mix(message);
-      return { ...mixResult, nlu };
-    }
-  }
-
-  const genericAgents: Record<string, any> = {
-    music: services.musicProductionGeniusAgent,
-    story: services.storyGeniusAgent,
-    legal: services.legalCivicGeniusAgent,
-    health: services.healthGeniusAgent,
-    security: services.securityGeniusAgent,
-    business: services.businessGeniusAgent,
-    philosophy: services.philosophyGeniusAgent,
-    language: services.languageGeniusAgent,
-    geography: services.geoCultureGeniusAgent,
-    engineering: services.engineeringGeniusAgent
-  };
-
-  if (mode === 'music' && services.mixGeniusAgent && nlu?.intent?.startsWith('mix.')) {
-    const result = await services.mixGeniusAgent.plan({ query: message });
-    return { ...result, nlu };
-  }
-
-  if (genericAgents[mode]) {
-    const result = await genericAgents[mode].ask(message);
-    return { ...result, nlu };
-  }
-
-  return undefined;
-}
-
-const ENV_PATH = path.join(process.cwd(), '.env');
-const SETTINGS_KEYS = [
-  'LLM_PROVIDER',
-  'USE_OLLAMA',
-  'OLLAMA_URL',
-  'OLLAMA_MODEL',
-  'USE_HUGGINGFACE',
-  'HUGGINGFACE_MODEL',
-  'HUGGINGFACE_API_KEY',
-  'OPENAI_API_KEY',
-  'OPENAI_MODEL',
-  'OPENAI_COMPATIBLE_API_KEY',
-  'OPENAI_COMPATIBLE_BASE_URL',
-  'OPENAI_COMPATIBLE_MODEL',
-  'OPENAI_COMPATIBLE_PROVIDER_NAME',
-  'ANTHROPIC_API_KEY',
-  'ANTHROPIC_MODEL',
-  'GEMINI_API_KEY',
-  'GEMINI_MODEL',
-  'USE_STABLE_DIFFUSION',
-  'STABLE_DIFFUSION_URL',
-  'EMBEDDING_PROVIDER',
-  'EMBEDDING_MODEL',
-  'EMBEDDING_USE_TRANSFORMERS',
-  'FL_STUDIO_MCP_COMMAND',
-  'FL_STUDIO_MCP_ARGS',
-  'FL_STUDIO_MCP_CWD'
-];
-
-const PUBLIC_SETTINGS_KEYS = SETTINGS_KEYS.filter(key => !key.endsWith('_API_KEY'));
-
-function maskSecret(value?: string): string {
-  if (!value) return '';
-  if (value.length <= 8) return '********';
-  return `${value.slice(0, 4)}...${value.slice(-4)}`;
-}
-
-function parseEnvFile(filePath: string): Record<string, string> {
-  if (!fs.existsSync(filePath)) return {};
-
-  return fs.readFileSync(filePath, 'utf8')
-    .split(/\r?\n/)
-    .reduce<Record<string, string>>((acc, line) => {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith('#')) return acc;
-
-      const separatorIndex = trimmed.indexOf('=');
-      if (separatorIndex === -1) return acc;
-
-      const key = trimmed.slice(0, separatorIndex).trim();
-      const value = trimmed.slice(separatorIndex + 1).trim();
-      acc[key] = value.replace(/^["']|["']$/g, '');
-      return acc;
-    }, {});
-}
-
-function serializeEnvValue(value: string): string {
-  return /[\s#"'\\]/.test(value) ? JSON.stringify(value) : value;
-}
-
-function writeEnvUpdates(updates: Record<string, string>): void {
-  const existing = parseEnvFile(ENV_PATH);
-  const merged = { ...existing, ...updates };
-  const lines: string[] = [
-    'PORT=3001',
-    'NODE_ENV=development',
-    `JWT_SECRET=${serializeEnvValue(merged.JWT_SECRET || process.env.JWT_SECRET || 'local-dev-jwt-secret-5c17f8b96a514fc9a8c9b51d')}`,
-    '',
-    '# Model provider settings managed from the app settings menu'
-  ];
-
-  for (const key of SETTINGS_KEYS) {
-    if (merged[key] !== undefined) {
-      lines.push(`${key}=${serializeEnvValue(merged[key])}`);
-    }
-  }
-
-  lines.push(
-    '',
-    'ENABLE_RAG=true',
-    'ENABLE_MODEL_ROUTING=true',
-    'ENABLE_ENSEMBLE=false',
-    'ENABLE_SAFETY_PIPELINE=true',
-    'ENABLE_SEMANTIC_CACHE=true',
-    'ENABLE_REDIS_CACHE=false',
-    'ENABLE_DISK_CACHE=true',
-    'LOG_LEVEL=info'
-  );
-
-  fs.writeFileSync(ENV_PATH, `${lines.join('\n')}\n`);
-
-  for (const [key, value] of Object.entries(merged)) {
-    process.env[key] = value;
-  }
-}
-
-function getProviderStatus() {
-  const configured = {
-    ollama: process.env.USE_OLLAMA !== 'false',
-    huggingface: process.env.USE_HUGGINGFACE === 'true' && !!process.env.HUGGINGFACE_API_KEY,
-    openai: !!process.env.OPENAI_API_KEY,
-    openaiCompatible: !!process.env.OPENAI_COMPATIBLE_API_KEY && !!process.env.OPENAI_COMPATIBLE_BASE_URL,
-    anthropic: !!process.env.ANTHROPIC_API_KEY,
-    gemini: !!process.env.GEMINI_API_KEY,
-    stableDiffusion: process.env.USE_STABLE_DIFFUSION === 'true',
-    transformers: process.env.EMBEDDING_USE_TRANSFORMERS === 'true'
-  };
-
-  const selectedProvider = process.env.LLM_PROVIDER || 'template';
-  const activeProvider = selectedProvider === 'openai-compatible' && configured.openaiCompatible
-    ? 'openai-compatible'
-    : selectedProvider === 'openai' && configured.openai
-    ? 'openai'
-    : selectedProvider === 'anthropic' && configured.anthropic
-      ? 'anthropic'
-    : selectedProvider === 'gemini' && configured.gemini
-      ? 'gemini'
-    : selectedProvider === 'huggingface' && configured.huggingface
-      ? 'huggingface'
-      : selectedProvider === 'ollama' && configured.ollama
-        ? 'ollama'
-        : 'template';
-
-  return {
-    activeProvider,
-    configured,
-    model: orchestrator ? 'ready' : 'initializing'
-  };
+  services = services || {};
+  services.conversationManager = new ConversationManager(services?.database);
+  return services.conversationManager;
 }
 
 async function reinitializeServices(): Promise<void> {
   services = await ServiceInitializer.initialize();
   orchestrator = services.orchestrator;
+}
+
+async function waitForReady(timeoutMs = STARTUP_TIMEOUT_MS): Promise<void> {
+  if (startupState === 'ready' && orchestrator) {
+    return;
+  }
+
+  if ((startupState as string) === 'failed') {
+    throw new Error(startupError || 'Services failed to initialize');
+  }
+
+  const startedAt = Date.now();
+  while (Date.now() - startedAt < timeoutMs) {
+    if (startupState === 'ready' && orchestrator) {
+      return;
+    }
+    if ((startupState as string) === 'failed') {
+      throw new Error(startupError || 'Services failed to initialize');
+    }
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+
+  throw new Error(`Services were not ready within ${timeoutMs}ms`);
+}
+
+function requireReady(): RequestHandler {
+  return asyncHandler(async (_req, res, next) => {
+    try {
+      await waitForReady(Number(process.env.REQUEST_READY_TIMEOUT_MS || 10000));
+      next();
+    } catch (error: any) {
+      res.status(503).json({
+        error: {
+          message: error.message,
+          code: 'SERVICE_NOT_READY'
+        }
+      });
+    }
+  });
+}
+
+function mountServiceRouter(createRouter: () => RequestHandler): RequestHandler {
+  let cachedServices: any;
+  let cachedRouter: RequestHandler | undefined;
+
+  return (req, res, next) => {
+    if (!cachedRouter || cachedServices !== services) {
+      cachedServices = services;
+      cachedRouter = createRouter();
+    }
+    cachedRouter(req, res, next);
+  };
 }
 
 // Start initialization immediately
@@ -473,131 +151,22 @@ async function reinitializeServices(): Promise<void> {
     logger.info('🚀 Initializing all services...');
     await reinitializeServices();
 
-    // Also initialize Stable Diffusion for image generation (if enabled)
-    const sdUrl = process.env.STABLE_DIFFUSION_URL || 'http://localhost:7860';
-    const useStableDiffusion = process.env.USE_STABLE_DIFFUSION !== 'false';
-
-    if (useStableDiffusion) {
-      logger.info('Using Stable Diffusion for image generation', { url: sdUrl });
-      const imageAdapter = new StableDiffusionAdapter(sdUrl);
-
-      imageAdapter.checkAvailability().then((available) => {
-        if (available) {
-          logger.info('Stable Diffusion is available');
-        } else {
-          logger.warn('Stable Diffusion is not available. Install Automatic1111 WebUI or similar.');
-        }
-      });
-    }
-
+    startupState = 'ready';
     logger.info('✅ All services initialized and ready');
   } catch (error: any) {
+    startupState = 'failed';
+    startupError = error.message;
     logger.error('Failed to initialize services', { error: error.message });
     process.exit(1);
   }
 })();
 
-// Health check with detailed status
-app.get('/health', asyncHandler(async (req, res) => {
-  const health: any = {
-    status: orchestrator ? 'ready' : 'initializing',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: process.env.NODE_ENV || 'development',
-    version: process.env.npm_package_version || '1.0.0',
-    services: {
-      orchestrator: !!orchestrator,
-      rag: !!services?.ragService,
-      tools: !!services?.toolRegistry,
-      vision: !!services?.visionAdapter,
-    },
-    dependencies: {},
-  };
-
-  // Check Ollama
-  if (process.env.USE_OLLAMA !== 'false') {
-    try {
-      const axios = require('axios');
-      const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
-      await axios.get(`${ollamaUrl}/api/tags`, { timeout: 2000 });
-      health.dependencies.ollama = 'healthy';
-    } catch (error) {
-      health.dependencies.ollama = 'unhealthy';
-    }
-  }
-
-  // Check Redis
-  if (process.env.ENABLE_REDIS_CACHE === 'true' && process.env.REDIS_URL) {
-    try {
-      const Redis = require('ioredis');
-      const redis = new Redis(process.env.REDIS_URL);
-      await redis.ping();
-      redis.disconnect();
-      health.dependencies.redis = 'healthy';
-    } catch (error) {
-      health.dependencies.redis = 'unhealthy';
-    }
-  }
-
-  // Check disk space
-  try {
-    const fs = require('fs');
-    const stats = fs.statSync(process.cwd());
-    health.dependencies.disk = 'healthy';
-  } catch (error) {
-    health.dependencies.disk = 'unhealthy';
-  }
-
-  const allHealthy = Object.values(health.dependencies).every(status => status === 'healthy');
-  if (!allHealthy && orchestrator) {
-    health.status = 'degraded';
-  }
-
-  res.json(health);
-}));
-
-// Kubernetes readiness probe
-app.get('/health/ready', asyncHandler(async (req, res) => {
-  if (!orchestrator) {
-    return res.status(503).json({ status: 'not ready' });
-  }
-  res.json({ status: 'ready' });
-}));
-
-// Kubernetes liveness probe
-app.get('/health/live', (req, res) => {
-  res.json({ status: 'alive' });
+registerHealthRoutes(app, {
+  getStartupState: () => startupState,
+  getStartupError: () => startupError,
+  getOrchestrator: () => orchestrator,
+  getServices: () => services
 });
-
-// Metrics endpoint (JSON)
-app.get('/api/metrics', asyncHandler(async (req, res) => {
-  if (!orchestrator) {
-    return res.status(503).json({ error: 'Services not initialized yet' });
-  }
-
-  const metrics = {
-    timestamp: new Date().toISOString(),
-    system: {
-      memory: {
-        used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
-        total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
-        rss: Math.round(process.memoryUsage().rss / 1024 / 1024)
-      },
-      uptime: process.uptime()
-    },
-    application: metricsCollector.getMetrics(),
-    cache: services?.cache?.getStats() || {}
-  };
-  res.json(metrics);
-}));
-
-// Prometheus metrics endpoint
-app.get('/metrics', asyncHandler(async (req, res) => {
-  const { PrometheusExporter } = require('../observability/prometheus');
-  const metrics = PrometheusExporter.getApplicationMetrics();
-  res.setHeader('Content-Type', 'text/plain');
-  res.send(metrics);
-}));
 
 // API Versioning
 // Determine API version from header or URL
@@ -612,144 +181,28 @@ const getApiVersion = (req: any): string => {
 };
 
 // Versioned API routes
-app.use('/api/v1', asyncHandler(async (req, res, next) => {
-  if (!orchestrator) {
-    await new Promise(resolve => {
-      const checkInterval = setInterval(() => {
-        if (orchestrator) {
-          clearInterval(checkInterval);
-          resolve(undefined);
-        }
-      }, 100);
-    });
-  }
-  next();
-}), (req, res, next) => {
+app.use('/api/v1', requireReady(), (req, res, next) => {
   const { createChatRouter } = require('./routes/v1/chat');
   const router = createChatRouter(orchestrator);
   router(req, res, next);
 });
 
-app.use('/api/v2', asyncHandler(async (req, res, next) => {
-  if (!orchestrator) {
-    await new Promise(resolve => {
-      const checkInterval = setInterval(() => {
-        if (orchestrator) {
-          clearInterval(checkInterval);
-          resolve(undefined);
-        }
-      }, 100);
-    });
-  }
-  next();
-}), (req, res, next) => {
+app.use('/api/v2', requireReady(), (req, res, next) => {
   const { createChatRouterV2 } = require('./routes/v2/chat');
   const router = createChatRouterV2(orchestrator);
   router(req, res, next);
 });
 
 // Legacy endpoint (defaults to v1)
-app.post('/api/chat',
-  rateLimiter.middleware(),
-  validateChatRequest,
-  asyncHandler(async (req, res) => {
-    // Wait for services to initialize
-    if (!orchestrator) {
-      await new Promise(resolve => {
-        const checkInterval = setInterval(() => {
-          if (orchestrator) {
-            clearInterval(checkInterval);
-            resolve(undefined);
-          }
-        }, 100);
-      });
-    }
-
-    const { message, sessionId, userId, mode } = req.body;
-
-    // Sanitize input
-    const sanitizedMessage = sanitizeInput(message);
-    const detectedIntent = detectUserIntent(sanitizedMessage);
-    const switchRequirement = requiresSwitchForIntent(mode, detectedIntent);
-    if (switchRequirement.required && !(mode === 'plan' && detectedIntent === 'implement')) {
-      return res.json({
-        response: switchRequirement.message,
-        sources: [],
-        mode,
-        model: 'mode-policy',
-        modeSwitch: {
-          targetMode: switchRequirement.targetMode,
-          reason: detectedIntent
-        }
-      });
-    }
-
-    if (mode === 'plan') {
-      const plan = await new PlanDocumentService(process.cwd()).createPlan({
-        userRequest: sanitizedMessage,
-        mode: 'plan'
-      });
-      return res.json({
-        response: `${plan.summary}\n\nSaved plan: ${plan.planPath}\n\nSwitch to Implement when you want to turn this plan into code.`,
-        sources: [plan.planPath],
-        mode: 'plan',
-        model: 'plan-document-service',
-        planId: plan.planId,
-        planPath: plan.planPath,
-        savedMarkdown: true,
-        suggestedNextMode: 'implement',
-        actions: [
-          { type: 'switch_mode', label: 'Switch to Implement', mode: 'implement' },
-          { type: 'open_plan', label: 'Open Plan', planId: plan.planId }
-        ]
-      });
-    }
-
-    const nlu = humanLanguageRouter.route({
-      message: sanitizedMessage,
-      explicitMode: mode
-    });
-    const nluRoute = nlu.confidence >= 0.75 && isRecognizedSpecialistMode(nlu.route)
-      ? nlu.route
-      : undefined;
-    const specialistMode = nluRoute || inferChatSpecialistMode(sanitizedMessage, mode);
-
-    if (!specialistMode && nlu.clarification) {
-      return res.json({
-        response: nlu.clarification,
-        sources: [],
-        mode: 'clarify',
-        model: 'human-language-router',
-        nlu
-      });
-    }
-
-    if (specialistMode) {
-      return res.json(await processSpecialistChat(sanitizedMessage, specialistMode, nlu));
-    }
-
-    if (!mode || mode === 'ask') {
-      const localKnowledge = new LocalKnowledgeAnswerer(services?.ragDocumentStore);
-      const localResponse = await localKnowledge.answer(sanitizedMessage, 'ask');
-      if (localResponse) {
-        return res.json(localResponse);
-      }
-    }
-
-    const request: ChatRequest = {
-      message: sanitizedMessage,
-      sessionId,
-      userId
-    };
-
-    const response = await orchestrator.processRequest(request);
-
-    res.json(response);
-  })
-);
+app.post('/api/chat', ...createLegacyChatHandlers({
+  getServices: () => services,
+  getOrchestrator: () => orchestrator,
+  waitForReady,
+  getConversationManager
+}));
 
 // Knowledge base management endpoints
-app.post('/api/knowledge-base/add', asyncHandler(async (req, res) => {
+app.post('/api/knowledge-base/add', developerOnly, auditPrivilegedRequest('knowledge-base:add'), asyncHandler(async (req, res) => {
   if (!services?.documentManager) {
     return res.status(503).json({ error: 'Document manager not initialized' });
   }
@@ -759,7 +212,7 @@ app.post('/api/knowledge-base/add', asyncHandler(async (req, res) => {
   res.json({ success: true, chunksCount: chunks.length });
 }));
 
-app.post('/api/knowledge-base/file', asyncHandler(async (req, res) => {
+app.post('/api/knowledge-base/file', developerOnly, auditPrivilegedRequest('knowledge-base:file'), asyncHandler(async (req, res) => {
   if (!services?.documentManager) {
     return res.status(503).json({ error: 'Document manager not initialized' });
   }
@@ -769,15 +222,9 @@ app.post('/api/knowledge-base/file', asyncHandler(async (req, res) => {
   res.json({ success: true, chunksCount: chunks.length });
 }));
 
-app.use((req, res, next) => {
-  const router = createKnowledgeBaseRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createKnowledgeOsRouter(services);
-  router(req, res, next);
-});
+app.use(requireReady(), mountServiceRouter(() => createKnowledgeBaseRouter(services)));
+app.use('/api/knowledge-os', adminOnly, auditPrivilegedRequest('knowledge-os'));
+app.use(requireReady(), mountServiceRouter(() => createKnowledgeOsRouter(services)));
 
 // Tools endpoint
 app.get('/api/tools', asyncHandler(async (req, res) => {
@@ -786,7 +233,7 @@ app.get('/api/tools', asyncHandler(async (req, res) => {
   }
 
   res.json({
-    tools: services.toolRegistry.getAll().map(tool => ({
+    tools: services.toolRegistry.getAll().map((tool: any) => ({
       id: tool.id,
       name: tool.name,
       description: tool.description,
@@ -806,121 +253,11 @@ app.get('/api/models/free', asyncHandler(async (req, res) => {
   });
 }));
 
-app.get('/api/settings', asyncHandler(async (_req, res) => {
-  const envFile = parseEnvFile(ENV_PATH);
-  const settings: Record<string, string> = {};
-
-  for (const key of PUBLIC_SETTINGS_KEYS) {
-    settings[key] = process.env[key] || envFile[key] || '';
-  }
-
-  res.json({
-    settings,
-    secrets: {
-      OPENAI_API_KEY: {
-        configured: !!(process.env.OPENAI_API_KEY || envFile.OPENAI_API_KEY),
-        preview: maskSecret(process.env.OPENAI_API_KEY || envFile.OPENAI_API_KEY)
-      },
-      HUGGINGFACE_API_KEY: {
-        configured: !!(process.env.HUGGINGFACE_API_KEY || envFile.HUGGINGFACE_API_KEY),
-        preview: maskSecret(process.env.HUGGINGFACE_API_KEY || envFile.HUGGINGFACE_API_KEY)
-      },
-      OPENAI_COMPATIBLE_API_KEY: {
-        configured: !!(process.env.OPENAI_COMPATIBLE_API_KEY || envFile.OPENAI_COMPATIBLE_API_KEY),
-        preview: maskSecret(process.env.OPENAI_COMPATIBLE_API_KEY || envFile.OPENAI_COMPATIBLE_API_KEY)
-      },
-      ANTHROPIC_API_KEY: {
-        configured: !!(process.env.ANTHROPIC_API_KEY || envFile.ANTHROPIC_API_KEY),
-        preview: maskSecret(process.env.ANTHROPIC_API_KEY || envFile.ANTHROPIC_API_KEY)
-      },
-      GEMINI_API_KEY: {
-        configured: !!(process.env.GEMINI_API_KEY || envFile.GEMINI_API_KEY),
-        preview: maskSecret(process.env.GEMINI_API_KEY || envFile.GEMINI_API_KEY)
-      }
-    },
-    status: getProviderStatus()
-  });
-}));
-
-app.put('/api/settings', asyncHandler(async (req, res) => {
-  const body = req.body || {};
-  const current = parseEnvFile(ENV_PATH);
-  const updates: Record<string, string> = {};
-
-  const selectedProvider = String(body.provider || 'template');
-
-  for (const key of PUBLIC_SETTINGS_KEYS) {
-    if (body[key] !== undefined) {
-      updates[key] = String(body[key]);
-    }
-  }
-
-  if (body.OPENAI_API_KEY !== undefined && String(body.OPENAI_API_KEY).trim()) {
-    updates.OPENAI_API_KEY = String(body.OPENAI_API_KEY).trim();
-  } else if (current.OPENAI_API_KEY) {
-    updates.OPENAI_API_KEY = current.OPENAI_API_KEY;
-  }
-
-  if (body.HUGGINGFACE_API_KEY !== undefined && String(body.HUGGINGFACE_API_KEY).trim()) {
-    updates.HUGGINGFACE_API_KEY = String(body.HUGGINGFACE_API_KEY).trim();
-  } else if (current.HUGGINGFACE_API_KEY) {
-    updates.HUGGINGFACE_API_KEY = current.HUGGINGFACE_API_KEY;
-  }
-
-  if (body.OPENAI_COMPATIBLE_API_KEY !== undefined && String(body.OPENAI_COMPATIBLE_API_KEY).trim()) {
-    updates.OPENAI_COMPATIBLE_API_KEY = String(body.OPENAI_COMPATIBLE_API_KEY).trim();
-  } else if (current.OPENAI_COMPATIBLE_API_KEY) {
-    updates.OPENAI_COMPATIBLE_API_KEY = current.OPENAI_COMPATIBLE_API_KEY;
-  }
-
-  if (body.ANTHROPIC_API_KEY !== undefined && String(body.ANTHROPIC_API_KEY).trim()) {
-    updates.ANTHROPIC_API_KEY = String(body.ANTHROPIC_API_KEY).trim();
-  } else if (current.ANTHROPIC_API_KEY) {
-    updates.ANTHROPIC_API_KEY = current.ANTHROPIC_API_KEY;
-  }
-
-  if (body.GEMINI_API_KEY !== undefined && String(body.GEMINI_API_KEY).trim()) {
-    updates.GEMINI_API_KEY = String(body.GEMINI_API_KEY).trim();
-  } else if (current.GEMINI_API_KEY) {
-    updates.GEMINI_API_KEY = current.GEMINI_API_KEY;
-  }
-
-  updates.USE_OLLAMA = selectedProvider === 'ollama' ? 'true' : 'false';
-  updates.USE_HUGGINGFACE = selectedProvider === 'huggingface' ? 'true' : 'false';
-  updates.LLM_PROVIDER = selectedProvider;
-
-  if (selectedProvider === 'openai' && !updates.OPENAI_API_KEY && !process.env.OPENAI_API_KEY) {
-    return res.status(400).json({ error: 'OPENAI_API_KEY is required when OpenAI is selected' });
-  }
-
-  if (selectedProvider === 'openai-compatible' && !updates.OPENAI_COMPATIBLE_API_KEY && !process.env.OPENAI_COMPATIBLE_API_KEY) {
-    return res.status(400).json({ error: 'An API key is required for this provider' });
-  }
-
-  if (selectedProvider === 'openai-compatible' && !updates.OPENAI_COMPATIBLE_BASE_URL) {
-    return res.status(400).json({ error: 'A base URL is required for this provider' });
-  }
-
-  if (selectedProvider === 'anthropic' && !updates.ANTHROPIC_API_KEY && !process.env.ANTHROPIC_API_KEY) {
-    return res.status(400).json({ error: 'ANTHROPIC_API_KEY is required when Claude is selected' });
-  }
-
-  if (selectedProvider === 'gemini' && !updates.GEMINI_API_KEY && !process.env.GEMINI_API_KEY) {
-    return res.status(400).json({ error: 'GEMINI_API_KEY is required when Gemini is selected' });
-  }
-
-  if (selectedProvider === 'huggingface' && !updates.HUGGINGFACE_API_KEY && !process.env.HUGGINGFACE_API_KEY) {
-    return res.status(400).json({ error: 'HUGGINGFACE_API_KEY is required when Hugging Face is selected' });
-  }
-
-  writeEnvUpdates(updates);
-  await reinitializeServices();
-
-  res.json({
-    success: true,
-    status: getProviderStatus()
-  });
-}));
+registerSettingsRoutes(app, {
+  adminOnly,
+  reinitializeServices,
+  getOrchestrator: () => orchestrator
+});
 
 // API Documentation endpoint
 app.get('/api-docs', (req, res) => {
@@ -938,149 +275,14 @@ app.get('/api-docs', (req, res) => {
   }
 });
 
-// Direct RAG query route
-app.use((req, res, next) => {
-  const router = createRagQueryRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createCodeRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createPlansRouter(process.cwd());
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createFilesRouter(process.cwd());
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createAudioRouter(process.cwd());
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createMathRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createMarketRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createGameDevRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createGamingRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createSixSigmaRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createChronoRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createPopCultureRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createHistoryRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createScienceRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createMusicProductionGeniusRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createFLStudioControlRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createStoryGeniusRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createLegalCivicGeniusRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createHealthGeniusRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createSecurityGeniusRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createBusinessGeniusRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createPhilosophyGeniusRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createLanguageGeniusRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createGeoCultureGeniusRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createEngineeringGeniusRouter(services);
-  router(req, res, next);
-});
-
-app.use((req, res, next) => {
-  const router = createKnowledgeOnlineRouter(services);
-  router(req, res, next);
-});
-
-// Admin routes
-app.use('/api/admin', (req, res, next) => {
-  const { createAdminRouter } = require('./routes/admin');
-  const router = createAdminRouter(services);
-  router(req, res, next);
-});
-
-// Export/Import routes
-app.use('/api/export', (req, res, next) => {
-  const { createExportRouter } = require('./routes/export');
-  const router = createExportRouter(services);
-  router(req, res, next);
+registerManifestRoutes({
+  app,
+  getServices: () => services,
+  workspaceRoot: process.cwd(),
+  adminOnly,
+  developerOnly,
+  requireReady,
+  mountServiceRouter
 });
 
 // File upload endpoint
@@ -1200,10 +402,9 @@ app.post('/api/conversations/:sessionId/share', requireAuth, asyncHandler(async 
 
 app.get('/api/share/:shareId', asyncHandler(async (req, res) => {
   const { ConversationSharingService } = require('../core/sharing/ConversationSharing');
-  const { ConversationManager } = require('../core/conversation/ConversationManager');
 
   const sharingService = new ConversationSharingService();
-  const conversationManager = new ConversationManager();
+  const conversationManager = getConversationManager();
 
   const share = await sharingService.getShare(req.params.shareId, req.query.password as string);
   if (!share) {
@@ -1231,6 +432,8 @@ app.get('/api/documents/search', requireAuth, asyncHandler(async (req, res) => {
 }));
 
 // Knowledge sources endpoints
+app.use('/api/knowledge', developerOnly, auditPrivilegedRequest('knowledge-ingestion'));
+
 app.post('/api/knowledge/reddit', asyncHandler(async (req, res) => {
   const { RedditSource } = require('../core/knowledge/RedditSource');
   const source = new RedditSource();
@@ -1838,8 +1041,7 @@ app.get('/api/debug/:requestId', requireAuth, asyncHandler(async (req, res) => {
 
 // Conversation management endpoints
 app.get('/api/conversations', requireAuth, asyncHandler(async (req, res) => {
-  const { ConversationManager } = require('../core/conversation/ConversationManager');
-  const conversationManager = new ConversationManager();
+  const conversationManager = getConversationManager();
 
   const userId = req.user?.userId;
   const limit = parseInt(req.query.limit as string) || 20;
@@ -1849,8 +1051,7 @@ app.get('/api/conversations', requireAuth, asyncHandler(async (req, res) => {
 }));
 
 app.get('/api/conversations/:sessionId', requireAuth, asyncHandler(async (req, res) => {
-  const { ConversationManager } = require('../core/conversation/ConversationManager');
-  const conversationManager = new ConversationManager();
+  const conversationManager = getConversationManager();
 
   const conversation = await conversationManager.getConversation(req.params.sessionId);
   if (!conversation) {
@@ -1861,21 +1062,21 @@ app.get('/api/conversations/:sessionId', requireAuth, asyncHandler(async (req, r
 }));
 
 app.delete('/api/conversations/:sessionId', requireAuth, asyncHandler(async (req, res) => {
-  const { ConversationManager } = require('../core/conversation/ConversationManager');
-  const conversationManager = new ConversationManager();
+  const conversationManager = getConversationManager();
 
   const deleted = await conversationManager.deleteConversation(req.params.sessionId);
   res.json({ success: deleted });
 }));
 
 // Webhook management endpoints
-app.post('/api/webhooks', asyncHandler(async (req, res) => {
+app.post('/api/webhooks', adminOnly, auditPrivilegedRequest('webhooks:create'), asyncHandler(async (req, res) => {
   const { WebhookService } = require('../core/webhooks/WebhookService');
   const webhookService = new WebhookService();
 
   const { url, events, secret } = req.body;
+  const validatedUrl = validateWebhookUrl(String(url || ''));
   const webhook = webhookService.register({
-    url,
+    url: validatedUrl,
     events: events || ['*'],
     secret,
     active: true,
@@ -1884,18 +1085,35 @@ app.post('/api/webhooks', asyncHandler(async (req, res) => {
   res.json({ success: true, webhook });
 }));
 
-app.get('/api/webhooks', asyncHandler(async (req, res) => {
+app.get('/api/webhooks', adminOnly, auditPrivilegedRequest('webhooks:list'), asyncHandler(async (req, res) => {
   const { WebhookService } = require('../core/webhooks/WebhookService');
   const webhookService = new WebhookService();
   res.json({ webhooks: webhookService.list() });
 }));
 
-app.delete('/api/webhooks/:id', asyncHandler(async (req, res) => {
+app.delete('/api/webhooks/:id', adminOnly, auditPrivilegedRequest('webhooks:delete'), asyncHandler(async (req, res) => {
   const { WebhookService } = require('../core/webhooks/WebhookService');
   const webhookService = new WebhookService();
   const deleted = webhookService.unregister(req.params.id);
   res.json({ success: deleted });
 }));
+
+if (fs.existsSync(CLIENT_DIST_DIR)) {
+  app.use(express.static(CLIENT_DIST_DIR));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/health') || req.path === '/metrics') {
+      next();
+      return;
+    }
+
+    res.sendFile(path.join(CLIENT_DIST_DIR, 'index.html'));
+  });
+  logger.info('Serving built client', { path: CLIENT_DIST_DIR });
+} else {
+  logger.warn('Built client not found; run npm run build before production start', {
+    path: CLIENT_DIST_DIR
+  });
+}
 
 // Error handler (must be last)
 app.use(errorHandler);
@@ -1903,11 +1121,8 @@ app.use(errorHandler);
 // Start server (wait for initialization)
 const startServer = async () => {
   try {
-    // Wait for services to initialize
     logger.info('Waiting for services to initialize...');
-    while (!orchestrator) {
-      await new Promise(resolve => setTimeout(resolve, 100));
-    }
+    await waitForReady(STARTUP_TIMEOUT_MS);
 
     server.listen(PORT, () => {
       logger.info(`🚀 Server running on port ${PORT}`);

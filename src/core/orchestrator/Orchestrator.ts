@@ -16,13 +16,10 @@ import { logger } from '../observability/logger';
 import { CacheManager } from '../../utils/cache';
 import { metricsCollector } from '../observability/metrics';
 import { v4 as uuidv4 } from 'uuid';
+import { ChatRequestDto, buildChatContextBundle, renderChatContext } from '../../types/chat';
+import { KnowledgeMiss } from '../knowledge/KnowledgeMiss';
 
-export interface ChatRequest {
-  message: string;
-  sessionId: string;
-  userId?: string;
-  contract?: AIContract;
-}
+export type ChatRequest = ChatRequestDto;
 
 export interface ChatResponse {
   response: string;
@@ -31,6 +28,10 @@ export interface ChatResponse {
   latency: number;
   model: string;
   warnings?: string[];
+  knowledgeMiss?: true;
+  knowledgeMissDetail?: KnowledgeMiss;
+  canSearchOnline?: true;
+  proposedWebQuery?: string;
   image?: string; // Base64 encoded image if image generation was requested
   imageUrl?: string;
 }
@@ -101,8 +102,9 @@ export class Orchestrator {
     const contextSummary = this.memoryService.summarizeMemories(request.sessionId);
 
     // 6. Build prompt with context
-    const systemPrompt = this.buildSystemPrompt(contract, contextSummary);
-    const userPrompt = this.buildUserPrompt(request.message, memoryContext);
+    const explicitContext = renderChatContext(buildChatContextBundle(request));
+    const systemPrompt = this.buildSystemPrompt(contract, contextSummary, request.systemPrompt);
+    const userPrompt = this.buildUserPrompt(request.message, memoryContext, explicitContext);
 
     // 7. Generate response with retry logic (and optionally generate image in parallel)
     const shouldGenerateImage = this.shouldGenerateImage(request.message);
@@ -213,8 +215,10 @@ export class Orchestrator {
     throw new Error('Failed to generate valid response after retries');
   }
 
-  private buildSystemPrompt(contract: AIContract, contextSummary: string): string {
+  private buildSystemPrompt(contract: AIContract, contextSummary: string, systemInstruction?: string): string {
     return `You are a helpful AI assistant. You can answer questions, engage in conversation, and provide information on a wide variety of topics.
+
+${systemInstruction ? `User-selected system instruction: ${systemInstruction}\n` : ''}
 
 Context from previous conversation: ${contextSummary}
 
@@ -225,9 +229,10 @@ Guidelines:
 - Contract version: ${contract.version}`;
   }
 
-  private buildUserPrompt(message: string, memoryContext: any): string {
-    // In a full implementation, this would build a rich context prompt
-    return message;
+  private buildUserPrompt(message: string, memoryContext: any, explicitContext?: string): string {
+    return explicitContext?.trim()
+      ? `${explicitContext}\n\nUser request:\n${message}`
+      : message;
   }
 
   /**

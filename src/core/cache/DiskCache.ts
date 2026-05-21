@@ -146,6 +146,26 @@ export class DiskCache {
   }
 
   /**
+   * Clear all disk cache entries while keeping the cache directory available.
+   */
+  async clear(): Promise<void> {
+    if (!this.enabled) {
+      return;
+    }
+
+    try {
+      if (fs.existsSync(this.cacheDir)) {
+        fs.rmSync(this.cacheDir, { recursive: true, force: true });
+      }
+      fs.mkdirSync(this.cacheDir, { recursive: true });
+      logger.info('Disk cache cleared', { cacheDir: this.cacheDir });
+    } catch (error: any) {
+      logger.warn('Disk cache clear failed', { error: error.message });
+      throw error;
+    }
+  }
+
+  /**
    * Get file path for key
    */
   private getFilePath(key: string): string {

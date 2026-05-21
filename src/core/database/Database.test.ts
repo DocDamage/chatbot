@@ -56,4 +56,11 @@ describe('Database migrations', () => {
 
     await db.close();
   });
+
+  it('translates shared question-mark placeholders for PostgreSQL queries', () => {
+    const db = new Database({ type: 'postgresql', connectionString: 'postgres://example' });
+
+    expect((db as any).toPostgresSql('SELECT * FROM messages WHERE session_id = ? AND role = ? LIMIT ?'))
+      .toBe('SELECT * FROM messages WHERE session_id = $1 AND role = $2 LIMIT $3');
+  });
 });

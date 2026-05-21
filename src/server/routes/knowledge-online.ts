@@ -21,7 +21,17 @@ export function createKnowledgeOnlineRouter(services: any): Router {
   router.post('/api/knowledge-online/ingest', asyncHandler(async (req, res) => {
     if (!services?.documentManager) return res.status(503).json({ error: 'Document manager not available' });
     const service = new OnlineKnowledgeIngestionService(services.documentManager, WebSearcher.fromEnv() as any);
-    res.json(await service.ingestApproved(req.body.preview, String(req.body.sessionId || 'unknown-session')));
+    res.json(await service.ingestApproved(req.body.preview, {
+      approved: req.body.approved === true,
+      approvedBy: req.user?.userId || String(req.body.approvedBy || ''),
+      notes: String(req.body.notes || '')
+    }));
+  }));
+
+  router.delete('/api/knowledge-online/ingest/:ingestionId', asyncHandler(async (req, res) => {
+    if (!services?.documentManager) return res.status(503).json({ error: 'Document manager not available' });
+    const service = new OnlineKnowledgeIngestionService(services.documentManager, WebSearcher.fromEnv() as any);
+    res.json(await service.rollbackIngestion(req.params.ingestionId));
   }));
 
   return router;

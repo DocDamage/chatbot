@@ -1,9 +1,0 @@
-.chat-interface {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  overflow: hidden;
-  background:
-    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-}
-

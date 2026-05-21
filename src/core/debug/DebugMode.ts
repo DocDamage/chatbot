@@ -84,7 +84,9 @@ export class DebugMode {
     // Maintain max logs
     if (this.debugLogs.size > this.maxLogs) {
       const firstKey = this.debugLogs.keys().next().value;
-      this.debugLogs.delete(firstKey);
+      if (firstKey) {
+        this.debugLogs.delete(firstKey);
+      }
     }
 
     // Log to console in development

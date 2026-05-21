@@ -5,8 +5,12 @@
 
 import { Router, Request, Response } from 'express';
 import { apiKeyManager, LLM_PROVIDERS, LLMProviderInfo } from '../../core/config/APIKeyManager';
+import { auditPrivilegedRequest, requireAuth, requireCsrfForStateChange, requireRole } from '../../middleware/auth';
 
 const router = Router();
+const stateChangePolicy = [requireCsrfForStateChange];
+
+router.use(requireAuth, requireRole('admin'), auditPrivilegedRequest('api-key-setup'));
 
 /**
  * GET /api/setup/providers
@@ -164,7 +168,7 @@ router.get('/provider/:id', async (req: Request, res: Response) => {
  * POST /api/setup/key/:provider
  * Save and validate an API key
  */
-router.post('/key/:provider', async (req: Request, res: Response) => {
+router.post('/key/:provider', ...stateChangePolicy, async (req: Request, res: Response) => {
     const { provider } = req.params;
     const { key, model } = req.body;
 
@@ -205,7 +209,7 @@ router.post('/key/:provider', async (req: Request, res: Response) => {
  * DELETE /api/setup/key/:provider
  * Remove an API key
  */
-router.delete('/key/:provider', async (req: Request, res: Response) => {
+router.delete('/key/:provider', ...stateChangePolicy, async (req: Request, res: Response) => {
     const { provider } = req.params;
 
     try {
@@ -271,7 +275,7 @@ router.get('/guide', async (_req: Request, res: Response) => {
  * POST /api/setup/import
  * Import keys from .env format
  */
-router.post('/import', async (req: Request, res: Response) => {
+router.post('/import', ...stateChangePolicy, async (req: Request, res: Response) => {
     const { envContent } = req.body;
 
     if (!envContent) {
@@ -300,10 +304,9 @@ router.post('/import', async (req: Request, res: Response) => {
  * Export keys to .env format
  */
 router.get('/export', async (_req: Request, res: Response) => {
-    const envContent = apiKeyManager.exportToEnv();
-    res.json({
-        success: true,
-        envContent
+    res.status(410).json({
+        success: false,
+        error: 'Plaintext API key export is disabled'
     });
 });
 

@@ -6,9 +6,9 @@ export class FLStepSequencerPatternTool {
   run(input: Record<string, any> = {}) {
     const pattern = this.drumPattern.run({ ...input, daw: 'fl_studio' });
     return {
+      ...pattern,
       domain: 'music',
       tool: 'FLStepSequencerPatternTool',
-      ...pattern,
       flSteps: [
         'Sketch kick, clap/snare, hat, perc, and 808 channels in Channel Rack.',
         'Send each important channel to its own Mixer insert.',

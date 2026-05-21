@@ -33,3 +33,13 @@
   box-shadow: 0 0 4px rgba(244, 67, 54, 0.5);
 }
 
+.status-indicator.degraded {
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.14);
+}
+
+.status-indicator.connecting {
+  background: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
+}
+

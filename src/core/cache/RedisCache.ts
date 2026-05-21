@@ -103,6 +103,22 @@ export class RedisCache {
   }
 
   /**
+   * Clear all keys from the currently selected Redis database.
+   */
+  async clear(): Promise<void> {
+    if (!this.enabled || !this.client) {
+      return;
+    }
+
+    try {
+      await this.client.flushdb();
+    } catch (error: any) {
+      logger.warn('Redis clear failed', { error: error.message });
+      throw error;
+    }
+  }
+
+  /**
    * Check if Redis is enabled
    */
   isEnabled(): boolean {

@@ -27,11 +27,44 @@ jobs:
         run: npm ci
         working-directory: client
 
-      - name: Type check
-        run: npm run type-check
+      - name: Type check server
+        run: npm run type-check:server
 
-      - name: Test
-        run: npm test -- --runInBand
+      - name: Type check tests
+        run: npm run type-check:tests
 
-      - name: Build
-        run: npm run build
+      - name: Type check client
+        run: npm run type-check:client
+
+      - name: Lint server
+        run: npm run lint:server
+
+      - name: Lint client
+        run: npm run lint:client
+
+      - name: Security route tests
+        run: npm run test:security -- --runInBand
+
+      - name: Server route and service tests
+        run: npm run test:routes -- --runInBand && npm run test:services -- --runInBand
+
+      - name: E2E smoke tests
+        run: npm run test:e2e -- --runInBand
+
+      - name: Server coverage
+        run: npm run test:coverage -- --runInBand
+
+      - name: Client tests
+        run: npm run test
+        working-directory: client
+
+      - name: Client coverage
+        run: npm run coverage
+        working-directory: client
+
+      - name: Client accessibility checks
+        run: npm run a11y
+        working-directory: client
+
+      - name: Packaging smoke
+        run: npm run smoke:package

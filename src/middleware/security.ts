@@ -19,7 +19,11 @@ export const securityHeaders = helmet({
 });
 
 export const corsOptions = {
-  origin: process.env.CORS_ORIGIN || '*',
+  origin: process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim()).filter(Boolean)
+    : process.env.NODE_ENV === 'production'
+      ? false
+      : true,
   credentials: true,
   optionsSuccessStatus: 200,
 };

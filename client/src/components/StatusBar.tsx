@@ -2,11 +2,18 @@ import React, { useState, useEffect } from 'react';
 import './StatusBar.css';
 
 interface StatusBarProps {
-  isConnected?: boolean;
+  connectionState?: 'connected' | 'degraded' | 'connecting' | 'disconnected';
   messageCount?: number;
 }
 
-const StatusBar: React.FC<StatusBarProps> = ({ isConnected = true, messageCount = 0 }) => {
+const statusLabels = {
+  connected: 'Connected',
+  degraded: 'Degraded',
+  connecting: 'Connecting',
+  disconnected: 'Disconnected'
+};
+
+const StatusBar: React.FC<StatusBarProps> = ({ connectionState = 'connecting', messageCount = 0 }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -20,8 +27,8 @@ const StatusBar: React.FC<StatusBarProps> = ({ isConnected = true, messageCount 
   return (
     <div className="status-bar" role="status" aria-live="polite">
       <div className="status-item">
-        <span className={`status-indicator ${isConnected ? 'connected' : 'disconnected'}`}></span>
-        <span>{isConnected ? 'Connected' : 'Disconnected'}</span>
+        <span className={`status-indicator ${connectionState}`}></span>
+        <span>{statusLabels[connectionState]}</span>
       </div>
       {messageCount > 0 && (
         <div className="status-item">

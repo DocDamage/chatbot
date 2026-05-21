@@ -71,7 +71,7 @@ This roadmap transforms the chatbot into a state-of-the-art system leveraging th
 - ✅ **Vision Models**: Integrate GPT-4V, Gemini Vision, LLaVA
 - ✅ **Image Understanding**: Analyze uploaded images
 - ✅ **Visual Question Answering**: Answer questions about images
-- ✅ **Image Generation**: Enhanced Stable Diffusion with control
+- Planned **Image Generation**: Not exposed in the active chat UI; legacy provider adapters need product wiring before release
 - ✅ **Video Understanding**: Process video inputs (future)
 
 **Advanced Features**:

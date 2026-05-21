@@ -216,7 +216,7 @@ export class McpClientService {
 
     this.buffer = Buffer.concat([this.buffer, chunk]);
 
-    while (true) {
+    for (;;) {
       const headerEnd = this.buffer.indexOf('\r\n\r\n');
       if (headerEnd === -1) return;
 

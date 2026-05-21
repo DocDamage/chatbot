@@ -13,6 +13,7 @@ export interface LocalKnowledgeAnswer {
   mode: LocalKnowledgeMode;
   model: 'local-knowledge-base';
   knowledgeMiss?: true;
+  knowledgeMissDetail?: KnowledgeMiss;
   miss?: KnowledgeMiss;
   canSearchOnline?: true;
   proposedWebQuery?: string;
@@ -318,6 +319,7 @@ export class LocalKnowledgeAnswerer {
       mode,
       model: 'local-knowledge-base',
       knowledgeMiss: true,
+      knowledgeMissDetail: miss,
       miss,
       canSearchOnline: true,
       proposedWebQuery: miss.proposedWebQuery

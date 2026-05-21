@@ -15,7 +15,8 @@
 }
 
 .assistant-cta-bar,
-.assistant-knowledge-preview {
+.assistant-knowledge-preview,
+.assistant-error-bar {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -23,6 +24,12 @@
   border-bottom: 1px solid #262626;
   background: #111111;
   color: #ffffff;
+}
+
+.assistant-error-bar {
+  background: #1f0b08;
+  color: #ffb4a8;
+  font-size: 13px;
 }
 
 .assistant-cta-bar span {

@@ -41,7 +41,7 @@ describe('Personal Knowledge Sources', () => {
         expect(results).toBeDefined();
 
         // Should find the ADHD section
-        const adhdTopic = results.find(r => r.metadata.type === 'research_topic');
+        const adhdTopic = results.find((r: any) => r.metadata.type === 'research_topic');
         expect(adhdTopic).toBeDefined();
         if (adhdTopic) {
             expect(adhdTopic.title.toLowerCase()).toContain('adhd');
@@ -61,7 +61,7 @@ describe('Personal Knowledge Sources', () => {
         const results = await source.search('Fibonacci');
 
         expect(results).toBeDefined();
-        const snippet = results.find(r => r.metadata.type === 'code_snippet');
+        const snippet = results.find((r: any) => r.metadata.type === 'code_snippet');
 
         if (!snippet) {
             console.log('No Fibonacci snippet found. Trying "List"');
