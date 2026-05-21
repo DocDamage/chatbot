@@ -16,6 +16,10 @@ A production-grade AI chatbot application built following a comprehensive archit
 - **Observability**: Structured logging and metrics
 - **Modern UI**: React-based chat interface with provider settings, workspace context, and backend health status
 
+## Release status
+
+The finish-plan implementation status is tracked in [docs/100_PERCENT_FINISH_STATUS.md](docs/100_PERCENT_FINISH_STATUS.md). Use that document together with [docs/RELEASE_COMPLETION_AUDIT.md](docs/RELEASE_COMPLETION_AUDIT.md) and [docs/FEATURE_COMPLETION_TRACKER.md](docs/FEATURE_COMPLETION_TRACKER.md) when deciding what is verified, fixed, open, or still needs manual runtime QA.
+
 ## Architecture
 
 The system follows a layered architecture:
@@ -130,7 +134,6 @@ Production deployments must provide a strong `JWT_SECRET` and an explicit `CORS_
 │   ├── src/
 │   │   ├── components/   # React components
 │   │   └── ...
-│   └── ...
 └── ai_gaming_hub_detailed_implementation_plan.md  # Architecture plan
 ```
 
