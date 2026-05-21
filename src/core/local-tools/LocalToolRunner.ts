@@ -1,6 +1,20 @@
-import { spawn } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+
+const activeRuns = new Map<string, ChildProcess>();
+
+export function cancelLocalToolRun(runId: string): boolean {
+  const child = activeRuns.get(runId);
+  if (!child) return false;
+  child.kill('SIGTERM');
+  setTimeout(() => {
+    if (activeRuns.has(runId)) {
+      child.kill('SIGKILL');
+    }
+  }, 5000).unref?.();
+  return true;
+}
 
 export interface LocalToolRunRequest {
   runId: string;
@@ -15,7 +29,7 @@ export interface LocalToolRunRequest {
 
 export interface LocalToolRunResult {
   runId: string;
-  status: 'completed' | 'failed' | 'timed_out';
+  status: 'completed' | 'failed' | 'timed_out' | 'cancelled';
   exitCode: number | null;
   stdout: string;
   stderr: string;
@@ -45,10 +59,12 @@ export class LocalToolRunner {
       let stdout = '';
       let stderr = '';
       let settled = false;
+      let cancelRequested = false;
 
       const finish = (result: Omit<LocalToolRunResult, 'stdoutPath' | 'stderrPath' | 'durationMs' | 'outputFiles'>) => {
         if (settled) return;
         settled = true;
+        activeRuns.delete(request.runId);
         const durationMs = Date.now() - startedAt;
         fs.writeFileSync(stdoutPath, stdout, 'utf8');
         fs.writeFileSync(stderrPath, stderr, 'utf8');
@@ -72,6 +88,11 @@ export class LocalToolRunner {
           CHATBOT_LOCAL_TOOL_RUN_ID: request.runId,
           CHATBOT_LOCAL_TOOL_OUTPUT_DIR: runDir
         }
+      });
+
+      activeRuns.set(request.runId, child);
+      child.on('exit', (_code, signal) => {
+        if (signal === 'SIGTERM' || signal === 'SIGKILL') cancelRequested = true;
       });
 
       const timeout = setTimeout(() => {
@@ -104,6 +125,15 @@ export class LocalToolRunner {
 
       child.on('close', code => {
         clearTimeout(timeout);
+        if (cancelRequested) {
+          finish({
+            runId: request.runId,
+            status: 'cancelled',
+            exitCode: code,
+            error: 'Local tool run was cancelled'
+          });
+          return;
+        }
         finish({
           runId: request.runId,
           status: code === 0 ? 'completed' : 'failed',
