@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { asyncHandler } from '../../middleware/errorHandler';
 import { sanitizeInput } from '../../middleware/validator';
 import { InternalSpriteImageAdapter } from '../../core/sprite-lab/InternalSpriteImageAdapter';
+import { SpriteExternalToolAdapter } from '../../core/sprite-lab/SpriteExternalToolAdapter';
 import { SpriteLabPlanService } from '../../core/sprite-lab/SpriteLabPlanService';
 
 export function createSpriteLabRouter(services: any, workspaceRoot = process.cwd()): Router {
@@ -9,6 +10,7 @@ export function createSpriteLabRouter(services: any, workspaceRoot = process.cwd
 
   const getService = () => new SpriteLabPlanService(services?.database, workspaceRoot);
   const getInternalAdapter = () => new InternalSpriteImageAdapter(workspaceRoot);
+  const getExternalAdapter = () => new SpriteExternalToolAdapter(services?.database, workspaceRoot);
 
   router.get('/api/sprite-lab/status', asyncHandler(async (_req, res) => {
     res.json(await getService().getStatus());
@@ -24,6 +26,51 @@ export function createSpriteLabRouter(services: any, workspaceRoot = process.cwd
     }
 
     res.json(await getService().planWorkflow({ workflow, inputPath, outputTarget }));
+  }));
+
+  router.post('/api/sprite-lab/external/plan', asyncHandler(async (req, res) => {
+    const backend = sanitizeInput(String(req.body.backend || '')) as any;
+    const workflow = sanitizeInput(String(req.body.workflow || '')) as any;
+    const inputPath = sanitizeInput(String(req.body.inputPath || ''));
+    const outputTarget = req.body.outputTarget ? sanitizeInput(String(req.body.outputTarget)) : undefined;
+
+    if (!backend.trim() || !workflow.trim() || !inputPath.trim()) {
+      return res.status(400).json({ error: 'backend, workflow, and inputPath are required' });
+    }
+
+    res.json(await getExternalAdapter().planRun({
+      backend,
+      workflow,
+      inputPath,
+      outputTarget,
+      cwd: req.body.cwd ? String(req.body.cwd) : undefined,
+      approvedByUser: req.body.approvedByUser === true,
+      options: req.body.options && typeof req.body.options === 'object' ? req.body.options : undefined
+    }));
+  }));
+
+  router.post('/api/sprite-lab/external/run', asyncHandler(async (req, res) => {
+    const backend = sanitizeInput(String(req.body.backend || '')) as any;
+    const workflow = sanitizeInput(String(req.body.workflow || '')) as any;
+    const inputPath = sanitizeInput(String(req.body.inputPath || ''));
+    const outputTarget = req.body.outputTarget ? sanitizeInput(String(req.body.outputTarget)) : undefined;
+
+    if (!backend.trim() || !workflow.trim() || !inputPath.trim()) {
+      return res.status(400).json({ error: 'backend, workflow, and inputPath are required' });
+    }
+    if (req.body.approvedByUser !== true) {
+      return res.status(400).json({ error: 'approvedByUser must be true before starting an external sprite tool run' });
+    }
+
+    res.json(await getExternalAdapter().run({
+      backend,
+      workflow,
+      inputPath,
+      outputTarget,
+      cwd: req.body.cwd ? String(req.body.cwd) : undefined,
+      approvedByUser: true,
+      options: req.body.options && typeof req.body.options === 'object' ? req.body.options : undefined
+    }));
   }));
 
   router.post('/api/sprite-lab/internal/slice-grid', asyncHandler(async (req, res) => {
