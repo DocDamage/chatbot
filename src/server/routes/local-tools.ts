@@ -2,11 +2,13 @@ import { Router } from 'express';
 import { asyncHandler } from '../../middleware/errorHandler';
 import { sanitizeInput } from '../../middleware/validator';
 import { LocalToolService } from '../../core/local-tools/LocalToolService';
+import { LocalRunApprovalService } from '../../core/local-tools/LocalRunApprovalService';
 
 export function createLocalToolsRouter(services: any, workspaceRoot = process.cwd()): Router {
   const router = Router();
 
   const getService = () => new LocalToolService(services?.database, workspaceRoot);
+  const getApprovalService = () => new LocalRunApprovalService(services?.database);
 
   router.get('/api/local-tools/detect', asyncHandler(async (_req, res) => {
     res.json(await getService().detectAll());
@@ -48,6 +50,16 @@ export function createLocalToolsRouter(services: any, workspaceRoot = process.cw
       riskLevel: req.body.riskLevel ? String(req.body.riskLevel) : undefined,
       approvedByUser: req.body.approvedByUser === true
     }));
+  }));
+
+  router.get('/api/local-tools/runs', asyncHandler(async (req, res) => {
+    res.json({ runs: await getApprovalService().listRuns(req.query.limit ? Number(req.query.limit) : undefined) });
+  }));
+
+  router.post('/api/local-tools/runs/:runId/approve', asyncHandler(async (req, res) => {
+    const runId = sanitizeInput(String(req.params.runId || ''));
+    if (!runId.trim()) return res.status(400).json({ error: 'runId is required' });
+    res.json({ run: await getApprovalService().approveRun(runId, req.body.approvalNote ? String(req.body.approvalNote) : undefined) });
   }));
 
   return router;
