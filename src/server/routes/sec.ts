@@ -18,6 +18,22 @@ export function createSECRouter(services: any): Router {
     res.json({ companies: await getService().searchCompanies(q, req.query.limit ? Number(req.query.limit) : undefined) });
   }));
 
+  router.get('/api/sec/live/tickers', asyncHandler(async (_req, res) => {
+    res.json(await getService().getLiveCompanyTickers());
+  }));
+
+  router.get('/api/sec/live/submissions/:cik', asyncHandler(async (req, res) => {
+    const cik = sanitizeInput(String(req.params.cik || ''));
+    if (!cik.trim()) return res.status(400).json({ error: 'cik is required' });
+    res.json(await getService().getLiveCompanySubmissions(cik));
+  }));
+
+  router.get('/api/sec/live/facts/:cik', asyncHandler(async (req, res) => {
+    const cik = sanitizeInput(String(req.params.cik || ''));
+    if (!cik.trim()) return res.status(400).json({ error: 'cik is required' });
+    res.json(await getService().getLiveCompanyFacts(cik));
+  }));
+
   router.post('/api/sec/ingest/plan', asyncHandler(async (req, res) => {
     res.json(await getService().planIngestion({
       runType: req.body.runType ? String(req.body.runType) : undefined,
