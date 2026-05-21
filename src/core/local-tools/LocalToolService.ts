@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Database } from '../database/Database';
 import { boolParam, ensureExpansionDatabase, jsonParam } from '../database/ExpansionDatabase';
 import { ToolCatalogService } from '../tools/catalog/ToolCatalogService';
+import { LocalToolRunner, LocalToolRunResult } from './LocalToolRunner';
 
 export interface LocalExecutableDetection {
   toolId?: string;
@@ -29,6 +30,10 @@ export interface PlannedLocalToolRun {
   cwd: string;
   riskLevel: string;
   requiresApproval: boolean;
+}
+
+export interface ExecutedLocalToolRun extends LocalToolRunResult {
+  approvedByUser: boolean;
 }
 
 export class LocalToolService {
@@ -134,15 +139,11 @@ export class LocalToolService {
     approvedByUser?: boolean;
   }): Promise<PlannedLocalToolRun> {
     const database = await ensureExpansionDatabase(this.database);
-    const cwd = path.resolve(this.workspaceRoot, input.cwd || '.');
-    if (!cwd.startsWith(this.workspaceRoot)) {
-      throw new Error('Local tool runs must stay inside the workspace unless a broader path is explicitly approved in a later implementation step.');
-    }
-
+    const cwd = this.resolveWorkspacePath(input.cwd || '.');
     const executable = await this.resolveExecutable(database, input.toolSlug, input.executablePath);
-    const args = Array.isArray(input.args) ? input.args.map(String) : [];
+    const args = this.normalizeArgs(input.args || []);
     const riskLevel = input.riskLevel || 'low';
-    const requiresApproval = riskLevel !== 'low' || executable.approval_policy === 'ask_each_run';
+    const requiresApproval = this.requiresApproval(executable.approval_policy, riskLevel);
     const runId = uuidv4();
 
     await database.query(
@@ -161,7 +162,10 @@ export class LocalToolService {
         'planned',
         riskLevel,
         boolParam(database, input.approvedByUser === true),
-        jsonParam({ note: 'Phase 1 creates auditable planned runs only. Execution bridge is Phase 2.' })
+        jsonParam({
+          note: 'Planned local tool run. Execution requires the guarded LocalToolRunner path.',
+          requiresApproval
+        })
       ]
     );
 
@@ -178,13 +182,101 @@ export class LocalToolService {
     };
   }
 
+  async executePlannedRun(runId: string, approvedByUser = false): Promise<ExecutedLocalToolRun> {
+    const database = await ensureExpansionDatabase(this.database);
+    const row = (await database.query('SELECT * FROM local_tool_runs WHERE id = ? LIMIT 1', [runId])).rows[0];
+    if (!row) {
+      throw new Error(`Local tool run not found: ${runId}`);
+    }
+    if (row.status !== 'planned' && row.status !== 'failed') {
+      throw new Error(`Local tool run cannot be executed from status: ${row.status}`);
+    }
+
+    const resolvedCommand = this.parseJson<string[]>(row.resolved_command_json, []);
+    const [executablePath, ...args] = resolvedCommand;
+    if (!executablePath) {
+      throw new Error('Planned run does not contain an executable path');
+    }
+
+    const executable = row.executable_id
+      ? (await database.query('SELECT * FROM local_executables WHERE id = ? LIMIT 1', [row.executable_id])).rows[0]
+      : { approval_policy: 'ask_each_run', enabled: true };
+    const riskLevel = row.risk_level || 'low';
+    const runAlreadyApproved = Boolean(row.approved_by_user);
+    const requiresApproval = this.requiresApproval(executable?.approval_policy || 'ask_each_run', riskLevel);
+
+    if (requiresApproval && !approvedByUser && !runAlreadyApproved) {
+      throw new Error('Local tool run requires explicit user approval before execution');
+    }
+    if (executable && executable.enabled !== undefined && !Boolean(executable.enabled) && !approvedByUser) {
+      throw new Error('Local executable is not enabled. Enable it or explicitly approve this run.');
+    }
+
+    const cwd = this.resolveWorkspacePath(path.relative(this.workspaceRoot, row.cwd || this.workspaceRoot));
+    await database.query(
+      `UPDATE local_tool_runs SET status = ?, approved_by_user = ?, started_at = CURRENT_TIMESTAMP, metadata_json = ? WHERE id = ?`,
+      [
+        'running',
+        boolParam(database, approvedByUser || runAlreadyApproved),
+        jsonParam({ executing: true, approvalSource: approvedByUser ? 'request' : runAlreadyApproved ? 'stored_run' : 'none' }),
+        runId
+      ]
+    );
+
+    const result = await new LocalToolRunner().run({
+      runId,
+      executablePath,
+      args: this.normalizeArgs(args),
+      cwd,
+      riskLevel,
+      outputRoot: process.env.LOCAL_TOOL_RUNS_DIR || path.join(process.cwd(), 'data', 'local-tool-runs'),
+      timeoutMs: process.env.LOCAL_TOOL_TIMEOUT_MS ? Number(process.env.LOCAL_TOOL_TIMEOUT_MS) : undefined
+    });
+
+    await database.query(
+      `UPDATE local_tool_runs SET
+        status = ?, exit_code = ?, stdout_path = ?, stderr_path = ?, output_files_json = ?,
+        completed_at = CURRENT_TIMESTAMP, duration_ms = ?, approved_by_user = ?, metadata_json = ?
+       WHERE id = ?`,
+      [
+        result.status,
+        result.exitCode,
+        result.stdoutPath,
+        result.stderrPath,
+        jsonParam(result.outputFiles),
+        result.durationMs,
+        boolParam(database, approvedByUser || runAlreadyApproved),
+        jsonParam({ error: result.error || null }),
+        runId
+      ]
+    );
+
+    return {
+      ...result,
+      approvedByUser: approvedByUser || runAlreadyApproved
+    };
+  }
+
+  async planAndExecute(input: {
+    toolSlug?: string;
+    executablePath?: string;
+    args?: string[];
+    cwd?: string;
+    riskLevel?: string;
+    approvedByUser?: boolean;
+  }): Promise<ExecutedLocalToolRun> {
+    const plan = await this.planRun(input);
+    return this.executePlannedRun(plan.runId, input.approvedByUser === true);
+  }
+
   private async resolveExecutable(database: Database, toolSlug?: string, executablePath?: string): Promise<any> {
     if (executablePath) {
       return {
         id: null,
         tool_id: null,
         executable_path: path.resolve(executablePath),
-        approval_policy: 'ask_each_run'
+        approval_policy: 'ask_each_run',
+        enabled: true
       };
     }
 
@@ -303,6 +395,23 @@ export class LocalToolService {
     return executablePath.includes(`${path.sep}local-tools${path.sep}`)
       || executablePath.toLowerCase().includes('steamapps')
       || executablePath.toLowerCase().includes('program files');
+  }
+
+  private resolveWorkspacePath(requestedPath: string): string {
+    const resolved = path.resolve(this.workspaceRoot, requestedPath);
+    const relative = path.relative(this.workspaceRoot, resolved);
+    if (relative.startsWith('..') || path.isAbsolute(relative)) {
+      throw new Error('Local tool runs must stay inside the workspace unless a broader path is explicitly approved in a later implementation step.');
+    }
+    return resolved;
+  }
+
+  private normalizeArgs(args: string[]): string[] {
+    return args.map(arg => String(arg));
+  }
+
+  private requiresApproval(approvalPolicy: string, riskLevel: string): boolean {
+    return approvalPolicy === 'ask_each_run' || riskLevel === 'medium' || riskLevel === 'high';
   }
 
   private parseJson<T>(value: unknown, fallback: T): T {
