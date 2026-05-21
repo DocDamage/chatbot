@@ -1,10 +1,14 @@
 node_modules/
 dist/
 data/
+local-tools/
+private-tools/
 client/node_modules/
 client/dist/
 client/.next/
 .env
+.env.local
+.env.*.local
 cache/
 knowledge-base/
 *.log
