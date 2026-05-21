@@ -248,6 +248,8 @@ const initialCatalog: ToolCatalogRecord[] = [
 ];
 
 export class ToolCatalogService {
+  private seeded = false;
+
   constructor(private readonly database?: Database) {}
 
   async seedInitialCatalog(): Promise<{ insertedOrUpdated: number }> {
@@ -257,11 +259,12 @@ export class ToolCatalogService {
       await this.upsertTool(record, database);
       insertedOrUpdated += 1;
     }
+    this.seeded = true;
     return { insertedOrUpdated };
   }
 
   async listTools(filters: { category?: string; q?: string; limit?: number } = {}): Promise<ToolCatalogRecord[]> {
-    const database = await ensureExpansionDatabase(this.database);
+    const database = await this.readyDatabase();
     const params: any[] = [];
     const where: string[] = [];
 
@@ -286,7 +289,7 @@ export class ToolCatalogService {
   }
 
   async getStats(): Promise<{ total: number; byCategory: Record<string, number> }> {
-    const database = await ensureExpansionDatabase(this.database);
+    const database = await this.readyDatabase();
     const total = await database.query('SELECT COUNT(*) AS count FROM tool_catalog');
     const byCategoryRows = await database.query('SELECT category, COUNT(*) AS count FROM tool_catalog GROUP BY category ORDER BY category');
     const byCategory: Record<string, number> = {};
@@ -294,6 +297,14 @@ export class ToolCatalogService {
       byCategory[row.category] = Number(row.count);
     }
     return { total: Number(total.rows[0]?.count || 0), byCategory };
+  }
+
+  private async readyDatabase(): Promise<Database> {
+    const database = await ensureExpansionDatabase(this.database);
+    if (!this.seeded) {
+      await this.seedInitialCatalog();
+    }
+    return database;
   }
 
   private async upsertTool(record: ToolCatalogRecord, database: Database): Promise<void> {
