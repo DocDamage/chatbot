@@ -77,6 +77,7 @@ export interface LegacyChatRouteDeps {
   getOrchestrator: () => any;
   waitForReady: (timeoutMs?: number) => Promise<void>;
   getConversationManager: () => ConversationManager;
+  workspaceRoot?: string;
 }
 
 export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHandler[] {
@@ -226,7 +227,7 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
       }
 
       if (mode === 'plan') {
-        const plan = await new PlanDocumentService(process.cwd()).createPlan({
+        const plan = await new PlanDocumentService(deps.workspaceRoot || process.cwd()).createPlan({
           userRequest: sanitizedMessage,
           mode: 'plan'
         });

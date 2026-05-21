@@ -3,7 +3,21 @@
 **Repository:** `DocDamage/chatbot`  
 **Branch scanned:** `main`  
 **Plan date:** 2026-05-20  
-**Status:** Plan-only. No implementation changes have been made.
+**Status:** Historical plan, implemented in later release-audit work. Updated 2026-05-21 to reflect current code state.
+
+## Current Implementation Status
+
+This document began as a plan-only artifact. The repo now implements the plan's major behavior:
+
+- File explorer: implemented with `FileExplorerService`, `/api/files`, `FileExplorerPanel`, `FilePreviewPane`, and `LoadedFilesBar`.
+- Audio browser: implemented with `AudioLibraryService`, `AudioMetadataService`, `/api/audio`, and `AudioPreviewBrowser`.
+- Mode guardrails: implemented with `ModePolicy`, server-side code-route restrictions, plan-mode saved Markdown output, and debug switch prompts.
+- Plan persistence: implemented with `PlanDocumentService`, `/api/plans`, chat plan actions, and reusable `PlanActionBar`.
+- Gaming module: implemented with `GamingGeniusAgent`, gaming intent/knowledge routing, phrasebook wiring, `/api/gaming`, and UI mode registration.
+- Knowledge miss and online ingestion: implemented with `KnowledgeMissHandler`, `OnlineKnowledgeIngestionService`, `/api/knowledge-online`, reusable `KnowledgeMissPrompt`, and client API calls.
+- Verification: covered by focused unit/API/client tests plus release-audit entries in `docs/RELEASE_COMPLETION_AUDIT.md`.
+
+Remaining scope after this update is ordinary product hardening: manual browser smoke testing, richer file-range selection UI, deeper audio analysis beyond deterministic PCM WAV statistics, and quality review of online-ingestion source ranking.
 
 ## 1. Goal
 

@@ -20,6 +20,8 @@ import AudioPreviewBrowser from './AudioPreviewBrowser';
 import CodeWorkflowPanel from './CodeWorkflowPanel';
 import ConversationToolsPanel from './ConversationToolsPanel';
 import CreativeComposerPanel, { buildCreativeRequestPayload, defaultCreativeComposerState } from './CreativeComposerPanel';
+import KnowledgeMissPrompt from './KnowledgeMissPrompt';
+import PlanActionBar from './PlanActionBar';
 import { LoadedFileContext } from '../api/files';
 import { AudioFileContext } from '../api/audio';
 import type { ConversationDetail } from '../api/conversations';
@@ -386,6 +388,29 @@ function AssistantChat() {
     }
   };
 
+  const openPlan = async (planId: string) => {
+    try {
+      const response = await fetch(`/api/plans/${encodeURIComponent(planId)}`);
+      if (!response.ok) {
+        await throwApiError(response, 'Unable to open plan');
+      }
+      const plan = await response.json();
+      setMessages(prev => [
+        ...prev,
+        {
+          id: uuidv4(),
+          role: 'assistant',
+          content: plan.content || plan.summary || `Plan ${planId} loaded.`,
+          mode: 'plan',
+          createdAt: new Date().toISOString(),
+          status: 'complete'
+        }
+      ]);
+    } catch (error: any) {
+      setKnowledgeActionError(error.message || 'Unable to open plan');
+    }
+  };
+
   return (
     <AssistantRuntimeProvider runtime={runtime}>
       <div className="assistant-workspace">
@@ -419,17 +444,21 @@ function AssistantChat() {
             <FLStudioControlPanel onSendCommand={command => sendUserMessage(command, 'fl_studio_control')} />
           )}
           {planAction && (
-            <div className="assistant-cta-bar">
-              <span>Plan saved: {planAction.planPath}</span>
-              <button type="button" onClick={() => setMode('implement')}>Switch to Implement</button>
-            </div>
+            <PlanActionBar
+              planId={planAction.planId}
+              planPath={planAction.planPath}
+              onSwitchToImplement={() => setMode('implement')}
+              onOpenPlan={openPlan}
+            />
           )}
           {knowledgeMiss && (
-            <div className="assistant-cta-bar">
-              <span>I do not have this in local knowledge.</span>
-              <button type="button" onClick={runOnlineSearch}>Search Online</button>
-              <button type="button" onClick={() => setKnowledgeMiss(null)}>Cancel</button>
-            </div>
+            <KnowledgeMissPrompt
+              query={knowledgeMiss.query}
+              domain={knowledgeMiss.domain}
+              recommendedSources={knowledgeMiss.recommendedSources}
+              onSearch={runOnlineSearch}
+              onCancel={() => setKnowledgeMiss(null)}
+            />
           )}
           {knowledgeActionError && (
             <div className="assistant-error-bar" role="alert">{knowledgeActionError}</div>

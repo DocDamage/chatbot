@@ -1,9 +1,80 @@
 import express from 'express';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import request from 'supertest';
 import { ConversationManager } from '../../core/conversation/ConversationManager';
 import { createLegacyChatHandlers } from './legacy-chat';
 
 describe('legacy chat knowledge miss contract', () => {
+  it('saves Markdown plans and returns implement-mode actions from plan mode', async () => {
+    const app = express();
+    const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'legacy-plan-route-'));
+    const conversationManager = new ConversationManager();
+    const orchestrator = {
+      processRequest: jest.fn(),
+    };
+
+    app.use(express.json());
+    app.post('/api/chat', ...createLegacyChatHandlers({
+      getServices: () => ({}),
+      getOrchestrator: () => orchestrator,
+      waitForReady: jest.fn().mockResolvedValue(undefined),
+      getConversationManager: () => conversationManager,
+      workspaceRoot,
+    }));
+
+    await request(app)
+      .post('/api/chat')
+      .send({
+        message: 'Implement a file explorer panel',
+        sessionId: 'plan-session',
+        mode: 'plan',
+      })
+      .expect(200)
+      .expect(response => {
+        expect(response.body.savedMarkdown).toBe(true);
+        expect(response.body.suggestedNextMode).toBe('implement');
+        expect(response.body.planPath).toMatch(/plans\//);
+        expect(fs.existsSync(path.join(workspaceRoot, response.body.planPath))).toBe(true);
+        expect(response.body.actions).toEqual(expect.arrayContaining([
+          expect.objectContaining({ type: 'switch_mode', mode: 'implement' }),
+          expect.objectContaining({ type: 'open_plan' }),
+        ]));
+      });
+
+    expect(orchestrator.processRequest).not.toHaveBeenCalled();
+  });
+
+  it('returns a debug-mode switch prompt for stack traces outside debug mode', async () => {
+    const app = express();
+    const conversationManager = new ConversationManager();
+    const orchestrator = {
+      processRequest: jest.fn(),
+    };
+
+    app.use(express.json());
+    app.post('/api/chat', ...createLegacyChatHandlers({
+      getServices: () => ({}),
+      getOrchestrator: () => orchestrator,
+      waitForReady: jest.fn().mockResolvedValue(undefined),
+      getConversationManager: () => conversationManager,
+    }));
+
+    await request(app)
+      .post('/api/chat')
+      .send({
+        message: 'TypeError: Cannot read properties of undefined',
+        sessionId: 'debug-session',
+        mode: 'ask',
+      })
+      .expect(200)
+      .expect(response => {
+        expect(response.body.response).toContain('Switch to Debug');
+        expect(response.body.modeSwitch.targetMode).toBe('debug');
+      });
+  });
+
   it('returns a typed knowledge miss detail when local knowledge has no coverage', async () => {
     const app = express();
     const conversationManager = new ConversationManager();
