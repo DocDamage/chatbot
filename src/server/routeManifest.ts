@@ -9,6 +9,7 @@ import { createEngineeringGeniusRouter } from './routes/engineering';
 import { createExportRouter } from './routes/export';
 import { createFilesRouter } from './routes/files';
 import { createFLStudioControlRouter } from './routes/flstudio';
+import { createGISRouter } from './routes/gis';
 import { createGameDevRouter } from './routes/gamedev';
 import { createGamingRouter } from './routes/gaming';
 import { createGeoCultureGeniusRouter } from './routes/geography';
@@ -63,6 +64,7 @@ export const routeManifest: RouteManifestEntry[] = [
   { name: 'philosophy', readiness: true },
   { name: 'language', readiness: true },
   { name: 'geography', readiness: true },
+  { name: 'gis', readiness: true },
   { name: 'engineering', readiness: true },
   { name: 'knowledge-online', mount: '/api/knowledge-online', readiness: true, privilege: 'developer', auditAction: 'knowledge-online' },
   { name: 'admin', mount: '/api/admin', readiness: false, privilege: 'admin', auditAction: 'admin' },
@@ -108,6 +110,7 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
     philosophy: () => createPhilosophyGeniusRouter(deps.getServices()),
     language: () => createLanguageGeniusRouter(deps.getServices()),
     geography: () => createGeoCultureGeniusRouter(deps.getServices()),
+    gis: () => createGISRouter(deps.getServices()),
     engineering: () => createEngineeringGeniusRouter(deps.getServices()),
     'knowledge-online': () => createKnowledgeOnlineRouter(deps.getServices()),
     admin: () => createAdminRouter(deps.getServices()),

@@ -71,6 +71,7 @@ describe('ModeSelector', () => {
       'Creative Writing',
       'Roleplay',
       'Legal/Civic',
+      'GIS',
       'Engineering',
     ]));
   });

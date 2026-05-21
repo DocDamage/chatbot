@@ -22,6 +22,7 @@ import ConversationToolsPanel from './ConversationToolsPanel';
 import CreativeComposerPanel, { buildCreativeRequestPayload, defaultCreativeComposerState } from './CreativeComposerPanel';
 import KnowledgeMissPrompt from './KnowledgeMissPrompt';
 import PlanActionBar from './PlanActionBar';
+import GISMapPanel from '../features/gis/GISMapPanel';
 import { LoadedFileContext } from '../api/files';
 import { AudioFileContext } from '../api/audio';
 import type { ConversationDetail } from '../api/conversations';
@@ -106,6 +107,7 @@ const modeHints: Record<ChatMode, string> = {
   philosophy: 'Philosophy mode',
   language: 'Language mode',
   geography: 'Geography mode',
+  gis: 'GIS mapping mode',
   engineering: 'Engineering mode',
   knowledge_os: 'Knowledge OS mode'
 };
@@ -140,6 +142,7 @@ const placeholders: Record<ChatMode, string> = {
   philosophy: 'Ask about arguments, ethics, debate, or philosophy history...',
   language: 'Ask for translation, tone, grammar, rhetoric, or speech help...',
   geography: 'Ask about countries, culture, maps, or demographics...',
+  gis: 'Ask for geocoding, routing, layer imports, parcels, or spatial analysis...',
   engineering: 'Ask about circuits, robotics, mechanics, or prototypes...',
   knowledge_os: 'Ask about the local DB, graph, wiki, memory, or evidence...'
 };
@@ -193,6 +196,7 @@ function AssistantChat() {
   const showAudioBrowser = showBackendPanels && ['music', 'fl_studio', 'fl_studio_control', 'pro_tools', 'logic', 'mix_master'].includes(mode);
   const showCodeWorkflows = showBackendPanels && ['ask', 'plan', 'implement', 'debug', 'explain'].includes(mode);
   const showCreativeComposer = mode === 'creative_writing' || mode === 'roleplay';
+  const showGISPanel = showBackendPanels && mode === 'gis';
 
   useEffect(() => {
     let active = true;
@@ -439,6 +443,7 @@ function AssistantChat() {
               onActionCommand={command => sendUserMessage(command, mode)}
             />
           )}
+          {showGISPanel && <GISMapPanel />}
           {showAudioBrowser && <AudioPreviewBrowser onLoadAudio={addLoadedAudio} />}
           {mode === 'fl_studio_control' && (
             <FLStudioControlPanel onSendCommand={command => sendUserMessage(command, 'fl_studio_control')} />
@@ -605,6 +610,8 @@ function getSystemPrompt(mode: ChatMode): string {
       return 'You are a language specialist. Help with translation, grammar, tone, rhetoric, speeches, readability, and rewriting.';
     case 'geography':
       return 'You are a geography and culture specialist. Handle maps, countries, demographics, cultural etiquette, and contested claims carefully.';
+    case 'gis':
+      return 'You are a GIS mapping specialist. Help with geocoding, routing, layers, parcels, spatial analysis, coordinate privacy, provider attribution, and degraded-mode fallbacks.';
     case 'engineering':
       return 'You are an engineering specialist. Help with circuits, robotics, mechanics, BOMs, prototypes, and calculations with safety caveats.';
     case 'knowledge_os':
