@@ -5,6 +5,7 @@ import { createBusinessGeniusRouter } from './routes/business';
 import { createChronoRouter } from './routes/chrono';
 import { createCodeRouter } from './routes/code';
 import { createCreativeWritingRouter } from './routes/creative';
+import { createEducationRouter } from './routes/education';
 import { createEngineeringGeniusRouter } from './routes/engineering';
 import { createExportRouter } from './routes/export';
 import { createFilesRouter } from './routes/files';
@@ -18,6 +19,7 @@ import { createHistoryRouter } from './routes/history';
 import { createKnowledgeOnlineRouter } from './routes/knowledge-online';
 import { createLanguageGeniusRouter } from './routes/language';
 import { createLegalCivicGeniusRouter } from './routes/legal';
+import { createLocalToolsRouter } from './routes/local-tools';
 import { createMarketRouter } from './routes/market';
 import { createMathRouter } from './routes/math';
 import { createMusicProductionGeniusRouter } from './routes/music';
@@ -27,8 +29,10 @@ import { createPopCultureRouter } from './routes/pop-culture';
 import { createRagQueryRouter } from './routes/rag-query';
 import { createScienceRouter } from './routes/science';
 import { createSecurityGeniusRouter } from './routes/security';
+import { createSECRouter } from './routes/sec';
 import { createSixSigmaRouter } from './routes/sixsigma';
 import { createStoryGeniusRouter } from './routes/story';
+import { createToolCatalogRouter } from './routes/toolCatalog';
 
 export interface RouteManifestEntry {
   name: string;
@@ -44,6 +48,10 @@ export const routeManifest: RouteManifestEntry[] = [
   { name: 'plans', mount: '/api/plans', readiness: false, privilege: 'developer', auditAction: 'plans' },
   { name: 'files', mount: '/api/files', readiness: false, privilege: 'developer', auditAction: 'files' },
   { name: 'audio', mount: '/api/audio', readiness: false, privilege: 'developer', auditAction: 'audio' },
+  { name: 'local-tools', mount: '/api/local-tools', readiness: true, privilege: 'developer', auditAction: 'local-tools' },
+  { name: 'tool-catalog', mount: '/api/tool-catalog', readiness: true, privilege: 'developer', auditAction: 'tool-catalog' },
+  { name: 'sec', mount: '/api/sec', readiness: true, privilege: 'developer', auditAction: 'sec' },
+  { name: 'education', mount: '/api/education', readiness: true, privilege: 'developer', auditAction: 'education' },
   { name: 'math', readiness: true },
   { name: 'market', readiness: true },
   { name: 'gamedev', readiness: true },
@@ -90,6 +98,10 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
     plans: () => createPlansRouter(deps.workspaceRoot),
     files: () => createFilesRouter(deps.workspaceRoot),
     audio: () => createAudioRouter(deps.workspaceRoot),
+    'local-tools': () => createLocalToolsRouter(deps.getServices(), deps.workspaceRoot),
+    'tool-catalog': () => createToolCatalogRouter(deps.getServices()),
+    sec: () => createSECRouter(deps.getServices()),
+    education: () => createEducationRouter(deps.getServices()),
     math: () => createMathRouter(deps.getServices()),
     market: () => createMarketRouter(deps.getServices()),
     gamedev: () => createGameDevRouter(deps.getServices()),
