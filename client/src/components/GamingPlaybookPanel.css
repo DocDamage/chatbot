@@ -1,0 +1,93 @@
+.gaming-playbook-panel {
+  border-top: 1px solid #262626;
+  border-bottom: 1px solid #262626;
+  padding: 12px 16px;
+  display: grid;
+  gap: 10px;
+  background: #080808;
+  color: #ffffff;
+}
+
+.gaming-playbook-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.gaming-playbook-header span {
+  color: #a3a3a3;
+  font-size: 12px;
+}
+
+.gaming-playbook-controls {
+  display: grid;
+  grid-template-columns: 140px repeat(4, minmax(0, 1fr)) auto;
+  gap: 8px;
+}
+
+.gaming-playbook-controls select,
+.gaming-playbook-controls input,
+.gaming-playbook-controls button {
+  border: 1px solid #333333;
+  border-radius: 6px;
+  background: #0d0d0d;
+  color: #ffffff;
+  font: inherit;
+  min-height: 32px;
+  padding: 0 10px;
+}
+
+.gaming-playbook-controls button {
+  cursor: pointer;
+}
+
+.gaming-playbook-controls button:hover:not(:disabled) {
+  border-color: #ffffff;
+}
+
+.gaming-playbook-controls button:disabled {
+  color: #737373;
+  cursor: not-allowed;
+}
+
+.gaming-playbook-error {
+  color: #ffb4a8;
+  font-size: 13px;
+}
+
+.gaming-playbook-result {
+  display: grid;
+  gap: 10px;
+  border: 1px solid #262626;
+  border-radius: 8px;
+  background: #030303;
+  padding: 10px;
+}
+
+.gaming-playbook-result h4 {
+  margin: 0;
+}
+
+.gaming-playbook-list {
+  display: grid;
+  gap: 4px;
+}
+
+.gaming-playbook-list ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #d4d4d4;
+  font-size: 13px;
+}
+
+@media (max-width: 960px) {
+  .gaming-playbook-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .gaming-playbook-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
