@@ -31,6 +31,7 @@ import { createScienceRouter } from './routes/science';
 import { createSecurityGeniusRouter } from './routes/security';
 import { createSECRouter } from './routes/sec';
 import { createSixSigmaRouter } from './routes/sixsigma';
+import { createSpriteLabRouter } from './routes/sprite-lab';
 import { createStoryGeniusRouter } from './routes/story';
 import { createToolCatalogRouter } from './routes/toolCatalog';
 
@@ -52,6 +53,7 @@ export const routeManifest: RouteManifestEntry[] = [
   { name: 'tool-catalog', mount: '/api/tool-catalog', readiness: true, privilege: 'developer', auditAction: 'tool-catalog' },
   { name: 'sec', mount: '/api/sec', readiness: true, privilege: 'developer', auditAction: 'sec' },
   { name: 'education', mount: '/api/education', readiness: true, privilege: 'developer', auditAction: 'education' },
+  { name: 'sprite-lab', mount: '/api/sprite-lab', readiness: true, privilege: 'developer', auditAction: 'sprite-lab' },
   { name: 'math', readiness: true },
   { name: 'market', readiness: true },
   { name: 'gamedev', readiness: true },
@@ -102,6 +104,7 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
     'tool-catalog': () => createToolCatalogRouter(deps.getServices()),
     sec: () => createSECRouter(deps.getServices()),
     education: () => createEducationRouter(deps.getServices()),
+    'sprite-lab': () => createSpriteLabRouter(deps.getServices(), deps.workspaceRoot),
     math: () => createMathRouter(deps.getServices()),
     market: () => createMarketRouter(deps.getServices()),
     gamedev: () => createGameDevRouter(deps.getServices()),
