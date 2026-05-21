@@ -1,0 +1,1 @@
+SEC queue implementation note.
