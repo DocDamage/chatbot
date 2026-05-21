@@ -52,6 +52,15 @@ export function createLocalToolsRouter(services: any, workspaceRoot = process.cw
     }));
   }));
 
+  router.post('/api/local-tools/run/start-approved', asyncHandler(async (req, res) => {
+    const runId = sanitizeInput(String(req.body.runId || ''));
+    if (!runId.trim()) return res.status(400).json({ error: 'runId is required' });
+
+    res.json({
+      run: await getService().executePlannedRun(runId, req.body.approvedByUser === true)
+    });
+  }));
+
   router.get('/api/local-tools/runs', asyncHandler(async (req, res) => {
     res.json({ runs: await getApprovalService().listRuns(req.query.limit ? Number(req.query.limit) : undefined) });
   }));
@@ -60,6 +69,15 @@ export function createLocalToolsRouter(services: any, workspaceRoot = process.cw
     const runId = sanitizeInput(String(req.params.runId || ''));
     if (!runId.trim()) return res.status(400).json({ error: 'runId is required' });
     res.json({ run: await getApprovalService().approveRun(runId, req.body.approvalNote ? String(req.body.approvalNote) : undefined) });
+  }));
+
+  router.post('/api/local-tools/runs/:runId/start', asyncHandler(async (req, res) => {
+    const runId = sanitizeInput(String(req.params.runId || ''));
+    if (!runId.trim()) return res.status(400).json({ error: 'runId is required' });
+
+    res.json({
+      run: await getService().executePlannedRun(runId, req.body.approvedByUser === true)
+    });
   }));
 
   return router;
