@@ -6,6 +6,7 @@ import { Database } from '../database/Database';
 import { boolParam, ensureExpansionDatabase, jsonParam } from '../database/ExpansionDatabase';
 import { ToolCatalogService } from '../tools/catalog/ToolCatalogService';
 import { LocalToolRunner, LocalToolRunResult } from './LocalToolRunner';
+import { validateLocalToolArgs } from './LocalToolPolicy';
 
 export interface LocalExecutableDetection {
   toolId?: string;
@@ -142,6 +143,10 @@ export class LocalToolService {
     const cwd = this.resolveWorkspacePath(input.cwd || '.');
     const executable = await this.resolveExecutable(database, input.toolSlug, input.executablePath);
     const args = this.normalizeArgs(input.args || []);
+    const policy = validateLocalToolArgs(input.toolSlug, args);
+    if (!policy.allowed) {
+      throw new Error(policy.reason || 'Local tool arguments are not allowed');
+    }
     const riskLevel = input.riskLevel || 'low';
     const requiresApproval = this.requiresApproval(executable.approval_policy, riskLevel);
     const runId = uuidv4();
@@ -164,7 +169,8 @@ export class LocalToolService {
         boolParam(database, input.approvedByUser === true),
         jsonParam({
           note: 'Planned local tool run. Execution requires the guarded LocalToolRunner path.',
-          requiresApproval
+          requiresApproval,
+          policy: 'capability-allowlisted-args'
         })
       ]
     );
