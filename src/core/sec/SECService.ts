@@ -146,12 +146,7 @@ export class SECService {
     const companyId = await storage.upsertCompanyFromSubmissions(submissions);
     const forms = this.normalizeForms(input.forms);
     const limit = Math.min(Math.max(Number(input.limitPerCompany || 25), 1), 200);
-    const filingsStored = await storage.storeRecentFilings({
-      companyId,
-      submissions,
-      forms,
-      limit
-    });
+    const filingsStored = await storage.storeRecentFilings({ companyId, submissions, forms, limit });
 
     const warnings: string[] = [];
     let factsStored = 0;
@@ -165,13 +160,7 @@ export class SECService {
       }
     }
 
-    return {
-      companyId,
-      cik: normalizedCik,
-      filingsStored,
-      factsStored,
-      warnings
-    };
+    return { companyId, cik: normalizedCik, filingsStored, factsStored, warnings };
   }
 
   async ingestCompanyByTicker(ticker: string, input: SECCompanyIngestionInput = {}): Promise<SECCompanyIngestionResult> {
@@ -289,7 +278,8 @@ export class SECService {
 
       try {
         const metadata = this.parseJson<SECCompanyIngestionInput>(item.metadata_json, {});
-        const forms = this.parseJson<string[]>(item.forms_json, metadata.forms || undefined);
+        const fallbackForms = Array.isArray(metadata.forms) ? metadata.forms : this.normalizeForms(undefined);
+        const forms = this.parseJson<string[]>(item.forms_json, fallbackForms);
         const ingestInput: SECCompanyIngestionInput = {
           ...metadata,
           forms,

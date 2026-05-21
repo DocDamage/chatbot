@@ -4,15 +4,21 @@ import * as path from 'path';
 
 const activeRuns = new Map<string, ChildProcess>();
 
+type LocalToolRunFinishInput = Omit<
+  LocalToolRunResult,
+  'stdout' | 'stderr' | 'stdoutPath' | 'stderrPath' | 'durationMs' | 'outputFiles'
+>;
+
 export function cancelLocalToolRun(runId: string): boolean {
   const child = activeRuns.get(runId);
   if (!child) return false;
   child.kill('SIGTERM');
-  setTimeout(() => {
+  const killTimer = setTimeout(() => {
     if (activeRuns.has(runId)) {
       child.kill('SIGKILL');
     }
-  }, 5000).unref?.();
+  }, 5000);
+  killTimer.unref?.();
   return true;
 }
 
@@ -61,7 +67,7 @@ export class LocalToolRunner {
       let settled = false;
       let cancelRequested = false;
 
-      const finish = (result: Omit<LocalToolRunResult, 'stdoutPath' | 'stderrPath' | 'durationMs' | 'outputFiles'>) => {
+      const finish = (result: LocalToolRunFinishInput) => {
         if (settled) return;
         settled = true;
         activeRuns.delete(request.runId);
