@@ -214,7 +214,7 @@ export class LocalToolService {
     if (requiresApproval && !approvedByUser && !runAlreadyApproved) {
       throw new Error('Local tool run requires explicit user approval before execution');
     }
-    if (executable && executable.enabled !== undefined && !Boolean(executable.enabled) && !approvedByUser) {
+    if (executable && executable.enabled !== undefined && !executable.enabled && !approvedByUser) {
       throw new Error('Local executable is not enabled. Enable it or explicitly approve this run.');
     }
 
