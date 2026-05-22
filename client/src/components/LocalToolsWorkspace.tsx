@@ -1,6 +1,7 @@
 import { isStaticPagesBuild } from '../api/runtime';
 import LocalRunApprovalPanel from './LocalRunApprovalPanel';
 import SpriteLabPanel from './SpriteLabPanel';
+import './LocalToolsWorkspace.css';
 
 export default function LocalToolsWorkspace() {
   if (isStaticPagesBuild) return null;
