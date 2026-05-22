@@ -11,9 +11,13 @@ vi.mock('./FileExplorerPanel', () => ({
   )
 }));
 
+let clipboardWriteText: ReturnType<typeof vi.fn>;
+
 beforeEach(() => {
-  Object.assign(navigator, {
-    clipboard: { writeText: vi.fn().mockResolvedValue(undefined) }
+  clipboardWriteText = vi.fn().mockResolvedValue(undefined);
+  Object.defineProperty(window.navigator, 'clipboard', {
+    value: { writeText: clipboardWriteText },
+    configurable: true
   });
 
   global.fetch = vi.fn(async (url: RequestInfo | URL) => {
@@ -89,6 +93,6 @@ describe('SpriteLabPanel polish', () => {
     await waitFor(() => expect(screen.getByText(/stdout\.txt/i)).toBeTruthy());
 
     await user.click(screen.getByRole('button', { name: /copy command/i }));
-    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('aseprite -b assets/hero.aseprite --sheet out.png');
+    expect(clipboardWriteText).toHaveBeenCalledWith('aseprite -b assets/hero.aseprite --sheet out.png');
   });
 });
