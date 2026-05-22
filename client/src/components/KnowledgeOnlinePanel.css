@@ -1,0 +1,125 @@
+.knowledge-online-panel {
+  border-top: 1px solid #262626;
+  border-bottom: 1px solid #262626;
+  padding: 12px 16px;
+  display: grid;
+  gap: 10px;
+  background: #080808;
+  color: #ffffff;
+}
+
+.knowledge-online-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.knowledge-online-header span {
+  color: #a3a3a3;
+  font-size: 12px;
+}
+
+.knowledge-online-controls {
+  display: grid;
+  grid-template-columns: 2fr 140px 120px 180px auto auto;
+  gap: 8px;
+}
+
+.knowledge-online-controls input,
+.knowledge-online-controls button {
+  border: 1px solid #333333;
+  border-radius: 6px;
+  background: #0d0d0d;
+  color: #ffffff;
+  font: inherit;
+  min-height: 32px;
+  padding: 0 10px;
+}
+
+.knowledge-online-controls button {
+  cursor: pointer;
+}
+
+.knowledge-online-controls button:hover:not(:disabled) {
+  border-color: #ffffff;
+}
+
+.knowledge-online-controls button:disabled {
+  color: #737373;
+  cursor: not-allowed;
+}
+
+.knowledge-online-error {
+  color: #ffb4a8;
+  font-size: 13px;
+}
+
+.knowledge-online-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.knowledge-online-card {
+  display: grid;
+  gap: 8px;
+  border: 1px solid #262626;
+  border-radius: 8px;
+  background: #030303;
+  padding: 10px;
+}
+
+.knowledge-online-card h4 {
+  margin: 0;
+}
+
+.knowledge-online-card pre {
+  margin: 0;
+  max-height: 160px;
+  overflow: auto;
+  white-space: pre-wrap;
+  color: #d4d4d4;
+  font-size: 12px;
+}
+
+.knowledge-online-metric {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: #d4d4d4;
+  font-size: 12px;
+}
+
+.knowledge-online-source-list {
+  display: grid;
+  gap: 6px;
+}
+
+.knowledge-online-source {
+  border: 1px solid #202020;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.knowledge-online-source strong {
+  display: block;
+}
+
+.knowledge-online-source small {
+  color: #a3a3a3;
+  word-break: break-all;
+}
+
+.knowledge-online-source p {
+  margin: 4px 0 0;
+  color: #d4d4d4;
+  font-size: 12px;
+}
+
+@media (max-width: 1100px) {
+  .knowledge-online-controls,
+  .knowledge-online-grid {
+    grid-template-columns: 1fr;
+  }
+}

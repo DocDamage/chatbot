@@ -1,5 +1,6 @@
 import AssistantChat from './components/AssistantChat';
 import GamingPlaybookPanel from './components/GamingPlaybookPanel';
+import KnowledgeOnlinePanel from './components/KnowledgeOnlinePanel';
 import LocalToolsWorkspace from './components/LocalToolsWorkspace';
 import SettingsMenu from './components/SettingsMenu';
 import './App.css';
@@ -14,6 +15,7 @@ function App() {
       </header>
       <AssistantChat />
       <GamingPlaybookPanel />
+      <KnowledgeOnlinePanel />
       <LocalToolsWorkspace />
     </div>
   );
