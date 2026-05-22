@@ -1,0 +1,125 @@
+.local-run-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 10px;
+}
+
+.local-run-list {
+  max-height: 230px;
+}
+
+.local-run-card.selected,
+.sprite-backend-card.selected {
+  border-color: #4f46e5;
+}
+
+.local-run-select {
+  float: right;
+  padding: 4px 8px !important;
+  font-size: 0.7rem;
+}
+
+.local-run-actions,
+.sprite-lab-action-row,
+.local-run-output-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.status-pill,
+.disabled-pill {
+  border-radius: 999px;
+  padding: 2px 7px;
+  font-size: 0.7rem;
+  border: 1px solid #454545;
+  color: #e5e5e5;
+}
+
+.status-planned { border-color: #6366f1; }
+.status-running,
+.status-processing,
+.status-cancel-requested { border-color: #0ea5e9; }
+.status-completed { border-color: #16a34a; }
+.status-failed,
+.status-timed-out,
+.status-cancelled { border-color: #dc2626; }
+.disabled-pill { border-color: #7f1d1d; color: #fecaca; }
+
+.local-run-output-browser {
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  background: #070707;
+  padding: 9px;
+  min-width: 0;
+}
+
+.local-run-output-header,
+.sprite-card-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.local-run-output-header span {
+  color: #a3a3a3;
+  overflow-wrap: anywhere;
+  font-size: 0.72rem;
+}
+
+.local-run-output-tabs button.active {
+  border-color: #4f46e5;
+}
+
+.local-run-output-links,
+.sprite-output-list {
+  display: grid;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.local-run-output-links a,
+.sprite-output-list a {
+  color: #93c5fd;
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.sprite-output-list code,
+.sprite-command-preview {
+  display: block;
+  color: #d4d4d4;
+  font-size: 0.74rem;
+  overflow-wrap: anywhere;
+}
+
+.local-run-output-text {
+  margin: 8px 0 0;
+  max-height: 120px;
+  overflow: auto;
+  white-space: pre-wrap;
+  background: #020202;
+  border: 1px solid #202020;
+  border-radius: 8px;
+  padding: 8px;
+  color: #e5e5e5;
+  font-size: 0.72rem;
+}
+
+.sprite-backend-inline {
+  color: #d4d4d4;
+  font-size: 0.72rem;
+}
+
+.sprite-backend-inline.available { color: #86efac; }
+.sprite-backend-inline.missing { color: #fecaca; }
+.sprite-external-run-card { display: grid; gap: 6px; }
+
+@media (max-width: 920px) {
+  .local-run-layout {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,4 +1,5 @@
 import { throwApiError } from './errors';
+import { LocalRunOutputFile, listLocalRunFiles, localRunFileUrl } from './localRunApprovals';
 
 export type SpriteWorkflow = 'spritesheet_export' | 'frame_slice' | 'palette_extract' | 'manifest_generate';
 export type ExternalSpriteBackend = 'aseprite' | 'libresprite' | 'pixelorama';
@@ -23,6 +24,23 @@ export interface SpriteWorkflowPlan {
   inputPath: string;
   outputTarget: string;
   notes: string[];
+}
+
+export interface PlannedExternalSpriteRun {
+  runId: string;
+  status: string;
+  riskLevel?: string;
+  requiresApproval?: boolean;
+  commandTemplate?: string;
+  resolvedCommand?: string[];
+  adapter?: {
+    backend: ExternalSpriteBackend;
+    workflow: SpriteWorkflow;
+    inputPath: string;
+    outputTarget: string;
+    outputFiles: string[];
+    notes: string[];
+  };
 }
 
 async function postJson<T>(url: string, body: unknown, errorMessage: string): Promise<T> {
@@ -82,7 +100,7 @@ export async function planExternalSpriteRun(input: {
   inputPath: string;
   outputTarget?: string;
   options?: Record<string, unknown>;
-}): Promise<any> {
+}): Promise<PlannedExternalSpriteRun> {
   return postJson('/api/sprite-lab/external/plan', input, 'Unable to plan external sprite tool run');
 }
 
@@ -105,4 +123,12 @@ export async function approveLocalToolRun(runId: string): Promise<any> {
 
 export async function startLocalToolRun(runId: string): Promise<any> {
   return postJson(`/api/local-tools/runs/${encodeURIComponent(runId)}/start`, {}, 'Unable to start external run');
+}
+
+export async function listSpriteExternalRunFiles(runId: string): Promise<{ runId: string; files: LocalRunOutputFile[] }> {
+  return listLocalRunFiles(runId);
+}
+
+export function spriteExternalRunFileUrl(runId: string, fileName: string): string {
+  return localRunFileUrl(runId, fileName);
 }

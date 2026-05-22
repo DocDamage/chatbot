@@ -5,15 +5,20 @@ import {
   extractSpritePalette,
   generateSpriteManifest,
   getSpriteLabStatus,
+  listSpriteExternalRunFiles,
   planExternalSpriteRun,
   planSpriteWorkflow,
   sliceSpriteGrid,
+  spriteExternalRunFileUrl,
   startLocalToolRun,
   ExternalSpriteBackend,
+  PlannedExternalSpriteRun,
+  SpriteBackendStatus,
   SpriteLabStatus,
   SpriteWorkflow,
   SpriteWorkflowPlan
 } from '../api/spriteLab';
+import { LocalRunOutputFile } from '../api/localRunApprovals';
 
 const workflows: Array<{ value: SpriteWorkflow; label: string }> = [
   { value: 'spritesheet_export', label: 'Spritesheet export' },
@@ -39,7 +44,8 @@ export default function SpriteLabPanel() {
   const [maxColors, setMaxColors] = useState(256);
   const [animationName, setAnimationName] = useState('default');
   const [plan, setPlan] = useState<SpriteWorkflowPlan | null>(null);
-  const [plannedExternalRun, setPlannedExternalRun] = useState<any>(null);
+  const [plannedExternalRun, setPlannedExternalRun] = useState<PlannedExternalSpriteRun | null>(null);
+  const [externalRunFiles, setExternalRunFiles] = useState<LocalRunOutputFile[]>([]);
   const [actionResult, setActionResult] = useState<any>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -49,12 +55,16 @@ export default function SpriteLabPanel() {
     return name.replace(/\.[^.]+$/, '') || 'sprite';
   }, [inputPath]);
 
+  const selectedExternalStatus = useMemo(() => {
+    return status?.backends.find(backend => backend.slug === externalBackend) || null;
+  }, [status, externalBackend]);
+
   const refreshStatus = async () => {
     try {
       setError('');
       setStatus(await getSpriteLabStatus());
     } catch (err: any) {
-      setError(err.message || 'Unable to load Sprite Lab status');
+      setError(friendlySpriteError(err, 'Unable to load Sprite Lab status'));
     }
   };
 
@@ -64,7 +74,7 @@ export default function SpriteLabPanel() {
 
   const requireInputPath = () => {
     if (!inputPath.trim()) {
-      setError('Input path is required');
+      setError('Input path is required. Pick a sprite file from the explorer or paste a workspace-relative path.');
       return false;
     }
     return true;
@@ -77,7 +87,7 @@ export default function SpriteLabPanel() {
       setError('');
       setActionResult(await action());
     } catch (err: any) {
-      setError(err.message || `${label} failed`);
+      setError(friendlySpriteError(err, `${label} failed`));
     } finally {
       setLoading(false);
     }
@@ -94,13 +104,16 @@ export default function SpriteLabPanel() {
         outputTarget: outputTarget.trim() || undefined
       }));
     } catch (err: any) {
-      setError(err.message || 'Unable to plan Sprite Lab workflow');
+      setError(friendlySpriteError(err, 'Unable to plan Sprite Lab workflow'));
     } finally {
       setLoading(false);
     }
   };
 
   const planExternal = async () => {
+    if (selectedExternalStatus && !selectedExternalStatus.available) {
+      throw new Error(`${selectedExternalStatus.label} is not detected. Register or enable the executable in Local Tools first.`);
+    }
     const result = await planExternalSpriteRun({
       backend: externalBackend,
       workflow,
@@ -108,17 +121,34 @@ export default function SpriteLabPanel() {
       outputTarget: outputTarget.trim() || undefined
     });
     setPlannedExternalRun(result);
+    setExternalRunFiles([]);
     return result;
   };
 
   const approveExternal = async () => {
     if (!plannedExternalRun?.runId) throw new Error('No planned external run');
-    return approveLocalToolRun(plannedExternalRun.runId);
+    const result = await approveLocalToolRun(plannedExternalRun.runId);
+    setPlannedExternalRun(prev => prev ? { ...prev, status: result.run?.status || prev.status } : prev);
+    return result;
   };
 
   const startExternal = async () => {
     if (!plannedExternalRun?.runId) throw new Error('No planned external run');
-    return startLocalToolRun(plannedExternalRun.runId);
+    const result = await startLocalToolRun(plannedExternalRun.runId);
+    setPlannedExternalRun(prev => prev ? { ...prev, status: result.run?.status || result.status || prev.status } : prev);
+    await refreshExternalRunFiles(plannedExternalRun.runId);
+    return result;
+  };
+
+  const refreshExternalRunFiles = async (runId = plannedExternalRun?.runId) => {
+    if (!runId) return;
+    const result = await listSpriteExternalRunFiles(runId);
+    setExternalRunFiles(result.files);
+  };
+
+  const copy = async (value: string) => {
+    if (!value.trim()) return;
+    await navigator.clipboard?.writeText(value);
   };
 
   return (
@@ -136,11 +166,7 @@ export default function SpriteLabPanel() {
       {status && (
         <div className="sprite-backend-grid">
           {status.backends.map(backend => (
-            <div key={backend.slug} className={`sprite-backend-card ${backend.available ? 'available' : 'missing'}`}>
-              <strong>{backend.label}</strong>
-              <span>{backend.role}</span>
-              <p>{backend.detail}</p>
-            </div>
+            <BackendCard key={backend.slug} backend={backend} selected={backend.slug === status.selected.slug || backend.slug === externalBackend} />
           ))}
         </div>
       )}
@@ -163,6 +189,11 @@ export default function SpriteLabPanel() {
           <select value={externalBackend} onChange={event => setExternalBackend(event.target.value as ExternalSpriteBackend)}>
             {externalBackends.map(item => <option key={item.value} value={item.value}>{item.label}</option>)}
           </select>
+          {selectedExternalStatus && (
+            <span className={`sprite-backend-inline ${selectedExternalStatus.available ? 'available' : 'missing'}`}>
+              {selectedExternalStatus.available ? 'Detected and available' : 'Missing or disabled'} · {selectedExternalStatus.detail}
+            </span>
+          )}
         </label>
         <label className="assistant-field">
           Input path
@@ -216,11 +247,24 @@ export default function SpriteLabPanel() {
       </div>
 
       {plannedExternalRun?.runId && (
-        <div className="sprite-plan-card">
-          <h4>Planned external run</h4>
+        <div className="sprite-plan-card sprite-external-run-card">
+          <div className="sprite-card-header-row">
+            <h4>External run</h4>
+            <span className={`status-pill status-${plannedExternalRun.status.replace(/_/g, '-')}`}>{plannedExternalRun.status}</span>
+          </div>
           <p><strong>Run ID:</strong> {plannedExternalRun.runId}</p>
-          <p><strong>Status:</strong> {plannedExternalRun.status}</p>
-          {plannedExternalRun.resolvedCommand && <pre>{JSON.stringify(plannedExternalRun.resolvedCommand, null, 2)}</pre>}
+          <p><strong>Backend:</strong> {plannedExternalRun.adapter?.backend || externalBackend}</p>
+          <p><strong>Workflow:</strong> {plannedExternalRun.adapter?.workflow || workflow}</p>
+          {plannedExternalRun.resolvedCommand && <code className="sprite-command-preview">{plannedExternalRun.resolvedCommand.join(' ')}</code>}
+          <div className="sprite-lab-action-row">
+            <button type="button" onClick={() => copy(plannedExternalRun.resolvedCommand?.join(' ') || plannedExternalRun.commandTemplate || '')}>Copy command</button>
+            <button type="button" onClick={() => copy(plannedExternalRun.adapter?.outputTarget || '')} disabled={!plannedExternalRun.adapter?.outputTarget}>Copy output target</button>
+            <button type="button" onClick={() => refreshExternalRunFiles()}>Refresh output files</button>
+          </div>
+          {plannedExternalRun.adapter?.outputFiles?.length ? (
+            <ExpectedOutputList outputFiles={plannedExternalRun.adapter.outputFiles} />
+          ) : null}
+          <OutputLinkList runId={plannedExternalRun.runId} files={externalRunFiles} />
         </div>
       )}
 
@@ -236,12 +280,84 @@ export default function SpriteLabPanel() {
         </div>
       )}
 
-      {actionResult && (
-        <div className="sprite-plan-card">
-          <h4>Action result</h4>
-          <pre>{JSON.stringify(actionResult, null, 2)}</pre>
-        </div>
-      )}
+      {actionResult && <ActionResultCard result={actionResult} />}
     </section>
   );
+}
+
+function BackendCard({ backend, selected }: { backend: SpriteBackendStatus; selected: boolean }) {
+  return (
+    <div className={`sprite-backend-card ${backend.available ? 'available' : 'missing'} ${selected ? 'selected' : ''}`}>
+      <strong>{backend.label}</strong>
+      <span>{backend.role} · {backend.available ? 'available' : 'missing'}</span>
+      <p>{backend.detail}</p>
+    </div>
+  );
+}
+
+function ExpectedOutputList({ outputFiles }: { outputFiles: string[] }) {
+  return (
+    <div className="sprite-output-list">
+      <strong>Expected outputs</strong>
+      {outputFiles.map(file => <code key={file}>{file}</code>)}
+    </div>
+  );
+}
+
+function OutputLinkList({ runId, files }: { runId: string; files: LocalRunOutputFile[] }) {
+  return (
+    <div className="sprite-output-list">
+      <strong>Captured run files</strong>
+      {files.length === 0 && <span className="assistant-muted">No run output files captured yet. Start the run, then refresh output files.</span>}
+      {files.map(file => (
+        <a key={file.fileName} href={spriteExternalRunFileUrl(runId, file.fileName)} target="_blank" rel="noreferrer">
+          {file.fileName} · {formatBytes(file.size)}
+        </a>
+      ))}
+    </div>
+  );
+}
+
+function ActionResultCard({ result }: { result: any }) {
+  const outputCandidates = [
+    result?.outputPath,
+    result?.outputDir,
+    result?.manifestPath,
+    result?.palettePath,
+    result?.sheetPath
+  ].filter(Boolean);
+
+  return (
+    <div className="sprite-plan-card">
+      <h4>Action result</h4>
+      {result?.success !== undefined && <p><strong>Status:</strong> {result.success ? 'completed' : 'failed'}</p>}
+      {outputCandidates.length > 0 && (
+        <div className="sprite-output-list">
+          <strong>Generated outputs</strong>
+          {outputCandidates.map((file: string) => <code key={file}>{file}</code>)}
+        </div>
+      )}
+      {!outputCandidates.length && <pre>{JSON.stringify(result, null, 2)}</pre>}
+    </div>
+  );
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}
+
+function friendlySpriteError(error: any, fallback: string): string {
+  const message = error?.message || fallback;
+  if (/not detected|not available|No enabled executable|executable/i.test(message)) {
+    return `${message} Check Local Tools, register the executable, and make sure it is enabled before planning an external run.`;
+  }
+  if (/outside workspace|path resolves|blocked/i.test(message)) {
+    return 'That path is blocked because it resolves outside the trusted workspace. Use a workspace-relative input/output path.';
+  }
+  if (/requires explicit user approval/i.test(message)) {
+    return 'This external run needs approval first. Use Approve Planned CLI, then Start Approved CLI.';
+  }
+  return message;
 }
