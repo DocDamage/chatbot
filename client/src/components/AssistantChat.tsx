@@ -14,6 +14,8 @@ import ModeSelector, { ChatMode } from './ModeSelector';
 import StatusBar from './StatusBar';
 import FLStudioControlPanel from './FLStudioControlPanel';
 import KnowledgeOSPanel from './KnowledgeOSPanel';
+import KnowledgeOnlinePanel from './KnowledgeOnlinePanel';
+import GamingPlaybookPanel from './GamingPlaybookPanel';
 import FileExplorerPanel from './FileExplorerPanel';
 import LoadedFilesBar from './LoadedFilesBar';
 import AudioPreviewBrowser from './AudioPreviewBrowser';
@@ -147,6 +149,19 @@ const placeholders: Record<ChatMode, string> = {
   knowledge_os: 'Ask about the local DB, graph, wiki, memory, or evidence...'
 };
 
+const onlineResearchModes: ChatMode[] = [
+  'ask',
+  'knowledge_os',
+  'gaming',
+  'gamedev',
+  'engineering',
+  'science',
+  'history',
+  'market',
+  'legal',
+  'health'
+];
+
 const convertMessage = (message: ChatMessage): ThreadMessageLike => {
   const baseMessage = {
     role: message.role,
@@ -197,6 +212,8 @@ function AssistantChat() {
   const showCodeWorkflows = showBackendPanels && ['ask', 'plan', 'implement', 'debug', 'explain'].includes(mode);
   const showCreativeComposer = mode === 'creative_writing' || mode === 'roleplay';
   const showGISPanel = showBackendPanels && mode === 'gis';
+  const showGamingPlaybooks = showBackendPanels && (mode === 'gaming' || mode === 'gamedev');
+  const showKnowledgeOnlinePanel = showBackendPanels && onlineResearchModes.includes(mode);
 
   useEffect(() => {
     let active = true;
@@ -425,6 +442,8 @@ function AssistantChat() {
             <span className="assistant-mode-hint">{modeHints[mode]}</span>
           </div>
           {showBackendPanels && <KnowledgeOSPanel />}
+          {showGamingPlaybooks && <GamingPlaybookPanel />}
+          {showKnowledgeOnlinePanel && <KnowledgeOnlinePanel />}
           {showBackendPanels && (
             <ConversationToolsPanel
               sessionId={sessionId}
