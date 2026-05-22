@@ -56,6 +56,20 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+async function selectMode(user: { click: (element: Element) => Promise<void> }, label: string) {
+  await user.click(screen.getByRole('button', { name: /ask/i }));
+  const option = screen.getAllByRole('option').find(element => {
+    const labelElement = element.querySelector('.mode-option-label');
+    return labelElement?.textContent === label;
+  });
+
+  if (!option) {
+    throw new Error(`Mode option not found: ${label}`);
+  }
+
+  await user.click(option);
+}
+
 describe('AssistantChat specialist panel scoping', () => {
   it('shows Knowledge Online in ask mode without showing Gaming playbooks', () => {
     global.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
@@ -72,8 +86,7 @@ describe('AssistantChat specialist panel scoping', () => {
 
     render(<AssistantChat />);
 
-    await user.click(screen.getByRole('button', { name: /ask/i }));
-    await user.click(screen.getByRole('option', { name: /gaming/i }));
+    await selectMode(user, 'Gaming');
 
     await waitFor(() => expect(screen.getByText('Gaming Playbooks')).toBeTruthy());
     expect(screen.getByText('Knowledge Online')).toBeTruthy();
@@ -85,8 +98,7 @@ describe('AssistantChat specialist panel scoping', () => {
 
     render(<AssistantChat />);
 
-    await user.click(screen.getByRole('button', { name: /ask/i }));
-    await user.click(screen.getByRole('option', { name: /story/i }));
+    await selectMode(user, 'Story');
 
     await waitFor(() => expect(screen.queryByText('Knowledge Online')).toBeNull());
     expect(screen.queryByText('Gaming Playbooks')).toBeNull();
