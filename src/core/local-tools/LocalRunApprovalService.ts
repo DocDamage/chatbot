@@ -8,6 +8,8 @@ export interface LocalRunSummary {
   cwd: string;
   riskLevel: string;
   approvedByUser: boolean;
+  executableEnabled?: boolean;
+  executablePath?: string;
   stdoutPath?: string;
   stderrPath?: string;
   durationMs?: number;
@@ -23,10 +25,12 @@ export class LocalRunApprovalService {
     const database = await ensureExpansionDatabase(this.database);
     const safeLimit = Math.min(Math.max(limit, 1), 100);
     const result = await database.query(
-      `SELECT id, status, command_template, cwd, risk_level, approved_by_user,
-        stdout_path, stderr_path, duration_ms, created_at, started_at, completed_at
-       FROM local_tool_runs
-       ORDER BY created_at DESC
+      `SELECT ltr.id, ltr.status, ltr.command_template, ltr.cwd, ltr.risk_level, ltr.approved_by_user,
+        ltr.stdout_path, ltr.stderr_path, ltr.duration_ms, ltr.created_at, ltr.started_at, ltr.completed_at,
+        le.enabled AS executable_enabled, le.executable_path AS executable_path
+       FROM local_tool_runs ltr
+       LEFT JOIN local_executables le ON le.id = ltr.executable_id
+       ORDER BY ltr.created_at DESC
        LIMIT ?`,
       [safeLimit]
     );
@@ -54,7 +58,14 @@ export class LocalRunApprovalService {
       ]
     );
 
-    const updated = (await database.query('SELECT * FROM local_tool_runs WHERE id = ? LIMIT 1', [runId])).rows[0];
+    const updated = (await database.query(
+      `SELECT ltr.*, le.enabled AS executable_enabled, le.executable_path AS executable_path
+       FROM local_tool_runs ltr
+       LEFT JOIN local_executables le ON le.id = ltr.executable_id
+       WHERE ltr.id = ?
+       LIMIT 1`,
+      [runId]
+    )).rows[0];
     return this.mapRow(updated);
   }
 
@@ -66,6 +77,10 @@ export class LocalRunApprovalService {
       cwd: row.cwd,
       riskLevel: row.risk_level,
       approvedByUser: Boolean(row.approved_by_user),
+      executableEnabled: row.executable_enabled === null || row.executable_enabled === undefined
+        ? undefined
+        : Boolean(row.executable_enabled),
+      executablePath: row.executable_path || undefined,
       stdoutPath: row.stdout_path || undefined,
       stderrPath: row.stderr_path || undefined,
       durationMs: row.duration_ms === null || row.duration_ms === undefined ? undefined : Number(row.duration_ms),
