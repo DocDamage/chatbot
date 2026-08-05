@@ -5,24 +5,41 @@
 ## Status metadata
 
 - Reconciled by task: `P00-T03`.
-- Reconciliation baseline: `main` commit `f520cc4a71b975a8f816454ab2c174b8e5663617`.
-- Reconciliation date: `2026-08-04` America/New_York.
-- Production hosting, database, Redis, Pages purpose, provider support, and telemetry/privacy decisions remain assigned to `P00-T04` and later tasks.
+- Architecture decisions established by task: `P00-T04`.
+- Decision baseline: `main` commit `4b10a434f5b60216608da74303d4193bc289e372`.
+- Decision date: `2026-08-05` America/New_York.
+- No mode is deployment-verified until the later implementation and release gates pass.
 
 ## Authoritative release sources
 
 - [Master Production Completion Tracker](implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md)
 - [Production Feature Manifest](implementation/PRODUCTION_FEATURE_MANIFEST.md)
 - [Release Evidence Index](implementation/RELEASE_EVIDENCE_INDEX.md)
+- [Architecture and Release Decisions](implementation/decisions/README.md)
+
+## Accepted architecture boundary
+
+The accepted deployment profiles are:
+
+- `HOSTED`: a multi-user network service with local filesystem, local command, Sprite Lab external-tool, FL Studio/MCP, and other desktop integrations excluded from server registration.
+- `LOCAL_TRUSTED`: a trusted-user application on Windows 11 x64 where local integrations may be enabled only with feature flags, roles, confinement, approval, and audit.
+
+Related decisions:
+
+- [ADR-0001 — Production database](implementation/decisions/ADR-0001-production-database.md)
+- [ADR-0002 — Hosted and local boundaries](implementation/decisions/ADR-0002-hosted-and-local-product-boundaries.md)
+- [ADR-0003 — GitHub Pages](implementation/decisions/ADR-0003-github-pages-purpose.md)
+- [ADR-0007 — Redis](implementation/decisions/ADR-0007-redis-deployment-model.md)
+- [ADR-0008 — Hosting target](implementation/decisions/ADR-0008-production-hosting-target.md)
 
 ## Verification levels used here
 
 - **Documented:** commands and intended behavior are described.
 - **Automated-verified:** named automated checks passed against an exact commit and date.
 - **Manual-verified:** documented human runtime steps passed against an exact commit, environment, and date.
-- **Deployment-verified:** the intended deployed environment passed smoke, dependency, persistence, security, and operational checks.
+- **Deployment-verified:** the intended deployed environment passed smoke, dependency, persistence, security, recovery, and operational checks.
 
-A documented command is not proof that it was run successfully.
+A documented command or accepted ADR is not proof that implementation or deployment passed.
 
 ## Local development
 
@@ -38,7 +55,7 @@ Intended endpoints:
 
 Classification: development use only. This mode is not deployment-verified.
 
-## Built local evaluation
+## Built trusted-local evaluation
 
 ```bash
 npm run build
@@ -49,60 +66,64 @@ Intended behavior:
 
 - Open `http://localhost:3001`.
 - Express serves the built client and API from one origin.
+- SQLite is the default trusted-local database.
 - `JWT_SECRET` must be strong.
-- Production-mode CORS must use an explicit allowed origin.
+- CORS must use an explicit allowed origin.
+- Local integrations remain disabled unless deliberately enabled and approved.
 
-Classification: a local production-mode simulation. A successful local start may become automated-verified or manual-verified evidence, but it is not a production deployment by itself.
+Classification: a `LOCAL_TRUSTED` production-mode simulation. A successful start may become automated-verified or manual-verified evidence, but it is not a hosted deployment.
 
 ## Hosted application
 
-A hosted release requires a separately selected and verified architecture for:
+The target is a single-region managed Linux OCI container platform with:
 
-- application hosting and TLS;
-- PostgreSQL and migrations where hosted persistence is claimed;
-- Redis network isolation and authentication where used;
-- secrets and rotation;
-- upload/artifact storage;
-- provider connectivity and degraded behavior;
-- backups and restore;
-- logs, metrics, traces, and alerts;
-- repeatable deployment and rollback.
+- managed TLS ingress;
+- private PostgreSQL 16+ as the system of record;
+- private authenticated Redis 7-compatible service;
+- protected artifact storage;
+- secret management;
+- logs, metrics, traces, alerts, backups, and rollback.
 
-Classification: not deployment-verified at the `P00-T03` reconciliation baseline.
+Local filesystem browsing, local commands, workspace mutation, desktop-tool control, Sprite Lab external adapters, and FL Studio/MCP are excluded from `HOSTED`.
+
+Classification: architecture accepted, not deployment-verified.
 
 ## Static demo / GitHub Pages
 
-A static client does not supply the Express API, authentication, database, Redis, local tools, provider integrations, or background services.
+GitHub Pages is an optional static demonstration only.
 
-It must be treated as one of the following after the Pages ADR is completed:
+- It must show a visible limitation notice.
+- Backend and privileged controls must be disabled.
+- It must contain no secrets or private data.
+- It is not connected to a production API by this decision.
+- `P01-T05` must repair it under these limits or remove it.
 
-1. a static UI demonstration with unavailable backend features clearly disabled;
-2. a client configured for a separately deployed API; or
-3. removed from the release path.
+Classification: static demo, not the hosted product.
 
-It must not be presented as the complete production application without a separately deployed and verified backend.
+## Provider, file, OS, experimental, and privacy boundaries
 
-## Local-only experimental capabilities
+- Initial provider targets: OpenAI for `HOSTED`; Ollama for `LOCAL_TRUSTED`.
+- Initial file targets are deliberately narrow; consult ADR-0005.
+- Local integration support initially targets Windows 11 x64; hosted containers target Linux x86_64.
+- Preview and local-only features follow the registration policy in ADR-0009.
+- Routine telemetry excludes prompt, response, file, secret, and local-command content by default under ADR-0010.
 
-The production feature manifest currently places local filesystem, audio, coding, local-command, Sprite Lab, FL Studio, and related desktop integrations in `LOCAL_ONLY_EXPERIMENTAL` where applicable. They are intended for a trusted local machine and must not be exposed in hosted mode unless a later verified task changes the classification.
-
-## Privileged API groups
-
-The repository includes privileged route groups such as settings, files, audio, plans, code, knowledge, administration, export, and webhooks. Presence of middleware or tests does not by itself certify the complete authorization model. Current route policy and release status must be taken from the manifest, tracker, and later security evidence.
+None of these targets are production-supported until their later verification tasks pass.
 
 ## Evaluation checklist
 
-When evaluating a built environment, record the exact commit, date, environment, commands, exit codes, and runtime results. At minimum, check:
+When evaluating an environment, record the exact commit, date, profile, operating system, commands, exit codes, and runtime results. At minimum, check:
 
 - liveness and readiness;
 - client load;
-- authenticated and unauthorized route behavior;
+- authenticated, unauthorized, and forbidden route behavior;
+- deployment-profile route registration;
 - provider behavior and failure states;
 - persistence across restart;
 - migration state;
 - dependency health;
 - secret and header policy;
-- logs and metrics;
+- logs, metrics, traces, and redaction;
 - backup/restore and rollback where claiming deployment verification.
 
-No checklist item is considered passed until evidence is recorded in `docs/implementation/evidence/` and indexed.
+No checklist item is passed until evidence is committed under `docs/implementation/evidence/` and indexed.
