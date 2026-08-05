@@ -10,9 +10,9 @@ permissions:
 
 jobs:
   reproduce-warning:
-    if: "${{ github.event.head_commit.message == 'chore(P01-T03): reproduce client lint warning' }}"
+    if: "${{ github.event.head_commit.message == 'chore(P01-T03): reproduce lint with root dependencies' }}"
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Check out task branch
@@ -23,7 +23,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: client/package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
 
       - name: Record baseline
         run: |
@@ -32,8 +34,10 @@ jobs:
           git rev-parse HEAD
           git status --short
 
-      - name: Install isolated client dependencies
-        run: npm --prefix client ci
+      - name: Install repository and client dependencies
+        run: |
+          npm ci
+          npm --prefix client ci
 
       - name: Reproduce client lint warning
         run: npm run lint:client
