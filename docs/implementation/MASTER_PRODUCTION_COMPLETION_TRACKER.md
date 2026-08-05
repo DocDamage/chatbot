@@ -7,9 +7,11 @@
 - Repository: `DocDamage/chatbot`
 - Baseline branch: `main`
 - Baseline commit: `8b963232d72a69c6616667aaf34daadba6056aba`
-- Working branch: `agent/p00-t01-master-production-tracker`
+- Last inspected `main` commit: `ea1257ea07c83d36b82e079c7ab408fa33f2b737`
+- Current task branch: `agent/p00-t02-production-feature-manifest`
 - Plan date: `2026-08-04`
 - Tracker created: `2026-08-04`
+- Tracker last updated: `2026-08-04`
 - Status vocabulary: `NOT_STARTED`, `IN_PROGRESS`, `IMPLEMENTED_NOT_VERIFIED`, `BLOCKED`, `VERIFIED`, `RELEASED`
 
 ## Governance rules
@@ -26,7 +28,7 @@
 
 | Phase | Total | Verified | In progress | Blocked | Not started |
 |---|---:|---:|---:|---:|---:|
-| PHASE 0 | 5 | 1 | 0 | 0 | 4 |
+| PHASE 0 | 5 | 2 | 0 | 0 | 3 |
 | PHASE 1 | 7 | 0 | 0 | 0 | 7 |
 | PHASE 2 | 7 | 0 | 0 | 0 | 7 |
 | PHASE 3 | 8 | 0 | 0 | 0 | 8 |
@@ -41,7 +43,7 @@
 | PHASE 12 | 8 | 0 | 0 | 0 | 8 |
 | PHASE 13 | 5 | 0 | 0 | 0 | 5 |
 | PHASE 14 | 5 | 0 | 0 | 0 | 5 |
-| **Total** | **124** | **1** | **0** | **0** | **123** |
+| **Total** | **124** | **2** | **0** | **0** | **122** |
 
 ## Task register
 
@@ -50,7 +52,7 @@
 | Task ID | Task | Owner | Status | Branch | Implementation commit | Evidence path | Blocker | Date verified | Release applicability |
 |---|---|---|---|---|---|---|---|---|---|
 | `P00-T01` | Create the master production completion tracker | Codex/GitHub | `VERIFIED` | `agent/p00-t01-master-production-tracker` | `84ef639bda41d585240041a0657cd21f2e9f8cde` | `docs/implementation/evidence/PHASE-00/P00-T01/2026-08-04_84ef639b` | None | `2026-08-04` | `REQUIRED` |
-| `P00-T02` | Create the production feature manifest | Unassigned | `NOT_STARTED` | — | — | — | — | — | `REQUIRED` |
+| `P00-T02` | Create the production feature manifest | Codex/GitHub | `VERIFIED` | `agent/p00-t02-production-feature-manifest` | `027eacd948cadb0f8b749385c51acd13a287051c` | `docs/implementation/evidence/PHASE-00/P00-T02/2026-08-04_027eacd9` | None | `2026-08-04` | `REQUIRED` |
 | `P00-T03` | Reconcile existing release documents | Unassigned | `NOT_STARTED` | — | — | — | — | — | `REQUIRED` |
 | `P00-T04` | Establish release decisions | Unassigned | `NOT_STARTED` | — | — | — | — | — | `REQUIRED` |
 | `P00-T05` | Create GitHub milestones and issues | Unassigned | `NOT_STARTED` | — | — | — | — | — | `REQUIRED` |
@@ -243,18 +245,3 @@
 | `P14-T03` | Regression and eval maintenance | Unassigned | `NOT_STARTED` | — | — | — | — | — | `REQUIRED` |
 | `P14-T04` | Quarterly restore and incident drills | Unassigned | `NOT_STARTED` | — | — | — | — | — | `REQUIRED` |
 | `P14-T05` | Feature lifecycle policy | Unassigned | `NOT_STARTED` | — | — | — | — | — | `REQUIRED` |
-
-## Status-change checklist
-
-Before changing any task to `VERIFIED`, confirm:
-
-- [ ] Authorized task ID and scope are unchanged.
-- [ ] Implementation is committed.
-- [ ] Focused and relevant regression checks pass.
-- [ ] Required runtime QA passes.
-- [ ] Negative and failure paths are covered.
-- [ ] Evidence directory follows the required naming convention.
-- [ ] Exact implementation commit and command exit codes are recorded.
-- [ ] Feature manifest and release documents are updated when applicable.
-- [ ] `CURRENT_HANDOFF.md` and the archived task handoff are committed.
-- [ ] The next-thread prompt authorizes exactly one task.

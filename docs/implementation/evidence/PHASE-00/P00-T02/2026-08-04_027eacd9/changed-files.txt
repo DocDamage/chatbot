@@ -1,0 +1,11 @@
+docs/implementation/PRODUCTION_FEATURE_MANIFEST.md
+docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md
+docs/implementation/RELEASE_EVIDENCE_INDEX.md
+docs/implementation/evidence/PHASE-00/P00-T02/2026-08-04_027eacd9/summary.md
+docs/implementation/evidence/PHASE-00/P00-T02/2026-08-04_027eacd9/commands.md
+docs/implementation/evidence/PHASE-00/P00-T02/2026-08-04_027eacd9/results.json
+docs/implementation/evidence/PHASE-00/P00-T02/2026-08-04_027eacd9/changed-files.txt
+docs/implementation/evidence/PHASE-00/P00-T02/2026-08-04_027eacd9/test-output.txt
+docs/implementation/evidence/PHASE-00/P00-T02/2026-08-04_027eacd9/runtime-checklist.md
+docs/implementation/handoffs/archive/P00-T02_HANDOFF.md
+docs/implementation/handoffs/CURRENT_HANDOFF.md
