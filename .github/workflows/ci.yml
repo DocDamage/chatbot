@@ -35,6 +35,9 @@ jobs:
       - name: Verify CI job graph
         run: node scripts/release/verify-ci-graph.mjs
 
+      - name: Verify Phase 2 repository policy
+        run: npm run check:phase2
+
   type-check:
     name: Type check (${{ matrix.target }})
     runs-on: ubuntu-latest
