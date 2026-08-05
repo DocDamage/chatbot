@@ -1,0 +1,39 @@
+name: P01-T03 client lint diagnostic
+
+on:
+  push:
+    branches:
+      - agent/p01-t03-remove-client-lint-warning
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce-warning:
+    if: "${{ github.event.head_commit.message == 'chore(P01-T03): reproduce client lint warning' }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out task branch
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Record baseline
+        run: |
+          node --version
+          npm --version
+          git rev-parse HEAD
+          git status --short
+
+      - name: Install isolated client dependencies
+        run: npm --prefix client ci
+
+      - name: Reproduce client lint warning
+        run: npm run lint:client
