@@ -1,0 +1,45 @@
+name: P00-T05 Create GitHub Governance Objects
+
+on:
+  push:
+    branches:
+      - agent/p00-t05-create-github-milestones-issues
+    paths:
+      - .github/workflows/p00-t05-create-github-governance.yml
+      - docs/implementation/evidence/PHASE-00/P00-T05/bootstrap/create_github_governance.py
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: p00-t05-github-governance
+  cancel-in-progress: false
+
+jobs:
+  create-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out authorized branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/p00-t05-create-github-milestones-issues
+          fetch-depth: 1
+
+      - name: Create milestones and issues, then verify read-back
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 docs/implementation/evidence/PHASE-00/P00-T05/bootstrap/create_github_governance.py
+
+      - name: Commit generated evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/implementation/evidence/PHASE-00/P00-T05
+          if git diff --cached --quiet; then
+            echo "No evidence changes to commit."
+            exit 0
+          fi
+          git commit -m "docs(P00-T05): record GitHub governance object results"
+          git push origin HEAD:agent/p00-t05-create-github-milestones-issues
