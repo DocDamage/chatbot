@@ -101,7 +101,7 @@ export default function LocalRunApprovalPanel({ visible = true }: LocalRunApprov
       } else {
         setOutputText('No output files have been captured yet.');
       }
-    } catch (err: any) {
+    } catch {
       setOutputFiles([]);
       setOutputText('No output files are available for this run yet.');
     } finally {
