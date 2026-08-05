@@ -1,0 +1,63 @@
+{
+  "taskId": "P01-T02",
+  "commit": "2882406d0d944ab62aa93c27cbf9a685084d8d5a",
+  "branch": "agent/p01-t02-correct-clipboard-tests",
+  "status": "VERIFIED",
+  "commands": [
+    {
+      "command": "npm --prefix client ci (isolated; root node_modules absent)",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix client run type-check (isolated)",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix client test (isolated)",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix client run build (isolated)",
+      "exitCode": 0
+    },
+    {
+      "command": "npm ci",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix client ci",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run type-check:client",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix client test",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix client run build",
+      "exitCode": 0
+    }
+  ],
+  "automatedTestsPassed": true,
+  "runtimeQaRequired": true,
+  "runtimeQaPassed": true,
+  "testSummary": {
+    "filesPassed": 26,
+    "testsPassed": 70,
+    "environmentsVerified": 2
+  },
+  "knownLimitations": [
+    "Existing dependency audit findings are outside P01-T02.",
+    "Existing stale gitlink warning remains assigned to P01-T04.",
+    "Existing client lint warning remains assigned to P01-T03."
+  ],
+  "workflow": {
+    "runId": 30985202244,
+    "jobId": 92238274530,
+    "conclusion": "success"
+  },
+  "evidenceGeneratedAt": "2026-08-05T07:31:00Z"
+}

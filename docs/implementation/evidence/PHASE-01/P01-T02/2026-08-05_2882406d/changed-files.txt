@@ -1,0 +1,14 @@
+client/src/api/code.test.ts
+client/src/api/conversations.test.ts
+client/src/clipboard.test.ts
+client/src/clipboard.ts
+client/src/components/AssistantChatPanelScope.test.tsx
+client/src/components/CodeWorkflowPanel.test.tsx
+client/src/components/ConversationToolsPanel.test.tsx
+client/src/components/FLStudioControlPanel.test.tsx
+client/src/components/KnowledgeOnlinePanel.test.tsx
+client/src/components/LocalRunApprovalPanel.test.tsx
+client/src/components/LocalRunApprovalPanel.tsx
+client/src/components/SpriteLabPanel.test.tsx
+client/src/components/SpriteLabPanel.tsx
+client/src/test/browserTestUtils.ts
