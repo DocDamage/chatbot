@@ -30,7 +30,14 @@ jobs:
       - name: Create milestones and issues, then verify read-back
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python3 docs/implementation/evidence/PHASE-00/P00-T05/bootstrap/create_github_governance.py
+        run: |
+          for attempt in 1 2 3; do
+            if python3 docs/implementation/evidence/PHASE-00/P00-T05/bootstrap/create_github_governance.py; then
+              exit 0
+            fi
+            sleep $((attempt * 10))
+          done
+          exit 1
 
       - name: Commit generated evidence
         run: |
