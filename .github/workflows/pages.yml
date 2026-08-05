@@ -8,9 +8,7 @@ on:
       - 'scripts/release/smoke-pages-*.mjs'
       - 'docs/GITHUB_PAGES_DEMO.md'
   push:
-    branches:
-      - main
-      - agent/p01-t05-decide-repair-github-pages
+    branches: [main]
     paths:
       - '.github/workflows/pages.yml'
       - 'client/**'
@@ -80,7 +78,7 @@ jobs:
           path: client/dist
 
   deploy:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
