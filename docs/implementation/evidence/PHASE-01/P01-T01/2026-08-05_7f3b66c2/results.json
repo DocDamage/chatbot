@@ -88,5 +88,101 @@
       "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/14-client-build.log"
     }
   ],
-  "failedCommands": []
+  "failedCommands": [],
+  "status": "VERIFIED",
+  "diagnosticWorkflowRunId": 30982260932,
+  "implementationCommit": "b29a7125ef22f1a0d34f0a0b6d36d0bd61b183d4",
+  "userSuppliedStandaloneClientBuild": {
+    "exitCode": 2,
+    "errorCode": "TS2304",
+    "message": "Cannot find name 'global'",
+    "occurrences": 14
+  },
+  "rootCause": {
+    "clientBuildScript": "tsc && vite build",
+    "clientTsconfigInclude": [
+      "src"
+    ],
+    "clientTypes": [],
+    "clientDeclaresNodeTypes": false,
+    "rootDeclaresNodeTypes": true,
+    "globalReferences": [
+      {
+        "path": "client/src/api/code.test.ts",
+        "line": 10,
+        "text": "global.fetch = vi.fn().mockResolvedValue({"
+      },
+      {
+        "path": "client/src/api/code.test.ts",
+        "line": 20,
+        "text": "global.fetch = vi.fn().mockResolvedValue({"
+      },
+      {
+        "path": "client/src/api/conversations.test.ts",
+        "line": 15,
+        "text": "global.fetch = vi.fn().mockResolvedValue({"
+      },
+      {
+        "path": "client/src/components/AssistantChatPanelScope.test.tsx",
+        "line": 75,
+        "text": "global.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);"
+      },
+      {
+        "path": "client/src/components/AssistantChatPanelScope.test.tsx",
+        "line": 84,
+        "text": "global.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);"
+      },
+      {
+        "path": "client/src/components/AssistantChatPanelScope.test.tsx",
+        "line": 96,
+        "text": "global.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);"
+      },
+      {
+        "path": "client/src/components/CodeWorkflowPanel.test.tsx",
+        "line": 12,
+        "text": "global.fetch = vi.fn().mockResolvedValue({"
+      },
+      {
+        "path": "client/src/components/CodeWorkflowPanel.test.tsx",
+        "line": 78,
+        "text": "global.fetch = vi.fn().mockResolvedValue({"
+      },
+      {
+        "path": "client/src/components/ConversationToolsPanel.test.tsx",
+        "line": 12,
+        "text": "global.fetch = vi.fn(async (input: RequestInfo | URL) => {"
+      },
+      {
+        "path": "client/src/components/ConversationToolsPanel.test.tsx",
+        "line": 104,
+        "text": "global.fetch = vi.fn().mockResolvedValue({"
+      },
+      {
+        "path": "client/src/components/FLStudioControlPanel.test.tsx",
+        "line": 12,
+        "text": "global.fetch = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {"
+      },
+      {
+        "path": "client/src/components/KnowledgeOnlinePanel.test.tsx",
+        "line": 12,
+        "text": "global.fetch = vi.fn(async (url: RequestInfo | URL) => {"
+      },
+      {
+        "path": "client/src/components/LocalRunApprovalPanel.test.tsx",
+        "line": 22,
+        "text": "global.fetch = vi.fn(async (url: RequestInfo | URL) => {"
+      },
+      {
+        "path": "client/src/components/SpriteLabPanel.test.tsx",
+        "line": 15,
+        "text": "global.fetch = vi.fn(async (url: RequestInfo | URL) => {"
+      }
+    ]
+  },
+  "clipboardFailuresReproduced": false,
+  "knownFindings": [
+    "Client lint completes with one existing unused err warning assigned to P01-T03.",
+    "Repository checkout cleanup still reports the stale docs/30-seconds-of-code gitlink warning assigned to P01-T04.",
+    "Dependency installation reports existing vulnerabilities for later security/dependency tasks."
+  ]
 }
