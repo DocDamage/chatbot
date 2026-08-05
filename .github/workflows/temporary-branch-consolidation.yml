@@ -1,0 +1,316 @@
+name: Temporary Branch Consolidation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/temporary-branch-consolidation.yml
+
+permissions:
+  contents: write
+
+jobs:
+  consolidate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Reconcile governance records
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          import re
+
+          main_sha = '6e1a019f8eccf5154c6a579d02abb188c6911a9e'
+          implementation_sha = 'a0d159dd0eff1991a9a7400664e2eef0286e77a2'
+          evidence_path = 'docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd'
+
+          tracker_path = Path('docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md')
+          tracker = tracker_path.read_text(encoding='utf-8')
+          tracker = tracker.replace(
+              '- Current task branch: `agent/p01-t06-make-all-ci-stages-execute`',
+              '- Current task branch: `main` (consolidated baseline)'
+          )
+          tracker = tracker.replace(
+              '- Current verified implementation commit: `7e95e339aa7e5d661bbe67ccad98418cbfbd2960`',
+              f'- Current integrated implementation commit: `{main_sha}`'
+          )
+          tracker = tracker.replace(
+              '- Status vocabulary: `NOT_STARTED`, `IN_PROGRESS`, `IMPLEMENTED_NOT_VERIFIED`, `BLOCKED`, `VERIFIED`, `RELEASED`',
+              '- Status vocabulary: `NOT_STARTED`, `IN_PROGRESS`, `IMPLEMENTED_NOT_VERIFIED`, `BLOCKED`, `WAIVED`, `VERIFIED`, `RELEASED`'
+          )
+          rule_anchor = '5. Accepted ADRs define targets and constraints; they do not certify implementation or deployment.'
+          if '6. A repository-owner waiver' not in tracker:
+              tracker = tracker.replace(
+                  rule_anchor,
+                  rule_anchor + '\n6. A repository-owner waiver may remove an optional governance task as a sequencing blocker, but a waived task does not count as verified.'
+              )
+
+          lines = tracker.splitlines()
+          header = '| Phase | Total | Verified | In progress | Blocked | Not started |'
+          if header in lines:
+              start = lines.index(header)
+              lines[start] = '| Phase | Total | Verified | Implemented, not verified | In progress | Blocked | Waived | Not started |'
+              lines[start + 1] = '|---|---:|---:|---:|---:|---:|---:|---:|'
+              index = start + 2
+              while index < len(lines) and lines[index].startswith('|'):
+                  cells = [cell.strip() for cell in lines[index].strip('|').split('|')]
+                  phase = cells[0].replace('**', '')
+                  if phase == 'PHASE 1':
+                      values = ['PHASE 1', '7', '6', '0', '0', '0', '1', '0']
+                  elif phase == 'PHASE 2':
+                      values = ['PHASE 2', '7', '0', '7', '0', '0', '0', '0']
+                  elif phase == 'Total':
+                      values = ['**Total**', '**124**', '**11**', '**7**', '**0**', '**0**', '**1**', '**105**']
+                  else:
+                      values = [cells[0], cells[1], cells[2], '0', cells[3], cells[4], '0', cells[5]]
+                  lines[index] = '| ' + ' | '.join(values) + ' |'
+                  index += 1
+          tracker = '\n'.join(lines) + '\n'
+
+          records = f'''## Waived task records
+
+| Task ID | Task | Owner | Status | Decision evidence | Date | Release applicability |
+|---|---|---|---|---|---|---|
+| `P01-T07` | Add branch protection | Repository owner | `WAIVED` | Issue `#35` owner-waiver comment; live `main` remains unprotected and ruleset `chatrules` contains zero rules | `2026-08-05` | `OWNER-WAIVED` |
+
+## Implemented-not-verified task records
+
+| Task ID | Task | Status | Implementation branch | Implementation commit | Consolidated evidence | Integration result |
+|---|---|---|---|---|---|---|
+| `P02-T01` | Create a complete code and route inventory | `IMPLEMENTED_NOT_VERIFIED` | `agent/complete-through-phase-02` | `{implementation_sha}` | `{evidence_path}` | PR `#155`; CI run `31033387341` passed |
+| `P02-T02` | Build a reachability map | `IMPLEMENTED_NOT_VERIFIED` | `agent/complete-through-phase-02` | `{implementation_sha}` | `{evidence_path}` | PR `#155`; CI run `31033387341` passed |
+| `P02-T03` | Remove or isolate legacy and duplicate implementations | `IMPLEMENTED_NOT_VERIFIED` | `agent/complete-through-phase-02` | `{implementation_sha}` | `{evidence_path}` | PR `#155`; CI run `31033387341` passed |
+| `P02-T04` | Enforce the 300-line source guideline | `IMPLEMENTED_NOT_VERIFIED` | `agent/complete-through-phase-02` | `{implementation_sha}` | `{evidence_path}` | PR `#155`; CI run `31033387341` passed |
+| `P02-T05` | Consolidate environment templates | `IMPLEMENTED_NOT_VERIFIED` | `agent/complete-through-phase-02` | `{implementation_sha}` | `{evidence_path}` | PR `#155`; CI run `31033387341` passed |
+| `P02-T06` | Create configuration schemas | `IMPLEMENTED_NOT_VERIFIED` | `agent/complete-through-phase-02` | `{implementation_sha}` | `{evidence_path}` | PR `#155`; CI run `31033387341` passed |
+| `P02-T07` | Normalize documentation and generated artifacts | `IMPLEMENTED_NOT_VERIFIED` | `agent/complete-through-phase-02` | `{implementation_sha}` | `{evidence_path}` | PR `#155`; CI run `31033387341` passed |
+
+'''
+          marker = '## Pending task field defaults\n'
+          if '## Waived task records' not in tracker:
+              tracker = tracker.replace(marker, records + marker)
+
+          tracker = re.sub(
+              r'### PHASE 1 — Restore Repository Integrity and a Fully Green `main`\n\n\| Task ID \| Task \|\n\|---\|---\|\n\| `P01-T07` \| Add branch protection \|\n',
+              '### PHASE 1 — Restore Repository Integrity and a Fully Green `main`\n\nNo remaining unwaived Phase 1 tasks. `P01-T07` is recorded above as `WAIVED` by the repository owner.\n',
+              tracker,
+          )
+          tracker = re.sub(
+              r'### PHASE 2 — Repository Hygiene, Architecture Boundaries, and Maintainability\n\n\| Task ID \| Task \|\n\|---\|---\|\n(?:\| `P02-T0[1-7]` \|.*\n){7}',
+              '### PHASE 2 — Repository Hygiene, Architecture Boundaries, and Maintainability\n\nAll seven Phase 2 tasks are implemented and integrated on `main`; formal per-task verification remains pending and is recorded above as `IMPLEMENTED_NOT_VERIFIED`.\n',
+              tracker,
+          )
+          tracker_path.write_text(tracker, encoding='utf-8')
+
+          evidence_index_path = Path('docs/implementation/RELEASE_EVIDENCE_INDEX.md')
+          evidence_index = evidence_index_path.read_text(encoding='utf-8')
+          nonverified = f'''\n## Non-verified implementation and waiver records
+
+| Record | Status | Commit/reference | Evidence | Notes |
+|---|---|---|---|---|
+| `P01-T07` | `WAIVED` | Issue `#35` | `docs/implementation/BRANCH_PROTECTION_POLICY.md` | Repository owner explicitly declined branch-protection enforcement. This does not count as verification. |
+| Phase 2 consolidated implementation | `IMPLEMENTED_NOT_VERIFIED` | `{implementation_sha}` merged by PR `#155` | `{evidence_path}` | CI run `31033387341` passed every job and the required aggregate gate; per-task evidence reconciliation remains open. |
+'''
+          if '## Non-verified implementation and waiver records' not in evidence_index:
+              evidence_index += nonverified
+          evidence_index_path.write_text(evidence_index, encoding='utf-8')
+
+          Path('docs/implementation/BRANCH_PROTECTION_POLICY.md').write_text('''# Main Branch Governance Decision
+
+## Owner decision
+
+On 2026-08-05, the repository owner explicitly declined branch-protection enforcement for `DocDamage/chatbot`.
+
+The intended P01-T07 controls are therefore **waived**, not verified. This decision removes P01-T07 as a sequencing blocker but does not count it toward verified completion.
+
+## Live state
+
+- `main` is intentionally unprotected.
+- The active `chatrules` ruleset targets the default branch but contains zero rules.
+- Pull requests, approvals, required status checks, conversation resolution, force-push restrictions, and deletion restrictions are not enforced by repository rules.
+- CI remains available and should be used for development verification, but it is not a GitHub merge-enforcement requirement.
+
+## Retained tooling
+
+`scripts/release/configure-main-branch-protection.mjs` is retained only as an opt-in future configurator. Its presence does not authorize or imply live protection.
+
+## Reconsideration triggers
+
+Review this waiver before adding collaborators, publishing a production release, accepting outside contributions, or delegating repository administration.
+''', encoding='utf-8')
+
+          Path('docs/implementation/handoffs/CURRENT_HANDOFF.md').write_text(f'''# Post-Phase-2 Consolidation Handoff
+
+## Repository state
+
+- Repository: `DocDamage/chatbot`
+- Integrated `main` commit before consolidation records: `{main_sha}`
+- Phase 2 implementation commit: `{implementation_sha}`
+- Integration pull request: `#155`
+- Full green CI run: `31033387341`
+- Branch-protection task: `P01-T07` owner-waived and closed as not planned
+- Consolidated evidence: `{evidence_path}`
+- Date: `2026-08-05`
+
+## Current status
+
+- Phase 0: verified.
+- Phase 1: six verified tasks and one owner-waived task.
+- Phase 2: all seven tasks implemented, merged, and green in CI; formal per-task evidence reconciliation remains pending.
+- Obsolete stacked PRs `#148`, `#149`, and `#150` are closed.
+- Historical task branches are consolidated into `main` and scheduled for deletion.
+
+## Owner governance decision
+
+The repository owner does not want branch-protection rules. `main` remains intentionally unprotected. CI must not be weakened merely because it is not enforced by GitHub branch rules.
+
+## Next authorized work
+
+`Phase 2 evidence closeout` on a fresh branch created from the final consolidated `main`.
+
+The closeout must split the consolidated Phase 2 evidence into task-specific records, run the applicable checks against one exact commit, and update each P02 task from `IMPLEMENTED_NOT_VERIFIED` only when its evidence requirements are actually satisfied.
+
+Do not begin Phase 3 implementation until this closeout is complete or the repository owner explicitly waives that evidence requirement.
+''', encoding='utf-8')
+
+          consolidation = Path('docs/implementation/BRANCH_CONSOLIDATION_2026-08-05.md')
+          consolidation.write_text(f'''# Branch Consolidation Record — 2026-08-05
+
+## Baseline
+
+- Repository: `DocDamage/chatbot`
+- Audited `main`: `{main_sha}`
+- Phase 2 implementation: `{implementation_sha}`
+- Phase 2 integration: PR `#155`
+- Final Phase 2 CI: run `31033387341`, all independent jobs and `Required CI gate` passed
+
+## Pull-request reconciliation
+
+- PR `#148` closed as obsolete; its P01-T02 work is present on `main` through the merged integration chain.
+- PR `#149` closed as obsolete; its P01-T03 work is present on `main` through the merged integration chain.
+- PR `#150` closed as obsolete; its P01-T04 work is present on `main` through the merged integration chain.
+
+## Branch audit
+
+All non-main branches were reviewed against `main` and their associated pull-request history.
+
+| Branch | Accounting result |
+|---|---|
+| `agent/p00-t05-create-github-milestones-issues` | Strict ancestor of `main` |
+| `agent/p01-t01-reproduce-latest-ci-failure` | Strict ancestor of `main` |
+| `agent/p01-t02-correct-clipboard-tests` | Strict ancestor of `main`; stale PR closed |
+| `agent/p01-t03-remove-client-lint-warning` | Strict ancestor of `main`; stale PR closed |
+| `agent/p01-t04-repair-gitlink-integrity` | Strict ancestor of `main`; stale PR closed |
+| `agent/p01-t05-decide-repair-github-pages` | Strict ancestor of `main` |
+| `agent/p01-t06-make-all-ci-stages-execute` | Merged by PR `#153`; post-merge probe/history commits are represented or superseded by the current CI workflow and evidence on `main` |
+| `agent/p01-t07-add-branch-protection` | Merged by PR `#154`; live enforcement later owner-waived |
+| `release-verification-tests` | Merged by PR `#5` and strict ancestor of `main` |
+| `server-work-mode-policy` | Merged by PR `#6` and strict ancestor of `main` |
+| temporary `tmp/*` safety refs | Exact snapshots of the audited `main`; deleted after this record was committed |
+
+## Destructive cleanup authorization
+
+The repository owner requested that `main` temporarily become the only branch. The temporary consolidation workflow deletes every audited non-main branch after this record and the governance updates pass validation.
+
+A new branch is created only after the branch list is verified to contain `main` alone.
+''', encoding='utf-8')
+
+          evidence_dir = Path(evidence_path)
+          evidence_dir.mkdir(parents=True, exist_ok=True)
+          (evidence_dir / 'summary.md').write_text(f'''# Phase 2 Consolidated Implementation Evidence
+
+Status: `IMPLEMENTED_NOT_VERIFIED`
+
+All seven Phase 2 tasks were implemented on `agent/complete-through-phase-02`, tested at `{implementation_sha}`, merged by PR `#155`, and passed CI run `31033387341` including the aggregate gate.
+
+This consolidated record accounts for the implementation but does not replace the task-specific evidence required to mark P02-T01 through P02-T07 `VERIFIED`.
+''', encoding='utf-8')
+          (evidence_dir / 'commands.md').write_text('''# Commands and workflow evidence
+
+- `npm run type-check:server` — passed
+- `npm run type-check:tests` — passed
+- `npm run type-check:client` — passed
+- server and client lint — passed
+- security, route, service, E2E, server coverage, client tests, client coverage, and accessibility jobs — passed
+- `npm run smoke:package` — passed
+- `npm run check:phase2` — passed
+- GitHub Actions run `31033387341` — all jobs and `Required CI gate` passed
+''', encoding='utf-8')
+          (evidence_dir / 'runtime-checklist.md').write_text('''# Runtime checklist
+
+- [x] Phase 2 implementation merged into `main`.
+- [x] Full CI matrix passed on the exact implementation head.
+- [x] Repository inventory, reachability, file-size, environment, and documentation checks passed.
+- [x] Branch and stale-PR consolidation accounted for.
+- [ ] Create task-specific P02 evidence bundles.
+- [ ] Reconcile each task's runtime/manual requirements where applicable.
+- [ ] Mark P02 tasks verified only after exact-commit evidence is complete.
+''', encoding='utf-8')
+          (evidence_dir / 'changed-files.txt').write_text('''See PR #155 for the complete 42-file implementation diff.
+Governance reconciliation adds:
+- docs/implementation/BRANCH_CONSOLIDATION_2026-08-05.md
+- docs/implementation/BRANCH_PROTECTION_POLICY.md
+- docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md
+- docs/implementation/RELEASE_EVIDENCE_INDEX.md
+- docs/implementation/handoffs/CURRENT_HANDOFF.md
+- docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd/*
+''', encoding='utf-8')
+          (evidence_dir / 'results.json').write_text(json.dumps({
+              'phase': 'PHASE-02',
+              'status': 'IMPLEMENTED_NOT_VERIFIED',
+              'implementationCommit': implementation_sha,
+              'integrationCommit': main_sha,
+              'pullRequest': 155,
+              'workflowRun': 31033387341,
+              'allCiJobsPassed': True,
+              'taskSpecificEvidenceComplete': False,
+              'branchProtection': 'OWNER_WAIVED'
+          }, indent=2) + '\n', encoding='utf-8')
+          PY
+
+          npm ci
+          npm run check:phase2
+          git diff --check
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs
+          git commit -m 'docs(repo): reconcile Phase 2 and branch consolidation'
+          git push origin HEAD:main
+
+      - name: Delete accounted branches
+        shell: bash
+        run: |
+          branches=(
+            'agent/p00-t05-create-github-milestones-issues'
+            'agent/p01-t01-reproduce-latest-ci-failure'
+            'agent/p01-t02-correct-clipboard-tests'
+            'agent/p01-t03-remove-client-lint-warning'
+            'agent/p01-t04-repair-gitlink-integrity'
+            'agent/p01-t05-decide-repair-github-pages'
+            'agent/p01-t06-make-all-ci-stages-execute'
+            'agent/p01-t07-add-branch-protection'
+            'release-verification-tests'
+            'server-work-mode-policy'
+            'tmp/branch-consolidation-prep'
+            'tmp/do-not-use'
+            'tmp/consolidation-runner'
+            'tmp/consolidation-snapshot'
+          )
+          for branch in "${branches[@]}"; do
+            if git ls-remote --exit-code --heads origin "refs/heads/${branch}" >/dev/null 2>&1; then
+              git push origin --delete "$branch"
+            fi
+          done
+
+          remaining="$(git ls-remote --heads origin | awk '{sub("refs/heads/", "", $2); print $2}' | sort)"
+          test "$remaining" = 'main'
+          echo 'Verified: main is the only remaining branch.'
