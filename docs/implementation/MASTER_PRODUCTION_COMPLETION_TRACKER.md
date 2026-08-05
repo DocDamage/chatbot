@@ -8,12 +8,12 @@
 - Baseline branch: `main`
 - Original plan baseline commit: `8b963232d72a69c6616667aaf34daadba6056aba`
 - Last verified deployment commit: `342b657c6510fc086d11ad19a1c7b62fad9cd725`
-- Current task branch: `agent/p01-t06-make-all-ci-stages-execute`
-- Current verified implementation commit: `7e95e339aa7e5d661bbe67ccad98418cbfbd2960`
+- Current task branch: `main` (consolidated baseline)
+- Current integrated implementation commit: `6e1a019f8eccf5154c6a579d02abb188c6911a9e`
 - Plan date: `2026-08-04`
 - Tracker created: `2026-08-04`
 - Tracker last updated: `2026-08-05`
-- Status vocabulary: `NOT_STARTED`, `IN_PROGRESS`, `IMPLEMENTED_NOT_VERIFIED`, `BLOCKED`, `VERIFIED`, `RELEASED`
+- Status vocabulary: `NOT_STARTED`, `IN_PROGRESS`, `IMPLEMENTED_NOT_VERIFIED`, `BLOCKED`, `WAIVED`, `VERIFIED`, `RELEASED`
 
 ## Governance rules
 
@@ -22,27 +22,28 @@
 3. Every verified record identifies owner, status, branch, implementation commit, evidence path, blocker, date, and release applicability.
 4. Each task runs in a new thread and closes with an archived handoff plus a replacement `CURRENT_HANDOFF.md`.
 5. Accepted ADRs define targets and constraints; they do not certify implementation or deployment.
+6. A repository-owner waiver may remove an optional governance task as a sequencing blocker, but a waived task does not count as verified.
 
 ## Summary
 
-| Phase | Total | Verified | In progress | Blocked | Not started |
-|---|---:|---:|---:|---:|---:|
-| PHASE 0 | 5 | 5 | 0 | 0 | 0 |
-| PHASE 1 | 7 | 6 | 0 | 0 | 1 |
-| PHASE 2 | 7 | 0 | 0 | 0 | 7 |
-| PHASE 3 | 8 | 0 | 0 | 0 | 8 |
-| PHASE 4 | 12 | 0 | 0 | 0 | 12 |
-| PHASE 5 | 8 | 0 | 0 | 0 | 8 |
-| PHASE 6 | 9 | 0 | 0 | 0 | 9 |
-| PHASE 7 | 20 | 0 | 0 | 0 | 20 |
-| PHASE 8 | 8 | 0 | 0 | 0 | 8 |
-| PHASE 9 | 7 | 0 | 0 | 0 | 7 |
-| PHASE 10 | 7 | 0 | 0 | 0 | 7 |
-| PHASE 11 | 8 | 0 | 0 | 0 | 8 |
-| PHASE 12 | 8 | 0 | 0 | 0 | 8 |
-| PHASE 13 | 5 | 0 | 0 | 0 | 5 |
-| PHASE 14 | 5 | 0 | 0 | 0 | 5 |
-| **Total** | **124** | **11** | **0** | **0** | **113** |
+| Phase | Total | Verified | Implemented, not verified | In progress | Blocked | Waived | Not started |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| PHASE 0 | 5 | 5 | 0 | 0 | 0 | 0 | 0 |
+| PHASE 1 | 7 | 6 | 0 | 0 | 0 | 1 | 0 |
+| PHASE 2 | 7 | 0 | 7 | 0 | 0 | 0 | 0 |
+| PHASE 3 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
+| PHASE 4 | 12 | 0 | 0 | 0 | 0 | 0 | 12 |
+| PHASE 5 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
+| PHASE 6 | 9 | 0 | 0 | 0 | 0 | 0 | 9 |
+| PHASE 7 | 20 | 0 | 0 | 0 | 0 | 0 | 20 |
+| PHASE 8 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
+| PHASE 9 | 7 | 0 | 0 | 0 | 0 | 0 | 7 |
+| PHASE 10 | 7 | 0 | 0 | 0 | 0 | 0 | 7 |
+| PHASE 11 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
+| PHASE 12 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
+| PHASE 13 | 5 | 0 | 0 | 0 | 0 | 0 | 5 |
+| PHASE 14 | 5 | 0 | 0 | 0 | 0 | 0 | 5 |
+| **Total** | **124** | **11** | **7** | **0** | **0** | **1** | **105** |
 
 ## Verified task records
 
@@ -59,6 +60,24 @@
 | `P01-T04` | Repair stale gitlink/submodule state | Codex/GitHub | `VERIFIED` | `agent/p01-t04-repair-gitlink-integrity` | `7995961b0b6c2f2fc847da8ade16d2df594aee27` | `docs/implementation/evidence/PHASE-01/P01-T04/2026-08-05_7995961b` | None | `2026-08-05` | `REQUIRED` |
 | `P01-T05` | Decide and repair GitHub Pages | Codex/GitHub | `VERIFIED` | `agent/p01-t05-decide-repair-github-pages` | `fe2782e7e7eb778de8bd25cabaeadb2243a6dfd6` | `docs/implementation/evidence/PHASE-01/P01-T05/2026-08-05_fe2782e7` | None | `2026-08-05` | `REQUIRED` |
 | `P01-T06` | Make all current CI stages execute | Codex/GitHub | `VERIFIED` | `agent/p01-t06-make-all-ci-stages-execute` | `7e95e339aa7e5d661bbe67ccad98418cbfbd2960` | `docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339` | None | `2026-08-05` | `REQUIRED` |
+
+## Waived task records
+
+| Task ID | Task | Owner | Status | Decision evidence | Date | Release applicability |
+|---|---|---|---|---|---|---|
+| `P01-T07` | Add branch protection | Repository owner | `WAIVED` | Issue `#35`; live `main` is unprotected and `chatrules` contains zero rules | `2026-08-05` | `OWNER-WAIVED` |
+
+## Implemented-not-verified task records
+
+| Task ID | Task | Status | Implementation commit | Consolidated evidence | Integration result |
+|---|---|---|---|---|---|
+| `P02-T01` | Create a complete code and route inventory | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
+| `P02-T02` | Build a reachability map | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
+| `P02-T03` | Remove or isolate legacy and duplicate implementations | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
+| `P02-T04` | Enforce the 300-line source guideline | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
+| `P02-T05` | Consolidate environment templates | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
+| `P02-T06` | Create configuration schemas | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
+| `P02-T07` | Normalize documentation and generated artifacts | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
 
 ## Pending task field defaults
 
@@ -77,21 +96,11 @@ Every row in the pending register inherits these values unless a later verified 
 
 ### PHASE 1 — Restore Repository Integrity and a Fully Green `main`
 
-| Task ID | Task |
-|---|---|
-| `P01-T07` | Add branch protection |
+No remaining unwaived Phase 1 tasks. `P01-T07` is recorded above as `WAIVED` by the repository owner.
 
 ### PHASE 2 — Repository Hygiene, Architecture Boundaries, and Maintainability
 
-| Task ID | Task |
-|---|---|
-| `P02-T01` | Create a complete code and route inventory |
-| `P02-T02` | Build a reachability map |
-| `P02-T03` | Remove or isolate legacy and duplicate implementations |
-| `P02-T04` | Enforce the 300-line source guideline |
-| `P02-T05` | Consolidate environment templates |
-| `P02-T06` | Create configuration schemas |
-| `P02-T07` | Normalize documentation and generated artifacts |
+All seven Phase 2 tasks are implemented and integrated on `main`; formal task-specific verification remains pending and is recorded above as `IMPLEMENTED_NOT_VERIFIED`.
 
 ### PHASE 3 — CI/CD and Verification Gates That Cannot Produce False Confidence
 

@@ -17,3 +17,11 @@ This index links verified production-completion tasks to evidence collected agai
 | `P01-T06` | `VERIFIED` | `7e95e339aa7e5d661bbe67ccad98418cbfbd2960` | `docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339` | `2026-08-05` | Split current CI into 15 independently executing diagnostic job instances plus an unconditional aggregate gate. Positive run `31017213617` passed, controlled failure run `31017534074` proved unrelated diagnostics still complete and the gate rejects failure, and final restored run `31017624960` passed all 16 jobs. |
 
 Future tasks must append one row only after their evidence bundle and tracker status are complete.
+
+
+## Non-verified implementation and waiver records
+
+| Record | Status | Commit/reference | Evidence | Notes |
+|---|---|---|---|---|
+| `P01-T07` | `WAIVED` | Issue `#35` | `docs/implementation/BRANCH_PROTECTION_POLICY.md` | Repository owner declined branch-protection enforcement; this does not count as verification. |
+| Phase 2 consolidated implementation | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` merged by PR `#155` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | CI run `31033387341` passed; task-specific evidence closeout remains open. |
