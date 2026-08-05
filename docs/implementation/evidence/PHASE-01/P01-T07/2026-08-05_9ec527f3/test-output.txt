@@ -1,0 +1,28 @@
+P01-T07 focused validation
+
+Node version:
+v22.16.0
+
+Syntax check:
+$ node --check /tmp/p01-t07-configure.mjs
+exit 0
+
+Line count:
+191 /tmp/p01-t07-configure.mjs
+
+Dry-run mock:
+Dry run only. Re-run with --apply and BRANCH_PROTECTION_TOKEN set.
+dry-run mock passed
+exit 0
+
+Apply/read-back mock:
+Verified live branch protection for DocDamage/chatbot:main at 929bc0f.
+apply/read-back mock passed
+exit 0
+
+Live API permission probe:
+GET /repos/DocDamage/chatbot/branches/main/protection
+HTTP 403
+Resource not accessible by integration
+
+The mock test confirms the intended PUT payload and read-back assertions. It does not replace the required live GitHub setting update, so the task remains BLOCKED.
