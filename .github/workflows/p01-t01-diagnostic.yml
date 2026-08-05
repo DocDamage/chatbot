@@ -1,0 +1,108 @@
+name: P01-T01 Diagnostic Reproduction
+
+on:
+  push:
+    branches:
+      - agent/p01-t01-reproduce-latest-ci-failure
+    paths:
+      - .github/workflows/p01-t01-diagnostic.yml
+
+permissions:
+  contents: write
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out diagnostic branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/p01-t01-reproduce-latest-ci-failure
+          fetch-depth: 1
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Run prescribed sequence and preserve all results
+        shell: bash
+        run: |
+          set +e
+          BASE_COMMIT="7f3b66c2c4ecf10028be6bbee4a68c64f651b8d0"
+          OUT="docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2"
+          mkdir -p "$OUT/logs" "$OUT/artifacts"
+
+          {
+            echo "repository=DocDamage/chatbot"
+            echo "branch=$GITHUB_REF_NAME"
+            echo "baseline_commit=$BASE_COMMIT"
+            echo "workflow_commit=$GITHUB_SHA"
+            echo "runner_os=$RUNNER_OS"
+            echo "runner_arch=$RUNNER_ARCH"
+            echo "node=$(node --version)"
+            echo "npm=$(npm --version)"
+          } > "$OUT/environment.txt"
+
+          RESULTS="$OUT/artifacts/command-results.tsv"
+          printf 'index\tcommand\texit_code\tlog\n' > "$RESULTS"
+
+          run_cmd() {
+            idx="$1"
+            label="$2"
+            command="$3"
+            log="$OUT/logs/${idx}-${label}.log"
+            echo "===== $command =====" | tee "$log"
+            bash -lc "$command" 2>&1 | tee -a "$log"
+            code=${PIPESTATUS[0]}
+            printf '%s\t%s\t%s\t%s\n' "$idx" "$command" "$code" "$log" >> "$RESULTS"
+            return 0
+          }
+
+          run_cmd 01 npm-ci-root 'npm ci'
+          run_cmd 02 npm-ci-client 'npm --prefix client ci'
+          run_cmd 03 type-check-server 'npm run type-check:server'
+          run_cmd 04 type-check-tests 'npm run type-check:tests'
+          run_cmd 05 type-check-client 'npm run type-check:client'
+          run_cmd 06 lint-server 'npm run lint:server'
+          run_cmd 07 lint-client 'npm run lint:client'
+          run_cmd 08 test-security 'npm run test:security -- --runInBand'
+          run_cmd 09 test-routes 'npm run test:routes -- --runInBand'
+          run_cmd 10 test-services 'npm run test:services -- --runInBand'
+          run_cmd 11 test-e2e 'npm run test:e2e -- --runInBand'
+          run_cmd 12 test-coverage 'npm run test:coverage -- --runInBand'
+          run_cmd 13 client-test 'npm --prefix client test'
+          run_cmd 14 client-build 'npm --prefix client run build'
+
+          python3 - "$OUT" <<'PY'
+          import csv, json, pathlib, sys
+          out = pathlib.Path(sys.argv[1])
+          rows = list(csv.DictReader((out/'artifacts/command-results.tsv').open(), delimiter='\t'))
+          env = dict(line.rstrip().split('=', 1) for line in (out/'environment.txt').read_text().splitlines() if '=' in line)
+          payload = {
+              'taskId': 'P01-T01',
+              'baselineCommit': env.get('baseline_commit'),
+              'workflowCommit': env.get('workflow_commit'),
+              'commands': [
+                  {
+                      'index': row['index'],
+                      'command': row['command'],
+                      'exitCode': int(row['exit_code']),
+                      'log': row['log'],
+                  }
+                  for row in rows
+              ],
+              'failedCommands': [row['command'] for row in rows if int(row['exit_code']) != 0],
+          }
+          (out/'results.json').write_text(json.dumps(payload, indent=2) + '\n')
+          PY
+
+      - name: Commit diagnostic evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/implementation/evidence/PHASE-01/P01-T01
+          git commit -m "docs(P01-T01): record full CI reproduction results"
+          git push origin HEAD:agent/p01-t01-reproduce-latest-ci-failure
