@@ -8,8 +8,8 @@
 - Baseline branch: `main`
 - Original plan baseline commit: `8b963232d72a69c6616667aaf34daadba6056aba`
 - Last inspected `main` commit before this task: `4b10a434f5b60216608da74303d4193bc289e372`
-- Current task branch: `agent/p01-t02-correct-clipboard-tests`
-- Current verified implementation commit: `2882406d0d944ab62aa93c27cbf9a685084d8d5a`
+- Current task branch: `agent/p01-t03-remove-client-lint-warning`
+- Current verified implementation commit: `12b4088671cf5c828dd8e6b430b5320b5544016c`
 - Plan date: `2026-08-04`
 - Tracker created: `2026-08-04`
 - Tracker last updated: `2026-08-05`
@@ -28,7 +28,7 @@
 | Phase | Total | Verified | In progress | Blocked | Not started |
 |---|---:|---:|---:|---:|---:|
 | PHASE 0 | 5 | 5 | 0 | 0 | 0 |
-| PHASE 1 | 7 | 2 | 0 | 0 | 5 |
+| PHASE 1 | 7 | 3 | 0 | 0 | 4 |
 | PHASE 2 | 7 | 0 | 0 | 0 | 7 |
 | PHASE 3 | 8 | 0 | 0 | 0 | 8 |
 | PHASE 4 | 12 | 0 | 0 | 0 | 12 |
@@ -42,7 +42,7 @@
 | PHASE 12 | 8 | 0 | 0 | 0 | 8 |
 | PHASE 13 | 5 | 0 | 0 | 0 | 5 |
 | PHASE 14 | 5 | 0 | 0 | 0 | 5 |
-| **Total** | **124** | **7** | **0** | **0** | **117** |
+| **Total** | **124** | **8** | **0** | **0** | **116** |
 
 ## Verified task records
 
@@ -55,6 +55,7 @@
 | `P00-T05` | Create GitHub milestones and issues | Codex/GitHub | `VERIFIED` | `agent/p00-t05-create-github-milestones-issues` | `0f687c56d536565c39b2817417862559b1b8efd3` | `docs/implementation/evidence/PHASE-00/P00-T05/2026-08-05_fbff3ab0` | None | `2026-08-05` | `REQUIRED` |
 | `P01-T01` | Reproduce the latest CI failure locally | Codex/GitHub | `VERIFIED` | `agent/p01-t01-reproduce-latest-ci-failure` | `b29a7125ef22f1a0d34f0a0b6d36d0bd61b183d4` | `docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2` | None | `2026-08-05` | `REQUIRED` |
 | `P01-T02` | Correct clipboard behavior and tests | Codex/GitHub | `VERIFIED` | `agent/p01-t02-correct-clipboard-tests` | `2882406d0d944ab62aa93c27cbf9a685084d8d5a` | `docs/implementation/evidence/PHASE-01/P01-T02/2026-08-05_2882406d` | None | `2026-08-05` | `REQUIRED` |
+| `P01-T03` | Remove the client lint warning | Codex/GitHub | `VERIFIED` | `agent/p01-t03-remove-client-lint-warning` | `12b4088671cf5c828dd8e6b430b5320b5544016c` | `docs/implementation/evidence/PHASE-01/P01-T03/2026-08-05_12b40886` | None | `2026-08-05` | `REQUIRED` |
 
 ## Pending task field defaults
 
@@ -75,7 +76,6 @@ Every row in the pending register inherits these values unless a later verified 
 
 | Task ID | Task |
 |---|---|
-| `P01-T03` | Remove the client lint warning |
 | `P01-T04` | Repair stale gitlink/submodule state |
 | `P01-T05` | Decide and repair GitHub Pages |
 | `P01-T06` | Make all current CI stages execute |
