@@ -1,0 +1,37 @@
+{
+  "taskId": "P01-T06",
+  "commit": "7e95e339aa7e5d661bbe67ccad98418cbfbd2960",
+  "branch": "agent/p01-t06-make-all-ci-stages-execute",
+  "status": "VERIFIED",
+  "commands": [
+    {"command": "bash scripts/release/verify-repository-integrity.sh", "exitCode": 0},
+    {"command": "node scripts/release/verify-ci-graph.mjs", "exitCode": 0},
+    {"command": "npm run type-check:server", "exitCode": 0},
+    {"command": "npm run type-check:tests", "exitCode": 0},
+    {"command": "npm run type-check:client", "exitCode": 0},
+    {"command": "npm run lint:server", "exitCode": 0},
+    {"command": "npm run lint:client", "exitCode": 0},
+    {"command": "npm run test:security -- --runInBand", "exitCode": 0},
+    {"command": "npm run test:routes -- --runInBand", "exitCode": 0},
+    {"command": "npm run test:services -- --runInBand", "exitCode": 0},
+    {"command": "npm run test:e2e -- --runInBand", "exitCode": 0},
+    {"command": "npm run test:coverage -- --runInBand", "exitCode": 0},
+    {"command": "client: npm run test", "exitCode": 0},
+    {"command": "client: npm run coverage", "exitCode": 0},
+    {"command": "client: npm run a11y", "exitCode": 0},
+    {"command": "npm run smoke:package", "exitCode": 0}
+  ],
+  "workflowRuns": {
+    "positive": {"id": 31017213617, "conclusion": "success", "jobCount": 16},
+    "failureIsolationProbe": {"id": 31017534074, "conclusion": "failure", "jobCount": 16, "expected": true},
+    "final": {"id": 31017624960, "conclusion": "success", "jobCount": 16}
+  },
+  "automatedTestsPassed": true,
+  "runtimeQaRequired": true,
+  "runtimeQaPassed": true,
+  "knownLimitations": [
+    "The current accessibility script is still TypeScript validation; real accessibility testing is assigned to P03-T04.",
+    "Container CI is assigned to P03-T08 and was not added to the current-stage split."
+  ],
+  "evidenceGeneratedAt": "2026-08-05T14:59:00Z"
+}

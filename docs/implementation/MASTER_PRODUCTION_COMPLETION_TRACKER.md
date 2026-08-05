@@ -8,8 +8,8 @@
 - Baseline branch: `main`
 - Original plan baseline commit: `8b963232d72a69c6616667aaf34daadba6056aba`
 - Last verified deployment commit: `342b657c6510fc086d11ad19a1c7b62fad9cd725`
-- Current task branch: `agent/p01-t05-decide-repair-github-pages`
-- Current verified implementation commit: `fe2782e7e7eb778de8bd25cabaeadb2243a6dfd6`
+- Current task branch: `agent/p01-t06-make-all-ci-stages-execute`
+- Current verified implementation commit: `7e95e339aa7e5d661bbe67ccad98418cbfbd2960`
 - Plan date: `2026-08-04`
 - Tracker created: `2026-08-04`
 - Tracker last updated: `2026-08-05`
@@ -28,7 +28,7 @@
 | Phase | Total | Verified | In progress | Blocked | Not started |
 |---|---:|---:|---:|---:|---:|
 | PHASE 0 | 5 | 5 | 0 | 0 | 0 |
-| PHASE 1 | 7 | 5 | 0 | 0 | 2 |
+| PHASE 1 | 7 | 6 | 0 | 0 | 1 |
 | PHASE 2 | 7 | 0 | 0 | 0 | 7 |
 | PHASE 3 | 8 | 0 | 0 | 0 | 8 |
 | PHASE 4 | 12 | 0 | 0 | 0 | 12 |
@@ -42,7 +42,7 @@
 | PHASE 12 | 8 | 0 | 0 | 0 | 8 |
 | PHASE 13 | 5 | 0 | 0 | 0 | 5 |
 | PHASE 14 | 5 | 0 | 0 | 0 | 5 |
-| **Total** | **124** | **10** | **0** | **0** | **114** |
+| **Total** | **124** | **11** | **0** | **0** | **113** |
 
 ## Verified task records
 
@@ -58,6 +58,7 @@
 | `P01-T03` | Remove the client lint warning | Codex/GitHub | `VERIFIED` | `agent/p01-t03-remove-client-lint-warning` | `12b4088671cf5c828dd8e6b430b5320b5544016c` | `docs/implementation/evidence/PHASE-01/P01-T03/2026-08-05_12b40886` | None | `2026-08-05` | `REQUIRED` |
 | `P01-T04` | Repair stale gitlink/submodule state | Codex/GitHub | `VERIFIED` | `agent/p01-t04-repair-gitlink-integrity` | `7995961b0b6c2f2fc847da8ade16d2df594aee27` | `docs/implementation/evidence/PHASE-01/P01-T04/2026-08-05_7995961b` | None | `2026-08-05` | `REQUIRED` |
 | `P01-T05` | Decide and repair GitHub Pages | Codex/GitHub | `VERIFIED` | `agent/p01-t05-decide-repair-github-pages` | `fe2782e7e7eb778de8bd25cabaeadb2243a6dfd6` | `docs/implementation/evidence/PHASE-01/P01-T05/2026-08-05_fe2782e7` | None | `2026-08-05` | `REQUIRED` |
+| `P01-T06` | Make all current CI stages execute | Codex/GitHub | `VERIFIED` | `agent/p01-t06-make-all-ci-stages-execute` | `7e95e339aa7e5d661bbe67ccad98418cbfbd2960` | `docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339` | None | `2026-08-05` | `REQUIRED` |
 
 ## Pending task field defaults
 
@@ -78,7 +79,6 @@ Every row in the pending register inherits these values unless a later verified 
 
 | Task ID | Task |
 |---|---|
-| `P01-T06` | Make all current CI stages execute |
 | `P01-T07` | Add branch protection |
 
 ### PHASE 2 — Repository Hygiene, Architecture Boundaries, and Maintainability

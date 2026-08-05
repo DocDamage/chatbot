@@ -1,0 +1,34 @@
+P01-T06 test and workflow result summary
+
+Baseline:
+- .github/workflows/ci.yml contained one sequential job.
+- Any failing step skipped every later step.
+
+Positive run 31017213617 / CI #110 / commit 74e28efada13c5aa24ec3978b9904668f837fb6c:
+- conclusion: success
+- total jobs: 16
+- repository integrity and CI graph verification: success
+- type checks server/tests/client: success
+- lint server/client: success
+- security route tests: success
+- server routes/services/e2e/coverage: success
+- client unit/component tests and coverage: success
+- current client accessibility command: success
+- packaging smoke: success
+- required gate job 92345163361: success
+
+Controlled failure probe 31017534074 / CI #111 / commit 8d29a1d2b84f555eb5ab014d870bede25d3f8539:
+- conclusion: expected failure
+- total jobs: 16
+- security route tests job 92345414777: intentional failure after real suite execution
+- every other diagnostic job: success
+- required gate job 92346297194: expected failure
+- result proves one failure no longer conceals independent diagnostics and cannot produce a green aggregate result
+
+Final restored run 31017624960 / CI #112 / commit 7e95e339aa7e5d661bbe67ccad98418cbfbd2960:
+- conclusion: success
+- total jobs: 16
+- all 15 diagnostic job instances: success
+- required gate job 92346631141: success
+
+No test, command, threshold, or security control was removed or weakened.
