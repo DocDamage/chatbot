@@ -11,15 +11,7 @@ vi.mock('./FileExplorerPanel', () => ({
   )
 }));
 
-let clipboardWriteText: ReturnType<typeof vi.fn>;
-
 beforeEach(() => {
-  clipboardWriteText = vi.fn().mockResolvedValue(undefined);
-  Object.defineProperty(window.navigator, 'clipboard', {
-    value: { writeText: clipboardWriteText },
-    configurable: true
-  });
-
   global.fetch = vi.fn(async (url: RequestInfo | URL) => {
     const path = String(url);
     if (path === '/api/sprite-lab/status') {
@@ -77,6 +69,9 @@ afterEach(() => {
 describe('SpriteLabPanel polish', () => {
   it('shows backend availability, expected outputs, and captured output links', async () => {
     const user = userEvent.setup();
+    const clipboardWriteText = vi
+      .spyOn(window.navigator.clipboard, 'writeText')
+      .mockResolvedValue(undefined);
     render(<SpriteLabPanel />);
 
     await waitFor(() => expect(screen.getByText('Aseprite')).toBeTruthy());
