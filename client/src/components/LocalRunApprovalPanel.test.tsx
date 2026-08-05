@@ -2,6 +2,11 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import LocalRunApprovalPanel from './LocalRunApprovalPanel';
+import {
+  restoreBrowserTestGlobals,
+  stubClipboard,
+  stubExecCommand
+} from '../test/browserTestUtils';
 
 const runs = [
   {
@@ -19,7 +24,7 @@ const runs = [
 ];
 
 beforeEach(() => {
-  global.fetch = vi.fn(async (url: RequestInfo | URL) => {
+  globalThis.fetch = vi.fn(async (url: RequestInfo | URL) => {
     const path = String(url);
     if (path.includes('/api/local-tools/runs?')) {
       return { ok: true, json: async () => ({ runs }) } as Response;
@@ -57,15 +62,15 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  restoreBrowserTestGlobals();
   vi.restoreAllMocks();
 });
 
 describe('LocalRunApprovalPanel', () => {
   it('renders polished run state, output browser, links, and copy actions', async () => {
     const user = userEvent.setup();
-    const clipboardWriteText = vi
-      .spyOn(window.navigator.clipboard, 'writeText')
-      .mockResolvedValue(undefined);
+    const clipboardWriteText = vi.fn(async (_value: string) => undefined);
+    stubClipboard(clipboardWriteText);
     render(<LocalRunApprovalPanel />);
 
     await waitFor(() => expect(screen.getByText('node script.js')).toBeTruthy());
@@ -80,6 +85,24 @@ describe('LocalRunApprovalPanel', () => {
 
     await user.click(screen.getByRole('button', { name: /copy command/i }));
     expect(clipboardWriteText).toHaveBeenCalledWith('node script.js');
+    await waitFor(() => expect(screen.getByRole('status').textContent).toMatch(/copied to clipboard/i));
+  });
+
+  it('reports clipboard rejection without breaking the run controls', async () => {
+    const user = userEvent.setup();
+    stubClipboard(vi.fn(async (_value: string) => {
+      throw new DOMException('Permission denied', 'NotAllowedError');
+    }));
+    stubExecCommand(() => false);
+    render(<LocalRunApprovalPanel />);
+
+    await waitFor(() => expect(screen.getByText('node script.js')).toBeTruthy());
+    await user.click(screen.getByRole('button', { name: /copy command/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert').textContent).toMatch(/clipboard access is unavailable/i);
+    });
+    expect(screen.getByRole('button', { name: /^start$/i }).hasAttribute('disabled')).toBe(false);
   });
 
   it('starts approved runs from the UI', async () => {

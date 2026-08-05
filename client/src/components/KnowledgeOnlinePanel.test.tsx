@@ -9,7 +9,7 @@ afterEach(() => {
 });
 
 beforeEach(() => {
-  global.fetch = vi.fn(async (url: RequestInfo | URL) => {
+  globalThis.fetch = vi.fn(async (url: RequestInfo | URL) => {
     const path = String(url);
     if (path.includes('/api/knowledge-online/check')) {
       return {

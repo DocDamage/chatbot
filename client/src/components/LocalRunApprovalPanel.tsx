@@ -10,6 +10,7 @@ import {
   readLocalRunFile,
   startLocalRun
 } from '../api/localRunApprovals';
+import { copyTextToClipboard } from '../clipboard';
 
 interface LocalRunApprovalPanelProps {
   visible?: boolean;
@@ -28,6 +29,8 @@ export default function LocalRunApprovalPanel({ visible = true }: LocalRunApprov
   const [loading, setLoading] = useState(false);
   const [outputLoading, setOutputLoading] = useState(false);
   const [error, setError] = useState('');
+  const [clipboardStatus, setClipboardStatus] = useState('');
+  const [clipboardError, setClipboardError] = useState('');
   const [approvalNote, setApprovalNote] = useState('Approved from local UI after reviewing command, cwd, and risk.');
 
   const refresh = async () => {
@@ -121,7 +124,16 @@ export default function LocalRunApprovalPanel({ visible = true }: LocalRunApprov
 
   const copy = async (value: string) => {
     if (!value.trim()) return;
-    await navigator.clipboard?.writeText(value);
+    const result = await copyTextToClipboard(value);
+    if (result.ok) {
+      setClipboardError('');
+      setClipboardStatus(result.method === 'fallback'
+        ? 'Copied using the browser fallback.'
+        : 'Copied to clipboard.');
+      return;
+    }
+    setClipboardStatus('');
+    setClipboardError('Clipboard access is unavailable. Select the text and copy it manually.');
   };
 
   if (!visible) return null;
@@ -150,6 +162,8 @@ export default function LocalRunApprovalPanel({ visible = true }: LocalRunApprov
       </label>
 
       {error && <div className="assistant-error-bar" role="alert">{error}</div>}
+      {clipboardError && <div className="assistant-error-bar" role="alert">{clipboardError}</div>}
+      {clipboardStatus && <div className="assistant-muted" role="status" aria-live="polite">{clipboardStatus}</div>}
 
       <div className="local-run-layout">
         <div className="local-run-list">

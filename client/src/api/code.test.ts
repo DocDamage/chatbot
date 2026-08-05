@@ -7,7 +7,7 @@ describe('code API client', () => {
   });
 
   it('searches code files through the dedicated route', async () => {
-    global.fetch = vi.fn().mockResolvedValue({
+    globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ results: [{ path: 'src/index.ts' }] }),
     } as Response);
@@ -17,7 +17,7 @@ describe('code API client', () => {
   });
 
   it('loads symbols and posts code workflows', async () => {
-    global.fetch = vi.fn().mockResolvedValue({
+    globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({ symbols: [{ name: 'App' }], ok: true }),
     } as Response);

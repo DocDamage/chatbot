@@ -9,7 +9,7 @@ afterEach(() => {
 });
 
 beforeEach(() => {
-  global.fetch = vi.fn().mockResolvedValue({
+  globalThis.fetch = vi.fn().mockResolvedValue({
     ok: true,
     json: async () => ({
       results: [{ path: 'src/App.tsx' }],
@@ -75,7 +75,7 @@ describe('CodeWorkflowPanel', () => {
 
   it('displays structured 400 route errors without dumping backend details', async () => {
     const user = userEvent.setup();
-    global.fetch = vi.fn().mockResolvedValue({
+    globalThis.fetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 400,
       json: async () => ({
