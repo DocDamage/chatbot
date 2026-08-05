@@ -1,0 +1,47 @@
+name: P01-T04 Finalize Evidence
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/p01-t04-finalize.py
+      - .github/workflows/p01-t04-finalize.yml
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'agent/p01-t04-repair-gitlink-integrity'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout task branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Reverify repository integrity
+        run: bash scripts/release/verify-repository-integrity.sh
+
+      - name: Generate evidence and handoff
+        run: python scripts/p01-t04-finalize.py
+
+      - name: Validate closure artifacts
+        run: |
+          python -m json.tool docs/implementation/evidence/PHASE-01/P01-T04/2026-08-05_7995961b/results.json >/dev/null
+          grep -F '| `P01-T04` | Repair stale gitlink/submodule state | Codex/GitHub | `VERIFIED` |' docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md
+          grep -F '`P01-T05 — Decide and repair GitHub Pages`' docs/implementation/handoffs/CURRENT_HANDOFF.md
+          test ! -e scripts/p01-t04-finalize.py
+          test ! -e .github/workflows/p01-t04-finalize.yml
+          git diff --check
+
+      - name: Commit closure evidence
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'docs(P01-T04): record evidence and close task'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
