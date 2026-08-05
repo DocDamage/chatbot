@@ -1,0 +1,37 @@
+name: Phase 2 Inventory Preview
+
+on:
+  push:
+    branches: [agent/complete-through-phase-02]
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    name: Generate Phase 2 inventory artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Test release scanners
+        run: node --test scripts/release/__tests__/phase2-scanners.test.mjs
+      - name: Generate inventory and reachability artifacts
+        run: node scripts/release/generate-repository-inventory.mjs
+      - name: Generate large-file register
+        run: node scripts/release/check-file-size.mjs --write-register
+      - name: Generate environment contract report
+        run: node scripts/release/check-environment-contract.mjs --write-report --allow-undocumented
+      - name: Upload generated artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase2-generated-artifacts
+          path: |
+            docs/architecture/generated
+            docs/architecture/large-file-register.md
+          if-no-files-found: error
