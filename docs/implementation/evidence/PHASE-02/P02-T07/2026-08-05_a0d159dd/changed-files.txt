@@ -1,0 +1,14 @@
+README.md
+docs/guides/SETUP_PREREQUISITES.md
+docs/architecture/REPOSITORY_HYGIENE.md
+docs/architecture/legacy-and-duplicate-review.md
+docs/implementation/release-critical-documents.json
+scripts/release/check-docs.mjs
+scripts/release/check-repository-inventory.mjs
+scripts/release/check-production-boundary.mjs
+docs/architecture/generated/repository-inventory.json
+docs/architecture/generated/repository-inventory.md
+docs/architecture/generated/reachability-map.json
+docs/architecture/generated/reachability-map.md
+package.json
+.github/workflows/ci.yml

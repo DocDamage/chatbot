@@ -1,0 +1,10 @@
+scripts/release/generate-repository-inventory.mjs
+scripts/release/check-repository-inventory.mjs
+scripts/release/lib/files.mjs
+scripts/release/lib/source-analysis.mjs
+scripts/release/lib/render.mjs
+scripts/release/__tests__/phase2-scanners.test.mjs
+docs/architecture/generated/repository-inventory.json
+docs/architecture/generated/repository-inventory.md
+package.json
+.github/workflows/ci.yml
