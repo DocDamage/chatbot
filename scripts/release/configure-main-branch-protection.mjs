@@ -184,4 +184,8 @@ async function main() {
   console.log(`Verified live branch protection for ${repository}:${branch} at ${headSha}.`);
 }
 
-main().catch((error) => fail(error instanceof Error ? error.message : String(error)));
+try {
+  await main();
+} catch (error) {
+  fail(error instanceof Error ? error.message : String(error));
+}
