@@ -1,0 +1,176 @@
+name: Temporary Tracker Reconciliation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/temporary-tracker-reconciliation.yml
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Patch tracker and evidence index
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          tracker_path = Path('docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md')
+          tracker = tracker_path.read_text(encoding='utf-8')
+
+          tracker = tracker.replace(
+              '- Current task branch: `agent/p01-t06-make-all-ci-stages-execute`',
+              '- Current task branch: `main` (consolidated baseline)'
+          )
+          tracker = tracker.replace(
+              '- Current verified implementation commit: `7e95e339aa7e5d661bbe67ccad98418cbfbd2960`',
+              '- Current integrated implementation commit: `6e1a019f8eccf5154c6a579d02abb188c6911a9e`'
+          )
+          tracker = tracker.replace(
+              '- Status vocabulary: `NOT_STARTED`, `IN_PROGRESS`, `IMPLEMENTED_NOT_VERIFIED`, `BLOCKED`, `VERIFIED`, `RELEASED`',
+              '- Status vocabulary: `NOT_STARTED`, `IN_PROGRESS`, `IMPLEMENTED_NOT_VERIFIED`, `BLOCKED`, `WAIVED`, `VERIFIED`, `RELEASED`'
+          )
+
+          governance = '5. Accepted ADRs define targets and constraints; they do not certify implementation or deployment.'
+          if '6. A repository-owner waiver' not in tracker:
+              tracker = tracker.replace(
+                  governance,
+                  governance + '\n6. A repository-owner waiver may remove an optional governance task as a sequencing blocker, but a waived task does not count as verified.'
+              )
+
+          old_summary = '''| Phase | Total | Verified | In progress | Blocked | Not started |
+          |---|---:|---:|---:|---:|---:|
+          | PHASE 0 | 5 | 5 | 0 | 0 | 0 |
+          | PHASE 1 | 7 | 6 | 0 | 0 | 1 |
+          | PHASE 2 | 7 | 0 | 0 | 0 | 7 |
+          | PHASE 3 | 8 | 0 | 0 | 0 | 8 |
+          | PHASE 4 | 12 | 0 | 0 | 0 | 12 |
+          | PHASE 5 | 8 | 0 | 0 | 0 | 8 |
+          | PHASE 6 | 9 | 0 | 0 | 0 | 9 |
+          | PHASE 7 | 20 | 0 | 0 | 0 | 20 |
+          | PHASE 8 | 8 | 0 | 0 | 0 | 8 |
+          | PHASE 9 | 7 | 0 | 0 | 0 | 7 |
+          | PHASE 10 | 7 | 0 | 0 | 0 | 7 |
+          | PHASE 11 | 8 | 0 | 0 | 0 | 8 |
+          | PHASE 12 | 8 | 0 | 0 | 0 | 8 |
+          | PHASE 13 | 5 | 0 | 0 | 0 | 5 |
+          | PHASE 14 | 5 | 0 | 0 | 0 | 5 |
+          | **Total** | **124** | **11** | **0** | **0** | **113** |'''.replace('          ', '')
+
+          new_summary = '''| Phase | Total | Verified | Implemented, not verified | In progress | Blocked | Waived | Not started |
+          |---|---:|---:|---:|---:|---:|---:|---:|
+          | PHASE 0 | 5 | 5 | 0 | 0 | 0 | 0 | 0 |
+          | PHASE 1 | 7 | 6 | 0 | 0 | 0 | 1 | 0 |
+          | PHASE 2 | 7 | 0 | 7 | 0 | 0 | 0 | 0 |
+          | PHASE 3 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
+          | PHASE 4 | 12 | 0 | 0 | 0 | 0 | 0 | 12 |
+          | PHASE 5 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
+          | PHASE 6 | 9 | 0 | 0 | 0 | 0 | 0 | 9 |
+          | PHASE 7 | 20 | 0 | 0 | 0 | 0 | 0 | 20 |
+          | PHASE 8 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
+          | PHASE 9 | 7 | 0 | 0 | 0 | 0 | 0 | 7 |
+          | PHASE 10 | 7 | 0 | 0 | 0 | 0 | 0 | 7 |
+          | PHASE 11 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
+          | PHASE 12 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
+          | PHASE 13 | 5 | 0 | 0 | 0 | 0 | 0 | 5 |
+          | PHASE 14 | 5 | 0 | 0 | 0 | 0 | 0 | 5 |
+          | **Total** | **124** | **11** | **7** | **0** | **0** | **1** | **105** |'''.replace('          ', '')
+
+          if old_summary not in tracker:
+              raise SystemExit('Expected tracker summary was not found.')
+          tracker = tracker.replace(old_summary, new_summary, 1)
+
+          records = '''## Waived task records
+
+          | Task ID | Task | Owner | Status | Decision evidence | Date | Release applicability |
+          |---|---|---|---|---|---|---|
+          | `P01-T07` | Add branch protection | Repository owner | `WAIVED` | Issue `#35`; live `main` is unprotected and `chatrules` contains zero rules | `2026-08-05` | `OWNER-WAIVED` |
+
+          ## Implemented-not-verified task records
+
+          | Task ID | Task | Status | Implementation commit | Consolidated evidence | Integration result |
+          |---|---|---|---|---|---|
+          | `P02-T01` | Create a complete code and route inventory | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
+          | `P02-T02` | Build a reachability map | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
+          | `P02-T03` | Remove or isolate legacy and duplicate implementations | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
+          | `P02-T04` | Enforce the 300-line source guideline | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
+          | `P02-T05` | Consolidate environment templates | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
+          | `P02-T06` | Create configuration schemas | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
+          | `P02-T07` | Normalize documentation and generated artifacts | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | PR `#155`; CI `31033387341` passed |
+
+          '''.replace('          ', '')
+
+          marker = '## Pending task field defaults\n'
+          if '## Waived task records' not in tracker:
+              tracker = tracker.replace(marker, records + marker, 1)
+
+          tracker = tracker.replace(
+              '''### PHASE 1 — Restore Repository Integrity and a Fully Green `main`
+
+          | Task ID | Task |
+          |---|---|
+          | `P01-T07` | Add branch protection |
+          '''.replace('          ', ''),
+              '''### PHASE 1 — Restore Repository Integrity and a Fully Green `main`
+
+          No remaining unwaived Phase 1 tasks. `P01-T07` is recorded above as `WAIVED` by the repository owner.
+          '''.replace('          ', ''),
+              1,
+          )
+
+          phase2 = '''### PHASE 2 — Repository Hygiene, Architecture Boundaries, and Maintainability
+
+          | Task ID | Task |
+          |---|---|
+          | `P02-T01` | Create a complete code and route inventory |
+          | `P02-T02` | Build a reachability map |
+          | `P02-T03` | Remove or isolate legacy and duplicate implementations |
+          | `P02-T04` | Enforce the 300-line source guideline |
+          | `P02-T05` | Consolidate environment templates |
+          | `P02-T06` | Create configuration schemas |
+          | `P02-T07` | Normalize documentation and generated artifacts |
+          '''.replace('          ', '')
+          tracker = tracker.replace(
+              phase2,
+              '''### PHASE 2 — Repository Hygiene, Architecture Boundaries, and Maintainability
+
+          All seven Phase 2 tasks are implemented and integrated on `main`; formal task-specific verification remains pending and is recorded above as `IMPLEMENTED_NOT_VERIFIED`.
+          '''.replace('          ', ''),
+              1,
+          )
+
+          tracker_path.write_text(tracker, encoding='utf-8')
+
+          index_path = Path('docs/implementation/RELEASE_EVIDENCE_INDEX.md')
+          index = index_path.read_text(encoding='utf-8')
+          if '## Non-verified implementation and waiver records' not in index:
+              index += '''
+
+          ## Non-verified implementation and waiver records
+
+          | Record | Status | Commit/reference | Evidence | Notes |
+          |---|---|---|---|---|
+          | `P01-T07` | `WAIVED` | Issue `#35` | `docs/implementation/BRANCH_PROTECTION_POLICY.md` | Repository owner declined branch-protection enforcement; this does not count as verification. |
+          | Phase 2 consolidated implementation | `IMPLEMENTED_NOT_VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` merged by PR `#155` | `docs/implementation/evidence/PHASE-02/CONSOLIDATED/2026-08-05_a0d159dd` | CI run `31033387341` passed; task-specific evidence closeout remains open. |
+          '''.replace('          ', '')
+          index_path.write_text(index, encoding='utf-8')
+          PY
+
+          npm run check:docs
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md docs/implementation/RELEASE_EVIDENCE_INDEX.md
+          git commit -m 'docs(tracker): reconcile waiver and Phase 2 integration'
+          git push origin HEAD:main
