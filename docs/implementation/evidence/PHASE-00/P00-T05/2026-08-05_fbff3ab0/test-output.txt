@@ -1,0 +1,22 @@
+P00-T05 deterministic verification
+===================================
+Repository: DocDamage/chatbot
+Branch: agent/p00-t05-create-github-milestones-issues
+Implementation commit: 0f687c56d536565c39b2817417862559b1b8efd3
+Final verification workflow run: 30981300411
+
+PASS milestone count: 15
+PASS task issue count: 124
+PASS duplicate phase milestones: 0
+PASS duplicate task issues: 0
+PASS exact task titles: 124/124
+PASS correct milestone assignments: 124/124
+PASS required issue body headings: 124/124
+PASS verified task issue states: P00-T01 through P00-T05 closed
+PASS remaining task issue states: 119 open
+PASS Phase 0 milestone: closed, 0 open, 5 closed
+PASS tracker reconciliation
+PASS release evidence index reconciliation
+PASS archived and current handoff generation
+
+Application runtime tests: not applicable; no runtime code changed.

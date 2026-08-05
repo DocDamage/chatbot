@@ -1,0 +1,16 @@
+.github/workflows/p00-t05-create-github-governance.yml (temporary execution workflow; removed by closure commit)
+docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md
+docs/implementation/RELEASE_EVIDENCE_INDEX.md
+docs/implementation/evidence/PHASE-00/P00-T05/bootstrap/create_github_governance.py
+docs/implementation/evidence/PHASE-00/P00-T05/bootstrap/finalize_p00_t05.py
+docs/implementation/evidence/PHASE-00/P00-T05/2026-08-05_fbff3ab0/artifacts/github-object-results.json
+docs/implementation/evidence/PHASE-00/P00-T05/2026-08-05_fbff3ab0/artifacts/github-object-results.md
+docs/implementation/evidence/PHASE-00/P00-T05/2026-08-05_fbff3ab0/artifacts/final-verification.json
+docs/implementation/evidence/PHASE-00/P00-T05/2026-08-05_fbff3ab0/summary.md
+docs/implementation/evidence/PHASE-00/P00-T05/2026-08-05_fbff3ab0/commands.md
+docs/implementation/evidence/PHASE-00/P00-T05/2026-08-05_fbff3ab0/results.json
+docs/implementation/evidence/PHASE-00/P00-T05/2026-08-05_fbff3ab0/changed-files.txt
+docs/implementation/evidence/PHASE-00/P00-T05/2026-08-05_fbff3ab0/test-output.txt
+docs/implementation/evidence/PHASE-00/P00-T05/2026-08-05_fbff3ab0/runtime-checklist.md
+docs/implementation/handoffs/CURRENT_HANDOFF.md
+docs/implementation/handoffs/archive/P00-T05_HANDOFF.md
