@@ -1,0 +1,14 @@
+# P01-T04 Test Output Summary
+
+- Base commit index inspection: five mode-`160000` entries; `.gitmodules` absent.
+- Malformed fixture: expected exit `128` and missing-mapping fatal message.
+- Repository integrity CI step: passed.
+- Clean clone and detached checkout: passed.
+- `git ls-files --stage`: passed with no gitlinks.
+- `git submodule status`: passed with no output.
+- `git fsck --full`: passed.
+- Checkout post-step: passed without a cleanup warning.
+- All existing type-check, lint, security, route/service, E2E, coverage, client, accessibility, and packaging steps passed.
+- Verification run: `30987598336`; job: `92245900469`.
+
+Raw logs remain in GitHub Actions. This committed summary contains no secrets or private data.
