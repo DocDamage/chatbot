@@ -1,0 +1,32 @@
+P00-T04 documentation validation
+=================================
+Task: P00-T04 — Establish release decisions
+Baseline: 4b10a434f5b60216608da74303d4193bc289e372
+Implementation commit: 923d3a14de0c1b6b9b5aab31cd14663869b3dda7
+
+PASS: exactly 10 ADR files were found.
+PASS: ADR sequence is ADR-0001 through ADR-0010.
+PASS: all ADRs have Status: Accepted.
+PASS: all ADRs identify P00-T04 and the exact baseline commit.
+PASS: all ADRs contain every required governance section.
+PASS: all ADRs are below 300 lines.
+PASS: the ADR README links every decision.
+PASS: 7 of 7 deployment-mode consistency assertions passed.
+PASS: local Git blob IDs match the committed blob IDs.
+PASS: GitHub comparison reports one documentation-only implementation commit with 12 changed files.
+
+Line counts:
+- ADR-0001-production-database.md: 86 lines
+- ADR-0002-hosted-and-local-product-boundaries.md: 99 lines
+- ADR-0003-github-pages-purpose.md: 82 lines
+- ADR-0004-supported-llm-provider-boundary.md: 103 lines
+- ADR-0005-supported-file-formats.md: 101 lines
+- ADR-0006-supported-operating-systems.md: 80 lines
+- ADR-0007-redis-deployment-model.md: 91 lines
+- ADR-0008-production-hosting-target.md: 96 lines
+- ADR-0009-experimental-module-support-policy.md: 96 lines
+- ADR-0010-telemetry-and-privacy-policy.md: 108 lines
+
+Runtime QA: NOT REQUIRED for this documentation-only governance task.
+Application CI: NOT CLAIMED as P00-T04 evidence.
+Overall result: PASS

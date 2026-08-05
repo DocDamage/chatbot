@@ -1,0 +1,26 @@
+{
+  "taskId": "P00-T04",
+  "commit": "923d3a14de0c1b6b9b5aab31cd14663869b3dda7",
+  "branch": "agent/p00-t04-establish-release-decisions",
+  "status": "VERIFIED",
+  "commands": [
+    {
+      "command": "python3 docs/implementation/evidence/PHASE-00/P00-T04/2026-08-05_923d3a14/artifacts/validate_decisions.py --repo-root . --json-output docs/implementation/evidence/PHASE-00/P00-T04/2026-08-05_923d3a14/artifacts/validation-report.json",
+      "exitCode": 0
+    },
+    {
+      "command": "GitHub.compare_commits(base=4b10a434f5b60216608da74303d4193bc289e372, head=923d3a14de0c1b6b9b5aab31cd14663869b3dda7)",
+      "exitCode": 0
+    }
+  ],
+  "automatedTestsPassed": true,
+  "runtimeQaRequired": false,
+  "runtimeQaPassed": true,
+  "knownLimitations": [
+    "Accepted ADRs define targets; they do not certify current executable behavior.",
+    "Concrete hosting and managed-service vendors remain deferred to P11-T01.",
+    "Exact provider and model versions remain deferred to Phase 6.",
+    "Hosted/local route registration enforcement remains unimplemented."
+  ],
+  "evidenceGeneratedAt": "2026-08-05T00:59:12-04:00"
+}

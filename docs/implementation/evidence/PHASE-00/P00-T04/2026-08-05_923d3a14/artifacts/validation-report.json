@@ -1,0 +1,96 @@
+{
+  "adrCount": 10,
+  "files": {
+    "ADR-0001-production-database.md": {
+      "lines": 86,
+      "accepted": true,
+      "task": true,
+      "baseline": true,
+      "under300Lines": true,
+      "missingSections": []
+    },
+    "ADR-0002-hosted-and-local-product-boundaries.md": {
+      "lines": 99,
+      "accepted": true,
+      "task": true,
+      "baseline": true,
+      "under300Lines": true,
+      "missingSections": []
+    },
+    "ADR-0003-github-pages-purpose.md": {
+      "lines": 82,
+      "accepted": true,
+      "task": true,
+      "baseline": true,
+      "under300Lines": true,
+      "missingSections": []
+    },
+    "ADR-0004-supported-llm-provider-boundary.md": {
+      "lines": 103,
+      "accepted": true,
+      "task": true,
+      "baseline": true,
+      "under300Lines": true,
+      "missingSections": []
+    },
+    "ADR-0005-supported-file-formats.md": {
+      "lines": 101,
+      "accepted": true,
+      "task": true,
+      "baseline": true,
+      "under300Lines": true,
+      "missingSections": []
+    },
+    "ADR-0006-supported-operating-systems.md": {
+      "lines": 80,
+      "accepted": true,
+      "task": true,
+      "baseline": true,
+      "under300Lines": true,
+      "missingSections": []
+    },
+    "ADR-0007-redis-deployment-model.md": {
+      "lines": 91,
+      "accepted": true,
+      "task": true,
+      "baseline": true,
+      "under300Lines": true,
+      "missingSections": []
+    },
+    "ADR-0008-production-hosting-target.md": {
+      "lines": 96,
+      "accepted": true,
+      "task": true,
+      "baseline": true,
+      "under300Lines": true,
+      "missingSections": []
+    },
+    "ADR-0009-experimental-module-support-policy.md": {
+      "lines": 96,
+      "accepted": true,
+      "task": true,
+      "baseline": true,
+      "under300Lines": true,
+      "missingSections": []
+    },
+    "ADR-0010-telemetry-and-privacy-policy.md": {
+      "lines": 108,
+      "accepted": true,
+      "task": true,
+      "baseline": true,
+      "under300Lines": true,
+      "missingSections": []
+    }
+  },
+  "deploymentAssertions": {
+    "hostedProfile": true,
+    "localProfile": true,
+    "postgresqlHosted": true,
+    "pagesStaticDemo": true,
+    "openAiOllamaTargets": true,
+    "localExcludedFromHosted": true,
+    "privacyBoundary": true
+  },
+  "status": "PASS",
+  "failures": []
+}

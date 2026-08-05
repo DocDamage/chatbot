@@ -1,0 +1,29 @@
+# Implementation commit files
+docs/DEPLOYMENT_MODES.md
+docs/implementation/decisions/README.md
+docs/implementation/decisions/ADR-0001-production-database.md
+docs/implementation/decisions/ADR-0002-hosted-and-local-product-boundaries.md
+docs/implementation/decisions/ADR-0003-github-pages-purpose.md
+docs/implementation/decisions/ADR-0004-supported-llm-provider-boundary.md
+docs/implementation/decisions/ADR-0005-supported-file-formats.md
+docs/implementation/decisions/ADR-0006-supported-operating-systems.md
+docs/implementation/decisions/ADR-0007-redis-deployment-model.md
+docs/implementation/decisions/ADR-0008-production-hosting-target.md
+docs/implementation/decisions/ADR-0009-experimental-module-support-policy.md
+docs/implementation/decisions/ADR-0010-telemetry-and-privacy-policy.md
+
+# Verification and closure files
+docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md
+docs/implementation/RELEASE_EVIDENCE_INDEX.md
+docs/implementation/handoffs/CURRENT_HANDOFF.md
+docs/implementation/handoffs/archive/P00-T04_HANDOFF.md
+docs/implementation/evidence/PHASE-00/P00-T04/2026-08-05_923d3a14/summary.md
+docs/implementation/evidence/PHASE-00/P00-T04/2026-08-05_923d3a14/commands.md
+docs/implementation/evidence/PHASE-00/P00-T04/2026-08-05_923d3a14/results.json
+docs/implementation/evidence/PHASE-00/P00-T04/2026-08-05_923d3a14/changed-files.txt
+docs/implementation/evidence/PHASE-00/P00-T04/2026-08-05_923d3a14/test-output.txt
+docs/implementation/evidence/PHASE-00/P00-T04/2026-08-05_923d3a14/runtime-checklist.md
+docs/implementation/evidence/PHASE-00/P00-T04/2026-08-05_923d3a14/artifacts/decision-matrix.md
+docs/implementation/evidence/PHASE-00/P00-T04/2026-08-05_923d3a14/artifacts/validate_decisions.py
+docs/implementation/evidence/PHASE-00/P00-T04/2026-08-05_923d3a14/artifacts/validation-report.json
+docs/implementation/evidence/PHASE-00/P00-T04/2026-08-05_923d3a14/screenshots/README.md
