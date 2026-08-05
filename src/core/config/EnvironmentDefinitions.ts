@@ -124,7 +124,7 @@ export const ENVIRONMENT_DEFINITIONS: EnvironmentDefinition[] = [
   secret('TWILIO_AUTH_TOKEN', 'notifications', 'Twilio auth token.'),
   optional('TWILIO_FROM_NUMBER', 'notifications', 'Twilio sending phone number.'),
   optional('SAFETY_CHECK_FACTS', 'safety', 'Enable factual safety checks.', 'true'),
-  optional('SAFETY_CONFIDENCE_THRESHOLD', 'safety', 'Safety confidence threshold.', '0.7')
+  optional('SAFETY_CONFIDENCE_THRESHOLD', 'safety', 'Safety confidence threshold.', '0.7'),
   optional('ALLOW_PRIVATE_WEBHOOK_URLS', 'security', 'Permit explicitly configured private-network webhook targets in trusted local environments.'),
   secret('ASSEMBLYAI_API_KEY', 'providers-and-integrations', 'Assemblyai api key.'),
   secret('BING_API_KEY', 'providers-and-integrations', 'Bing api key.'),

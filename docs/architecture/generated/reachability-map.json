@@ -1749,7 +1749,6 @@
       "scripts/release/lib/reachability.mjs",
       "scripts/release/lib/source-analysis.mjs"
     ],
-    "scripts/release/_phase2-finalize.mjs": [],
     "scripts/release/check-docs.mjs": [],
     "scripts/release/check-environment-contract.mjs": [
       "scripts/release/lib/files.mjs"
@@ -4695,5 +4694,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 917
+  "sourceRecordCount": 916
 }
