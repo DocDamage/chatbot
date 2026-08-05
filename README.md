@@ -1,240 +1,146 @@
 # AI Chatbot Hub
 
-A production-grade AI chatbot application built following a comprehensive architecture plan. Features contract-based control, memory stratification, provider abstraction, provenance tracking, and observability.
+AI Chatbot Hub is a broad TypeScript/React chatbot application with provider abstraction, specialist modes, memory, RAG, local-development tools, creative workflows, and operational endpoints.
 
-## Features
+> **Release classification:** This repository is under a formal production-completion program. It is not currently certified as production-ready. At the `P00-T02` classification baseline, commit `027eacd948cadb0f8b749385c51acd13a287051c` dated `2026-08-04`, the manifest contained 136 records: 0 `PRODUCTION_SUPPORTED`, 105 `PRODUCTION_PREVIEW`, 24 `LOCAL_ONLY_EXPERIMENTAL`, and 7 `DISABLED_OR_REMOVED`.
 
-- **🆓 Free Local LLMs**: Built-in Ollama support for free, local text generation (no API keys needed!)
-- **Specialist Modes**: Text chat with planning, implementation, debugging, music, gaming, history, science, Knowledge OS, and other specialist modes
-- **AI Contract System**: Every request is bound by explicit contracts with capability gating, cost limits, and policy enforcement
-- **Memory Stratification**: Session (ephemeral), Episodic (durable), and Canonical (deterministic) memory layers
-- **Provider Abstraction**: Swappable LLM providers (Ollama, OpenAI) with graceful degradation
-- **Creative Writing & Roleplay**: Story bible continuity, long-form drafting, roleplay state, branches, prompt packs, privacy controls, and export workflows. See [docs/creative-writing.md](docs/creative-writing.md)
-- **Intent Routing**: Automatic classification and routing of user requests
-- **Validation Pipeline**: Safety, tone, and schema validation before responses
-- **Provenance Ledger**: Full content lineage tracking for every response
-- **Observability**: Structured logging and metrics
-- **Modern UI**: React-based chat interface with provider settings, workspace context, and backend health status
+## Authoritative release status
 
-## Release status
+Use these files for current release decisions:
 
-The finish-plan implementation status is tracked in [docs/100_PERCENT_FINISH_STATUS.md](docs/100_PERCENT_FINISH_STATUS.md). Use that document together with [docs/RELEASE_COMPLETION_AUDIT.md](docs/RELEASE_COMPLETION_AUDIT.md) and [docs/FEATURE_COMPLETION_TRACKER.md](docs/FEATURE_COMPLETION_TRACKER.md) when deciding what is verified, fixed, open, or still needs manual runtime QA.
+- [Master Production Completion Tracker](docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md) — authoritative task status.
+- [Production Feature Manifest](docs/implementation/PRODUCTION_FEATURE_MANIFEST.md) — authoritative feature boundary and support category.
+- [Release Evidence Index](docs/implementation/RELEASE_EVIDENCE_INDEX.md) — commit-bound evidence for verified tasks.
+
+The older May 2026 status, audit, and feature-tracker documents are historical snapshots. Their former `Fixed` or `Verified` labels describe implementation or checks performed at the time; they do not certify current manual QA, deployment verification, security review, backup/restore, accessibility, provider canaries, or production support.
+
+### Verification vocabulary
+
+- **Implemented:** code or documentation exists; no verification is implied.
+- **Automated-verified:** named automated checks passed against a stated commit and date.
+- **Manual-verified:** a documented human runtime workflow passed against a stated commit, environment, and date.
+- **Deployment-verified:** the intended deployed environment passed smoke, dependency, persistence, security, and operational checks against a stated commit and date.
+- **Production-supported:** all applicable release gates are verified and recorded in the manifest and evidence index.
+- **Production preview:** implemented or reachable, but one or more release gates remain unverified.
+- **Local-only experimental:** intended only for a trusted local machine and not approved for hosted exposure.
+- **Disabled or removed:** not reachable in the supported product surface.
+
+## Feature overview
+
+The repository contains or explores:
+
+- Ollama and remote LLM provider adapters.
+- Specialist chat modes and routing.
+- Conversation, memory, RAG, provenance, and validation services.
+- Creative writing, gaming, GIS, SEC, Knowledge OS, and other specialist workflows.
+- File, audio, coding, local-tool, Sprite Lab, and desktop-integration features.
+- Health, metrics, administration, export, webhook, and deployment support.
+
+Presence in the repository does not establish production support. Consult the feature manifest before relying on a capability.
 
 ## Architecture
 
-The system follows a layered architecture:
-
-```
-Client → Gateway → Router/Orchestrator → Contract Gate → 
-State Snapshot → (Memory + RAG) → Specialist Agent → 
-Validators → Persist + Provenance → Response
+```text
+Client → Gateway → Router/Orchestrator → Contract Gate
+       → State Snapshot → Memory/RAG → Specialist Agent
+       → Validators → Persistence/Provenance → Response
 ```
 
-### Core Services
-
-- **Gateway/API**: Request handling, rate limits, auth
-- **Router/Orchestrator**: Intent classification, agent selection, orchestration
-- **Contract & Policy Gate**: Capability gating, tool permissions, cost ceilings
-- **Memory Service**: Stratified memory management
-- **LLM Adapter**: Provider abstraction layer
-- **Validation Pipeline**: Quality gates
-- **Provenance Ledger**: Content lineage tracking
-
-## Getting Started
+## Getting started for development evaluation
 
 ### Prerequisites
 
-- Node.js 18+ and npm
-- **For Text Chat**: Ollama (free, local) - [Download here](https://ollama.ai)
-- OpenAI API key (optional, if you prefer OpenAI over Ollama)
+- Node.js 18 or newer.
+- npm.
+- Ollama for local text generation, or a configured supported remote provider.
+- Optional native tools only for the local features that require them.
 
-### Installation
-
-1. Clone the repository and install dependencies:
+### Install
 
 ```bash
 npm install
-cd client && npm install && cd ..
+npm --prefix client install
 ```
 
-2. Create a `.env` file in the root directory:
+Create `.env` from the repository's environment example and supply development-safe values. Do not reuse production secrets.
+
+Typical local settings include:
 
 ```env
 PORT=3001
 NODE_ENV=development
 JWT_SECRET=replace-with-at-least-32-random-characters
 CORS_ORIGIN=http://localhost:3000
-
-# Use Ollama (free, local LLM) - Recommended
 USE_OLLAMA=true
 OLLAMA_URL=http://localhost:11434
 OLLAMA_MODEL=llama2
-
-# Or use OpenAI instead (requires API key)
-# USE_OLLAMA=false
-# OPENAI_API_KEY=your_openai_api_key_here
-
 LOG_LEVEL=info
 ```
 
-3. **Install Ollama** (if using free local LLM):
-   ```bash
-   # Download from https://ollama.ai
-   # Then pull a model:
-   ollama pull llama2
-   ```
-
-4. Build the project:
-
-```bash
-npm run build
-```
-
-### Running the Application
-
-#### Development Mode (with hot reload)
+### Development mode
 
 ```bash
 npm run dev
 ```
 
-This starts both the backend server (port 3001) and frontend dev server (port 3000).
+- Client: `http://localhost:3000`
+- API: `http://localhost:3001`
 
-#### Production Mode
+### Built local evaluation
 
 ```bash
-# Build everything
 npm run build
-
-# Start the server
 npm start
 ```
 
-Then open http://localhost:3001 in your browser. The Express server serves the built React client from `client/dist` and exposes the API on the same origin.
+Then open `http://localhost:3001`. This proves only that the documented local build/start path works when it is actually run successfully. It does not by itself prove production deployment readiness.
 
-Production deployments must provide a strong `JWT_SECRET` and an explicit `CORS_ORIGIN`. Privileged routes such as settings, file browsing, code verification, plan storage, audio browsing, Knowledge OS, online ingestion, admin/export, and webhooks require a bearer token with `admin` or `developer` roles.
+## Deployment boundaries
 
-## Project Structure
+See [docs/DEPLOYMENT_MODES.md](docs/DEPLOYMENT_MODES.md).
 
-```
-.
-├── src/
-│   ├── server/           # Express API server
-│   ├── core/             # Core business logic
-│   │   ├── contracts/    # AI contract system
-│   │   ├── memory/       # Memory stratification
-│   │   ├── providers/    # LLM adapter abstraction
-│   │   ├── router/       # Intent routing
-│   │   ├── orchestrator/ # Request orchestration
-│   │   ├── validator/    # Validation pipeline
-│   │   ├── provenance/   # Provenance ledger
-│   │   └── observability/# Logging and metrics
-│   └── types/            # TypeScript type definitions
-├── client/               # React frontend application
-│   ├── src/
-│   │   ├── components/   # React components
-│   │   └── ...
-└── ai_gaming_hub_detailed_implementation_plan.md  # Architecture plan
-```
+- A local development or built-local run is not a production deployment.
+- GitHub Pages or another static host is only a static demo unless it is deliberately connected to a separately deployed API.
+- Local filesystem, local command, Sprite Lab, FL Studio, and similar desktop integrations must remain local-only unless a later verified task changes their classification.
+- Production architecture, database, Redis, secrets, TLS, backups, monitoring, rollback, and provider support remain subject to later tasks and ADRs.
 
-## Usage
+## Current API examples
 
-### Text Chat
-1. Start the application
-2. Open the web interface at http://localhost:3000
-3. Type your message and press Enter or click Send
-4. The chatbot will respond using Ollama (or configured LLM provider)
+### `POST /api/chat`
 
-### Image Generation
-The active production chat surface renders text responses only. Legacy image-provider adapters may exist in the codebase, but Stable Diffusion is not exposed through the current settings UI or chat flow.
-
-### System Features
-- Classifies your intent automatically
-- Enforces contracts and policies
-- Retrieves relevant memories for context
-- Validates responses for safety
-- Tracks provenance for all content
-- Caches responses for performance
-
-## Configuration
-
-### Environment Variables
-
-**Server Configuration:**
-- `PORT`: Backend server port (default: 3001)
-- `NODE_ENV`: Environment (development/production)
-- `JWT_SECRET`: Required secret for bearer-token authentication, minimum 32 characters
-- `CORS_ORIGIN`: Required explicit browser origin in production
-- `LOG_LEVEL`: Logging level (debug/info/warn/error)
-
-**LLM Configuration:**
-- `USE_OLLAMA`: Use Ollama for free local LLM (default: true)
-- `OLLAMA_URL`: Ollama API URL (default: http://localhost:11434)
-- `OLLAMA_MODEL`: Model to use (default: llama2)
-- `OPENAI_API_KEY`: OpenAI API key (only if USE_OLLAMA=false)
-
-### Contract Configuration
-
-Contracts define what the AI can do. Default contract allows:
-- General queries and dialogue generation
-- Episodic memory persistence
-- Cost limit: $0.10 per request
-- Max latency: 5000ms
-
-Modify contracts in `src/types/contract.ts` or pass custom contracts in API requests.
-
-## API Endpoints
-
-### POST /api/chat
-
-Send a chat message.
-
-**Request:**
 ```json
 {
-  "message": "Hello, how are you?",
+  "message": "Hello",
   "sessionId": "unique-session-id",
   "userId": "optional-user-id"
 }
 ```
 
-**Response:**
-```json
-{
-  "response": "Hello! I'm doing well, thank you for asking.",
-  "artifactId": "uuid-of-response",
-  "contractVersion": "1.0.0",
-  "latency": 1234,
-  "model": "gpt-3.5-turbo",
-  "warnings": []
-}
+The exact response shape and authorization policy must be taken from the current implementation and API documentation. Example payloads are not release certification.
+
+### Health endpoints
+
+The repository includes health endpoints such as `/health`, `/health/live`, and `/health/ready`. Their operational meaning must be verified in the intended deployment before production use.
+
+## Security note
+
+Privileged and local-only routes must not be exposed based solely on README examples. Authentication, authorization, CSRF, CORS, path safety, upload policy, outbound-request policy, local execution, secret handling, and audit controls remain subject to the production-completion tracker.
+
+## Project structure
+
+```text
+.
+├── src/                         # Server, core services, providers, policies, types
+├── client/                      # React/Vite client
+├── docs/implementation/         # Authoritative production-completion governance
+├── docs/                        # Product, setup, and historical documentation
+└── package.json                 # Root scripts and dependencies
 ```
 
-### GET /health
+## Contributing
 
-Health check endpoint.
-
-## Architecture Principles
-
-1. **Deterministic Core / Probabilistic Shell**: Core logic is deterministic; AI provides probabilistic variations
-2. **Contracts Over Prompts**: Every action is bound by explicit contracts
-3. **Graceful Degradation**: System works even if AI is slow/down (fallbacks, caches)
-4. **Provenance & Canon Levels**: Every artifact is tagged with source, lineage, and rollback capability
-5. **Observability-First**: Full tracing of what happened, why, and how to reproduce
-
-## Future Enhancements
-
-Based on the implementation plan, future phases include:
-
-- **Phase B**: Rules engine, canon enforcement, episodic memory compression
-- **Phase C**: Intent routing with specialist agents, caching, pre-generation pools
-- **Phase D**: Full provenance tooling, mod SDK, economy guardrails, kill switches
+Do not describe a merged feature as production-supported unless the feature manifest and evidence index show that status against an exact commit. New production-completion work must follow the one-task, one-thread handoff process in `docs/implementation/handoffs/CURRENT_HANDOFF.md`.
 
 ## License
 
 MIT
-
-## Contributing
-
-This is a reference implementation following a detailed architecture plan. Contributions welcome!
-
