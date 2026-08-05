@@ -6,9 +6,10 @@
 
 - Repository: `DocDamage/chatbot`
 - Baseline branch: `main`
-- Baseline commit: `8b963232d72a69c6616667aaf34daadba6056aba`
-- Last inspected `main` commit: `ea1257ea07c83d36b82e079c7ab408fa33f2b737`
-- Current task branch: `agent/p00-t02-production-feature-manifest`
+- Original plan baseline commit: `8b963232d72a69c6616667aaf34daadba6056aba`
+- Last inspected `main` commit before this task: `f520cc4a71b975a8f816454ab2c174b8e5663617`
+- Current task branch: `agent/p00-t03-reconcile-release-documents`
+- Current verified implementation commit: `27c225dfae2a9d475331af56e9030ba93f8d42e5`
 - Plan date: `2026-08-04`
 - Tracker created: `2026-08-04`
 - Tracker last updated: `2026-08-04`
@@ -22,13 +23,13 @@
 4. Every status change must identify a branch, implementation commit, evidence path, blocker state, and verification date.
 5. Each task must be performed in a new Codex thread and must end with an archived handoff plus a replacement `CURRENT_HANDOFF.md`.
 6. No task may be expanded into a different task ID without closing the current task and starting a new thread.
-7. Release applicability is `REQUIRED` unless a later architecture decision explicitly marks the task `NOT_APPLICABLE` with evidence.
+7. Release applicability is `REQUIRED` unless a later architecture decision marks the task `NOT_APPLICABLE` with evidence.
 
 ## Summary
 
 | Phase | Total | Verified | In progress | Blocked | Not started |
 |---|---:|---:|---:|---:|---:|
-| PHASE 0 | 5 | 2 | 0 | 0 | 3 |
+| PHASE 0 | 5 | 3 | 0 | 0 | 2 |
 | PHASE 1 | 7 | 0 | 0 | 0 | 7 |
 | PHASE 2 | 7 | 0 | 0 | 0 | 7 |
 | PHASE 3 | 8 | 0 | 0 | 0 | 8 |
@@ -43,7 +44,7 @@
 | PHASE 12 | 8 | 0 | 0 | 0 | 8 |
 | PHASE 13 | 5 | 0 | 0 | 0 | 5 |
 | PHASE 14 | 5 | 0 | 0 | 0 | 5 |
-| **Total** | **124** | **2** | **0** | **0** | **122** |
+| **Total** | **124** | **3** | **0** | **0** | **121** |
 
 ## Task register
 
@@ -53,7 +54,7 @@
 |---|---|---|---|---|---|---|---|---|---|
 | `P00-T01` | Create the master production completion tracker | Codex/GitHub | `VERIFIED` | `agent/p00-t01-master-production-tracker` | `84ef639bda41d585240041a0657cd21f2e9f8cde` | `docs/implementation/evidence/PHASE-00/P00-T01/2026-08-04_84ef639b` | None | `2026-08-04` | `REQUIRED` |
 | `P00-T02` | Create the production feature manifest | Codex/GitHub | `VERIFIED` | `agent/p00-t02-production-feature-manifest` | `027eacd948cadb0f8b749385c51acd13a287051c` | `docs/implementation/evidence/PHASE-00/P00-T02/2026-08-04_027eacd9` | None | `2026-08-04` | `REQUIRED` |
-| `P00-T03` | Reconcile existing release documents | Unassigned | `NOT_STARTED` | — | — | — | — | — | `REQUIRED` |
+| `P00-T03` | Reconcile existing release documents | Codex/GitHub | `VERIFIED` | `agent/p00-t03-reconcile-release-documents` | `27c225dfae2a9d475331af56e9030ba93f8d42e5` | `docs/implementation/evidence/PHASE-00/P00-T03/2026-08-04_27c225df` | None | `2026-08-04` | `REQUIRED` |
 | `P00-T04` | Establish release decisions | Unassigned | `NOT_STARTED` | — | — | — | — | — | `REQUIRED` |
 | `P00-T05` | Create GitHub milestones and issues | Unassigned | `NOT_STARTED` | — | — | — | — | — | `REQUIRED` |
 

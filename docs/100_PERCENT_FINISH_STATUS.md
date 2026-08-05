@@ -1,140 +1,51 @@
-# 100% Finish Status
+# 100% Finish Status — Historical Snapshot
 
-Updated: 2026-05-21
+> **Historical document. Not an authoritative current release claim.**
 
-This document tracks the uploaded `100% finish plan` against the current repo state. It is a release-facing addendum to `FEATURE_COMPLETION_TRACKER.md` and `RELEASE_COMPLETION_AUDIT.md`.
+## Snapshot metadata
 
-## Definition of done used
+- Original snapshot date: `2026-05-21`.
+- Original document commit: `ae1368d793793187c9fb21131bec936729eda62d`.
+- Reconciled by task: `P00-T03`.
+- Reconciliation baseline: `main` commit `f520cc4a71b975a8f816454ab2c174b8e5663617`, inspected `2026-08-04` America/New_York.
+- Original unmodified snapshot: [`docs/implementation/historical/2026-05-21/100_PERCENT_FINISH_STATUS.md`](implementation/historical/2026-05-21/100_PERCENT_FINISH_STATUS.md).
 
-For this repo, `100% finished` means every visible feature has a backend route, service, persistence path where needed, UI control, error state, and tests; release findings are Fixed or Verified; no planned-only production routes remain for claimed-complete features; temporary docs are removed; external local tools require explicit approval and auditable run records; and CI/release gates pass.
+## Authoritative current sources
 
-## Current CI baseline
+- [Master Production Completion Tracker](implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md)
+- [Production Feature Manifest](implementation/PRODUCTION_FEATURE_MANIFEST.md)
+- [Release Evidence Index](implementation/RELEASE_EVIDENCE_INDEX.md)
 
-The latest merged work through PR #11 has passed the standard GitHub CI workflow, including:
+## Reconciled meaning
 
-- server type-check
-- test type-check
-- client type-check
-- server lint
-- client lint
-- security route tests
-- server route and service tests
-- E2E smoke tests
-- server coverage
-- client tests
-- client coverage
-- client accessibility checks
-- packaging smoke
+The May document recorded substantial implementation and automated-test work for a narrower finish plan. Its statements such as “green CI,” “completed and verified,” and “substantially complete” are retained only in the archived snapshot and must be read with their original `2026-05-21` context.
 
-## Completed and verified work
+They do **not** establish any of the following for the current repository:
 
-### Repository cleanup
+- current green required-branch CI;
+- assembled application manual runtime verification;
+- target-environment deployment verification;
+- production database migration and restore proof;
+- security review and abuse testing;
+- WCAG 2.2 AA verification;
+- live provider or external-service canaries;
+- production monitoring, rollback, or recovery;
+- production support for every visible or reachable feature.
 
-- Removed `docs/planning/sec_queue_note_test.md`.
-- Verification: merged in PR #2 and covered by subsequent green CI.
+At the `P00-T02` feature-classification baseline, commit `027eacd948cadb0f8b749385c51acd13a287051c` dated `2026-08-04`, the manifest classified 0 of 136 records as `PRODUCTION_SUPPORTED`.
 
-### SEC storage, queue, parser, and persistence
+## Status translation
 
-- Added normalized SEC storage service.
-- Added SEC ingestion queue table/indexes.
-- Added queue creation, listing, processing, stale recovery, direct CIK/ticker ingestion, filing parse/store routes, and status counts.
-- Added tests for parser behavior, queue migration, storage persistence, XBRL fact replacement, filing parse/store rows, queue success/failure lifecycle, and stale item recovery.
-- Verification: PR #5 and PR #9 merged with green CI.
+| Historical wording | Current interpretation |
+|---|---|
+| Implemented or completed | Source behavior was reported present at the historical commit. |
+| Fixed | Implementation existed, but complete verification was not established. |
+| Verified | The named historical check passed; only the check named in the historical verification field is supported. |
+| Green CI | A historical workflow result, not a current or deployment-level guarantee. |
+| Manual runtime QA open | Not manual-verified. |
+| Production deployment confirmation open | Not deployment-verified. |
+| 100% finished | Not accepted under the current production-completion definition. |
 
-### Local external tools
+## Current release statement
 
-- Added local-tool argument allowlist policy for governed tools.
-- Added guarded plan, approve, start, cancel, list runs, list output files, and output download flows.
-- Added active process cancellation support and output capture.
-- Added route-level tests covering plan, blocked start before approval, approve, start, stdout capture, run listing, output listing, output download, disallowed flags, and non-running cancel status.
-- Verification: PR #5 and PR #10 merged with green CI.
-
-### Sprite Lab external adapters
-
-- Added Aseprite-compatible external command planning for spritesheet export, frame slicing, manifest generation, and palette extraction through a Lua script.
-- Added Pixelorama CLI-template guard.
-- Added output verification after completed external runs.
-- Added adapter tests for command safety, workspace path rejection, Pixelorama guard, and palette script wiring.
-- Verification: PR #5 merged with green CI.
-
-### Plan / Implement / Debug backend mode enforcement
-
-- Added backend `ExecutionModePolicy`.
-- Enforced plan, patch, and verify boundaries in code routes.
-- Added route tests proving Plan mode cannot patch, Implement can patch, and only Implement/Debug can verify.
-- Verification: PR #6 merged with green CI.
-
-### Knowledge-online confidence and ingest flow
-
-- Added local confidence check flow.
-- Added online-research handoff when local confidence is too low.
-- Added preview-only search and explicitly approved search-and-ingest endpoint.
-- Added service and route tests for high-confidence local answers, low-confidence miss handoff, preview-only search, and approved ingest.
-- Verification: PR #7 merged with green CI.
-
-### Gaming module expansion
-
-- Added structured Gaming playbooks for engine selection, asset pipeline, design review, safe modding guidance, and gaming agent prompt packs.
-- Added backend routes and tests for playbook listing, generic playbook creation, shortcut endpoints, and invalid kind handling.
-- Surfaced Gaming playbooks in the client UI.
-- Verification: PR #8 and PR #11 merged with green CI.
-
-## Remaining release work
-
-### 1. Manual runtime QA
-
-Status: Open
-
-Automated CI is green, but manual app runtime verification is still required:
-
-- open app locally
-- verify mode selector behavior
-- confirm Plan mode cannot code from UI
-- confirm Implement mode can create patch flow from UI
-- confirm Debug mode can run verification/debug flow from UI
-- use File Explorer search/read/load into chat
-- preview image and audio files
-- use Sprite Lab internal slice, palette, and manifest calls
-- plan, approve, and start an external local tool run
-- verify local tool output listing/download in UI
-- run SEC status/search/queue/process routes against a configured SEC user agent
-- use knowledge-online confidence check and approved ingest flow
-- use Gaming playbook UI
-
-### 2. UI completeness pass
-
-Status: In Progress
-
-Backend and client routes exist for the core finish-plan areas, but the UI still needs product-polish review:
-
-- hide or scope Gaming playbook panel to Gaming mode if always-on placement is too noisy
-- add clearer Knowledge Online panel for confidence check/search/approved ingest instead of only chat CTA and API routes
-- add visible local-tool run history/output browser polish if current workspace is too raw
-- add Sprite Lab external run status/output affordances beyond JSON output
-
-### 3. Release tracker/audit line-item reconciliation
-
-Status: Open
-
-This status document records the 2026-05-21 finish-plan implementation. The older `FEATURE_COMPLETION_TRACKER.md` and `RELEASE_COMPLETION_AUDIT.md` still need a full editorial pass to:
-
-- add cross-references to this status document
-- mark newly completed finish-plan features with PR/CI verification references
-- keep manual-only items out of `Verified`
-- remove stale wording that says no build/test/packaging check has run while this tracker was created
-
-### 4. Production deployment confirmation
-
-Status: Open
-
-Green CI proves build/test/package smoke, not the target production deployment. Before final release:
-
-- run the production start path in the target environment
-- verify auth policy with real configured secrets
-- verify database migrations on the target database type
-- verify SEC live access with configured `SEC_USER_AGENT`
-- verify external local tools only on trusted local hosts
-
-## Release readiness summary
-
-Backend implementation and automated verification are now substantially complete for the uploaded finish plan. The remaining work is mostly manual runtime QA, UI polish, and final documentation reconciliation.
+The repository is a production-completion work in progress. The accurate label must come from the master tracker and feature manifest. No claim in the archived May snapshot overrides those authoritative sources.
