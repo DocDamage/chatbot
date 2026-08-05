@@ -1,0 +1,76 @@
+name: Phase 2 CI Repair
+
+on:
+  push:
+    branches:
+      - agent/complete-through-phase-02
+    paths:
+      - .github/workflows/phase2-ci-repair.yml
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repair branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/complete-through-phase-02
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Repair syntax and regenerate Phase 2 evidence
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('src/core/config/EnvironmentDefinitions.ts')
+          text = path.read_text(encoding='utf-8')
+          old = (
+              "  optional('WEBHOOK_REQUIRE_HTTPS', 'security', 'Require HTTPS webhook targets outside trusted local development.')\n"
+              "  optional('ALLOW_PRIVATE_WEBHOOK_URLS', 'security', 'Permit explicitly configured private-network webhook targets in trusted local environments.'),"
+          )
+          new = (
+              "  optional('WEBHOOK_REQUIRE_HTTPS', 'security', 'Require HTTPS webhook targets outside trusted local development.'),\n"
+              "  optional('ALLOW_PRIVATE_WEBHOOK_URLS', 'security', 'Permit explicitly configured private-network webhook targets in trusted local environments.'),"
+          )
+          if old not in text:
+              raise SystemExit('Expected missing-comma pattern was not found; refusing a blind edit.')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+
+          # Generate evidence for the final branch state, where this temporary
+          # workflow no longer exists, without trying to commit a workflow deletion.
+          git rm --cached .github/workflows/phase2-ci-repair.yml
+          node scripts/release/generate-repository-inventory.mjs
+
+          npm ci
+          npm run type-check:server
+          npm run type-check:tests
+          npm run lint:server
+          npm run test:security -- --runInBand
+          npm run test:routes -- --runInBand
+          npm run check:phase2
+
+          # Restore the temporary workflow in the index so the Actions token only
+          # commits source and generated evidence. It will be deleted separately.
+          git add .github/workflows/phase2-ci-repair.yml
+          git add src/core/config/EnvironmentDefinitions.ts
+          git add docs/architecture/generated
+          git add docs/architecture/large-file-register.md
+          git add docs/architecture/legacy-and-duplicate-review.md
+          git diff --cached --check
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix(ci): repair environment definitions and refresh inventories'
+          git push origin HEAD:agent/complete-through-phase-02
