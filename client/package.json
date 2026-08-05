@@ -7,9 +7,12 @@
     "type-check": "tsc --noEmit",
     "lint": "tsc --noEmit",
     "test": "vitest run",
+    "test:pages": "vitest run src/api/runtime.test.ts src/components/StaticDemo.test.tsx src/App.static-demo.test.tsx",
     "coverage": "vitest run --coverage",
     "a11y": "tsc --noEmit",
     "build": "tsc && vite build",
+    "build:pages": "tsc && vite build",
+    "smoke:pages": "node ../scripts/release/smoke-pages-artifact.mjs dist",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -1,8 +1,21 @@
 name: Deploy GitHub Pages
 
 on:
+  pull_request:
+    paths:
+      - '.github/workflows/pages.yml'
+      - 'client/**'
+      - 'scripts/release/smoke-pages-*.mjs'
+      - 'docs/GITHUB_PAGES_DEMO.md'
   push:
-    branches: [main]
+    branches:
+      - main
+      - agent/p01-t05-decide-repair-github-pages
+    paths:
+      - '.github/workflows/pages.yml'
+      - 'client/**'
+      - 'scripts/release/smoke-pages-*.mjs'
+      - 'docs/GITHUB_PAGES_DEMO.md'
   workflow_dispatch:
 
 permissions:
@@ -11,8 +24,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -25,26 +38,49 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: client/package-lock.json
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
 
       - name: Install client dependencies
         run: npm ci
         working-directory: client
 
-      - name: Build static client
-        run: npm run build
+      - name: Type-check static demo
+        run: npm run type-check
         working-directory: client
         env:
           GITHUB_PAGES: 'true'
+          VITE_RUNTIME_MODE: static-demo
 
-      - name: Upload artifact
+      - name: Test static demo boundary
+        run: npm run test:pages
+        working-directory: client
+        env:
+          GITHUB_PAGES: 'true'
+          VITE_RUNTIME_MODE: static-demo
+
+      - name: Build static demo
+        run: npm run build:pages
+        working-directory: client
+        env:
+          GITHUB_PAGES: 'true'
+          VITE_RUNTIME_MODE: static-demo
+
+      - name: Smoke static artifact
+        run: npm run smoke:pages
+        working-directory: client
+
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: client/dist
 
   deploy:
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -52,6 +88,12 @@ jobs:
     needs: build
 
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Checkout smoke script
+        uses: actions/checkout@v4
+
+      - name: Deploy static demo
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Smoke deployed static demo
+        run: node scripts/release/smoke-pages-deployment.mjs "${{ steps.deployment.outputs.page_url }}"
