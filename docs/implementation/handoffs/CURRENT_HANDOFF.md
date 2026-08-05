@@ -1,135 +1,132 @@
-# P01-T06 Handoff
+# P01-T07 Handoff
 
 ## Repository state
 
 - Repository: `DocDamage/chatbot`
-- Baseline `main` commit: `c0725407eb55575330fcde22e39e784c28395090`
-- Task branch: `agent/p01-t06-make-all-ci-stages-execute`
-- Verified implementation commit: `7e95e339aa7e5d661bbe67ccad98418cbfbd2960`
-- Pull request: `#153`
-- Positive CI run: `31017213617`
-- Failure-isolation probe run: `31017534074`
-- Final restored CI run: `31017624960`
+- Baseline `main` commit: `929bc0fbeefe7bf9d8d296e94d954dbb9de2b790`
+- Task branch: `agent/p01-t07-add-branch-protection`
+- Repository-side implementation commit: `9ec527f3d635fa1bf02d1a8ffbaeeb46048eaeb1`
+- Draft pull request: `#154`
+- Evidence path: `docs/implementation/evidence/PHASE-01/P01-T07/2026-08-05_9ec527f3`
 - Date: `2026-08-05`
 
 ## Authorized task
 
-- Task ID: `P01-T06`
-- Title: Make all current CI stages execute
-- Status: `VERIFIED`
+- Task ID: `P01-T07`
+- Title: Add branch protection
+- Status: `BLOCKED`
 
 ## Scope completed
 
-- Replaced the single sequential CI job with independent required jobs.
-- Separated repository integrity, type-check, lint, security, server tests, client tests, accessibility, and packaging responsibilities.
-- Added non-fail-fast matrices for type-check, lint, server-test, and client-test variants.
-- Added an unconditional aggregate required gate.
-- Added a repository-enforced CI graph validator.
-- Proved failure isolation with a controlled failing run and restored the exact passing workflow.
-- Did not begin P01-T07.
+- Inspected the current `main` branch, successful check runs, repository rulesets, direct collaborators, and Pages environment policy.
+- Confirmed that `main` is currently unprotected and no repository ruleset exists.
+- Identified the exact required aggregate check as `Required CI gate`, produced by GitHub Actions app ID `15368`.
+- Documented the exact intended protection policy.
+- Added a reproducible script that performs dry-run discovery, applies the rule with an administration-capable token, reads the live rule back, and validates every required field.
+- Preserved the existing Pages environment boundary.
+- Did not change CI commands and did not begin Phase 2.
 
 ## Files changed
 
-- `.github/workflows/ci.yml`: independent jobs, non-fail-fast matrices, and final required gate.
-- `scripts/release/verify-ci-graph.mjs`: validates job presence, independence, preserved commands, matrix behavior, and gate logic.
-- `docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339/`: task evidence.
-- `docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md`: P01-T06 verified and counts updated.
-- `docs/implementation/RELEASE_EVIDENCE_INDEX.md`: P01-T06 evidence indexed.
-- Current and archived handoffs: task closure and P01-T07-only authorization.
+- `docs/implementation/BRANCH_PROTECTION_POLICY.md`: exact settings, owner exception, signed-commit decision, and Pages boundary.
+- `scripts/release/configure-main-branch-protection.mjs`: dry-run, live apply, and API read-back verification.
+- `docs/implementation/evidence/PHASE-01/P01-T07/2026-08-05_9ec527f3/`: blocked-task evidence.
+- Current and archived handoffs: task status and restart instructions.
 
-## Behavior implemented
+## Intended live behavior
 
-A failure in one current CI stage no longer prevents unrelated diagnostics from executing. Every current stage runs independently. The `Required CI gate` runs after all required jobs, even when a parent fails, and returns failure unless every parent reports success.
+The `main` branch must require:
 
-## Tests added or changed
+- a pull request;
+- one approving review;
+- stale-review dismissal;
+- approval after the latest push by someone other than the pusher;
+- strict, up-to-date `Required CI gate` from GitHub Actions app ID `15368`;
+- resolution of all review conversations;
+- blocked force pushes;
+- blocked branch deletion.
 
-- Added CI graph validation covering required job IDs, job independence, matrix `fail-fast: false`, command preservation, prohibition of `continue-on-error`, and aggregate-gate completeness.
-- Executed one positive run, one controlled failure-isolation run, and one final restored positive run.
-- No test, threshold, security control, or package check was removed or weakened.
+The personal repository has one administrator, `DocDamage`. Classic branch protection cannot create a user-specific bypass list for a personal repository, so the narrow practical owner exception is `enforce_admins: false`.
 
-## Verification commands and results
+Signed commits are not enabled because current connector-authored implementation commits are unsigned. The existing `github-pages` environment remains limited to `main`; its path-filtered build is not added as a universally required status check.
 
-| Command or workflow | Exit/result | Result |
+## Tests and verification completed
+
+| Command or API call | Exit/status | Result |
 |---|---:|---|
-| `bash scripts/release/verify-repository-integrity.sh` | 0 | Passed |
-| `node scripts/release/verify-ci-graph.mjs` | 0 | Passed |
-| All current type-check commands | 0 | Passed |
-| All current lint commands | 0 | Passed |
-| Security, routes, services, E2E, and server coverage | 0 | Passed |
-| Client tests and coverage | 0 | Passed |
-| Current client accessibility command | 0 | Passed |
-| `npm run smoke:package` | 0 | Passed |
-| CI run `31017213617` | success | All 16 jobs passed |
-| CI run `31017534074` | expected failure | One deliberate diagnostic failure; all other diagnostics passed; aggregate gate failed |
-| CI run `31017624960` | success | Final restored implementation passed all 16 jobs |
+| `GET /repos/DocDamage/chatbot/branches/main` | 200 | `protected: false`; baseline SHA confirmed. |
+| `GET /repos/DocDamage/chatbot/rulesets` | 200 | No rulesets. |
+| Current commit check-runs read-back | 200 | `Required CI gate` passed; app ID `15368`. |
+| Direct collaborator read-back | 200 | Only `DocDamage`, role `admin`. |
+| Pages environment and branch-policy read-back | 200 | Custom policy permits only `main`. |
+| `GET /branches/main/protection` through connected app | 403 | Administration endpoint unavailable to the integration. |
+| `node --check` | 0 | Configurator syntax passed. |
+| Dry-run mock | 0 | Discovery and exact payload passed. |
+| Apply/read-back mock | 0 | PUT payload, authorization, full verification, and final protected state passed. |
 
-## Runtime QA
+## Blocking condition
 
-- Environment: GitHub Actions on `ubuntu-latest`, Node 20.
-- Positive behavior: 15 independent diagnostic job instances executed and the final gate passed.
-- Negative behavior: a deliberate security-job failure did not cancel or hide the other diagnostics, and the final gate rejected the workflow.
-- Final behavior: probe removed; all jobs and gate passed.
-- Evidence: `docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339/runtime-checklist.md`.
+The connected GitHub App lacks repository `Administration: write`. GitHub returned:
 
-## Security and data review
+```text
+403 Resource not accessible by integration
+```
 
-- Workflow permissions are read-only for repository contents.
-- No secrets, user data, provider configuration, database schema, or deployment configuration changed.
-- No `continue-on-error`, skipped required job, warning-only conversion, or threshold reduction was introduced.
+No administration-capable token is available in the execution environment. Live application and live API read-back are mandatory, so P01-T07 cannot be marked `VERIFIED` from documentation or mocks.
 
-## Known limitations or blockers
+## Required completion action
 
-- None for P01-T06.
-- The existing accessibility script remains TypeScript validation; real accessibility testing is assigned to P03-T04.
-- Container build/smoke CI remains assigned to P03-T08.
-- Branch protection is not yet configured; that is the next authorized task, P01-T07.
+Run from a trusted local environment with a short-lived fine-grained token that has **Administration: write** for `DocDamage/chatbot`:
 
-## Evidence bundle
+```bash
+BRANCH_PROTECTION_TOKEN='<token>' \
+  node scripts/release/configure-main-branch-protection.mjs --apply
+```
 
-- `docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339`
+Do not paste the token into chat or commit it. Preserve the successful output after sanitizing it, confirm `main` reports `protected: true`, test the rule on the draft pull request, then update the tracker/evidence/handoff and close issue `#35`.
+
+## Tracker and release evidence status
+
+- P01-T07 is not appended to `RELEASE_EVIDENCE_INDEX.md` because it is not verified.
+- The verified-task count is unchanged.
+- Phase 2 remains unauthorized.
 
 ## Next authorized task
 
-- `P01-T07 — Add branch protection`
+- `P01-T07 — Add branch protection` remains the only authorized task until live application and read-back succeed.
 
 ## NEW THREAD START PROMPT
 
 You are working on repository `DocDamage/chatbot`.
 
 AUTHORIZED TASK ONLY:
-`P01-T07 — Add branch protection`
+`P01-T07 — Add branch protection` (resume blocked live verification)
 
-Create branch:
-`agent/p01-t07-add-branch-protection`
-
-Read before changing settings or files:
+Read before acting:
 1. `docs/implementation/handoffs/CURRENT_HANDOFF.md`
-2. `docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md`
-3. `docs/implementation/RELEASE_EVIDENCE_INDEX.md`
-4. GitHub issue `#35` for P01-T07
-5. the P01-T07 section of the authoritative production-completion plan
-6. `.github/workflows/ci.yml`
-7. `.github/workflows/pages.yml`
-8. current repository rules, branch protection, and required-check names through the GitHub API
+2. `docs/implementation/BRANCH_PROTECTION_POLICY.md`
+3. `scripts/release/configure-main-branch-protection.mjs`
+4. `docs/implementation/evidence/PHASE-01/P01-T07/2026-08-05_9ec527f3/`
+5. GitHub issue `#35`
+6. draft pull request `#154`
 
 Requirements:
 - Work only on P01-T07.
-- Require pull requests before changes reach `main`.
-- Require the current aggregate CI check, `Required CI gate`, and any other check that must protect the supported release path.
-- Require conversation resolution and an up-to-date branch before merge.
-- Block force pushes and branch deletion.
-- Require at least one approving review for release-critical changes unless repository-plan limitations require a documented, narrow owner exception.
-- Enable signed commits only if practical for this repository and document the decision.
-- Preserve the existing Pages protected deployment boundary and do not misclassify Pages as the full product.
-- Do not change CI commands or begin Phase 2 work.
-- Read back the applied rule/protection configuration through the GitHub API and record exact settings, checks, repository/branch, commit SHA, and evidence.
-- Update tracker, evidence index, current handoff, and archived handoff only after verification.
-- End the thread after P01-T07 is verified or formally blocked; do not begin P02-T01.
+- Do not change CI commands or begin P02-T01.
+- Use a trusted identity with repository `Administration: write`; never paste, print, commit, or log a token.
+- Apply the committed exact policy to `main`.
+- Read the complete live protection object back through the GitHub API.
+- Confirm `main` reports `protected: true`.
+- Confirm strict `Required CI gate` binding to GitHub Actions app ID `15368`.
+- Confirm one review, stale-review dismissal, latest-push approval, conversation resolution, no force pushes, and no deletion.
+- Preserve the owner-only admin exception and signed-commit deferral documented in the policy.
+- Preserve the existing Pages protected deployment boundary.
+- Test the live rule with pull request `#154` or an equivalent safe probe.
+- Only after live verification: update the master tracker, append the release evidence index, replace and archive the handoff, close issue `#35`, and authorize only `P02-T01` in a new thread.
+- End the thread after P01-T07 is verified or remains formally blocked.
 
-Before changing settings, report the current `main` commit, existing protection/rules configuration, exact required check names from successful runs, proposed protection settings, owner-exception decision, and verification plan.
-
-Completion requires live GitHub settings read-back and committed evidence, not a narrative assertion.
+Completion requires live GitHub settings read-back and evidence against the exact commit. Mocks and narrative claims are insufficient.
 
 ## Thread closure
 
-This thread is closed. Do not begin another task here. Start a new Codex thread using the prompt above.
+This thread is closed. Do not begin another task here. Start a new Codex thread using the prompt above after an administration-capable GitHub identity is available.
