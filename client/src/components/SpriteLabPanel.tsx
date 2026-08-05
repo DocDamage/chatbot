@@ -19,6 +19,7 @@ import {
   SpriteWorkflowPlan
 } from '../api/spriteLab';
 import { LocalRunOutputFile } from '../api/localRunApprovals';
+import { copyTextToClipboard } from '../clipboard';
 
 const workflows: Array<{ value: SpriteWorkflow; label: string }> = [
   { value: 'spritesheet_export', label: 'Spritesheet export' },
@@ -48,6 +49,8 @@ export default function SpriteLabPanel() {
   const [externalRunFiles, setExternalRunFiles] = useState<LocalRunOutputFile[]>([]);
   const [actionResult, setActionResult] = useState<any>(null);
   const [error, setError] = useState('');
+  const [clipboardStatus, setClipboardStatus] = useState('');
+  const [clipboardError, setClipboardError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const baseName = useMemo(() => {
@@ -148,7 +151,16 @@ export default function SpriteLabPanel() {
 
   const copy = async (value: string) => {
     if (!value.trim()) return;
-    await navigator.clipboard?.writeText(value);
+    const result = await copyTextToClipboard(value);
+    if (result.ok) {
+      setClipboardError('');
+      setClipboardStatus(result.method === 'fallback'
+        ? 'Copied using the browser fallback.'
+        : 'Copied to clipboard.');
+      return;
+    }
+    setClipboardStatus('');
+    setClipboardError('Clipboard access is unavailable. Select the text and copy it manually.');
   };
 
   return (
@@ -162,6 +174,8 @@ export default function SpriteLabPanel() {
       </div>
 
       {error && <div className="assistant-error-bar" role="alert">{error}</div>}
+      {clipboardError && <div className="assistant-error-bar" role="alert">{clipboardError}</div>}
+      {clipboardStatus && <div className="assistant-muted" role="status" aria-live="polite">{clipboardStatus}</div>}
 
       {status && (
         <div className="sprite-backend-grid">

@@ -1,0 +1,28 @@
+{
+  "taskId": "P00-T05",
+  "commit": "0f687c56d536565c39b2817417862559b1b8efd3",
+  "branch": "agent/p00-t05-create-github-milestones-issues",
+  "status": "VERIFIED",
+  "commands": [
+    {
+      "command": "GitHub preflight: list all milestones and search all task-ID issues",
+      "exitCode": 0
+    },
+    {
+      "command": "GitHub Actions run 30980942808: idempotent creation and full read-back verification",
+      "exitCode": 0
+    },
+    {
+      "command": "GitHub Actions run 30981300411: independent final verification, issue closure, milestone closure, and evidence reconciliation",
+      "exitCode": 0
+    }
+  ],
+  "automatedTestsPassed": true,
+  "runtimeQaRequired": false,
+  "runtimeQaPassed": true,
+  "knownLimitations": [
+    "This task verifies GitHub governance objects only; it does not certify application CI, runtime, deployment, security, accessibility, recovery, or production readiness.",
+    "The known stale gitlink/submodule warning remains assigned to P01-T04 and was not changed by P00-T05."
+  ],
+  "evidenceGeneratedAt": "2026-08-05T06:25:21.347713+00:00"
+}

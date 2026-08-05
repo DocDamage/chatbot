@@ -1,0 +1,188 @@
+{
+  "taskId": "P01-T01",
+  "baselineCommit": "7f3b66c2c4ecf10028be6bbee4a68c64f651b8d0",
+  "workflowCommit": "7ed94ee1b352d205e9f242fb1f270f650baed878",
+  "commands": [
+    {
+      "index": "01",
+      "command": "npm ci",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/01-npm-ci-root.log"
+    },
+    {
+      "index": "02",
+      "command": "npm --prefix client ci",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/02-npm-ci-client.log"
+    },
+    {
+      "index": "03",
+      "command": "npm run type-check:server",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/03-type-check-server.log"
+    },
+    {
+      "index": "04",
+      "command": "npm run type-check:tests",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/04-type-check-tests.log"
+    },
+    {
+      "index": "05",
+      "command": "npm run type-check:client",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/05-type-check-client.log"
+    },
+    {
+      "index": "06",
+      "command": "npm run lint:server",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/06-lint-server.log"
+    },
+    {
+      "index": "07",
+      "command": "npm run lint:client",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/07-lint-client.log"
+    },
+    {
+      "index": "08",
+      "command": "npm run test:security -- --runInBand",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/08-test-security.log"
+    },
+    {
+      "index": "09",
+      "command": "npm run test:routes -- --runInBand",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/09-test-routes.log"
+    },
+    {
+      "index": "10",
+      "command": "npm run test:services -- --runInBand",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/10-test-services.log"
+    },
+    {
+      "index": "11",
+      "command": "npm run test:e2e -- --runInBand",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/11-test-e2e.log"
+    },
+    {
+      "index": "12",
+      "command": "npm run test:coverage -- --runInBand",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/12-test-coverage.log"
+    },
+    {
+      "index": "13",
+      "command": "npm --prefix client test",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/13-client-test.log"
+    },
+    {
+      "index": "14",
+      "command": "npm --prefix client run build",
+      "exitCode": 0,
+      "log": "docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/14-client-build.log"
+    }
+  ],
+  "failedCommands": [],
+  "status": "VERIFIED",
+  "diagnosticWorkflowRunId": 30982260932,
+  "implementationCommit": "b29a7125ef22f1a0d34f0a0b6d36d0bd61b183d4",
+  "userSuppliedStandaloneClientBuild": {
+    "exitCode": 2,
+    "errorCode": "TS2304",
+    "message": "Cannot find name 'global'",
+    "occurrences": 14
+  },
+  "rootCause": {
+    "clientBuildScript": "tsc && vite build",
+    "clientTsconfigInclude": [
+      "src"
+    ],
+    "clientTypes": [],
+    "clientDeclaresNodeTypes": false,
+    "rootDeclaresNodeTypes": true,
+    "globalReferences": [
+      {
+        "path": "client/src/api/code.test.ts",
+        "line": 10,
+        "text": "global.fetch = vi.fn().mockResolvedValue({"
+      },
+      {
+        "path": "client/src/api/code.test.ts",
+        "line": 20,
+        "text": "global.fetch = vi.fn().mockResolvedValue({"
+      },
+      {
+        "path": "client/src/api/conversations.test.ts",
+        "line": 15,
+        "text": "global.fetch = vi.fn().mockResolvedValue({"
+      },
+      {
+        "path": "client/src/components/AssistantChatPanelScope.test.tsx",
+        "line": 75,
+        "text": "global.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);"
+      },
+      {
+        "path": "client/src/components/AssistantChatPanelScope.test.tsx",
+        "line": 84,
+        "text": "global.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);"
+      },
+      {
+        "path": "client/src/components/AssistantChatPanelScope.test.tsx",
+        "line": 96,
+        "text": "global.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);"
+      },
+      {
+        "path": "client/src/components/CodeWorkflowPanel.test.tsx",
+        "line": 12,
+        "text": "global.fetch = vi.fn().mockResolvedValue({"
+      },
+      {
+        "path": "client/src/components/CodeWorkflowPanel.test.tsx",
+        "line": 78,
+        "text": "global.fetch = vi.fn().mockResolvedValue({"
+      },
+      {
+        "path": "client/src/components/ConversationToolsPanel.test.tsx",
+        "line": 12,
+        "text": "global.fetch = vi.fn(async (input: RequestInfo | URL) => {"
+      },
+      {
+        "path": "client/src/components/ConversationToolsPanel.test.tsx",
+        "line": 104,
+        "text": "global.fetch = vi.fn().mockResolvedValue({"
+      },
+      {
+        "path": "client/src/components/FLStudioControlPanel.test.tsx",
+        "line": 12,
+        "text": "global.fetch = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {"
+      },
+      {
+        "path": "client/src/components/KnowledgeOnlinePanel.test.tsx",
+        "line": 12,
+        "text": "global.fetch = vi.fn(async (url: RequestInfo | URL) => {"
+      },
+      {
+        "path": "client/src/components/LocalRunApprovalPanel.test.tsx",
+        "line": 22,
+        "text": "global.fetch = vi.fn(async (url: RequestInfo | URL) => {"
+      },
+      {
+        "path": "client/src/components/SpriteLabPanel.test.tsx",
+        "line": 15,
+        "text": "global.fetch = vi.fn(async (url: RequestInfo | URL) => {"
+      }
+    ]
+  },
+  "clipboardFailuresReproduced": false,
+  "knownFindings": [
+    "Client lint completes with one existing unused err warning assigned to P01-T03.",
+    "Repository checkout cleanup still reports the stale docs/30-seconds-of-code gitlink warning assigned to P01-T04.",
+    "Dependency installation reports existing vulnerabilities for later security/dependency tasks."
+  ]
+}

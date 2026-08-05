@@ -1,0 +1,39 @@
+{
+  "taskId": "P00-T05",
+  "repository": "DocDamage/chatbot",
+  "branch": "agent/p00-t05-create-github-milestones-issues",
+  "implementationCommit": "0f687c56d536565c39b2817417862559b1b8efd3",
+  "verificationWorkflowSourceCommit": "58282fadb03d1476c9b189b7f7e75fc4da99f299",
+  "verificationWorkflowRunId": 30981300411,
+  "verifiedAt": "2026-08-05T06:25:21.347713+00:00",
+  "milestoneCount": 15,
+  "issueCount": 124,
+  "closedIssueCount": 5,
+  "openIssueCount": 119,
+  "phaseZeroMilestone": {
+    "number": 1,
+    "url": "https://github.com/DocDamage/chatbot/milestone/1",
+    "state": "closed",
+    "openIssues": 0,
+    "closedIssues": 5
+  },
+  "p00T05Issue": {
+    "number": 28,
+    "url": "https://github.com/DocDamage/chatbot/issues/28",
+    "state": "closed",
+    "stateReason": "completed"
+  },
+  "requiredIssueBodyHeadings": [
+    "## Task objective",
+    "## Permitted scope",
+    "## Dependencies",
+    "## Acceptance criteria",
+    "## Evidence requirements",
+    "## Handoff requirement",
+    "## File-size rule",
+    "## Release-gate integrity"
+  ],
+  "duplicateTaskIssues": 0,
+  "duplicatePhaseMilestones": 0,
+  "verificationErrors": []
+}

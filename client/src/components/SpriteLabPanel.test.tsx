@@ -2,6 +2,11 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import SpriteLabPanel from './SpriteLabPanel';
+import {
+  restoreBrowserTestGlobals,
+  stubClipboard,
+  stubExecCommand
+} from '../test/browserTestUtils';
 
 vi.mock('./FileExplorerPanel', () => ({
   default: ({ onSelect }: any) => (
@@ -12,7 +17,7 @@ vi.mock('./FileExplorerPanel', () => ({
 }));
 
 beforeEach(() => {
-  global.fetch = vi.fn(async (url: RequestInfo | URL) => {
+  globalThis.fetch = vi.fn(async (url: RequestInfo | URL) => {
     const path = String(url);
     if (path === '/api/sprite-lab/status') {
       return {
@@ -63,15 +68,15 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  restoreBrowserTestGlobals();
   vi.restoreAllMocks();
 });
 
 describe('SpriteLabPanel polish', () => {
   it('shows backend availability, expected outputs, and captured output links', async () => {
     const user = userEvent.setup();
-    const clipboardWriteText = vi
-      .spyOn(window.navigator.clipboard, 'writeText')
-      .mockResolvedValue(undefined);
+    const clipboardWriteText = vi.fn(async (_value: string) => undefined);
+    stubClipboard(clipboardWriteText);
     render(<SpriteLabPanel />);
 
     await waitFor(() => expect(screen.getByText('Aseprite')).toBeTruthy());
@@ -89,5 +94,24 @@ describe('SpriteLabPanel polish', () => {
 
     await user.click(screen.getByRole('button', { name: /copy command/i }));
     expect(clipboardWriteText).toHaveBeenCalledWith('aseprite -b assets/hero.aseprite --sheet out.png');
+    await waitFor(() => expect(screen.getByRole('status').textContent).toMatch(/copied to clipboard/i));
+  });
+
+  it('uses the browser fallback when the Clipboard API is unavailable', async () => {
+    const user = userEvent.setup();
+    const execCommand = vi.fn(() => true);
+    stubClipboard(undefined);
+    stubExecCommand(execCommand);
+    render(<SpriteLabPanel />);
+
+    await waitFor(() => expect(screen.getByText('Aseprite')).toBeTruthy());
+    await user.click(screen.getByText('Pick sprite'));
+    await user.click(screen.getByRole('button', { name: /plan external cli/i }));
+    await waitFor(() => expect(screen.getByText('External run')).toBeTruthy());
+
+    await user.click(screen.getByRole('button', { name: /copy command/i }));
+
+    await waitFor(() => expect(screen.getByRole('status').textContent).toMatch(/browser fallback/i));
+    expect(execCommand).toHaveBeenCalledWith('copy');
   });
 });

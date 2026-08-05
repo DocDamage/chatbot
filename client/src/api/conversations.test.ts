@@ -12,7 +12,7 @@ import {
 describe('conversation API client', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
-    global.fetch = vi.fn().mockResolvedValue({
+    globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
         conversations: [{ sessionId: 'session-1' }],

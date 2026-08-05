@@ -1,0 +1,40 @@
+{
+  "taskId": "P01-T04",
+  "commit": "7995961b0b6c2f2fc847da8ade16d2df594aee27",
+  "branch": "agent/p01-t04-repair-gitlink-integrity",
+  "status": "VERIFIED",
+  "commands": [
+    {
+      "command": "git ls-files --stage",
+      "exitCode": 0
+    },
+    {
+      "command": "git submodule status",
+      "exitCode": 0
+    },
+    {
+      "command": "git fsck --full",
+      "exitCode": 0
+    },
+    {
+      "command": "git clone --no-local --no-recurse-submodules . <temp>",
+      "exitCode": 0
+    },
+    {
+      "command": "git -C <temp> checkout --detach 7995961b0b6c2f2fc847da8ade16d2df594aee27",
+      "exitCode": 0
+    },
+    {
+      "command": "clean-clone index/submodule/fsck verification",
+      "exitCode": 0
+    }
+  ],
+  "automatedTestsPassed": true,
+  "runtimeQaRequired": true,
+  "runtimeQaPassed": true,
+  "knownLimitations": [],
+  "evidenceGeneratedAt": "2026-08-05T08:12:29Z",
+  "workflowRun": "30987598336",
+  "workflowJob": "92245900469",
+  "pullRequest": 150
+}

@@ -1,0 +1,7 @@
+.github/workflows/ci.yml
+docs/30-seconds-of-code (removed gitlink)
+docs/30-seconds-of-csharp (removed gitlink)
+docs/C_Sharp_Examples (removed gitlink)
+docs/code-snippets (removed gitlink)
+docs/snippets (removed gitlink)
+scripts/release/verify-repository-integrity.sh

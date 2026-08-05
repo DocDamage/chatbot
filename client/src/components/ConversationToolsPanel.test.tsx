@@ -9,7 +9,7 @@ afterEach(() => {
 });
 
 beforeEach(() => {
-  global.fetch = vi.fn(async (input: RequestInfo | URL) => {
+  globalThis.fetch = vi.fn(async (input: RequestInfo | URL) => {
     const url = String(input);
     if (url.startsWith('/api/conversations?')) {
       return {
@@ -101,7 +101,7 @@ describe('ConversationToolsPanel', () => {
 
   it('displays structured 500 route errors without dumping backend details', async () => {
     const user = userEvent.setup();
-    global.fetch = vi.fn().mockResolvedValue({
+    globalThis.fetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 500,
       json: async () => ({

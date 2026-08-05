@@ -72,7 +72,7 @@ async function selectMode(user: { click: (element: Element) => Promise<void> }, 
 
 describe('AssistantChat specialist panel scoping', () => {
   it('shows Knowledge Online in ask mode without showing Gaming playbooks', () => {
-    global.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
 
     render(<AssistantChat />);
 
@@ -81,7 +81,7 @@ describe('AssistantChat specialist panel scoping', () => {
   });
 
   it('shows Gaming playbooks only after switching to Gaming mode', async () => {
-    global.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
     const user = userEvent.setup();
 
     render(<AssistantChat />);
@@ -93,7 +93,7 @@ describe('AssistantChat specialist panel scoping', () => {
   });
 
   it('hides both panels in Story mode', async () => {
-    global.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
     const user = userEvent.setup();
 
     render(<AssistantChat />);

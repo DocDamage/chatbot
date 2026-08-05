@@ -1,0 +1,1240 @@
+{
+  "taskId": "P00-T05",
+  "repository": "DocDamage/chatbot",
+  "branch": "agent/p00-t05-create-github-milestones-issues",
+  "sourceCommit": "fbff3ab0e04330739b0b1e3974333ffdc4e47145",
+  "status": "IMPLEMENTED_NOT_VERIFIED",
+  "generatedAt": "2026-08-05T06:19:03.970375+00:00",
+  "counts": {
+    "milestones": 15,
+    "issues": 124,
+    "closedVerifiedIssues": 4,
+    "openIssues": 120
+  },
+  "milestones": [
+    {
+      "phase": 0,
+      "number": 1,
+      "title": "PHASE 0 \u2014 Release Governance, Scope Freeze, and Truthful Status",
+      "url": "https://github.com/DocDamage/chatbot/milestone/1",
+      "action": "unchanged"
+    },
+    {
+      "phase": 1,
+      "number": 2,
+      "title": "PHASE 1 \u2014 Restore Repository Integrity and a Fully Green `main`",
+      "url": "https://github.com/DocDamage/chatbot/milestone/2",
+      "action": "unchanged"
+    },
+    {
+      "phase": 2,
+      "number": 3,
+      "title": "PHASE 2 \u2014 Repository Hygiene, Architecture Boundaries, and Maintainability",
+      "url": "https://github.com/DocDamage/chatbot/milestone/3",
+      "action": "unchanged"
+    },
+    {
+      "phase": 3,
+      "number": 4,
+      "title": "PHASE 3 \u2014 CI/CD and Verification Gates That Cannot Produce False Confidence",
+      "url": "https://github.com/DocDamage/chatbot/milestone/4",
+      "action": "unchanged"
+    },
+    {
+      "phase": 4,
+      "number": 5,
+      "title": "PHASE 4 \u2014 Security Hardening and Abuse Resistance",
+      "url": "https://github.com/DocDamage/chatbot/milestone/5",
+      "action": "unchanged"
+    },
+    {
+      "phase": 5,
+      "number": 6,
+      "title": "PHASE 5 \u2014 Database, Persistence, Migration, Backup, and Recovery",
+      "url": "https://github.com/DocDamage/chatbot/milestone/6",
+      "action": "unchanged"
+    },
+    {
+      "phase": 6,
+      "number": 7,
+      "title": "PHASE 6 \u2014 AI Provider, Routing, RAG, Safety, and Evaluation Reliability",
+      "url": "https://github.com/DocDamage/chatbot/milestone/7",
+      "action": "unchanged"
+    },
+    {
+      "phase": 7,
+      "number": 8,
+      "title": "PHASE 7 \u2014 Feature-by-Feature Production Completion",
+      "url": "https://github.com/DocDamage/chatbot/milestone/8",
+      "action": "unchanged"
+    },
+    {
+      "phase": 8,
+      "number": 9,
+      "title": "PHASE 8 \u2014 UX, Accessibility, Onboarding, and Product Polish",
+      "url": "https://github.com/DocDamage/chatbot/milestone/9",
+      "action": "unchanged"
+    },
+    {
+      "phase": 9,
+      "number": 10,
+      "title": "PHASE 9 \u2014 Performance, Capacity, Resilience, and Failure Testing",
+      "url": "https://github.com/DocDamage/chatbot/milestone/10",
+      "action": "unchanged"
+    },
+    {
+      "phase": 10,
+      "number": 11,
+      "title": "PHASE 10 \u2014 Observability, Auditability, and Operational Readiness",
+      "url": "https://github.com/DocDamage/chatbot/milestone/11",
+      "action": "unchanged"
+    },
+    {
+      "phase": 11,
+      "number": 12,
+      "title": "PHASE 11 \u2014 Production Deployment Engineering",
+      "url": "https://github.com/DocDamage/chatbot/milestone/12",
+      "action": "unchanged"
+    },
+    {
+      "phase": 12,
+      "number": 13,
+      "title": "PHASE 12 \u2014 Full Manual QA and Release Candidate Certification",
+      "url": "https://github.com/DocDamage/chatbot/milestone/13",
+      "action": "unchanged"
+    },
+    {
+      "phase": 13,
+      "number": 14,
+      "title": "PHASE 13 \u2014 Versioning, Release Packaging, and Launch",
+      "url": "https://github.com/DocDamage/chatbot/milestone/14",
+      "action": "unchanged"
+    },
+    {
+      "phase": 14,
+      "number": 15,
+      "title": "PHASE 14 \u2014 Post-Release Maintenance Baseline",
+      "url": "https://github.com/DocDamage/chatbot/milestone/15",
+      "action": "unchanged"
+    }
+  ],
+  "issues": [
+    {
+      "taskId": "P00-T01",
+      "number": 24,
+      "title": "[P00-T01] Create the master production completion tracker",
+      "state": "closed",
+      "milestone": 1,
+      "url": "https://github.com/DocDamage/chatbot/issues/24",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P00-T02",
+      "number": 25,
+      "title": "[P00-T02] Create the production feature manifest",
+      "state": "closed",
+      "milestone": 1,
+      "url": "https://github.com/DocDamage/chatbot/issues/25",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P00-T03",
+      "number": 26,
+      "title": "[P00-T03] Reconcile existing release documents",
+      "state": "closed",
+      "milestone": 1,
+      "url": "https://github.com/DocDamage/chatbot/issues/26",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P00-T04",
+      "number": 27,
+      "title": "[P00-T04] Establish release decisions",
+      "state": "closed",
+      "milestone": 1,
+      "url": "https://github.com/DocDamage/chatbot/issues/27",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P00-T05",
+      "number": 28,
+      "title": "[P00-T05] Create GitHub milestones and issues",
+      "state": "open",
+      "milestone": 1,
+      "url": "https://github.com/DocDamage/chatbot/issues/28",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P01-T01",
+      "number": 29,
+      "title": "[P01-T01] Reproduce the latest CI failure locally",
+      "state": "open",
+      "milestone": 2,
+      "url": "https://github.com/DocDamage/chatbot/issues/29",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P01-T02",
+      "number": 30,
+      "title": "[P01-T02] Correct clipboard behavior and tests",
+      "state": "open",
+      "milestone": 2,
+      "url": "https://github.com/DocDamage/chatbot/issues/30",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P01-T03",
+      "number": 31,
+      "title": "[P01-T03] Remove the client lint warning",
+      "state": "open",
+      "milestone": 2,
+      "url": "https://github.com/DocDamage/chatbot/issues/31",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P01-T04",
+      "number": 32,
+      "title": "[P01-T04] Repair stale gitlink/submodule state",
+      "state": "open",
+      "milestone": 2,
+      "url": "https://github.com/DocDamage/chatbot/issues/32",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P01-T05",
+      "number": 33,
+      "title": "[P01-T05] Decide and repair GitHub Pages",
+      "state": "open",
+      "milestone": 2,
+      "url": "https://github.com/DocDamage/chatbot/issues/33",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P01-T06",
+      "number": 34,
+      "title": "[P01-T06] Make all current CI stages execute",
+      "state": "open",
+      "milestone": 2,
+      "url": "https://github.com/DocDamage/chatbot/issues/34",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P01-T07",
+      "number": 35,
+      "title": "[P01-T07] Add branch protection",
+      "state": "open",
+      "milestone": 2,
+      "url": "https://github.com/DocDamage/chatbot/issues/35",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P02-T01",
+      "number": 36,
+      "title": "[P02-T01] Create a complete code and route inventory",
+      "state": "open",
+      "milestone": 3,
+      "url": "https://github.com/DocDamage/chatbot/issues/36",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P02-T02",
+      "number": 37,
+      "title": "[P02-T02] Build a reachability map",
+      "state": "open",
+      "milestone": 3,
+      "url": "https://github.com/DocDamage/chatbot/issues/37",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P02-T03",
+      "number": 38,
+      "title": "[P02-T03] Remove or isolate legacy and duplicate implementations",
+      "state": "open",
+      "milestone": 3,
+      "url": "https://github.com/DocDamage/chatbot/issues/38",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P02-T04",
+      "number": 39,
+      "title": "[P02-T04] Enforce the 300-line source guideline",
+      "state": "open",
+      "milestone": 3,
+      "url": "https://github.com/DocDamage/chatbot/issues/39",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P02-T05",
+      "number": 40,
+      "title": "[P02-T05] Consolidate environment templates",
+      "state": "open",
+      "milestone": 3,
+      "url": "https://github.com/DocDamage/chatbot/issues/40",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P02-T06",
+      "number": 41,
+      "title": "[P02-T06] Create configuration schemas",
+      "state": "open",
+      "milestone": 3,
+      "url": "https://github.com/DocDamage/chatbot/issues/41",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P02-T07",
+      "number": 42,
+      "title": "[P02-T07] Normalize documentation and generated artifacts",
+      "state": "open",
+      "milestone": 3,
+      "url": "https://github.com/DocDamage/chatbot/issues/42",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P03-T01",
+      "number": 43,
+      "title": "[P03-T01] Split and harden CI jobs",
+      "state": "open",
+      "milestone": 4,
+      "url": "https://github.com/DocDamage/chatbot/issues/43",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P03-T02",
+      "number": 44,
+      "title": "[P03-T02] Implement meaningful server coverage policy",
+      "state": "open",
+      "milestone": 4,
+      "url": "https://github.com/DocDamage/chatbot/issues/44",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P03-T03",
+      "number": 45,
+      "title": "[P03-T03] Implement client coverage thresholds",
+      "state": "open",
+      "milestone": 4,
+      "url": "https://github.com/DocDamage/chatbot/issues/45",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P03-T04",
+      "number": 46,
+      "title": "[P03-T04] Replace fake accessibility testing",
+      "state": "open",
+      "milestone": 4,
+      "url": "https://github.com/DocDamage/chatbot/issues/46",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P03-T05",
+      "number": 47,
+      "title": "[P03-T05] Add real browser E2E testing",
+      "state": "open",
+      "milestone": 4,
+      "url": "https://github.com/DocDamage/chatbot/issues/47",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P03-T06",
+      "number": 48,
+      "title": "[P03-T06] Add dependency and supply-chain gates",
+      "state": "open",
+      "milestone": 4,
+      "url": "https://github.com/DocDamage/chatbot/issues/48",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P03-T07",
+      "number": 49,
+      "title": "[P03-T07] Add migration CI",
+      "state": "open",
+      "milestone": 4,
+      "url": "https://github.com/DocDamage/chatbot/issues/49",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P03-T08",
+      "number": 50,
+      "title": "[P03-T08] Add container and package smoke tests",
+      "state": "open",
+      "milestone": 4,
+      "url": "https://github.com/DocDamage/chatbot/issues/50",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P04-T01",
+      "number": 51,
+      "title": "[P04-T01] Produce a complete threat model",
+      "state": "open",
+      "milestone": 5,
+      "url": "https://github.com/DocDamage/chatbot/issues/51",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P04-T02",
+      "number": 52,
+      "title": "[P04-T02] Harden authentication and session policy",
+      "state": "open",
+      "milestone": 5,
+      "url": "https://github.com/DocDamage/chatbot/issues/52",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P04-T03",
+      "number": 53,
+      "title": "[P04-T03] Formalize route authorization",
+      "state": "open",
+      "milestone": 5,
+      "url": "https://github.com/DocDamage/chatbot/issues/53",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P04-T04",
+      "number": 54,
+      "title": "[P04-T04] Upgrade and harden uploads",
+      "state": "open",
+      "milestone": 5,
+      "url": "https://github.com/DocDamage/chatbot/issues/54",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P04-T05",
+      "number": 55,
+      "title": "[P04-T05] Harden file browsing and workspace access",
+      "state": "open",
+      "milestone": 5,
+      "url": "https://github.com/DocDamage/chatbot/issues/55",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P04-T06",
+      "number": 56,
+      "title": "[P04-T06] Harden local command execution",
+      "state": "open",
+      "milestone": 5,
+      "url": "https://github.com/DocDamage/chatbot/issues/56",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P04-T07",
+      "number": 57,
+      "title": "[P04-T07] Harden SSRF and outbound requests",
+      "state": "open",
+      "milestone": 5,
+      "url": "https://github.com/DocDamage/chatbot/issues/57",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P04-T08",
+      "number": 58,
+      "title": "[P04-T08] Harden Redis and rate limiting",
+      "state": "open",
+      "milestone": 5,
+      "url": "https://github.com/DocDamage/chatbot/issues/58",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P04-T09",
+      "number": 59,
+      "title": "[P04-T09] Security headers and browser policy",
+      "state": "open",
+      "milestone": 5,
+      "url": "https://github.com/DocDamage/chatbot/issues/59",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P04-T10",
+      "number": 60,
+      "title": "[P04-T10] Secrets and API-key lifecycle",
+      "state": "open",
+      "milestone": 5,
+      "url": "https://github.com/DocDamage/chatbot/issues/60",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P04-T11",
+      "number": 61,
+      "title": "[P04-T11] Audit logging",
+      "state": "open",
+      "milestone": 5,
+      "url": "https://github.com/DocDamage/chatbot/issues/61",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P04-T12",
+      "number": 62,
+      "title": "[P04-T12] Independent security review",
+      "state": "open",
+      "milestone": 5,
+      "url": "https://github.com/DocDamage/chatbot/issues/62",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P05-T01",
+      "number": 63,
+      "title": "[P05-T01] Select and document the production database",
+      "state": "open",
+      "milestone": 6,
+      "url": "https://github.com/DocDamage/chatbot/issues/63",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P05-T02",
+      "number": 64,
+      "title": "[P05-T02] Centralize migration management",
+      "state": "open",
+      "milestone": 6,
+      "url": "https://github.com/DocDamage/chatbot/issues/64",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P05-T03",
+      "number": 65,
+      "title": "[P05-T03] Test PostgreSQL as a first-class target",
+      "state": "open",
+      "milestone": 6,
+      "url": "https://github.com/DocDamage/chatbot/issues/65",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P05-T04",
+      "number": 66,
+      "title": "[P05-T04] Enforce user ownership and data isolation",
+      "state": "open",
+      "milestone": 6,
+      "url": "https://github.com/DocDamage/chatbot/issues/66",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P05-T05",
+      "number": 67,
+      "title": "[P05-T05] Transaction and consistency review",
+      "state": "open",
+      "milestone": 6,
+      "url": "https://github.com/DocDamage/chatbot/issues/67",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P05-T06",
+      "number": 68,
+      "title": "[P05-T06] Backup implementation",
+      "state": "open",
+      "milestone": 6,
+      "url": "https://github.com/DocDamage/chatbot/issues/68",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P05-T07",
+      "number": 69,
+      "title": "[P05-T07] Restore drill",
+      "state": "open",
+      "milestone": 6,
+      "url": "https://github.com/DocDamage/chatbot/issues/69",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P05-T08",
+      "number": 70,
+      "title": "[P05-T08] Data retention, deletion, and export",
+      "state": "open",
+      "milestone": 6,
+      "url": "https://github.com/DocDamage/chatbot/issues/70",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P06-T01",
+      "number": 71,
+      "title": "[P06-T01] Declare supported providers and models",
+      "state": "open",
+      "milestone": 7,
+      "url": "https://github.com/DocDamage/chatbot/issues/71",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P06-T02",
+      "number": 72,
+      "title": "[P06-T02] Provider contract tests",
+      "state": "open",
+      "milestone": 7,
+      "url": "https://github.com/DocDamage/chatbot/issues/72",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P06-T03",
+      "number": 73,
+      "title": "[P06-T03] Real provider canary tests",
+      "state": "open",
+      "milestone": 7,
+      "url": "https://github.com/DocDamage/chatbot/issues/73",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P06-T04",
+      "number": 74,
+      "title": "[P06-T04] Timeout, retry, circuit breaker, and cancellation",
+      "state": "open",
+      "milestone": 7,
+      "url": "https://github.com/DocDamage/chatbot/issues/74",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P06-T05",
+      "number": 75,
+      "title": "[P06-T05] Token, context, and cost controls",
+      "state": "open",
+      "milestone": 7,
+      "url": "https://github.com/DocDamage/chatbot/issues/75",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P06-T06",
+      "number": 76,
+      "title": "[P06-T06] RAG production hardening",
+      "state": "open",
+      "milestone": 7,
+      "url": "https://github.com/DocDamage/chatbot/issues/76",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P06-T07",
+      "number": 77,
+      "title": "[P06-T07] Grounding and citation release gates",
+      "state": "open",
+      "milestone": 7,
+      "url": "https://github.com/DocDamage/chatbot/issues/77",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P06-T08",
+      "number": 78,
+      "title": "[P06-T08] Domain and safety evals",
+      "state": "open",
+      "milestone": 7,
+      "url": "https://github.com/DocDamage/chatbot/issues/78",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P06-T09",
+      "number": 79,
+      "title": "[P06-T09] Eval regression enforcement",
+      "state": "open",
+      "milestone": 7,
+      "url": "https://github.com/DocDamage/chatbot/issues/79",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T01",
+      "number": 80,
+      "title": "[P07-T01] Core chat and streaming",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/80",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T02",
+      "number": 81,
+      "title": "[P07-T02] Authentication, setup, and settings",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/81",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T03",
+      "number": 82,
+      "title": "[P07-T03] Conversations and sharing",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/82",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T04",
+      "number": 83,
+      "title": "[P07-T04] Modes and specialist routing",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/83",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T05",
+      "number": 84,
+      "title": "[P07-T05] Coding workflow",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/84",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T06",
+      "number": 85,
+      "title": "[P07-T06] File Explorer",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/85",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T07",
+      "number": 86,
+      "title": "[P07-T07] Audio browser and analysis",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/86",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T08",
+      "number": 87,
+      "title": "[P07-T08] Document, image, and video ingestion",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/87",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T09",
+      "number": 88,
+      "title": "[P07-T09] Knowledge Base and RAG UI",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/88",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T10",
+      "number": 89,
+      "title": "[P07-T10] Knowledge Online approval workflow",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/89",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T11",
+      "number": 90,
+      "title": "[P07-T11] Knowledge OS",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/90",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T12",
+      "number": 91,
+      "title": "[P07-T12] Local tools",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/91",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T13",
+      "number": 92,
+      "title": "[P07-T13] Sprite Lab",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/92",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T14",
+      "number": 93,
+      "title": "[P07-T14] SEC ingestion",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/93",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T15",
+      "number": 94,
+      "title": "[P07-T15] Gaming and game-development features",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/94",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T16",
+      "number": 95,
+      "title": "[P07-T16] Creative writing and roleplay",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/95",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T17",
+      "number": 96,
+      "title": "[P07-T17] Music, FL Studio, and desktop bridges",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/96",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T18",
+      "number": 97,
+      "title": "[P07-T18] GIS",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/97",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T19",
+      "number": 98,
+      "title": "[P07-T19] Administration and exports",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/98",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P07-T20",
+      "number": 99,
+      "title": "[P07-T20] Webhooks, automation, notifications, and real-time features",
+      "state": "open",
+      "milestone": 8,
+      "url": "https://github.com/DocDamage/chatbot/issues/99",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P08-T01",
+      "number": 100,
+      "title": "[P08-T01] Information architecture review",
+      "state": "open",
+      "milestone": 9,
+      "url": "https://github.com/DocDamage/chatbot/issues/100",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P08-T02",
+      "number": 101,
+      "title": "[P08-T02] Unified state design",
+      "state": "open",
+      "milestone": 9,
+      "url": "https://github.com/DocDamage/chatbot/issues/101",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P08-T03",
+      "number": 102,
+      "title": "[P08-T03] Dangerous-action UX",
+      "state": "open",
+      "milestone": 9,
+      "url": "https://github.com/DocDamage/chatbot/issues/102",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P08-T04",
+      "number": 103,
+      "title": "[P08-T04] First-run onboarding",
+      "state": "open",
+      "milestone": 9,
+      "url": "https://github.com/DocDamage/chatbot/issues/103",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P08-T05",
+      "number": 104,
+      "title": "[P08-T05] WCAG 2.2 AA implementation",
+      "state": "open",
+      "milestone": 9,
+      "url": "https://github.com/DocDamage/chatbot/issues/104",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P08-T06",
+      "number": 105,
+      "title": "[P08-T06] Manual assistive-technology test",
+      "state": "open",
+      "milestone": 9,
+      "url": "https://github.com/DocDamage/chatbot/issues/105",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P08-T07",
+      "number": 106,
+      "title": "[P08-T07] Responsive and browser matrix",
+      "state": "open",
+      "milestone": 9,
+      "url": "https://github.com/DocDamage/chatbot/issues/106",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P08-T08",
+      "number": 107,
+      "title": "[P08-T08] Product copy and diagnostics",
+      "state": "open",
+      "milestone": 9,
+      "url": "https://github.com/DocDamage/chatbot/issues/107",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P09-T01",
+      "number": 108,
+      "title": "[P09-T01] Define service objectives",
+      "state": "open",
+      "milestone": 10,
+      "url": "https://github.com/DocDamage/chatbot/issues/108",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P09-T02",
+      "number": 109,
+      "title": "[P09-T02] Build representative load profiles",
+      "state": "open",
+      "milestone": 10,
+      "url": "https://github.com/DocDamage/chatbot/issues/109",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P09-T03",
+      "number": 110,
+      "title": "[P09-T03] Load and soak tests",
+      "state": "open",
+      "milestone": 10,
+      "url": "https://github.com/DocDamage/chatbot/issues/110",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P09-T04",
+      "number": 111,
+      "title": "[P09-T04] Resource and abuse caps",
+      "state": "open",
+      "milestone": 10,
+      "url": "https://github.com/DocDamage/chatbot/issues/111",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P09-T05",
+      "number": 112,
+      "title": "[P09-T05] Dependency failure matrix",
+      "state": "open",
+      "milestone": 10,
+      "url": "https://github.com/DocDamage/chatbot/issues/112",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P09-T06",
+      "number": 113,
+      "title": "[P09-T06] Startup and shutdown reliability",
+      "state": "open",
+      "milestone": 10,
+      "url": "https://github.com/DocDamage/chatbot/issues/113",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P09-T07",
+      "number": 114,
+      "title": "[P09-T07] Performance regression gate",
+      "state": "open",
+      "milestone": 10,
+      "url": "https://github.com/DocDamage/chatbot/issues/114",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P10-T01",
+      "number": 115,
+      "title": "[P10-T01] Structured logging standard",
+      "state": "open",
+      "milestone": 11,
+      "url": "https://github.com/DocDamage/chatbot/issues/115",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P10-T02",
+      "number": 116,
+      "title": "[P10-T02] Metrics",
+      "state": "open",
+      "milestone": 11,
+      "url": "https://github.com/DocDamage/chatbot/issues/116",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P10-T03",
+      "number": 117,
+      "title": "[P10-T03] Distributed tracing",
+      "state": "open",
+      "milestone": 11,
+      "url": "https://github.com/DocDamage/chatbot/issues/117",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P10-T04",
+      "number": 118,
+      "title": "[P10-T04] Health endpoints",
+      "state": "open",
+      "milestone": 11,
+      "url": "https://github.com/DocDamage/chatbot/issues/118",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P10-T05",
+      "number": 119,
+      "title": "[P10-T05] Dashboards and alerts",
+      "state": "open",
+      "milestone": 11,
+      "url": "https://github.com/DocDamage/chatbot/issues/119",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P10-T06",
+      "number": 120,
+      "title": "[P10-T06] Runbooks",
+      "state": "open",
+      "milestone": 11,
+      "url": "https://github.com/DocDamage/chatbot/issues/120",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P10-T07",
+      "number": 121,
+      "title": "[P10-T07] Operational support bundle",
+      "state": "open",
+      "milestone": 11,
+      "url": "https://github.com/DocDamage/chatbot/issues/121",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P11-T01",
+      "number": 122,
+      "title": "[P11-T01] Select the production hosting architecture",
+      "state": "open",
+      "milestone": 12,
+      "url": "https://github.com/DocDamage/chatbot/issues/122",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P11-T02",
+      "number": 123,
+      "title": "[P11-T02] Harden the Docker image",
+      "state": "open",
+      "milestone": 12,
+      "url": "https://github.com/DocDamage/chatbot/issues/123",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P11-T03",
+      "number": 124,
+      "title": "[P11-T03] Correct Docker Compose defaults",
+      "state": "open",
+      "milestone": 12,
+      "url": "https://github.com/DocDamage/chatbot/issues/124",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P11-T04",
+      "number": 125,
+      "title": "[P11-T04] Reverse proxy and TLS",
+      "state": "open",
+      "milestone": 12,
+      "url": "https://github.com/DocDamage/chatbot/issues/125",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P11-T05",
+      "number": 126,
+      "title": "[P11-T05] Staging environment",
+      "state": "open",
+      "milestone": 12,
+      "url": "https://github.com/DocDamage/chatbot/issues/126",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P11-T06",
+      "number": 127,
+      "title": "[P11-T06] Automated deployment pipeline",
+      "state": "open",
+      "milestone": 12,
+      "url": "https://github.com/DocDamage/chatbot/issues/127",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P11-T07",
+      "number": 128,
+      "title": "[P11-T07] Migration and rollback strategy",
+      "state": "open",
+      "milestone": 12,
+      "url": "https://github.com/DocDamage/chatbot/issues/128",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P11-T08",
+      "number": 129,
+      "title": "[P11-T08] Production smoke suite",
+      "state": "open",
+      "milestone": 12,
+      "url": "https://github.com/DocDamage/chatbot/issues/129",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P12-T01",
+      "number": 130,
+      "title": "[P12-T01] Clean-machine installation",
+      "state": "open",
+      "milestone": 13,
+      "url": "https://github.com/DocDamage/chatbot/issues/130",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P12-T02",
+      "number": 131,
+      "title": "[P12-T02] Manual workflow matrix",
+      "state": "open",
+      "milestone": 13,
+      "url": "https://github.com/DocDamage/chatbot/issues/131",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P12-T03",
+      "number": 132,
+      "title": "[P12-T03] Cross-configuration matrix",
+      "state": "open",
+      "milestone": 13,
+      "url": "https://github.com/DocDamage/chatbot/issues/132",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P12-T04",
+      "number": 133,
+      "title": "[P12-T04] Long-running and large-data scenarios",
+      "state": "open",
+      "milestone": 13,
+      "url": "https://github.com/DocDamage/chatbot/issues/133",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P12-T05",
+      "number": 134,
+      "title": "[P12-T05] Security acceptance",
+      "state": "open",
+      "milestone": 13,
+      "url": "https://github.com/DocDamage/chatbot/issues/134",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P12-T06",
+      "number": 135,
+      "title": "[P12-T06] Documentation acceptance",
+      "state": "open",
+      "milestone": 13,
+      "url": "https://github.com/DocDamage/chatbot/issues/135",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P12-T07",
+      "number": 136,
+      "title": "[P12-T07] Release evidence reconciliation",
+      "state": "open",
+      "milestone": 13,
+      "url": "https://github.com/DocDamage/chatbot/issues/136",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P12-T08",
+      "number": 137,
+      "title": "[P12-T08] Final release candidate sign-off",
+      "state": "open",
+      "milestone": 13,
+      "url": "https://github.com/DocDamage/chatbot/issues/137",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P13-T01",
+      "number": 138,
+      "title": "[P13-T01] Version and tag",
+      "state": "open",
+      "milestone": 14,
+      "url": "https://github.com/DocDamage/chatbot/issues/138",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P13-T02",
+      "number": 139,
+      "title": "[P13-T02] Release artifacts",
+      "state": "open",
+      "milestone": 14,
+      "url": "https://github.com/DocDamage/chatbot/issues/139",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P13-T03",
+      "number": 140,
+      "title": "[P13-T03] Controlled rollout",
+      "state": "open",
+      "milestone": 14,
+      "url": "https://github.com/DocDamage/chatbot/issues/140",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P13-T04",
+      "number": 141,
+      "title": "[P13-T04] Post-deploy verification",
+      "state": "open",
+      "milestone": 14,
+      "url": "https://github.com/DocDamage/chatbot/issues/141",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P13-T05",
+      "number": 142,
+      "title": "[P13-T05] Initial operating review",
+      "state": "open",
+      "milestone": 14,
+      "url": "https://github.com/DocDamage/chatbot/issues/142",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P14-T01",
+      "number": 143,
+      "title": "[P14-T01] Dependency update policy",
+      "state": "open",
+      "milestone": 15,
+      "url": "https://github.com/DocDamage/chatbot/issues/143",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P14-T02",
+      "number": 144,
+      "title": "[P14-T02] Vulnerability response SLA",
+      "state": "open",
+      "milestone": 15,
+      "url": "https://github.com/DocDamage/chatbot/issues/144",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P14-T03",
+      "number": 145,
+      "title": "[P14-T03] Regression and eval maintenance",
+      "state": "open",
+      "milestone": 15,
+      "url": "https://github.com/DocDamage/chatbot/issues/145",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P14-T04",
+      "number": 146,
+      "title": "[P14-T04] Quarterly restore and incident drills",
+      "state": "open",
+      "milestone": 15,
+      "url": "https://github.com/DocDamage/chatbot/issues/146",
+      "action": "unchanged"
+    },
+    {
+      "taskId": "P14-T05",
+      "number": 147,
+      "title": "[P14-T05] Feature lifecycle policy",
+      "state": "open",
+      "milestone": 15,
+      "url": "https://github.com/DocDamage/chatbot/issues/147",
+      "action": "unchanged"
+    }
+  ],
+  "verificationErrors": []
+}

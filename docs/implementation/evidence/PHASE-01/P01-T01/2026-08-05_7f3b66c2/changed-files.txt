@@ -1,0 +1,7 @@
+.github/workflows/p01-t01-diagnostic.yml (temporary; removed at closure)
+docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/
+docs/implementation/evidence/PHASE-01/P01-T01/finalize_p01_t01.py
+docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md
+docs/implementation/RELEASE_EVIDENCE_INDEX.md
+docs/implementation/handoffs/archive/P01-T01_HANDOFF.md
+docs/implementation/handoffs/CURRENT_HANDOFF.md

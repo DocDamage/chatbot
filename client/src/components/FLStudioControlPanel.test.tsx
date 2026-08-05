@@ -9,7 +9,7 @@ afterEach(() => {
 });
 
 beforeEach(() => {
-  global.fetch = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+  globalThis.fetch = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input);
     if (url === '/api/flstudio/status') {
       return {

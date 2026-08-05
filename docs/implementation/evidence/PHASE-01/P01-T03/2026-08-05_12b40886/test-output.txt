@@ -1,0 +1,12 @@
+# P01-T03 Test Output Summary
+
+- Baseline ESLint: `1 problem (0 errors, 1 warning)`.
+- Repaired ESLint with `--max-warnings=0`: passed with no diagnostics.
+- Client TypeScript: passed.
+- Focused Vitest: `1 passed` file, `3 passed` tests.
+- Full Vitest: `26 passed` files, `70 passed` tests.
+- Vite production build: passed, `749 modules transformed`.
+- Verification run: `30986070946`.
+- Verification job: `92241000661`.
+
+The full raw log remains available through the GitHub Actions run. This committed summary contains no secrets or private data.
