@@ -1,0 +1,28 @@
+# P01-T05 Changed Files
+
+## Runtime and UI
+
+- `client/src/App.tsx`
+- `client/src/App.static-demo.test.tsx`
+- `client/src/api/runtime.ts`
+- `client/src/api/runtime.test.ts`
+- `client/src/components/StaticDemo.tsx`
+- `client/src/components/StaticDemo.css`
+- `client/src/components/StaticDemo.test.tsx`
+- `client/vite.config.ts`
+- `client/package.json`
+
+## Deployment and verification
+
+- `.github/workflows/pages.yml`
+- `scripts/release/smoke-pages-artifact.mjs`
+- `scripts/release/smoke-pages-deployment.mjs`
+- `docs/GITHUB_PAGES_DEMO.md`
+
+## Task closure
+
+- `docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md`
+- `docs/implementation/RELEASE_EVIDENCE_INDEX.md`
+- `docs/implementation/handoffs/CURRENT_HANDOFF.md`
+- `docs/implementation/handoffs/archive/P01-T05_HANDOFF.md`
+- `docs/implementation/evidence/PHASE-01/P01-T05/2026-08-05_fe2782e7/`

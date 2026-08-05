@@ -1,0 +1,62 @@
+# P01-T05 Test and Deployment Output
+
+## Focused Pages tests
+
+```text
+Test Files  3 passed (3)
+Tests       6 passed (6)
+```
+
+Coverage includes:
+
+- static-demo runtime default for the `/chatbot/` Pages base;
+- normal application runtime;
+- API configuration rejection in static-demo mode;
+- unknown runtime-mode rejection;
+- persistent limitation notice and disabled composer;
+- application boundary preventing interactive components from rendering.
+
+## Pages production build
+
+```text
+vite v8.0.13 building client environment for production
+751 modules transformed
+dist/index.html                   0.75 kB
+dist/assets/index-Dn7waF1_.css   40.71 kB
+dist/assets/index-CdHBvQaM.js   398.18 kB
+built successfully
+```
+
+## Artifact smoke
+
+```json
+{
+  "status": "passed",
+  "files": 3,
+  "repositoryScopedAssets": 2,
+  "marker": "Static interface demo only"
+}
+```
+
+## Protected live deployment
+
+```text
+Created deployment for 342b657c6510fc086d11ad19a1c7b62fad9cd725
+Reported success
+```
+
+## Live post-deployment smoke
+
+```json
+{
+  "status": "passed",
+  "pageUrl": "https://docdamage.github.io/chatbot/",
+  "assetsChecked": 2,
+  "marker": "Static interface demo only"
+}
+```
+
+## Full repository CI
+
+- Pull-request run `30989827572`: passed.
+- `main` push run `30990196532`: passed.
