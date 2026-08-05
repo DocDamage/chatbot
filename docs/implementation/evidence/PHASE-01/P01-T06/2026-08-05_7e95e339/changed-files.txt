@@ -1,0 +1,12 @@
+.github/workflows/ci.yml
+scripts/release/verify-ci-graph.mjs
+docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md
+docs/implementation/RELEASE_EVIDENCE_INDEX.md
+docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339/summary.md
+docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339/commands.md
+docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339/results.json
+docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339/changed-files.txt
+docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339/test-output.txt
+docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339/runtime-checklist.md
+docs/implementation/handoffs/CURRENT_HANDOFF.md
+docs/implementation/handoffs/archive/P01-T06_HANDOFF.md
