@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   apply-and-verify:
-    if: github.event.head_commit.message == 'chore(P01-T02): stage verification workflow'
+    if: "${{ github.event.head_commit.message == 'chore(P01-T02): correct verification trigger' }}"
     runs-on: ubuntu-latest
     timeout-minutes: 35
 
