@@ -33,8 +33,12 @@ for (const file of reachability.reachableProduction) {
 const manifestPath = path.join(root, 'src/server/routeManifest.ts');
 const manifest = fs.readFileSync(manifestPath, 'utf8');
 for (const routeName of boundary.requiredLocalOnlyRouteNames) {
-  const pattern = new RegExp(`name:\\s*['"]${routeName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"][\\s\\S]{0,220}?availability:\\s*['"]local-only['"]`);
-  if (!pattern.test(manifest)) failures.push(`route ${routeName} is not explicitly marked local-only`);
+  const escaped = routeName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const wrappedLocalOnly = new RegExp(`localOnly\\(\\{\\s*name:\\s*['"]${escaped}['"]`);
+  const explicitAvailability = new RegExp(`name:\\s*['"]${escaped}['"][\\s\\S]{0,220}?availability:\\s*['"]local-only['"]`);
+  if (!wrappedLocalOnly.test(manifest) && !explicitAvailability.test(manifest)) {
+    failures.push(`route ${routeName} is not explicitly marked local-only`);
+  }
 }
 if (!/getActiveRouteManifest/.test(manifest) || !/resolveDeploymentMode/.test(manifest)) {
   failures.push('route manifest does not apply deployment-mode filtering');
