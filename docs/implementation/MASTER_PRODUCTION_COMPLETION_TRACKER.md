@@ -26,7 +26,7 @@
 
 | Phase | Total | Verified | In progress | Blocked | Not started |
 |---|---:|---:|---:|---:|---:|
-| PHASE 0 | 5 | 0 | 1 | 0 | 4 |
+| PHASE 0 | 5 | 1 | 0 | 0 | 4 |
 | PHASE 1 | 7 | 0 | 0 | 0 | 7 |
 | PHASE 2 | 7 | 0 | 0 | 0 | 7 |
 | PHASE 3 | 8 | 0 | 0 | 0 | 8 |
@@ -41,7 +41,7 @@
 | PHASE 12 | 8 | 0 | 0 | 0 | 8 |
 | PHASE 13 | 5 | 0 | 0 | 0 | 5 |
 | PHASE 14 | 5 | 0 | 0 | 0 | 5 |
-| **Total** | **124** | **0** | **1** | **0** | **123** |
+| **Total** | **124** | **1** | **0** | **0** | **123** |
 
 ## Task register
 
@@ -49,7 +49,7 @@
 
 | Task ID | Task | Owner | Status | Branch | Implementation commit | Evidence path | Blocker | Date verified | Release applicability |
 |---|---|---|---|---|---|---|---|---|---|
-| `P00-T01` | Create the master production completion tracker | Codex/GitHub | `IMPLEMENTED_NOT_VERIFIED` | `agent/p00-t01-master-production-tracker` | Pending evidence commit | Pending | None | — | `REQUIRED` |
+| `P00-T01` | Create the master production completion tracker | Codex/GitHub | `VERIFIED` | `agent/p00-t01-master-production-tracker` | `84ef639bda41d585240041a0657cd21f2e9f8cde` | `docs/implementation/evidence/PHASE-00/P00-T01/2026-08-04_84ef639b` | None | `2026-08-04` | `REQUIRED` |
 | `P00-T02` | Create the production feature manifest | Unassigned | `NOT_STARTED` | — | — | — | — | — | `REQUIRED` |
 | `P00-T03` | Reconcile existing release documents | Unassigned | `NOT_STARTED` | — | — | — | — | — | `REQUIRED` |
 | `P00-T04` | Establish release decisions | Unassigned | `NOT_STARTED` | — | — | — | — | — | `REQUIRED` |
