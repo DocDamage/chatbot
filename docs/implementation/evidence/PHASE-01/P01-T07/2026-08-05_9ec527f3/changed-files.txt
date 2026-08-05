@@ -1,0 +1,11 @@
+docs/implementation/BRANCH_PROTECTION_POLICY.md
+scripts/release/configure-main-branch-protection.mjs
+docs/implementation/evidence/PHASE-01/P01-T07/2026-08-05_9ec527f3/summary.md
+docs/implementation/evidence/PHASE-01/P01-T07/2026-08-05_9ec527f3/commands.md
+docs/implementation/evidence/PHASE-01/P01-T07/2026-08-05_9ec527f3/results.json
+docs/implementation/evidence/PHASE-01/P01-T07/2026-08-05_9ec527f3/changed-files.txt
+docs/implementation/evidence/PHASE-01/P01-T07/2026-08-05_9ec527f3/test-output.txt
+docs/implementation/evidence/PHASE-01/P01-T07/2026-08-05_9ec527f3/runtime-checklist.md
+docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md
+docs/implementation/handoffs/CURRENT_HANDOFF.md
+docs/implementation/handoffs/archive/P01-T07_HANDOFF.md
