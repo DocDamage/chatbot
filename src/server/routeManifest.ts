@@ -1,5 +1,6 @@
 import { RequestHandler } from 'express';
 import { auditPrivilegedRequest } from '../middleware/auth';
+import { resolveDeploymentMode, RuntimeProfile } from '../core/config/EnvironmentDefinitions';
 import { createAudioRouter } from './routes/audio';
 import { createBusinessGeniusRouter } from './routes/business';
 import { createChronoRouter } from './routes/chrono';
@@ -35,56 +36,74 @@ import { createSpriteLabRouter } from './routes/sprite-lab';
 import { createStoryGeniusRouter } from './routes/story';
 import { createToolCatalogRouter } from './routes/toolCatalog';
 
+export type RouteAvailability = 'hosted-and-local' | 'local-only';
+export type FeatureStatus = 'PRODUCTION_PREVIEW' | 'LOCAL_ONLY_EXPERIMENTAL';
+
 export interface RouteManifestEntry {
   name: string;
   mount?: string;
   readiness: boolean;
   privilege?: 'admin' | 'developer';
   auditAction?: string;
+  availability: RouteAvailability;
+  status: FeatureStatus;
 }
 
+const preview = (entry: Omit<RouteManifestEntry, 'availability' | 'status'>): RouteManifestEntry => ({
+  ...entry,
+  availability: 'hosted-and-local',
+  status: 'PRODUCTION_PREVIEW'
+});
+const localOnly = (entry: Omit<RouteManifestEntry, 'availability' | 'status'>): RouteManifestEntry => ({
+  ...entry,
+  availability: 'local-only',
+  status: 'LOCAL_ONLY_EXPERIMENTAL'
+});
+
 export const routeManifest: RouteManifestEntry[] = [
-  { name: 'rag-query', readiness: true },
-  { name: 'code', mount: '/api/code', readiness: true, privilege: 'developer', auditAction: 'code' },
-  { name: 'plans', mount: '/api/plans', readiness: false, privilege: 'developer', auditAction: 'plans' },
-  { name: 'files', mount: '/api/files', readiness: false, privilege: 'developer', auditAction: 'files' },
-  { name: 'audio', mount: '/api/audio', readiness: false, privilege: 'developer', auditAction: 'audio' },
-  { name: 'local-tools', mount: '/api/local-tools', readiness: true, privilege: 'developer', auditAction: 'local-tools' },
-  { name: 'tool-catalog', mount: '/api/tool-catalog', readiness: true, privilege: 'developer', auditAction: 'tool-catalog' },
-  { name: 'sec', mount: '/api/sec', readiness: true, privilege: 'developer', auditAction: 'sec' },
-  { name: 'education', mount: '/api/education', readiness: true, privilege: 'developer', auditAction: 'education' },
-  { name: 'sprite-lab', mount: '/api/sprite-lab', readiness: true, privilege: 'developer', auditAction: 'sprite-lab' },
-  { name: 'math', readiness: true },
-  { name: 'market', readiness: true },
-  { name: 'gamedev', readiness: true },
-  { name: 'gaming', readiness: true },
-  { name: 'sixsigma', readiness: true },
-  { name: 'chrono', readiness: true },
-  { name: 'pop-culture', readiness: true },
-  { name: 'history', readiness: true },
-  { name: 'science', readiness: true },
-  { name: 'music', readiness: true },
-  { name: 'flstudio', readiness: true },
-  { name: 'story', readiness: true },
-  { name: 'creative', readiness: true },
-  { name: 'legal', readiness: true },
-  { name: 'health', readiness: true },
-  { name: 'security', readiness: true },
-  { name: 'business', readiness: true },
-  { name: 'philosophy', readiness: true },
-  { name: 'language', readiness: true },
-  { name: 'geography', readiness: true },
-  { name: 'gis', readiness: true },
-  { name: 'engineering', readiness: true },
-  { name: 'knowledge-online', mount: '/api/knowledge-online', readiness: true, privilege: 'developer', auditAction: 'knowledge-online' },
-  { name: 'admin', mount: '/api/admin', readiness: false, privilege: 'admin', auditAction: 'admin' },
-  { name: 'export', mount: '/api/export', readiness: false, privilege: 'admin', auditAction: 'export' },
+  preview({ name: 'rag-query', readiness: true }),
+  localOnly({ name: 'code', mount: '/api/code', readiness: true, privilege: 'developer', auditAction: 'code' }),
+  localOnly({ name: 'plans', mount: '/api/plans', readiness: false, privilege: 'developer', auditAction: 'plans' }),
+  localOnly({ name: 'files', mount: '/api/files', readiness: false, privilege: 'developer', auditAction: 'files' }),
+  localOnly({ name: 'audio', mount: '/api/audio', readiness: false, privilege: 'developer', auditAction: 'audio' }),
+  localOnly({ name: 'local-tools', mount: '/api/local-tools', readiness: true, privilege: 'developer', auditAction: 'local-tools' }),
+  preview({ name: 'tool-catalog', mount: '/api/tool-catalog', readiness: true, privilege: 'developer', auditAction: 'tool-catalog' }),
+  preview({ name: 'sec', mount: '/api/sec', readiness: true, privilege: 'developer', auditAction: 'sec' }),
+  preview({ name: 'education', mount: '/api/education', readiness: true, privilege: 'developer', auditAction: 'education' }),
+  localOnly({ name: 'sprite-lab', mount: '/api/sprite-lab', readiness: true, privilege: 'developer', auditAction: 'sprite-lab' }),
+  preview({ name: 'math', readiness: true }),
+  preview({ name: 'market', readiness: true }),
+  preview({ name: 'gamedev', readiness: true }),
+  preview({ name: 'gaming', readiness: true }),
+  preview({ name: 'sixsigma', readiness: true }),
+  preview({ name: 'chrono', readiness: true }),
+  preview({ name: 'pop-culture', readiness: true }),
+  preview({ name: 'history', readiness: true }),
+  preview({ name: 'science', readiness: true }),
+  preview({ name: 'music', readiness: true }),
+  localOnly({ name: 'flstudio', readiness: true }),
+  preview({ name: 'story', readiness: true }),
+  preview({ name: 'creative', readiness: true }),
+  preview({ name: 'legal', readiness: true }),
+  preview({ name: 'health', readiness: true }),
+  preview({ name: 'security', readiness: true }),
+  preview({ name: 'business', readiness: true }),
+  preview({ name: 'philosophy', readiness: true }),
+  preview({ name: 'language', readiness: true }),
+  preview({ name: 'geography', readiness: true }),
+  preview({ name: 'gis', readiness: true }),
+  preview({ name: 'engineering', readiness: true }),
+  preview({ name: 'knowledge-online', mount: '/api/knowledge-online', readiness: true, privilege: 'developer', auditAction: 'knowledge-online' }),
+  preview({ name: 'admin', mount: '/api/admin', readiness: false, privilege: 'admin', auditAction: 'admin' }),
+  preview({ name: 'export', mount: '/api/export', readiness: false, privilege: 'admin', auditAction: 'export' })
 ];
 
+export function getActiveRouteManifest(profile: RuntimeProfile = resolveDeploymentMode()): RouteManifestEntry[] {
+  return routeManifest.filter(entry => profile !== 'hosted' || entry.availability !== 'local-only');
+}
+
 interface RegisterRouteDeps {
-  app: {
-    use: (...handlers: any[]) => void;
-  };
+  app: { use: (...handlers: any[]) => void };
   getServices: () => any;
   workspaceRoot: string;
   adminOnly: RequestHandler[];
@@ -129,10 +148,10 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
     engineering: () => createEngineeringGeniusRouter(deps.getServices()),
     'knowledge-online': () => createKnowledgeOnlineRouter(deps.getServices()),
     admin: () => createAdminRouter(deps.getServices()),
-    export: () => createExportRouter(deps.getServices()),
+    export: () => createExportRouter(deps.getServices())
   };
 
-  for (const entry of routeManifest) {
+  for (const entry of getActiveRouteManifest()) {
     const routeHandlers: RequestHandler[] = [];
     if (entry.readiness) routeHandlers.push(deps.requireReady());
     routeHandlers.push(deps.mountServiceRouter(routerFactories[entry.name]));
@@ -140,13 +159,10 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
     if (entry.mount) {
       const authHandlers = entry.privilege === 'admin'
         ? deps.adminOnly
-        : entry.privilege === 'developer'
-          ? deps.developerOnly
-          : [];
+        : entry.privilege === 'developer' ? deps.developerOnly : [];
       const audit = entry.auditAction ? [auditPrivilegedRequest(entry.auditAction)] : [];
       deps.app.use(entry.mount, ...authHandlers, ...audit);
     }
-
     deps.app.use(...routeHandlers);
   }
 }

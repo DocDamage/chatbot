@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "entrypoints": [
+    "src/server/index.ts",
+    "client/src/main.tsx"
+  ],
+  "requiredLocalOnlyRouteNames": [
+    "code",
+    "plans",
+    "files",
+    "audio",
+    "local-tools",
+    "sprite-lab",
+    "flstudio"
+  ],
+  "rules": [
+    {
+      "id": "tests-and-fixtures",
+      "patterns": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/__tests__/**"],
+      "registration": "isolated",
+      "availability": "test-only",
+      "owner": "Engineering",
+      "futureTask": "Continuous test maintenance"
+    },
+    {
+      "id": "local-tools",
+      "patterns": [
+        "src/server/routes/code.ts",
+        "src/server/routes/plans.ts",
+        "src/server/routes/files.ts",
+        "src/server/routes/audio.ts",
+        "src/server/routes/local-tools.ts",
+        "src/server/routes/sprite-lab.ts",
+        "src/server/routes/flstudio.ts",
+        "src/core/local-tools/**",
+        "src/core/sprite-lab/**",
+        "src/core/flstudio/**",
+        "src/core/files/**",
+        "src/core/audio/**"
+      ],
+      "registration": "guarded",
+      "availability": "local-only",
+      "runtimeGuard": "routeManifest availability=local-only filtered by resolveDeploymentMode()",
+      "owner": "Local integrations",
+      "futureTask": "P07-T05/P07-T06/P07-T07/P07-T12/P07-T13/P07-T17"
+    },
+    {
+      "id": "compatibility-chat",
+      "patterns": [
+        "src/server/routes/legacy-chat.ts",
+        "src/server/routes/v1/**",
+        "src/server/routes/v2/**"
+      ],
+      "registration": "active-preview",
+      "availability": "hosted-and-local",
+      "owner": "Core chat",
+      "futureTask": "P07-T01"
+    },
+    {
+      "id": "provider-adapters",
+      "patterns": ["src/core/providers/**"],
+      "registration": "active-preview",
+      "availability": "profile-dependent",
+      "owner": "Provider platform",
+      "futureTask": "P06-T01/P06-T02"
+    },
+    {
+      "id": "unreachable-production-source",
+      "scope": "unreachable-only",
+      "patterns": ["src/**", "client/src/**"],
+      "registration": "isolated",
+      "availability": "disabled-or-unregistered",
+      "owner": "Architecture",
+      "futureTask": "Relevant Phase 6 or Phase 7 vertical-slice task"
+    }
+  ]
+}
