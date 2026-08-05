@@ -1,0 +1,4699 @@
+{
+  "entrypoints": [
+    "src/server/index.ts",
+    "client/src/main.tsx"
+  ],
+  "missingEntrypoints": [],
+  "roots": [
+    {
+      "entry": "src/server/index.ts",
+      "present": true,
+      "directImports": [
+        "src/core/config/ConfigValidator.ts",
+        "src/core/conversation/ConversationManager.ts",
+        "src/core/debug/DebugMode.ts",
+        "src/core/documents/DocumentMetadata.ts",
+        "src/core/embeddings/EmbeddingService.ts",
+        "src/core/feedback/FeedbackService.ts",
+        "src/core/initialization/ServiceInitializer.ts",
+        "src/core/knowledge/AnatomySource.ts",
+        "src/core/knowledge/AstrologySource.ts",
+        "src/core/knowledge/AstronomySource.ts",
+        "src/core/knowledge/BackendDesignSource.ts",
+        "src/core/knowledge/BookSource.ts",
+        "src/core/knowledge/BotanySource.ts",
+        "src/core/knowledge/CNASource.ts",
+        "src/core/knowledge/DSPSource.ts",
+        "src/core/knowledge/DatasetLoader.ts",
+        "src/core/knowledge/DocumentationSource.ts",
+        "src/core/knowledge/EntertainmentSource.ts",
+        "src/core/knowledge/FinancialAdviceSource.ts",
+        "src/core/knowledge/GardeningSource.ts",
+        "src/core/knowledge/GitHubSource.ts",
+        "src/core/knowledge/KnowledgeFusion.ts",
+        "src/core/knowledge/KnowledgeGraph.ts",
+        "src/core/knowledge/LLMProgrammingSource.ts",
+        "src/core/knowledge/LibraryOfCongressSource.ts",
+        "src/core/knowledge/MarijuanaGrowingSource.ts",
+        "src/core/knowledge/MediumSource.ts",
+        "src/core/knowledge/MentalHealthSource.ts",
+        "src/core/knowledge/MusicTheorySource.ts",
+        "src/core/knowledge/NewsSource.ts",
+        "src/core/knowledge/PotterySource.ts",
+        "src/core/knowledge/ProjectGutenbergSource.ts",
+        "src/core/knowledge/QuoraSource.ts",
+        "src/core/knowledge/RNSource.ts",
+        "src/core/knowledge/ReasoningEngine.ts",
+        "src/core/knowledge/RedditSource.ts",
+        "src/core/knowledge/ReligionSource.ts",
+        "src/core/knowledge/ScientificPapersSource.ts",
+        "src/core/knowledge/SpecializedTopicSource.ts",
+        "src/core/knowledge/StackOverflowSource.ts",
+        "src/core/knowledge/TelegramSource.ts",
+        "src/core/knowledge/UIDesignSource.ts",
+        "src/core/knowledge/UniversitySource.ts",
+        "src/core/knowledge/WebDesignSource.ts",
+        "src/core/knowledge/WebScraperSource.ts",
+        "src/core/knowledge/WikipediaSource.ts",
+        "src/core/knowledge/YouTubeSource.ts",
+        "src/core/observability/logger.ts",
+        "src/core/providers/FreeModelRegistry.ts",
+        "src/core/realtime/WebSocketServer.ts",
+        "src/core/sharing/ConversationSharing.ts",
+        "src/core/suggestions/QuickReplies.ts",
+        "src/core/upload/FileProcessor.ts",
+        "src/core/user/CustomInstructions.ts",
+        "src/core/webhooks/WebhookService.ts",
+        "src/middleware/apiErrorSchema.ts",
+        "src/middleware/auth.ts",
+        "src/middleware/errorHandler.ts",
+        "src/middleware/security.ts",
+        "src/server/healthRoutes.ts",
+        "src/server/routeManifest.ts",
+        "src/server/routes/knowledge-base.ts",
+        "src/server/routes/knowledge-os.ts",
+        "src/server/routes/legacy-chat.ts",
+        "src/server/routes/settings.ts",
+        "src/server/routes/v1/chat.ts",
+        "src/server/routes/v2/chat.ts",
+        "src/server/security/webhookUrl.ts"
+      ]
+    },
+    {
+      "entry": "client/src/main.tsx",
+      "present": true,
+      "directImports": [
+        "client/src/App.tsx"
+      ]
+    }
+  ],
+  "reachable": [
+    "client/src/App.tsx",
+    "client/src/api/audio.ts",
+    "client/src/api/code.ts",
+    "client/src/api/conversations.ts",
+    "client/src/api/errors.ts",
+    "client/src/api/files.ts",
+    "client/src/api/gaming.ts",
+    "client/src/api/knowledge.ts",
+    "client/src/api/localRunApprovals.ts",
+    "client/src/api/runtime.ts",
+    "client/src/api/spriteLab.ts",
+    "client/src/clipboard.ts",
+    "client/src/components/AssistantChat.tsx",
+    "client/src/components/AudioPreviewBrowser.tsx",
+    "client/src/components/CodeWorkflowPanel.tsx",
+    "client/src/components/ConversationToolsPanel.tsx",
+    "client/src/components/CreativeComposerPanel.tsx",
+    "client/src/components/FLStudioControlPanel.tsx",
+    "client/src/components/FileExplorerPanel.tsx",
+    "client/src/components/FilePreviewPane.tsx",
+    "client/src/components/GamingPlaybookPanel.tsx",
+    "client/src/components/KnowledgeMissPrompt.tsx",
+    "client/src/components/KnowledgeOSPanel.tsx",
+    "client/src/components/KnowledgeOnlinePanel.tsx",
+    "client/src/components/LoadedFilesBar.tsx",
+    "client/src/components/LocalRunApprovalPanel.tsx",
+    "client/src/components/LocalToolsWorkspace.tsx",
+    "client/src/components/ModeSelector.tsx",
+    "client/src/components/PlanActionBar.tsx",
+    "client/src/components/SettingsMenu.tsx",
+    "client/src/components/SpriteLabPanel.tsx",
+    "client/src/components/StaticDemo.tsx",
+    "client/src/components/StatusBar.tsx",
+    "client/src/features/gis/GISMapCard.tsx",
+    "client/src/features/gis/GISMapPanel.tsx",
+    "client/src/features/gis/gisApi.ts",
+    "client/src/features/gis/gisTypes.ts",
+    "client/src/main.tsx",
+    "src/core/agents/CodeContextBudgeter.ts",
+    "src/core/agents/CodeIndexer.ts",
+    "src/core/agents/CodePlanner.ts",
+    "src/core/agents/CodeReviewer.ts",
+    "src/core/agents/CodingAgent.ts",
+    "src/core/agents/PatchGenerator.ts",
+    "src/core/agents/VerificationRunner.ts",
+    "src/core/agents/business/BusinessGeniusAgent.ts",
+    "src/core/agents/culture/FranchiseKnowledgeGraph.ts",
+    "src/core/agents/culture/PopCultureCanonResolver.ts",
+    "src/core/agents/culture/PopCultureGeniusAgent.ts",
+    "src/core/agents/culture/PopCultureIntentClassifier.ts",
+    "src/core/agents/culture/PopCultureSourceRouter.ts",
+    "src/core/agents/culture/PopCultureTimelineBuilder.ts",
+    "src/core/agents/engineering/EngineeringGeniusAgent.ts",
+    "src/core/agents/gamedev/EngineAdvisor.ts",
+    "src/core/agents/gamedev/GameDesignPlanner.ts",
+    "src/core/agents/gamedev/GameDevGeniusAgent.ts",
+    "src/core/agents/gamedev/GameIntentClassifier.ts",
+    "src/core/agents/gamedev/GamePrototypeGenerator.ts",
+    "src/core/agents/gamedev/LevelDesignAdvisor.ts",
+    "src/core/agents/gamedev/MechanicsDesigner.ts",
+    "src/core/agents/gaming/GamingGeniusAgent.ts",
+    "src/core/agents/gaming/GamingIntentClassifier.ts",
+    "src/core/agents/gaming/GamingKnowledgeRouter.ts",
+    "src/core/agents/gaming/GamingPlaybookService.ts",
+    "src/core/agents/geography/GeoCultureGeniusAgent.ts",
+    "src/core/agents/gis/GISMappingAgent.ts",
+    "src/core/agents/health/HealthGeniusAgent.ts",
+    "src/core/agents/history/CivilizationGraph.ts",
+    "src/core/agents/history/EventCausalityAnalyzer.ts",
+    "src/core/agents/history/HistoricalTimelineBuilder.ts",
+    "src/core/agents/history/HistoryGeniusAgent.ts",
+    "src/core/agents/history/HistoryIntentClassifier.ts",
+    "src/core/agents/history/PrimarySourceRetriever.ts",
+    "src/core/agents/language/LanguageGeniusAgent.ts",
+    "src/core/agents/legal/LegalCivicGeniusAgent.ts",
+    "src/core/agents/market/BacktestRunner.ts",
+    "src/core/agents/market/EquityResearchPlanner.ts",
+    "src/core/agents/market/MarketGeniusAgent.ts",
+    "src/core/agents/market/MarketGuardrails.ts",
+    "src/core/agents/market/MarketIntentClassifier.ts",
+    "src/core/agents/market/RiskAnalyzer.ts",
+    "src/core/agents/math/MathGeniusAgent.ts",
+    "src/core/agents/math/MathProblemClassifier.ts",
+    "src/core/agents/math/MathProofPlanner.ts",
+    "src/core/agents/math/MathVerifier.ts",
+    "src/core/agents/music/DawWorkflowTranslator.ts",
+    "src/core/agents/music/MusicCopyrightGuardrails.ts",
+    "src/core/agents/music/MusicIntentClassifier.ts",
+    "src/core/agents/music/MusicProductionGeniusAgent.ts",
+    "src/core/agents/music/MusicWorkflowRouter.ts",
+    "src/core/agents/music/SongStructureCoach.ts",
+    "src/core/agents/music/flstudio/FLStudioGeniusAgent.ts",
+    "src/core/agents/music/logic/LogicProGeniusAgent.ts",
+    "src/core/agents/music/mix/FLStudioMixController.ts",
+    "src/core/agents/music/mix/MasteringAdvisor.ts",
+    "src/core/agents/music/mix/MixDiagnosticEngine.ts",
+    "src/core/agents/music/mix/MixGeniusAgent.ts",
+    "src/core/agents/music/mix/MixIntentClassifier.ts",
+    "src/core/agents/music/mix/MixPassReport.ts",
+    "src/core/agents/music/mix/MixPlanner.ts",
+    "src/core/agents/music/mix/MixRevisionLoop.ts",
+    "src/core/agents/music/mix/ReferenceMixAnalyzer.ts",
+    "src/core/agents/music/protools/ProToolsGeniusAgent.ts",
+    "src/core/agents/music/suno/SunoGeniusAgent.ts",
+    "src/core/agents/music/suno/SunoPromptBuilder.ts",
+    "src/core/agents/music/suno/SunoRevisionCoach.ts",
+    "src/core/agents/music/suno/SunoRightsAdvisor.ts",
+    "src/core/agents/music/suno/SunoSongStructurePlanner.ts",
+    "src/core/agents/music/suno/SunoStyleTagAdvisor.ts",
+    "src/core/agents/philosophy/PhilosophyGeniusAgent.ts",
+    "src/core/agents/science/DiscoveryGraph.ts",
+    "src/core/agents/science/InventionTimelineBuilder.ts",
+    "src/core/agents/science/PatentRetriever.ts",
+    "src/core/agents/science/ScienceIntentClassifier.ts",
+    "src/core/agents/science/ScienceInventionGeniusAgent.ts",
+    "src/core/agents/science/ScientificPaperRetriever.ts",
+    "src/core/agents/science/TheoryEvolutionAnalyzer.ts",
+    "src/core/agents/security/SecurityGeniusAgent.ts",
+    "src/core/agents/sixsigma/SixSigmaBlackBeltAgent.ts",
+    "src/core/agents/sixsigma/SixSigmaCalculatorRouter.ts",
+    "src/core/agents/sixsigma/SixSigmaCertificationCoach.ts",
+    "src/core/agents/sixsigma/SixSigmaComplianceAdvisor.ts",
+    "src/core/agents/sixsigma/SixSigmaExportAgent.ts",
+    "src/core/agents/sixsigma/SixSigmaIndustryAdvisor.ts",
+    "src/core/agents/sixsigma/SixSigmaIntentClassifier.ts",
+    "src/core/agents/sixsigma/SixSigmaLearningCoach.ts",
+    "src/core/agents/sixsigma/SixSigmaProjectCoach.ts",
+    "src/core/agents/sixsigma/SixSigmaSimulationAgent.ts",
+    "src/core/agents/specialist/SpecialistAgent.ts",
+    "src/core/agents/specialists/GenericSpecialistAgent.ts",
+    "src/core/agents/story/StoryGeniusAgent.ts",
+    "src/core/analytics/AnalyticsService.ts",
+    "src/core/audio/AudioLibraryService.ts",
+    "src/core/auth/AuthService.ts",
+    "src/core/auth/UserService.ts",
+    "src/core/chrono/ChronoDate.ts",
+    "src/core/chrono/ChronoKnowledgeEngine.ts",
+    "src/core/chrono/EntityGraphStore.ts",
+    "src/core/chrono/HistoricalUncertainty.ts",
+    "src/core/chrono/SourceAuthorityRanker.ts",
+    "src/core/chrono/TimeRangeParser.ts",
+    "src/core/chrono/TimelineBuilder.ts",
+    "src/core/config/ConfigValidator.ts",
+    "src/core/config/EnvironmentDefinitions.ts",
+    "src/core/contracts/ContractGate.ts",
+    "src/core/conversation/ConversationManager.ts",
+    "src/core/creative/CreativeCapabilityDetector.ts",
+    "src/core/creative/CreativeCommandRouter.ts",
+    "src/core/creative/CreativeQualityReviewer.ts",
+    "src/core/creative/CreativeStylePolicy.ts",
+    "src/core/creative/CreativeTypes.ts",
+    "src/core/creative/CreativeWritingAgent.ts",
+    "src/core/database/Database.ts",
+    "src/core/database/ExpansionDatabase.ts",
+    "src/core/database/ExpansionMigrations.ts",
+    "src/core/database/SafeDatabaseQuestionAgent.ts",
+    "src/core/debug/DebugMode.ts",
+    "src/core/documents/DocumentMetadata.ts",
+    "src/core/education/EducationService.ts",
+    "src/core/embeddings/EmbeddingService.ts",
+    "src/core/entity/EntityLinkingService.ts",
+    "src/core/feedback/FeedbackService.ts",
+    "src/core/files/FileExplorerService.ts",
+    "src/core/gis/GISCache.ts",
+    "src/core/gis/GISPrivacy.ts",
+    "src/core/gis/GISProviderRegistry.ts",
+    "src/core/gis/GISService.ts",
+    "src/core/gis/GeoJSONValidator.ts",
+    "src/core/gis/LayerImportService.ts",
+    "src/core/gis/MapSessionService.ts",
+    "src/core/gis/SpatialAnalysisService.ts",
+    "src/core/gis/providers/ArcGISFeatureServiceProvider.ts",
+    "src/core/gis/providers/CensusGeocoder.ts",
+    "src/core/gis/providers/MockGISProviders.ts",
+    "src/core/gis/providers/OSRMRoutingProvider.ts",
+    "src/core/governance/GovernanceEvidenceService.ts",
+    "src/core/graph/KnowledgeGraphIndexer.ts",
+    "src/core/importers/GitHubRepoKnowledgeImporter.ts",
+    "src/core/initialization/ServiceInitializer.ts",
+    "src/core/integrations/flstudio/FLStudioCommandPlanner.ts",
+    "src/core/integrations/flstudio/FLStudioControlAgent.ts",
+    "src/core/integrations/flstudio/FLStudioMcpClient.ts",
+    "src/core/integrations/flstudio/FLStudioSafetyGate.ts",
+    "src/core/integrations/flstudio/FLStudioSessionState.ts",
+    "src/core/knowledge-os/KnowledgeOsChatAgent.ts",
+    "src/core/knowledge/AnatomySource.ts",
+    "src/core/knowledge/AstrologySource.ts",
+    "src/core/knowledge/AstronomySource.ts",
+    "src/core/knowledge/BackendDesignSource.ts",
+    "src/core/knowledge/BaseKnowledgeSource.ts",
+    "src/core/knowledge/BookSource.ts",
+    "src/core/knowledge/BotanySource.ts",
+    "src/core/knowledge/CNASource.ts",
+    "src/core/knowledge/CodingKnowledgeBase.ts",
+    "src/core/knowledge/DSPSource.ts",
+    "src/core/knowledge/DatasetLoader.ts",
+    "src/core/knowledge/DocumentationSource.ts",
+    "src/core/knowledge/EntertainmentSource.ts",
+    "src/core/knowledge/FinancialAdviceSource.ts",
+    "src/core/knowledge/GardeningSource.ts",
+    "src/core/knowledge/GitHubSource.ts",
+    "src/core/knowledge/KnowledgeExtractor.ts",
+    "src/core/knowledge/KnowledgeFusion.ts",
+    "src/core/knowledge/KnowledgeGraph.ts",
+    "src/core/knowledge/KnowledgeMiss.ts",
+    "src/core/knowledge/KnowledgeMissHandler.ts",
+    "src/core/knowledge/KnowledgeOnlineFlowService.ts",
+    "src/core/knowledge/KnowledgeSource.ts",
+    "src/core/knowledge/KnowledgeSourceHelper.ts",
+    "src/core/knowledge/LLMProgrammingSource.ts",
+    "src/core/knowledge/LibraryOfCongressSource.ts",
+    "src/core/knowledge/LocalKnowledgeAnswerer.ts",
+    "src/core/knowledge/MarijuanaGrowingSource.ts",
+    "src/core/knowledge/MediumSource.ts",
+    "src/core/knowledge/MentalHealthSource.ts",
+    "src/core/knowledge/MusicTheorySource.ts",
+    "src/core/knowledge/NewsSource.ts",
+    "src/core/knowledge/OnlineKnowledgeIngestionService.ts",
+    "src/core/knowledge/PersonalResearchSource.ts",
+    "src/core/knowledge/PotterySource.ts",
+    "src/core/knowledge/ProjectGutenbergSource.ts",
+    "src/core/knowledge/QueryEnhancer.ts",
+    "src/core/knowledge/QuoraSource.ts",
+    "src/core/knowledge/RNSource.ts",
+    "src/core/knowledge/ReasoningEngine.ts",
+    "src/core/knowledge/RedditSource.ts",
+    "src/core/knowledge/ReligionSource.ts",
+    "src/core/knowledge/ResultRanker.ts",
+    "src/core/knowledge/ScientificPapersSource.ts",
+    "src/core/knowledge/SongwritingStyleSource.ts",
+    "src/core/knowledge/SpecializedTopicSource.ts",
+    "src/core/knowledge/StackOverflowSource.ts",
+    "src/core/knowledge/TelegramSource.ts",
+    "src/core/knowledge/UIDesignSource.ts",
+    "src/core/knowledge/UniversitySource.ts",
+    "src/core/knowledge/WebDesignSource.ts",
+    "src/core/knowledge/WebScraperSource.ts",
+    "src/core/knowledge/WikipediaSource.ts",
+    "src/core/knowledge/YouTubeSource.ts",
+    "src/core/knowledge/index.ts",
+    "src/core/learning/KnowledgeLearner.ts",
+    "src/core/learning/SpacedRepetitionService.ts",
+    "src/core/mcp/McpAuditLogger.ts",
+    "src/core/mcp/McpClientService.ts",
+    "src/core/mcp/McpPermissionGate.ts",
+    "src/core/mcp/McpToolRegistry.ts",
+    "src/core/memory/MemoryService.ts",
+    "src/core/memory/PrivateMemoryStore.ts",
+    "src/core/modes/ExecutionModePolicy.ts",
+    "src/core/modes/ModePolicy.ts",
+    "src/core/nlu/ClarifyingQuestionBuilder.ts",
+    "src/core/nlu/DomainPhrasebook.ts",
+    "src/core/nlu/HumanLanguageRouter.ts",
+    "src/core/nlu/IntentCandidateRanker.ts",
+    "src/core/nlu/SlangNormalizer.ts",
+    "src/core/nlu/VibeInterpreter.ts",
+    "src/core/nlu/phrasebooks/business.phrasebook.ts",
+    "src/core/nlu/phrasebooks/chrono.phrasebook.ts",
+    "src/core/nlu/phrasebooks/coding.phrasebook.ts",
+    "src/core/nlu/phrasebooks/engineering.phrasebook.ts",
+    "src/core/nlu/phrasebooks/gamedev.phrasebook.ts",
+    "src/core/nlu/phrasebooks/gaming.phrasebook.ts",
+    "src/core/nlu/phrasebooks/general.phrasebook.ts",
+    "src/core/nlu/phrasebooks/geography.phrasebook.ts",
+    "src/core/nlu/phrasebooks/health.phrasebook.ts",
+    "src/core/nlu/phrasebooks/index.ts",
+    "src/core/nlu/phrasebooks/knowledge-os.phrasebook.ts",
+    "src/core/nlu/phrasebooks/language.phrasebook.ts",
+    "src/core/nlu/phrasebooks/legal.phrasebook.ts",
+    "src/core/nlu/phrasebooks/market.phrasebook.ts",
+    "src/core/nlu/phrasebooks/math.phrasebook.ts",
+    "src/core/nlu/phrasebooks/music.phrasebook.ts",
+    "src/core/nlu/phrasebooks/philosophy.phrasebook.ts",
+    "src/core/nlu/phrasebooks/security.phrasebook.ts",
+    "src/core/nlu/phrasebooks/story.phrasebook.ts",
+    "src/core/observability/logger.ts",
+    "src/core/observability/metrics.ts",
+    "src/core/orchestrator/EnhancedOrchestrator.ts",
+    "src/core/orchestrator/Orchestrator.ts",
+    "src/core/planning/PlanDocumentService.ts",
+    "src/core/provenance/ProvenanceLedger.ts",
+    "src/core/providers/EnsembleAdapter.ts",
+    "src/core/providers/FreeModelRegistry.ts",
+    "src/core/providers/HuggingFaceAdapter.ts",
+    "src/core/providers/LLMAdapter.ts",
+    "src/core/providers/ModelRouter.ts",
+    "src/core/providers/OllamaAdapter.ts",
+    "src/core/providers/StableDiffusionAdapter.ts",
+    "src/core/providers/VisionAdapter.ts",
+    "src/core/rag/CitationTracker.ts",
+    "src/core/rag/ContextCompressor.ts",
+    "src/core/rag/DocumentIngester.ts",
+    "src/core/rag/DocumentManager.ts",
+    "src/core/rag/GroundingVerifier.ts",
+    "src/core/rag/HybridRetriever.ts",
+    "src/core/rag/QueryExpander.ts",
+    "src/core/rag/RAGDocumentStore.ts",
+    "src/core/rag/RAGInjectionScanner.ts",
+    "src/core/rag/RAGService.ts",
+    "src/core/rag/ReRanker.ts",
+    "src/core/rag/ingestion/ExtractedDocument.ts",
+    "src/core/rag/ingestion/FileTypeRouter.ts",
+    "src/core/rag/ingestion/ImageOcrExtractor.ts",
+    "src/core/rag/ingestion/OfficeExtractor.ts",
+    "src/core/rag/ingestion/PdfExtractor.ts",
+    "src/core/rag/ingestion/TextLikeExtractor.ts",
+    "src/core/realtime/WebSocketServer.ts",
+    "src/core/router/IntentRouter.ts",
+    "src/core/safety/BiasMitigator.ts",
+    "src/core/safety/ConstitutionalAI.ts",
+    "src/core/safety/FactChecker.ts",
+    "src/core/safety/SafetyPipeline.ts",
+    "src/core/safety/SelfCheckSafety.ts",
+    "src/core/safety/ToxicityDetector.ts",
+    "src/core/safety/UncertaintyQuantifier.ts",
+    "src/core/sec/EDGARClient.ts",
+    "src/core/sec/SECFilingParser.ts",
+    "src/core/sec/SECRequestPacer.ts",
+    "src/core/sec/SECService.ts",
+    "src/core/sec/SECStorageService.ts",
+    "src/core/sharing/ConversationSharing.ts",
+    "src/core/sprite-lab/InternalSpriteImageAdapter.ts",
+    "src/core/sprite-lab/SpriteExternalToolAdapter.ts",
+    "src/core/sprite-lab/SpriteLabPlanService.ts",
+    "src/core/suggestions/QuickReplies.ts",
+    "src/core/tools/CodeExecutor.ts",
+    "src/core/tools/CodingKnowledgeTool.ts",
+    "src/core/tools/CommandRunner.ts",
+    "src/core/tools/FunctionCaller.ts",
+    "src/core/tools/PersonalKnowledgeTool.ts",
+    "src/core/tools/RepoTools.ts",
+    "src/core/tools/ToolRegistry.ts",
+    "src/core/tools/WebSearcher.ts",
+    "src/core/tools/audio/AudioAnalyzerTool.ts",
+    "src/core/tools/audio/DynamicRangeTool.ts",
+    "src/core/tools/audio/LoudnessMeterTool.ts",
+    "src/core/tools/audio/MaskingDetectorTool.ts",
+    "src/core/tools/audio/ReferenceCompareTool.ts",
+    "src/core/tools/audio/SpectrumAnalyzerTool.ts",
+    "src/core/tools/audio/StereoImageTool.ts",
+    "src/core/tools/business/BusinessModelCanvasTool.ts",
+    "src/core/tools/business/CompetitorResearchTool.ts",
+    "src/core/tools/business/KpiDashboardTool.ts",
+    "src/core/tools/business/LeanCanvasTool.ts",
+    "src/core/tools/business/PricingModelTool.ts",
+    "src/core/tools/business/SwotTool.ts",
+    "src/core/tools/business/UnitEconomicsTool.ts",
+    "src/core/tools/catalog/ToolCatalogService.ts",
+    "src/core/tools/culture/FranchiseGraphTool.ts",
+    "src/core/tools/culture/PopCultureTimelineTool.ts",
+    "src/core/tools/engineering/BOMBuilderTool.ts",
+    "src/core/tools/engineering/BeamLoadTool.ts",
+    "src/core/tools/engineering/CircuitChecklistTool.ts",
+    "src/core/tools/engineering/MotorSizingTool.ts",
+    "src/core/tools/engineering/OhmsLawTool.ts",
+    "src/core/tools/engineering/RoboticsKinematicsTool.ts",
+    "src/core/tools/engineering/UnitConversionTool.ts",
+    "src/core/tools/flstudio/FLTemplateInspectorTool.ts",
+    "src/core/tools/gamedev/BalanceSimTool.ts",
+    "src/core/tools/gamedev/GodotTool.ts",
+    "src/core/tools/gamedev/PhaserTool.ts",
+    "src/core/tools/gamedev/UnityTool.ts",
+    "src/core/tools/gamedev/UnrealTool.ts",
+    "src/core/tools/geography/CountryProfileTool.ts",
+    "src/core/tools/geography/CulturalEtiquetteTool.ts",
+    "src/core/tools/geography/DemographicsTool.ts",
+    "src/core/tools/geography/GeoTimelineTool.ts",
+    "src/core/tools/geography/LanguageRegionTool.ts",
+    "src/core/tools/geography/MapLookupTool.ts",
+    "src/core/tools/health/AnatomyLookupTool.ts",
+    "src/core/tools/health/FitnessPlanTool.ts",
+    "src/core/tools/health/MedicalSourceRouterTool.ts",
+    "src/core/tools/health/MedicationInteractionWarningTool.ts",
+    "src/core/tools/health/NutritionMacroTool.ts",
+    "src/core/tools/health/RedFlagTriageTool.ts",
+    "src/core/tools/language/GrammarDiagnosticTool.ts",
+    "src/core/tools/language/ReadabilityTool.ts",
+    "src/core/tools/language/RhetoricAnalyzerTool.ts",
+    "src/core/tools/language/SpeechOutlineTool.ts",
+    "src/core/tools/language/ToneRewriteTool.ts",
+    "src/core/tools/language/TranslationTool.ts",
+    "src/core/tools/legal/CaseLawSummaryTool.ts",
+    "src/core/tools/legal/ContractClauseExplainerTool.ts",
+    "src/core/tools/legal/JurisdictionRouterTool.ts",
+    "src/core/tools/legal/LegalRiskChecklistTool.ts",
+    "src/core/tools/legal/PlainEnglishLegalTool.ts",
+    "src/core/tools/legal/StatuteLookupTool.ts",
+    "src/core/tools/market/FredMacroTool.ts",
+    "src/core/tools/market/PriceDataTool.ts",
+    "src/core/tools/market/SecEdgarTool.ts",
+    "src/core/tools/math/LeanProofTool.ts",
+    "src/core/tools/math/NumericSolverTool.ts",
+    "src/core/tools/math/SymPyTool.ts",
+    "src/core/tools/math/Z3SolverTool.ts",
+    "src/core/tools/music/ArrangementCriticTool.ts",
+    "src/core/tools/music/ArrangementMapTool.ts",
+    "src/core/tools/music/BpmKeyDetectorTool.ts",
+    "src/core/tools/music/BpmTool.ts",
+    "src/core/tools/music/ChordProgressionTool.ts",
+    "src/core/tools/music/DawWorkflowMapTool.ts",
+    "src/core/tools/music/DrumPatternGeneratorTool.ts",
+    "src/core/tools/music/DrumPatternTool.ts",
+    "src/core/tools/music/FLAutomationTool.ts",
+    "src/core/tools/music/FLEdisonWorkflowTool.ts",
+    "src/core/tools/music/FLExportSettingsTool.ts",
+    "src/core/tools/music/FLGrossBeatAdvisorTool.ts",
+    "src/core/tools/music/FLMixerRoutingTool.ts",
+    "src/core/tools/music/FLPianoRollTool.ts",
+    "src/core/tools/music/FLPluginChainTool.ts",
+    "src/core/tools/music/FLStepSequencerPatternTool.ts",
+    "src/core/tools/music/GenreInfluenceGraphTool.ts",
+    "src/core/tools/music/KeyScaleTool.ts",
+    "src/core/tools/music/LogicAlchemyAdvisorTool.ts",
+    "src/core/tools/music/LogicArrangementMarkerTool.ts",
+    "src/core/tools/music/LogicBounceExportTool.ts",
+    "src/core/tools/music/LogicDrummerSessionPlayerTool.ts",
+    "src/core/tools/music/LogicMidiWorkflowTool.ts",
+    "src/core/tools/music/LogicProjectSetupTool.ts",
+    "src/core/tools/music/LogicStockPluginChainTool.ts",
+    "src/core/tools/music/LogicVocalChainTool.ts",
+    "src/core/tools/music/LoudnessMeterTool.ts",
+    "src/core/tools/music/LoudnessTargetTool.ts",
+    "src/core/tools/music/MasteringChecklistTool.ts",
+    "src/core/tools/music/MixChecklistTool.ts",
+    "src/core/tools/music/MixDiagnosticTool.ts",
+    "src/core/tools/music/ProToolsBusRoutingTool.ts",
+    "src/core/tools/music/ProToolsEditWorkflowTool.ts",
+    "src/core/tools/music/ProToolsExportStemTool.ts",
+    "src/core/tools/music/ProToolsPlaylistAdvisorTool.ts",
+    "src/core/tools/music/ProToolsPostAudioTool.ts",
+    "src/core/tools/music/ProToolsSessionSetupTool.ts",
+    "src/core/tools/music/ProToolsSignalFlowTool.ts",
+    "src/core/tools/music/ProToolsVocalCompTool.ts",
+    "src/core/tools/music/SampleClearanceAdvisorTool.ts",
+    "src/core/tools/music/SunoHookTool.ts",
+    "src/core/tools/music/SunoPromptTool.ts",
+    "src/core/tools/music/SunoRevisionTool.ts",
+    "src/core/tools/music/SunoRightsGuardrailTool.ts",
+    "src/core/tools/music/SunoStructureTool.ts",
+    "src/core/tools/music/SunoStyleBlendTool.ts",
+    "src/core/tools/music/VocalChainTool.ts",
+    "src/core/tools/music/createMusicTools.ts",
+    "src/core/tools/philosophy/ArgumentMapTool.ts",
+    "src/core/tools/philosophy/CounterargumentTool.ts",
+    "src/core/tools/philosophy/EthicalFrameworkTool.ts",
+    "src/core/tools/philosophy/FallacyDetectionTool.ts",
+    "src/core/tools/philosophy/PhilosophyTimelineTool.ts",
+    "src/core/tools/philosophy/SocraticQuestionTool.ts",
+    "src/core/tools/science/InventionTimelineTool.ts",
+    "src/core/tools/science/OpenAlexTool.ts",
+    "src/core/tools/science/ScientificConsensusTool.ts",
+    "src/core/tools/science/USPTOPatentTool.ts",
+    "src/core/tools/security/AuthFlowReviewTool.ts",
+    "src/core/tools/security/DependencyAuditTool.ts",
+    "src/core/tools/security/HeadersAuditTool.ts",
+    "src/core/tools/security/PrivacyChecklistTool.ts",
+    "src/core/tools/security/SecretsScanTool.ts",
+    "src/core/tools/security/SecureCodeScanTool.ts",
+    "src/core/tools/security/ThreatModelTool.ts",
+    "src/core/tools/sixsigma/AnovaTool.ts",
+    "src/core/tools/sixsigma/ControlChartBuilderTool.ts",
+    "src/core/tools/sixsigma/ControlChartConstantsTool.ts",
+    "src/core/tools/sixsigma/CopqTool.ts",
+    "src/core/tools/sixsigma/CpkCalculatorTool.ts",
+    "src/core/tools/sixsigma/DoePlannerTool.ts",
+    "src/core/tools/sixsigma/GageRRTool.ts",
+    "src/core/tools/sixsigma/ProcessMapAnalyzerTool.ts",
+    "src/core/tools/sixsigma/RegressionTool.ts",
+    "src/core/tools/sixsigma/SampleSizeTool.ts",
+    "src/core/tools/sixsigma/SigmaDpmoTool.ts",
+    "src/core/tools/sixsigma/StatSoftwareExportTool.ts",
+    "src/core/tools/story/CharacterArcTool.ts",
+    "src/core/tools/story/ContinuityCheckerTool.ts",
+    "src/core/tools/story/DialogueToneTool.ts",
+    "src/core/tools/story/GenreTropeAnalyzerTool.ts",
+    "src/core/tools/story/LoreBibleTool.ts",
+    "src/core/tools/story/ScenePacingTool.ts",
+    "src/core/tools/story/StoryStructureTool.ts",
+    "src/core/upload/FileProcessor.ts",
+    "src/core/user/CustomInstructions.ts",
+    "src/core/validator/Validators.ts",
+    "src/core/webhooks/WebhookService.ts",
+    "src/core/wiki/LocalKnowledgeWiki.ts",
+    "src/middleware/apiErrorSchema.ts",
+    "src/middleware/auth.ts",
+    "src/middleware/errorHandler.ts",
+    "src/middleware/rateLimiter.ts",
+    "src/middleware/security.ts",
+    "src/middleware/validator.ts",
+    "src/observability/prometheus.ts",
+    "src/server/chatRequest.ts",
+    "src/server/healthRoutes.ts",
+    "src/server/index.ts",
+    "src/server/routeManifest.ts",
+    "src/server/routes/admin.ts",
+    "src/server/routes/audio.ts",
+    "src/server/routes/business.ts",
+    "src/server/routes/chat-stream.ts",
+    "src/server/routes/chrono.ts",
+    "src/server/routes/code.ts",
+    "src/server/routes/creative.ts",
+    "src/server/routes/education.ts",
+    "src/server/routes/engineering.ts",
+    "src/server/routes/export.ts",
+    "src/server/routes/files.ts",
+    "src/server/routes/flstudio.ts",
+    "src/server/routes/gamedev.ts",
+    "src/server/routes/gaming.ts",
+    "src/server/routes/geography.ts",
+    "src/server/routes/gis.ts",
+    "src/server/routes/health.ts",
+    "src/server/routes/history.ts",
+    "src/server/routes/knowledge-base.ts",
+    "src/server/routes/knowledge-online.ts",
+    "src/server/routes/knowledge-os.ts",
+    "src/server/routes/language.ts",
+    "src/server/routes/legacy-chat.ts",
+    "src/server/routes/legal.ts",
+    "src/server/routes/local-tools.ts",
+    "src/server/routes/market.ts",
+    "src/server/routes/math.ts",
+    "src/server/routes/music.ts",
+    "src/server/routes/philosophy.ts",
+    "src/server/routes/plans.ts",
+    "src/server/routes/pop-culture.ts",
+    "src/server/routes/rag-query.ts",
+    "src/server/routes/science.ts",
+    "src/server/routes/sec.ts",
+    "src/server/routes/security.ts",
+    "src/server/routes/settings.ts",
+    "src/server/routes/sixsigma.ts",
+    "src/server/routes/sprite-lab.ts",
+    "src/server/routes/story.ts",
+    "src/server/routes/toolCatalog.ts",
+    "src/server/routes/v1/chat.ts",
+    "src/server/routes/v2/chat.ts",
+    "src/server/security/webhookUrl.ts",
+    "src/types/chat.ts",
+    "src/types/contract.ts",
+    "src/types/gis.ts",
+    "src/types/intent.ts",
+    "src/types/memory.ts",
+    "src/types/model-routing.ts",
+    "src/types/modes.ts",
+    "src/types/provenance.ts",
+    "src/types/rag.ts",
+    "src/types/tools.ts",
+    "src/types/vision.ts",
+    "src/utils/cache.ts",
+    "src/utils/errors.ts",
+    "src/utils/retry.ts"
+  ],
+  "reachableProduction": [
+    "client/src/App.tsx",
+    "client/src/api/audio.ts",
+    "client/src/api/code.ts",
+    "client/src/api/conversations.ts",
+    "client/src/api/errors.ts",
+    "client/src/api/files.ts",
+    "client/src/api/gaming.ts",
+    "client/src/api/knowledge.ts",
+    "client/src/api/localRunApprovals.ts",
+    "client/src/api/runtime.ts",
+    "client/src/api/spriteLab.ts",
+    "client/src/clipboard.ts",
+    "client/src/components/AssistantChat.tsx",
+    "client/src/components/AudioPreviewBrowser.tsx",
+    "client/src/components/CodeWorkflowPanel.tsx",
+    "client/src/components/ConversationToolsPanel.tsx",
+    "client/src/components/CreativeComposerPanel.tsx",
+    "client/src/components/FLStudioControlPanel.tsx",
+    "client/src/components/FileExplorerPanel.tsx",
+    "client/src/components/FilePreviewPane.tsx",
+    "client/src/components/GamingPlaybookPanel.tsx",
+    "client/src/components/KnowledgeMissPrompt.tsx",
+    "client/src/components/KnowledgeOSPanel.tsx",
+    "client/src/components/KnowledgeOnlinePanel.tsx",
+    "client/src/components/LoadedFilesBar.tsx",
+    "client/src/components/LocalRunApprovalPanel.tsx",
+    "client/src/components/LocalToolsWorkspace.tsx",
+    "client/src/components/ModeSelector.tsx",
+    "client/src/components/PlanActionBar.tsx",
+    "client/src/components/SettingsMenu.tsx",
+    "client/src/components/SpriteLabPanel.tsx",
+    "client/src/components/StaticDemo.tsx",
+    "client/src/components/StatusBar.tsx",
+    "client/src/features/gis/GISMapCard.tsx",
+    "client/src/features/gis/GISMapPanel.tsx",
+    "client/src/features/gis/gisApi.ts",
+    "client/src/features/gis/gisTypes.ts",
+    "client/src/main.tsx",
+    "src/core/agents/CodeContextBudgeter.ts",
+    "src/core/agents/CodeIndexer.ts",
+    "src/core/agents/CodePlanner.ts",
+    "src/core/agents/CodeReviewer.ts",
+    "src/core/agents/CodingAgent.ts",
+    "src/core/agents/PatchGenerator.ts",
+    "src/core/agents/VerificationRunner.ts",
+    "src/core/agents/business/BusinessGeniusAgent.ts",
+    "src/core/agents/culture/FranchiseKnowledgeGraph.ts",
+    "src/core/agents/culture/PopCultureCanonResolver.ts",
+    "src/core/agents/culture/PopCultureGeniusAgent.ts",
+    "src/core/agents/culture/PopCultureIntentClassifier.ts",
+    "src/core/agents/culture/PopCultureSourceRouter.ts",
+    "src/core/agents/culture/PopCultureTimelineBuilder.ts",
+    "src/core/agents/engineering/EngineeringGeniusAgent.ts",
+    "src/core/agents/gamedev/EngineAdvisor.ts",
+    "src/core/agents/gamedev/GameDesignPlanner.ts",
+    "src/core/agents/gamedev/GameDevGeniusAgent.ts",
+    "src/core/agents/gamedev/GameIntentClassifier.ts",
+    "src/core/agents/gamedev/GamePrototypeGenerator.ts",
+    "src/core/agents/gamedev/LevelDesignAdvisor.ts",
+    "src/core/agents/gamedev/MechanicsDesigner.ts",
+    "src/core/agents/gaming/GamingGeniusAgent.ts",
+    "src/core/agents/gaming/GamingIntentClassifier.ts",
+    "src/core/agents/gaming/GamingKnowledgeRouter.ts",
+    "src/core/agents/gaming/GamingPlaybookService.ts",
+    "src/core/agents/geography/GeoCultureGeniusAgent.ts",
+    "src/core/agents/gis/GISMappingAgent.ts",
+    "src/core/agents/health/HealthGeniusAgent.ts",
+    "src/core/agents/history/CivilizationGraph.ts",
+    "src/core/agents/history/EventCausalityAnalyzer.ts",
+    "src/core/agents/history/HistoricalTimelineBuilder.ts",
+    "src/core/agents/history/HistoryGeniusAgent.ts",
+    "src/core/agents/history/HistoryIntentClassifier.ts",
+    "src/core/agents/history/PrimarySourceRetriever.ts",
+    "src/core/agents/language/LanguageGeniusAgent.ts",
+    "src/core/agents/legal/LegalCivicGeniusAgent.ts",
+    "src/core/agents/market/BacktestRunner.ts",
+    "src/core/agents/market/EquityResearchPlanner.ts",
+    "src/core/agents/market/MarketGeniusAgent.ts",
+    "src/core/agents/market/MarketGuardrails.ts",
+    "src/core/agents/market/MarketIntentClassifier.ts",
+    "src/core/agents/market/RiskAnalyzer.ts",
+    "src/core/agents/math/MathGeniusAgent.ts",
+    "src/core/agents/math/MathProblemClassifier.ts",
+    "src/core/agents/math/MathProofPlanner.ts",
+    "src/core/agents/math/MathVerifier.ts",
+    "src/core/agents/music/DawWorkflowTranslator.ts",
+    "src/core/agents/music/MusicCopyrightGuardrails.ts",
+    "src/core/agents/music/MusicIntentClassifier.ts",
+    "src/core/agents/music/MusicProductionGeniusAgent.ts",
+    "src/core/agents/music/MusicWorkflowRouter.ts",
+    "src/core/agents/music/SongStructureCoach.ts",
+    "src/core/agents/music/flstudio/FLStudioGeniusAgent.ts",
+    "src/core/agents/music/logic/LogicProGeniusAgent.ts",
+    "src/core/agents/music/mix/FLStudioMixController.ts",
+    "src/core/agents/music/mix/MasteringAdvisor.ts",
+    "src/core/agents/music/mix/MixDiagnosticEngine.ts",
+    "src/core/agents/music/mix/MixGeniusAgent.ts",
+    "src/core/agents/music/mix/MixIntentClassifier.ts",
+    "src/core/agents/music/mix/MixPassReport.ts",
+    "src/core/agents/music/mix/MixPlanner.ts",
+    "src/core/agents/music/mix/MixRevisionLoop.ts",
+    "src/core/agents/music/mix/ReferenceMixAnalyzer.ts",
+    "src/core/agents/music/protools/ProToolsGeniusAgent.ts",
+    "src/core/agents/music/suno/SunoGeniusAgent.ts",
+    "src/core/agents/music/suno/SunoPromptBuilder.ts",
+    "src/core/agents/music/suno/SunoRevisionCoach.ts",
+    "src/core/agents/music/suno/SunoRightsAdvisor.ts",
+    "src/core/agents/music/suno/SunoSongStructurePlanner.ts",
+    "src/core/agents/music/suno/SunoStyleTagAdvisor.ts",
+    "src/core/agents/philosophy/PhilosophyGeniusAgent.ts",
+    "src/core/agents/science/DiscoveryGraph.ts",
+    "src/core/agents/science/InventionTimelineBuilder.ts",
+    "src/core/agents/science/PatentRetriever.ts",
+    "src/core/agents/science/ScienceIntentClassifier.ts",
+    "src/core/agents/science/ScienceInventionGeniusAgent.ts",
+    "src/core/agents/science/ScientificPaperRetriever.ts",
+    "src/core/agents/science/TheoryEvolutionAnalyzer.ts",
+    "src/core/agents/security/SecurityGeniusAgent.ts",
+    "src/core/agents/sixsigma/SixSigmaBlackBeltAgent.ts",
+    "src/core/agents/sixsigma/SixSigmaCalculatorRouter.ts",
+    "src/core/agents/sixsigma/SixSigmaCertificationCoach.ts",
+    "src/core/agents/sixsigma/SixSigmaComplianceAdvisor.ts",
+    "src/core/agents/sixsigma/SixSigmaExportAgent.ts",
+    "src/core/agents/sixsigma/SixSigmaIndustryAdvisor.ts",
+    "src/core/agents/sixsigma/SixSigmaIntentClassifier.ts",
+    "src/core/agents/sixsigma/SixSigmaLearningCoach.ts",
+    "src/core/agents/sixsigma/SixSigmaProjectCoach.ts",
+    "src/core/agents/sixsigma/SixSigmaSimulationAgent.ts",
+    "src/core/agents/specialist/SpecialistAgent.ts",
+    "src/core/agents/specialists/GenericSpecialistAgent.ts",
+    "src/core/agents/story/StoryGeniusAgent.ts",
+    "src/core/analytics/AnalyticsService.ts",
+    "src/core/audio/AudioLibraryService.ts",
+    "src/core/auth/AuthService.ts",
+    "src/core/auth/UserService.ts",
+    "src/core/chrono/ChronoDate.ts",
+    "src/core/chrono/ChronoKnowledgeEngine.ts",
+    "src/core/chrono/EntityGraphStore.ts",
+    "src/core/chrono/HistoricalUncertainty.ts",
+    "src/core/chrono/SourceAuthorityRanker.ts",
+    "src/core/chrono/TimeRangeParser.ts",
+    "src/core/chrono/TimelineBuilder.ts",
+    "src/core/config/ConfigValidator.ts",
+    "src/core/config/EnvironmentDefinitions.ts",
+    "src/core/contracts/ContractGate.ts",
+    "src/core/conversation/ConversationManager.ts",
+    "src/core/creative/CreativeCapabilityDetector.ts",
+    "src/core/creative/CreativeCommandRouter.ts",
+    "src/core/creative/CreativeQualityReviewer.ts",
+    "src/core/creative/CreativeStylePolicy.ts",
+    "src/core/creative/CreativeTypes.ts",
+    "src/core/creative/CreativeWritingAgent.ts",
+    "src/core/database/Database.ts",
+    "src/core/database/ExpansionDatabase.ts",
+    "src/core/database/ExpansionMigrations.ts",
+    "src/core/database/SafeDatabaseQuestionAgent.ts",
+    "src/core/debug/DebugMode.ts",
+    "src/core/documents/DocumentMetadata.ts",
+    "src/core/education/EducationService.ts",
+    "src/core/embeddings/EmbeddingService.ts",
+    "src/core/entity/EntityLinkingService.ts",
+    "src/core/feedback/FeedbackService.ts",
+    "src/core/files/FileExplorerService.ts",
+    "src/core/gis/GISCache.ts",
+    "src/core/gis/GISPrivacy.ts",
+    "src/core/gis/GISProviderRegistry.ts",
+    "src/core/gis/GISService.ts",
+    "src/core/gis/GeoJSONValidator.ts",
+    "src/core/gis/LayerImportService.ts",
+    "src/core/gis/MapSessionService.ts",
+    "src/core/gis/SpatialAnalysisService.ts",
+    "src/core/gis/providers/ArcGISFeatureServiceProvider.ts",
+    "src/core/gis/providers/CensusGeocoder.ts",
+    "src/core/gis/providers/MockGISProviders.ts",
+    "src/core/gis/providers/OSRMRoutingProvider.ts",
+    "src/core/governance/GovernanceEvidenceService.ts",
+    "src/core/graph/KnowledgeGraphIndexer.ts",
+    "src/core/importers/GitHubRepoKnowledgeImporter.ts",
+    "src/core/initialization/ServiceInitializer.ts",
+    "src/core/integrations/flstudio/FLStudioCommandPlanner.ts",
+    "src/core/integrations/flstudio/FLStudioControlAgent.ts",
+    "src/core/integrations/flstudio/FLStudioMcpClient.ts",
+    "src/core/integrations/flstudio/FLStudioSafetyGate.ts",
+    "src/core/integrations/flstudio/FLStudioSessionState.ts",
+    "src/core/knowledge-os/KnowledgeOsChatAgent.ts",
+    "src/core/knowledge/AnatomySource.ts",
+    "src/core/knowledge/AstrologySource.ts",
+    "src/core/knowledge/AstronomySource.ts",
+    "src/core/knowledge/BackendDesignSource.ts",
+    "src/core/knowledge/BaseKnowledgeSource.ts",
+    "src/core/knowledge/BookSource.ts",
+    "src/core/knowledge/BotanySource.ts",
+    "src/core/knowledge/CNASource.ts",
+    "src/core/knowledge/CodingKnowledgeBase.ts",
+    "src/core/knowledge/DSPSource.ts",
+    "src/core/knowledge/DatasetLoader.ts",
+    "src/core/knowledge/DocumentationSource.ts",
+    "src/core/knowledge/EntertainmentSource.ts",
+    "src/core/knowledge/FinancialAdviceSource.ts",
+    "src/core/knowledge/GardeningSource.ts",
+    "src/core/knowledge/GitHubSource.ts",
+    "src/core/knowledge/KnowledgeExtractor.ts",
+    "src/core/knowledge/KnowledgeFusion.ts",
+    "src/core/knowledge/KnowledgeGraph.ts",
+    "src/core/knowledge/KnowledgeMiss.ts",
+    "src/core/knowledge/KnowledgeMissHandler.ts",
+    "src/core/knowledge/KnowledgeOnlineFlowService.ts",
+    "src/core/knowledge/KnowledgeSource.ts",
+    "src/core/knowledge/KnowledgeSourceHelper.ts",
+    "src/core/knowledge/LLMProgrammingSource.ts",
+    "src/core/knowledge/LibraryOfCongressSource.ts",
+    "src/core/knowledge/LocalKnowledgeAnswerer.ts",
+    "src/core/knowledge/MarijuanaGrowingSource.ts",
+    "src/core/knowledge/MediumSource.ts",
+    "src/core/knowledge/MentalHealthSource.ts",
+    "src/core/knowledge/MusicTheorySource.ts",
+    "src/core/knowledge/NewsSource.ts",
+    "src/core/knowledge/OnlineKnowledgeIngestionService.ts",
+    "src/core/knowledge/PersonalResearchSource.ts",
+    "src/core/knowledge/PotterySource.ts",
+    "src/core/knowledge/ProjectGutenbergSource.ts",
+    "src/core/knowledge/QueryEnhancer.ts",
+    "src/core/knowledge/QuoraSource.ts",
+    "src/core/knowledge/RNSource.ts",
+    "src/core/knowledge/ReasoningEngine.ts",
+    "src/core/knowledge/RedditSource.ts",
+    "src/core/knowledge/ReligionSource.ts",
+    "src/core/knowledge/ResultRanker.ts",
+    "src/core/knowledge/ScientificPapersSource.ts",
+    "src/core/knowledge/SongwritingStyleSource.ts",
+    "src/core/knowledge/SpecializedTopicSource.ts",
+    "src/core/knowledge/StackOverflowSource.ts",
+    "src/core/knowledge/TelegramSource.ts",
+    "src/core/knowledge/UIDesignSource.ts",
+    "src/core/knowledge/UniversitySource.ts",
+    "src/core/knowledge/WebDesignSource.ts",
+    "src/core/knowledge/WebScraperSource.ts",
+    "src/core/knowledge/WikipediaSource.ts",
+    "src/core/knowledge/YouTubeSource.ts",
+    "src/core/knowledge/index.ts",
+    "src/core/learning/KnowledgeLearner.ts",
+    "src/core/learning/SpacedRepetitionService.ts",
+    "src/core/mcp/McpAuditLogger.ts",
+    "src/core/mcp/McpClientService.ts",
+    "src/core/mcp/McpPermissionGate.ts",
+    "src/core/mcp/McpToolRegistry.ts",
+    "src/core/memory/MemoryService.ts",
+    "src/core/memory/PrivateMemoryStore.ts",
+    "src/core/modes/ExecutionModePolicy.ts",
+    "src/core/modes/ModePolicy.ts",
+    "src/core/nlu/ClarifyingQuestionBuilder.ts",
+    "src/core/nlu/DomainPhrasebook.ts",
+    "src/core/nlu/HumanLanguageRouter.ts",
+    "src/core/nlu/IntentCandidateRanker.ts",
+    "src/core/nlu/SlangNormalizer.ts",
+    "src/core/nlu/VibeInterpreter.ts",
+    "src/core/nlu/phrasebooks/business.phrasebook.ts",
+    "src/core/nlu/phrasebooks/chrono.phrasebook.ts",
+    "src/core/nlu/phrasebooks/coding.phrasebook.ts",
+    "src/core/nlu/phrasebooks/engineering.phrasebook.ts",
+    "src/core/nlu/phrasebooks/gamedev.phrasebook.ts",
+    "src/core/nlu/phrasebooks/gaming.phrasebook.ts",
+    "src/core/nlu/phrasebooks/general.phrasebook.ts",
+    "src/core/nlu/phrasebooks/geography.phrasebook.ts",
+    "src/core/nlu/phrasebooks/health.phrasebook.ts",
+    "src/core/nlu/phrasebooks/index.ts",
+    "src/core/nlu/phrasebooks/knowledge-os.phrasebook.ts",
+    "src/core/nlu/phrasebooks/language.phrasebook.ts",
+    "src/core/nlu/phrasebooks/legal.phrasebook.ts",
+    "src/core/nlu/phrasebooks/market.phrasebook.ts",
+    "src/core/nlu/phrasebooks/math.phrasebook.ts",
+    "src/core/nlu/phrasebooks/music.phrasebook.ts",
+    "src/core/nlu/phrasebooks/philosophy.phrasebook.ts",
+    "src/core/nlu/phrasebooks/security.phrasebook.ts",
+    "src/core/nlu/phrasebooks/story.phrasebook.ts",
+    "src/core/observability/logger.ts",
+    "src/core/observability/metrics.ts",
+    "src/core/orchestrator/EnhancedOrchestrator.ts",
+    "src/core/orchestrator/Orchestrator.ts",
+    "src/core/planning/PlanDocumentService.ts",
+    "src/core/provenance/ProvenanceLedger.ts",
+    "src/core/providers/EnsembleAdapter.ts",
+    "src/core/providers/FreeModelRegistry.ts",
+    "src/core/providers/HuggingFaceAdapter.ts",
+    "src/core/providers/LLMAdapter.ts",
+    "src/core/providers/ModelRouter.ts",
+    "src/core/providers/OllamaAdapter.ts",
+    "src/core/providers/StableDiffusionAdapter.ts",
+    "src/core/providers/VisionAdapter.ts",
+    "src/core/rag/CitationTracker.ts",
+    "src/core/rag/ContextCompressor.ts",
+    "src/core/rag/DocumentIngester.ts",
+    "src/core/rag/DocumentManager.ts",
+    "src/core/rag/GroundingVerifier.ts",
+    "src/core/rag/HybridRetriever.ts",
+    "src/core/rag/QueryExpander.ts",
+    "src/core/rag/RAGDocumentStore.ts",
+    "src/core/rag/RAGInjectionScanner.ts",
+    "src/core/rag/RAGService.ts",
+    "src/core/rag/ReRanker.ts",
+    "src/core/rag/ingestion/ExtractedDocument.ts",
+    "src/core/rag/ingestion/FileTypeRouter.ts",
+    "src/core/rag/ingestion/ImageOcrExtractor.ts",
+    "src/core/rag/ingestion/OfficeExtractor.ts",
+    "src/core/rag/ingestion/PdfExtractor.ts",
+    "src/core/rag/ingestion/TextLikeExtractor.ts",
+    "src/core/realtime/WebSocketServer.ts",
+    "src/core/router/IntentRouter.ts",
+    "src/core/safety/BiasMitigator.ts",
+    "src/core/safety/ConstitutionalAI.ts",
+    "src/core/safety/FactChecker.ts",
+    "src/core/safety/SafetyPipeline.ts",
+    "src/core/safety/SelfCheckSafety.ts",
+    "src/core/safety/ToxicityDetector.ts",
+    "src/core/safety/UncertaintyQuantifier.ts",
+    "src/core/sec/EDGARClient.ts",
+    "src/core/sec/SECFilingParser.ts",
+    "src/core/sec/SECRequestPacer.ts",
+    "src/core/sec/SECService.ts",
+    "src/core/sec/SECStorageService.ts",
+    "src/core/sharing/ConversationSharing.ts",
+    "src/core/sprite-lab/InternalSpriteImageAdapter.ts",
+    "src/core/sprite-lab/SpriteExternalToolAdapter.ts",
+    "src/core/sprite-lab/SpriteLabPlanService.ts",
+    "src/core/suggestions/QuickReplies.ts",
+    "src/core/tools/CodeExecutor.ts",
+    "src/core/tools/CodingKnowledgeTool.ts",
+    "src/core/tools/CommandRunner.ts",
+    "src/core/tools/FunctionCaller.ts",
+    "src/core/tools/PersonalKnowledgeTool.ts",
+    "src/core/tools/RepoTools.ts",
+    "src/core/tools/ToolRegistry.ts",
+    "src/core/tools/WebSearcher.ts",
+    "src/core/tools/audio/AudioAnalyzerTool.ts",
+    "src/core/tools/audio/DynamicRangeTool.ts",
+    "src/core/tools/audio/LoudnessMeterTool.ts",
+    "src/core/tools/audio/MaskingDetectorTool.ts",
+    "src/core/tools/audio/ReferenceCompareTool.ts",
+    "src/core/tools/audio/SpectrumAnalyzerTool.ts",
+    "src/core/tools/audio/StereoImageTool.ts",
+    "src/core/tools/business/BusinessModelCanvasTool.ts",
+    "src/core/tools/business/CompetitorResearchTool.ts",
+    "src/core/tools/business/KpiDashboardTool.ts",
+    "src/core/tools/business/LeanCanvasTool.ts",
+    "src/core/tools/business/PricingModelTool.ts",
+    "src/core/tools/business/SwotTool.ts",
+    "src/core/tools/business/UnitEconomicsTool.ts",
+    "src/core/tools/catalog/ToolCatalogService.ts",
+    "src/core/tools/culture/FranchiseGraphTool.ts",
+    "src/core/tools/culture/PopCultureTimelineTool.ts",
+    "src/core/tools/engineering/BOMBuilderTool.ts",
+    "src/core/tools/engineering/BeamLoadTool.ts",
+    "src/core/tools/engineering/CircuitChecklistTool.ts",
+    "src/core/tools/engineering/MotorSizingTool.ts",
+    "src/core/tools/engineering/OhmsLawTool.ts",
+    "src/core/tools/engineering/RoboticsKinematicsTool.ts",
+    "src/core/tools/engineering/UnitConversionTool.ts",
+    "src/core/tools/flstudio/FLTemplateInspectorTool.ts",
+    "src/core/tools/gamedev/BalanceSimTool.ts",
+    "src/core/tools/gamedev/GodotTool.ts",
+    "src/core/tools/gamedev/PhaserTool.ts",
+    "src/core/tools/gamedev/UnityTool.ts",
+    "src/core/tools/gamedev/UnrealTool.ts",
+    "src/core/tools/geography/CountryProfileTool.ts",
+    "src/core/tools/geography/CulturalEtiquetteTool.ts",
+    "src/core/tools/geography/DemographicsTool.ts",
+    "src/core/tools/geography/GeoTimelineTool.ts",
+    "src/core/tools/geography/LanguageRegionTool.ts",
+    "src/core/tools/geography/MapLookupTool.ts",
+    "src/core/tools/health/AnatomyLookupTool.ts",
+    "src/core/tools/health/FitnessPlanTool.ts",
+    "src/core/tools/health/MedicalSourceRouterTool.ts",
+    "src/core/tools/health/MedicationInteractionWarningTool.ts",
+    "src/core/tools/health/NutritionMacroTool.ts",
+    "src/core/tools/health/RedFlagTriageTool.ts",
+    "src/core/tools/language/GrammarDiagnosticTool.ts",
+    "src/core/tools/language/ReadabilityTool.ts",
+    "src/core/tools/language/RhetoricAnalyzerTool.ts",
+    "src/core/tools/language/SpeechOutlineTool.ts",
+    "src/core/tools/language/ToneRewriteTool.ts",
+    "src/core/tools/language/TranslationTool.ts",
+    "src/core/tools/legal/CaseLawSummaryTool.ts",
+    "src/core/tools/legal/ContractClauseExplainerTool.ts",
+    "src/core/tools/legal/JurisdictionRouterTool.ts",
+    "src/core/tools/legal/LegalRiskChecklistTool.ts",
+    "src/core/tools/legal/PlainEnglishLegalTool.ts",
+    "src/core/tools/legal/StatuteLookupTool.ts",
+    "src/core/tools/market/FredMacroTool.ts",
+    "src/core/tools/market/PriceDataTool.ts",
+    "src/core/tools/market/SecEdgarTool.ts",
+    "src/core/tools/math/LeanProofTool.ts",
+    "src/core/tools/math/NumericSolverTool.ts",
+    "src/core/tools/math/SymPyTool.ts",
+    "src/core/tools/math/Z3SolverTool.ts",
+    "src/core/tools/music/ArrangementCriticTool.ts",
+    "src/core/tools/music/ArrangementMapTool.ts",
+    "src/core/tools/music/BpmKeyDetectorTool.ts",
+    "src/core/tools/music/BpmTool.ts",
+    "src/core/tools/music/ChordProgressionTool.ts",
+    "src/core/tools/music/DawWorkflowMapTool.ts",
+    "src/core/tools/music/DrumPatternGeneratorTool.ts",
+    "src/core/tools/music/DrumPatternTool.ts",
+    "src/core/tools/music/FLAutomationTool.ts",
+    "src/core/tools/music/FLEdisonWorkflowTool.ts",
+    "src/core/tools/music/FLExportSettingsTool.ts",
+    "src/core/tools/music/FLGrossBeatAdvisorTool.ts",
+    "src/core/tools/music/FLMixerRoutingTool.ts",
+    "src/core/tools/music/FLPianoRollTool.ts",
+    "src/core/tools/music/FLPluginChainTool.ts",
+    "src/core/tools/music/FLStepSequencerPatternTool.ts",
+    "src/core/tools/music/GenreInfluenceGraphTool.ts",
+    "src/core/tools/music/KeyScaleTool.ts",
+    "src/core/tools/music/LogicAlchemyAdvisorTool.ts",
+    "src/core/tools/music/LogicArrangementMarkerTool.ts",
+    "src/core/tools/music/LogicBounceExportTool.ts",
+    "src/core/tools/music/LogicDrummerSessionPlayerTool.ts",
+    "src/core/tools/music/LogicMidiWorkflowTool.ts",
+    "src/core/tools/music/LogicProjectSetupTool.ts",
+    "src/core/tools/music/LogicStockPluginChainTool.ts",
+    "src/core/tools/music/LogicVocalChainTool.ts",
+    "src/core/tools/music/LoudnessMeterTool.ts",
+    "src/core/tools/music/LoudnessTargetTool.ts",
+    "src/core/tools/music/MasteringChecklistTool.ts",
+    "src/core/tools/music/MixChecklistTool.ts",
+    "src/core/tools/music/MixDiagnosticTool.ts",
+    "src/core/tools/music/ProToolsBusRoutingTool.ts",
+    "src/core/tools/music/ProToolsEditWorkflowTool.ts",
+    "src/core/tools/music/ProToolsExportStemTool.ts",
+    "src/core/tools/music/ProToolsPlaylistAdvisorTool.ts",
+    "src/core/tools/music/ProToolsPostAudioTool.ts",
+    "src/core/tools/music/ProToolsSessionSetupTool.ts",
+    "src/core/tools/music/ProToolsSignalFlowTool.ts",
+    "src/core/tools/music/ProToolsVocalCompTool.ts",
+    "src/core/tools/music/SampleClearanceAdvisorTool.ts",
+    "src/core/tools/music/SunoHookTool.ts",
+    "src/core/tools/music/SunoPromptTool.ts",
+    "src/core/tools/music/SunoRevisionTool.ts",
+    "src/core/tools/music/SunoRightsGuardrailTool.ts",
+    "src/core/tools/music/SunoStructureTool.ts",
+    "src/core/tools/music/SunoStyleBlendTool.ts",
+    "src/core/tools/music/VocalChainTool.ts",
+    "src/core/tools/music/createMusicTools.ts",
+    "src/core/tools/philosophy/ArgumentMapTool.ts",
+    "src/core/tools/philosophy/CounterargumentTool.ts",
+    "src/core/tools/philosophy/EthicalFrameworkTool.ts",
+    "src/core/tools/philosophy/FallacyDetectionTool.ts",
+    "src/core/tools/philosophy/PhilosophyTimelineTool.ts",
+    "src/core/tools/philosophy/SocraticQuestionTool.ts",
+    "src/core/tools/science/InventionTimelineTool.ts",
+    "src/core/tools/science/OpenAlexTool.ts",
+    "src/core/tools/science/ScientificConsensusTool.ts",
+    "src/core/tools/science/USPTOPatentTool.ts",
+    "src/core/tools/security/AuthFlowReviewTool.ts",
+    "src/core/tools/security/DependencyAuditTool.ts",
+    "src/core/tools/security/HeadersAuditTool.ts",
+    "src/core/tools/security/PrivacyChecklistTool.ts",
+    "src/core/tools/security/SecretsScanTool.ts",
+    "src/core/tools/security/SecureCodeScanTool.ts",
+    "src/core/tools/security/ThreatModelTool.ts",
+    "src/core/tools/sixsigma/AnovaTool.ts",
+    "src/core/tools/sixsigma/ControlChartBuilderTool.ts",
+    "src/core/tools/sixsigma/ControlChartConstantsTool.ts",
+    "src/core/tools/sixsigma/CopqTool.ts",
+    "src/core/tools/sixsigma/CpkCalculatorTool.ts",
+    "src/core/tools/sixsigma/DoePlannerTool.ts",
+    "src/core/tools/sixsigma/GageRRTool.ts",
+    "src/core/tools/sixsigma/ProcessMapAnalyzerTool.ts",
+    "src/core/tools/sixsigma/RegressionTool.ts",
+    "src/core/tools/sixsigma/SampleSizeTool.ts",
+    "src/core/tools/sixsigma/SigmaDpmoTool.ts",
+    "src/core/tools/sixsigma/StatSoftwareExportTool.ts",
+    "src/core/tools/story/CharacterArcTool.ts",
+    "src/core/tools/story/ContinuityCheckerTool.ts",
+    "src/core/tools/story/DialogueToneTool.ts",
+    "src/core/tools/story/GenreTropeAnalyzerTool.ts",
+    "src/core/tools/story/LoreBibleTool.ts",
+    "src/core/tools/story/ScenePacingTool.ts",
+    "src/core/tools/story/StoryStructureTool.ts",
+    "src/core/upload/FileProcessor.ts",
+    "src/core/user/CustomInstructions.ts",
+    "src/core/validator/Validators.ts",
+    "src/core/webhooks/WebhookService.ts",
+    "src/core/wiki/LocalKnowledgeWiki.ts",
+    "src/middleware/apiErrorSchema.ts",
+    "src/middleware/auth.ts",
+    "src/middleware/errorHandler.ts",
+    "src/middleware/rateLimiter.ts",
+    "src/middleware/security.ts",
+    "src/middleware/validator.ts",
+    "src/observability/prometheus.ts",
+    "src/server/chatRequest.ts",
+    "src/server/healthRoutes.ts",
+    "src/server/index.ts",
+    "src/server/routeManifest.ts",
+    "src/server/routes/admin.ts",
+    "src/server/routes/audio.ts",
+    "src/server/routes/business.ts",
+    "src/server/routes/chat-stream.ts",
+    "src/server/routes/chrono.ts",
+    "src/server/routes/code.ts",
+    "src/server/routes/creative.ts",
+    "src/server/routes/education.ts",
+    "src/server/routes/engineering.ts",
+    "src/server/routes/export.ts",
+    "src/server/routes/files.ts",
+    "src/server/routes/flstudio.ts",
+    "src/server/routes/gamedev.ts",
+    "src/server/routes/gaming.ts",
+    "src/server/routes/geography.ts",
+    "src/server/routes/gis.ts",
+    "src/server/routes/health.ts",
+    "src/server/routes/history.ts",
+    "src/server/routes/knowledge-base.ts",
+    "src/server/routes/knowledge-online.ts",
+    "src/server/routes/knowledge-os.ts",
+    "src/server/routes/language.ts",
+    "src/server/routes/legacy-chat.ts",
+    "src/server/routes/legal.ts",
+    "src/server/routes/local-tools.ts",
+    "src/server/routes/market.ts",
+    "src/server/routes/math.ts",
+    "src/server/routes/music.ts",
+    "src/server/routes/philosophy.ts",
+    "src/server/routes/plans.ts",
+    "src/server/routes/pop-culture.ts",
+    "src/server/routes/rag-query.ts",
+    "src/server/routes/science.ts",
+    "src/server/routes/sec.ts",
+    "src/server/routes/security.ts",
+    "src/server/routes/settings.ts",
+    "src/server/routes/sixsigma.ts",
+    "src/server/routes/sprite-lab.ts",
+    "src/server/routes/story.ts",
+    "src/server/routes/toolCatalog.ts",
+    "src/server/routes/v1/chat.ts",
+    "src/server/routes/v2/chat.ts",
+    "src/server/security/webhookUrl.ts",
+    "src/types/chat.ts",
+    "src/types/contract.ts",
+    "src/types/gis.ts",
+    "src/types/intent.ts",
+    "src/types/memory.ts",
+    "src/types/model-routing.ts",
+    "src/types/modes.ts",
+    "src/types/provenance.ts",
+    "src/types/rag.ts",
+    "src/types/tools.ts",
+    "src/types/vision.ts",
+    "src/utils/cache.ts",
+    "src/utils/errors.ts",
+    "src/utils/retry.ts"
+  ],
+  "unreachable": [
+    "client/src/api/localTools.ts",
+    "client/src/vite-env.d.ts",
+    "src/core/agents/AgentTeam.ts",
+    "src/core/agents/MultiAgentOrchestrator.ts",
+    "src/core/agents/ReasoningController.ts",
+    "src/core/agents/business/FinancialModelBuilder.ts",
+    "src/core/agents/business/MarketResearchPlanner.ts",
+    "src/core/agents/business/OperationsAdvisor.ts",
+    "src/core/agents/business/PricingAdvisor.ts",
+    "src/core/agents/business/ProductStrategist.ts",
+    "src/core/agents/engineering/CadDesignCoach.ts",
+    "src/core/agents/engineering/ElectronicsAdvisor.ts",
+    "src/core/agents/engineering/MechanicalAdvisor.ts",
+    "src/core/agents/engineering/RoboticsPlanner.ts",
+    "src/core/agents/engineering/SafetyChecklist.ts",
+    "src/core/agents/gamedev/BalanceSimulator.ts",
+    "src/core/agents/geography/CultureProfileBuilder.ts",
+    "src/core/agents/geography/DemographicsAnalyzer.ts",
+    "src/core/agents/geography/GeopoliticalContextAdvisor.ts",
+    "src/core/agents/geography/MapContextAdvisor.ts",
+    "src/core/agents/health/AnatomyTutor.ts",
+    "src/core/agents/health/FitnessPlanner.ts",
+    "src/core/agents/health/MedicationSafetyAdvisor.ts",
+    "src/core/agents/health/NutritionCoach.ts",
+    "src/core/agents/health/SymptomTriageGuardrails.ts",
+    "src/core/agents/history/HistoricalSourceRanker.ts",
+    "src/core/agents/index.ts",
+    "src/core/agents/language/GrammarExplainer.ts",
+    "src/core/agents/language/RhetoricCoach.ts",
+    "src/core/agents/language/SpeechCoach.ts",
+    "src/core/agents/language/ToneRewriter.ts",
+    "src/core/agents/language/Translator.ts",
+    "src/core/agents/legal/CivicProcessAdvisor.ts",
+    "src/core/agents/legal/ContractExplainer.ts",
+    "src/core/agents/legal/LegalGuardrails.ts",
+    "src/core/agents/legal/LegalIntentClassifier.ts",
+    "src/core/agents/legal/RightsAndObligationsAnalyzer.ts",
+    "src/core/agents/market/PortfolioAnalyzer.ts",
+    "src/core/agents/music/BeatArrangementCoach.ts",
+    "src/core/agents/music/GenreTimelineMapper.ts",
+    "src/core/agents/music/MixMasteringAdvisor.ts",
+    "src/core/agents/music/MusicPromptEngineer.ts",
+    "src/core/agents/music/MusicTheoryAdvisor.ts",
+    "src/core/agents/music/SampleWorkflowAdvisor.ts",
+    "src/core/agents/music/flstudio/FLAutomationCoach.ts",
+    "src/core/agents/music/flstudio/FLExportAdvisor.ts",
+    "src/core/agents/music/flstudio/FLMixerCoach.ts",
+    "src/core/agents/music/flstudio/FLPatternCoach.ts",
+    "src/core/agents/music/flstudio/FLPianoRollCoach.ts",
+    "src/core/agents/music/flstudio/FLSoundDesignCoach.ts",
+    "src/core/agents/music/logic/LogicArrangementCoach.ts",
+    "src/core/agents/music/logic/LogicExportAdvisor.ts",
+    "src/core/agents/music/logic/LogicMidiCoach.ts",
+    "src/core/agents/music/logic/LogicSessionPlayerCoach.ts",
+    "src/core/agents/music/logic/LogicStockPluginCoach.ts",
+    "src/core/agents/music/logic/LogicVocalProductionCoach.ts",
+    "src/core/agents/music/protools/ProToolsEditingCoach.ts",
+    "src/core/agents/music/protools/ProToolsMixPrepCoach.ts",
+    "src/core/agents/music/protools/ProToolsPostProductionCoach.ts",
+    "src/core/agents/music/protools/ProToolsRecordingCoach.ts",
+    "src/core/agents/music/protools/ProToolsRoutingCoach.ts",
+    "src/core/agents/music/protools/ProToolsVocalCompCoach.ts",
+    "src/core/agents/philosophy/ArgumentMapper.ts",
+    "src/core/agents/philosophy/DebateCoach.ts",
+    "src/core/agents/philosophy/EthicsAdvisor.ts",
+    "src/core/agents/philosophy/FallacyDetector.ts",
+    "src/core/agents/philosophy/PhilosophyTimelineTool.ts",
+    "src/core/agents/security/DependencyRiskAdvisor.ts",
+    "src/core/agents/security/PrivacyRiskAnalyzer.ts",
+    "src/core/agents/security/SecureCodeReviewer.ts",
+    "src/core/agents/security/SecurityGuardrails.ts",
+    "src/core/agents/security/ThreatModeler.ts",
+    "src/core/agents/specialists/WorkflowComponent.ts",
+    "src/core/agents/story/CharacterDesigner.ts",
+    "src/core/agents/story/DialogueCoach.ts",
+    "src/core/agents/story/LoreContinuityChecker.ts",
+    "src/core/agents/story/PlotArchitect.ts",
+    "src/core/agents/story/WorldbuildingEngine.ts",
+    "src/core/audio/AudioMetadataService.ts",
+    "src/core/audit/AuditLogger.ts",
+    "src/core/auth/ApiKeyService.ts",
+    "src/core/automation/AutoDrive.ts",
+    "src/core/browser/BrowserAgent.ts",
+    "src/core/chrono/ClaimVerifier.ts",
+    "src/core/config/APIKeyManager.ts",
+    "src/core/config/ProfileManager.ts",
+    "src/core/contracts/UniversalContract.ts",
+    "src/core/creative/CreativePrivacyManager.ts",
+    "src/core/creative/CreativeProjectStore.ts",
+    "src/core/creative/PromptPackLibrary.ts",
+    "src/core/creative/RoleplaySessionEngine.ts",
+    "src/core/creative/StoryBibleStore.ts",
+    "src/core/evaluation/EvalHarness.ts",
+    "src/core/index.ts",
+    "src/core/knowledge/SmartKnowledgeSource.ts",
+    "src/core/knowledge/SmartSourceFactory.ts",
+    "src/core/knowledge/SmartSourceWrapper.ts",
+    "src/core/learning/ABTester.ts",
+    "src/core/learning/FeedbackCollector.ts",
+    "src/core/learning/ModelUpdater.ts",
+    "src/core/learning/PerformanceMonitor.ts",
+    "src/core/memory/ForgettingMechanism.ts",
+    "src/core/memory/GraphMemory.ts",
+    "src/core/memory/HierarchicalMemory.ts",
+    "src/core/memory/MemoryConsolidator.ts",
+    "src/core/memory/MemoryRetrievalNetwork.ts",
+    "src/core/memory/ProjectContext.ts",
+    "src/core/moderation/ContentModerator.ts",
+    "src/core/multimodal/ImageProcessor.ts",
+    "src/core/multimodal/VideoProcessor.ts",
+    "src/core/multimodal/VisualSearch.ts",
+    "src/core/notifications/TwilioAdapter.ts",
+    "src/core/notifications/index.ts",
+    "src/core/optimization/ToonSerializer.ts",
+    "src/core/optimization/index.ts",
+    "src/core/personalization/CollaborativeFilter.ts",
+    "src/core/personalization/PreferenceLearner.ts",
+    "src/core/personalization/StyleAdapter.ts",
+    "src/core/personalization/UserProfiler.ts",
+    "src/core/providers/DeviceAdapter.ts",
+    "src/core/providers/UniversalLLM.ts",
+    "src/core/quality/AutoReview.ts",
+    "src/core/rag/AudioRAG.ts",
+    "src/core/rag/CorrectiveRetriever.ts",
+    "src/core/rag/RAGRouter.ts",
+    "src/core/rag/TrustRAG.ts",
+    "src/core/rag/VideoRAG.ts",
+    "src/core/rl/FeedbackCollector.ts",
+    "src/core/rl/PolicyOptimizer.ts",
+    "src/core/rl/RewardModel.ts",
+    "src/core/rl/SafeRL.ts",
+    "src/core/safety/ApprovalPolicy.ts",
+    "src/core/safety/SandboxController.ts",
+    "src/core/scheduler/TaskScheduler.ts",
+    "src/core/scheduler/index.ts",
+    "src/core/tools/ToolComposer.ts",
+    "src/core/tools/audio/StemAnalyzerTool.ts",
+    "src/core/tools/culture/AwardLookupTool.ts",
+    "src/core/tools/culture/MusicBrainzTool.ts",
+    "src/core/tools/culture/OpenLibraryTool.ts",
+    "src/core/tools/culture/TMDBTool.ts",
+    "src/core/tools/culture/WikidataEntityTool.ts",
+    "src/core/tools/flstudio/FLMixerControlTool.ts",
+    "src/core/tools/flstudio/FLPluginParamTool.ts",
+    "src/core/tools/flstudio/FLRenderTool.ts",
+    "src/core/tools/flstudio/FLTransportTool.ts",
+    "src/core/tools/history/ChronologyTool.ts",
+    "src/core/tools/history/EuropeanaTool.ts",
+    "src/core/tools/history/LibraryOfCongressTool.ts",
+    "src/core/tools/history/MapContextTool.ts",
+    "src/core/tools/history/SmithsonianTool.ts",
+    "src/core/tools/history/SourceCriticismTool.ts",
+    "src/core/tools/history/WikidataHistoryTool.ts",
+    "src/core/tools/market/FundamentalsTool.ts",
+    "src/core/tools/market/NewsEventTool.ts",
+    "src/core/tools/market/TechnicalIndicatorTool.ts",
+    "src/core/tools/market/ValuationTool.ts",
+    "src/core/tools/science/GBIFTool.ts",
+    "src/core/tools/science/NasaDataTool.ts",
+    "src/core/tools/science/WikidataScienceTool.ts",
+    "src/core/tools/sixsigma/AnalysisApiTool.ts",
+    "src/core/ui/ThinkingUI.ts",
+    "src/core/voice/VoiceAgent.ts",
+    "src/mesh/CircuitBreaker.ts",
+    "src/mesh/LoadBalancer.ts",
+    "src/middleware/apiKeyAuth.ts",
+    "src/observability/alerts.ts",
+    "src/observability/tracing.ts",
+    "src/server/routes/setup.ts",
+    "src/services/ServiceRegistry.ts",
+    "src/utils/memoize.ts"
+  ],
+  "unresolvedRelativeImports": [
+    {
+      "importer": "client/src/App.tsx",
+      "specifier": "./App.css"
+    },
+    {
+      "importer": "client/src/components/AssistantChat.tsx",
+      "specifier": "./AssistantChat.css"
+    },
+    {
+      "importer": "client/src/components/AudioPreviewBrowser.tsx",
+      "specifier": "./AudioPreviewBrowser.css"
+    },
+    {
+      "importer": "client/src/components/CodeWorkflowPanel.tsx",
+      "specifier": "./CodeWorkflowPanel.css"
+    },
+    {
+      "importer": "client/src/components/ConversationToolsPanel.tsx",
+      "specifier": "./ConversationToolsPanel.css"
+    },
+    {
+      "importer": "client/src/components/FileExplorerPanel.tsx",
+      "specifier": "./FileExplorerPanel.css"
+    },
+    {
+      "importer": "client/src/components/FLStudioControlPanel.tsx",
+      "specifier": "./FLStudioControlPanel.css"
+    },
+    {
+      "importer": "client/src/components/GamingPlaybookPanel.tsx",
+      "specifier": "./GamingPlaybookPanel.css"
+    },
+    {
+      "importer": "client/src/components/KnowledgeOnlinePanel.tsx",
+      "specifier": "./KnowledgeOnlinePanel.css"
+    },
+    {
+      "importer": "client/src/components/KnowledgeOSPanel.tsx",
+      "specifier": "./KnowledgeOSPanel.css"
+    },
+    {
+      "importer": "client/src/components/LocalToolsWorkspace.tsx",
+      "specifier": "./LocalToolsWorkspace.css"
+    },
+    {
+      "importer": "client/src/components/ModeSelector.tsx",
+      "specifier": "./ModeSelector.css"
+    },
+    {
+      "importer": "client/src/components/SettingsMenu.tsx",
+      "specifier": "./SettingsMenu.css"
+    },
+    {
+      "importer": "client/src/components/StaticDemo.tsx",
+      "specifier": "./StaticDemo.css"
+    },
+    {
+      "importer": "client/src/components/StatusBar.tsx",
+      "specifier": "./StatusBar.css"
+    },
+    {
+      "importer": "client/src/features/gis/GISMapCard.tsx",
+      "specifier": "./GISMapCard.css"
+    },
+    {
+      "importer": "client/src/main.tsx",
+      "specifier": "./index.css"
+    },
+    {
+      "importer": "scripts/release/__tests__/phase2-scanners.test.mjs",
+      "specifier": "./App"
+    },
+    {
+      "importer": "scripts/release/__tests__/phase2-scanners.test.mjs",
+      "specifier": "./live"
+    },
+    {
+      "importer": "scripts/release/__tests__/phase2-scanners.test.mjs",
+      "specifier": "./thing"
+    },
+    {
+      "importer": "src/core/initialization/ServiceInitializer.ts",
+      "specifier": "../cache/MultiLevelCache"
+    },
+    {
+      "importer": "src/core/initialization/ServiceInitializer.ts",
+      "specifier": "../cache/SemanticCache"
+    },
+    {
+      "importer": "src/core/orchestrator/EnhancedOrchestrator.ts",
+      "specifier": "../cache/SemanticCache"
+    },
+    {
+      "importer": "src/core/sprite-lab/SpriteExternalToolAdapter.ts",
+      "specifier": "../local-tools/LocalToolService"
+    },
+    {
+      "importer": "src/core/sprite-lab/SpriteLabPlanService.ts",
+      "specifier": "../local-tools/LocalToolService"
+    },
+    {
+      "importer": "src/server/routes/local-tools.ts",
+      "specifier": "../../core/local-tools/LocalRunApprovalService"
+    },
+    {
+      "importer": "src/server/routes/local-tools.ts",
+      "specifier": "../../core/local-tools/LocalToolPolicy"
+    },
+    {
+      "importer": "src/server/routes/local-tools.ts",
+      "specifier": "../../core/local-tools/LocalToolRunner"
+    },
+    {
+      "importer": "src/server/routes/local-tools.ts",
+      "specifier": "../../core/local-tools/LocalToolService"
+    }
+  ],
+  "importGraph": {
+    "client/src/api/audio.test.ts": [
+      "client/src/api/audio.ts"
+    ],
+    "client/src/api/audio.ts": [
+      "client/src/api/errors.ts"
+    ],
+    "client/src/api/code.test.ts": [
+      "client/src/api/code.ts"
+    ],
+    "client/src/api/code.ts": [
+      "client/src/api/errors.ts"
+    ],
+    "client/src/api/conversations.test.ts": [
+      "client/src/api/conversations.ts"
+    ],
+    "client/src/api/conversations.ts": [
+      "client/src/api/errors.ts"
+    ],
+    "client/src/api/errors.test.ts": [
+      "client/src/api/errors.ts"
+    ],
+    "client/src/api/errors.ts": [],
+    "client/src/api/files.test.ts": [
+      "client/src/api/files.ts"
+    ],
+    "client/src/api/files.ts": [
+      "client/src/api/errors.ts"
+    ],
+    "client/src/api/gaming.ts": [
+      "client/src/api/errors.ts"
+    ],
+    "client/src/api/knowledge-online-flow.test.ts": [
+      "client/src/api/knowledge.ts"
+    ],
+    "client/src/api/knowledge.test.ts": [
+      "client/src/api/knowledge.ts"
+    ],
+    "client/src/api/knowledge.ts": [
+      "client/src/api/errors.ts"
+    ],
+    "client/src/api/localRunApprovals.test.ts": [
+      "client/src/api/localRunApprovals.ts"
+    ],
+    "client/src/api/localRunApprovals.ts": [
+      "client/src/api/errors.ts"
+    ],
+    "client/src/api/localTools.ts": [
+      "client/src/api/errors.ts"
+    ],
+    "client/src/api/runtime.test.ts": [
+      "client/src/api/runtime.ts"
+    ],
+    "client/src/api/runtime.ts": [],
+    "client/src/api/spriteLab.ts": [
+      "client/src/api/errors.ts",
+      "client/src/api/localRunApprovals.ts"
+    ],
+    "client/src/App.static-demo.test.tsx": [
+      "client/src/App.tsx"
+    ],
+    "client/src/App.tsx": [
+      "client/src/api/runtime.ts",
+      "client/src/components/AssistantChat.tsx",
+      "client/src/components/LocalToolsWorkspace.tsx",
+      "client/src/components/SettingsMenu.tsx",
+      "client/src/components/StaticDemo.tsx"
+    ],
+    "client/src/clipboard.test.ts": [
+      "client/src/clipboard.ts",
+      "client/src/test/browserTestUtils.ts"
+    ],
+    "client/src/clipboard.ts": [],
+    "client/src/components/AssistantChat.test.tsx": [
+      "client/src/components/AssistantChat.tsx"
+    ],
+    "client/src/components/AssistantChat.tsx": [
+      "client/src/api/audio.ts",
+      "client/src/api/conversations.ts",
+      "client/src/api/errors.ts",
+      "client/src/api/files.ts",
+      "client/src/api/knowledge.ts",
+      "client/src/api/runtime.ts",
+      "client/src/components/AudioPreviewBrowser.tsx",
+      "client/src/components/CodeWorkflowPanel.tsx",
+      "client/src/components/ConversationToolsPanel.tsx",
+      "client/src/components/CreativeComposerPanel.tsx",
+      "client/src/components/FLStudioControlPanel.tsx",
+      "client/src/components/FileExplorerPanel.tsx",
+      "client/src/components/GamingPlaybookPanel.tsx",
+      "client/src/components/KnowledgeMissPrompt.tsx",
+      "client/src/components/KnowledgeOSPanel.tsx",
+      "client/src/components/KnowledgeOnlinePanel.tsx",
+      "client/src/components/LoadedFilesBar.tsx",
+      "client/src/components/ModeSelector.tsx",
+      "client/src/components/PlanActionBar.tsx",
+      "client/src/components/StatusBar.tsx",
+      "client/src/features/gis/GISMapPanel.tsx"
+    ],
+    "client/src/components/AssistantChatPanelScope.test.tsx": [
+      "client/src/components/AssistantChat.tsx"
+    ],
+    "client/src/components/AudioPreviewBrowser.test.tsx": [
+      "client/src/components/AudioPreviewBrowser.tsx"
+    ],
+    "client/src/components/AudioPreviewBrowser.tsx": [
+      "client/src/api/audio.ts",
+      "client/src/api/runtime.ts"
+    ],
+    "client/src/components/CodeWorkflowPanel.test.tsx": [
+      "client/src/components/CodeWorkflowPanel.tsx"
+    ],
+    "client/src/components/CodeWorkflowPanel.tsx": [
+      "client/src/api/code.ts",
+      "client/src/components/ModeSelector.tsx"
+    ],
+    "client/src/components/ConversationToolsPanel.test.tsx": [
+      "client/src/components/ConversationToolsPanel.tsx"
+    ],
+    "client/src/components/ConversationToolsPanel.tsx": [
+      "client/src/api/conversations.ts"
+    ],
+    "client/src/components/CreativeComposerPanel.test.tsx": [
+      "client/src/components/CreativeComposerPanel.tsx"
+    ],
+    "client/src/components/CreativeComposerPanel.tsx": [],
+    "client/src/components/FileExplorerPanel.test.tsx": [
+      "client/src/components/FileExplorerPanel.tsx"
+    ],
+    "client/src/components/FileExplorerPanel.tsx": [
+      "client/src/api/files.ts",
+      "client/src/api/runtime.ts",
+      "client/src/components/FilePreviewPane.tsx"
+    ],
+    "client/src/components/FilePreviewPane.tsx": [
+      "client/src/api/files.ts"
+    ],
+    "client/src/components/FLStudioControlPanel.test.tsx": [
+      "client/src/components/FLStudioControlPanel.tsx"
+    ],
+    "client/src/components/FLStudioControlPanel.tsx": [],
+    "client/src/components/GamingPlaybookPanel.tsx": [
+      "client/src/api/gaming.ts"
+    ],
+    "client/src/components/KnowledgeMissPrompt.test.tsx": [
+      "client/src/components/KnowledgeMissPrompt.tsx"
+    ],
+    "client/src/components/KnowledgeMissPrompt.tsx": [],
+    "client/src/components/KnowledgeOnlinePanel.test.tsx": [
+      "client/src/components/KnowledgeOnlinePanel.tsx"
+    ],
+    "client/src/components/KnowledgeOnlinePanel.tsx": [
+      "client/src/api/knowledge.ts"
+    ],
+    "client/src/components/KnowledgeOSPanel.tsx": [
+      "client/src/api/runtime.ts"
+    ],
+    "client/src/components/LoadedFilesBar.tsx": [
+      "client/src/api/audio.ts",
+      "client/src/api/files.ts"
+    ],
+    "client/src/components/LocalRunApprovalPanel.test.tsx": [
+      "client/src/components/LocalRunApprovalPanel.tsx",
+      "client/src/test/browserTestUtils.ts"
+    ],
+    "client/src/components/LocalRunApprovalPanel.tsx": [
+      "client/src/api/localRunApprovals.ts",
+      "client/src/clipboard.ts"
+    ],
+    "client/src/components/LocalToolsWorkspace.tsx": [
+      "client/src/api/runtime.ts",
+      "client/src/components/LocalRunApprovalPanel.tsx",
+      "client/src/components/SpriteLabPanel.tsx"
+    ],
+    "client/src/components/ModeSelector.test.tsx": [
+      "client/src/components/ModeSelector.tsx"
+    ],
+    "client/src/components/ModeSelector.tsx": [],
+    "client/src/components/PlanActionBar.test.tsx": [
+      "client/src/components/PlanActionBar.tsx"
+    ],
+    "client/src/components/PlanActionBar.tsx": [],
+    "client/src/components/SettingsMenu.test.tsx": [
+      "client/src/components/SettingsMenu.tsx"
+    ],
+    "client/src/components/SettingsMenu.tsx": [],
+    "client/src/components/SpriteLabPanel.test.tsx": [
+      "client/src/components/SpriteLabPanel.tsx",
+      "client/src/test/browserTestUtils.ts"
+    ],
+    "client/src/components/SpriteLabPanel.tsx": [
+      "client/src/api/localRunApprovals.ts",
+      "client/src/api/spriteLab.ts",
+      "client/src/clipboard.ts",
+      "client/src/components/FileExplorerPanel.tsx"
+    ],
+    "client/src/components/StaticDemo.test.tsx": [
+      "client/src/components/StaticDemo.tsx"
+    ],
+    "client/src/components/StaticDemo.tsx": [],
+    "client/src/components/StatusBar.test.tsx": [
+      "client/src/components/StatusBar.tsx"
+    ],
+    "client/src/components/StatusBar.tsx": [],
+    "client/src/features/gis/gisApi.ts": [
+      "client/src/features/gis/gisTypes.ts"
+    ],
+    "client/src/features/gis/GISMapCard.tsx": [
+      "client/src/features/gis/gisTypes.ts"
+    ],
+    "client/src/features/gis/GISMapPanel.test.tsx": [
+      "client/src/features/gis/GISMapPanel.tsx"
+    ],
+    "client/src/features/gis/GISMapPanel.tsx": [
+      "client/src/features/gis/GISMapCard.tsx",
+      "client/src/features/gis/gisApi.ts",
+      "client/src/features/gis/gisTypes.ts"
+    ],
+    "client/src/features/gis/gisTypes.ts": [],
+    "client/src/main.tsx": [
+      "client/src/App.tsx"
+    ],
+    "client/src/test/browserTestUtils.ts": [],
+    "client/src/vite-env.d.ts": [],
+    "client/vite.config.ts": [],
+    "docs/extract_all_snippets.js": [],
+    "docs/extract_snippets.js": [],
+    "e2e/chat-flow.test.ts": [
+      "src/__tests__/utils/test-helpers.ts",
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "e2e/creative-release.test.ts": [
+      "src/core/creative/CreativeCapabilityDetector.ts",
+      "src/core/creative/CreativeProjectStore.ts",
+      "src/core/creative/CreativeWritingAgent.ts",
+      "src/core/creative/PromptPackLibrary.ts",
+      "src/core/creative/RoleplaySessionEngine.ts",
+      "src/core/creative/StoryBibleStore.ts"
+    ],
+    "e2e/knowledge-base.test.ts": [
+      "src/__tests__/utils/test-helpers.ts",
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/rag/DocumentManager.ts",
+      "src/core/rag/RAGService.ts"
+    ],
+    "eslint.config.js": [],
+    "jest.config.js": [],
+    "prettier.config.js": [],
+    "scripts/extract_encyclopedia.js": [],
+    "scripts/extract_encyclopedia.ts": [],
+    "scripts/import-blackbelt-knowledge.ts": [],
+    "scripts/import-europeana.ts": [],
+    "scripts/import-loc-history.ts": [],
+    "scripts/import-musicbrainz.ts": [],
+    "scripts/import-openalex-science.ts": [],
+    "scripts/import-openlibrary.ts": [],
+    "scripts/import-tmdb-popculture.ts": [],
+    "scripts/import-uspto-patents.ts": [],
+    "scripts/import-wikidata-chrono.ts": [],
+    "scripts/import-wikimedia-history.ts": [],
+    "scripts/import-wikipedia-general-corpus.ts": [],
+    "scripts/release/__tests__/phase2-scanners.test.mjs": [
+      "scripts/release/lib/reachability.mjs",
+      "scripts/release/lib/source-analysis.mjs"
+    ],
+    "scripts/release/_phase2-finalize.mjs": [],
+    "scripts/release/check-docs.mjs": [],
+    "scripts/release/check-environment-contract.mjs": [
+      "scripts/release/lib/files.mjs"
+    ],
+    "scripts/release/check-file-size.mjs": [
+      "scripts/release/lib/files.mjs",
+      "scripts/release/lib/source-analysis.mjs"
+    ],
+    "scripts/release/check-production-boundary.mjs": [
+      "scripts/release/generate-repository-inventory.mjs",
+      "scripts/release/lib/files.mjs"
+    ],
+    "scripts/release/check-repository-inventory.mjs": [
+      "scripts/release/generate-repository-inventory.mjs"
+    ],
+    "scripts/release/configure-main-branch-protection.mjs": [],
+    "scripts/release/generate-repository-inventory.mjs": [
+      "scripts/release/lib/files.mjs",
+      "scripts/release/lib/reachability.mjs",
+      "scripts/release/lib/render.mjs",
+      "scripts/release/lib/source-analysis.mjs"
+    ],
+    "scripts/release/lib/files.mjs": [],
+    "scripts/release/lib/reachability.mjs": [
+      "scripts/release/lib/files.mjs",
+      "scripts/release/lib/source-analysis.mjs"
+    ],
+    "scripts/release/lib/render.mjs": [],
+    "scripts/release/lib/source-analysis.mjs": [
+      "scripts/release/lib/files.mjs"
+    ],
+    "scripts/release/smoke-pages-artifact.mjs": [],
+    "scripts/release/smoke-pages-deployment.mjs": [],
+    "scripts/release/verify-ci-graph.mjs": [],
+    "scripts/run-domain-evals.ts": [],
+    "scripts/run-evals.ts": [
+      "src/core/evaluation/EvalHarness.ts"
+    ],
+    "scripts/verify-package-smoke.mjs": [],
+    "src/__tests__/core/providers/LLMAdapter.test.ts": [
+      "src/__tests__/utils/test-helpers.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/__tests__/core/rag/RAGService.test.ts": [
+      "src/__tests__/utils/test-helpers.ts",
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/rag/RAGService.ts"
+    ],
+    "src/__tests__/core/safety/SafetyPipeline.test.ts": [
+      "src/__tests__/utils/test-helpers.ts",
+      "src/core/safety/SafetyPipeline.ts"
+    ],
+    "src/__tests__/core/tools/ToolRegistry.test.ts": [
+      "src/core/tools/ToolRegistry.ts",
+      "src/types/tools.ts"
+    ],
+    "src/__tests__/setup.ts": [],
+    "src/__tests__/utils/test-helpers.ts": [
+      "src/core/providers/LLMAdapter.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/agents/AgentTeam.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/agents/business/BusinessGeniusAgent.test.ts": [
+      "src/core/agents/business/BusinessGeniusAgent.ts"
+    ],
+    "src/core/agents/business/BusinessGeniusAgent.ts": [
+      "src/core/agents/specialists/GenericSpecialistAgent.ts",
+      "src/core/tools/business/BusinessModelCanvasTool.ts",
+      "src/core/tools/business/CompetitorResearchTool.ts",
+      "src/core/tools/business/KpiDashboardTool.ts",
+      "src/core/tools/business/LeanCanvasTool.ts",
+      "src/core/tools/business/PricingModelTool.ts",
+      "src/core/tools/business/SwotTool.ts",
+      "src/core/tools/business/UnitEconomicsTool.ts"
+    ],
+    "src/core/agents/business/FinancialModelBuilder.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/business/MarketResearchPlanner.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/business/OperationsAdvisor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/business/PricingAdvisor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/business/ProductStrategist.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/CodeContextBudgeter.test.ts": [
+      "src/core/agents/CodeContextBudgeter.ts"
+    ],
+    "src/core/agents/CodeContextBudgeter.ts": [],
+    "src/core/agents/CodeIndexer.ts": [],
+    "src/core/agents/CodePlanner.ts": [],
+    "src/core/agents/CodeReviewer.ts": [],
+    "src/core/agents/CodingAgent.test.ts": [
+      "src/core/agents/CodingAgent.ts"
+    ],
+    "src/core/agents/CodingAgent.ts": [
+      "src/core/agents/CodeContextBudgeter.ts",
+      "src/core/agents/CodeIndexer.ts",
+      "src/core/agents/CodePlanner.ts",
+      "src/core/agents/CodeReviewer.ts",
+      "src/core/agents/PatchGenerator.ts",
+      "src/core/agents/VerificationRunner.ts",
+      "src/core/tools/CommandRunner.ts",
+      "src/core/tools/FunctionCaller.ts",
+      "src/core/tools/RepoTools.ts",
+      "src/core/tools/ToolRegistry.ts",
+      "src/types/chat.ts",
+      "src/types/tools.ts"
+    ],
+    "src/core/agents/culture/FranchiseKnowledgeGraph.ts": [
+      "src/core/tools/culture/FranchiseGraphTool.ts"
+    ],
+    "src/core/agents/culture/PopCultureCanonResolver.ts": [],
+    "src/core/agents/culture/PopCultureGeniusAgent.test.ts": [
+      "src/core/agents/culture/PopCultureGeniusAgent.ts"
+    ],
+    "src/core/agents/culture/PopCultureGeniusAgent.ts": [
+      "src/core/agents/culture/FranchiseKnowledgeGraph.ts",
+      "src/core/agents/culture/PopCultureCanonResolver.ts",
+      "src/core/agents/culture/PopCultureIntentClassifier.ts",
+      "src/core/agents/culture/PopCultureSourceRouter.ts",
+      "src/core/agents/culture/PopCultureTimelineBuilder.ts",
+      "src/core/chrono/ChronoKnowledgeEngine.ts"
+    ],
+    "src/core/agents/culture/PopCultureIntentClassifier.ts": [],
+    "src/core/agents/culture/PopCultureSourceRouter.ts": [],
+    "src/core/agents/culture/PopCultureTimelineBuilder.ts": [
+      "src/core/tools/culture/PopCultureTimelineTool.ts"
+    ],
+    "src/core/agents/engineering/CadDesignCoach.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/engineering/ElectronicsAdvisor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/engineering/EngineeringGeniusAgent.test.ts": [
+      "src/core/agents/engineering/EngineeringGeniusAgent.ts"
+    ],
+    "src/core/agents/engineering/EngineeringGeniusAgent.ts": [
+      "src/core/agents/specialists/GenericSpecialistAgent.ts",
+      "src/core/tools/engineering/BOMBuilderTool.ts",
+      "src/core/tools/engineering/BeamLoadTool.ts",
+      "src/core/tools/engineering/CircuitChecklistTool.ts",
+      "src/core/tools/engineering/MotorSizingTool.ts",
+      "src/core/tools/engineering/OhmsLawTool.ts",
+      "src/core/tools/engineering/RoboticsKinematicsTool.ts",
+      "src/core/tools/engineering/UnitConversionTool.ts"
+    ],
+    "src/core/agents/engineering/MechanicalAdvisor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/engineering/RoboticsPlanner.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/engineering/SafetyChecklist.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/gamedev/BalanceSimulator.ts": [
+      "src/core/tools/gamedev/BalanceSimTool.ts"
+    ],
+    "src/core/agents/gamedev/EngineAdvisor.ts": [
+      "src/core/tools/gamedev/GodotTool.ts",
+      "src/core/tools/gamedev/PhaserTool.ts",
+      "src/core/tools/gamedev/UnityTool.ts",
+      "src/core/tools/gamedev/UnrealTool.ts"
+    ],
+    "src/core/agents/gamedev/GameDesignPlanner.ts": [],
+    "src/core/agents/gamedev/GameDevGeniusAgent.test.ts": [
+      "src/core/agents/gamedev/GameDevGeniusAgent.ts"
+    ],
+    "src/core/agents/gamedev/GameDevGeniusAgent.ts": [
+      "src/core/agents/gamedev/EngineAdvisor.ts",
+      "src/core/agents/gamedev/GameDesignPlanner.ts",
+      "src/core/agents/gamedev/GameIntentClassifier.ts",
+      "src/core/agents/gamedev/GamePrototypeGenerator.ts",
+      "src/core/agents/gamedev/LevelDesignAdvisor.ts",
+      "src/core/agents/gamedev/MechanicsDesigner.ts",
+      "src/core/agents/specialist/SpecialistAgent.ts",
+      "src/core/tools/gamedev/BalanceSimTool.ts"
+    ],
+    "src/core/agents/gamedev/GameIntentClassifier.ts": [
+      "src/core/agents/specialist/SpecialistAgent.ts"
+    ],
+    "src/core/agents/gamedev/GamePrototypeGenerator.ts": [],
+    "src/core/agents/gamedev/LevelDesignAdvisor.ts": [],
+    "src/core/agents/gamedev/MechanicsDesigner.ts": [],
+    "src/core/agents/gaming/GamingGeniusAgent.test.ts": [
+      "src/core/agents/gaming/GamingGeniusAgent.ts"
+    ],
+    "src/core/agents/gaming/GamingGeniusAgent.ts": [
+      "src/core/agents/gamedev/GameDevGeniusAgent.ts",
+      "src/core/agents/gaming/GamingIntentClassifier.ts",
+      "src/core/agents/gaming/GamingKnowledgeRouter.ts",
+      "src/core/agents/specialist/SpecialistAgent.ts"
+    ],
+    "src/core/agents/gaming/GamingIntentClassifier.ts": [
+      "src/core/agents/specialist/SpecialistAgent.ts"
+    ],
+    "src/core/agents/gaming/GamingKnowledgeRouter.ts": [],
+    "src/core/agents/gaming/GamingPlaybookService.test.ts": [
+      "src/core/agents/gaming/GamingPlaybookService.ts"
+    ],
+    "src/core/agents/gaming/GamingPlaybookService.ts": [],
+    "src/core/agents/geography/CultureProfileBuilder.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/geography/DemographicsAnalyzer.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/geography/GeoCultureGeniusAgent.test.ts": [
+      "src/core/agents/geography/GeoCultureGeniusAgent.ts"
+    ],
+    "src/core/agents/geography/GeoCultureGeniusAgent.ts": [
+      "src/core/agents/specialists/GenericSpecialistAgent.ts",
+      "src/core/tools/geography/CountryProfileTool.ts",
+      "src/core/tools/geography/CulturalEtiquetteTool.ts",
+      "src/core/tools/geography/DemographicsTool.ts",
+      "src/core/tools/geography/GeoTimelineTool.ts",
+      "src/core/tools/geography/LanguageRegionTool.ts",
+      "src/core/tools/geography/MapLookupTool.ts"
+    ],
+    "src/core/agents/geography/GeopoliticalContextAdvisor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/geography/MapContextAdvisor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/gis/GISMappingAgent.ts": [
+      "src/core/gis/GISService.ts",
+      "src/types/gis.ts"
+    ],
+    "src/core/agents/health/AnatomyTutor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/health/FitnessPlanner.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/health/HealthGeniusAgent.test.ts": [
+      "src/core/agents/health/HealthGeniusAgent.ts"
+    ],
+    "src/core/agents/health/HealthGeniusAgent.ts": [
+      "src/core/agents/specialists/GenericSpecialistAgent.ts",
+      "src/core/tools/health/AnatomyLookupTool.ts",
+      "src/core/tools/health/FitnessPlanTool.ts",
+      "src/core/tools/health/MedicalSourceRouterTool.ts",
+      "src/core/tools/health/MedicationInteractionWarningTool.ts",
+      "src/core/tools/health/NutritionMacroTool.ts",
+      "src/core/tools/health/RedFlagTriageTool.ts"
+    ],
+    "src/core/agents/health/MedicationSafetyAdvisor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/health/NutritionCoach.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/health/SymptomTriageGuardrails.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/history/CivilizationGraph.ts": [],
+    "src/core/agents/history/EventCausalityAnalyzer.ts": [],
+    "src/core/agents/history/HistoricalSourceRanker.ts": [
+      "src/core/chrono/SourceAuthorityRanker.ts"
+    ],
+    "src/core/agents/history/HistoricalTimelineBuilder.ts": [
+      "src/core/chrono/ChronoKnowledgeEngine.ts"
+    ],
+    "src/core/agents/history/HistoryGeniusAgent.ts": [
+      "src/core/agents/history/CivilizationGraph.ts",
+      "src/core/agents/history/EventCausalityAnalyzer.ts",
+      "src/core/agents/history/HistoricalTimelineBuilder.ts",
+      "src/core/agents/history/HistoryIntentClassifier.ts",
+      "src/core/agents/history/PrimarySourceRetriever.ts",
+      "src/core/chrono/ChronoKnowledgeEngine.ts"
+    ],
+    "src/core/agents/history/HistoryIntentClassifier.ts": [],
+    "src/core/agents/history/PrimarySourceRetriever.ts": [],
+    "src/core/agents/index.ts": [
+      "src/core/agents/AgentTeam.ts"
+    ],
+    "src/core/agents/language/GrammarExplainer.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/language/LanguageGeniusAgent.test.ts": [
+      "src/core/agents/language/LanguageGeniusAgent.ts"
+    ],
+    "src/core/agents/language/LanguageGeniusAgent.ts": [
+      "src/core/agents/specialists/GenericSpecialistAgent.ts",
+      "src/core/tools/language/GrammarDiagnosticTool.ts",
+      "src/core/tools/language/ReadabilityTool.ts",
+      "src/core/tools/language/RhetoricAnalyzerTool.ts",
+      "src/core/tools/language/SpeechOutlineTool.ts",
+      "src/core/tools/language/ToneRewriteTool.ts",
+      "src/core/tools/language/TranslationTool.ts"
+    ],
+    "src/core/agents/language/RhetoricCoach.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/language/SpeechCoach.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/language/ToneRewriter.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/language/Translator.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/legal/CivicProcessAdvisor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/legal/ContractExplainer.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/legal/LegalCivicGeniusAgent.test.ts": [
+      "src/core/agents/legal/LegalCivicGeniusAgent.ts"
+    ],
+    "src/core/agents/legal/LegalCivicGeniusAgent.ts": [
+      "src/core/agents/specialists/GenericSpecialistAgent.ts",
+      "src/core/tools/legal/CaseLawSummaryTool.ts",
+      "src/core/tools/legal/ContractClauseExplainerTool.ts",
+      "src/core/tools/legal/JurisdictionRouterTool.ts",
+      "src/core/tools/legal/LegalRiskChecklistTool.ts",
+      "src/core/tools/legal/PlainEnglishLegalTool.ts",
+      "src/core/tools/legal/StatuteLookupTool.ts"
+    ],
+    "src/core/agents/legal/LegalGuardrails.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/legal/LegalIntentClassifier.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/legal/RightsAndObligationsAnalyzer.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/market/BacktestRunner.ts": [],
+    "src/core/agents/market/EquityResearchPlanner.ts": [],
+    "src/core/agents/market/MarketGeniusAgent.test.ts": [
+      "src/core/agents/market/MarketGeniusAgent.ts"
+    ],
+    "src/core/agents/market/MarketGeniusAgent.ts": [
+      "src/core/agents/market/BacktestRunner.ts",
+      "src/core/agents/market/EquityResearchPlanner.ts",
+      "src/core/agents/market/MarketGuardrails.ts",
+      "src/core/agents/market/MarketIntentClassifier.ts",
+      "src/core/agents/market/RiskAnalyzer.ts",
+      "src/core/agents/specialist/SpecialistAgent.ts",
+      "src/core/tools/market/FredMacroTool.ts",
+      "src/core/tools/market/PriceDataTool.ts",
+      "src/core/tools/market/SecEdgarTool.ts"
+    ],
+    "src/core/agents/market/MarketGuardrails.ts": [],
+    "src/core/agents/market/MarketIntentClassifier.ts": [
+      "src/core/agents/specialist/SpecialistAgent.ts"
+    ],
+    "src/core/agents/market/PortfolioAnalyzer.ts": [],
+    "src/core/agents/market/RiskAnalyzer.ts": [],
+    "src/core/agents/math/MathGeniusAgent.test.ts": [
+      "src/core/agents/math/MathGeniusAgent.ts"
+    ],
+    "src/core/agents/math/MathGeniusAgent.ts": [
+      "src/core/agents/math/MathProblemClassifier.ts",
+      "src/core/agents/math/MathProofPlanner.ts",
+      "src/core/agents/math/MathVerifier.ts",
+      "src/core/agents/specialist/SpecialistAgent.ts",
+      "src/core/tools/math/LeanProofTool.ts",
+      "src/core/tools/math/NumericSolverTool.ts",
+      "src/core/tools/math/SymPyTool.ts",
+      "src/core/tools/math/Z3SolverTool.ts"
+    ],
+    "src/core/agents/math/MathProblemClassifier.ts": [],
+    "src/core/agents/math/MathProofPlanner.ts": [],
+    "src/core/agents/math/MathVerifier.ts": [
+      "src/core/tools/math/SymPyTool.ts"
+    ],
+    "src/core/agents/MultiAgentOrchestrator.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/agents/music/BeatArrangementCoach.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/music/DawWorkflowTranslator.ts": [],
+    "src/core/agents/music/flstudio/FLAutomationCoach.ts": [
+      "src/core/tools/music/FLAutomationTool.ts"
+    ],
+    "src/core/agents/music/flstudio/FLExportAdvisor.ts": [
+      "src/core/tools/music/FLExportSettingsTool.ts"
+    ],
+    "src/core/agents/music/flstudio/FLMixerCoach.ts": [
+      "src/core/tools/music/FLMixerRoutingTool.ts"
+    ],
+    "src/core/agents/music/flstudio/FLPatternCoach.ts": [
+      "src/core/tools/music/FLStepSequencerPatternTool.ts"
+    ],
+    "src/core/agents/music/flstudio/FLPianoRollCoach.ts": [
+      "src/core/tools/music/FLPianoRollTool.ts"
+    ],
+    "src/core/agents/music/flstudio/FLSoundDesignCoach.ts": [
+      "src/core/tools/music/FLGrossBeatAdvisorTool.ts",
+      "src/core/tools/music/FLPluginChainTool.ts"
+    ],
+    "src/core/agents/music/flstudio/FLStudioGeniusAgent.ts": [
+      "src/core/tools/music/FLAutomationTool.ts",
+      "src/core/tools/music/FLEdisonWorkflowTool.ts",
+      "src/core/tools/music/FLExportSettingsTool.ts",
+      "src/core/tools/music/FLGrossBeatAdvisorTool.ts",
+      "src/core/tools/music/FLMixerRoutingTool.ts",
+      "src/core/tools/music/FLPianoRollTool.ts",
+      "src/core/tools/music/FLPluginChainTool.ts",
+      "src/core/tools/music/FLStepSequencerPatternTool.ts"
+    ],
+    "src/core/agents/music/GenreTimelineMapper.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/music/logic/LogicArrangementCoach.ts": [
+      "src/core/tools/music/LogicArrangementMarkerTool.ts"
+    ],
+    "src/core/agents/music/logic/LogicExportAdvisor.ts": [
+      "src/core/tools/music/LogicBounceExportTool.ts"
+    ],
+    "src/core/agents/music/logic/LogicMidiCoach.ts": [
+      "src/core/tools/music/LogicMidiWorkflowTool.ts"
+    ],
+    "src/core/agents/music/logic/LogicProGeniusAgent.ts": [
+      "src/core/tools/music/LogicAlchemyAdvisorTool.ts",
+      "src/core/tools/music/LogicArrangementMarkerTool.ts",
+      "src/core/tools/music/LogicBounceExportTool.ts",
+      "src/core/tools/music/LogicDrummerSessionPlayerTool.ts",
+      "src/core/tools/music/LogicMidiWorkflowTool.ts",
+      "src/core/tools/music/LogicProjectSetupTool.ts",
+      "src/core/tools/music/LogicStockPluginChainTool.ts",
+      "src/core/tools/music/LogicVocalChainTool.ts"
+    ],
+    "src/core/agents/music/logic/LogicSessionPlayerCoach.ts": [
+      "src/core/tools/music/LogicDrummerSessionPlayerTool.ts"
+    ],
+    "src/core/agents/music/logic/LogicStockPluginCoach.ts": [
+      "src/core/tools/music/LogicStockPluginChainTool.ts"
+    ],
+    "src/core/agents/music/logic/LogicVocalProductionCoach.ts": [
+      "src/core/tools/music/LogicVocalChainTool.ts"
+    ],
+    "src/core/agents/music/mix/FLStudioMixController.ts": [
+      "src/core/agents/music/mix/MixPlanner.ts",
+      "src/core/integrations/flstudio/FLStudioControlAgent.ts",
+      "src/core/mcp/McpPermissionGate.ts"
+    ],
+    "src/core/agents/music/mix/MasteringAdvisor.ts": [
+      "src/core/tools/audio/LoudnessMeterTool.ts",
+      "src/core/tools/music/MasteringChecklistTool.ts"
+    ],
+    "src/core/agents/music/mix/MixDiagnosticEngine.ts": [
+      "src/core/tools/audio/AudioAnalyzerTool.ts",
+      "src/core/tools/audio/DynamicRangeTool.ts",
+      "src/core/tools/audio/MaskingDetectorTool.ts",
+      "src/core/tools/audio/SpectrumAnalyzerTool.ts",
+      "src/core/tools/audio/StereoImageTool.ts"
+    ],
+    "src/core/agents/music/mix/MixGeniusAgent.test.ts": [
+      "src/core/agents/music/mix/MixGeniusAgent.ts"
+    ],
+    "src/core/agents/music/mix/MixGeniusAgent.ts": [
+      "src/core/agents/music/mix/FLStudioMixController.ts",
+      "src/core/agents/music/mix/MasteringAdvisor.ts",
+      "src/core/agents/music/mix/MixDiagnosticEngine.ts",
+      "src/core/agents/music/mix/MixIntentClassifier.ts",
+      "src/core/agents/music/mix/MixPassReport.ts",
+      "src/core/agents/music/mix/MixPlanner.ts",
+      "src/core/agents/music/mix/MixRevisionLoop.ts",
+      "src/core/agents/music/mix/ReferenceMixAnalyzer.ts",
+      "src/core/integrations/flstudio/FLStudioControlAgent.ts",
+      "src/core/tools/flstudio/FLTemplateInspectorTool.ts"
+    ],
+    "src/core/agents/music/mix/MixIntentClassifier.ts": [],
+    "src/core/agents/music/mix/MixPassReport.ts": [
+      "src/core/agents/music/mix/MixPlanner.ts"
+    ],
+    "src/core/agents/music/mix/MixPlanner.ts": [
+      "src/core/agents/music/mix/MixIntentClassifier.ts"
+    ],
+    "src/core/agents/music/mix/MixRevisionLoop.ts": [],
+    "src/core/agents/music/mix/ReferenceMixAnalyzer.ts": [
+      "src/core/tools/audio/ReferenceCompareTool.ts"
+    ],
+    "src/core/agents/music/MixMasteringAdvisor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/music/MusicCopyrightGuardrails.ts": [],
+    "src/core/agents/music/MusicIntentClassifier.ts": [],
+    "src/core/agents/music/MusicProductionGeniusAgent.test.ts": [
+      "src/core/agents/music/MusicProductionGeniusAgent.ts"
+    ],
+    "src/core/agents/music/MusicProductionGeniusAgent.ts": [
+      "src/core/agents/music/MusicCopyrightGuardrails.ts",
+      "src/core/agents/music/MusicWorkflowRouter.ts",
+      "src/core/agents/music/SongStructureCoach.ts",
+      "src/core/agents/music/flstudio/FLStudioGeniusAgent.ts",
+      "src/core/agents/music/logic/LogicProGeniusAgent.ts",
+      "src/core/agents/music/protools/ProToolsGeniusAgent.ts",
+      "src/core/agents/music/suno/SunoGeniusAgent.ts",
+      "src/core/agents/specialists/GenericSpecialistAgent.ts",
+      "src/core/tools/music/ArrangementCriticTool.ts",
+      "src/core/tools/music/ArrangementMapTool.ts",
+      "src/core/tools/music/BpmKeyDetectorTool.ts",
+      "src/core/tools/music/BpmTool.ts",
+      "src/core/tools/music/ChordProgressionTool.ts",
+      "src/core/tools/music/DawWorkflowMapTool.ts",
+      "src/core/tools/music/DrumPatternGeneratorTool.ts",
+      "src/core/tools/music/GenreInfluenceGraphTool.ts",
+      "src/core/tools/music/KeyScaleTool.ts",
+      "src/core/tools/music/LoudnessMeterTool.ts",
+      "src/core/tools/music/LoudnessTargetTool.ts",
+      "src/core/tools/music/MasteringChecklistTool.ts",
+      "src/core/tools/music/MixChecklistTool.ts",
+      "src/core/tools/music/MixDiagnosticTool.ts",
+      "src/core/tools/music/SampleClearanceAdvisorTool.ts",
+      "src/core/tools/music/VocalChainTool.ts"
+    ],
+    "src/core/agents/music/MusicProductionGeniusStack.test.ts": [
+      "src/core/agents/music/MusicProductionGeniusAgent.ts",
+      "src/core/agents/music/flstudio/FLStudioGeniusAgent.ts",
+      "src/core/agents/music/logic/LogicProGeniusAgent.ts",
+      "src/core/agents/music/protools/ProToolsGeniusAgent.ts",
+      "src/core/agents/music/suno/SunoGeniusAgent.ts"
+    ],
+    "src/core/agents/music/MusicPromptEngineer.ts": [],
+    "src/core/agents/music/MusicTheoryAdvisor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/music/MusicWorkflowRouter.ts": [
+      "src/core/agents/music/MusicIntentClassifier.ts"
+    ],
+    "src/core/agents/music/protools/ProToolsEditingCoach.ts": [
+      "src/core/tools/music/ProToolsEditWorkflowTool.ts"
+    ],
+    "src/core/agents/music/protools/ProToolsGeniusAgent.ts": [
+      "src/core/tools/music/ProToolsBusRoutingTool.ts",
+      "src/core/tools/music/ProToolsEditWorkflowTool.ts",
+      "src/core/tools/music/ProToolsExportStemTool.ts",
+      "src/core/tools/music/ProToolsPlaylistAdvisorTool.ts",
+      "src/core/tools/music/ProToolsPostAudioTool.ts",
+      "src/core/tools/music/ProToolsSessionSetupTool.ts",
+      "src/core/tools/music/ProToolsSignalFlowTool.ts",
+      "src/core/tools/music/ProToolsVocalCompTool.ts"
+    ],
+    "src/core/agents/music/protools/ProToolsMixPrepCoach.ts": [
+      "src/core/tools/music/ProToolsExportStemTool.ts"
+    ],
+    "src/core/agents/music/protools/ProToolsPostProductionCoach.ts": [
+      "src/core/tools/music/ProToolsPostAudioTool.ts"
+    ],
+    "src/core/agents/music/protools/ProToolsRecordingCoach.ts": [
+      "src/core/tools/music/ProToolsSessionSetupTool.ts",
+      "src/core/tools/music/ProToolsSignalFlowTool.ts"
+    ],
+    "src/core/agents/music/protools/ProToolsRoutingCoach.ts": [
+      "src/core/tools/music/ProToolsBusRoutingTool.ts"
+    ],
+    "src/core/agents/music/protools/ProToolsVocalCompCoach.ts": [
+      "src/core/tools/music/ProToolsPlaylistAdvisorTool.ts",
+      "src/core/tools/music/ProToolsVocalCompTool.ts"
+    ],
+    "src/core/agents/music/SampleWorkflowAdvisor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/music/SongStructureCoach.ts": [],
+    "src/core/agents/music/suno/SunoGeniusAgent.ts": [
+      "src/core/agents/music/MusicCopyrightGuardrails.ts",
+      "src/core/agents/music/suno/SunoPromptBuilder.ts",
+      "src/core/agents/music/suno/SunoRevisionCoach.ts",
+      "src/core/agents/music/suno/SunoRightsAdvisor.ts",
+      "src/core/agents/music/suno/SunoSongStructurePlanner.ts",
+      "src/core/agents/music/suno/SunoStyleTagAdvisor.ts",
+      "src/core/tools/music/SunoHookTool.ts"
+    ],
+    "src/core/agents/music/suno/SunoPromptBuilder.ts": [
+      "src/core/tools/music/SunoPromptTool.ts"
+    ],
+    "src/core/agents/music/suno/SunoRevisionCoach.ts": [],
+    "src/core/agents/music/suno/SunoRightsAdvisor.ts": [],
+    "src/core/agents/music/suno/SunoSongStructurePlanner.ts": [],
+    "src/core/agents/music/suno/SunoStyleTagAdvisor.ts": [],
+    "src/core/agents/PatchGenerator.test.ts": [
+      "src/core/agents/PatchGenerator.ts"
+    ],
+    "src/core/agents/PatchGenerator.ts": [],
+    "src/core/agents/philosophy/ArgumentMapper.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/philosophy/DebateCoach.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/philosophy/EthicsAdvisor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/philosophy/FallacyDetector.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/philosophy/PhilosophyGeniusAgent.test.ts": [
+      "src/core/agents/philosophy/PhilosophyGeniusAgent.ts"
+    ],
+    "src/core/agents/philosophy/PhilosophyGeniusAgent.ts": [
+      "src/core/agents/specialists/GenericSpecialistAgent.ts",
+      "src/core/tools/philosophy/ArgumentMapTool.ts",
+      "src/core/tools/philosophy/CounterargumentTool.ts",
+      "src/core/tools/philosophy/EthicalFrameworkTool.ts",
+      "src/core/tools/philosophy/FallacyDetectionTool.ts",
+      "src/core/tools/philosophy/PhilosophyTimelineTool.ts",
+      "src/core/tools/philosophy/SocraticQuestionTool.ts"
+    ],
+    "src/core/agents/philosophy/PhilosophyTimelineTool.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/ReasoningController.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/agents/science/DiscoveryGraph.ts": [],
+    "src/core/agents/science/InventionTimelineBuilder.ts": [
+      "src/core/tools/science/InventionTimelineTool.ts"
+    ],
+    "src/core/agents/science/PatentRetriever.ts": [
+      "src/core/tools/science/USPTOPatentTool.ts"
+    ],
+    "src/core/agents/science/ScienceIntentClassifier.ts": [],
+    "src/core/agents/science/ScienceInventionGeniusAgent.ts": [
+      "src/core/agents/science/DiscoveryGraph.ts",
+      "src/core/agents/science/InventionTimelineBuilder.ts",
+      "src/core/agents/science/PatentRetriever.ts",
+      "src/core/agents/science/ScienceIntentClassifier.ts",
+      "src/core/agents/science/ScientificPaperRetriever.ts",
+      "src/core/agents/science/TheoryEvolutionAnalyzer.ts",
+      "src/core/chrono/ChronoKnowledgeEngine.ts",
+      "src/core/tools/science/ScientificConsensusTool.ts"
+    ],
+    "src/core/agents/science/ScientificPaperRetriever.ts": [
+      "src/core/tools/science/OpenAlexTool.ts"
+    ],
+    "src/core/agents/science/TheoryEvolutionAnalyzer.ts": [],
+    "src/core/agents/security/DependencyRiskAdvisor.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/security/PrivacyRiskAnalyzer.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/security/SecureCodeReviewer.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/security/SecurityGeniusAgent.test.ts": [
+      "src/core/agents/security/SecurityGeniusAgent.ts"
+    ],
+    "src/core/agents/security/SecurityGeniusAgent.ts": [
+      "src/core/agents/specialists/GenericSpecialistAgent.ts",
+      "src/core/tools/security/AuthFlowReviewTool.ts",
+      "src/core/tools/security/DependencyAuditTool.ts",
+      "src/core/tools/security/HeadersAuditTool.ts",
+      "src/core/tools/security/PrivacyChecklistTool.ts",
+      "src/core/tools/security/SecretsScanTool.ts",
+      "src/core/tools/security/SecureCodeScanTool.ts",
+      "src/core/tools/security/ThreatModelTool.ts"
+    ],
+    "src/core/agents/security/SecurityGuardrails.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/security/ThreatModeler.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/sixsigma/SixSigmaBlackBeltAgent.test.ts": [
+      "src/core/agents/sixsigma/SixSigmaBlackBeltAgent.ts"
+    ],
+    "src/core/agents/sixsigma/SixSigmaBlackBeltAgent.ts": [
+      "src/core/agents/sixsigma/SixSigmaCalculatorRouter.ts",
+      "src/core/agents/sixsigma/SixSigmaCertificationCoach.ts",
+      "src/core/agents/sixsigma/SixSigmaComplianceAdvisor.ts",
+      "src/core/agents/sixsigma/SixSigmaExportAgent.ts",
+      "src/core/agents/sixsigma/SixSigmaIndustryAdvisor.ts",
+      "src/core/agents/sixsigma/SixSigmaIntentClassifier.ts",
+      "src/core/agents/sixsigma/SixSigmaLearningCoach.ts",
+      "src/core/agents/sixsigma/SixSigmaProjectCoach.ts",
+      "src/core/agents/sixsigma/SixSigmaSimulationAgent.ts",
+      "src/core/agents/specialist/SpecialistAgent.ts"
+    ],
+    "src/core/agents/sixsigma/SixSigmaCalculatorRouter.ts": [
+      "src/core/tools/sixsigma/AnovaTool.ts",
+      "src/core/tools/sixsigma/ControlChartConstantsTool.ts",
+      "src/core/tools/sixsigma/CopqTool.ts",
+      "src/core/tools/sixsigma/CpkCalculatorTool.ts",
+      "src/core/tools/sixsigma/GageRRTool.ts",
+      "src/core/tools/sixsigma/RegressionTool.ts",
+      "src/core/tools/sixsigma/SampleSizeTool.ts",
+      "src/core/tools/sixsigma/SigmaDpmoTool.ts"
+    ],
+    "src/core/agents/sixsigma/SixSigmaCertificationCoach.ts": [
+      "src/core/agents/sixsigma/SixSigmaLearningCoach.ts"
+    ],
+    "src/core/agents/sixsigma/SixSigmaComplianceAdvisor.ts": [],
+    "src/core/agents/sixsigma/SixSigmaExportAgent.ts": [
+      "src/core/tools/sixsigma/StatSoftwareExportTool.ts"
+    ],
+    "src/core/agents/sixsigma/SixSigmaIndustryAdvisor.ts": [],
+    "src/core/agents/sixsigma/SixSigmaIntentClassifier.ts": [
+      "src/core/agents/specialist/SpecialistAgent.ts"
+    ],
+    "src/core/agents/sixsigma/SixSigmaLearningCoach.ts": [
+      "src/core/learning/SpacedRepetitionService.ts"
+    ],
+    "src/core/agents/sixsigma/SixSigmaProjectCoach.ts": [],
+    "src/core/agents/sixsigma/SixSigmaSimulationAgent.ts": [
+      "src/core/tools/sixsigma/ControlChartBuilderTool.ts",
+      "src/core/tools/sixsigma/DoePlannerTool.ts",
+      "src/core/tools/sixsigma/ProcessMapAnalyzerTool.ts"
+    ],
+    "src/core/agents/specialist/SpecialistAgent.ts": [],
+    "src/core/agents/specialists/GenericSpecialistAgent.test.ts": [
+      "src/core/agents/specialists/GenericSpecialistAgent.ts"
+    ],
+    "src/core/agents/specialists/GenericSpecialistAgent.ts": [
+      "src/core/rag/RAGDocumentStore.ts"
+    ],
+    "src/core/agents/specialists/WorkflowComponent.test.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/specialists/WorkflowComponent.ts": [],
+    "src/core/agents/story/CharacterDesigner.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/story/DialogueCoach.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/story/LoreContinuityChecker.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/story/PlotArchitect.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/story/StoryGeniusAgent.test.ts": [
+      "src/core/agents/story/StoryGeniusAgent.ts"
+    ],
+    "src/core/agents/story/StoryGeniusAgent.ts": [
+      "src/core/agents/specialists/GenericSpecialistAgent.ts",
+      "src/core/tools/story/CharacterArcTool.ts",
+      "src/core/tools/story/ContinuityCheckerTool.ts",
+      "src/core/tools/story/DialogueToneTool.ts",
+      "src/core/tools/story/GenreTropeAnalyzerTool.ts",
+      "src/core/tools/story/LoreBibleTool.ts",
+      "src/core/tools/story/ScenePacingTool.ts",
+      "src/core/tools/story/StoryStructureTool.ts"
+    ],
+    "src/core/agents/story/WorldbuildingEngine.ts": [
+      "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/VerificationRunner.test.ts": [
+      "src/core/agents/VerificationRunner.ts"
+    ],
+    "src/core/agents/VerificationRunner.ts": [
+      "src/core/tools/CommandRunner.ts"
+    ],
+    "src/core/analytics/AnalyticsService.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/audio/AudioLibraryService.test.ts": [
+      "src/core/audio/AudioLibraryService.ts"
+    ],
+    "src/core/audio/AudioLibraryService.ts": [],
+    "src/core/audio/AudioMetadataService.ts": [
+      "src/core/audio/AudioLibraryService.ts"
+    ],
+    "src/core/audit/AuditLogger.ts": [
+      "src/core/database/Database.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/auth/ApiKeyService.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/auth/AuthService.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/auth/UserService.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/automation/AutoDrive.ts": [
+      "src/core/agents/MultiAgentOrchestrator.ts",
+      "src/core/agents/ReasoningController.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/browser/BrowserAgent.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/chrono/ChronoDate.ts": [],
+    "src/core/chrono/ChronoKnowledgeEngine.test.ts": [
+      "src/core/chrono/ChronoKnowledgeEngine.ts"
+    ],
+    "src/core/chrono/ChronoKnowledgeEngine.ts": [
+      "src/core/chrono/ChronoDate.ts",
+      "src/core/chrono/EntityGraphStore.ts",
+      "src/core/chrono/HistoricalUncertainty.ts",
+      "src/core/chrono/SourceAuthorityRanker.ts",
+      "src/core/chrono/TimeRangeParser.ts",
+      "src/core/chrono/TimelineBuilder.ts"
+    ],
+    "src/core/chrono/ClaimVerifier.ts": [
+      "src/core/chrono/ChronoDate.ts",
+      "src/core/chrono/SourceAuthorityRanker.ts"
+    ],
+    "src/core/chrono/EntityGraphStore.ts": [
+      "src/core/chrono/ChronoDate.ts"
+    ],
+    "src/core/chrono/HistoricalUncertainty.ts": [
+      "src/core/chrono/ChronoDate.ts"
+    ],
+    "src/core/chrono/SourceAuthorityRanker.ts": [
+      "src/core/chrono/ChronoDate.ts"
+    ],
+    "src/core/chrono/TimelineBuilder.ts": [
+      "src/core/chrono/ChronoDate.ts"
+    ],
+    "src/core/chrono/TimeRangeParser.test.ts": [
+      "src/core/chrono/TimeRangeParser.ts"
+    ],
+    "src/core/chrono/TimeRangeParser.ts": [
+      "src/core/chrono/ChronoDate.ts"
+    ],
+    "src/core/config/APIKeyManager.test.ts": [
+      "src/core/config/APIKeyManager.ts"
+    ],
+    "src/core/config/APIKeyManager.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/config/ConfigValidator.test.ts": [
+      "src/core/config/ConfigValidator.ts"
+    ],
+    "src/core/config/ConfigValidator.ts": [
+      "src/core/config/EnvironmentDefinitions.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/config/EnvironmentDefinitions.ts": [],
+    "src/core/config/ProfileManager.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/contracts/ContractGate.ts": [
+      "src/core/observability/logger.ts",
+      "src/types/contract.ts"
+    ],
+    "src/core/contracts/UniversalContract.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/conversation/ConversationManager.test.ts": [
+      "src/core/conversation/ConversationManager.ts"
+    ],
+    "src/core/conversation/ConversationManager.ts": [
+      "src/core/database/Database.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/creative/CreativeCapabilityDetector.ts": [],
+    "src/core/creative/CreativeCommandRouter.test.ts": [
+      "src/core/creative/CreativeCommandRouter.ts"
+    ],
+    "src/core/creative/CreativeCommandRouter.ts": [
+      "src/core/creative/CreativeTypes.ts"
+    ],
+    "src/core/creative/CreativePrivacyManager.ts": [
+      "src/core/creative/CreativeProjectStore.ts"
+    ],
+    "src/core/creative/CreativeProjectStore.ts": [
+      "src/core/creative/CreativeTypes.ts"
+    ],
+    "src/core/creative/CreativeQualityReviewer.test.ts": [
+      "src/core/creative/CreativeQualityReviewer.ts"
+    ],
+    "src/core/creative/CreativeQualityReviewer.ts": [
+      "src/core/creative/CreativeTypes.ts"
+    ],
+    "src/core/creative/CreativeStylePolicy.test.ts": [
+      "src/core/creative/CreativeStylePolicy.ts"
+    ],
+    "src/core/creative/CreativeStylePolicy.ts": [],
+    "src/core/creative/CreativeTypes.ts": [
+      "src/core/creative/CreativeCapabilityDetector.ts",
+      "src/core/creative/CreativeQualityReviewer.ts"
+    ],
+    "src/core/creative/CreativeWorkspace.test.ts": [
+      "src/core/creative/CreativeCapabilityDetector.ts",
+      "src/core/creative/CreativePrivacyManager.ts",
+      "src/core/creative/CreativeProjectStore.ts",
+      "src/core/creative/PromptPackLibrary.ts",
+      "src/core/creative/RoleplaySessionEngine.ts",
+      "src/core/creative/StoryBibleStore.ts"
+    ],
+    "src/core/creative/CreativeWritingAgent.test.ts": [
+      "src/core/creative/CreativeWritingAgent.ts"
+    ],
+    "src/core/creative/CreativeWritingAgent.ts": [
+      "src/core/creative/CreativeCapabilityDetector.ts",
+      "src/core/creative/CreativeCommandRouter.ts",
+      "src/core/creative/CreativeQualityReviewer.ts",
+      "src/core/creative/CreativeStylePolicy.ts",
+      "src/core/creative/CreativeTypes.ts"
+    ],
+    "src/core/creative/PromptPackLibrary.ts": [],
+    "src/core/creative/RoleplaySessionEngine.ts": [
+      "src/core/creative/CreativeTypes.ts"
+    ],
+    "src/core/creative/StoryBibleStore.ts": [
+      "src/core/creative/CreativeTypes.ts"
+    ],
+    "src/core/database/Database.test.ts": [
+      "src/core/database/Database.ts"
+    ],
+    "src/core/database/Database.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/database/ExpansionDatabase.sec.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/database/ExpansionDatabase.ts"
+    ],
+    "src/core/database/ExpansionDatabase.ts": [
+      "src/core/database/Database.ts",
+      "src/core/database/ExpansionMigrations.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/database/ExpansionMigrations.ts": [
+      "src/core/database/Database.ts"
+    ],
+    "src/core/database/SafeDatabaseQuestionAgent.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/database/SafeDatabaseQuestionAgent.ts"
+    ],
+    "src/core/database/SafeDatabaseQuestionAgent.ts": [
+      "src/core/database/Database.ts"
+    ],
+    "src/core/debug/DebugMode.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/documents/DocumentMetadata.ts": [
+      "src/core/database/Database.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/education/EducationService.ts": [
+      "src/core/database/Database.ts",
+      "src/core/database/ExpansionDatabase.ts"
+    ],
+    "src/core/embeddings/EmbeddingService.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/entity/EntityLinkingService.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/entity/EntityLinkingService.ts"
+    ],
+    "src/core/entity/EntityLinkingService.ts": [
+      "src/core/database/Database.ts"
+    ],
+    "src/core/evaluation/EvalHarness.test.ts": [
+      "src/core/evaluation/EvalHarness.ts"
+    ],
+    "src/core/evaluation/EvalHarness.ts": [],
+    "src/core/feedback/FeedbackService.ts": [
+      "src/core/database/Database.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/files/FileExplorerService.test.ts": [
+      "src/core/files/FileExplorerService.ts"
+    ],
+    "src/core/files/FileExplorerService.ts": [],
+    "src/core/gis/__tests__/GISPrivacy.test.ts": [
+      "src/core/gis/GISPrivacy.ts"
+    ],
+    "src/core/gis/__tests__/GISService.test.ts": [
+      "src/core/gis/GISProviderRegistry.ts",
+      "src/core/gis/GISService.ts"
+    ],
+    "src/core/gis/__tests__/SpatialAnalysisService.test.ts": [
+      "src/core/gis/SpatialAnalysisService.ts"
+    ],
+    "src/core/gis/GeoJSONValidator.ts": [
+      "src/types/gis.ts"
+    ],
+    "src/core/gis/GISCache.ts": [],
+    "src/core/gis/GISPrivacy.ts": [],
+    "src/core/gis/GISProviderRegistry.ts": [
+      "src/core/gis/providers/ArcGISFeatureServiceProvider.ts",
+      "src/core/gis/providers/CensusGeocoder.ts",
+      "src/core/gis/providers/MockGISProviders.ts",
+      "src/core/gis/providers/OSRMRoutingProvider.ts",
+      "src/types/gis.ts"
+    ],
+    "src/core/gis/GISService.ts": [
+      "src/core/gis/GISCache.ts",
+      "src/core/gis/GISPrivacy.ts",
+      "src/core/gis/GISProviderRegistry.ts",
+      "src/core/gis/LayerImportService.ts",
+      "src/core/gis/MapSessionService.ts",
+      "src/core/gis/SpatialAnalysisService.ts",
+      "src/types/gis.ts"
+    ],
+    "src/core/gis/LayerImportService.ts": [
+      "src/core/gis/GeoJSONValidator.ts",
+      "src/core/gis/SpatialAnalysisService.ts",
+      "src/types/gis.ts"
+    ],
+    "src/core/gis/MapSessionService.ts": [
+      "src/types/gis.ts"
+    ],
+    "src/core/gis/providers/ArcGISFeatureServiceProvider.ts": [
+      "src/core/gis/GISProviderRegistry.ts",
+      "src/core/gis/SpatialAnalysisService.ts",
+      "src/types/gis.ts"
+    ],
+    "src/core/gis/providers/CensusGeocoder.ts": [
+      "src/core/gis/GISProviderRegistry.ts",
+      "src/types/gis.ts"
+    ],
+    "src/core/gis/providers/MockGISProviders.ts": [
+      "src/core/gis/GISProviderRegistry.ts",
+      "src/core/gis/SpatialAnalysisService.ts",
+      "src/types/gis.ts"
+    ],
+    "src/core/gis/providers/OSRMRoutingProvider.ts": [
+      "src/core/gis/GISProviderRegistry.ts",
+      "src/types/gis.ts"
+    ],
+    "src/core/gis/SpatialAnalysisService.ts": [
+      "src/types/gis.ts"
+    ],
+    "src/core/governance/GovernanceEvidenceService.test.ts": [
+      "src/core/governance/GovernanceEvidenceService.ts"
+    ],
+    "src/core/governance/GovernanceEvidenceService.ts": [
+      "src/core/database/Database.ts"
+    ],
+    "src/core/graph/KnowledgeGraphIndexer.test.ts": [
+      "src/core/graph/KnowledgeGraphIndexer.ts"
+    ],
+    "src/core/graph/KnowledgeGraphIndexer.ts": [
+      "src/core/agents/CodeIndexer.ts",
+      "src/core/database/Database.ts",
+      "src/core/entity/EntityLinkingService.ts",
+      "src/core/rag/RAGDocumentStore.ts"
+    ],
+    "src/core/importers/GitHubRepoKnowledgeImporter.test.ts": [
+      "src/core/importers/GitHubRepoKnowledgeImporter.ts"
+    ],
+    "src/core/importers/GitHubRepoKnowledgeImporter.ts": [
+      "src/core/rag/DocumentManager.ts",
+      "src/core/wiki/LocalKnowledgeWiki.ts"
+    ],
+    "src/core/index.ts": [
+      "src/core/agents/AgentTeam.ts",
+      "src/core/agents/MultiAgentOrchestrator.ts",
+      "src/core/agents/ReasoningController.ts",
+      "src/core/analytics/AnalyticsService.ts",
+      "src/core/automation/AutoDrive.ts",
+      "src/core/browser/BrowserAgent.ts",
+      "src/core/config/APIKeyManager.ts",
+      "src/core/config/ProfileManager.ts",
+      "src/core/contracts/UniversalContract.ts",
+      "src/core/knowledge/BaseKnowledgeSource.ts",
+      "src/core/knowledge/CodingKnowledgeBase.ts",
+      "src/core/knowledge/KnowledgeExtractor.ts",
+      "src/core/knowledge/QueryEnhancer.ts",
+      "src/core/learning/FeedbackCollector.ts",
+      "src/core/learning/KnowledgeLearner.ts",
+      "src/core/learning/ModelUpdater.ts",
+      "src/core/memory/GraphMemory.ts",
+      "src/core/memory/ProjectContext.ts",
+      "src/core/multimodal/ImageProcessor.ts",
+      "src/core/multimodal/VideoProcessor.ts",
+      "src/core/notifications/TwilioAdapter.ts",
+      "src/core/observability/logger.ts",
+      "src/core/optimization/ToonSerializer.ts",
+      "src/core/personalization/UserProfiler.ts",
+      "src/core/providers/DeviceAdapter.ts",
+      "src/core/providers/UniversalLLM.ts",
+      "src/core/quality/AutoReview.ts",
+      "src/core/rag/AudioRAG.ts",
+      "src/core/rag/CorrectiveRetriever.ts",
+      "src/core/rag/RAGRouter.ts",
+      "src/core/rag/TrustRAG.ts",
+      "src/core/rag/VideoRAG.ts",
+      "src/core/safety/ApprovalPolicy.ts",
+      "src/core/safety/SandboxController.ts",
+      "src/core/scheduler/TaskScheduler.ts",
+      "src/core/tools/CodingKnowledgeTool.ts",
+      "src/core/tools/WebSearcher.ts",
+      "src/core/ui/ThinkingUI.ts",
+      "src/core/voice/VoiceAgent.ts"
+    ],
+    "src/core/initialization/ServiceInitializer.test.ts": [
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "src/core/initialization/ServiceInitializer.ts": [
+      "src/core/agents/CodingAgent.ts",
+      "src/core/agents/VerificationRunner.ts",
+      "src/core/agents/business/BusinessGeniusAgent.ts",
+      "src/core/agents/culture/PopCultureGeniusAgent.ts",
+      "src/core/agents/engineering/EngineeringGeniusAgent.ts",
+      "src/core/agents/gamedev/GameDevGeniusAgent.ts",
+      "src/core/agents/gaming/GamingGeniusAgent.ts",
+      "src/core/agents/geography/GeoCultureGeniusAgent.ts",
+      "src/core/agents/health/HealthGeniusAgent.ts",
+      "src/core/agents/history/HistoryGeniusAgent.ts",
+      "src/core/agents/language/LanguageGeniusAgent.ts",
+      "src/core/agents/legal/LegalCivicGeniusAgent.ts",
+      "src/core/agents/market/MarketGeniusAgent.ts",
+      "src/core/agents/math/MathGeniusAgent.ts",
+      "src/core/agents/music/MusicProductionGeniusAgent.ts",
+      "src/core/agents/music/flstudio/FLStudioGeniusAgent.ts",
+      "src/core/agents/music/logic/LogicProGeniusAgent.ts",
+      "src/core/agents/music/mix/MixGeniusAgent.ts",
+      "src/core/agents/music/protools/ProToolsGeniusAgent.ts",
+      "src/core/agents/music/suno/SunoGeniusAgent.ts",
+      "src/core/agents/philosophy/PhilosophyGeniusAgent.ts",
+      "src/core/agents/science/ScienceInventionGeniusAgent.ts",
+      "src/core/agents/security/SecurityGeniusAgent.ts",
+      "src/core/agents/sixsigma/SixSigmaBlackBeltAgent.ts",
+      "src/core/agents/story/StoryGeniusAgent.ts",
+      "src/core/analytics/AnalyticsService.ts",
+      "src/core/chrono/ChronoKnowledgeEngine.ts",
+      "src/core/conversation/ConversationManager.ts",
+      "src/core/creative/CreativeWritingAgent.ts",
+      "src/core/database/Database.ts",
+      "src/core/database/SafeDatabaseQuestionAgent.ts",
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/entity/EntityLinkingService.ts",
+      "src/core/governance/GovernanceEvidenceService.ts",
+      "src/core/graph/KnowledgeGraphIndexer.ts",
+      "src/core/importers/GitHubRepoKnowledgeImporter.ts",
+      "src/core/integrations/flstudio/FLStudioCommandPlanner.ts",
+      "src/core/integrations/flstudio/FLStudioControlAgent.ts",
+      "src/core/integrations/flstudio/FLStudioMcpClient.ts",
+      "src/core/integrations/flstudio/FLStudioSafetyGate.ts",
+      "src/core/integrations/flstudio/FLStudioSessionState.ts",
+      "src/core/knowledge/CodingKnowledgeBase.ts",
+      "src/core/learning/KnowledgeLearner.ts",
+      "src/core/mcp/McpAuditLogger.ts",
+      "src/core/mcp/McpClientService.ts",
+      "src/core/memory/PrivateMemoryStore.ts",
+      "src/core/observability/logger.ts",
+      "src/core/orchestrator/EnhancedOrchestrator.ts",
+      "src/core/providers/EnsembleAdapter.ts",
+      "src/core/providers/HuggingFaceAdapter.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/providers/ModelRouter.ts",
+      "src/core/providers/OllamaAdapter.ts",
+      "src/core/providers/VisionAdapter.ts",
+      "src/core/rag/DocumentManager.ts",
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/core/rag/RAGService.ts",
+      "src/core/safety/SafetyPipeline.ts",
+      "src/core/tools/CodeExecutor.ts",
+      "src/core/tools/CodingKnowledgeTool.ts",
+      "src/core/tools/CommandRunner.ts",
+      "src/core/tools/FunctionCaller.ts",
+      "src/core/tools/PersonalKnowledgeTool.ts",
+      "src/core/tools/RepoTools.ts",
+      "src/core/tools/ToolRegistry.ts",
+      "src/core/tools/WebSearcher.ts",
+      "src/core/tools/music/createMusicTools.ts",
+      "src/core/tools/sixsigma/AnovaTool.ts",
+      "src/core/tools/sixsigma/ControlChartConstantsTool.ts",
+      "src/core/tools/sixsigma/CopqTool.ts",
+      "src/core/tools/sixsigma/CpkCalculatorTool.ts",
+      "src/core/tools/sixsigma/GageRRTool.ts",
+      "src/core/tools/sixsigma/RegressionTool.ts",
+      "src/core/tools/sixsigma/SampleSizeTool.ts",
+      "src/core/tools/sixsigma/SigmaDpmoTool.ts",
+      "src/core/wiki/LocalKnowledgeWiki.ts"
+    ],
+    "src/core/integrations/flstudio/FLStudioCommandPlanner.test.ts": [
+      "src/core/integrations/flstudio/FLStudioCommandPlanner.ts"
+    ],
+    "src/core/integrations/flstudio/FLStudioCommandPlanner.ts": [],
+    "src/core/integrations/flstudio/FLStudioControlAgent.test.ts": [
+      "src/core/integrations/flstudio/FLStudioControlAgent.ts"
+    ],
+    "src/core/integrations/flstudio/FLStudioControlAgent.ts": [
+      "src/core/integrations/flstudio/FLStudioCommandPlanner.ts",
+      "src/core/integrations/flstudio/FLStudioMcpClient.ts",
+      "src/core/integrations/flstudio/FLStudioSafetyGate.ts",
+      "src/core/integrations/flstudio/FLStudioSessionState.ts",
+      "src/core/mcp/McpAuditLogger.ts",
+      "src/core/mcp/McpPermissionGate.ts"
+    ],
+    "src/core/integrations/flstudio/FLStudioMcpBridge.integration.test.ts": [
+      "src/core/integrations/flstudio/FLStudioControlAgent.ts"
+    ],
+    "src/core/integrations/flstudio/FLStudioMcpClient.ts": [
+      "src/core/mcp/McpClientService.ts"
+    ],
+    "src/core/integrations/flstudio/FLStudioSafetyGate.ts": [
+      "src/core/mcp/McpPermissionGate.ts"
+    ],
+    "src/core/integrations/flstudio/FLStudioSessionState.ts": [
+      "src/core/mcp/McpPermissionGate.ts"
+    ],
+    "src/core/knowledge-os/KnowledgeOsChatAgent.test.ts": [
+      "src/core/knowledge-os/KnowledgeOsChatAgent.ts"
+    ],
+    "src/core/knowledge-os/KnowledgeOsChatAgent.ts": [],
+    "src/core/knowledge/AnatomySource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/AstrologySource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/AstronomySource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/BackendDesignSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/BaseKnowledgeSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/BookSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/BotanySource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/CNASource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/CodingKnowledgeBase.ts": [
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/knowledge/KnowledgeExtractor.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/DatasetLoader.ts": [
+      "src/core/database/Database.ts",
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/observability/logger.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/knowledge/DocumentationSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/DSPSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/EntertainmentSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/FinancialAdviceSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/GardeningSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/GitHubSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/index.ts": [
+      "src/core/knowledge/AnatomySource.ts",
+      "src/core/knowledge/AstrologySource.ts",
+      "src/core/knowledge/AstronomySource.ts",
+      "src/core/knowledge/BackendDesignSource.ts",
+      "src/core/knowledge/BaseKnowledgeSource.ts",
+      "src/core/knowledge/BookSource.ts",
+      "src/core/knowledge/BotanySource.ts",
+      "src/core/knowledge/CNASource.ts",
+      "src/core/knowledge/DSPSource.ts",
+      "src/core/knowledge/DocumentationSource.ts",
+      "src/core/knowledge/EntertainmentSource.ts",
+      "src/core/knowledge/FinancialAdviceSource.ts",
+      "src/core/knowledge/GardeningSource.ts",
+      "src/core/knowledge/GitHubSource.ts",
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/knowledge/KnowledgeSourceHelper.ts",
+      "src/core/knowledge/LLMProgrammingSource.ts",
+      "src/core/knowledge/LibraryOfCongressSource.ts",
+      "src/core/knowledge/MarijuanaGrowingSource.ts",
+      "src/core/knowledge/MediumSource.ts",
+      "src/core/knowledge/MentalHealthSource.ts",
+      "src/core/knowledge/MusicTheorySource.ts",
+      "src/core/knowledge/NewsSource.ts",
+      "src/core/knowledge/PersonalResearchSource.ts",
+      "src/core/knowledge/PotterySource.ts",
+      "src/core/knowledge/ProjectGutenbergSource.ts",
+      "src/core/knowledge/QueryEnhancer.ts",
+      "src/core/knowledge/QuoraSource.ts",
+      "src/core/knowledge/RNSource.ts",
+      "src/core/knowledge/RedditSource.ts",
+      "src/core/knowledge/ReligionSource.ts",
+      "src/core/knowledge/ScientificPapersSource.ts",
+      "src/core/knowledge/SongwritingStyleSource.ts",
+      "src/core/knowledge/SpecializedTopicSource.ts",
+      "src/core/knowledge/StackOverflowSource.ts",
+      "src/core/knowledge/UIDesignSource.ts",
+      "src/core/knowledge/UniversitySource.ts",
+      "src/core/knowledge/WebDesignSource.ts",
+      "src/core/knowledge/WikipediaSource.ts",
+      "src/core/knowledge/YouTubeSource.ts"
+    ],
+    "src/core/knowledge/KnowledgeExtractor.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/KnowledgeFusion.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/knowledge/KnowledgeGraph.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/KnowledgeMiss.ts": [],
+    "src/core/knowledge/KnowledgeMissHandler.test.ts": [
+      "src/core/knowledge/KnowledgeMissHandler.ts"
+    ],
+    "src/core/knowledge/KnowledgeMissHandler.ts": [
+      "src/core/knowledge/KnowledgeMiss.ts"
+    ],
+    "src/core/knowledge/KnowledgeOnlineFlowService.test.ts": [
+      "src/core/knowledge/KnowledgeOnlineFlowService.ts"
+    ],
+    "src/core/knowledge/KnowledgeOnlineFlowService.ts": [
+      "src/core/knowledge/KnowledgeMissHandler.ts",
+      "src/core/knowledge/OnlineKnowledgeIngestionService.ts"
+    ],
+    "src/core/knowledge/KnowledgeSource.ts": [],
+    "src/core/knowledge/KnowledgeSourceHelper.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/LibraryOfCongressSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/LLMProgrammingSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/LocalKnowledgeAnswerer.test.ts": [
+      "src/core/knowledge/LocalKnowledgeAnswerer.ts"
+    ],
+    "src/core/knowledge/LocalKnowledgeAnswerer.ts": [
+      "src/core/knowledge/KnowledgeMiss.ts",
+      "src/core/knowledge/KnowledgeMissHandler.ts",
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/knowledge/MarijuanaGrowingSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/MediumSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/MentalHealthSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/MusicTheorySource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/NewsSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/OnlineKnowledgeIngestionService.test.ts": [
+      "src/core/knowledge/OnlineKnowledgeIngestionService.ts"
+    ],
+    "src/core/knowledge/OnlineKnowledgeIngestionService.ts": [],
+    "src/core/knowledge/PersonalResearchSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/PotterySource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/ProjectGutenbergSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/QueryEnhancer.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/knowledge/QuoraSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/ReasoningEngine.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/knowledge/RedditSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/ReligionSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/ResultRanker.ts": [
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/RNSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/ScientificPapersSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/SmartKnowledgeSource.ts": [
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/knowledge/SmartSourceFactory.ts": [
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/knowledge/SmartSourceWrapper.ts",
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/knowledge/SmartSourceWrapper.ts": [
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/knowledge/SmartKnowledgeSource.ts",
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/knowledge/SongwritingStyleSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/SpecializedTopicSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/StackOverflowSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/TelegramSource.ts": [
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/observability/logger.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/knowledge/UIDesignSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/UniversitySource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/WebDesignSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/WebScraperSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/WikipediaSource.ts": [
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/knowledge/QueryEnhancer.ts",
+      "src/core/knowledge/ResultRanker.ts",
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/knowledge/YouTubeSource.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/learning/ABTester.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/learning/FeedbackCollector.ts": [
+      "src/core/analytics/AnalyticsService.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/learning/KnowledgeLearner.ts": [
+      "src/core/knowledge/CodingKnowledgeBase.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/learning/ModelUpdater.ts": [
+      "src/core/learning/FeedbackCollector.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/learning/PerformanceMonitor.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/learning/SpacedRepetitionService.ts": [],
+    "src/core/mcp/McpAuditLogger.ts": [],
+    "src/core/mcp/McpClientService.ts": [
+      "src/core/mcp/McpToolRegistry.ts"
+    ],
+    "src/core/mcp/McpPermissionGate.ts": [],
+    "src/core/mcp/McpToolRegistry.ts": [],
+    "src/core/memory/ForgettingMechanism.ts": [
+      "src/core/observability/logger.ts",
+      "src/types/memory.ts"
+    ],
+    "src/core/memory/GraphMemory.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/memory/HierarchicalMemory.ts": [
+      "src/core/memory/MemoryService.ts",
+      "src/core/observability/logger.ts",
+      "src/types/memory.ts"
+    ],
+    "src/core/memory/MemoryConsolidator.ts": [
+      "src/core/memory/HierarchicalMemory.ts",
+      "src/core/memory/MemoryService.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/memory/MemoryRetrievalNetwork.ts": [
+      "src/core/observability/logger.ts",
+      "src/types/memory.ts"
+    ],
+    "src/core/memory/MemoryService.ts": [
+      "src/core/observability/logger.ts",
+      "src/types/memory.ts"
+    ],
+    "src/core/memory/PrivateMemoryStore.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/memory/PrivateMemoryStore.ts"
+    ],
+    "src/core/memory/PrivateMemoryStore.ts": [
+      "src/core/database/Database.ts"
+    ],
+    "src/core/memory/ProjectContext.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/moderation/ContentModerator.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/modes/ExecutionModePolicy.test.ts": [
+      "src/core/modes/ExecutionModePolicy.ts"
+    ],
+    "src/core/modes/ExecutionModePolicy.ts": [],
+    "src/core/modes/ModePolicy.test.ts": [
+      "src/core/modes/ModePolicy.ts"
+    ],
+    "src/core/modes/ModePolicy.ts": [
+      "src/types/modes.ts"
+    ],
+    "src/core/multimodal/ImageProcessor.test.ts": [
+      "src/core/multimodal/ImageProcessor.ts"
+    ],
+    "src/core/multimodal/ImageProcessor.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/multimodal/VideoProcessor.test.ts": [
+      "src/core/multimodal/VideoProcessor.ts"
+    ],
+    "src/core/multimodal/VideoProcessor.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/multimodal/VisualSearch.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/nlu/__tests__/CrossDomainAmbiguity.test.ts": [
+      "src/core/nlu/HumanLanguageRouter.ts"
+    ],
+    "src/core/nlu/__tests__/FLStudioSlang.test.ts": [
+      "src/core/nlu/HumanLanguageRouter.ts"
+    ],
+    "src/core/nlu/__tests__/HumanLanguageRouter.test.ts": [
+      "src/core/nlu/HumanLanguageRouter.ts"
+    ],
+    "src/core/nlu/__tests__/MusicSlang.test.ts": [
+      "src/core/nlu/HumanLanguageRouter.ts"
+    ],
+    "src/core/nlu/ClarifyingQuestionBuilder.ts": [
+      "src/core/nlu/HumanLanguageRouter.ts"
+    ],
+    "src/core/nlu/DomainPhrasebook.ts": [],
+    "src/core/nlu/HumanLanguageRouter.ts": [
+      "src/core/nlu/ClarifyingQuestionBuilder.ts",
+      "src/core/nlu/DomainPhrasebook.ts",
+      "src/core/nlu/IntentCandidateRanker.ts",
+      "src/core/nlu/SlangNormalizer.ts",
+      "src/core/nlu/VibeInterpreter.ts",
+      "src/core/nlu/phrasebooks/index.ts"
+    ],
+    "src/core/nlu/IntentCandidateRanker.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/business.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/chrono.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/coding.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/engineering.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/gamedev.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/gaming.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/general.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/geography.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/health.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/index.ts": [
+      "src/core/nlu/DomainPhrasebook.ts",
+      "src/core/nlu/phrasebooks/business.phrasebook.ts",
+      "src/core/nlu/phrasebooks/chrono.phrasebook.ts",
+      "src/core/nlu/phrasebooks/coding.phrasebook.ts",
+      "src/core/nlu/phrasebooks/engineering.phrasebook.ts",
+      "src/core/nlu/phrasebooks/gamedev.phrasebook.ts",
+      "src/core/nlu/phrasebooks/gaming.phrasebook.ts",
+      "src/core/nlu/phrasebooks/general.phrasebook.ts",
+      "src/core/nlu/phrasebooks/geography.phrasebook.ts",
+      "src/core/nlu/phrasebooks/health.phrasebook.ts",
+      "src/core/nlu/phrasebooks/knowledge-os.phrasebook.ts",
+      "src/core/nlu/phrasebooks/language.phrasebook.ts",
+      "src/core/nlu/phrasebooks/legal.phrasebook.ts",
+      "src/core/nlu/phrasebooks/market.phrasebook.ts",
+      "src/core/nlu/phrasebooks/math.phrasebook.ts",
+      "src/core/nlu/phrasebooks/music.phrasebook.ts",
+      "src/core/nlu/phrasebooks/philosophy.phrasebook.ts",
+      "src/core/nlu/phrasebooks/security.phrasebook.ts",
+      "src/core/nlu/phrasebooks/story.phrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/knowledge-os.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/language.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/legal.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/market.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/math.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/music.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/philosophy.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/security.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/phrasebooks/story.phrasebook.ts": [
+      "src/core/nlu/DomainPhrasebook.ts"
+    ],
+    "src/core/nlu/SlangNormalizer.ts": [],
+    "src/core/nlu/VibeInterpreter.ts": [],
+    "src/core/notifications/index.ts": [
+      "src/core/notifications/TwilioAdapter.ts"
+    ],
+    "src/core/notifications/TwilioAdapter.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/observability/logger.ts": [],
+    "src/core/observability/metrics.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/optimization/index.ts": [
+      "src/core/optimization/ToonSerializer.ts"
+    ],
+    "src/core/optimization/ToonSerializer.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/orchestrator/EnhancedOrchestrator.coding.test.ts": [
+      "src/core/orchestrator/EnhancedOrchestrator.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/orchestrator/EnhancedOrchestrator.ts": [
+      "src/core/agents/CodingAgent.ts",
+      "src/core/contracts/ContractGate.ts",
+      "src/core/memory/MemoryService.ts",
+      "src/core/observability/logger.ts",
+      "src/core/observability/metrics.ts",
+      "src/core/orchestrator/Orchestrator.ts",
+      "src/core/provenance/ProvenanceLedger.ts",
+      "src/core/providers/EnsembleAdapter.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/providers/ModelRouter.ts",
+      "src/core/providers/StableDiffusionAdapter.ts",
+      "src/core/rag/RAGService.ts",
+      "src/core/router/IntentRouter.ts",
+      "src/core/safety/SafetyPipeline.ts",
+      "src/core/tools/FunctionCaller.ts",
+      "src/core/tools/ToolRegistry.ts",
+      "src/core/validator/Validators.ts",
+      "src/types/chat.ts",
+      "src/types/contract.ts",
+      "src/types/provenance.ts"
+    ],
+    "src/core/orchestrator/Orchestrator.ts": [
+      "src/core/contracts/ContractGate.ts",
+      "src/core/knowledge/KnowledgeMiss.ts",
+      "src/core/memory/MemoryService.ts",
+      "src/core/observability/logger.ts",
+      "src/core/observability/metrics.ts",
+      "src/core/provenance/ProvenanceLedger.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/providers/StableDiffusionAdapter.ts",
+      "src/core/router/IntentRouter.ts",
+      "src/core/validator/Validators.ts",
+      "src/types/chat.ts",
+      "src/types/contract.ts",
+      "src/types/provenance.ts",
+      "src/utils/cache.ts"
+    ],
+    "src/core/personalization/CollaborativeFilter.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/personalization/UserProfiler.ts"
+    ],
+    "src/core/personalization/PreferenceLearner.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/personalization/UserProfiler.ts"
+    ],
+    "src/core/personalization/StyleAdapter.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/personalization/UserProfiler.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/personalization/UserProfiler.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/planning/PlanDocumentService.test.ts": [
+      "src/core/planning/PlanDocumentService.ts"
+    ],
+    "src/core/planning/PlanDocumentService.ts": [],
+    "src/core/provenance/ProvenanceLedger.ts": [
+      "src/core/observability/logger.ts",
+      "src/types/contract.ts",
+      "src/types/provenance.ts"
+    ],
+    "src/core/providers/DeviceAdapter.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/providers/EnsembleAdapter.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/providers/ModelRouter.ts",
+      "src/types/model-routing.ts"
+    ],
+    "src/core/providers/FreeModelRegistry.ts": [],
+    "src/core/providers/HuggingFaceAdapter.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/providers/LLMAdapter.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/providers/ModelRouter.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/HuggingFaceAdapter.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/types/model-routing.ts"
+    ],
+    "src/core/providers/OllamaAdapter.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/providers/StableDiffusionAdapter.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/providers/UniversalLLM.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/HuggingFaceAdapter.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/providers/OllamaAdapter.ts"
+    ],
+    "src/core/providers/VisionAdapter.ts": [
+      "src/core/observability/logger.ts",
+      "src/types/vision.ts"
+    ],
+    "src/core/quality/AutoReview.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/rag/__tests__/DocumentIngester.test.ts": [
+      "src/core/rag/DocumentIngester.ts",
+      "src/core/rag/ingestion/FileTypeRouter.ts"
+    ],
+    "src/core/rag/__tests__/RAGDocumentStore.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/AudioRAG.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/voice/VoiceAgent.ts"
+    ],
+    "src/core/rag/CitationTracker.ts": [
+      "src/core/observability/logger.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/ContextCompressor.test.ts": [
+      "src/core/rag/ContextCompressor.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/ContextCompressor.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/CorrectiveRetriever.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/rag/HybridRetriever.ts",
+      "src/core/rag/ReRanker.ts",
+      "src/core/tools/WebSearcher.ts"
+    ],
+    "src/core/rag/DocumentIngester.ts": [
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/observability/logger.ts",
+      "src/core/rag/ingestion/ExtractedDocument.ts",
+      "src/core/rag/ingestion/FileTypeRouter.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/DocumentManager.entity-linking.test.ts": [
+      "src/core/rag/DocumentManager.ts"
+    ],
+    "src/core/rag/DocumentManager.ts": [
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/entity/EntityLinkingService.ts",
+      "src/core/observability/logger.ts",
+      "src/core/rag/DocumentIngester.ts",
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/core/rag/RAGService.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/GroundingVerifier.test.ts": [
+      "src/core/rag/GroundingVerifier.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/GroundingVerifier.ts": [
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/HybridRetriever.filters.test.ts": [
+      "src/core/rag/HybridRetriever.ts"
+    ],
+    "src/core/rag/HybridRetriever.ts": [
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/observability/logger.ts",
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/core/rag/RAGInjectionScanner.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/ingestion/ExtractedDocument.ts": [],
+    "src/core/rag/ingestion/FileTypeRouter.ts": [
+      "src/core/rag/ingestion/ExtractedDocument.ts",
+      "src/core/rag/ingestion/ImageOcrExtractor.ts",
+      "src/core/rag/ingestion/OfficeExtractor.ts",
+      "src/core/rag/ingestion/PdfExtractor.ts",
+      "src/core/rag/ingestion/TextLikeExtractor.ts"
+    ],
+    "src/core/rag/ingestion/ImageOcrExtractor.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/rag/ingestion/ExtractedDocument.ts"
+    ],
+    "src/core/rag/ingestion/OfficeExtractor.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/rag/ingestion/ExtractedDocument.ts"
+    ],
+    "src/core/rag/ingestion/PdfExtractor.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/rag/ingestion/ExtractedDocument.ts"
+    ],
+    "src/core/rag/ingestion/TextLikeExtractor.ts": [
+      "src/core/rag/ingestion/ExtractedDocument.ts"
+    ],
+    "src/core/rag/QueryExpander.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/RAGDocumentStore.ts": [
+      "src/core/database/Database.ts",
+      "src/core/observability/logger.ts",
+      "src/core/rag/HybridRetriever.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/RAGInjectionScanner.test.ts": [
+      "src/core/rag/RAGInjectionScanner.ts"
+    ],
+    "src/core/rag/RAGInjectionScanner.ts": [],
+    "src/core/rag/RAGRouter.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/rag/RAGService.ts": [
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/rag/CitationTracker.ts",
+      "src/core/rag/ContextCompressor.ts",
+      "src/core/rag/GroundingVerifier.ts",
+      "src/core/rag/HybridRetriever.ts",
+      "src/core/rag/QueryExpander.ts",
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/core/rag/ReRanker.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/ReRanker.test.ts": [
+      "src/__tests__/utils/test-helpers.ts",
+      "src/core/rag/ReRanker.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/ReRanker.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/TrustRAG.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/rag/VideoRAG.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/voice/VoiceAgent.ts"
+    ],
+    "src/core/realtime/WebSocketServer.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/rl/FeedbackCollector.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/rl/RewardModel.ts"
+    ],
+    "src/core/rl/PolicyOptimizer.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/rl/RewardModel.ts"
+    ],
+    "src/core/rl/RewardModel.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/rl/SafeRL.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/rl/RewardModel.ts"
+    ],
+    "src/core/router/IntentRouter.ts": [
+      "src/core/observability/logger.ts",
+      "src/types/intent.ts"
+    ],
+    "src/core/safety/ApprovalPolicy.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/safety/BiasMitigator.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/safety/ConstitutionalAI.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/safety/FactChecker.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/rag/HybridRetriever.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/safety/SafetyPipeline.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/rag/HybridRetriever.ts",
+      "src/core/safety/BiasMitigator.ts",
+      "src/core/safety/ConstitutionalAI.ts",
+      "src/core/safety/FactChecker.ts",
+      "src/core/safety/SelfCheckSafety.ts",
+      "src/core/safety/ToxicityDetector.ts",
+      "src/core/safety/UncertaintyQuantifier.ts"
+    ],
+    "src/core/safety/SandboxController.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/safety/SelfCheckSafety.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/safety/ToxicityDetector.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/safety/UncertaintyQuantifier.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/scheduler/index.ts": [
+      "src/core/scheduler/TaskScheduler.ts"
+    ],
+    "src/core/scheduler/TaskScheduler.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/sec/EDGARClient.ts": [
+      "src/core/sec/SECRequestPacer.ts"
+    ],
+    "src/core/sec/parser-smoke.test.ts": [
+      "src/core/sec/SECFilingParser.ts"
+    ],
+    "src/core/sec/SECFilingParser.ts": [],
+    "src/core/sec/SECRequestPacer.ts": [],
+    "src/core/sec/SECService.queue.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/database/ExpansionDatabase.ts",
+      "src/core/sec/SECService.ts"
+    ],
+    "src/core/sec/SECService.ts": [
+      "src/core/database/Database.ts",
+      "src/core/database/ExpansionDatabase.ts",
+      "src/core/sec/EDGARClient.ts",
+      "src/core/sec/SECFilingParser.ts",
+      "src/core/sec/SECStorageService.ts"
+    ],
+    "src/core/sec/SECStorageService.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/database/ExpansionDatabase.ts",
+      "src/core/sec/SECStorageService.ts"
+    ],
+    "src/core/sec/SECStorageService.ts": [
+      "src/core/database/Database.ts",
+      "src/core/database/ExpansionDatabase.ts",
+      "src/core/sec/SECFilingParser.ts"
+    ],
+    "src/core/sharing/ConversationSharing.ts": [
+      "src/core/database/Database.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/sprite-lab/InternalSpriteImageAdapter.ts": [],
+    "src/core/sprite-lab/SpriteExternalToolAdapter.test.ts": [
+      "src/core/sprite-lab/SpriteExternalToolAdapter.ts"
+    ],
+    "src/core/sprite-lab/SpriteExternalToolAdapter.ts": [
+      "src/core/database/Database.ts"
+    ],
+    "src/core/sprite-lab/SpriteLabPlanService.ts": [
+      "src/core/database/Database.ts"
+    ],
+    "src/core/suggestions/QuickReplies.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/tools/audio/AudioAnalyzerTool.ts": [],
+    "src/core/tools/audio/DynamicRangeTool.ts": [],
+    "src/core/tools/audio/LoudnessMeterTool.ts": [],
+    "src/core/tools/audio/MaskingDetectorTool.ts": [],
+    "src/core/tools/audio/ReferenceCompareTool.ts": [],
+    "src/core/tools/audio/SpectrumAnalyzerTool.ts": [],
+    "src/core/tools/audio/StemAnalyzerTool.ts": [],
+    "src/core/tools/audio/StereoImageTool.ts": [],
+    "src/core/tools/business/BusinessModelCanvasTool.ts": [],
+    "src/core/tools/business/CompetitorResearchTool.ts": [],
+    "src/core/tools/business/KpiDashboardTool.ts": [],
+    "src/core/tools/business/LeanCanvasTool.ts": [],
+    "src/core/tools/business/PricingModelTool.ts": [],
+    "src/core/tools/business/SwotTool.ts": [],
+    "src/core/tools/business/UnitEconomicsTool.ts": [],
+    "src/core/tools/catalog/ToolCatalogService.ts": [
+      "src/core/database/Database.ts",
+      "src/core/database/ExpansionDatabase.ts"
+    ],
+    "src/core/tools/CodeExecutor.ts": [
+      "src/core/observability/logger.ts",
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/CodingKnowledgeTool.ts": [
+      "src/core/knowledge/CodingKnowledgeBase.ts",
+      "src/core/observability/logger.ts",
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/CommandRunner.test.ts": [
+      "src/core/tools/CommandRunner.ts"
+    ],
+    "src/core/tools/CommandRunner.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/tools/culture/AwardLookupTool.ts": [],
+    "src/core/tools/culture/FranchiseGraphTool.ts": [],
+    "src/core/tools/culture/MusicBrainzTool.ts": [],
+    "src/core/tools/culture/OpenLibraryTool.ts": [],
+    "src/core/tools/culture/PopCultureTimelineTool.ts": [],
+    "src/core/tools/culture/TMDBTool.ts": [],
+    "src/core/tools/culture/WikidataEntityTool.ts": [],
+    "src/core/tools/engineering/BeamLoadTool.ts": [],
+    "src/core/tools/engineering/BOMBuilderTool.ts": [],
+    "src/core/tools/engineering/CircuitChecklistTool.ts": [],
+    "src/core/tools/engineering/MotorSizingTool.ts": [],
+    "src/core/tools/engineering/OhmsLawTool.ts": [],
+    "src/core/tools/engineering/RoboticsKinematicsTool.ts": [],
+    "src/core/tools/engineering/UnitConversionTool.ts": [],
+    "src/core/tools/flstudio/FLMixerControlTool.ts": [],
+    "src/core/tools/flstudio/FLPluginParamTool.ts": [],
+    "src/core/tools/flstudio/FLRenderTool.ts": [],
+    "src/core/tools/flstudio/FLTemplateInspectorTool.ts": [],
+    "src/core/tools/flstudio/FLTransportTool.ts": [],
+    "src/core/tools/FunctionCaller.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/tools/ToolRegistry.ts",
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/gamedev/BalanceSimTool.test.ts": [
+      "src/core/tools/gamedev/BalanceSimTool.ts"
+    ],
+    "src/core/tools/gamedev/BalanceSimTool.ts": [],
+    "src/core/tools/gamedev/GodotTool.ts": [],
+    "src/core/tools/gamedev/PhaserTool.ts": [],
+    "src/core/tools/gamedev/UnityTool.ts": [],
+    "src/core/tools/gamedev/UnrealTool.ts": [],
+    "src/core/tools/geography/CountryProfileTool.ts": [],
+    "src/core/tools/geography/CulturalEtiquetteTool.ts": [],
+    "src/core/tools/geography/DemographicsTool.ts": [],
+    "src/core/tools/geography/GeoTimelineTool.ts": [],
+    "src/core/tools/geography/LanguageRegionTool.ts": [],
+    "src/core/tools/geography/MapLookupTool.ts": [],
+    "src/core/tools/health/AnatomyLookupTool.ts": [],
+    "src/core/tools/health/FitnessPlanTool.ts": [],
+    "src/core/tools/health/MedicalSourceRouterTool.ts": [],
+    "src/core/tools/health/MedicationInteractionWarningTool.ts": [],
+    "src/core/tools/health/NutritionMacroTool.ts": [],
+    "src/core/tools/health/RedFlagTriageTool.ts": [],
+    "src/core/tools/history/ChronologyTool.ts": [
+      "src/core/chrono/TimeRangeParser.ts"
+    ],
+    "src/core/tools/history/EuropeanaTool.ts": [],
+    "src/core/tools/history/LibraryOfCongressTool.ts": [],
+    "src/core/tools/history/MapContextTool.ts": [],
+    "src/core/tools/history/SmithsonianTool.ts": [],
+    "src/core/tools/history/SourceCriticismTool.ts": [],
+    "src/core/tools/history/WikidataHistoryTool.ts": [
+      "src/core/tools/culture/WikidataEntityTool.ts"
+    ],
+    "src/core/tools/language/GrammarDiagnosticTool.ts": [],
+    "src/core/tools/language/ReadabilityTool.ts": [],
+    "src/core/tools/language/RhetoricAnalyzerTool.ts": [],
+    "src/core/tools/language/SpeechOutlineTool.ts": [],
+    "src/core/tools/language/ToneRewriteTool.ts": [],
+    "src/core/tools/language/TranslationTool.ts": [],
+    "src/core/tools/legal/CaseLawSummaryTool.ts": [],
+    "src/core/tools/legal/ContractClauseExplainerTool.ts": [],
+    "src/core/tools/legal/JurisdictionRouterTool.ts": [],
+    "src/core/tools/legal/LegalRiskChecklistTool.ts": [],
+    "src/core/tools/legal/PlainEnglishLegalTool.ts": [],
+    "src/core/tools/legal/StatuteLookupTool.ts": [],
+    "src/core/tools/market/FredMacroTool.ts": [],
+    "src/core/tools/market/FundamentalsTool.ts": [
+      "src/core/tools/market/ValuationTool.ts"
+    ],
+    "src/core/tools/market/NewsEventTool.ts": [],
+    "src/core/tools/market/PriceDataTool.ts": [],
+    "src/core/tools/market/SecEdgarTool.ts": [],
+    "src/core/tools/market/TechnicalIndicatorTool.ts": [],
+    "src/core/tools/market/ValuationTool.ts": [],
+    "src/core/tools/math/LeanProofTool.ts": [],
+    "src/core/tools/math/NumericSolverTool.ts": [],
+    "src/core/tools/math/SymPyTool.test.ts": [
+      "src/core/tools/math/SymPyTool.ts"
+    ],
+    "src/core/tools/math/SymPyTool.ts": [],
+    "src/core/tools/math/Z3SolverTool.ts": [],
+    "src/core/tools/music/ArrangementCriticTool.ts": [],
+    "src/core/tools/music/ArrangementMapTool.ts": [
+      "src/core/agents/music/SongStructureCoach.ts"
+    ],
+    "src/core/tools/music/BpmKeyDetectorTool.ts": [],
+    "src/core/tools/music/BpmTool.ts": [
+      "src/core/tools/music/BpmKeyDetectorTool.ts"
+    ],
+    "src/core/tools/music/ChordProgressionTool.ts": [],
+    "src/core/tools/music/createMusicTools.test.ts": [
+      "src/core/tools/ToolRegistry.ts",
+      "src/core/tools/music/createMusicTools.ts"
+    ],
+    "src/core/tools/music/createMusicTools.ts": [
+      "src/core/tools/music/ArrangementMapTool.ts",
+      "src/core/tools/music/BpmTool.ts",
+      "src/core/tools/music/DawWorkflowMapTool.ts",
+      "src/core/tools/music/DrumPatternTool.ts",
+      "src/core/tools/music/FLAutomationTool.ts",
+      "src/core/tools/music/FLExportSettingsTool.ts",
+      "src/core/tools/music/FLMixerRoutingTool.ts",
+      "src/core/tools/music/FLPianoRollTool.ts",
+      "src/core/tools/music/FLPluginChainTool.ts",
+      "src/core/tools/music/FLStepSequencerPatternTool.ts",
+      "src/core/tools/music/KeyScaleTool.ts",
+      "src/core/tools/music/LogicBounceExportTool.ts",
+      "src/core/tools/music/LogicMidiWorkflowTool.ts",
+      "src/core/tools/music/LogicProjectSetupTool.ts",
+      "src/core/tools/music/LogicVocalChainTool.ts",
+      "src/core/tools/music/LoudnessTargetTool.ts",
+      "src/core/tools/music/MasteringChecklistTool.ts",
+      "src/core/tools/music/MixDiagnosticTool.ts",
+      "src/core/tools/music/ProToolsExportStemTool.ts",
+      "src/core/tools/music/ProToolsSessionSetupTool.ts",
+      "src/core/tools/music/ProToolsSignalFlowTool.ts",
+      "src/core/tools/music/ProToolsVocalCompTool.ts",
+      "src/core/tools/music/SunoHookTool.ts",
+      "src/core/tools/music/SunoPromptTool.ts",
+      "src/core/tools/music/SunoRevisionTool.ts",
+      "src/core/tools/music/SunoRightsGuardrailTool.ts",
+      "src/core/tools/music/SunoStructureTool.ts",
+      "src/core/tools/music/SunoStyleBlendTool.ts",
+      "src/core/tools/music/VocalChainTool.ts",
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/music/DawWorkflowMapTool.ts": [
+      "src/core/agents/music/DawWorkflowTranslator.ts"
+    ],
+    "src/core/tools/music/DrumPatternGeneratorTool.ts": [],
+    "src/core/tools/music/DrumPatternTool.ts": [],
+    "src/core/tools/music/FLAutomationTool.ts": [],
+    "src/core/tools/music/FLEdisonWorkflowTool.ts": [],
+    "src/core/tools/music/FLExportSettingsTool.ts": [],
+    "src/core/tools/music/FLGrossBeatAdvisorTool.ts": [],
+    "src/core/tools/music/FLMixerRoutingTool.ts": [],
+    "src/core/tools/music/FLPianoRollTool.ts": [],
+    "src/core/tools/music/FLPluginChainTool.ts": [],
+    "src/core/tools/music/FLStepSequencerPatternTool.ts": [
+      "src/core/tools/music/DrumPatternTool.ts"
+    ],
+    "src/core/tools/music/GenreInfluenceGraphTool.ts": [],
+    "src/core/tools/music/KeyScaleTool.ts": [],
+    "src/core/tools/music/LogicAlchemyAdvisorTool.ts": [],
+    "src/core/tools/music/LogicArrangementMarkerTool.ts": [],
+    "src/core/tools/music/LogicBounceExportTool.ts": [],
+    "src/core/tools/music/LogicDrummerSessionPlayerTool.ts": [],
+    "src/core/tools/music/LogicMidiWorkflowTool.ts": [],
+    "src/core/tools/music/LogicProjectSetupTool.ts": [],
+    "src/core/tools/music/LogicStockPluginChainTool.ts": [],
+    "src/core/tools/music/LogicVocalChainTool.ts": [
+      "src/core/tools/music/VocalChainTool.ts"
+    ],
+    "src/core/tools/music/LoudnessMeterTool.ts": [],
+    "src/core/tools/music/LoudnessTargetTool.ts": [],
+    "src/core/tools/music/MasteringChecklistTool.ts": [],
+    "src/core/tools/music/MixChecklistTool.ts": [],
+    "src/core/tools/music/MixDiagnosticTool.ts": [],
+    "src/core/tools/music/ProToolsBusRoutingTool.ts": [],
+    "src/core/tools/music/ProToolsEditWorkflowTool.ts": [],
+    "src/core/tools/music/ProToolsExportStemTool.ts": [],
+    "src/core/tools/music/ProToolsPlaylistAdvisorTool.ts": [],
+    "src/core/tools/music/ProToolsPostAudioTool.ts": [],
+    "src/core/tools/music/ProToolsSessionSetupTool.ts": [],
+    "src/core/tools/music/ProToolsSignalFlowTool.ts": [],
+    "src/core/tools/music/ProToolsVocalCompTool.ts": [],
+    "src/core/tools/music/SampleClearanceAdvisorTool.ts": [],
+    "src/core/tools/music/SunoHookTool.ts": [],
+    "src/core/tools/music/SunoPromptTool.ts": [],
+    "src/core/tools/music/SunoRevisionTool.ts": [
+      "src/core/agents/music/suno/SunoRevisionCoach.ts"
+    ],
+    "src/core/tools/music/SunoRightsGuardrailTool.ts": [
+      "src/core/agents/music/suno/SunoRightsAdvisor.ts"
+    ],
+    "src/core/tools/music/SunoStructureTool.ts": [
+      "src/core/agents/music/suno/SunoSongStructurePlanner.ts"
+    ],
+    "src/core/tools/music/SunoStyleBlendTool.ts": [],
+    "src/core/tools/music/VocalChainTool.ts": [],
+    "src/core/tools/PersonalKnowledgeTool.ts": [
+      "src/core/knowledge/PersonalResearchSource.ts",
+      "src/core/knowledge/SongwritingStyleSource.ts",
+      "src/core/knowledge/index.ts",
+      "src/core/observability/logger.ts",
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/philosophy/ArgumentMapTool.ts": [],
+    "src/core/tools/philosophy/CounterargumentTool.ts": [],
+    "src/core/tools/philosophy/EthicalFrameworkTool.ts": [],
+    "src/core/tools/philosophy/FallacyDetectionTool.ts": [],
+    "src/core/tools/philosophy/PhilosophyTimelineTool.ts": [],
+    "src/core/tools/philosophy/SocraticQuestionTool.ts": [],
+    "src/core/tools/RepoTools.test.ts": [
+      "src/core/tools/FunctionCaller.ts",
+      "src/core/tools/RepoTools.ts",
+      "src/core/tools/ToolRegistry.ts"
+    ],
+    "src/core/tools/RepoTools.ts": [
+      "src/core/agents/CodeIndexer.ts",
+      "src/core/tools/CommandRunner.ts",
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/science/GBIFTool.ts": [],
+    "src/core/tools/science/InventionTimelineTool.ts": [
+      "src/core/chrono/ChronoKnowledgeEngine.ts"
+    ],
+    "src/core/tools/science/NasaDataTool.ts": [],
+    "src/core/tools/science/OpenAlexTool.ts": [],
+    "src/core/tools/science/ScientificConsensusTool.ts": [],
+    "src/core/tools/science/USPTOPatentTool.ts": [],
+    "src/core/tools/science/WikidataScienceTool.ts": [
+      "src/core/tools/culture/WikidataEntityTool.ts"
+    ],
+    "src/core/tools/security/AuthFlowReviewTool.ts": [],
+    "src/core/tools/security/DependencyAuditTool.ts": [],
+    "src/core/tools/security/HeadersAuditTool.ts": [],
+    "src/core/tools/security/PrivacyChecklistTool.ts": [],
+    "src/core/tools/security/SecretsScanTool.ts": [],
+    "src/core/tools/security/SecureCodeScanTool.ts": [],
+    "src/core/tools/security/ThreatModelTool.ts": [],
+    "src/core/tools/sixsigma/AnalysisApiTool.ts": [],
+    "src/core/tools/sixsigma/AnovaTool.ts": [
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/sixsigma/ControlChartBuilderTool.ts": [
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/sixsigma/ControlChartConstantsTool.ts": [
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/sixsigma/CopqTool.ts": [
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/sixsigma/CpkCalculatorTool.test.ts": [
+      "src/core/tools/sixsigma/CpkCalculatorTool.ts"
+    ],
+    "src/core/tools/sixsigma/CpkCalculatorTool.ts": [
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/sixsigma/DoePlannerTool.ts": [
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/sixsigma/GageRRTool.ts": [
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/sixsigma/ProcessMapAnalyzerTool.ts": [
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/sixsigma/RegressionTool.ts": [
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/sixsigma/SampleSizeTool.ts": [
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/sixsigma/SigmaDpmoTool.ts": [
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/sixsigma/StatSoftwareExportTool.ts": [
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/story/CharacterArcTool.ts": [],
+    "src/core/tools/story/ContinuityCheckerTool.ts": [],
+    "src/core/tools/story/DialogueToneTool.ts": [],
+    "src/core/tools/story/GenreTropeAnalyzerTool.ts": [],
+    "src/core/tools/story/LoreBibleTool.ts": [],
+    "src/core/tools/story/ScenePacingTool.ts": [],
+    "src/core/tools/story/StoryStructureTool.ts": [],
+    "src/core/tools/ToolComposer.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/tools/FunctionCaller.ts",
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/ToolRegistry.ts": [
+      "src/core/observability/logger.ts",
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/WebSearcher.ts": [
+      "src/core/observability/logger.ts",
+      "src/types/tools.ts"
+    ],
+    "src/core/ui/ThinkingUI.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/upload/FileProcessor.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/rag/DocumentManager.ts"
+    ],
+    "src/core/user/CustomInstructions.ts": [
+      "src/core/database/Database.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/validator/Validators.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/voice/VoiceAgent.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/webhooks/WebhookService.ts": [
+      "src/core/observability/logger.ts",
+      "src/utils/retry.ts"
+    ],
+    "src/core/wiki/LocalKnowledgeWiki.ts": [],
+    "src/evals/run-domain-evals.test.ts": [],
+    "src/mesh/CircuitBreaker.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/mesh/LoadBalancer.ts": [
+      "src/core/observability/logger.ts",
+      "src/services/ServiceRegistry.ts"
+    ],
+    "src/middleware/apiErrorSchema.test.ts": [
+      "src/middleware/apiErrorSchema.ts",
+      "src/middleware/errorHandler.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/middleware/apiErrorSchema.ts": [],
+    "src/middleware/apiKeyAuth.ts": [
+      "src/core/auth/ApiKeyService.ts",
+      "src/core/observability/logger.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/middleware/auth.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/core/observability/logger.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/middleware/errorHandler.ts": [
+      "src/core/observability/logger.ts",
+      "src/middleware/apiErrorSchema.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/middleware/rateLimiter.ts": [
+      "src/core/observability/logger.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/middleware/security.ts": [],
+    "src/middleware/validator.ts": [
+      "src/types/chat.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/observability/alerts.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/observability/prometheus.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/observability/metrics.ts"
+    ],
+    "src/observability/tracing.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/server/__tests__/api.test.ts": [
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "src/server/__tests__/chat.test.ts": [
+      "src/__tests__/utils/test-helpers.ts",
+      "src/core/orchestrator/EnhancedOrchestrator.ts"
+    ],
+    "src/server/__tests__/coding-knowledge.test.ts": [
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/knowledge/CodingKnowledgeBase.ts",
+      "src/core/learning/KnowledgeLearner.ts",
+      "src/core/tools/CodingKnowledgeTool.ts"
+    ],
+    "src/server/__tests__/knowledge-base.test.ts": [
+      "src/__tests__/utils/test-helpers.ts",
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/rag/DocumentManager.ts",
+      "src/core/rag/RAGService.ts"
+    ],
+    "src/server/__tests__/personal-knowledge.test.ts": [
+      "src/core/knowledge/index.ts"
+    ],
+    "src/server/__tests__/release-security.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/core/config/ConfigValidator.ts",
+      "src/middleware/auth.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/rateLimiter.ts",
+      "src/server/routes/audio.ts",
+      "src/server/routes/code.ts",
+      "src/server/routes/files.ts",
+      "src/server/routes/knowledge-online.ts",
+      "src/server/routes/knowledge-os.ts",
+      "src/server/routes/plans.ts",
+      "src/server/security/webhookUrl.ts"
+    ],
+    "src/server/chatRequest.test.ts": [
+      "src/core/planning/PlanDocumentService.ts",
+      "src/server/chatRequest.ts",
+      "src/types/chat.ts"
+    ],
+    "src/server/chatRequest.ts": [
+      "src/core/planning/PlanDocumentService.ts",
+      "src/types/chat.ts"
+    ],
+    "src/server/healthRoutes.test.ts": [
+      "src/server/healthRoutes.ts"
+    ],
+    "src/server/healthRoutes.ts": [
+      "src/core/observability/metrics.ts",
+      "src/middleware/errorHandler.ts",
+      "src/observability/prometheus.ts"
+    ],
+    "src/server/index.ts": [
+      "src/core/config/ConfigValidator.ts",
+      "src/core/conversation/ConversationManager.ts",
+      "src/core/debug/DebugMode.ts",
+      "src/core/documents/DocumentMetadata.ts",
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/feedback/FeedbackService.ts",
+      "src/core/initialization/ServiceInitializer.ts",
+      "src/core/knowledge/AnatomySource.ts",
+      "src/core/knowledge/AstrologySource.ts",
+      "src/core/knowledge/AstronomySource.ts",
+      "src/core/knowledge/BackendDesignSource.ts",
+      "src/core/knowledge/BookSource.ts",
+      "src/core/knowledge/BotanySource.ts",
+      "src/core/knowledge/CNASource.ts",
+      "src/core/knowledge/DSPSource.ts",
+      "src/core/knowledge/DatasetLoader.ts",
+      "src/core/knowledge/DocumentationSource.ts",
+      "src/core/knowledge/EntertainmentSource.ts",
+      "src/core/knowledge/FinancialAdviceSource.ts",
+      "src/core/knowledge/GardeningSource.ts",
+      "src/core/knowledge/GitHubSource.ts",
+      "src/core/knowledge/KnowledgeFusion.ts",
+      "src/core/knowledge/KnowledgeGraph.ts",
+      "src/core/knowledge/LLMProgrammingSource.ts",
+      "src/core/knowledge/LibraryOfCongressSource.ts",
+      "src/core/knowledge/MarijuanaGrowingSource.ts",
+      "src/core/knowledge/MediumSource.ts",
+      "src/core/knowledge/MentalHealthSource.ts",
+      "src/core/knowledge/MusicTheorySource.ts",
+      "src/core/knowledge/NewsSource.ts",
+      "src/core/knowledge/PotterySource.ts",
+      "src/core/knowledge/ProjectGutenbergSource.ts",
+      "src/core/knowledge/QuoraSource.ts",
+      "src/core/knowledge/RNSource.ts",
+      "src/core/knowledge/ReasoningEngine.ts",
+      "src/core/knowledge/RedditSource.ts",
+      "src/core/knowledge/ReligionSource.ts",
+      "src/core/knowledge/ScientificPapersSource.ts",
+      "src/core/knowledge/SpecializedTopicSource.ts",
+      "src/core/knowledge/StackOverflowSource.ts",
+      "src/core/knowledge/TelegramSource.ts",
+      "src/core/knowledge/UIDesignSource.ts",
+      "src/core/knowledge/UniversitySource.ts",
+      "src/core/knowledge/WebDesignSource.ts",
+      "src/core/knowledge/WebScraperSource.ts",
+      "src/core/knowledge/WikipediaSource.ts",
+      "src/core/knowledge/YouTubeSource.ts",
+      "src/core/observability/logger.ts",
+      "src/core/providers/FreeModelRegistry.ts",
+      "src/core/realtime/WebSocketServer.ts",
+      "src/core/sharing/ConversationSharing.ts",
+      "src/core/suggestions/QuickReplies.ts",
+      "src/core/upload/FileProcessor.ts",
+      "src/core/user/CustomInstructions.ts",
+      "src/core/webhooks/WebhookService.ts",
+      "src/middleware/apiErrorSchema.ts",
+      "src/middleware/auth.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/security.ts",
+      "src/server/healthRoutes.ts",
+      "src/server/routeManifest.ts",
+      "src/server/routes/knowledge-base.ts",
+      "src/server/routes/knowledge-os.ts",
+      "src/server/routes/legacy-chat.ts",
+      "src/server/routes/settings.ts",
+      "src/server/routes/v1/chat.ts",
+      "src/server/routes/v2/chat.ts",
+      "src/server/security/webhookUrl.ts"
+    ],
+    "src/server/routeManifest.boundary.test.ts": [
+      "src/server/routeManifest.ts"
+    ],
+    "src/server/routeManifest.test.ts": [
+      "src/server/routeManifest.ts"
+    ],
+    "src/server/routeManifest.ts": [
+      "src/core/config/EnvironmentDefinitions.ts",
+      "src/middleware/auth.ts",
+      "src/server/routes/admin.ts",
+      "src/server/routes/audio.ts",
+      "src/server/routes/business.ts",
+      "src/server/routes/chrono.ts",
+      "src/server/routes/code.ts",
+      "src/server/routes/creative.ts",
+      "src/server/routes/education.ts",
+      "src/server/routes/engineering.ts",
+      "src/server/routes/export.ts",
+      "src/server/routes/files.ts",
+      "src/server/routes/flstudio.ts",
+      "src/server/routes/gamedev.ts",
+      "src/server/routes/gaming.ts",
+      "src/server/routes/geography.ts",
+      "src/server/routes/gis.ts",
+      "src/server/routes/health.ts",
+      "src/server/routes/history.ts",
+      "src/server/routes/knowledge-online.ts",
+      "src/server/routes/language.ts",
+      "src/server/routes/legal.ts",
+      "src/server/routes/local-tools.ts",
+      "src/server/routes/market.ts",
+      "src/server/routes/math.ts",
+      "src/server/routes/music.ts",
+      "src/server/routes/philosophy.ts",
+      "src/server/routes/plans.ts",
+      "src/server/routes/pop-culture.ts",
+      "src/server/routes/rag-query.ts",
+      "src/server/routes/science.ts",
+      "src/server/routes/sec.ts",
+      "src/server/routes/security.ts",
+      "src/server/routes/sixsigma.ts",
+      "src/server/routes/sprite-lab.ts",
+      "src/server/routes/story.ts",
+      "src/server/routes/toolCatalog.ts"
+    ],
+    "src/server/routes/__tests__/chrono-routes.test.ts": [
+      "src/server/routes/chrono.ts",
+      "src/server/routes/history.ts",
+      "src/server/routes/pop-culture.ts",
+      "src/server/routes/science.ts"
+    ],
+    "src/server/routes/__tests__/code-routes.test.ts": [
+      "src/server/routes/code.ts"
+    ],
+    "src/server/routes/__tests__/creative-routes.test.ts": [
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/creative.ts"
+    ],
+    "src/server/routes/__tests__/feature-expansion-routes.test.ts": [
+      "src/server/routes/audio.ts",
+      "src/server/routes/files.ts",
+      "src/server/routes/gaming.ts",
+      "src/server/routes/knowledge-online.ts",
+      "src/server/routes/plans.ts"
+    ],
+    "src/server/routes/__tests__/flstudio-routes.test.ts": [
+      "src/server/routes/flstudio.ts"
+    ],
+    "src/server/routes/__tests__/gaming-playbook-routes.test.ts": [
+      "src/server/routes/gaming.ts"
+    ],
+    "src/server/routes/__tests__/gis-routes.test.ts": [
+      "src/core/gis/GISProviderRegistry.ts",
+      "src/core/gis/GISService.ts",
+      "src/middleware/apiErrorSchema.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/gis.ts"
+    ],
+    "src/server/routes/__tests__/knowledge-base-stats.test.ts": [
+      "src/server/routes/knowledge-base.ts"
+    ],
+    "src/server/routes/__tests__/knowledge-online-flow-routes.test.ts": [
+      "src/server/routes/knowledge-online.ts"
+    ],
+    "src/server/routes/__tests__/knowledge-os.test.ts": [
+      "src/server/routes/knowledge-os.ts"
+    ],
+    "src/server/routes/__tests__/local-tools-routes.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/database/ExpansionDatabase.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/local-tools.ts"
+    ],
+    "src/server/routes/__tests__/music-routes.test.ts": [
+      "src/server/routes/music.ts"
+    ],
+    "src/server/routes/__tests__/rag-query.test.ts": [
+      "src/server/routes/rag-query.ts"
+    ],
+    "src/server/routes/__tests__/sixsigma-routes.test.ts": [
+      "src/server/routes/sixsigma.ts"
+    ],
+    "src/server/routes/__tests__/specialist-genius-routes.test.ts": [
+      "src/server/routes/business.ts",
+      "src/server/routes/engineering.ts",
+      "src/server/routes/geography.ts",
+      "src/server/routes/health.ts",
+      "src/server/routes/language.ts",
+      "src/server/routes/legal.ts",
+      "src/server/routes/music.ts",
+      "src/server/routes/philosophy.ts",
+      "src/server/routes/security.ts",
+      "src/server/routes/story.ts"
+    ],
+    "src/server/routes/__tests__/specialist-routes.test.ts": [
+      "src/server/routes/gamedev.ts",
+      "src/server/routes/market.ts",
+      "src/server/routes/math.ts"
+    ],
+    "src/server/routes/admin.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/middleware/apiErrorSchema.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/admin.ts"
+    ],
+    "src/server/routes/admin.ts": [
+      "src/core/auth/UserService.ts",
+      "src/core/observability/logger.ts",
+      "src/core/observability/metrics.ts",
+      "src/middleware/auth.ts",
+      "src/middleware/errorHandler.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/server/routes/audio.ts": [
+      "src/core/audio/AudioLibraryService.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/business.ts": [
+      "src/core/agents/business/BusinessGeniusAgent.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/chat-stream.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/orchestrator/EnhancedOrchestrator.ts"
+    ],
+    "src/server/routes/chrono.ts": [
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/code.ts": [
+      "src/core/modes/ExecutionModePolicy.ts",
+      "src/core/modes/ModePolicy.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts"
+    ],
+    "src/server/routes/creative.ts": [
+      "src/core/creative/CreativeTypes.ts",
+      "src/core/creative/CreativeWritingAgent.ts",
+      "src/middleware/errorHandler.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/server/routes/education.ts": [
+      "src/core/education/EducationService.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts"
+    ],
+    "src/server/routes/engineering.ts": [
+      "src/core/agents/engineering/EngineeringGeniusAgent.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/export.ts": [
+      "src/core/observability/logger.ts",
+      "src/middleware/auth.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/files.ts": [
+      "src/core/files/FileExplorerService.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/flstudio.ts": [
+      "src/core/integrations/flstudio/FLStudioControlAgent.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/gamedev.ts": [
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/gaming.ts": [
+      "src/core/agents/gaming/GamingPlaybookService.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/geography.ts": [
+      "src/core/agents/geography/GeoCultureGeniusAgent.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/gis.ts": [
+      "src/core/agents/gis/GISMappingAgent.ts",
+      "src/core/gis/GISService.ts",
+      "src/core/gis/SpatialAnalysisService.ts",
+      "src/middleware/errorHandler.ts",
+      "src/types/gis.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/server/routes/health.ts": [
+      "src/core/agents/health/HealthGeniusAgent.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/history.ts": [
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/knowledge-base.ts": [
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/knowledge-online.ts": [
+      "src/core/knowledge/KnowledgeMissHandler.ts",
+      "src/core/knowledge/KnowledgeOnlineFlowService.ts",
+      "src/core/knowledge/OnlineKnowledgeIngestionService.ts",
+      "src/core/tools/WebSearcher.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/knowledge-os.ts": [
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts"
+    ],
+    "src/server/routes/language.ts": [
+      "src/core/agents/language/LanguageGeniusAgent.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/legacy-chat.test.ts": [
+      "src/core/conversation/ConversationManager.ts",
+      "src/server/routes/legacy-chat.ts"
+    ],
+    "src/server/routes/legacy-chat.ts": [
+      "src/core/conversation/ConversationManager.ts",
+      "src/core/creative/CreativeWritingAgent.ts",
+      "src/core/knowledge-os/KnowledgeOsChatAgent.ts",
+      "src/core/knowledge/LocalKnowledgeAnswerer.ts",
+      "src/core/modes/ModePolicy.ts",
+      "src/core/nlu/HumanLanguageRouter.ts",
+      "src/core/orchestrator/Orchestrator.ts",
+      "src/core/planning/PlanDocumentService.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/rateLimiter.ts",
+      "src/middleware/validator.ts",
+      "src/server/chatRequest.ts",
+      "src/types/chat.ts"
+    ],
+    "src/server/routes/legal.ts": [
+      "src/core/agents/legal/LegalCivicGeniusAgent.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/local-tools.ts": [
+      "src/core/database/ExpansionDatabase.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts"
+    ],
+    "src/server/routes/market.ts": [
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/math.ts": [
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/music.ts": [
+      "src/core/agents/music/MusicProductionGeniusAgent.ts",
+      "src/core/agents/music/mix/MixGeniusAgent.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/philosophy.ts": [
+      "src/core/agents/philosophy/PhilosophyGeniusAgent.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/plans.ts": [
+      "src/core/planning/PlanDocumentService.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts"
+    ],
+    "src/server/routes/pop-culture.ts": [
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/rag-query.ts": [
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts"
+    ],
+    "src/server/routes/science.ts": [
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/sec.ts": [
+      "src/core/sec/SECService.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts"
+    ],
+    "src/server/routes/security.ts": [
+      "src/core/agents/security/SecurityGeniusAgent.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/settings.ts": [
+      "src/middleware/auth.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/setup.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/setup.ts"
+    ],
+    "src/server/routes/setup.ts": [
+      "src/core/config/APIKeyManager.ts",
+      "src/middleware/auth.ts"
+    ],
+    "src/server/routes/sixsigma.ts": [
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/sprite-lab.ts": [
+      "src/core/sprite-lab/InternalSpriteImageAdapter.ts",
+      "src/core/sprite-lab/SpriteExternalToolAdapter.ts",
+      "src/core/sprite-lab/SpriteLabPlanService.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts"
+    ],
+    "src/server/routes/story.ts": [
+      "src/core/agents/story/StoryGeniusAgent.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/toolCatalog.ts": [
+      "src/core/tools/catalog/ToolCatalogService.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts"
+    ],
+    "src/server/routes/v1/chat.ts": [
+      "src/core/orchestrator/Orchestrator.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/rateLimiter.ts",
+      "src/middleware/validator.ts"
+    ],
+    "src/server/routes/v2/chat.ts": [
+      "src/core/orchestrator/Orchestrator.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/rateLimiter.ts",
+      "src/middleware/validator.ts",
+      "src/server/routes/chat-stream.ts"
+    ],
+    "src/server/security/webhookUrl.ts": [
+      "src/utils/errors.ts"
+    ],
+    "src/services/ServiceRegistry.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/types/chat.test.ts": [
+      "src/types/chat.ts"
+    ],
+    "src/types/chat.ts": [
+      "src/core/creative/CreativeTypes.ts",
+      "src/types/contract.ts"
+    ],
+    "src/types/contract.ts": [],
+    "src/types/gis.ts": [],
+    "src/types/intent.ts": [],
+    "src/types/memory.ts": [],
+    "src/types/model-routing.ts": [],
+    "src/types/modes.ts": [],
+    "src/types/provenance.ts": [],
+    "src/types/rag.ts": [],
+    "src/types/tools.ts": [],
+    "src/types/vision.ts": [],
+    "src/utils/cache.ts": [],
+    "src/utils/errors.ts": [],
+    "src/utils/memoize.ts": [],
+    "src/utils/retry.ts": [
+      "src/core/observability/logger.ts"
+    ]
+  },
+  "sourceRecordCount": 917
+}
