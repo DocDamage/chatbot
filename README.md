@@ -50,7 +50,7 @@ Client → Gateway → Router/Orchestrator → Contract Gate
 
 ### Prerequisites
 
-- Node.js 18 or newer.
+- Node.js 20 LTS or newer.
 - npm.
 - Ollama for local text generation, or a configured supported remote provider.
 - Optional native tools only for the local features that require them.
@@ -58,11 +58,11 @@ Client → Gateway → Router/Orchestrator → Contract Gate
 ### Install
 
 ```bash
-npm install
-npm --prefix client install
+npm ci
+npm --prefix client ci
 ```
 
-Create `.env` from the repository's environment example and supply development-safe values. Do not reuse production secrets.
+Copy the canonical [`.env.example`](.env.example) to `.env` and supply development-safe values. Follow [Setup Prerequisites](docs/guides/SETUP_PREREQUISITES.md) for OS-specific and optional native dependencies. Do not reuse production secrets.
 
 Typical local settings include:
 
@@ -132,6 +132,9 @@ Privileged and local-only routes must not be exposed based solely on README exam
 .
 ├── src/                         # Server, core services, providers, policies, types
 ├── client/                      # React/Vite client
+├── config/                      # Production boundary and release configuration
+├── scripts/release/             # Reproducible inventories and Phase 2 policy checks
+├── docs/architecture/generated/ # Generated repository and reachability evidence
 ├── docs/implementation/         # Authoritative production-completion governance
 ├── docs/                        # Product, setup, and historical documentation
 └── package.json                 # Root scripts and dependencies

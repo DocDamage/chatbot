@@ -66,7 +66,15 @@
     "lint:client": "eslint client/src",
     "lint:fix": "eslint src --fix",
     "format": "prettier --write \"src/**/*.ts\"",
-    "format:check": "prettier --check \"src/**/*.ts\""
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "release:inventory": "node scripts/release/generate-repository-inventory.mjs",
+    "check:inventory": "node scripts/release/check-repository-inventory.mjs",
+    "check:reachability": "node scripts/release/check-production-boundary.mjs",
+    "check:file-size": "node scripts/release/check-file-size.mjs",
+    "check:env": "node scripts/release/check-environment-contract.mjs",
+    "check:docs": "node scripts/release/check-docs.mjs",
+    "test:release-tools": "node --test scripts/release/__tests__/phase2-scanners.test.mjs",
+    "check:phase2": "npm run test:release-tools && npm run check:inventory && npm run check:reachability && npm run check:file-size && npm run check:env && npm run check:docs"
   },
   "keywords": [
     "ai",

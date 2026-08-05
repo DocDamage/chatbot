@@ -1,0 +1,194 @@
+# Production Reachability Map
+
+Generated from static relative imports and literal `require()`/dynamic-import calls. Runtime registration is additionally constrained by `src/server/routeManifest.ts` and `config/production-boundary.json`.
+
+## Entrypoints
+
+- `src/server/index.ts`: present
+- `client/src/main.tsx`: present
+
+## Counts
+
+- Reachable production files: 551
+- Unreachable production files: 171
+- Unresolved relative imports: 29
+
+## Unreachable production modules
+
+- `client/src/api/localTools.ts`
+- `client/src/vite-env.d.ts`
+- `src/core/agents/AgentTeam.ts`
+- `src/core/agents/MultiAgentOrchestrator.ts`
+- `src/core/agents/ReasoningController.ts`
+- `src/core/agents/business/FinancialModelBuilder.ts`
+- `src/core/agents/business/MarketResearchPlanner.ts`
+- `src/core/agents/business/OperationsAdvisor.ts`
+- `src/core/agents/business/PricingAdvisor.ts`
+- `src/core/agents/business/ProductStrategist.ts`
+- `src/core/agents/engineering/CadDesignCoach.ts`
+- `src/core/agents/engineering/ElectronicsAdvisor.ts`
+- `src/core/agents/engineering/MechanicalAdvisor.ts`
+- `src/core/agents/engineering/RoboticsPlanner.ts`
+- `src/core/agents/engineering/SafetyChecklist.ts`
+- `src/core/agents/gamedev/BalanceSimulator.ts`
+- `src/core/agents/geography/CultureProfileBuilder.ts`
+- `src/core/agents/geography/DemographicsAnalyzer.ts`
+- `src/core/agents/geography/GeopoliticalContextAdvisor.ts`
+- `src/core/agents/geography/MapContextAdvisor.ts`
+- `src/core/agents/health/AnatomyTutor.ts`
+- `src/core/agents/health/FitnessPlanner.ts`
+- `src/core/agents/health/MedicationSafetyAdvisor.ts`
+- `src/core/agents/health/NutritionCoach.ts`
+- `src/core/agents/health/SymptomTriageGuardrails.ts`
+- `src/core/agents/history/HistoricalSourceRanker.ts`
+- `src/core/agents/index.ts`
+- `src/core/agents/language/GrammarExplainer.ts`
+- `src/core/agents/language/RhetoricCoach.ts`
+- `src/core/agents/language/SpeechCoach.ts`
+- `src/core/agents/language/ToneRewriter.ts`
+- `src/core/agents/language/Translator.ts`
+- `src/core/agents/legal/CivicProcessAdvisor.ts`
+- `src/core/agents/legal/ContractExplainer.ts`
+- `src/core/agents/legal/LegalGuardrails.ts`
+- `src/core/agents/legal/LegalIntentClassifier.ts`
+- `src/core/agents/legal/RightsAndObligationsAnalyzer.ts`
+- `src/core/agents/market/PortfolioAnalyzer.ts`
+- `src/core/agents/music/BeatArrangementCoach.ts`
+- `src/core/agents/music/GenreTimelineMapper.ts`
+- `src/core/agents/music/MixMasteringAdvisor.ts`
+- `src/core/agents/music/MusicPromptEngineer.ts`
+- `src/core/agents/music/MusicTheoryAdvisor.ts`
+- `src/core/agents/music/SampleWorkflowAdvisor.ts`
+- `src/core/agents/music/flstudio/FLAutomationCoach.ts`
+- `src/core/agents/music/flstudio/FLExportAdvisor.ts`
+- `src/core/agents/music/flstudio/FLMixerCoach.ts`
+- `src/core/agents/music/flstudio/FLPatternCoach.ts`
+- `src/core/agents/music/flstudio/FLPianoRollCoach.ts`
+- `src/core/agents/music/flstudio/FLSoundDesignCoach.ts`
+- `src/core/agents/music/logic/LogicArrangementCoach.ts`
+- `src/core/agents/music/logic/LogicExportAdvisor.ts`
+- `src/core/agents/music/logic/LogicMidiCoach.ts`
+- `src/core/agents/music/logic/LogicSessionPlayerCoach.ts`
+- `src/core/agents/music/logic/LogicStockPluginCoach.ts`
+- `src/core/agents/music/logic/LogicVocalProductionCoach.ts`
+- `src/core/agents/music/protools/ProToolsEditingCoach.ts`
+- `src/core/agents/music/protools/ProToolsMixPrepCoach.ts`
+- `src/core/agents/music/protools/ProToolsPostProductionCoach.ts`
+- `src/core/agents/music/protools/ProToolsRecordingCoach.ts`
+- `src/core/agents/music/protools/ProToolsRoutingCoach.ts`
+- `src/core/agents/music/protools/ProToolsVocalCompCoach.ts`
+- `src/core/agents/philosophy/ArgumentMapper.ts`
+- `src/core/agents/philosophy/DebateCoach.ts`
+- `src/core/agents/philosophy/EthicsAdvisor.ts`
+- `src/core/agents/philosophy/FallacyDetector.ts`
+- `src/core/agents/philosophy/PhilosophyTimelineTool.ts`
+- `src/core/agents/security/DependencyRiskAdvisor.ts`
+- `src/core/agents/security/PrivacyRiskAnalyzer.ts`
+- `src/core/agents/security/SecureCodeReviewer.ts`
+- `src/core/agents/security/SecurityGuardrails.ts`
+- `src/core/agents/security/ThreatModeler.ts`
+- `src/core/agents/specialists/WorkflowComponent.ts`
+- `src/core/agents/story/CharacterDesigner.ts`
+- `src/core/agents/story/DialogueCoach.ts`
+- `src/core/agents/story/LoreContinuityChecker.ts`
+- `src/core/agents/story/PlotArchitect.ts`
+- `src/core/agents/story/WorldbuildingEngine.ts`
+- `src/core/audio/AudioMetadataService.ts`
+- `src/core/audit/AuditLogger.ts`
+- `src/core/auth/ApiKeyService.ts`
+- `src/core/automation/AutoDrive.ts`
+- `src/core/browser/BrowserAgent.ts`
+- `src/core/chrono/ClaimVerifier.ts`
+- `src/core/config/APIKeyManager.ts`
+- `src/core/config/ProfileManager.ts`
+- `src/core/contracts/UniversalContract.ts`
+- `src/core/creative/CreativePrivacyManager.ts`
+- `src/core/creative/CreativeProjectStore.ts`
+- `src/core/creative/PromptPackLibrary.ts`
+- `src/core/creative/RoleplaySessionEngine.ts`
+- `src/core/creative/StoryBibleStore.ts`
+- `src/core/evaluation/EvalHarness.ts`
+- `src/core/index.ts`
+- `src/core/knowledge/SmartKnowledgeSource.ts`
+- `src/core/knowledge/SmartSourceFactory.ts`
+- `src/core/knowledge/SmartSourceWrapper.ts`
+- `src/core/learning/ABTester.ts`
+- `src/core/learning/FeedbackCollector.ts`
+- `src/core/learning/ModelUpdater.ts`
+- `src/core/learning/PerformanceMonitor.ts`
+- `src/core/memory/ForgettingMechanism.ts`
+- `src/core/memory/GraphMemory.ts`
+- `src/core/memory/HierarchicalMemory.ts`
+- `src/core/memory/MemoryConsolidator.ts`
+- `src/core/memory/MemoryRetrievalNetwork.ts`
+- `src/core/memory/ProjectContext.ts`
+- `src/core/moderation/ContentModerator.ts`
+- `src/core/multimodal/ImageProcessor.ts`
+- `src/core/multimodal/VideoProcessor.ts`
+- `src/core/multimodal/VisualSearch.ts`
+- `src/core/notifications/TwilioAdapter.ts`
+- `src/core/notifications/index.ts`
+- `src/core/optimization/ToonSerializer.ts`
+- `src/core/optimization/index.ts`
+- `src/core/personalization/CollaborativeFilter.ts`
+- `src/core/personalization/PreferenceLearner.ts`
+- `src/core/personalization/StyleAdapter.ts`
+- `src/core/personalization/UserProfiler.ts`
+- `src/core/providers/DeviceAdapter.ts`
+- `src/core/providers/UniversalLLM.ts`
+- `src/core/quality/AutoReview.ts`
+- `src/core/rag/AudioRAG.ts`
+- `src/core/rag/CorrectiveRetriever.ts`
+- `src/core/rag/RAGRouter.ts`
+- `src/core/rag/TrustRAG.ts`
+- `src/core/rag/VideoRAG.ts`
+- `src/core/rl/FeedbackCollector.ts`
+- `src/core/rl/PolicyOptimizer.ts`
+- `src/core/rl/RewardModel.ts`
+- `src/core/rl/SafeRL.ts`
+- `src/core/safety/ApprovalPolicy.ts`
+- `src/core/safety/SandboxController.ts`
+- `src/core/scheduler/TaskScheduler.ts`
+- `src/core/scheduler/index.ts`
+- `src/core/tools/ToolComposer.ts`
+- `src/core/tools/audio/StemAnalyzerTool.ts`
+- `src/core/tools/culture/AwardLookupTool.ts`
+- `src/core/tools/culture/MusicBrainzTool.ts`
+- `src/core/tools/culture/OpenLibraryTool.ts`
+- `src/core/tools/culture/TMDBTool.ts`
+- `src/core/tools/culture/WikidataEntityTool.ts`
+- `src/core/tools/flstudio/FLMixerControlTool.ts`
+- `src/core/tools/flstudio/FLPluginParamTool.ts`
+- `src/core/tools/flstudio/FLRenderTool.ts`
+- `src/core/tools/flstudio/FLTransportTool.ts`
+- `src/core/tools/history/ChronologyTool.ts`
+- `src/core/tools/history/EuropeanaTool.ts`
+- `src/core/tools/history/LibraryOfCongressTool.ts`
+- `src/core/tools/history/MapContextTool.ts`
+- `src/core/tools/history/SmithsonianTool.ts`
+- `src/core/tools/history/SourceCriticismTool.ts`
+- `src/core/tools/history/WikidataHistoryTool.ts`
+- `src/core/tools/market/FundamentalsTool.ts`
+- `src/core/tools/market/NewsEventTool.ts`
+- `src/core/tools/market/TechnicalIndicatorTool.ts`
+- `src/core/tools/market/ValuationTool.ts`
+- `src/core/tools/science/GBIFTool.ts`
+- `src/core/tools/science/NasaDataTool.ts`
+- `src/core/tools/science/WikidataScienceTool.ts`
+- `src/core/tools/sixsigma/AnalysisApiTool.ts`
+- `src/core/ui/ThinkingUI.ts`
+- `src/core/voice/VoiceAgent.ts`
+- `src/mesh/CircuitBreaker.ts`
+- `src/mesh/LoadBalancer.ts`
+- `src/middleware/apiKeyAuth.ts`
+- `src/observability/alerts.ts`
+- `src/observability/tracing.ts`
+- `src/server/routes/setup.ts`
+- `src/services/ServiceRegistry.ts`
+- `src/utils/memoize.ts`
+
+## Static-analysis limitations
+
+- Computed module paths cannot be resolved statically.
+- Framework or runtime registration outside literal imports requires explicit boundary metadata.
+- Reachability proves registration possibility, not production support or runtime verification.
