@@ -1,0 +1,89 @@
+name: P01-T02 clipboard verification
+
+on:
+  push:
+    branches:
+      - agent/p01-t02-correct-clipboard-tests
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-verify:
+    if: github.event.head_commit.message == 'chore(P01-T02): stage verification workflow'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Check out task branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
+
+      - name: Record toolchain
+        run: |
+          node --version
+          npm --version
+          git rev-parse HEAD
+          git status --short
+
+      - name: Apply focused P01-T02 repair
+        run: |
+          node scripts/p01-t02-apply.mjs
+          git diff --check
+          git status --short
+          if grep -R -n -E '(^|[^[:alnum:]_])global\.' client/src --include='*.test.ts' --include='*.test.tsx'; then
+            echo "Node global references remain in browser tests."
+            exit 1
+          fi
+
+      - name: Verify isolated client install
+        run: |
+          rm -rf node_modules client/node_modules
+          npm --prefix client ci
+          test ! -d node_modules
+          npm --prefix client run type-check
+          npm --prefix client test
+          npm --prefix client run build
+
+      - name: Verify full repository install boundary
+        run: |
+          rm -rf node_modules client/node_modules
+          npm ci
+          npm --prefix client ci
+          npm run type-check:client
+          npm --prefix client test
+          npm --prefix client run build
+
+      - name: Commit verified implementation
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            client/src/api/code.test.ts \
+            client/src/api/conversations.test.ts \
+            client/src/clipboard.ts \
+            client/src/clipboard.test.ts \
+            client/src/test/browserTestUtils.ts \
+            client/src/components/AssistantChatPanelScope.test.tsx \
+            client/src/components/CodeWorkflowPanel.test.tsx \
+            client/src/components/ConversationToolsPanel.test.tsx \
+            client/src/components/FLStudioControlPanel.test.tsx \
+            client/src/components/KnowledgeOnlinePanel.test.tsx \
+            client/src/components/LocalRunApprovalPanel.tsx \
+            client/src/components/LocalRunApprovalPanel.test.tsx \
+            client/src/components/SpriteLabPanel.tsx \
+            client/src/components/SpriteLabPanel.test.tsx
+          git diff --cached --check
+          git commit -m "fix(P01-T02): correct clipboard behavior and tests"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+          echo "Verified implementation commit: $(git rev-parse HEAD)"
