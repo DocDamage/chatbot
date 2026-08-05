@@ -36,11 +36,11 @@ jobs:
           path = Path('src/core/config/EnvironmentDefinitions.ts')
           text = path.read_text(encoding='utf-8')
           old = (
-              "  optional('WEBHOOK_REQUIRE_HTTPS', 'security', 'Require HTTPS webhook targets outside trusted local development.')\n"
+              "  optional('SAFETY_CONFIDENCE_THRESHOLD', 'safety', 'Safety confidence threshold.', '0.7')\n"
               "  optional('ALLOW_PRIVATE_WEBHOOK_URLS', 'security', 'Permit explicitly configured private-network webhook targets in trusted local environments.'),"
           )
           new = (
-              "  optional('WEBHOOK_REQUIRE_HTTPS', 'security', 'Require HTTPS webhook targets outside trusted local development.'),\n"
+              "  optional('SAFETY_CONFIDENCE_THRESHOLD', 'safety', 'Safety confidence threshold.', '0.7'),\n"
               "  optional('ALLOW_PRIVATE_WEBHOOK_URLS', 'security', 'Permit explicitly configured private-network webhook targets in trusted local environments.'),"
           )
           if old not in text:
