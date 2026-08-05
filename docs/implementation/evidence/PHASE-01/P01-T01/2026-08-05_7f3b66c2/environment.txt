@@ -1,0 +1,8 @@
+repository=DocDamage/chatbot
+branch=agent/p01-t01-reproduce-latest-ci-failure
+baseline_commit=7f3b66c2c4ecf10028be6bbee4a68c64f651b8d0
+workflow_commit=7ed94ee1b352d205e9f242fb1f270f650baed878
+runner_os=Linux
+runner_arch=X64
+node=v20.20.2
+npm=10.8.2

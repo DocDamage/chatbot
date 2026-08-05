@@ -1,0 +1,15 @@
+index	command	exit_code	log
+01	npm ci	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/01-npm-ci-root.log
+02	npm --prefix client ci	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/02-npm-ci-client.log
+03	npm run type-check:server	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/03-type-check-server.log
+04	npm run type-check:tests	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/04-type-check-tests.log
+05	npm run type-check:client	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/05-type-check-client.log
+06	npm run lint:server	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/06-lint-server.log
+07	npm run lint:client	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/07-lint-client.log
+08	npm run test:security -- --runInBand	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/08-test-security.log
+09	npm run test:routes -- --runInBand	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/09-test-routes.log
+10	npm run test:services -- --runInBand	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/10-test-services.log
+11	npm run test:e2e -- --runInBand	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/11-test-e2e.log
+12	npm run test:coverage -- --runInBand	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/12-test-coverage.log
+13	npm --prefix client test	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/13-client-test.log
+14	npm --prefix client run build	0	docs/implementation/evidence/PHASE-01/P01-T01/2026-08-05_7f3b66c2/logs/14-client-build.log
