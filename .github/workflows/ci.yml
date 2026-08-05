@@ -123,7 +123,7 @@ jobs:
         run: npm ci
 
       - name: Run security route tests
-        run: npm run test:security -- --runInBand && exit 17
+        run: npm run test:security -- --runInBand
 
   server-tests:
     name: Server tests (${{ matrix.suite }})
