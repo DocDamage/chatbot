@@ -1,0 +1,15 @@
+docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md
+docs/implementation/RELEASE_EVIDENCE_INDEX.md
+docs/implementation/evidence/PHASE-00/P00-T01/2026-08-04_84ef639b/summary.md
+docs/implementation/evidence/PHASE-00/P00-T01/2026-08-04_84ef639b/commands.md
+docs/implementation/evidence/PHASE-00/P00-T01/2026-08-04_84ef639b/results.json
+docs/implementation/evidence/PHASE-00/P00-T01/2026-08-04_84ef639b/test-output.txt
+docs/implementation/evidence/PHASE-00/P00-T01/2026-08-04_84ef639b/runtime-checklist.md
+docs/implementation/evidence/PHASE-00/P00-T01/2026-08-04_84ef639b/changed-files.txt
+docs/implementation/handoffs/CURRENT_HANDOFF.md
+docs/implementation/handoffs/archive/P00-T01_HANDOFF.md
+docs/implementation/README.md
+docs/implementation/decisions/README.md
+docs/implementation/runbooks/README.md
+docs/implementation/threat-models/README.md
+docs/implementation/qa/README.md
