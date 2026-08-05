@@ -18,15 +18,7 @@ const runs = [
   }
 ];
 
-let clipboardWriteText: ReturnType<typeof vi.fn>;
-
 beforeEach(() => {
-  clipboardWriteText = vi.fn().mockResolvedValue(undefined);
-  Object.defineProperty(window.navigator, 'clipboard', {
-    value: { writeText: clipboardWriteText },
-    configurable: true
-  });
-
   global.fetch = vi.fn(async (url: RequestInfo | URL) => {
     const path = String(url);
     if (path.includes('/api/local-tools/runs?')) {
@@ -71,6 +63,9 @@ afterEach(() => {
 describe('LocalRunApprovalPanel', () => {
   it('renders polished run state, output browser, links, and copy actions', async () => {
     const user = userEvent.setup();
+    const clipboardWriteText = vi
+      .spyOn(window.navigator.clipboard, 'writeText')
+      .mockResolvedValue(undefined);
     render(<LocalRunApprovalPanel />);
 
     await waitFor(() => expect(screen.getByText('node script.js')).toBeTruthy());
