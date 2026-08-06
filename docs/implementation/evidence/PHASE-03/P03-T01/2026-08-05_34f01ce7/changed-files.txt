@@ -1,0 +1,10 @@
+.dockerignore
+.github/workflows/ci.yml
+Dockerfile
+docs/architecture/generated/reachability-map.json
+docs/architecture/generated/repository-inventory.json
+docs/architecture/generated/repository-inventory.md
+package.json
+scripts/release/check-release-evidence.mjs
+scripts/release/smoke-container.sh
+scripts/release/verify-ci-graph.mjs

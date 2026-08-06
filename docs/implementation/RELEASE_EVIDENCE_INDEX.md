@@ -22,6 +22,7 @@ This index links verified production-completion tasks to evidence collected agai
 | `P02-T05` | `VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T05/2026-08-05_a0d159dd` | `2026-08-05` | Canonical `.env.example`, duplicate removal, and environment-contract synchronization verified. |
 | `P02-T06` | `VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T06/2026-08-05_a0d159dd` | `2026-08-05` | Typed profile-aware configuration validation, redaction, focused tests, and package smoke verified. |
 | `P02-T07` | `VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T07/2026-08-05_a0d159dd` | `2026-08-05` | Release-critical docs, local-link validation, setup guidance, and generated-artifact currentness verified. |
+| `P03-T01` | `VERIFIED` | `34f01ce7f8aa52b4579b6aa883c8c9c6c7a1a594` | `docs/implementation/evidence/PHASE-03/P03-T01/2026-08-05_34f01ce7` | `2026-08-05` | Eighteen independent CI jobs, Node 22/24 compatibility, aggregate enforcement, evidence validation, and build/liveness smoke passed in CI `31062952540`. |
 
 ## Phase-level closeout evidence
 

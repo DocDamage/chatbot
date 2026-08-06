@@ -1,0 +1,33 @@
+{
+  "taskId": "P03-T01",
+  "commit": "34f01ce7f8aa52b4579b6aa883c8c9c6c7a1a594",
+  "branch": "agent/p03-t01-split-harden-ci-jobs",
+  "status": "VERIFIED",
+  "commands": [
+    {
+      "command": "GitHub Actions CI run 31062952540 — all 18 independent jobs and aggregate required gate",
+      "exitCode": 0
+    },
+    {
+      "command": "bash scripts/release/smoke-container.sh",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/release/check-release-evidence.mjs",
+      "exitCode": 0
+    }
+  ],
+  "automatedTestsPassed": true,
+  "runtimeQaRequired": true,
+  "runtimeQaPassed": true,
+  "knownLimitations": [
+    "P03-T02 must implement risk-based server coverage thresholds.",
+    "P03-T03 must implement final client coverage thresholds.",
+    "P03-T04 must replace the current TypeScript-only accessibility script.",
+    "P03-T05 must add real browser E2E testing.",
+    "P03-T06 must add full supply-chain gates.",
+    "P03-T07 must add PostgreSQL and full migration CI.",
+    "P03-T08 must expand container/package smoke to migrations, readiness, authentication, restart, persistence, and clean shutdown."
+  ],
+  "evidenceGeneratedAt": "2026-08-06T01:36:00Z"
+}
