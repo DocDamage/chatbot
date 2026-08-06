@@ -1,0 +1,12 @@
+config/server-coverage-policy.json
+docs/architecture/generated/reachability-map.json
+docs/architecture/generated/reachability-map.md
+docs/architecture/generated/repository-inventory.json
+docs/architecture/generated/repository-inventory.md
+docs/implementation/SERVER_COVERAGE_POLICY.md
+jest.config.js
+package.json
+scripts/release/__tests__/server-coverage-policy.test.mjs
+scripts/release/check-server-coverage.mjs
+scripts/release/lib/server-coverage-policy.mjs
+scripts/release/run-server-coverage.mjs
