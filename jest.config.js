@@ -1,3 +1,18 @@
+const coveragePolicy = require('./config/server-coverage-policy.json');
+
+const globalBaseline = coveragePolicy.baseline.global;
+const maximumUncovered = (metric) => -(metric.total - metric.covered);
+const coverageThreshold = globalBaseline
+  ? {
+      global: {
+        branches: maximumUncovered(globalBaseline.branches),
+        functions: maximumUncovered(globalBaseline.functions),
+        lines: maximumUncovered(globalBaseline.lines),
+        statements: maximumUncovered(globalBaseline.statements),
+      },
+    }
+  : undefined;
+
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
@@ -6,22 +21,10 @@ module.exports = {
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
-  collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.d.ts',
-    '!src/**/__tests__/**',
-    '!src/**/index.ts',
-  ],
+  collectCoverageFrom: coveragePolicy.coverageScope.collectCoverageFrom,
   coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html'],
-  coverageThreshold: {
-    global: {
-      branches: 1,
-      functions: 1,
-      lines: 1,
-      statements: 1,
-    },
-  },
+  coverageReporters: ['text', 'lcov', 'html', 'json-summary'],
+  ...(coverageThreshold ? { coverageThreshold } : {}),
   moduleFileExtensions: ['ts', 'js', 'json'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
@@ -30,4 +33,3 @@ module.exports = {
   testTimeout: 10000,
   verbose: true,
 };
-

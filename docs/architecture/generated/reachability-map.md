@@ -11,7 +11,7 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 
 - Reachable production files: 551
 - Unreachable production files: 171
-- Unresolved relative imports: 29
+- Unresolved relative imports: 30
 
 ## Unreachable production modules
 

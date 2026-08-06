@@ -1436,6 +1436,10 @@
       "specifier": "./index.css"
     },
     {
+      "importer": "jest.config.js",
+      "specifier": "./config/server-coverage-policy.json"
+    },
+    {
       "importer": "scripts/release/__tests__/phase2-scanners.test.mjs",
       "specifier": "./App"
     },
@@ -1749,6 +1753,9 @@
       "scripts/release/lib/reachability.mjs",
       "scripts/release/lib/source-analysis.mjs"
     ],
+    "scripts/release/__tests__/server-coverage-policy.test.mjs": [
+      "scripts/release/lib/server-coverage-policy.mjs"
+    ],
     "scripts/release/check-docs.mjs": [],
     "scripts/release/check-environment-contract.mjs": [
       "scripts/release/lib/files.mjs"
@@ -1765,6 +1772,9 @@
     "scripts/release/check-repository-inventory.mjs": [
       "scripts/release/generate-repository-inventory.mjs"
     ],
+    "scripts/release/check-server-coverage.mjs": [
+      "scripts/release/lib/server-coverage-policy.mjs"
+    ],
     "scripts/release/configure-main-branch-protection.mjs": [],
     "scripts/release/generate-repository-inventory.mjs": [
       "scripts/release/lib/files.mjs",
@@ -1778,9 +1788,11 @@
       "scripts/release/lib/source-analysis.mjs"
     ],
     "scripts/release/lib/render.mjs": [],
+    "scripts/release/lib/server-coverage-policy.mjs": [],
     "scripts/release/lib/source-analysis.mjs": [
       "scripts/release/lib/files.mjs"
     ],
+    "scripts/release/run-server-coverage.mjs": [],
     "scripts/release/smoke-pages-artifact.mjs": [],
     "scripts/release/smoke-pages-deployment.mjs": [],
     "scripts/release/verify-ci-graph.mjs": [],
@@ -4695,5 +4707,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 917
+  "sourceRecordCount": 921
 }
