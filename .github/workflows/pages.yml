@@ -6,7 +6,6 @@ on:
       - '.github/workflows/pages.yml'
       - 'client/**'
       - 'scripts/release/smoke-pages-*.mjs'
-      - 'scripts/release/finalize-p03-t04-docs.mjs'
       - 'docs/GITHUB_PAGES_DEMO.md'
   push:
     branches: [main]
@@ -18,7 +17,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -77,29 +76,6 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: client/dist
-
-  finalize-p03-t04-docs:
-    if: github.event_name == 'pull_request' && github.head_ref == 'agent/p03-t04-real-accessibility-testing'
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout feature branch
-        uses: actions/checkout@v4
-        with:
-          ref: agent/p03-t04-real-accessibility-testing
-          fetch-depth: 0
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-      - name: Generate P03-T04 evidence and handoff
-        run: node scripts/release/finalize-p03-t04-docs.mjs
-      - name: Commit and push documentation
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "P03-T04 commit verified evidence and handoff"
-          git push origin HEAD:agent/p03-t04-real-accessibility-testing
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
