@@ -9,7 +9,7 @@ test('loads real workspace text and audio fixtures into chat context', async ({ 
   await installAuthenticatedApi(page, { roles: ['developer', 'admin'] });
   await openBuiltApplication(page);
 
-  const fileExplorer = page.getByRole('complementary', { name: 'Workspace files' });
+  const fileExplorer = page.getByRole('complementary', { name: 'Workspace files', exact: true });
   const fileSearch = fileExplorer.getByPlaceholder('Search files');
   await fileSearch.fill('browser-e2e-note');
   await fileSearch.press('Enter');
