@@ -87,18 +87,45 @@ function validateResult(taskId, record) {
 
   if (result.taskId !== taskId) fail(`${taskId}: results.json taskId mismatch`);
   if (result.status !== "VERIFIED") fail(`${taskId}: results.json is not VERIFIED`);
-  if (result.commit !== record.commit) fail(`${taskId}: tracker and results.json commits differ`);
-  if (typeof result.branch !== "string" || result.branch.length === 0) {
-    fail(`${taskId}: results.json is missing branch`);
+
+  const evidenceCommit = result.commit ?? result.implementationCommit;
+  if (evidenceCommit !== record.commit) {
+    fail(`${taskId}: tracker and results.json implementation commits differ`);
   }
+
+  const usesCurrentSchema = Object.hasOwn(result, "commit");
+  if (usesCurrentSchema && (typeof result.branch !== "string" || result.branch.length === 0)) {
+    fail(`${taskId}: current-schema results.json is missing branch`);
+  }
+
   for (const key of ["automatedTestsPassed", "runtimeQaRequired", "runtimeQaPassed"]) {
-    if (typeof result[key] !== "boolean") fail(`${taskId}: results.json is missing boolean ${key}`);
+    if (usesCurrentSchema && typeof result[key] !== "boolean") {
+      fail(`${taskId}: current-schema results.json is missing boolean ${key}`);
+    }
+    if (Object.hasOwn(result, key) && typeof result[key] !== "boolean") {
+      fail(`${taskId}: results.json ${key} must be boolean when present`);
+    }
   }
-  if (!Array.isArray(result.knownLimitations)) {
-    fail(`${taskId}: results.json knownLimitations must be an array`);
+
+  if (usesCurrentSchema && !Array.isArray(result.knownLimitations)) {
+    fail(`${taskId}: current-schema results.json knownLimitations must be an array`);
   }
-  if (Number.isNaN(Date.parse(result.evidenceGeneratedAt))) {
-    fail(`${taskId}: results.json evidenceGeneratedAt is invalid`);
+  if (Object.hasOwn(result, "knownLimitations") && !Array.isArray(result.knownLimitations)) {
+    fail(`${taskId}: results.json knownLimitations must be an array when present`);
+  }
+  if (usesCurrentSchema && Number.isNaN(Date.parse(result.evidenceGeneratedAt))) {
+    fail(`${taskId}: current-schema results.json evidenceGeneratedAt is invalid`);
+  }
+  if (Object.hasOwn(result, "evidenceGeneratedAt") && Number.isNaN(Date.parse(result.evidenceGeneratedAt))) {
+    fail(`${taskId}: results.json evidenceGeneratedAt is invalid when present`);
+  }
+
+  if (!usesCurrentSchema) {
+    if (!Array.isArray(result.commands) || result.commands.length === 0) {
+      fail(`${taskId}: legacy results.json must retain command evidence`);
+    } else if (result.commands.some((command) => command?.exitCode !== 0)) {
+      fail(`${taskId}: legacy results.json contains a non-zero command result`);
+    }
   }
 }
 
@@ -138,17 +165,17 @@ if (!handoff.includes("## Thread closure")) {
   fail("CURRENT_HANDOFF.md is missing the thread-closure section");
 }
 
-const duplicateResultFiles = [];
+const resultFiles = [];
 function walk(directory) {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     const fullPath = path.join(directory, entry.name);
     if (entry.isDirectory()) walk(fullPath);
-    if (entry.isFile() && entry.name === "results.json") duplicateResultFiles.push(fullPath);
+    if (entry.isFile() && entry.name === "results.json") resultFiles.push(fullPath);
   }
 }
 const evidenceRoot = path.join(root, "docs/implementation/evidence");
 if (existsSync(evidenceRoot)) walk(evidenceRoot);
-if (duplicateResultFiles.length < trackerRecords.size) {
+if (resultFiles.length < trackerRecords.size) {
   fail("fewer results.json files exist than verified tracker records");
 }
 
