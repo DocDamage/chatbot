@@ -27,6 +27,8 @@ This index links verified production-completion tasks to evidence collected agai
 | `P03-T03` | `VERIFIED` | `23fcb9b18348bd05cc95c66d29e799ebb03252e8` | `docs/implementation/evidence/PHASE-03/P03-T03/2026-08-05_23fcb9b1` | `2026-08-05` | Expanded all-production client scope, exact global/per-file no-regression baselines, 29 critical client files, staged 65/55, 75/65, and final 80/70 targets, and client policy regression tests passed in CI `31069162209`. |
 | `P03-T04` | `VERIFIED` | `bb9d55ea662ed4a22b921ea1e2e08747e196a2a4` | `docs/implementation/evidence/PHASE-03/P03-T04/2026-08-06_bb9d55ea` | `2026-08-06` | Real Chromium/Axe scans, keyboard workflows, focus restoration, live-region checks, contrast repairs, landmark repairs, scroll-region keyboard access, and the manual screen-reader checklist passed the required gates in CI `31074967710`. |
 
+| `P03-T05` | `VERIFIED` | `cef6288dfe784e55fc1ad69b5ff2c786b7b83072` | `docs/implementation/evidence/PHASE-03/P03-T05/2026-08-06_cef6288` | `2026-08-06` | Compiled-server Playwright covered seven desktop/mobile workflows, repaired settings feedback and chronological conversation history defects, retained browser artifacts, and passed every required job plus aggregate gate in CI `31081497523`. |
+
 ## Phase-level closeout evidence
 
 | Record | Status | Exact evidence commit | Evidence | Notes |

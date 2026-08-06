@@ -1,0 +1,61 @@
+{
+  "taskId": "P03-T05",
+  "status": "VERIFIED",
+  "branch": "agent/p03-t05-real-browser-e2e",
+  "implementationCommit": "cef6288dfe784e55fc1ad69b5ff2c786b7b83072",
+  "testedMergeCommit": "b7765c365139aa193a3f77c7e56552c9169b9e56",
+  "verificationCi": "31081497523",
+  "browserJob": "92551113290",
+  "pullRequest": 162,
+  "commands": [
+    {
+      "command": "npm run test:e2e",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:browser:prepare",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix client run test:browser",
+      "exitCode": 0
+    },
+    {
+      "command": "GitHub Actions run 31081497523 \u2014 all independent jobs and aggregate required gate",
+      "exitCode": 0
+    }
+  ],
+  "serviceE2e": {
+    "suites": 3,
+    "tests": 5,
+    "passed": true
+  },
+  "browserE2e": {
+    "workflows": 7,
+    "passed": true,
+    "desktopEngine": "Chromium",
+    "mobileProfile": "Pixel 5 Chromium",
+    "durationSeconds": 13.7
+  },
+  "browserArtifact": {
+    "id": 8959667465,
+    "name": "browser-e2e-31081497523",
+    "digest": "sha256:dbe6da3f6ed1f5ca5eebdafc6c1f91d629dc22c534e222d1c48e5c8746e0d0fa",
+    "retentionDays": 14
+  },
+  "automatedTestsPassed": true,
+  "coverageEnforcementPassed": true,
+  "requiredGatePassed": true,
+  "runtimeQaRequired": true,
+  "runtimeQaPassed": true,
+  "knownLimitations": [
+    "No end-user login/logout UI exists yet; the built-browser suite verifies JWT authentication, authorization, role denial, and expiry at the real browser/API boundary.",
+    "Live remote-provider canaries are P06-T03 and are not claimed by the real template-adapter canary in P03-T05.",
+    "Existing dependency vulnerabilities remain the explicit scope of P03-T06."
+  ],
+  "evidenceGeneratedAt": "2026-08-06T03:40:00-04:00"
+}
