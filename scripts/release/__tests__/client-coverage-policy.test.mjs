@@ -72,10 +72,12 @@ function policy(mode = 'audit') {
   };
 }
 
-test('repository client policy covers production entry points and required workflow categories', () => {
+test('repository client policy locks the production scope and measured baseline', () => {
   const policyUrl = new URL('../../../config/client-coverage-policy.json', import.meta.url);
   const repositoryPolicy = JSON.parse(fs.readFileSync(policyUrl, 'utf8'));
-  assert.ok(['audit', 'enforce'].includes(repositoryPolicy.mode));
+  assert.equal(repositoryPolicy.mode, 'enforce');
+  assert.match(repositoryPolicy.baseline.commit, /^[0-9a-f]{40}$/);
+  assert.ok(repositoryPolicy.baseline.global.lines.total > 0);
   assert.ok(repositoryPolicy.coverageScope.include.includes('src/**/*.{ts,tsx}'));
   assert.ok(!repositoryPolicy.coverageScope.exclude.includes('src/main.tsx'));
   assert.equal(repositoryPolicy.criticalWorkflows.target.lines, 80);
@@ -84,6 +86,11 @@ test('repository client policy covers production entry points and required workf
   assert.ok(
     repositoryPolicy.criticalWorkflows.requiredWorkflowIds.includes(
       'dangerous-action-confirmation',
+    ),
+  );
+  assert.ok(
+    repositoryPolicy.criticalWorkflows.files.every(
+      (file) => file.baseline?.lines?.total >= 0 && file.baseline?.branches?.total >= 0,
     ),
   );
 });
