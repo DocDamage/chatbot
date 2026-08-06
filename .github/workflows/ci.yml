@@ -195,9 +195,9 @@ jobs:
         run: npm run test
 
   e2e-tests:
-    name: E2E tests (current smoke harness)
+    name: Built-server browser E2E
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -206,14 +206,29 @@ jobs:
         with:
           node-version: ${{ env.PRIMARY_NODE_VERSION }}
           cache: npm
-          cache-dependency-path: package-lock.json
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
       - name: Install server dependencies
         run: npm ci
-      - name: Run existing E2E smoke harness
-        run: npm run test:e2e -- --runInBand
+      - name: Install client dependencies
+        run: npm --prefix client ci
+      - name: Run service and built-server browser E2E suites
+        run: npm run test:e2e
+      - name: Upload browser E2E evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-e2e-${{ github.run_id }}
+          path: |
+            client/playwright-report/browser/
+            client/test-results/browser/
+            data/local-tool-runs/browser-e2e/
+          if-no-files-found: warn
+          retention-days: 14
 
   accessibility:
-    name: Accessibility gate (current script)
+    name: Accessibility gate
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
@@ -230,7 +245,7 @@ jobs:
           cache-dependency-path: client/package-lock.json
       - name: Install client dependencies
         run: npm ci
-      - name: Run current accessibility script
+      - name: Run accessibility checks
         run: npm run a11y
 
   security:

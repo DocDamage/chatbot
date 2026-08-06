@@ -1494,6 +1494,7 @@
   ],
   "importGraph": {
     "client/playwright.a11y.config.mjs": [],
+    "client/playwright.browser.config.mjs": [],
     "client/scripts/prepare-a11y-tools.mjs": [],
     "client/src/api/audio.test.ts": [
       "client/src/api/audio.ts"
@@ -1725,6 +1726,22 @@
     "client/tests/accessibility/static-demo.a11y.pw.mjs": [
       "client/tests/accessibility/accessibility-helpers.mjs"
     ],
+    "client/tests/browser/chat-and-auth.browser.pw.mjs": [
+      "client/tests/browser/helpers.mjs"
+    ],
+    "client/tests/browser/degraded.browser.pw.mjs": [
+      "client/tests/browser/helpers.mjs"
+    ],
+    "client/tests/browser/files-audio.browser.pw.mjs": [
+      "client/tests/browser/helpers.mjs"
+    ],
+    "client/tests/browser/helpers.mjs": [],
+    "client/tests/browser/knowledge-local-sprite.browser.pw.mjs": [
+      "client/tests/browser/helpers.mjs"
+    ],
+    "client/tests/browser/mobile.browser.pw.mjs": [
+      "client/tests/browser/helpers.mjs"
+    ],
     "client/vite.config.ts": [],
     "docs/extract_all_snippets.js": [],
     "docs/extract_snippets.js": [],
@@ -1749,6 +1766,8 @@
     "eslint.config.js": [],
     "jest.config.js": [],
     "prettier.config.js": [],
+    "scripts/browser/local-tool-fixture.mjs": [],
+    "scripts/browser/prepare-browser-e2e.mjs": [],
     "scripts/extract_encyclopedia.js": [],
     "scripts/extract_encyclopedia.ts": [],
     "scripts/import-blackbelt-knowledge.ts": [],
@@ -4727,5 +4746,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 929
+  "sourceRecordCount": 938
 }

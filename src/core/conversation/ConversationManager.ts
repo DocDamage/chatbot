@@ -107,7 +107,7 @@ export class ConversationManager {
   async getConversation(sessionId: string): Promise<Conversation | null> {
     // Check memory first
     let conversation = this.conversations.get(sessionId);
-    
+
     // Load from database if not in memory
     if (!conversation && this.db) {
       try {
@@ -115,7 +115,7 @@ export class ConversationManager {
           'SELECT * FROM messages WHERE session_id = ? ORDER BY created_at ASC',
           [sessionId]
         );
-        
+
         if (result.rows.length > 0) {
           conversation = {
             sessionId,
@@ -175,13 +175,15 @@ export class ConversationManager {
       try {
         const result = await this.db.query(
           `SELECT s.id as session_id, s.user_id, s.created_at, s.updated_at,
-           COUNT(m.id) as message_count,
-           MIN(m.content) as first_message,
-           MAX(m.content) as last_message
+           (SELECT COUNT(*) FROM messages counted WHERE counted.session_id = s.id) as message_count,
+           (SELECT first.content FROM messages first
+              WHERE first.session_id = s.id
+              ORDER BY first.created_at ASC, first.id ASC LIMIT 1) as first_message,
+           (SELECT last.content FROM messages last
+              WHERE last.session_id = s.id
+              ORDER BY last.created_at DESC, last.id DESC LIMIT 1) as last_message
            FROM sessions s
-           LEFT JOIN messages m ON s.id = m.session_id
            WHERE s.user_id = ?
-           GROUP BY s.id
            ORDER BY s.updated_at DESC
            LIMIT ?`,
           [userId, limit]
@@ -253,4 +255,3 @@ export class ConversationManager {
     return matching.slice(0, limit);
   }
 }
-

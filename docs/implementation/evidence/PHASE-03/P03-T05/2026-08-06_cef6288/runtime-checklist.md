@@ -1,0 +1,22 @@
+# P03-T05 Runtime Checklist
+
+- [x] Compiled server starts on an isolated test port.
+- [x] Compiled client is served by that server.
+- [x] Unauthenticated privileged request is rejected.
+- [x] Ordinary-user role is rejected from privileged settings.
+- [x] Expired JWT is rejected.
+- [x] Admin/developer JWT reaches privileged settings.
+- [x] Settings update completes and visible confirmation survives reinitialization.
+- [x] Plan and Ask modes change the real UI state.
+- [x] Chat response succeeds through the template adapter.
+- [x] SSE emits connected, chunk, and complete events.
+- [x] Conversation persists to SQLite, appears in history chronologically, and reloads into chat.
+- [x] Text fixture previews and loads into chat context.
+- [x] WAV fixture previews and loads into chat context.
+- [x] Knowledge Online preview does not ingest before explicit approval.
+- [x] Local tool requires plan and approval before start.
+- [x] Local tool uses no shell and accepts only the exact safe marker.
+- [x] Sprite Lab internal manifest workflow generates the expected output.
+- [x] Provider/readiness failure produces degraded/error state rather than false success.
+- [x] Pixel 5 mobile viewport loads and completes chat smoke.
+- [x] Browser reports and failure diagnostics are retained as CI artifacts.

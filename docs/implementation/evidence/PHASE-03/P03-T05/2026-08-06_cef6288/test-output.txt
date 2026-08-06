@@ -1,0 +1,27 @@
+# P03-T05 Test Output Summary
+
+Verification CI: `31081497523`
+Implementation head: `cef6288dfe784e55fc1ad69b5ff2c786b7b83072`
+Tested pull-request merge ref: `b7765c365139aa193a3f77c7e56552c9169b9e56`
+
+```text
+PASS e2e/creative-release.test.ts
+PASS e2e/chat-flow.test.ts
+PASS e2e/knowledge-base.test.ts
+Test Suites: 3 passed, 3 total
+Tests:       5 passed, 5 total
+
+Running 7 tests using 1 worker
+[desktop-chromium] authentication, authorization, and expired sessions — passed
+[desktop-chromium] settings, modes, chat, SSE, persistence, reload — passed
+[desktop-chromium] provider/readiness degradation — passed
+[desktop-chromium] workspace text and audio context — passed
+[desktop-chromium] Knowledge Online explicit approval — passed
+[desktop-chromium] local-tool approval/run and Sprite Lab workflow — passed
+[mobile-chromium] Pixel 5 chat smoke — passed
+7 passed (13.7s)
+
+Browser artifact ID: 8959667465
+Browser artifact digest: sha256:dbe6da3f6ed1f5ca5eebdafc6c1f91d629dc22c534e222d1c48e5c8746e0d0fa
+Required CI gate: success
+```

@@ -6,7 +6,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 929 |
+| Source files | 938 |
 | Production source files | 722 |
 | Reachable production files | 551 |
 | Unreachable production files | 171 |
@@ -531,7 +531,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `client/src/components/FLStudioControlPanel.tsx` | 622 |
 | `client/src/components/KnowledgeOSPanel.tsx` | 313 |
 | `client/src/components/ModeSelector.tsx` | 393 |
-| `client/src/components/SettingsMenu.tsx` | 495 |
+| `client/src/components/SettingsMenu.tsx` | 494 |
 | `client/src/components/SpriteLabPanel.tsx` | 378 |
 | `docs/extract_all_snippets.js` | 364 |
 | `scripts/import-wikipedia-general-corpus.ts` | 337 |

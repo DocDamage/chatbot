@@ -58,7 +58,7 @@ const expectedCommands = new Map([
     ],
   ],
   ["client-tests", ["npm run test"]],
-  ["e2e-tests", ["npm run test:e2e -- --runInBand"]],
+  ["e2e-tests", ["npm run test:e2e"]],
   ["accessibility", ["npm run a11y"]],
   ["security", ["npm run test:security -- --runInBand"]],
   [
@@ -158,6 +158,21 @@ for (const [job, commands] of expectedCommands) {
       fail(`job "${job}" does not preserve command: ${command}`);
     }
   }
+}
+
+const e2eSection = sections.get("e2e-tests") ?? "";
+for (const requiredText of [
+  "name: Built-server browser E2E",
+  "npm --prefix client ci",
+  "client/playwright-report/browser/",
+  "client/test-results/browser/",
+]) {
+  if (!e2eSection.includes(requiredText)) {
+    fail(`browser E2E job is missing required configuration: ${requiredText}`);
+  }
+}
+if (/current smoke harness/i.test(e2eSection)) {
+  fail("browser E2E job must not be labeled as the legacy smoke harness");
 }
 
 for (const match of workflow.matchAll(/uses:\s*([^\s]+)/g)) {
