@@ -93,6 +93,6 @@ test('plans, approves, and runs the safe local harness, then completes an intern
   await expect(spritePanel.getByRole('heading', { name: 'Planned workflow' })).toBeVisible();
   await spritePanel.getByRole('button', { name: 'Generate Manifest' }).click();
   const result = spritePanel.getByRole('heading', { name: 'Action result' }).locator('..');
-  await expect(result).toContainText('completed');
+  await expect(result).toContainText('Generated outputs');
   await expect(result).toContainText('browser-e2e-sprite.manifest.json');
 });
