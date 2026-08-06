@@ -24,6 +24,7 @@ This index links verified production-completion tasks to evidence collected agai
 | `P02-T07` | `VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T07/2026-08-05_a0d159dd` | `2026-08-05` | Release-critical docs, local-link validation, setup guidance, and generated-artifact currentness verified. |
 | `P03-T01` | `VERIFIED` | `34f01ce7f8aa52b4579b6aa883c8c9c6c7a1a594` | `docs/implementation/evidence/PHASE-03/P03-T01/2026-08-05_34f01ce7` | `2026-08-05` | Eighteen independent CI jobs, Node 22/24 compatibility, aggregate enforcement, evidence validation, and build/liveness smoke passed in CI `31062952540`. |
 | `P03-T02` | `VERIFIED` | `b7e81e3935185c06cbaab2fb7e2ee199a69dcaca` | `docs/implementation/evidence/PHASE-03/P03-T02/2026-08-05_b7e81e39` | `2026-08-05` | Risk-based server coverage policy, expanded all-source baseline, count/percentage no-regression, 19-file Tier A inventory, Tier B manifest mapping, and staged 55/45, 65/55, and 75/65 targets passed in CI `31066377115`. |
+| `P03-T03` | `VERIFIED` | `23fcb9b18348bd05cc95c66d29e799ebb03252e8` | `docs/implementation/evidence/PHASE-03/P03-T03/2026-08-05_23fcb9b1` | `2026-08-05` | Expanded all-production client scope, exact global/per-file no-regression baselines, 29 critical client files, staged 65/55, 75/65, and final 80/70 targets, and client policy regression tests passed in CI `31069162209`. |
 
 ## Phase-level closeout evidence
 

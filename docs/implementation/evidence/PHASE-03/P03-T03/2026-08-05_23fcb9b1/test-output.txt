@@ -1,0 +1,14 @@
+# P03-T03 Test Output Summary
+
+Verification CI: `31069162209`
+Verification commit: `fd996d8e0843efb9f4f7ff28245d6542586686cf`
+Closure metadata and inventory commit: `f1e8c42ab4e17a8cb2ddfd59d13d5f1bc86a5402`
+
+- Client policy tests: 8 passed.
+- Client Vitest suite: 29 files and 76 tests passed.
+- Expanded client coverage: 58.8767% lines, 48.6777% branches, 45.4704% functions, 55.6193% statements.
+- Critical files evaluated: 29.
+- Policy mode: `enforce`.
+- Active stage: `stage-1-baseline`.
+- Repository inventory currentness: passed.
+- Type checking, lint, security, E2E smoke, migrations, package smoke, container smoke, and aggregate required gate: passed.

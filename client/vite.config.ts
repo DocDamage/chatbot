@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
+import clientCoveragePolicy from '../config/client-coverage-policy.json';
 
 const isPagesBuild = process.env.GITHUB_PAGES === 'true';
 const requestedRuntimeMode = process.env.VITE_RUNTIME_MODE?.trim();
@@ -26,24 +27,18 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
-        changeOrigin: true
-      }
-    }
+        changeOrigin: true,
+      },
+    },
   },
   test: {
     environment: 'jsdom',
     coverage: {
       provider: 'v8',
-      include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/**/*.test.{ts,tsx}', 'src/main.tsx', 'src/vite-env.d.ts'],
-      reporter: ['text', 'lcov'],
+      include: clientCoveragePolicy.coverageScope.include,
+      exclude: clientCoveragePolicy.coverageScope.exclude,
+      reporter: ['text', 'json-summary', 'lcov'],
       reportsDirectory: 'coverage',
-      thresholds: {
-        statements: 5,
-        branches: 5,
-        functions: 5,
-        lines: 5
-      }
-    }
-  }
+    },
+  },
 });

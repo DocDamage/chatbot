@@ -8,9 +8,9 @@
 - Baseline branch: `main`
 - Original plan baseline commit: `8b963232d72a69c6616667aaf34daadba6056aba`
 - Last verified deployment commit: `342b657c6510fc086d11ad19a1c7b62fad9cd725`
-- Current task branch: `agent/p03-t02-server-coverage-policy`
-- Current P03-T02 implementation commit: `b7e81e3935185c06cbaab2fb7e2ee199a69dcaca`
-- Current P03-T02 verification CI: `31066377115`
+- Current task branch: `agent/p03-t03-client-coverage-thresholds`
+- Current P03-T03 implementation commit: `23fcb9b18348bd05cc95c66d29e799ebb03252e8`
+- Current P03-T03 verification CI: `31069162209`
 - Current integrated Phase 2 implementation commit: `6e1a019f8eccf5154c6a579d02abb188c6911a9e`
 - Exact Phase 2 implementation head: `a0d159dd0eff1991a9a7400664e2eef0286e77a2`
 - Phase 2 task-evidence validation commit: `84d981ea5cc951d51cb90996a157280b4b548dde`
@@ -36,7 +36,7 @@
 | PHASE 0 | 5 | 5 | 0 | 0 | 0 | 0 | 0 |
 | PHASE 1 | 7 | 6 | 0 | 0 | 0 | 1 | 0 |
 | PHASE 2 | 7 | 7 | 0 | 0 | 0 | 0 | 0 |
-| PHASE 3 | 8 | 2 | 0 | 0 | 0 | 0 | 6 |
+| PHASE 3 | 8 | 3 | 0 | 0 | 0 | 0 | 5 |
 | PHASE 4 | 12 | 0 | 0 | 0 | 0 | 0 | 12 |
 | PHASE 5 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
 | PHASE 6 | 9 | 0 | 0 | 0 | 0 | 0 | 9 |
@@ -48,7 +48,7 @@
 | PHASE 12 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
 | PHASE 13 | 5 | 0 | 0 | 0 | 0 | 0 | 5 |
 | PHASE 14 | 5 | 0 | 0 | 0 | 0 | 0 | 5 |
-| **Total** | **124** | **20** | **0** | **0** | **0** | **1** | **103** |
+| **Total** | **124** | **21** | **0** | **0** | **0** | **1** | **102** |
 
 ## Verified task records
 
@@ -74,6 +74,7 @@
 | `P02-T07` | Normalize documentation and generated artifacts | Codex/GitHub | `VERIFIED` | `agent/complete-through-phase-02` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T07/2026-08-05_a0d159dd` | None | `2026-08-05` | `REQUIRED` |
 | `P03-T01` | Split and harden CI jobs | Codex/GitHub | `VERIFIED` | `agent/p03-t01-split-harden-ci-jobs` | `34f01ce7f8aa52b4579b6aa883c8c9c6c7a1a594` | `docs/implementation/evidence/PHASE-03/P03-T01/2026-08-05_34f01ce7` | None | `2026-08-05` | `REQUIRED` |
 | `P03-T02` | Implement meaningful server coverage policy | Codex/GitHub | `VERIFIED` | `agent/p03-t02-server-coverage-policy` | `b7e81e3935185c06cbaab2fb7e2ee199a69dcaca` | `docs/implementation/evidence/PHASE-03/P03-T02/2026-08-05_b7e81e39` | None | `2026-08-05` | `REQUIRED` |
+| `P03-T03` | Implement client coverage thresholds | Codex/GitHub | `VERIFIED` | `agent/p03-t03-client-coverage-thresholds` | `23fcb9b18348bd05cc95c66d29e799ebb03252e8` | `docs/implementation/evidence/PHASE-03/P03-T03/2026-08-05_23fcb9b1` | None | `2026-08-05` | `REQUIRED` |
 
 ## Waived task records
 
@@ -114,7 +115,6 @@ No pending tasks. `P02-T01` through `P02-T07` are verified with task-specific ev
 
 | Task ID | Task |
 |---|---|
-| `P03-T03` | Implement client coverage thresholds |
 | `P03-T04` | Replace fake accessibility testing |
 | `P03-T05` | Add real browser E2E testing |
 | `P03-T06` | Add dependency and supply-chain gates |

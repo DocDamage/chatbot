@@ -1,0 +1,34 @@
+{
+  "taskId": "P03-T03",
+  "commit": "23fcb9b18348bd05cc95c66d29e799ebb03252e8",
+  "branch": "agent/p03-t03-client-coverage-thresholds",
+  "status": "VERIFIED",
+  "commands": [
+    {
+      "command": "GitHub Actions run 31069162209 — all independent jobs and aggregate required gate",
+      "exitCode": 0
+    },
+    {
+      "command": "node --test scripts/release/__tests__/client-coverage-policy.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "npm --prefix client run coverage",
+      "exitCode": 0
+    },
+    {
+      "command": "container build and package smoke jobs",
+      "exitCode": 0
+    }
+  ],
+  "automatedTestsPassed": true,
+  "runtimeQaRequired": false,
+  "runtimeQaPassed": true,
+  "knownLimitations": [
+    "Current global client coverage is the locked Stage 1 baseline and does not yet meet Stage 2 or final targets.",
+    "Several critical workflows remain below the final 80 percent line target; they are explicit and protected against regression.",
+    "The existing accessibility job is still a TypeScript-only gate and remains the separate responsibility of P03-T04.",
+    "P01-T07 remains owner-waived; main is intentionally unprotected."
+  ],
+  "evidenceGeneratedAt": "2026-08-06T03:47:00Z"
+}
