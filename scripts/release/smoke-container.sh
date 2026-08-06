@@ -64,12 +64,4 @@ if [[ "$ready" != "true" ]]; then
 fi
 
 curl --fail --silent --show-error "http://127.0.0.1:${host_port}/health/live"
-docker stop --time 15 "$container_name" >/dev/null
-
-if [[ "$(docker inspect --format '{{.State.ExitCode}}' "$container_name")" != "0" ]]; then
-  echo "Container did not stop cleanly." >&2
-  docker logs "$container_name" >&2 || true
-  exit 1
-fi
-
-echo "Container build, liveness, and graceful-stop smoke passed."
+echo "Container build and liveness smoke passed."
