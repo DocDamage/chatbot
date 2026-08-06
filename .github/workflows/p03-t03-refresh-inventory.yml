@@ -1,0 +1,49 @@
+name: P03-T03 Refresh Inventory
+
+on:
+  push:
+    branches:
+      - agent/p03-t03-client-coverage-thresholds
+    paths:
+      - .github/workflows/p03-t03-refresh-inventory.yml
+      - config/client-coverage-policy.json
+      - scripts/release/check-client-coverage.mjs
+      - scripts/release/lib/client-coverage-policy.mjs
+      - scripts/release/__tests__/client-coverage-policy.test.mjs
+      - client/package.json
+      - client/vite.config.ts
+      - client/tsconfig.node.json
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout task branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/p03-t03-client-coverage-thresholds
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Regenerate repository inventory
+        run: npm run inventory:generate
+      - name: Commit generated inventory
+        shell: bash
+        run: |
+          git add docs/architecture/generated
+          if git diff --cached --quiet; then
+            echo "Generated inventory is already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "P03-T03: refresh generated inventory"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
