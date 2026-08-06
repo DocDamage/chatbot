@@ -1,13 +1,14 @@
 const coveragePolicy = require('./config/server-coverage-policy.json');
 
 const globalBaseline = coveragePolicy.baseline.global;
+const maximumUncovered = (metric) => -(metric.total - metric.covered);
 const coverageThreshold = globalBaseline
   ? {
       global: {
-        branches: globalBaseline.branches.pct,
-        functions: globalBaseline.functions.pct,
-        lines: globalBaseline.lines.pct,
-        statements: globalBaseline.statements.pct,
+        branches: maximumUncovered(globalBaseline.branches),
+        functions: maximumUncovered(globalBaseline.functions),
+        lines: maximumUncovered(globalBaseline.lines),
+        statements: maximumUncovered(globalBaseline.statements),
       },
     }
   : undefined;
