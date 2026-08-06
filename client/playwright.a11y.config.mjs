@@ -42,12 +42,12 @@ export default defineConfig({
   projects: [
     {
       name: 'application-accessibility',
-      testMatch: /application\.a11y\.spec\.mjs/,
+      testMatch: /application\.a11y\.pw\.mjs/,
       use: { baseURL: 'http://127.0.0.1:4175' },
     },
     {
       name: 'static-demo-accessibility',
-      testMatch: /static-demo\.a11y\.spec\.mjs/,
+      testMatch: /static-demo\.a11y\.pw\.mjs/,
       use: { baseURL: 'http://127.0.0.1:4176' },
     },
   ],
