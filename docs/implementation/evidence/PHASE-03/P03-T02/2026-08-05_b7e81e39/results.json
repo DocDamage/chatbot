@@ -1,0 +1,34 @@
+{
+  "taskId": "P03-T02",
+  "commit": "b7e81e3935185c06cbaab2fb7e2ee199a69dcaca",
+  "branch": "agent/p03-t02-server-coverage-policy",
+  "status": "VERIFIED",
+  "commands": [
+    {
+      "command": "GitHub Actions run 31066377115 — all independent jobs and aggregate required gate",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:coverage -- --runInBand",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:release-tools",
+      "exitCode": 0
+    },
+    {
+      "command": "container build and smoke job",
+      "exitCode": 0
+    }
+  ],
+  "automatedTestsPassed": true,
+  "runtimeQaRequired": false,
+  "runtimeQaPassed": true,
+  "knownLimitations": [
+    "Current global server coverage is the locked Stage 1 baseline and does not yet meet the Stage 2 or final global targets.",
+    "Tier A final 90 percent line and 85 percent branch targets are not yet achieved; five critical files remain at zero measured coverage and are explicitly recorded.",
+    "No feature is currently classified PRODUCTION_SUPPORTED, so Tier B has no active source mappings.",
+    "P03-T03 remains responsible for final client coverage thresholds."
+  ],
+  "evidenceGeneratedAt": "2026-08-06T03:09:00Z"
+}
