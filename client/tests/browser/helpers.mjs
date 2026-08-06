@@ -54,7 +54,9 @@ export async function openBuiltApplication(page) {
 export async function switchMode(page, label) {
   const trigger = page.locator('.mode-selector-button');
   await trigger.click();
-  await page.getByRole('option', { name: new RegExp(`^${escapeRegex(label)}\\b`, 'i') }).click();
+  const listbox = page.getByRole('listbox', { name: 'Chat mode' });
+  await expect(listbox).toBeVisible();
+  await listbox.getByRole('option', { name: label, exact: false }).click();
   await expect(trigger).toContainText(label);
 }
 
@@ -71,8 +73,4 @@ export async function sendChatMessage(page, text) {
   await expect(page.locator('.assistant-message-assistant .assistant-message-text').last()).not.toContainText('Thinking...');
   await expect(page.locator('.assistant-message-assistant .assistant-message-text').last()).not.toContainText('encountered an error');
   return { requestBody, payload };
-}
-
-function escapeRegex(value) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
