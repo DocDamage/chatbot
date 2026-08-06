@@ -8,6 +8,7 @@ export default function LocalToolsWorkspace() {
 
   return (
     <aside className="local-tools-workspace" aria-label="Local tools workspace">
+      <h2 className="local-tools-heading">Local tools</h2>
       <LocalRunApprovalPanel />
       <SpriteLabPanel />
     </aside>

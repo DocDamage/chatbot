@@ -8,12 +8,14 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('application shell and primary chat workflow pass Axe', async ({ page }) => {
+  await expect(page.getByRole('main')).toBeVisible();
   await expect(page.getByRole('region', { name: 'AI chat' })).toBeVisible();
+  await expect(page.locator('.assistant-viewport')).toHaveAttribute('tabindex', '0');
   await expectNoAxeViolations(page, 'application shell');
 });
 
 test('keyboard-only mode selection exposes the selected mode accessibly', async ({ page }) => {
-  const modeButton = page.getByRole('button', { name: /Ask/ }).first();
+  const modeButton = page.locator('.mode-selector-button');
   await modeButton.focus();
   await page.keyboard.press('ArrowDown');
 
