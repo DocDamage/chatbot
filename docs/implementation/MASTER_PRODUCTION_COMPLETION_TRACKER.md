@@ -8,7 +8,9 @@
 - Baseline branch: `main`
 - Original plan baseline commit: `8b963232d72a69c6616667aaf34daadba6056aba`
 - Last verified deployment commit: `342b657c6510fc086d11ad19a1c7b62fad9cd725`
-- Current task branch: `agent/phase-02-evidence-closeout-execution`
+- Current task branch: `agent/p03-t01-split-harden-ci-jobs`
+- Current P03-T01 implementation commit: `34f01ce7f8aa52b4579b6aa883c8c9c6c7a1a594`
+- Current P03-T01 verification CI: `31062952540`
 - Current integrated Phase 2 implementation commit: `6e1a019f8eccf5154c6a579d02abb188c6911a9e`
 - Exact Phase 2 implementation head: `a0d159dd0eff1991a9a7400664e2eef0286e77a2`
 - Phase 2 task-evidence validation commit: `84d981ea5cc951d51cb90996a157280b4b548dde`
@@ -34,7 +36,7 @@
 | PHASE 0 | 5 | 5 | 0 | 0 | 0 | 0 | 0 |
 | PHASE 1 | 7 | 6 | 0 | 0 | 0 | 1 | 0 |
 | PHASE 2 | 7 | 7 | 0 | 0 | 0 | 0 | 0 |
-| PHASE 3 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
+| PHASE 3 | 8 | 1 | 0 | 0 | 0 | 0 | 7 |
 | PHASE 4 | 12 | 0 | 0 | 0 | 0 | 0 | 12 |
 | PHASE 5 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
 | PHASE 6 | 9 | 0 | 0 | 0 | 0 | 0 | 9 |
@@ -46,7 +48,7 @@
 | PHASE 12 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
 | PHASE 13 | 5 | 0 | 0 | 0 | 0 | 0 | 5 |
 | PHASE 14 | 5 | 0 | 0 | 0 | 0 | 0 | 5 |
-| **Total** | **124** | **18** | **0** | **0** | **0** | **1** | **105** |
+| **Total** | **124** | **19** | **0** | **0** | **0** | **1** | **104** |
 
 ## Verified task records
 
@@ -70,6 +72,7 @@
 | `P02-T05` | Consolidate environment templates | Codex/GitHub | `VERIFIED` | `agent/complete-through-phase-02` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T05/2026-08-05_a0d159dd` | None | `2026-08-05` | `REQUIRED` |
 | `P02-T06` | Create configuration schemas | Codex/GitHub | `VERIFIED` | `agent/complete-through-phase-02` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T06/2026-08-05_a0d159dd` | None | `2026-08-05` | `REQUIRED` |
 | `P02-T07` | Normalize documentation and generated artifacts | Codex/GitHub | `VERIFIED` | `agent/complete-through-phase-02` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T07/2026-08-05_a0d159dd` | None | `2026-08-05` | `REQUIRED` |
+| `P03-T01` | Split and harden CI jobs | Codex/GitHub | `VERIFIED` | `agent/p03-t01-split-harden-ci-jobs` | `34f01ce7f8aa52b4579b6aa883c8c9c6c7a1a594` | `docs/implementation/evidence/PHASE-03/P03-T01/2026-08-05_34f01ce7` | None | `2026-08-05` | `REQUIRED` |
 
 ## Waived task records
 
@@ -110,7 +113,6 @@ No pending tasks. `P02-T01` through `P02-T07` are verified with task-specific ev
 
 | Task ID | Task |
 |---|---|
-| `P03-T01` | Split and harden CI jobs |
 | `P03-T02` | Implement meaningful server coverage policy |
 | `P03-T03` | Implement client coverage thresholds |
 | `P03-T04` | Replace fake accessibility testing |
