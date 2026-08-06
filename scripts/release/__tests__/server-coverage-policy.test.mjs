@@ -9,12 +9,12 @@ function metric(covered, total = 100) {
   return { covered, total, skipped: 0, pct: total === 0 ? 100 : (covered / total) * 100 };
 }
 
-function metrics(value) {
+function metrics(value, total = 100) {
   return {
-    lines: metric(value),
-    branches: metric(value),
-    functions: metric(value),
-    statements: metric(value),
+    lines: metric(value, total),
+    branches: metric(value, total),
+    functions: metric(value, total),
+    statements: metric(value, total),
   };
 }
 
@@ -58,7 +58,6 @@ function policy(mode = 'audit') {
       A: {
         description: 'critical',
         target: { lines: 90, branches: 85 },
-        enforceTarget: false,
         enforceFromStage: 'final',
         files: [
           {
@@ -83,6 +82,7 @@ test('repository policy is locked in enforce mode', () => {
   const policyUrl = new URL('../../../config/server-coverage-policy.json', import.meta.url);
   const lockedPolicy = JSON.parse(fs.readFileSync(policyUrl, 'utf8'));
   assert.equal(lockedPolicy.mode, 'enforce');
+  assert.equal(lockedPolicy.tiers.A.enforceFromStage, 'final');
   assert.ok(lockedPolicy.baseline.global.lines.total > 0);
   assert.ok(!lockedPolicy.coverageScope.collectCoverageFrom.includes('!src/**/index.ts'));
 });
@@ -99,7 +99,7 @@ test('audit mode records honest scope including server index without pretending 
   assert.equal(report.tiers.A.files[0].gaps[0].target, 90);
 });
 
-test('enforce mode rejects a global no-regression failure', () => {
+test('enforce mode rejects a global percentage regression', () => {
   const report = evaluateServerCoverage({
     root,
     policy: policy('enforce'),
@@ -107,7 +107,22 @@ test('enforce mode rejects a global no-regression failure', () => {
     featureManifest: manifest(),
   });
   assert.equal(report.passed, false);
-  assert.ok(report.violations.some((violation) => violation.includes('Global lines regressed')));
+  assert.ok(report.violations.some((violation) => violation.includes('Global lines percentage regressed')));
+});
+
+test('enforce mode rejects more uncovered code even when percentage is unchanged', () => {
+  const countPolicy = policy('enforce');
+  countPolicy.baseline.global = metrics(80);
+  const rawSummary = summary(80, 80);
+  rawSummary.total = metrics(160, 200);
+  const report = evaluateServerCoverage({
+    root,
+    policy: countPolicy,
+    rawSummary,
+    featureManifest: manifest(),
+  });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some((violation) => violation.includes('Global lines uncovered count regressed')));
 });
 
 test('enforce mode rejects a Tier A file regression even when global coverage passes', () => {
@@ -118,7 +133,7 @@ test('enforce mode rejects a Tier A file regression even when global coverage pa
     featureManifest: manifest(),
   });
   assert.equal(report.passed, false);
-  assert.ok(report.violations.some((violation) => violation.includes('Tier A src/critical.ts lines regressed')));
+  assert.ok(report.violations.some((violation) => violation.includes('Tier A src/critical.ts lines')));
 });
 
 test('final stage enforces the Tier A 90/85 target', () => {
@@ -136,7 +151,7 @@ test('final stage enforces the Tier A 90/85 target', () => {
   assert.ok(report.violations.some((violation) => violation.includes('Tier A target not met')));
 });
 
-test('production-supported manifest promotion requires an explicit Tier B policy mapping', () => {
+test('production-supported promotion requires an explicit Tier B source mapping', () => {
   assert.deepEqual(productionSupportedFeatureIds(manifest('PRODUCTION_SUPPORTED')), ['CORE-001']);
   const report = evaluateServerCoverage({
     root,
@@ -146,7 +161,27 @@ test('production-supported manifest promotion requires an explicit Tier B policy
   });
   assert.equal(report.passed, false);
   assert.ok(report.violations.some((violation) => violation.includes('Tier B feature IDs do not match')));
-  assert.ok(report.violations.some((violation) => violation.includes('Tier B must map at least one source file')));
+  assert.ok(report.violations.some((violation) => violation.includes('has no source mapping')));
+});
+
+test('a complete Tier B mapping can satisfy production-supported policy', () => {
+  const supportedPolicy = policy('audit');
+  supportedPolicy.tiers.B.featureIds = ['CORE-001'];
+  supportedPolicy.tiers.B.files = [
+    {
+      path: 'src/critical.ts',
+      control: 'core production service',
+      featureIds: ['CORE-001'],
+      baseline: null,
+    },
+  ];
+  const report = evaluateServerCoverage({
+    root,
+    policy: supportedPolicy,
+    rawSummary: summary(),
+    featureManifest: manifest('PRODUCTION_SUPPORTED'),
+  });
+  assert.equal(report.passed, true);
 });
 
 test('broad source exclusions are rejected', () => {
