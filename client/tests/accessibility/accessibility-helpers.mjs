@@ -12,13 +12,19 @@ const settingsPayload = {
 };
 
 export async function mockApplicationApi(page) {
-  await page.route('**/health/ready', async route => {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: '{"status":"ready"}' });
-  });
-
-  await page.route('**/api/**', async route => {
+  await page.route('**/*', async route => {
     const request = route.request();
     const url = new URL(request.url());
+
+    if (url.pathname === '/health/ready') {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '{"status":"ready"}' });
+      return;
+    }
+
+    if (!url.pathname.startsWith('/api/')) {
+      await route.continue();
+      return;
+    }
 
     if (url.pathname === '/api/settings') {
       const body = request.method() === 'PUT'

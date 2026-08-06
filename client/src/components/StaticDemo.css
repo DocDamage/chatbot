@@ -87,7 +87,7 @@
 }
 
 .static-demo-mode-active {
-  background: #667eea;
+  background: #4156b3;
   color: #fff;
 }
 
@@ -123,6 +123,11 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   opacity: 0.82;
+}
+
+.static-demo-message-user .static-demo-speaker {
+  color: #fff;
+  opacity: 1;
 }
 
 .static-demo-composer {
