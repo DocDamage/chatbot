@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "mode": "audit",
+  "activeStage": "stage-1-baseline",
+  "baseline": {
+    "commit": "34d67d85cfafaedc03cef9da3678c2a19030458d",
+    "ciRun": 31063384145,
+    "recordedAt": "2026-08-06T02:03:00Z",
+    "global": null
+  },
+  "coverageScope": {
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.d.ts",
+      "!src/**/__tests__/**",
+      "!src/**/*.test.ts",
+      "!src/**/*.spec.ts"
+    ],
+    "allowedExclusions": [
+      "!src/**/*.d.ts",
+      "!src/**/__tests__/**",
+      "!src/**/*.test.ts",
+      "!src/**/*.spec.ts"
+    ]
+  },
+  "globalMilestones": [
+    {
+      "stage": "stage-1-baseline",
+      "description": "Honest expanded baseline plus no-regression enforcement",
+      "lines": null,
+      "branches": null
+    },
+    {
+      "stage": "stage-2",
+      "lines": 55,
+      "branches": 45
+    },
+    {
+      "stage": "stage-3",
+      "lines": 65,
+      "branches": 55
+    },
+    {
+      "stage": "final",
+      "lines": 75,
+      "branches": 65
+    }
+  ],
+  "tiers": {
+    "A": {
+      "description": "Critical security, authorization, execution, data-guardrail, redaction, and deployment controls",
+      "target": {
+        "lines": 90,
+        "branches": 85
+      },
+      "enforceTarget": false,
+      "files": [
+        { "path": "src/middleware/auth.ts", "control": "Authentication, RBAC, CSRF, and privileged-request audit", "baseline": null },
+        { "path": "src/middleware/apiKeyAuth.ts", "control": "API-key authentication", "baseline": null },
+        { "path": "src/core/auth/AuthService.ts", "control": "Authentication and session service", "baseline": null },
+        { "path": "src/middleware/security.ts", "control": "CORS and browser security headers", "baseline": null },
+        { "path": "src/middleware/rateLimiter.ts", "control": "Rate limiting", "baseline": null },
+        { "path": "src/core/config/APIKeyManager.ts", "control": "API-key encryption and secret lifecycle", "baseline": null },
+        { "path": "src/core/files/FileExplorerService.ts", "control": "Workspace path validation", "baseline": null },
+        { "path": "src/core/upload/FileProcessor.ts", "control": "Upload and parser validation", "baseline": null },
+        { "path": "src/core/local-tools/LocalToolPolicy.ts", "control": "Local command policy", "baseline": null },
+        { "path": "src/core/local-tools/LocalRunApprovalService.ts", "control": "Exact local-run approval binding", "baseline": null },
+        { "path": "src/core/local-tools/LocalToolRunner.ts", "control": "Local command execution", "baseline": null },
+        { "path": "src/core/local-tools/LocalToolService.ts", "control": "Local execution orchestration", "baseline": null },
+        { "path": "src/server/security/webhookUrl.ts", "control": "Webhook URL and SSRF validation", "baseline": null },
+        { "path": "src/core/database/SafeDatabaseQuestionAgent.ts", "control": "Read-only database guardrails", "baseline": null },
+        { "path": "src/core/audit/AuditLogger.ts", "control": "Audit logging and redaction", "baseline": null },
+        { "path": "src/server/routes/admin.ts", "control": "Administrative log redaction", "baseline": null },
+        { "path": "src/core/config/ConfigValidator.ts", "control": "Deployment configuration validation", "baseline": null },
+        { "path": "src/core/config/EnvironmentDefinitions.ts", "control": "Typed environment and secret redaction rules", "baseline": null },
+        { "path": "src/core/config/ProfileManager.ts", "control": "Hosted/local/test profile enforcement", "baseline": null }
+      ]
+    },
+    "B": {
+      "description": "Files backing features classified PRODUCTION_SUPPORTED in the production feature manifest",
+      "target": {
+        "lines": 80,
+        "branches": 70
+      },
+      "enforceTarget": true,
+      "featureIds": [],
+      "files": []
+    }
+  }
+}
