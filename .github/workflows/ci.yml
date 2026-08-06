@@ -329,13 +329,9 @@ jobs:
     name: Documentation and repository policy validation
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    permissions:
-      contents: write
     steps:
-      - name: Checkout pull request branch
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -348,20 +344,6 @@ jobs:
         run: npm run test:release-tools
       - name: Regenerate repository inventory
         run: npm run inventory:generate
-      - name: Commit generated inventory on the pull request branch
-        if: ${{ github.event_name == 'pull_request' }}
-        shell: bash
-        run: |
-          if git diff --quiet -- docs/architecture/generated/; then
-            echo "Generated repository inventory is already current."
-            exit 0
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/architecture/generated/
-          git commit -m "docs: refresh generated repository inventory"
-          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
       - name: Upload generated inventory diagnostics
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
