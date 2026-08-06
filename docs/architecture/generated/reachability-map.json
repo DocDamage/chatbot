@@ -1761,6 +1761,7 @@
       "scripts/release/generate-repository-inventory.mjs",
       "scripts/release/lib/files.mjs"
     ],
+    "scripts/release/check-release-evidence.mjs": [],
     "scripts/release/check-repository-inventory.mjs": [
       "scripts/release/generate-repository-inventory.mjs"
     ],
@@ -4694,5 +4695,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 916
+  "sourceRecordCount": 917
 }
