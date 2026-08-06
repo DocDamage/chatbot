@@ -20,6 +20,10 @@ export async function installAuthenticatedApi(page, options = {}) {
   const userId = options.userId || TEST_USER_ID;
   const token = options.token || createToken({ roles: options.roles || ['developer', 'admin'], userId });
 
+  await page.context().setExtraHTTPHeaders({
+    Authorization: `Bearer ${token}`,
+  });
+
   await page.route('**/api/**', async route => {
     const request = route.request();
     const headers = {
