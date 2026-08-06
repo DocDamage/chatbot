@@ -1436,6 +1436,10 @@
       "specifier": "./index.css"
     },
     {
+      "importer": "client/vite.config.ts",
+      "specifier": "../config/client-coverage-policy.json"
+    },
+    {
       "importer": "jest.config.js",
       "specifier": "./config/server-coverage-policy.json"
     },
@@ -1749,12 +1753,18 @@
     "scripts/import-wikidata-chrono.ts": [],
     "scripts/import-wikimedia-history.ts": [],
     "scripts/import-wikipedia-general-corpus.ts": [],
+    "scripts/release/__tests__/client-coverage-policy.test.mjs": [
+      "scripts/release/lib/client-coverage-policy.mjs"
+    ],
     "scripts/release/__tests__/phase2-scanners.test.mjs": [
       "scripts/release/lib/reachability.mjs",
       "scripts/release/lib/source-analysis.mjs"
     ],
     "scripts/release/__tests__/server-coverage-policy.test.mjs": [
       "scripts/release/lib/server-coverage-policy.mjs"
+    ],
+    "scripts/release/check-client-coverage.mjs": [
+      "scripts/release/lib/client-coverage-policy.mjs"
     ],
     "scripts/release/check-docs.mjs": [],
     "scripts/release/check-environment-contract.mjs": [
@@ -1782,6 +1792,7 @@
       "scripts/release/lib/render.mjs",
       "scripts/release/lib/source-analysis.mjs"
     ],
+    "scripts/release/lib/client-coverage-policy.mjs": [],
     "scripts/release/lib/files.mjs": [],
     "scripts/release/lib/reachability.mjs": [
       "scripts/release/lib/files.mjs",
@@ -4707,5 +4718,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 921
+  "sourceRecordCount": 924
 }
