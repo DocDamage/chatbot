@@ -27,7 +27,7 @@ This index links verified production-completion tasks to evidence collected agai
 
 | Record | Status | Exact evidence commit | Evidence | Notes |
 |---|---|---|---|---|
-| Phase 2 evidence closeout | `VERIFIED` | `84d981ea5cc951d51cb90996a157280b4b548dde` | `docs/implementation/evidence/PHASE-02/CLOSEOUT/2026-08-05_84d981ea` | PR `#157`; closeout evidence CI `31058155647`; final closure metadata must pass required CI before merge. |
+| Phase 2 evidence closeout | `VERIFIED` | `84d981ea5cc951d51cb90996a157280b4b548dde` | `docs/implementation/evidence/PHASE-02/CLOSEOUT/2026-08-05_84d981ea` | PR `#157`; task-evidence CI `31058155647`; closure-metadata commit `856642ecfa3b6e11dd29b45d2671e1227e8c66a8` passed CI `31058971080`. |
 
 ## Non-verified implementation and waiver records
 
