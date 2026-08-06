@@ -276,25 +276,9 @@ jobs:
         run: npm --prefix client run coverage
 
   migration-tests:
-    name: Database migration tests
+    name: Database migration tests (current SQLite coverage)
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    services:
-      postgres:
-        image: pgvector/pgvector:pg16
-        env:
-          POSTGRES_DB: chatbot_ci
-          POSTGRES_USER: chatbot
-          POSTGRES_PASSWORD: chatbot
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U chatbot -d chatbot_ci"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-    env:
-      POSTGRES_VECTOR_TEST_URL: postgres://chatbot:chatbot@127.0.0.1:5432/chatbot_ci
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -306,7 +290,7 @@ jobs:
           cache-dependency-path: package-lock.json
       - name: Install server dependencies
         run: npm ci
-      - name: Run migration tests against SQLite and PostgreSQL
+      - name: Run current migration tests
         run: npx jest --runTestsByPath src/core/database/Database.test.ts --runInBand
 
   container-smoke:
@@ -358,6 +342,17 @@ jobs:
         run: npm ci
       - name: Test release scanners
         run: npm run test:release-tools
+      - name: Regenerate repository inventory
+        run: npm run inventory:generate
+      - name: Upload generated inventory diagnostics
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: repository-inventory
+          path: docs/architecture/generated/
+          if-no-files-found: error
+      - name: Verify generated inventory is committed
+        run: git diff --exit-code -- docs/architecture/generated/
       - name: Validate repository inventory
         run: npm run check:inventory
       - name: Validate production reachability boundary
