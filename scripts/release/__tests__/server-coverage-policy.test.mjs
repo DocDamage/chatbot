@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import test from 'node:test';
 import { evaluateServerCoverage, productionSupportedFeatureIds } from '../lib/server-coverage-policy.mjs';
 
@@ -49,12 +50,16 @@ function policy(mode = 'audit') {
         '!src/**/*.spec.ts',
       ],
     },
-    globalMilestones: [{ stage: 'stage-1-baseline', lines: 60, branches: 60 }],
+    globalMilestones: [
+      { stage: 'stage-1-baseline', lines: 60, branches: 60 },
+      { stage: 'final', lines: 75, branches: 65 },
+    ],
     tiers: {
       A: {
         description: 'critical',
         target: { lines: 90, branches: 85 },
         enforceTarget: false,
+        enforceFromStage: 'final',
         files: [
           {
             path: 'src/critical.ts',
@@ -73,6 +78,14 @@ function policy(mode = 'audit') {
     },
   };
 }
+
+test('repository policy is locked in enforce mode', () => {
+  const policyUrl = new URL('../../../config/server-coverage-policy.json', import.meta.url);
+  const lockedPolicy = JSON.parse(fs.readFileSync(policyUrl, 'utf8'));
+  assert.equal(lockedPolicy.mode, 'enforce');
+  assert.ok(lockedPolicy.baseline.global.lines.total > 0);
+  assert.ok(!lockedPolicy.coverageScope.collectCoverageFrom.includes('!src/**/index.ts'));
+});
 
 test('audit mode records honest scope including server index without pretending targets pass', () => {
   const report = evaluateServerCoverage({
@@ -106,6 +119,21 @@ test('enforce mode rejects a Tier A file regression even when global coverage pa
   });
   assert.equal(report.passed, false);
   assert.ok(report.violations.some((violation) => violation.includes('Tier A src/critical.ts lines regressed')));
+});
+
+test('final stage enforces the Tier A 90/85 target', () => {
+  const finalPolicy = policy('enforce');
+  finalPolicy.activeStage = 'final';
+  finalPolicy.baseline.global = metrics(80);
+  finalPolicy.tiers.A.files[0].baseline = metrics(80);
+  const report = evaluateServerCoverage({
+    root,
+    policy: finalPolicy,
+    rawSummary: summary(80, 89),
+    featureManifest: manifest(),
+  });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some((violation) => violation.includes('Tier A target not met')));
 });
 
 test('production-supported manifest promotion requires an explicit Tier B policy mapping', () => {
