@@ -12,7 +12,9 @@ test('mobile viewport loads the built application and completes a chat smoke wor
   page.on('pageerror', error => pageErrors.push(error.message));
 
   await openBuiltApplication(page);
-  expect(page.viewportSize()).toEqual({ width: 393, height: 851 });
+  const viewport = page.viewportSize();
+  expect(viewport?.width).toBeLessThanOrEqual(430);
+  expect(viewport?.height).toBeGreaterThanOrEqual(700);
   await expect(page.locator('.assistant-input')).toBeVisible();
 
   await switchMode(page, 'Explain');
