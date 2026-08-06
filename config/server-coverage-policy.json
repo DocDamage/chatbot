@@ -1,12 +1,17 @@
 {
   "schemaVersion": 1,
-  "mode": "audit",
+  "mode": "enforce",
   "activeStage": "stage-1-baseline",
   "baseline": {
-    "commit": "34d67d85cfafaedc03cef9da3678c2a19030458d",
-    "ciRun": 31063384145,
-    "recordedAt": "2026-08-06T02:03:00Z",
-    "global": null
+    "commit": "42ef5cbeb832114cf2e393a6b21bc4840117c55e",
+    "ciRun": 31065400189,
+    "recordedAt": "2026-08-06T02:23:26Z",
+    "global": {
+      "lines": { "total": 20918, "covered": 7879, "skipped": 0, "pct": 37.6661 },
+      "branches": { "total": 11326, "covered": 3109, "skipped": 0, "pct": 27.4501 },
+      "functions": { "total": 4624, "covered": 1719, "skipped": 0, "pct": 37.1756 },
+      "statements": { "total": 22562, "covered": 8319, "skipped": 0, "pct": 36.8717 }
+    }
   },
   "coverageScope": {
     "collectCoverageFrom": [
@@ -30,58 +35,211 @@
       "lines": null,
       "branches": null
     },
-    {
-      "stage": "stage-2",
-      "lines": 55,
-      "branches": 45
-    },
-    {
-      "stage": "stage-3",
-      "lines": 65,
-      "branches": 55
-    },
-    {
-      "stage": "final",
-      "lines": 75,
-      "branches": 65
-    }
+    { "stage": "stage-2", "lines": 55, "branches": 45 },
+    { "stage": "stage-3", "lines": 65, "branches": 55 },
+    { "stage": "final", "lines": 75, "branches": 65 }
   ],
   "tiers": {
     "A": {
       "description": "Critical security, authorization, execution, data-guardrail, redaction, and deployment controls",
-      "target": {
-        "lines": 90,
-        "branches": 85
-      },
+      "target": { "lines": 90, "branches": 85 },
       "enforceTarget": false,
       "files": [
-        { "path": "src/middleware/auth.ts", "control": "Authentication, RBAC, CSRF, and privileged-request audit", "baseline": null },
-        { "path": "src/middleware/apiKeyAuth.ts", "control": "API-key authentication", "baseline": null },
-        { "path": "src/core/auth/AuthService.ts", "control": "Authentication and session service", "baseline": null },
-        { "path": "src/middleware/security.ts", "control": "CORS and browser security headers", "baseline": null },
-        { "path": "src/middleware/rateLimiter.ts", "control": "Rate limiting", "baseline": null },
-        { "path": "src/core/config/APIKeyManager.ts", "control": "API-key encryption and secret lifecycle", "baseline": null },
-        { "path": "src/core/files/FileExplorerService.ts", "control": "Workspace path validation", "baseline": null },
-        { "path": "src/core/upload/FileProcessor.ts", "control": "Upload and parser validation", "baseline": null },
-        { "path": "src/core/local-tools/LocalToolPolicy.ts", "control": "Local command policy", "baseline": null },
-        { "path": "src/core/local-tools/LocalRunApprovalService.ts", "control": "Exact local-run approval binding", "baseline": null },
-        { "path": "src/core/local-tools/LocalToolRunner.ts", "control": "Local command execution", "baseline": null },
-        { "path": "src/core/local-tools/LocalToolService.ts", "control": "Local execution orchestration", "baseline": null },
-        { "path": "src/server/security/webhookUrl.ts", "control": "Webhook URL and SSRF validation", "baseline": null },
-        { "path": "src/core/database/SafeDatabaseQuestionAgent.ts", "control": "Read-only database guardrails", "baseline": null },
-        { "path": "src/core/audit/AuditLogger.ts", "control": "Audit logging and redaction", "baseline": null },
-        { "path": "src/server/routes/admin.ts", "control": "Administrative log redaction", "baseline": null },
-        { "path": "src/core/config/ConfigValidator.ts", "control": "Deployment configuration validation", "baseline": null },
-        { "path": "src/core/config/EnvironmentDefinitions.ts", "control": "Typed environment and secret redaction rules", "baseline": null },
-        { "path": "src/core/config/ProfileManager.ts", "control": "Hosted/local/test profile enforcement", "baseline": null }
+        {
+          "path": "src/middleware/auth.ts",
+          "control": "Authentication, RBAC, CSRF, and privileged-request audit",
+          "baseline": {
+            "lines": { "total": 57, "covered": 48, "skipped": 0, "pct": 84.2105 },
+            "branches": { "total": 15, "covered": 9, "skipped": 0, "pct": 60 },
+            "functions": { "total": 9, "covered": 9, "skipped": 0, "pct": 100 },
+            "statements": { "total": 64, "covered": 55, "skipped": 0, "pct": 85.9375 }
+          }
+        },
+        {
+          "path": "src/middleware/apiKeyAuth.ts",
+          "control": "API-key authentication",
+          "baseline": {
+            "lines": { "total": 27, "covered": 0, "skipped": 0, "pct": 0 },
+            "branches": { "total": 7, "covered": 0, "skipped": 0, "pct": 0 },
+            "functions": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+            "statements": { "total": 29, "covered": 0, "skipped": 0, "pct": 0 }
+          }
+        },
+        {
+          "path": "src/core/auth/AuthService.ts",
+          "control": "Authentication and session service",
+          "baseline": {
+            "lines": { "total": 24, "covered": 20, "skipped": 0, "pct": 83.3333 },
+            "branches": { "total": 11, "covered": 8, "skipped": 0, "pct": 72.7273 },
+            "functions": { "total": 5, "covered": 4, "skipped": 0, "pct": 80 },
+            "statements": { "total": 26, "covered": 21, "skipped": 0, "pct": 80.7692 }
+          }
+        },
+        {
+          "path": "src/middleware/security.ts",
+          "control": "CORS and browser security headers",
+          "baseline": {
+            "lines": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+            "branches": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 },
+            "functions": { "total": 1, "covered": 0, "skipped": 0, "pct": 0 },
+            "statements": { "total": 4, "covered": 0, "skipped": 0, "pct": 0 }
+          }
+        },
+        {
+          "path": "src/middleware/rateLimiter.ts",
+          "control": "Rate limiting",
+          "baseline": {
+            "lines": { "total": 79, "covered": 46, "skipped": 0, "pct": 58.2278 },
+            "branches": { "total": 33, "covered": 16, "skipped": 0, "pct": 48.4848 },
+            "functions": { "total": 9, "covered": 5, "skipped": 0, "pct": 55.5556 },
+            "statements": { "total": 80, "covered": 46, "skipped": 0, "pct": 57.5 }
+          }
+        },
+        {
+          "path": "src/core/config/APIKeyManager.ts",
+          "control": "API-key encryption and secret lifecycle",
+          "baseline": {
+            "lines": { "total": 150, "covered": 58, "skipped": 0, "pct": 38.6667 },
+            "branches": { "total": 42, "covered": 11, "skipped": 0, "pct": 26.1905 },
+            "functions": { "total": 29, "covered": 15, "skipped": 0, "pct": 51.7241 },
+            "statements": { "total": 157, "covered": 60, "skipped": 0, "pct": 38.2166 }
+          }
+        },
+        {
+          "path": "src/core/files/FileExplorerService.ts",
+          "control": "Workspace path validation",
+          "baseline": {
+            "lines": { "total": 95, "covered": 93, "skipped": 0, "pct": 97.8947 },
+            "branches": { "total": 82, "covered": 62, "skipped": 0, "pct": 75.6098 },
+            "functions": { "total": 22, "covered": 20, "skipped": 0, "pct": 90.9091 },
+            "statements": { "total": 115, "covered": 103, "skipped": 0, "pct": 89.5652 }
+          }
+        },
+        {
+          "path": "src/core/upload/FileProcessor.ts",
+          "control": "Upload and parser validation",
+          "baseline": {
+            "lines": { "total": 68, "covered": 0, "skipped": 0, "pct": 0 },
+            "branches": { "total": 14, "covered": 0, "skipped": 0, "pct": 0 },
+            "functions": { "total": 12, "covered": 0, "skipped": 0, "pct": 0 },
+            "statements": { "total": 69, "covered": 0, "skipped": 0, "pct": 0 }
+          }
+        },
+        {
+          "path": "src/core/local-tools/LocalToolPolicy.ts",
+          "control": "Local command policy",
+          "baseline": {
+            "lines": { "total": 9, "covered": 9, "skipped": 0, "pct": 100 },
+            "branches": { "total": 5, "covered": 5, "skipped": 0, "pct": 100 },
+            "functions": { "total": 1, "covered": 1, "skipped": 0, "pct": 100 },
+            "statements": { "total": 11, "covered": 11, "skipped": 0, "pct": 100 }
+          }
+        },
+        {
+          "path": "src/core/local-tools/LocalRunApprovalService.ts",
+          "control": "Exact local-run approval binding",
+          "baseline": {
+            "lines": { "total": 17, "covered": 15, "skipped": 0, "pct": 88.2353 },
+            "branches": { "total": 27, "covered": 20, "skipped": 0, "pct": 74.0741 },
+            "functions": { "total": 5, "covered": 5, "skipped": 0, "pct": 100 },
+            "statements": { "total": 18, "covered": 16, "skipped": 0, "pct": 88.8889 }
+          }
+        },
+        {
+          "path": "src/core/local-tools/LocalToolRunner.ts",
+          "control": "Local command execution",
+          "baseline": {
+            "lines": { "total": 80, "covered": 58, "skipped": 0, "pct": 72.5 },
+            "branches": { "total": 27, "covered": 12, "skipped": 0, "pct": 44.4444 },
+            "functions": { "total": 18, "covered": 14, "skipped": 0, "pct": 77.7778 },
+            "statements": { "total": 84, "covered": 60, "skipped": 0, "pct": 71.4286 }
+          }
+        },
+        {
+          "path": "src/core/local-tools/LocalToolService.ts",
+          "control": "Local execution orchestration",
+          "baseline": {
+            "lines": { "total": 122, "covered": 53, "skipped": 0, "pct": 43.4426 },
+            "branches": { "total": 116, "covered": 38, "skipped": 0, "pct": 32.7586 },
+            "functions": { "total": 18, "covered": 9, "skipped": 0, "pct": 50 },
+            "statements": { "total": 133, "covered": 54, "skipped": 0, "pct": 40.6015 }
+          }
+        },
+        {
+          "path": "src/server/security/webhookUrl.ts",
+          "control": "Webhook URL and SSRF validation",
+          "baseline": {
+            "lines": { "total": 14, "covered": 13, "skipped": 0, "pct": 92.8571 },
+            "branches": { "total": 7, "covered": 7, "skipped": 0, "pct": 100 },
+            "functions": { "total": 1, "covered": 1, "skipped": 0, "pct": 100 },
+            "statements": { "total": 14, "covered": 13, "skipped": 0, "pct": 92.8571 }
+          }
+        },
+        {
+          "path": "src/core/database/SafeDatabaseQuestionAgent.ts",
+          "control": "Read-only database guardrails",
+          "baseline": {
+            "lines": { "total": 54, "covered": 44, "skipped": 0, "pct": 81.4815 },
+            "branches": { "total": 33, "covered": 14, "skipped": 0, "pct": 42.4242 },
+            "functions": { "total": 13, "covered": 12, "skipped": 0, "pct": 92.3077 },
+            "statements": { "total": 58, "covered": 46, "skipped": 0, "pct": 79.3103 }
+          }
+        },
+        {
+          "path": "src/core/audit/AuditLogger.ts",
+          "control": "Audit logging and redaction",
+          "baseline": {
+            "lines": { "total": 38, "covered": 0, "skipped": 0, "pct": 0 },
+            "branches": { "total": 35, "covered": 0, "skipped": 0, "pct": 0 },
+            "functions": { "total": 11, "covered": 0, "skipped": 0, "pct": 0 },
+            "statements": { "total": 46, "covered": 0, "skipped": 0, "pct": 0 }
+          }
+        },
+        {
+          "path": "src/server/routes/admin.ts",
+          "control": "Administrative log redaction",
+          "baseline": {
+            "lines": { "total": 116, "covered": 78, "skipped": 0, "pct": 67.2414 },
+            "branches": { "total": 49, "covered": 23, "skipped": 0, "pct": 46.9388 },
+            "functions": { "total": 19, "covered": 16, "skipped": 0, "pct": 84.2105 },
+            "statements": { "total": 120, "covered": 82, "skipped": 0, "pct": 68.3333 }
+          }
+        },
+        {
+          "path": "src/core/config/ConfigValidator.ts",
+          "control": "Deployment configuration validation",
+          "baseline": {
+            "lines": { "total": 61, "covered": 45, "skipped": 0, "pct": 73.7705 },
+            "branches": { "total": 62, "covered": 27, "skipped": 0, "pct": 43.5484 },
+            "functions": { "total": 14, "covered": 12, "skipped": 0, "pct": 85.7143 },
+            "statements": { "total": 77, "covered": 53, "skipped": 0, "pct": 68.8312 }
+          }
+        },
+        {
+          "path": "src/core/config/EnvironmentDefinitions.ts",
+          "control": "Typed environment and secret redaction rules",
+          "baseline": {
+            "lines": { "total": 15, "covered": 13, "skipped": 0, "pct": 86.6667 },
+            "branches": { "total": 9, "covered": 6, "skipped": 0, "pct": 66.6667 },
+            "functions": { "total": 7, "covered": 6, "skipped": 0, "pct": 85.7143 },
+            "statements": { "total": 22, "covered": 19, "skipped": 0, "pct": 86.3636 }
+          }
+        },
+        {
+          "path": "src/core/config/ProfileManager.ts",
+          "control": "Hosted/local/test profile enforcement",
+          "baseline": {
+            "lines": { "total": 112, "covered": 0, "skipped": 0, "pct": 0 },
+            "branches": { "total": 37, "covered": 0, "skipped": 0, "pct": 0 },
+            "functions": { "total": 24, "covered": 0, "skipped": 0, "pct": 0 },
+            "statements": { "total": 118, "covered": 0, "skipped": 0, "pct": 0 }
+          }
+        }
       ]
     },
     "B": {
       "description": "Files backing features classified PRODUCTION_SUPPORTED in the production feature manifest",
-      "target": {
-        "lines": 80,
-        "branches": 70
-      },
+      "target": { "lines": 80, "branches": 70 },
       "enforceTarget": true,
       "featureIds": [],
       "files": []
