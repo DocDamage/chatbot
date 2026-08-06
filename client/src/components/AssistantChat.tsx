@@ -494,7 +494,7 @@ function AssistantChat() {
             </div>
           )}
           <ThreadPrimitive.Root className="assistant-thread">
-            <ThreadPrimitive.Viewport className="assistant-viewport">
+            <ThreadPrimitive.Viewport className="assistant-viewport" tabIndex={0} aria-label="Conversation messages">
               <ThreadPrimitive.Empty>
                 <div className="assistant-empty">
                   <div className="assistant-empty-icon">AI</div>

@@ -13,8 +13,10 @@ function InteractiveApp() {
         <p className="subtitle">Ask me anything</p>
         <SettingsMenu />
       </header>
-      <AssistantChat />
-      <LocalToolsWorkspace />
+      <main>
+        <AssistantChat />
+        <LocalToolsWorkspace />
+      </main>
     </div>
   );
 }

@@ -1493,6 +1493,8 @@
     }
   ],
   "importGraph": {
+    "client/playwright.a11y.config.mjs": [],
+    "client/scripts/prepare-a11y-tools.mjs": [],
     "client/src/api/audio.test.ts": [
       "client/src/api/audio.ts"
     ],
@@ -1716,6 +1718,13 @@
     ],
     "client/src/test/browserTestUtils.ts": [],
     "client/src/vite-env.d.ts": [],
+    "client/tests/accessibility/accessibility-helpers.mjs": [],
+    "client/tests/accessibility/application.a11y.pw.mjs": [
+      "client/tests/accessibility/accessibility-helpers.mjs"
+    ],
+    "client/tests/accessibility/static-demo.a11y.pw.mjs": [
+      "client/tests/accessibility/accessibility-helpers.mjs"
+    ],
     "client/vite.config.ts": [],
     "docs/extract_all_snippets.js": [],
     "docs/extract_snippets.js": [],
@@ -4718,5 +4727,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 924
+  "sourceRecordCount": 929
 }

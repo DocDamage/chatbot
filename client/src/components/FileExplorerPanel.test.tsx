@@ -7,7 +7,39 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe('FileExplorerPanel error handling', () => {
+function stubFileTree() {
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    json: async () => ({ name: '.', path: '.', type: 'directory', children: [] }),
+  }));
+}
+
+describe('FileExplorerPanel accessibility and error handling', () => {
+  it('uses the browse landmark label by default', () => {
+    stubFileTree();
+
+    render(<FileExplorerPanel onLoadFile={vi.fn()} />);
+
+    expect(screen.getByRole('complementary', { name: 'Workspace files' })).toBeTruthy();
+  });
+
+  it('uses a distinct landmark label in select mode', () => {
+    stubFileTree();
+
+    render(<FileExplorerPanel mode="select" onSelect={vi.fn()} />);
+
+    expect(screen.getByRole('complementary', { name: 'Selectable workspace files' })).toBeTruthy();
+  });
+
+  it('allows callers to provide a unique landmark label', () => {
+    stubFileTree();
+
+    render(<FileExplorerPanel ariaLabel="Sprite source files" mode="select" onSelect={vi.fn()} />);
+
+    expect(screen.getByRole('complementary', { name: 'Sprite source files' })).toBeTruthy();
+  });
+
   it('displays structured 401 route errors from the file API', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: false,

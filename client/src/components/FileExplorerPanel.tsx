@@ -16,13 +16,14 @@ interface FileExplorerPanelProps {
   mode?: 'browse' | 'select';
   accept?: string[];
   onSelect?: (file: FileNode) => void;
+  ariaLabel?: string;
 }
 
 const textPreviewExtensions = new Set(['.ts', '.tsx', '.js', '.jsx', '.json', '.md', '.txt', '.css', '.html', '.yml', '.yaml']);
 const imagePreviewExtensions = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp']);
 const audioPreviewExtensions = new Set(['.mp3', '.wav', '.ogg', '.flac', '.m4a']);
 
-function FileExplorerPanel({ onLoadFile, mode = 'browse', accept, onSelect }: FileExplorerPanelProps) {
+function FileExplorerPanel({ onLoadFile, mode = 'browse', accept, onSelect, ariaLabel }: FileExplorerPanelProps) {
   const [tree, setTree] = useState<FileNode | null>(null);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Array<{ path: string; match: string }>>([]);
@@ -31,6 +32,7 @@ function FileExplorerPanel({ onLoadFile, mode = 'browse', accept, onSelect }: Fi
   const [mediaPreview, setMediaPreview] = useState<{ type: 'image' | 'audio'; path: string } | undefined>();
   const [error, setError] = useState('');
   const searchAbortRef = useRef<AbortController | null>(null);
+  const panelLabel = ariaLabel ?? (mode === 'select' ? 'Selectable workspace files' : 'Workspace files');
 
   useEffect(() => {
     if (isStaticPagesBuild) {
@@ -116,7 +118,7 @@ function FileExplorerPanel({ onLoadFile, mode = 'browse', accept, onSelect }: Fi
   const canSelect = (filePath: string) => mode === 'select' && isAccepted(filePath);
 
   return (
-    <aside className="file-explorer-panel" aria-label="Workspace files">
+    <aside className="file-explorer-panel" aria-label={panelLabel}>
       <div className="file-explorer-header">
         <strong>Files</strong>
         <input value={query} onChange={event => setQuery(event.target.value)} onKeyDown={event => event.key === 'Enter' && runSearch(0)} placeholder="Search files" />
