@@ -2,9 +2,8 @@
 
 - [x] One canonical `.env.example` remains.
 - [x] Conflicting `env.example` was removed.
-- [x] Variables are grouped by deployment concern.
-- [x] Required, optional, deprecated, and local-only semantics are represented by template/definitions.
-- [x] Environment usages and definitions are synchronized by an automated gate.
+- [x] Variables are grouped and typed by deployment concern.
+- [x] Environment usages and definitions are synchronized.
 - [x] Documentation and package smoke passed.
-- [x] Manual end-user runtime QA is not applicable to template consolidation.
-- [ ] Closeout evidence commit passes its own pull-request CI.
+- [x] Manual runtime QA is not applicable.
+- [x] Exact task-evidence commit passed pull-request CI.

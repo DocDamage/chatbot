@@ -2,23 +2,26 @@
 
 ## Status
 
-`IMPLEMENTED_NOT_VERIFIED` pending closeout-branch CI.
+`VERIFIED`
 
-## Exact implementation
+## Exact implementation and integration
 
 - Implementation commit: `a0d159dd0eff1991a9a7400664e2eef0286e77a2`
 - Integration commit: `6e1a019f8eccf5154c6a579d02abb188c6911a9e`
-- Pull request: `#155`
-- Exact implementation CI: run `31033387341`, conclusion `success`
+- Integration pull request: `#155`
+- Exact implementation CI: `31033387341` — success
+- Task-evidence commit: `84d981ea5cc951d51cb90996a157280b4b548dde`
+- Task-evidence pull request: `#157`
+- Exact task-evidence CI: `31058155647` — success
 
 ## Scope proven
 
-`check-file-size.mjs` scans production source, excludes only explicit generated/migration patterns, compares oversized files with the maintained large-file register, and fails for unregistered no-regression violations. The generated register records line counts, justification, decomposition review, and future ownership.
+`check-file-size.mjs` scans production source, excludes only explicit generated/migration patterns, compares oversized files with the maintained large-file register, and fails for unregistered no-regression violations. The register records line counts, justification, decomposition review, and future ownership.
 
 ## Verification conclusion
 
-Scanner tests, the file-size gate, aggregate Phase 2 gate, and repository-integrity job passed at the exact implementation head.
+The task-specific evidence bundle exists at the exact evidence commit, all applicable Phase 2 checks passed on both the implementation head and evidence commit, runtime/manual QA was correctly classified for this repository-governance task, and the limitation below is preserved rather than hidden.
 
 ## Known limitation
 
-Registered oversized files still exist. This task enforces truthful registration and no regression; it does not claim all large files were already decomposed.
+Registered oversized files remain and require future decomposition where practical.
