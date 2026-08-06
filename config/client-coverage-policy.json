@@ -207,7 +207,7 @@
         "baseline": null
       },
       {
-        "path": "client/src/components/LocalWorkspace.tsx",
+        "path": "client/src/components/LocalToolsWorkspace.tsx",
         "control": "Local-tool planning, execution, and output states",
         "workflowIds": [
           "production-components",
