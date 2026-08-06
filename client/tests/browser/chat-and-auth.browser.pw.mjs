@@ -90,7 +90,26 @@ test.describe.serial('built-server chat, authentication, and persistence', () =>
     await page.getByRole('button', { name: /Conversation Tools/ }).click();
     await page.getByRole('button', { name: 'Refresh History' }).click();
     await expect(page.getByText('Conversation list refreshed')).toBeVisible();
-    await page.getByRole('button', { name: new RegExp(message) }).first().click();
+
+    const historyResponse = await request.get('/api/conversations?limit=20', {
+      headers: authHeaders(token),
+    });
+    expect(historyResponse.status()).toBe(200);
+    const history = await historyResponse.json();
+    const persisted = history.conversations.find(
+      conversation => conversation.sessionId === requestBody.sessionId,
+    );
+    expect(persisted).toEqual(expect.objectContaining({
+      firstMessage: message,
+      userId: TEST_USER_ID,
+    }));
+    expect(persisted.messageCount).toBeGreaterThanOrEqual(2);
+
+    const historyRow = page
+      .getByRole('button', { name: `Delete ${requestBody.sessionId}` })
+      .locator('..');
+    await expect(historyRow).toContainText(message);
+    await historyRow.locator('button').first().click();
     await expect(page.getByText('Conversation loaded')).toBeVisible();
     await expect(page.getByText(message, { exact: true })).toBeVisible();
   });
