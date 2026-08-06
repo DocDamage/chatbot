@@ -22,7 +22,8 @@
     "release:package": "npm run smoke:package",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "node scripts/release/run-server-coverage.mjs",
+    "check:server-coverage": "node scripts/release/check-server-coverage.mjs",
     "test:unit": "jest --testPathPattern=__tests__",
     "test:integration": "jest --testPathPattern=server/__tests__",
     "test:security": "jest --runTestsByPath src/server/__tests__/release-security.test.ts",
@@ -74,7 +75,7 @@
     "check:file-size": "node scripts/release/check-file-size.mjs",
     "check:env": "node scripts/release/check-environment-contract.mjs",
     "check:docs": "node scripts/release/check-docs.mjs",
-    "test:release-tools": "node --test scripts/release/__tests__/phase2-scanners.test.mjs",
+    "test:release-tools": "node --test scripts/release/__tests__/phase2-scanners.test.mjs scripts/release/__tests__/server-coverage-policy.test.mjs",
     "check:phase2": "npm run test:release-tools && npm run check:inventory && npm run check:reachability && npm run check:file-size && npm run check:env && npm run check:docs"
   },
   "keywords": [
