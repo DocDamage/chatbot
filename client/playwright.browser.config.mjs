@@ -45,7 +45,7 @@ export default defineConfig({
       USE_HUGGINGFACE: 'false',
       EMBEDDING_USE_TRANSFORMERS: 'false',
       ENABLE_RAG: 'false',
-      RAG_PERSISTENCE: 'false',
+      RAG_PERSISTENCE: 'true',
       RAG_GENERATE_EMBEDDINGS: 'false',
       EAGER_KNOWLEDGE_LOAD: 'false',
       ENABLE_REDIS_CACHE: 'false',
