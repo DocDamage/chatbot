@@ -111,6 +111,8 @@ test.describe.serial('built-server chat, authentication, and persistence', () =>
     await expect(historyRow).toContainText(message);
     await historyRow.locator('button').first().click();
     await expect(page.getByText('Conversation loaded')).toBeVisible();
-    await expect(page.getByText(message, { exact: true })).toBeVisible();
+    await expect(
+      page.getByLabel('Conversation messages').getByText(message, { exact: true }),
+    ).toBeVisible();
   });
 });
