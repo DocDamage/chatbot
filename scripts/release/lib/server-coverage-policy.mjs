@@ -66,6 +66,27 @@ function compareFeatureIds(policyIds, manifestIds, violations) {
   }
 }
 
+function validateTierBMapping(tier, manifestIds, violations) {
+  const supported = new Set(manifestIds);
+  const mappedCounts = new Map(manifestIds.map((featureId) => [featureId, 0]));
+  for (const record of tier.files ?? []) {
+    if (!Array.isArray(record.featureIds) || record.featureIds.length === 0) {
+      violations.push(`Tier B file must declare at least one feature ID: ${record.path}`);
+      continue;
+    }
+    for (const featureId of record.featureIds) {
+      if (!supported.has(featureId)) {
+        violations.push(`Tier B file ${record.path} maps unknown or non-production feature: ${featureId}`);
+        continue;
+      }
+      mappedCounts.set(featureId, mappedCounts.get(featureId) + 1);
+    }
+  }
+  for (const [featureId, count] of mappedCounts) {
+    if (count === 0) violations.push(`Tier B production-supported feature has no source mapping: ${featureId}`);
+  }
+}
+
 function validateScope(policy, violations) {
   const configured = policy.coverageScope?.collectCoverageFrom ?? [];
   const allowed = new Set(policy.coverageScope?.allowedExclusions ?? []);
@@ -83,6 +104,14 @@ function validateScope(policy, violations) {
   }
 }
 
+function validateUniqueTierFiles(tierName, tier, violations) {
+  const seen = new Set();
+  for (const record of tier.files ?? []) {
+    if (seen.has(record.path)) violations.push(`Tier ${tierName} contains duplicate file: ${record.path}`);
+    seen.add(record.path);
+  }
+}
+
 function compareMetric(label, current, baseline, violations) {
   const currentPct = metricPct(current);
   const baselinePct = metricPct(baseline);
@@ -90,9 +119,16 @@ function compareMetric(label, current, baseline, violations) {
     violations.push(`${label} has invalid current or baseline coverage data.`);
     return;
   }
+  const currentUncovered = current.total - current.covered;
+  const baselineUncovered = baseline.total - baseline.covered;
+  if (currentUncovered > baselineUncovered) {
+    violations.push(
+      `${label} uncovered count regressed: ${currentUncovered} > ${baselineUncovered} (${current.covered}/${current.total} vs ${baseline.covered}/${baseline.total}).`,
+    );
+  }
   if (currentPct + EPSILON < baselinePct) {
     violations.push(
-      `${label} regressed: ${currentPct.toFixed(4)}% < ${baselinePct.toFixed(4)}% (${current.covered}/${current.total} vs ${baseline.covered}/${baseline.total}).`,
+      `${label} percentage regressed: ${currentPct.toFixed(4)}% < ${baselinePct.toFixed(4)}% (${current.covered}/${current.total} vs ${baseline.covered}/${baseline.total}).`,
     );
   }
 }
@@ -143,7 +179,14 @@ function evaluateTier(name, tier, coverage, mode, enforceTarget, violations) {
     if (enforceTarget && gaps.length > 0) {
       violations.push(`Tier ${name} target not met by ${record.path}: ${gaps.map((gap) => `${gap.metric}=${gap.current ?? 'missing'}<${gap.target}`).join(', ')}`);
     }
-    files.push({ path: record.path, control: record.control, current, baseline: record.baseline, gaps });
+    files.push({
+      path: record.path,
+      control: record.control,
+      featureIds: record.featureIds ?? [],
+      current,
+      baseline: record.baseline,
+      gaps,
+    });
   }
   return {
     description: tier.description,
@@ -158,12 +201,12 @@ export function evaluateServerCoverage({ root, policy, rawSummary, featureManife
   const violations = [];
   if (!['audit', 'enforce'].includes(policy.mode)) violations.push(`Unknown coverage policy mode: ${policy.mode}`);
   validateScope(policy, violations);
+  validateUniqueTierFiles('A', policy.tiers.A, violations);
+  validateUniqueTierFiles('B', policy.tiers.B, violations);
   const coverage = normalizeCoverageSummary(root, rawSummary);
   const manifestIds = productionSupportedFeatureIds(featureManifest);
   compareFeatureIds(policy.tiers.B.featureIds ?? [], manifestIds, violations);
-  if (manifestIds.length > 0 && (policy.tiers.B.files ?? []).length === 0) {
-    violations.push('Tier B must map at least one source file when PRODUCTION_SUPPORTED features exist.');
-  }
+  validateTierBMapping(policy.tiers.B, manifestIds, violations);
 
   evaluateBaseline('Global', coverage.global, policy.baseline.global, policy.mode, violations);
   const globalTarget = policy.globalMilestones.find((stage) => stage.stage === policy.activeStage);
