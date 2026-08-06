@@ -19,4 +19,17 @@ describe('StatusBar', () => {
     expect(screen.getByText(label)).toBeTruthy();
     expect(screen.getByText('2 messages')).toBeTruthy();
   });
+
+  it('keeps asynchronous connection and message updates in a polite live region', () => {
+    const { rerender } = render(<StatusBar connectionState="connecting" messageCount={0} />);
+    const liveStatus = screen.getByRole('status');
+
+    expect(liveStatus.getAttribute('aria-live')).toBe('polite');
+    expect(liveStatus.textContent).toContain('Connecting');
+
+    rerender(<StatusBar connectionState="connected" messageCount={1} />);
+
+    expect(liveStatus.textContent).toContain('Connected');
+    expect(liveStatus.textContent).toContain('1 message');
+  });
 });

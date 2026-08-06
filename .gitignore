@@ -6,6 +6,8 @@ private-tools/
 client/node_modules/
 client/dist/
 client/.next/
+client/playwright-report/
+client/test-results/
 .env
 .env.local
 .env.*.local
