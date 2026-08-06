@@ -1,146 +1,133 @@
-# P03-T02 Handoff
+# P03-T03 Handoff
 
 ## Repository state
 
 - Repository: `DocDamage/chatbot`
-- Branch: `agent/p03-t02-server-coverage-policy`
-- Parent `main` commit: `34d67d85cfafaedc03cef9da3678c2a19030458d`
-- Tested implementation commit: `b7e81e3935185c06cbaab2fb7e2ee199a69dcaca`
-- Pull request: `#159`
-- Verification CI: `31066377115` — success
+- Branch: `agent/p03-t03-client-coverage-thresholds`
+- Parent `main` commit: `9c7db84590be3eb5955eae732308ee574171f731`
+- Tested implementation commit: `23fcb9b18348bd05cc95c66d29e799ebb03252e8`
+- Clean verification commit: `fd996d8e0843efb9f4f7ff28245d6542586686cf`
+- Pull request: `#160`
+- Verification CI: `31069162209` — success
 - Date: `2026-08-05`
 
 ## Authorized task
 
-- Task ID: `P03-T02`
-- Title: Meaningful server coverage policy
+- Task ID: `P03-T03`
+- Title: Implement client coverage thresholds
 - Status: `VERIFIED`
 
 ## Scope completed
 
-- Replaced the former 1% global Jest threshold with a machine-readable, risk-based server coverage policy.
-- Expanded coverage measurement to every server TypeScript source file except declarations and test/spec files.
-- Removed and prohibited the broad `src/**/index.ts` exclusion.
-- Locked exact global and Tier A no-regression baselines from an expanded audit run.
-- Added count-aware and percentage-aware regression enforcement.
-- Added 19 explicit Tier A critical-control source records with final 90% line and 85% branch targets.
-- Added Tier B production-supported feature/source mapping with 80% line and 70% branch targets.
-- Added global progression stages: locked baseline, 55/45, 65/55, and final 75/65.
-- Added machine-readable policy reporting and focused policy regression tests.
-- Documented uncovered critical controls honestly instead of excluding them.
+- Replaced the former 5% client coverage threshold with an auditable policy.
+- Expanded coverage to all production TypeScript/TSX client sources.
+- Restored the application entry point to coverage scope.
+- Locked exact global and 29-file critical-workflow baselines.
+- Added count-aware and percentage-aware no-regression enforcement.
+- Mapped production components, every API client, mode routing, authentication-related states, dangerous actions, file/audio/Sprite Lab/local-tool workflows, accessibility status, and error paths.
+- Added global stages ending at 80% lines / 70% branches.
+- Added a final per-critical-file minimum of 80% lines / 70% branches.
+- Added eight coverage-policy regression tests and machine-readable reporting.
+- Refreshed generated repository inventory and committed task evidence.
 
 ## Files changed
 
-- `config/server-coverage-policy.json`: machine-readable scope, baselines, tiers, and milestones.
-- `jest.config.js`: imports the policy and enforces exact uncovered-count global baselines.
-- `package.json`: makes the policy checker part of the canonical coverage command.
-- `scripts/release/run-server-coverage.mjs`: runs Jest coverage and policy enforcement as one gate.
-- `scripts/release/check-server-coverage.mjs`: evaluates the generated coverage summary and writes the policy report.
-- `scripts/release/lib/server-coverage-policy.mjs`: implements scope, baseline, tier, manifest, and target enforcement.
-- `scripts/release/__tests__/server-coverage-policy.test.mjs`: verifies regressions, stages, mappings, and exclusions.
-- `docs/implementation/SERVER_COVERAGE_POLICY.md`: documents the active policy and ratchet procedure.
-- `docs/architecture/generated/*`: refreshed repository inventory and reachability records.
-- `docs/implementation/evidence/PHASE-03/P03-T02/2026-08-05_b7e81e39/*`: task evidence.
+- `config/client-coverage-policy.json`: scope, exact baselines, critical files, workflows, and staged targets.
+- `client/package.json`: canonical client coverage command now runs policy tests and enforcement.
+- `client/vite.config.ts`: imports the policy while preserving existing runtime and Pages safeguards.
+- `client/tsconfig.node.json`: enables typed JSON configuration imports.
+- `scripts/release/check-client-coverage.mjs`: generates the policy report and fails violations.
+- `scripts/release/lib/client-coverage-policy.mjs`: implements scope, baseline, workflow, and target enforcement.
+- `scripts/release/__tests__/client-coverage-policy.test.mjs`: verifies locked baselines and negative cases.
+- `docs/architecture/generated/*`: canonical generated inventory refresh.
+- `docs/implementation/evidence/PHASE-03/P03-T03/2026-08-05_23fcb9b1/*`: task evidence.
 - `docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md`: task status reconciliation.
-- `docs/implementation/RELEASE_EVIDENCE_INDEX.md`: release evidence registration.
-- `docs/implementation/handoffs/archive/P03-T02_HANDOFF.md`: archived closure handoff.
+- `docs/implementation/RELEASE_EVIDENCE_INDEX.md`: evidence registration.
+- `docs/implementation/handoffs/archive/P03-T03_HANDOFF.md`: archived closure handoff.
 - `docs/implementation/handoffs/CURRENT_HANDOFF.md`: next-task authorization.
 
 ## Behavior implemented
 
-- `npm run test:coverage -- --runInBand` now runs Jest coverage and policy enforcement as one required gate.
-- New production server source cannot lower the locked percentage or increase uncovered-item counts without tests.
-- Every listed Tier A file has its own no-regression baseline.
-- Tier A final targets become mandatory at the final global stage.
-- A `PRODUCTION_SUPPORTED` feature cannot be introduced without exact Tier B source mapping.
-- Tier B mapped files must satisfy 80% line and 70% branch coverage.
-- Broad coverage-only exclusions fail the policy checker.
-- Coverage results are emitted to `coverage/server-coverage-policy-report.json`.
+- `npm --prefix client run coverage` now runs policy tests, full production-source client coverage, and the policy checker as one gate.
+- New uncovered production code cannot reduce global or critical-file percentages or increase uncovered counts.
+- Broad production exclusions fail the checker.
+- Missing workflow mappings fail the checker.
+- Final-stage critical files below 80% line or 70% branch coverage fail.
+- Reports include text, LCOV, JSON summary, and `client/coverage/client-coverage-policy-report.json`.
 
 ## Honest baseline and targets
 
 Expanded Stage 1 baseline:
 
-- Lines: `7,879 / 20,918` — `37.6661%`
-- Branches: `3,109 / 11,326` — `27.4501%`
-- Functions: `1,719 / 4,624` — `37.1756%`
-- Statements: `8,319 / 22,562` — `36.8717%`
+- Lines: `912 / 1,549` — `58.8767%`
+- Branches: `589 / 1,210` — `48.6777%`
+- Functions: `261 / 574` — `45.4704%`
+- Statements: `970 / 1,744` — `55.6193%`
 
-Final targets remain:
+Staged targets:
 
-- Global: 75% lines / 65% branches.
-- Tier A: 90% lines / 85% branches.
-- Tier B: 80% lines / 70% branches.
+- Stage 2: 65% lines / 55% branches.
+- Stage 3: 75% lines / 65% branches.
+- Final global: 80% lines / 70% branches.
+- Final critical workflow file: 80% lines / 70% branches.
 
-P03-T02 verifies the policy and baseline enforcement. It does not falsely claim those final targets are already achieved.
+P03-T03 verifies policy enforcement. It does not claim the final target is already achieved.
 
 ## Tests added or changed
 
-- Added coverage-policy unit tests proving:
-  - actual repository policy is locked in enforcement mode;
-  - expanded scope includes production index files;
-  - lower global percentages fail;
-  - more uncovered code fails even at the same percentage;
-  - Tier A per-file regressions fail;
-  - final-stage Tier A targets are enforced;
-  - production-supported features require Tier B source mapping;
-  - valid Tier B mappings pass;
-  - broad `index.ts` exclusions fail.
-- Preserved and passed the complete existing server, client, migration, package, container, documentation, and E2E matrix.
+- Added eight policy tests proving:
+  - the repository policy is locked in enforcement mode;
+  - production entry points remain in scope;
+  - global percentage regression fails;
+  - added uncovered code fails even without a percentage drop;
+  - critical-file regression fails;
+  - final 80% per-file line coverage is enforced;
+  - missing workflow mappings fail;
+  - broad production exclusions fail.
+- Preserved the existing client, server, security, migration, package, container, documentation, and E2E matrix.
 
 ## Verification commands and results
 
 | Command or gate | Exit code | Result |
 |---|---:|---|
-| GitHub Actions run `31066377115` | 0 | Passed |
-| `npm run test:release-tools` | 0 | Passed |
-| `npm run test:coverage -- --runInBand` | 0 | 126 suites and 394 tests passed; policy passed |
-| Server/client/test type checks | 0 | Passed |
-| Server/client lint | 0 | Passed |
-| Security, route, and service tests | 0 | Passed |
-| Client tests, coverage, and accessibility | 0 | Passed |
-| Browser E2E smoke | 0 | Passed |
-| PostgreSQL and SQLite migration jobs | 0 | Passed |
-| Package smoke | 0 | Passed |
-| Container build and smoke | 0 | Passed |
-| Documentation and evidence validation | 0 | Passed |
+| GitHub Actions run `31069162209` | 0 | Passed |
+| `node --test scripts/release/__tests__/client-coverage-policy.test.mjs` | 0 | 8 tests passed |
+| `npm --prefix client run coverage` | 0 | 29 files / 76 tests passed; policy passed |
+| Client/server/test type checks and lint | 0 | Passed |
+| Security, route, service, and E2E smoke | 0 | Passed |
+| Repository inventory and docs validation | 0 | Passed |
+| Package and container smoke | 0 | Passed |
+| Migration and evidence validation | 0 | Passed |
 | Aggregate required gate | 0 | Passed |
 
 ## Runtime QA
 
-- Direct user-facing runtime QA was not required because this task changes CI coverage enforcement, not application behavior.
-- The production package and container smoke tests passed as regression protection.
-- Existing application E2E, security, route, service, client, accessibility, and migration checks passed.
+- Direct user-facing runtime QA was not required because this task changes verification policy, not application behavior.
+- Existing E2E, package, and container smoke checks passed as regression protection.
 
 ## Security and data review
 
-- No authentication, authorization, persistence, or schema behavior changed.
-- No tests or required jobs were deleted, skipped, weakened, or made advisory.
-- No production source was hidden to improve the reported percentage.
-- Five zero-covered Tier A controls remain explicit release gaps:
-  - `src/middleware/apiKeyAuth.ts`
-  - `src/middleware/security.ts`
-  - `src/core/upload/FileProcessor.ts`
-  - `src/core/audit/AuditLogger.ts`
-  - `src/core/config/ProfileManager.ts`
+- No authentication, authorization, persistence, migration, or user-data behavior changed.
+- No tests or release gates were weakened.
+- No production source was hidden to raise the percentage.
+- Authentication-related coverage maps to actual runtime and API error/state code because the client has no dedicated authentication module.
 
 ## Known limitations or blockers
 
-- Current global coverage remains at the honest Stage 1 baseline, below Stage 2 and final targets.
-- Tier A final 90/85 targets are not yet achieved.
-- No feature is currently classified `PRODUCTION_SUPPORTED`, so Tier B has no active mappings.
-- P03-T03 must implement meaningful client coverage thresholds.
-- P03-T04 through P03-T08 remain separate authorized tasks.
+- Current global coverage remains at the honest Stage 1 baseline.
+- Several critical workflows remain below the final 80/70 target and must gain meaningful tests before the final stage is activated.
+- The current accessibility script remains a TypeScript-only check; P03-T04 must replace it with real accessibility testing.
+- P03-T05 through P03-T08 remain separate tasks.
 - P01-T07 remains owner-waived; `main` is intentionally unprotected.
 
 ## Evidence bundle
 
-- `docs/implementation/evidence/PHASE-03/P03-T02/2026-08-05_b7e81e39`
+- `docs/implementation/evidence/PHASE-03/P03-T03/2026-08-05_23fcb9b1`
 
 ## Next authorized task after merge
 
-- `P03-T03 — Implement client coverage thresholds`
-- GitHub issue: `#45`
+- `P03-T04 — Replace fake accessibility testing`
+- GitHub issue: `#46`
 
 ## NEW THREAD START PROMPT
 
@@ -148,38 +135,40 @@ P03-T02 verifies the policy and baseline enforcement. It does not falsely claim 
 You are working on repository DocDamage/chatbot.
 
 AUTHORIZED TASK ONLY:
-P03-T03 — Implement client coverage thresholds
+P03-T04 — Replace fake accessibility testing
 
 Read these files before making changes:
 1. docs/implementation/handoffs/CURRENT_HANDOFF.md
 2. docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md
 3. docs/implementation/PRODUCTION_FEATURE_MANIFEST.md
-4. docs/implementation/SERVER_COVERAGE_POLICY.md for the established no-regression model
-5. the P03-T03 GitHub issue and all client coverage configuration, reports, components, API clients, and workflow files directly relevant to this task
+4. config/client-coverage-policy.json
+5. the P03-T04 GitHub issue and all accessibility scripts, client tests, rendered panels, Playwright/browser configuration, and CI files directly relevant to this task
 
 Rules:
-- Work only on P03-T03.
-- Confirm PR #159 is merged and inspect the exact current `main` commit before editing.
-- Inspect and record the honest current client coverage baseline before changing thresholds.
-- Implement meaningful client coverage thresholds for production components, API clients, mode routing, authentication states, dangerous-action confirmation, file/audio/Sprite Lab/local-tool workflows, accessibility paths, and error paths.
-- Ensure no critical client workflow remains below 80% line coverage at final policy state.
-- Use staged no-regression enforcement where current coverage cannot honestly meet final targets immediately.
-- Do not lower thresholds, add broad exclusions, delete tests, replace runtime tests with mock-only tests, or hide production source from coverage.
+- Work only on P03-T04.
+- Confirm PR #160 is merged and inspect the exact current `main` commit before editing.
+- Replace the TypeScript-only accessibility label with real accessibility testing; retain TypeScript checking under its own truthful script.
+- Add automated Axe checks for major rendered panels.
+- Add Playwright accessibility scans for complete workflows.
+- Add keyboard-only E2E tests, focus restoration tests, and accessible live-region tests for asynchronous results.
+- Add color-contrast scanning where supported and a manual screen-reader checklist.
+- Do not weaken, skip, relabel, or make accessibility checks advisory to pass CI.
+- Preserve the P03-T03 client coverage policy and add meaningful accessibility/error-path coverage where new tests exercise production code.
 - Keep source files below 300 lines where reasonably possible and register justified exceptions.
-- Do not begin P03-T04 or any later task.
+- Do not begin P03-T05 or any later task.
 - Run every required verification command and record exact commands, exit codes, workflow runs, and commit SHAs.
-- Create the P03-T03 evidence bundle, update the tracker and evidence index, replace/archive the handoff, and end the thread.
+- Create the P03-T04 evidence bundle, update the tracker and evidence index, replace/archive the handoff, and end the thread.
 
 Before editing, report:
 1. the current branch and commit;
-2. the files inspected;
-3. the measured client coverage baseline and exclusions;
-4. the precise implementation plan for P03-T03;
+2. the files and workflows inspected;
+3. the exact false-green accessibility behavior reproduced;
+4. the precise implementation plan for P03-T04;
 5. the verification commands that will be run.
 
-Completion requires committed evidence. End the thread after P03-T03 is verified or formally blocked.
+Completion requires committed evidence. End the thread after P03-T04 is verified or formally blocked.
 ```
 
 ## Thread closure
 
-This thread is closed. Do not begin P03-T03 here. After PR #159 is merged, start a new thread using the prompt above.
+This thread is closed. Do not begin P03-T04 here. After PR #160 is merged, start a new thread using the prompt above.
