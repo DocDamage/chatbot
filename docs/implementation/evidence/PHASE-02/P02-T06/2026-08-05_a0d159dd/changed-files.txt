@@ -1,0 +1,10 @@
+src/core/config/EnvironmentDefinitions.ts
+src/core/config/ConfigValidator.ts
+src/core/config/ConfigValidator.test.ts
+src/server/routeManifest.ts
+src/server/routeManifest.boundary.test.ts
+.env.example
+scripts/release/check-environment-contract.mjs
+docs/architecture/generated/environment-contract.json
+package.json
+.github/workflows/ci.yml

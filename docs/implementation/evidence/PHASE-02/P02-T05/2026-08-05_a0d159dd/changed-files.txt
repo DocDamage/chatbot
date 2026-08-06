@@ -1,0 +1,8 @@
+.env.example
+env.example (removed)
+scripts/release/check-environment-contract.mjs
+docs/architecture/generated/environment-contract.json
+docs/guides/SETUP_PREREQUISITES.md
+README.md
+package.json
+.github/workflows/ci.yml
