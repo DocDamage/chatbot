@@ -117,7 +117,19 @@ function evaluateBaseline(label, current, baseline, mode, violations) {
   for (const metric of METRICS) compareMetric(`${label} ${metric}`, current?.[metric], baseline?.[metric], violations);
 }
 
-function evaluateTier(name, tier, coverage, mode, violations) {
+function shouldEnforceTierTarget(tier, policy, violations) {
+  if (tier.enforceTarget === true) return true;
+  if (!tier.enforceFromStage) return false;
+  const currentIndex = policy.globalMilestones.findIndex((stage) => stage.stage === policy.activeStage);
+  const targetIndex = policy.globalMilestones.findIndex((stage) => stage.stage === tier.enforceFromStage);
+  if (targetIndex < 0) {
+    violations.push(`Unknown tier target-enforcement stage: ${tier.enforceFromStage}`);
+    return false;
+  }
+  return policy.mode === 'enforce' && currentIndex >= targetIndex;
+}
+
+function evaluateTier(name, tier, coverage, mode, enforceTarget, violations) {
   const files = [];
   for (const record of tier.files ?? []) {
     const current = coverage.files.get(record.path);
@@ -128,7 +140,7 @@ function evaluateTier(name, tier, coverage, mode, violations) {
     }
     evaluateBaseline(`Tier ${name} ${record.path}`, current, record.baseline, mode, violations);
     const gaps = targetGaps(current, tier.target);
-    if (tier.enforceTarget && gaps.length > 0) {
+    if (enforceTarget && gaps.length > 0) {
       violations.push(`Tier ${name} target not met by ${record.path}: ${gaps.map((gap) => `${gap.metric}=${gap.current ?? 'missing'}<${gap.target}`).join(', ')}`);
     }
     files.push({ path: record.path, control: record.control, current, baseline: record.baseline, gaps });
@@ -136,13 +148,15 @@ function evaluateTier(name, tier, coverage, mode, violations) {
   return {
     description: tier.description,
     target: tier.target,
-    enforceTarget: tier.enforceTarget,
+    enforceTarget,
+    enforceFromStage: tier.enforceFromStage ?? null,
     files,
   };
 }
 
 export function evaluateServerCoverage({ root, policy, rawSummary, featureManifest }) {
   const violations = [];
+  if (!['audit', 'enforce'].includes(policy.mode)) violations.push(`Unknown coverage policy mode: ${policy.mode}`);
   validateScope(policy, violations);
   const coverage = normalizeCoverageSummary(root, rawSummary);
   const manifestIds = productionSupportedFeatureIds(featureManifest);
@@ -161,8 +175,8 @@ export function evaluateServerCoverage({ root, policy, rawSummary, featureManife
   }
 
   const tiers = {
-    A: evaluateTier('A', policy.tiers.A, coverage, policy.mode, violations),
-    B: evaluateTier('B', policy.tiers.B, coverage, policy.mode, violations),
+    A: evaluateTier('A', policy.tiers.A, coverage, policy.mode, shouldEnforceTierTarget(policy.tiers.A, policy, violations), violations),
+    B: evaluateTier('B', policy.tiers.B, coverage, policy.mode, shouldEnforceTierTarget(policy.tiers.B, policy, violations), violations),
   };
 
   return {
