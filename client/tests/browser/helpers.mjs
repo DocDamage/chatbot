@@ -56,7 +56,7 @@ export async function switchMode(page, label) {
   await trigger.click();
   const listbox = page.getByRole('listbox', { name: 'Chat mode' });
   await expect(listbox).toBeVisible();
-  await listbox.getByRole('option', { name: label, exact: false }).click();
+  await listbox.getByText(label, { exact: true }).click();
   await expect(trigger).toContainText(label);
 }
 
