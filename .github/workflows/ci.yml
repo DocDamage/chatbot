@@ -9,270 +9,423 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
-  NODE_VERSION: "20"
+  PRIMARY_NODE_VERSION: "24"
 
 jobs:
   repository-integrity:
     name: Repository integrity
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
       - name: Verify repository integrity
         run: bash scripts/release/verify-repository-integrity.sh
-
       - name: Verify CI job graph
         run: node scripts/release/verify-ci-graph.mjs
 
-      - name: Verify Phase 2 repository policy
-        run: npm run check:phase2
-
-  type-check:
-    name: Type check (${{ matrix.target }})
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: server
-            lockfile: package-lock.json
-            install_command: npm ci
-            command: npm run type-check:server
-          - target: tests
-            lockfile: package-lock.json
-            install_command: npm ci
-            command: npm run type-check:tests
-          - target: client
-            lockfile: client/package-lock.json
-            install_command: npm --prefix client ci
-            command: npm run type-check:client
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: ${{ matrix.lockfile }}
-
-      - name: Install dependencies
-        run: ${{ matrix.install_command }}
-
-      - name: Run ${{ matrix.target }} type check
-        run: ${{ matrix.command }}
-
-  lint:
-    name: Lint (${{ matrix.target }})
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: server
-            command: npm run lint:server
-          - target: client
-            command: npm run lint:client
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install server dependencies
-        run: npm ci
-
-      - name: Run ${{ matrix.target }} lint
-        run: ${{ matrix.command }}
-
-  security:
-    name: Security route tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install server dependencies
-        run: npm ci
-
-      - name: Run security route tests
-        run: npm run test:security -- --runInBand
-
-  server-tests:
-    name: Server tests (${{ matrix.suite }})
+  dependency-integrity:
+    name: Dependency and lockfile integrity (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - suite: routes
-            command: npm run test:routes -- --runInBand
-          - suite: services
-            command: npm run test:services -- --runInBand
-          - suite: e2e-smoke
-            command: npm run test:e2e -- --runInBand
-          - suite: coverage
-            command: npm run test:coverage -- --runInBand
-
+        node-version: ["22", "24"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: package-lock.json
-
-      - name: Install server dependencies
-        run: npm ci
-
-      - name: Run ${{ matrix.suite }} suite
-        run: ${{ matrix.command }}
-
-  client-tests:
-    name: Client tests (${{ matrix.suite }})
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - suite: unit-and-component
-            command: npm run test
-          - suite: coverage
-            command: npm run coverage
-
-    defaults:
-      run:
-        working-directory: client
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: client/package-lock.json
-
-      - name: Install client dependencies
-        run: npm ci
-
-      - name: Run client ${{ matrix.suite }}
-        run: ${{ matrix.command }}
-
-  accessibility:
-    name: Client accessibility checks
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    defaults:
-      run:
-        working-directory: client
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-          cache-dependency-path: client/package-lock.json
-
-      - name: Install client dependencies
-        run: npm ci
-
-      - name: Run client accessibility checks
-        run: npm run a11y
-
-  packaging:
-    name: Packaging smoke
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: ${{ matrix.node-version }}
           cache: npm
           cache-dependency-path: |
             package-lock.json
             client/package-lock.json
+      - name: Install server dependencies from lockfile
+        run: npm ci
+      - name: Install client dependencies from lockfile
+        run: npm --prefix client ci
+      - name: Verify lockfiles remain unchanged
+        run: git diff --exit-code -- package-lock.json client/package-lock.json
+      - name: Verify supported-LTS type compatibility
+        run: npm run type-check
 
+  server-type-check:
+    name: Server type check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
       - name: Install server dependencies
         run: npm ci
+      - name: Run server type check
+        run: npm run type-check:server
 
+  client-type-check:
+    name: Client type check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - name: Install client dependencies
+        run: npm --prefix client ci
+      - name: Run client type check
+        run: npm run type-check:client
+
+  test-type-check:
+    name: Test type check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install server dependencies
+        run: npm ci
+      - name: Run test type check
+        run: npm run type-check:tests
+
+  server-lint:
+    name: Server lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install server dependencies
+        run: npm ci
+      - name: Run server lint
+        run: npm run lint:server
+
+  client-lint:
+    name: Client lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install lint dependencies
+        run: npm ci
+      - name: Run client lint
+        run: npm run lint:client
+
+  server-tests:
+    name: Server unit and integration tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install server dependencies
+        run: npm ci
+      - name: Run route integration tests
+        run: npm run test:routes -- --runInBand
+      - name: Run service tests
+        run: npm run test:services -- --runInBand
+
+  client-tests:
+    name: Client unit and component tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: client/package-lock.json
       - name: Install client dependencies
         run: npm ci
-        working-directory: client
+      - name: Run client unit and component tests
+        run: npm run test
 
-      - name: Run packaging smoke
+  e2e-tests:
+    name: E2E tests (current smoke harness)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install server dependencies
+        run: npm ci
+      - name: Run existing E2E smoke harness
+        run: npm run test:e2e -- --runInBand
+
+  accessibility:
+    name: Accessibility gate (current script)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - name: Install client dependencies
+        run: npm ci
+      - name: Run current accessibility script
+        run: npm run a11y
+
+  security:
+    name: Security tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install server dependencies
+        run: npm ci
+      - name: Run security tests
+        run: npm run test:security -- --runInBand
+
+  coverage:
+    name: Coverage enforcement
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
+      - name: Install server dependencies
+        run: npm ci
+      - name: Install client dependencies
+        run: npm --prefix client ci
+      - name: Enforce server coverage
+        run: npm run test:coverage -- --runInBand
+      - name: Enforce client coverage
+        run: npm --prefix client run coverage
+
+  migration-tests:
+    name: Database migration tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_DB: chatbot_ci
+          POSTGRES_USER: chatbot
+          POSTGRES_PASSWORD: chatbot
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U chatbot -d chatbot_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      POSTGRES_VECTOR_TEST_URL: postgres://chatbot:chatbot@127.0.0.1:5432/chatbot_ci
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install server dependencies
+        run: npm ci
+      - name: Run migration tests against SQLite and PostgreSQL
+        run: npx jest --runTestsByPath src/core/database/Database.test.ts --runInBand
+
+  container-smoke:
+    name: Docker build and container smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build and smoke production container
+        run: bash scripts/release/smoke-container.sh
+
+  package-smoke:
+    name: Package smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
+      - name: Install server dependencies
+        run: npm ci
+      - name: Install client dependencies
+        run: npm --prefix client ci
+      - name: Run package smoke
         run: npm run smoke:package
+
+  documentation:
+    name: Documentation and repository policy validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install server dependencies
+        run: npm ci
+      - name: Test release scanners
+        run: npm run test:release-tools
+      - name: Validate repository inventory
+        run: npm run check:inventory
+      - name: Validate production reachability boundary
+        run: npm run check:reachability
+      - name: Validate source file-size policy
+        run: npm run check:file-size
+      - name: Validate environment contract
+        run: npm run check:env
+      - name: Validate documentation
+        run: npm run check:docs
+
+  release-evidence:
+    name: Release evidence validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+      - name: Validate release evidence structure
+        run: node scripts/release/check-release-evidence.mjs
 
   required-gate:
     name: Required CI gate
     if: ${{ always() }}
     needs:
       - repository-integrity
-      - type-check
-      - lint
-      - security
+      - dependency-integrity
+      - server-type-check
+      - client-type-check
+      - test-type-check
+      - server-lint
+      - client-lint
       - server-tests
       - client-tests
+      - e2e-tests
       - accessibility
-      - packaging
+      - security
+      - coverage
+      - migration-tests
+      - container-smoke
+      - package-smoke
+      - documentation
+      - release-evidence
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
       REPOSITORY_INTEGRITY_RESULT: ${{ needs.repository-integrity.result }}
-      TYPE_CHECK_RESULT: ${{ needs.type-check.result }}
-      LINT_RESULT: ${{ needs.lint.result }}
-      SECURITY_RESULT: ${{ needs.security.result }}
+      DEPENDENCY_INTEGRITY_RESULT: ${{ needs.dependency-integrity.result }}
+      SERVER_TYPE_CHECK_RESULT: ${{ needs.server-type-check.result }}
+      CLIENT_TYPE_CHECK_RESULT: ${{ needs.client-type-check.result }}
+      TEST_TYPE_CHECK_RESULT: ${{ needs.test-type-check.result }}
+      SERVER_LINT_RESULT: ${{ needs.server-lint.result }}
+      CLIENT_LINT_RESULT: ${{ needs.client-lint.result }}
       SERVER_TESTS_RESULT: ${{ needs.server-tests.result }}
       CLIENT_TESTS_RESULT: ${{ needs.client-tests.result }}
+      E2E_TESTS_RESULT: ${{ needs.e2e-tests.result }}
       ACCESSIBILITY_RESULT: ${{ needs.accessibility.result }}
-      PACKAGING_RESULT: ${{ needs.packaging.result }}
-
+      SECURITY_RESULT: ${{ needs.security.result }}
+      COVERAGE_RESULT: ${{ needs.coverage.result }}
+      MIGRATION_TESTS_RESULT: ${{ needs.migration-tests.result }}
+      CONTAINER_SMOKE_RESULT: ${{ needs.container-smoke.result }}
+      PACKAGE_SMOKE_RESULT: ${{ needs.package-smoke.result }}
+      DOCUMENTATION_RESULT: ${{ needs.documentation.result }}
+      RELEASE_EVIDENCE_RESULT: ${{ needs.release-evidence.result }}
     steps:
       - name: Enforce required job success
         shell: bash
@@ -291,13 +444,23 @@ jobs:
           }
 
           check_result "repository-integrity" "$REPOSITORY_INTEGRITY_RESULT"
-          check_result "type-check" "$TYPE_CHECK_RESULT"
-          check_result "lint" "$LINT_RESULT"
-          check_result "security" "$SECURITY_RESULT"
+          check_result "dependency-integrity" "$DEPENDENCY_INTEGRITY_RESULT"
+          check_result "server-type-check" "$SERVER_TYPE_CHECK_RESULT"
+          check_result "client-type-check" "$CLIENT_TYPE_CHECK_RESULT"
+          check_result "test-type-check" "$TEST_TYPE_CHECK_RESULT"
+          check_result "server-lint" "$SERVER_LINT_RESULT"
+          check_result "client-lint" "$CLIENT_LINT_RESULT"
           check_result "server-tests" "$SERVER_TESTS_RESULT"
           check_result "client-tests" "$CLIENT_TESTS_RESULT"
+          check_result "e2e-tests" "$E2E_TESTS_RESULT"
           check_result "accessibility" "$ACCESSIBILITY_RESULT"
-          check_result "packaging" "$PACKAGING_RESULT"
+          check_result "security" "$SECURITY_RESULT"
+          check_result "coverage" "$COVERAGE_RESULT"
+          check_result "migration-tests" "$MIGRATION_TESTS_RESULT"
+          check_result "container-smoke" "$CONTAINER_SMOKE_RESULT"
+          check_result "package-smoke" "$PACKAGE_SMOKE_RESULT"
+          check_result "documentation" "$DOCUMENTATION_RESULT"
+          check_result "release-evidence" "$RELEASE_EVIDENCE_RESULT"
 
           if [[ "$failures" -ne 0 ]]; then
             echo "$failures required CI job(s) did not succeed."

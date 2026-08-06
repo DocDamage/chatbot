@@ -1,0 +1,16 @@
+.git
+.github
+node_modules
+client/node_modules
+dist
+client/dist
+coverage
+client/coverage
+data
+cache
+logs
+*.log
+.env
+.env.*
+!.env.example
+docs/implementation/evidence
