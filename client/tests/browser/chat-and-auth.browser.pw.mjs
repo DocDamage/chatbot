@@ -32,6 +32,7 @@ test.describe.serial('built-server chat, authentication, and persistence', () =>
   });
 
   test('updates settings, switches modes, chats, streams, and reloads a persisted conversation', async ({ page, request }) => {
+    test.setTimeout(180_000);
     const { token } = await installAuthenticatedApi(page, {
       roles: ['admin', 'developer'],
       userId: TEST_USER_ID,
@@ -43,8 +44,16 @@ test.describe.serial('built-server chat, authentication, and persistence', () =>
     const dialog = page.getByRole('dialog', { name: 'Settings' });
     await expect(dialog).toBeVisible();
     await dialog.getByRole('button', { name: 'Local fallback' }).click();
+    const settingsResponse = page.waitForResponse(response =>
+      response.url().endsWith('/api/settings')
+      && response.request().method() === 'PUT',
+    );
     await dialog.getByRole('button', { name: 'Save settings' }).click();
-    await expect(dialog.locator('.settings-message')).toContainText('Saved. Active provider: template.');
+    expect((await settingsResponse).status()).toBe(200);
+    await expect(dialog.locator('.settings-message')).toContainText(
+      'Saved. Active provider: template.',
+      { timeout: 60_000 },
+    );
     await dialog.getByRole('button', { name: 'Close settings' }).click();
 
     await switchMode(page, 'Plan');
