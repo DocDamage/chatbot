@@ -6,7 +6,7 @@
     "reachableProductionFiles": 551,
     "unreachableProductionFiles": 171,
     "routes": 325,
-    "environmentVariables": 154,
+    "environmentVariables": 153,
     "featureFlags": 17,
     "oversizedProductionFiles": 63
   },
@@ -4426,7 +4426,6 @@
     "CARTESIA_API_KEY",
     "CEREBRAS_API_KEY",
     "CEREBRAS_MODEL",
-    "CI",
     "CLAUDE_MODEL",
     "CODE_EXECUTOR_TIMEOUT",
     "COHERE_API_KEY",

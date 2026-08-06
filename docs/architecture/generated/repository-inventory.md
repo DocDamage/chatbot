@@ -11,7 +11,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | Reachable production files | 551 |
 | Unreachable production files | 171 |
 | Discovered route calls | 325 |
-| Environment variables | 154 |
+| Environment variables | 153 |
 | Feature flags | 17 |
 | Files above 300 lines | 63 |
 
@@ -376,7 +376,6 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `CARTESIA_API_KEY`
 - `CEREBRAS_API_KEY`
 - `CEREBRAS_MODEL`
-- `CI`
 - `CLAUDE_MODEL`
 - `CODE_EXECUTOR_TIMEOUT`
 - `COHERE_API_KEY`
