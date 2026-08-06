@@ -26,6 +26,13 @@ try {
     process.exit(1);
   }
   if (report.mode === 'audit') {
+    const baselineCandidate = {
+      global: report.global.current,
+      tierA: Object.fromEntries(
+        report.tiers.A.files.map((file) => [file.path, file.current]),
+      ),
+    };
+    console.log(`SERVER_COVERAGE_BASELINE_JSON=${JSON.stringify(baselineCandidate)}`);
     console.log('Audit mode passed structural checks. Lock the reported baseline before verification.');
   } else {
     console.log('Server coverage policy passed.');
