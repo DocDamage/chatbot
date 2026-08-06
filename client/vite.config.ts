@@ -1,49 +1,18 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-
-const isPagesBuild = process.env.GITHUB_PAGES === 'true';
-const requestedRuntimeMode = process.env.VITE_RUNTIME_MODE?.trim();
-const runtimeMode = requestedRuntimeMode || (isPagesBuild ? 'static-demo' : 'application');
-const publicApiBaseUrl = process.env.VITE_PUBLIC_API_BASE_URL?.trim();
-
-if (runtimeMode !== 'application' && runtimeMode !== 'static-demo') {
-  throw new Error(`Unsupported VITE_RUNTIME_MODE: ${runtimeMode}`);
-}
-
-if (isPagesBuild && runtimeMode !== 'static-demo') {
-  throw new Error('GitHub Pages builds must use VITE_RUNTIME_MODE=static-demo.');
-}
-
-if (runtimeMode === 'static-demo' && publicApiBaseUrl) {
-  throw new Error('Static demo builds must not set VITE_PUBLIC_API_BASE_URL.');
-}
+import clientCoveragePolicy from '../config/client-coverage-policy.json';
 
 export default defineConfig({
-  base: isPagesBuild ? '/chatbot/' : '/',
   plugins: [react()],
-  server: {
-    port: 3000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3001',
-        changeOrigin: true
-      }
-    }
-  },
   test: {
     environment: 'jsdom',
+    setupFiles: './src/test/setup.ts',
     coverage: {
       provider: 'v8',
-      include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/**/*.test.{ts,tsx}', 'src/main.tsx', 'src/vite-env.d.ts'],
-      reporter: ['text', 'lcov'],
+      include: clientCoveragePolicy.coverageScope.include,
+      exclude: clientCoveragePolicy.coverageScope.exclude,
+      reporter: ['text', 'json-summary', 'lcov'],
       reportsDirectory: 'coverage',
-      thresholds: {
-        statements: 5,
-        branches: 5,
-        functions: 5,
-        lines: 5
-      }
-    }
-  }
+    },
+  },
 });
