@@ -86,6 +86,10 @@ npm run dev
 - Client: `http://localhost:3000`
 - API: `http://localhost:3001`
 
+### Client layout
+
+The default client opens to a focused, conversation-first chat view with a small set of practical modes: Ask, Plan, Build, Debug, and Explain. Provider configuration and advanced tools are intentionally kept behind the gear-shaped **Settings** menu. Use **Open advanced workspace** there when you need specialist modes, file/audio context, research, local tools, GIS, DAW controls, or Sprite Lab.
+
 ### Built local evaluation
 
 ```bash

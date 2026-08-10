@@ -97,7 +97,12 @@ const compatibleProviders = [
   }
 ];
 
-const SettingsMenu: React.FC = () => {
+interface SettingsMenuProps {
+  advancedOpen?: boolean;
+  onAdvancedToggle?: () => void;
+}
+
+const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdvancedToggle }) => {
   const [open, setOpen] = useState(false);
   const [provider, setProvider] = useState<Provider>('template');
   const [settings, setSettings] = useState<Record<string, string>>(defaultSettings);
@@ -271,6 +276,23 @@ const SettingsMenu: React.FC = () => {
               <div className="settings-loading">Loading settings...</div>
             ) : (
               <div className="settings-body">
+                <div className="settings-section settings-workspace-section">
+                  <h3>Workspace</h3>
+                  <p className="settings-help">
+                    Keep the main screen focused on the conversation. Open the advanced workspace when you need tools, files, modes, or integrations.
+                  </p>
+                  <button
+                    type="button"
+                    className="settings-workspace-button"
+                    onClick={() => {
+                      onAdvancedToggle?.();
+                      setOpen(false);
+                    }}
+                  >
+                    {advancedOpen ? 'Hide advanced workspace' : 'Open advanced workspace'}
+                  </button>
+                </div>
+
                 <div className="settings-section">
                   <h3>Model Provider</h3>
                   <div className="provider-grid" role="radiogroup" aria-label="Model provider">

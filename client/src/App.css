@@ -225,3 +225,69 @@
     max-height: 360px;
   }
 }
+
+/* Focused, conversation-first shell. Advanced tools remain available from Settings. */
+.app {
+  height: 100vh;
+  min-height: 100vh;
+  max-height: none;
+  background: #f7f5f0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  color: #3d3732;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 28px;
+  background: #f7f5f0;
+  border-bottom: 1px solid #e7e1d8;
+  text-align: left;
+}
+
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.brand-mark {
+  color: #d97757;
+  font-size: 1.35rem;
+}
+
+.app-header h1 {
+  margin: 0;
+  color: #2f2a26;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.app-header .subtitle {
+  margin: 2px 0 0;
+  color: #857a70;
+  font-size: 0.78rem;
+}
+
+.app-main {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.app-main.advanced-open {
+  overflow: auto;
+}
+
+@media (max-width: 720px) {
+  .app-header {
+    padding: 14px 16px;
+  }
+}

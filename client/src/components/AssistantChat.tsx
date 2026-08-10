@@ -114,6 +114,14 @@ const modeHints: Record<ChatMode, string> = {
   knowledge_os: 'Knowledge OS mode'
 };
 
+const simpleModeOptions: Array<{ value: ChatMode; label: string }> = [
+  { value: 'ask', label: 'Ask' },
+  { value: 'plan', label: 'Plan' },
+  { value: 'implement', label: 'Build' },
+  { value: 'debug', label: 'Debug' },
+  { value: 'explain', label: 'Explain' }
+];
+
 const placeholders: Record<ChatMode, string> = {
   ask: 'Ask a question...',
   plan: 'Describe what you want to build...',
@@ -193,7 +201,11 @@ const convertMessage = (message: ChatMessage): ThreadMessageLike => {
   };
 };
 
-function AssistantChat() {
+interface AssistantChatProps {
+  advancedOpen?: boolean;
+}
+
+function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [mode, setMode] = useState<ChatMode>('ask');
   const [sessionId] = useState(() => uuidv4());
@@ -207,10 +219,10 @@ function AssistantChat() {
   const [connectionState, setConnectionState] = useState<ConnectionState>('connecting');
   const [creativeConfig, setCreativeConfig] = useState(defaultCreativeComposerState);
   const abortRef = useRef<AbortController | null>(null);
-  const showBackendPanels = !isStaticPagesBuild;
+  const showBackendPanels = !isStaticPagesBuild && advancedOpen;
   const showAudioBrowser = showBackendPanels && ['music', 'fl_studio', 'fl_studio_control', 'pro_tools', 'logic', 'mix_master'].includes(mode);
   const showCodeWorkflows = showBackendPanels && ['ask', 'plan', 'implement', 'debug', 'explain'].includes(mode);
-  const showCreativeComposer = mode === 'creative_writing' || mode === 'roleplay';
+  const showCreativeComposer = advancedOpen && (mode === 'creative_writing' || mode === 'roleplay');
   const showGISPanel = showBackendPanels && mode === 'gis';
   const showGamingPlaybooks = showBackendPanels && (mode === 'gaming' || mode === 'gamedev');
   const showKnowledgeOnlinePanel = showBackendPanels && onlineResearchModes.includes(mode);
@@ -438,8 +450,22 @@ function AssistantChat() {
         {showBackendPanels && <FileExplorerPanel onLoadFile={addLoadedFile} />}
         <section className="assistant-chat" aria-label="AI chat">
           <div className="assistant-toolbar">
-            <ModeSelector mode={mode} onModeChange={setMode} />
-            <span className="assistant-mode-hint">{modeHints[mode]}</span>
+            {advancedOpen ? (
+              <ModeSelector mode={mode} onModeChange={setMode} />
+            ) : (
+              <label className="simple-mode-picker">
+                <span>Mode</span>
+                <select value={mode} onChange={event => setMode(event.target.value as ChatMode)} aria-label="Chat mode">
+                  {!simpleModeOptions.some(option => option.value === mode) && (
+                    <option value={mode}>{modeHints[mode]}</option>
+                  )}
+                  {simpleModeOptions.map(option => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
+            )}
+            <span className="assistant-mode-hint">{advancedOpen ? modeHints[mode] : 'Focused chat'}</span>
           </div>
           {showBackendPanels && <KnowledgeOSPanel />}
           {showGamingPlaybooks && <GamingPlaybookPanel />}
@@ -464,10 +490,10 @@ function AssistantChat() {
           )}
           {showGISPanel && <GISMapPanel />}
           {showAudioBrowser && <AudioPreviewBrowser onLoadAudio={addLoadedAudio} />}
-          {mode === 'fl_studio_control' && (
+          {advancedOpen && mode === 'fl_studio_control' && (
             <FLStudioControlPanel onSendCommand={command => sendUserMessage(command, 'fl_studio_control')} />
           )}
-          {planAction && (
+          {advancedOpen && planAction && (
             <PlanActionBar
               planId={planAction.planId}
               planPath={planAction.planPath}

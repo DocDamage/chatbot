@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import AssistantChat from './components/AssistantChat';
 import LocalToolsWorkspace from './components/LocalToolsWorkspace';
 import SettingsMenu from './components/SettingsMenu';
@@ -6,16 +7,26 @@ import { isStaticPagesBuild } from './api/runtime';
 import './App.css';
 
 function InteractiveApp() {
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+
   return (
     <div className="app">
       <header className="app-header">
-        <h1>AI Chatbot Hub</h1>
-        <p className="subtitle">Ask me anything</p>
-        <SettingsMenu />
+        <div className="brand-block">
+          <span className="brand-mark" aria-hidden="true">✦</span>
+          <div>
+            <h1>Chatbot</h1>
+            <p className="subtitle">A simple space to think, write, and build.</p>
+          </div>
+        </div>
+        <SettingsMenu
+          advancedOpen={advancedOpen}
+          onAdvancedToggle={() => setAdvancedOpen(previous => !previous)}
+        />
       </header>
-      <main>
-        <AssistantChat />
-        <LocalToolsWorkspace />
+      <main className={advancedOpen ? 'app-main advanced-open' : 'app-main'}>
+        <AssistantChat advancedOpen={advancedOpen} />
+        {advancedOpen && <LocalToolsWorkspace />}
       </main>
     </div>
   );

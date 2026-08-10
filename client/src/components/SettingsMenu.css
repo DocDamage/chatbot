@@ -273,3 +273,43 @@
     grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
   }
 }
+
+.settings-button {
+  position: static;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #ded6cc;
+  border-radius: 50%;
+  background: transparent;
+  color: #6b625a;
+  box-shadow: none;
+  font-size: 1rem;
+}
+
+.settings-button:hover {
+  background: #ebe5de;
+  color: #3d3732;
+  transform: none;
+}
+
+.settings-workspace-section {
+  background: #faf7f2;
+  border: 1px solid #e7dfd5;
+  border-radius: 12px;
+}
+
+.settings-workspace-button {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid #d97757;
+  border-radius: 8px;
+  background: transparent;
+  color: #b85e40;
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.settings-workspace-button:hover {
+  background: #fff0e9;
+}

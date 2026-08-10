@@ -415,3 +415,163 @@
     display: none;
   }
 }
+
+/* Claude-inspired default presentation: quiet canvas, readable messages, compact composer. */
+.assistant-workspace,
+.assistant-chat {
+  background: #f7f5f0;
+  color: #3d3732;
+}
+
+.assistant-toolbar {
+  width: min(900px, 100%);
+  margin: 0 auto;
+  padding: 14px 26px;
+  background: transparent;
+  border-bottom: 0;
+}
+
+.assistant-mode-hint {
+  color: #8a7e74;
+}
+
+.simple-mode-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #6f645b;
+  font-size: 13px;
+}
+
+.simple-mode-picker select {
+  padding: 4px 24px 4px 0;
+  border: 0;
+  background: transparent;
+  color: #3d3732;
+  font: inherit;
+  font-weight: 700;
+}
+
+.assistant-viewport {
+  padding: 40px 24px 32px;
+  background: #f7f5f0;
+}
+
+.assistant-empty-icon {
+  border: 0;
+  border-radius: 14px;
+  background: #e9e1d7;
+  color: #d97757;
+}
+
+.assistant-empty h2 {
+  color: #2f2a26;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 26px;
+}
+
+.assistant-empty p {
+  color: #82766c;
+}
+
+.assistant-message {
+  max-width: 860px;
+  margin: 0 auto 28px;
+}
+
+.assistant-message-shell {
+  max-width: 760px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: #3d3732;
+}
+
+.assistant-message-user .assistant-message-shell {
+  border: 0;
+  border-radius: 18px;
+  background: #ebe5de;
+  color: #3d3732;
+  box-shadow: none;
+}
+
+.assistant-message-text {
+  padding: 12px 16px;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.assistant-message-assistant .assistant-message-text {
+  padding-left: 0;
+}
+
+.assistant-actions {
+  padding-left: 0;
+}
+
+.assistant-action {
+  background: transparent;
+  color: #8a7e74;
+}
+
+.assistant-action:hover {
+  background: #ebe5de;
+  color: #3d3732;
+}
+
+.assistant-composer {
+  width: min(820px, calc(100% - 32px));
+  margin: 0 auto 18px;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #ded6cc;
+  border-radius: 22px;
+  background: #fffdf9;
+  box-shadow: 0 8px 30px rgba(73, 57, 42, 0.08);
+}
+
+.assistant-input {
+  min-height: 44px;
+  padding: 12px;
+  border: 0;
+  background: transparent;
+  color: #3d3732;
+  box-shadow: none;
+}
+
+.assistant-input:focus {
+  border: 0;
+  box-shadow: none;
+}
+
+.assistant-input::placeholder {
+  color: #a3978c;
+}
+
+.assistant-send-button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #d97757;
+  color: #fff;
+}
+
+.assistant-send-button:hover {
+  background: #c76345;
+  transform: none;
+}
+
+.assistant-stop-button {
+  height: 42px;
+  border-radius: 999px;
+  background: #eee7df;
+  color: #5f544c;
+}
+
+.status-bar,
+.loaded-files-bar {
+  background: transparent;
+  border-color: #e7e1d8;
+  color: #8a7e74;
+}

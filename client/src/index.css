@@ -10,19 +10,19 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #000000;
-  color: #ffffff;
+  background: #f5f3ee;
+  color: #3d3732;
   min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  align-items: stretch;
 }
 
 #root {
   width: 100%;
-  max-width: 1200px;
+  max-width: none;
+  min-height: 100vh;
   margin: 0 auto;
-  padding: 18px;
+  padding: 0;
 }
 
 code {
