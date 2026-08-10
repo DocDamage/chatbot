@@ -38,6 +38,18 @@ export class OfficeExtractor implements FileExtractor {
     }
 
     const libreOfficeResult = await this.extractWithLibreOffice(filePath, ext);
+    if (libreOfficeResult.text.trim().length === 0 && ext === '.doc') {
+      const stringsResult = await this.extractDocWithStrings(filePath, ext);
+      return {
+        ...stringsResult,
+        warnings: [
+          ...warnings,
+          ...(libreOfficeResult.warnings || []),
+          ...(stringsResult.warnings || [])
+        ]
+      };
+    }
+
     return {
       ...libreOfficeResult,
       warnings: [...warnings, ...(libreOfficeResult.warnings || [])]
@@ -118,6 +130,31 @@ export class OfficeExtractor implements FileExtractor {
       } catch (cleanupError: any) {
         logger.warn('Office temp cleanup failed', { tempDir, error: cleanupError.message });
       }
+    }
+  }
+
+  private async extractDocWithStrings(filePath: string, ext: string): Promise<ExtractedDocument> {
+    try {
+      const { stdout } = await execFileAsync('strings', ['-n', '4', filePath], { timeout: 30000, maxBuffer: 20 * 1024 * 1024 });
+      const text = stdout
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(line => line.length > 0 && !/^[\W_]+$/.test(line))
+        .join('\n');
+
+      return {
+        text,
+        metadata: {
+          source: filePath,
+          title: path.basename(filePath),
+          type: ext.replace('.', '') || 'doc',
+          extractor: 'strings'
+        },
+        warnings: ['Used strings fallback for legacy DOC; formatting may be incomplete']
+      };
+    } catch (error: any) {
+      logger.warn('DOC strings fallback failed', { filePath, error: error.message });
+      return this.unsupported(filePath, ext, `DOC strings fallback failed: ${error.message}`);
     }
   }
 

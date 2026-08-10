@@ -80,6 +80,7 @@ import { SafeDatabaseQuestionAgent } from '../database/SafeDatabaseQuestionAgent
 import { GovernanceEvidenceService } from '../governance/GovernanceEvidenceService';
 import { GitHubRepoKnowledgeImporter } from '../importers/GitHubRepoKnowledgeImporter';
 import { ConversationManager } from '../conversation/ConversationManager';
+import { PyScrappyService } from '../research/PyScrappyService';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -132,6 +133,7 @@ export interface InitializedServices {
   analytics?: AnalyticsService;
   knowledgeLearner?: KnowledgeLearner;
   conversationManager?: ConversationManager;
+  pyScrappyService?: PyScrappyService;
   initialization?: InitializationStatus;
 }
 
@@ -186,10 +188,15 @@ export class ServiceInitializer {
     const database = await this.initializeDatabase();
     const ragDocumentStore = database ? new RAGDocumentStore(database) : undefined;
     const ragService = this.initializeRAGService(primaryAdapter, embeddingService, ragDocumentStore);
+    const ragRetrievalMode = process.env.RAG_RETRIEVAL_MODE || 'memory';
 
     const restorePersistedRag = async () => {
       if (!ragDocumentStore) {
         initialization.optional.persistedRagRestore.status = 'skipped';
+        return;
+      }
+      if (ragRetrievalMode === 'database' && process.env.RAG_RESTORE_PERSISTED_TO_MEMORY !== 'true') {
+        logger.info('Skipping persisted RAG memory restore because database retrieval is enabled');
         return;
       }
       const persistedChunks = await ragDocumentStore.loadChunks();
@@ -222,10 +229,14 @@ export class ServiceInitializer {
       await this.trackOptionalInitialization(initialization, 'persistedRagRestore', restorePersistedRag);
       await this.trackOptionalInitialization(initialization, 'privateKnowledgeBaseLoad', () => this.loadKnowledgeBase(documentManager));
       await this.trackOptionalInitialization(initialization, 'publicKnowledgeBaseLoad', () => this.loadPublicKnowledgeBase(documentManager));
-    } else {
+    } else if (process.env.BACKGROUND_KNOWLEDGE_LOAD === 'true') {
       void this.trackOptionalInitialization(initialization, 'persistedRagRestore', restorePersistedRag);
       void this.trackOptionalInitialization(initialization, 'privateKnowledgeBaseLoad', () => this.loadKnowledgeBase(documentManager));
       void this.trackOptionalInitialization(initialization, 'publicKnowledgeBaseLoad', () => this.loadPublicKnowledgeBase(documentManager));
+    } else {
+      void this.trackOptionalInitialization(initialization, 'persistedRagRestore', restorePersistedRag);
+      this.markOptionalSkipped(initialization, 'privateKnowledgeBaseLoad');
+      this.markOptionalSkipped(initialization, 'publicKnowledgeBaseLoad');
     }
     logger.info('RAG service initialized');
 
@@ -248,7 +259,8 @@ export class ServiceInitializer {
     }
 
     // 9. Initialize Tools & Coding Knowledge
-    const { toolRegistry, functionCaller, knowledgeLearner, codingAgent } = await this.initializeTools(embeddingService, initialization);
+    const pyScrappyService = PyScrappyService.fromEnv();
+    const { toolRegistry, functionCaller, knowledgeLearner, codingAgent } = await this.initializeTools(embeddingService, initialization, pyScrappyService);
     logger.info('Tools initialized', {
       toolsCount: toolRegistry.getStats().totalTools,
       learner: !!knowledgeLearner
@@ -399,7 +411,8 @@ export class ServiceInitializer {
       cache,
       analytics,
       knowledgeLearner,
-      conversationManager
+      conversationManager,
+      pyScrappyService
     };
   }
 
@@ -715,7 +728,7 @@ export class ServiceInitializer {
   /**
    * Initialize tools and coding knowledge
    */
-  private static async initializeTools(embeddingService: EmbeddingService, initialization?: InitializationStatus): Promise<{
+  private static async initializeTools(embeddingService: EmbeddingService, initialization?: InitializationStatus, pyScrappyService?: PyScrappyService): Promise<{
     toolRegistry: ToolRegistry;
     functionCaller: FunctionCaller;
     knowledgeLearner: KnowledgeLearner;
@@ -732,8 +745,10 @@ export class ServiceInitializer {
       } else {
         await initializeCodingKnowledge();
       }
-    } else if (initialization) {
+    } else if (initialization && process.env.BACKGROUND_CODING_KNOWLEDGE_LOAD === 'true') {
       void this.trackOptionalInitialization(initialization, 'codingKnowledgeBaseLoad', initializeCodingKnowledge);
+    } else if (initialization) {
+      this.markOptionalSkipped(initialization, 'codingKnowledgeBaseLoad');
     }
 
     // 2. Coding Knowledge Tool
@@ -767,6 +782,10 @@ export class ServiceInitializer {
     // 6. Web searcher
     const webSearcher = WebSearcher.fromEnv();
     registry.register(webSearcher.createTool());
+
+    if (pyScrappyService?.isConfigured()) {
+      registry.register(pyScrappyService.createTool());
+    }
 
     // 7. Personal Knowledge Tool
     const personalKnowledgeTool = new PersonalKnowledgeTool();
@@ -816,6 +835,13 @@ export class ServiceInitializer {
       status.error = error.message;
       logger.error('Optional service initialization failed', { name, error: error.message });
     }
+  }
+
+  private static markOptionalSkipped(initialization: InitializationStatus, name: string): void {
+    const status = initialization.optional[name] || { status: 'pending' };
+    initialization.optional[name] = status;
+    status.status = 'skipped';
+    status.completedAt = new Date().toISOString();
   }
 }
 

@@ -20,6 +20,7 @@ import { securityHeaders, corsOptions } from '../middleware/security';
 import { auditPrivilegedRequest, requireAuth, requireCsrfForStateChange, requireRole } from '../middleware/auth';
 import { createKnowledgeBaseRouter } from './routes/knowledge-base';
 import { createKnowledgeOsRouter } from './routes/knowledge-os';
+import { createRagQueryRouter } from './routes/rag-query';
 import { validateWebhookUrl } from './security/webhookUrl';
 import { ConversationManager } from '../core/conversation/ConversationManager';
 import { createLegacyChatHandlers } from './routes/legacy-chat';
@@ -222,7 +223,30 @@ app.post('/api/knowledge-base/file', developerOnly, auditPrivilegedRequest('know
   res.json({ success: true, chunksCount: chunks.length });
 }));
 
+app.post('/api/knowledge-base/directory', developerOnly, auditPrivilegedRequest('knowledge-base:directory'), asyncHandler(async (req, res) => {
+  if (!services?.documentManager) {
+    return res.status(503).json({ error: 'Document manager not initialized' });
+  }
+
+  const { directoryPath } = req.body;
+  const options = req.body.options && typeof req.body.options === 'object' ? req.body.options : {};
+  if (typeof directoryPath !== 'string' || !directoryPath.trim()) {
+    return res.status(400).json({ error: 'directoryPath is required' });
+  }
+
+  const chunks = await services.documentManager.addDirectory(directoryPath, {
+    chunkSize: Number.isFinite(Number(options.chunkSize)) ? Number(options.chunkSize) : undefined,
+    chunkOverlap: Number.isFinite(Number(options.chunkOverlap)) ? Number(options.chunkOverlap) : undefined,
+    generateEmbeddings: options.generateEmbeddings !== false,
+    embeddingProvider: options.embeddingProvider,
+    embeddingModel: options.embeddingModel,
+    embeddingBatchSize: Number.isFinite(Number(options.embeddingBatchSize)) ? Number(options.embeddingBatchSize) : undefined
+  });
+  res.json({ success: true, chunksCount: chunks.length });
+}));
+
 app.use(requireReady(), mountServiceRouter(() => createKnowledgeBaseRouter(services)));
+app.use(...developerOnly, auditPrivilegedRequest('rag-query'), requireReady(), mountServiceRouter(() => createRagQueryRouter(services)));
 app.use('/api/knowledge-os', adminOnly, auditPrivilegedRequest('knowledge-os'));
 app.use(requireReady(), mountServiceRouter(() => createKnowledgeOsRouter(services)));
 

@@ -48,3 +48,5 @@ Current feature classifications are limited to:
 - `DISABLED_OR_REMOVED`
 
 The production feature manifest controls those categories. Historical feature IDs and notes do not override it.
+
+For the current local integration work, see [research-and-companion.md](integrations/research-and-companion.md). It records the PyScrappy, mex, book-to-skill-compatible export, and Electron companion boundaries without promoting them to production-supported status.

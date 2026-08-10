@@ -38,6 +38,7 @@ describe('DocumentIngester', () => {
       '.md',
       '.json',
       '.pdf',
+      '.epub',
       '.docx',
       '.doc',
       '.png',
@@ -46,6 +47,60 @@ describe('DocumentIngester', () => {
       '.bmp',
       '.gif'
     ]));
+  });
+
+  it('extracts EPUB books with metadata and chapter text', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const AdmZip = require('adm-zip');
+    const filePath = path.join(tempDir, 'minimal.epub');
+    const zip = new AdmZip();
+    zip.addFile('mimetype', Buffer.from('application/epub+zip'));
+    zip.addFile('META-INF/container.xml', Buffer.from(`<?xml version="1.0"?>
+      <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+        <rootfiles>
+          <rootfile full-path="OPS/package.opf" media-type="application/oebps-package+xml"/>
+        </rootfiles>
+      </container>`));
+    zip.addFile('OPS/package.opf', Buffer.from(`<?xml version="1.0"?>
+      <package xmlns="http://www.idpf.org/2007/opf" version="3.0">
+        <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+          <dc:title>Minimal Book</dc:title>
+          <dc:creator>Test Author</dc:creator>
+          <dc:language>en</dc:language>
+        </metadata>
+        <manifest>
+          <item id="chapter-1" href="chapter1.xhtml" media-type="application/xhtml+xml"/>
+        </manifest>
+        <spine>
+          <itemref idref="chapter-1"/>
+        </spine>
+      </package>`));
+    zip.addFile('OPS/chapter1.xhtml', Buffer.from(`<?xml version="1.0"?>
+      <html xmlns="http://www.w3.org/1999/xhtml">
+        <head><title>Opening</title></head>
+        <body>
+          <h1>Opening</h1>
+          <p>The archive city remembers every borrowed book.</p>
+        </body>
+      </html>`));
+    zip.writeZip(filePath);
+
+    const ingester = new DocumentIngester();
+    const chunks = await ingester.ingestFile(filePath, {
+      generateEmbeddings: false,
+      chunkSize: 500
+    });
+
+    expect(chunks).toHaveLength(1);
+    expect(chunks[0].content).toContain('archive city remembers');
+    expect(chunks[0].metadata).toMatchObject({
+      source: filePath,
+      title: 'Minimal Book',
+      author: 'Test Author',
+      language: 'en',
+      type: 'epub',
+      chapters: 1
+    });
   });
 
   it('returns a diagnostic chunk when office conversion is disabled and no text can be extracted', async () => {

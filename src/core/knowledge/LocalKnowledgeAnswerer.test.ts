@@ -66,6 +66,59 @@ describe('LocalKnowledgeAnswerer', () => {
     expect(answer?.sources).toContain('knowledge-base-public/sixsigma/six_sigma_tools.md');
   });
 
+  it('formats book-style answers as compact relevant passages instead of whole chunks', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: 'hobbit-chunk-0',
+          content: [
+            'THE HOBBIT THE HOBBIT OR THERE AND BACK AGAIN BY J.R.R. TOLKIEN Contents Title Page Chapter I: An Unexpected Party Chapter II: Roast Mutton.',
+            'The Hobbit is a tale of high adventure, undertaken by a company of dwarves in search of dragon-guarded gold.',
+            'A reluctant partner in this perilous quest is Bilbo Baggins, a comfort-loving hobbit who surprises even himself by his resourcefulness.'
+          ].join(' '),
+          metadata: {
+            source: 'books/The Hobbit.epub',
+            title: 'The Hobbit'
+          }
+        },
+        score: 0.9,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answerer = new LocalKnowledgeAnswerer(store as any);
+    const answer = await answerer.answer('what happens in The Hobbit?', 'ask');
+
+    expect(answer?.response).toContain('Closest local passages indicate');
+    expect(answer?.response).toContain('Bilbo Baggins');
+    expect(answer?.response).not.toContain('Contents Title Page');
+    expect(answer?.response.length).toBeLessThan(900);
+  });
+
+  it('formats citations with readable book metadata while preserving raw source references', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: 'hobbit-citation-chunk-0',
+          content: 'The Hobbit is about Bilbo Baggins joining a quest to reclaim treasure from a dragon.',
+          metadata: {
+            source: 'F:\\Downloads\\Books\\The Hobbit.epub',
+            title: 'The Hobbit',
+            author: 'J. R. R. Tolkien'
+          }
+        },
+        score: 0.9,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answerer = new LocalKnowledgeAnswerer(store as any);
+    const answer = await answerer.answer('what is The Hobbit about?', 'ask');
+
+    expect(answer?.response).toContain('- The Hobbit - J. R. R. Tolkien');
+    expect(answer?.sources).toContain('F:\\Downloads\\Books\\The Hobbit.epub');
+  });
+
   it('answers year-event questions with events instead of the calendar summary', async () => {
     const store = {
       searchKeyword: jest.fn().mockResolvedValue([{
@@ -216,6 +269,7 @@ describe('LocalKnowledgeAnswerer', () => {
     const answer = await answerer.answer('what was world war i?', 'history');
 
     expect(answer?.response).toContain('World War I was a global conflict');
+    expect(answer?.mode).toBe('ask');
     expect(answer?.model).toBe('local-knowledge-base');
   });
 });

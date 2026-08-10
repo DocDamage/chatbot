@@ -38,6 +38,9 @@ describe('RAGDocumentStore', () => {
 
     await store.saveChunks(chunks, { sourceType: 'markdown', runId: 'run-1' });
 
+    await expect(store.hasSource('guide.md')).resolves.toBe(true);
+    await expect(store.hasSource('missing.md')).resolves.toBe(false);
+
     const loaded = await store.loadChunks();
     expect(loaded).toHaveLength(1);
     expect(loaded[0]).toMatchObject({
@@ -86,5 +89,65 @@ describe('RAGDocumentStore', () => {
       chunk: expect.objectContaining({ id: 'alpha-chunk-0' }),
       retrievalMethod: expect.stringContaining('keyword')
     });
+  });
+
+  it('lists source metadata, duplicate groups, and OCR queue candidates', async () => {
+    const store = new RAGDocumentStore(db);
+    await store.saveChunks([
+      {
+        id: 'scan.pdf-chunk-0',
+        content: 'Extraction warning for scan.pdf: no extractable text.',
+        metadata: {
+          source: 'scan.pdf',
+          title: 'Scanned Notes',
+          type: 'pdf',
+          author: 'Archive Desk',
+          chunkIndex: 0,
+          emptyExtraction: true,
+          extractionWarnings: ['PDF text extraction produced no text; queue for OCR reimport.']
+        }
+      },
+      {
+        id: 'hobbit-a.epub-chunk-0',
+        content: 'Bilbo sets out on an unexpected journey.',
+        metadata: {
+          source: 'hobbit-a.epub',
+          title: 'The Hobbit',
+          type: 'epub',
+          author: 'J. R. R. Tolkien',
+          chunkIndex: 0
+        }
+      },
+      {
+        id: 'hobbit-b.epub-chunk-0',
+        content: 'A second imported edition of the same book.',
+        metadata: {
+          source: 'hobbit-b.epub',
+          title: 'The Hobbit',
+          type: 'epub',
+          author: 'J. R. R. Tolkien',
+          chunkIndex: 0
+        }
+      }
+    ], { sourceType: 'book' });
+
+    const listed = await store.listSources({ limit: 10 });
+    expect(listed.total).toBe(3);
+    expect(listed.sources.find(source => source.title === 'Scanned Notes')).toMatchObject({
+      author: 'Archive Desk',
+      needsOcr: true,
+      citationLabel: 'Scanned Notes - Archive Desk'
+    });
+
+    const ocrQueue = await store.getOcrQueue({ limit: 10 });
+    expect(ocrQueue.sources).toHaveLength(1);
+    expect(ocrQueue.sources[0]).toMatchObject({
+      title: 'Scanned Notes',
+      needsOcr: true
+    });
+
+    const duplicates = await store.listSources({ duplicatesOnly: true, limit: 10 });
+    expect(duplicates.sources).toHaveLength(2);
+    expect(duplicates.sources.every(source => source.duplicateCount === 2)).toBe(true);
   });
 });

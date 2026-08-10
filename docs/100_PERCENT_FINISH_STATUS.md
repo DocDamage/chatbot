@@ -49,3 +49,7 @@ At the `P00-T02` feature-classification baseline, commit `027eacd948cadb0f8b7493
 ## Current release statement
 
 The repository is a production-completion work in progress. The accurate label must come from the master tracker and feature manifest. No claim in the archived May snapshot overrides those authoritative sources.
+
+## Supplemental local integration verification
+
+The current workspace also contains an optional PyScrappy MCP bridge, a deterministic book-to-skill-compatible export, an Electron voice companion, and a mex scaffold. Local verification covered the PyScrappy MCP handshake and authenticated research route smoke test, Electron dependency/audit/launch checks, and mex validation. These checks document local integration behavior; they do not change the authoritative production-support classification above.

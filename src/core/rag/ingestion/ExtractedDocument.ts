@@ -6,7 +6,11 @@ export type ExtractedDocumentType =
   | 'text'
   | 'markdown'
   | 'json'
+  | 'html'
+  | 'rtf'
   | 'pdf'
+  | 'epub'
+  | 'mobi'
   | 'docx'
   | 'doc'
   | 'image'
@@ -24,6 +28,9 @@ export interface FileExtractionOptions {
   imageOcrLanguage?: string;
   maxGifFrames?: number;
   enableOfficeConversion?: boolean;
+  enablePdfOcr?: boolean;
+  pdfOcrMaxPages?: number;
+  pdfOcrDpi?: number;
 }
 
 export interface FileExtractor {

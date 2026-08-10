@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src http://localhost:*; style-src 'self' 'unsafe-inline'; script-src 'self'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chatbot Companion</title>
+    <style>
+      :root { color-scheme: dark; font-family: Segoe UI, system-ui, sans-serif; }
+      body { margin: 0; background: #10131a; color: #eef2ff; }
+      main { display: flex; flex-direction: column; height: 100vh; }
+      header { padding: 18px 20px 12px; border-bottom: 1px solid #293043; }
+      h1 { margin: 0; font-size: 18px; }
+      p { color: #aeb9d4; font-size: 12px; margin: 6px 0 0; }
+      #messages { flex: 1; overflow: auto; padding: 16px; }
+      .message { white-space: pre-wrap; margin: 0 0 12px; padding: 10px 12px; border-radius: 10px; line-height: 1.4; font-size: 13px; }
+      .user { background: #24304d; margin-left: 34px; }
+      .assistant { background: #1b222f; margin-right: 22px; }
+      footer { padding: 12px; border-top: 1px solid #293043; }
+      textarea { width: 100%; box-sizing: border-box; resize: none; border: 1px solid #3b4660; border-radius: 8px; background: #151a24; color: inherit; padding: 10px; }
+      .controls { display: flex; gap: 8px; margin-top: 8px; }
+      button { border: 0; border-radius: 8px; padding: 9px 12px; color: white; background: #536dfe; cursor: pointer; }
+      button.secondary { background: #30394e; }
+      button.listening { background: #c54b63; }
+      #status { min-height: 16px; margin-top: 8px; color: #aeb9d4; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header><h1>Chatbot Companion</h1><p>Voice-first desktop access to the existing chatbot session.</p></header>
+      <section id="messages" aria-live="polite"></section>
+      <footer>
+        <textarea id="input" rows="3" placeholder="Say or type a message…"></textarea>
+        <div class="controls">
+          <button id="send">Send</button>
+          <button id="talk" class="secondary">Talk</button>
+          <button id="stop" class="secondary">Stop voice</button>
+        </div>
+        <div id="status">Ready. Ctrl/Cmd+Shift+Space toggles the companion.</div>
+      </footer>
+    </main>
+    <script src="renderer.js"></script>
+  </body>
+</html>

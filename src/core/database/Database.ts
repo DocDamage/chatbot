@@ -50,6 +50,14 @@ export class Database {
           }
 
           this.db = sqlite3(dbPath);
+          try {
+            this.db.pragma('journal_mode = WAL');
+            this.db.pragma('synchronous = NORMAL');
+            this.db.pragma('temp_store = MEMORY');
+            this.db.pragma(`busy_timeout = ${Number(process.env.SQLITE_BUSY_TIMEOUT_MS || 30000)}`);
+          } catch (pragmaError: any) {
+            logger.warn('SQLite performance pragma setup failed', { error: pragmaError.message });
+          }
           logger.info('SQLite database initialized', { path: dbPath });
         } catch (error: any) {
           logger.warn('SQLite not available, database features disabled', { error: error.message });
@@ -306,6 +314,8 @@ export class Database {
           `CREATE INDEX IF NOT EXISTS idx_document_chunks_fts
             ON document_chunks
             USING GIN (to_tsvector('english', content))`,
+          `CREATE INDEX IF NOT EXISTS idx_document_chunks_source_id
+            ON document_chunks (source_id)`,
           `CREATE INDEX IF NOT EXISTS idx_chunk_embeddings_vector
             ON chunk_embeddings
             USING ivfflat (embedding_vector vector_cosine_ops)
@@ -367,6 +377,27 @@ export class Database {
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (chunk_id) REFERENCES document_chunks(id) ON DELETE CASCADE
           )`,
+          `CREATE VIRTUAL TABLE IF NOT EXISTS document_chunks_fts
+            USING fts5(id UNINDEXED, content, content='document_chunks', content_rowid='rowid')`,
+          `CREATE TRIGGER IF NOT EXISTS document_chunks_ai_fts
+            AFTER INSERT ON document_chunks BEGIN
+              INSERT INTO document_chunks_fts(rowid, id, content)
+              VALUES (new.rowid, new.id, new.content);
+            END`,
+          `CREATE TRIGGER IF NOT EXISTS document_chunks_ad_fts
+            AFTER DELETE ON document_chunks BEGIN
+              INSERT INTO document_chunks_fts(document_chunks_fts, rowid, id, content)
+              VALUES('delete', old.rowid, old.id, old.content);
+            END`,
+          `CREATE TRIGGER IF NOT EXISTS document_chunks_au_fts
+            AFTER UPDATE ON document_chunks BEGIN
+              INSERT INTO document_chunks_fts(document_chunks_fts, rowid, id, content)
+              VALUES('delete', old.rowid, old.id, old.content);
+              INSERT INTO document_chunks_fts(rowid, id, content)
+              VALUES (new.rowid, new.id, new.content);
+            END`,
+          `CREATE INDEX IF NOT EXISTS idx_document_chunks_source_id
+            ON document_chunks (source_id)`,
           `CREATE TABLE IF NOT EXISTS source_citations (
             id TEXT PRIMARY KEY,
             chunk_id TEXT NOT NULL,

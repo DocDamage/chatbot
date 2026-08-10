@@ -111,4 +111,51 @@ describe('legacy chat knowledge miss contract', () => {
 
     expect(orchestrator.processRequest).not.toHaveBeenCalled();
   });
+
+  it('prefers local library answers over broad history routing for book questions', async () => {
+    const app = express();
+    const conversationManager = new ConversationManager();
+    const orchestrator = {
+      processRequest: jest.fn(),
+    };
+    const ragDocumentStore = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: 'hobbit-chunk-0',
+          content: 'The Hobbit is a tale of high adventure. A reluctant partner in this perilous quest is Bilbo Baggins.',
+          metadata: {
+            source: 'books/The Hobbit.epub',
+            title: 'The Hobbit'
+          }
+        },
+        score: 1,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    app.use(express.json());
+    app.post('/api/chat', ...createLegacyChatHandlers({
+      getServices: () => ({ ragDocumentStore }),
+      getOrchestrator: () => orchestrator,
+      waitForReady: jest.fn().mockResolvedValue(undefined),
+      getConversationManager: () => conversationManager,
+    }));
+
+    await request(app)
+      .post('/api/chat')
+      .send({
+        message: 'What happens in The Hobbit?',
+        sessionId: 'book-route-session',
+        mode: 'ask',
+      })
+      .expect(200)
+      .expect(response => {
+        expect(response.body.model).toBe('local-knowledge-base');
+        expect(response.body.mode).toBe('ask');
+        expect(response.body.response).toContain('Bilbo Baggins');
+        expect(response.body.nlu.route).toBe('history');
+      });
+
+    expect(orchestrator.processRequest).not.toHaveBeenCalled();
+  });
 });

@@ -250,6 +250,14 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
       const nlu = humanLanguageRouter.route({ message: sanitizedMessage, explicitMode: mode });
       const nluRoute = nlu.confidence >= 0.75 && isRecognizedSpecialistMode(nlu.route) ? nlu.route : undefined;
       const specialistMode = nluRoute || inferChatSpecialistMode(sanitizedMessage, mode);
+      const services = deps.getServices();
+
+      if (shouldPreferLocalLibraryAnswer(sanitizedMessage, mode, nlu)) {
+        const localResponse = await new LocalKnowledgeAnswerer(services?.ragDocumentStore).answer(sanitizedMessage, 'ask');
+        if (localResponse && !localResponse.knowledgeMiss) {
+          return sendAndPersist({ ...localResponse, nlu });
+        }
+      }
 
       if (!specialistMode && nlu.clarification) {
         return sendAndPersist({
@@ -265,10 +273,9 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
         return sendAndPersist(await processSpecialistChat(sanitizedMessage, specialistMode, nlu, chatRequest));
       }
 
-      const services = deps.getServices();
       if (!mode || mode === 'ask') {
         const localResponse = await new LocalKnowledgeAnswerer(services?.ragDocumentStore).answer(sanitizedMessage, 'ask');
-        if (localResponse) return sendAndPersist(localResponse);
+        if (localResponse) return sendAndPersist({ ...localResponse, nlu });
       }
 
       const request: ChatRequest = { ...chatRequest, message: sanitizedMessage, sessionId, userId };
@@ -312,4 +319,29 @@ function inferChatSpecialistMode(message: string, mode?: string): ChatSpecialist
   if (/(invention|invented|discovery|science|scientific|paper|patent|technology|physics|chemistry|biology|astronomy|medicine)/.test(text)) return 'science';
   if (/(tell me (something|the biggest story|a story)|biggest story|top story|major event|what happened|what was big|what was popular|pop culture reference).{0,24}\b(19[2-9]\d|20[0-2]\d)\b/.test(text)) return 'pop_culture';
   return undefined;
+}
+
+function shouldPreferLocalLibraryAnswer(
+  message: string,
+  mode: string | undefined,
+  nlu: HumanLanguageRoute
+): boolean {
+  if (mode && mode !== 'ask') {
+    return false;
+  }
+
+  if (nlu.route !== 'history' || !nlu.matchedPhrases.includes('what happened in')) {
+    return false;
+  }
+
+  const text = message.toLowerCase();
+  if (/\b(?:\d{1,5}\s*(?:bc|bce)|1[0-9]{3}|20[0-2]\d)\b/.test(text)) {
+    return false;
+  }
+
+  if (/\b(history|historical|ancient|medieval|empire|war|battle|civilization|archaeology|archaeological|dynasty|revolution|republic|kingdom)\b/.test(text)) {
+    return false;
+  }
+
+  return true;
 }

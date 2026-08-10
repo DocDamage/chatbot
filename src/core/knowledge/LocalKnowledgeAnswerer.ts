@@ -32,22 +32,25 @@ export class LocalKnowledgeAnswerer {
       return this.noLocalRecord(message, mode);
     }
 
+    let effectiveMode = mode;
     let results = await this.search(message, mode);
     if (results.length === 0 && mode !== 'ask') {
       results = await this.search(message, 'ask');
+      effectiveMode = 'ask';
     }
     if (results.length === 0) {
       return this.noLocalRecord(message, mode);
     }
 
     const chunks = this.selectChunks(results, message);
-    const sources = Array.from(new Set(chunks.map(chunk => chunk.metadata.source || chunk.metadata.title || 'local knowledge base')));
+    const sourceEntries = this.collectSourceEntries(chunks);
+    const sources = sourceEntries.map(entry => entry.source);
     const body = this.formatAnswerBody(chunks, message);
 
     return {
-      response: `From the local knowledge base:\n\n${body}\n\nSources:\n${sources.map(source => `- ${source}`).join('\n')}`,
+      response: `From the local knowledge base:\n\n${body}\n\nSources:\n${sourceEntries.map(entry => `- ${entry.label}`).join('\n')}`,
       sources,
-      mode,
+      mode: effectiveMode,
       model: 'local-knowledge-base'
     };
   }
@@ -108,6 +111,46 @@ export class LocalKnowledgeAnswerer {
       .trim();
   }
 
+  private collectSourceEntries(chunks: RetrievalResult['chunk'][]): Array<{ source: string; label: string }> {
+    const entries = new Map<string, { source: string; label: string }>();
+
+    for (const chunk of chunks) {
+      const source = String(chunk.metadata.source || chunk.metadata.title || 'local knowledge base');
+      if (entries.has(source)) {
+        continue;
+      }
+
+      entries.set(source, {
+        source,
+        label: this.formatSourceLabel(chunk)
+      });
+    }
+
+    return Array.from(entries.values());
+  }
+
+  private formatSourceLabel(chunk: RetrievalResult['chunk']): string {
+    const rawSource = String(chunk.metadata.source || '');
+    const title = this.cleanLabelPart(chunk.metadata.citationLabel || chunk.metadata.title || this.basename(rawSource));
+    const author = this.cleanLabelPart(chunk.metadata.author || chunk.metadata.creator);
+    const location = this.cleanLabelPart(chunk.metadata.chapterTitle || chunk.metadata.sectionTitle);
+    const parts = [title, author].filter(Boolean);
+    const label = parts.length ? parts.join(' - ') : 'local knowledge base';
+    return location ? `${label}, ${location}` : label;
+  }
+
+  private cleanLabelPart(value: unknown): string | undefined {
+    if (typeof value !== 'string') {
+      return undefined;
+    }
+    const cleaned = value.replace(/\s+/g, ' ').trim();
+    return cleaned || undefined;
+  }
+
+  private basename(source: string): string | undefined {
+    return source.split(/[\\/]/).filter(Boolean).pop();
+  }
+
   private formatAnswerBody(chunks: RetrievalResult['chunk'][], message: string): string {
     const year = this.extractYear(message);
     if (year && this.isYearEventQuestion(message)) {
@@ -115,9 +158,170 @@ export class LocalKnowledgeAnswerer {
       if (eventBody) return eventBody;
     }
 
-    return chunks
-      .map(chunk => this.cleanChunk(chunk.content))
-      .join('\n\n---\n\n');
+    return this.formatExtractiveAnswer(chunks, message);
+  }
+
+  private formatExtractiveAnswer(chunks: RetrievalResult['chunk'][], message: string): string {
+    const rankedUnits = chunks
+      .flatMap(chunk => this.extractAnswerUnits(chunk, message))
+      .sort((a, b) => b.score - a.score);
+
+    const selected: string[] = [];
+    const seen = new Set<string>();
+
+    for (const unit of rankedUnits) {
+      const normalized = unit.text.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      if (!normalized || seen.has(normalized)) {
+        continue;
+      }
+
+      if (Array.from(seen).some(existing => existing.includes(normalized) || normalized.includes(existing))) {
+        continue;
+      }
+
+      selected.push(unit.text);
+      seen.add(normalized);
+      if (selected.length >= 4) {
+        break;
+      }
+    }
+
+    if (selected.length === 0) {
+      return chunks
+        .map(chunk => this.truncateUnit(this.cleanChunk(chunk.content), 360))
+        .join('\n\n---\n\n');
+    }
+
+    const lead = this.isSummaryQuestion(message)
+      ? 'Closest local passages indicate:'
+      : 'Most relevant local passages:';
+
+    return [
+      lead,
+      '',
+      ...selected.map((unit, index) => `${index + 1}. ${unit}`)
+    ].join('\n');
+  }
+
+  private extractAnswerUnits(
+    chunk: RetrievalResult['chunk'],
+    message: string
+  ): Array<{ text: string; score: number }> {
+    const clean = this.cleanChunk(chunk.content)
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    return this.splitIntoUnits(clean)
+      .map(unit => this.polishAnswerUnit(unit))
+      .map(unit => this.truncateUnit(unit, 360))
+      .filter(unit => !this.isLowSignalUnit(unit))
+      .map(unit => ({
+        text: unit,
+        score: this.answerUnitScore(unit, message, chunk)
+      }))
+      .filter(unit => unit.score > 0);
+  }
+
+  private polishAnswerUnit(unit: string): string {
+    return unit
+      .replace(/\b(.{3,60})\s+\1\s+(is|are|was|were)\b/i, '$1 $2')
+      .replace(/^[A-Z][A-Z.]{2,}\s+(?=[A-Z][a-z])/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  private splitIntoUnits(content: string): string[] {
+    const sentenceUnits = content
+      .split(/(?<=[.!?])\s+(?=(?:["'“‘(]*[A-Z0-9]))/)
+      .map(unit => unit.trim())
+      .filter(Boolean);
+
+    return sentenceUnits.flatMap(unit => {
+      if (unit.length <= 420) {
+        return [unit];
+      }
+
+      return unit
+        .split(/\s+(?=(?:Chapter|CHAPTER|[A-Z][a-z]+:)\b)/)
+        .map(part => part.trim())
+        .filter(Boolean);
+    });
+  }
+
+  private answerUnitScore(unit: string, message: string, chunk: RetrievalResult['chunk']): number {
+    const lower = unit.toLowerCase();
+    const importantTokens = this.importantTokens(message);
+    const tokenMatches = importantTokens.filter(token => lower.includes(token)).length;
+    const tokenScore = importantTokens.length > 0 ? tokenMatches / importantTokens.length : 0;
+    const sourceText = `${chunk.metadata.title || ''} ${chunk.metadata.source || ''}`.toLowerCase();
+    const sourceMatches = importantTokens.filter(token => sourceText.includes(token)).length;
+
+    let score = tokenScore * 8 + sourceMatches * 0.75;
+    const explanatorySignals = [
+      ' is a tale ',
+      ' is about ',
+      ' tells the story ',
+      ' undertak',
+      ' quest',
+      ' reluctant',
+      ' adventure',
+      ' encounters',
+      ' discovers',
+      ' becomes',
+      ' forms a prelude',
+      ' measures',
+      ' means',
+      ' refers to'
+    ];
+
+    for (const signal of explanatorySignals) {
+      if (lower.includes(signal)) {
+        score += 1.25;
+      }
+    }
+
+    if (this.isSummaryQuestion(message) && /\b(is|are|was|were|means|refers|tale|story|quest|about)\b/i.test(unit)) {
+      score += 1;
+    }
+
+    return score;
+  }
+
+  private isLowSignalUnit(unit: string): boolean {
+    const normalized = unit.toLowerCase();
+    const letters = unit.replace(/[^a-z]/gi, '');
+    const upperLetters = unit.replace(/[^A-Z]/g, '');
+    const upperRatio = letters.length > 0 ? upperLetters.length / letters.length : 0;
+
+    return unit.length < 45
+      || /^chapter\s+(?:\d+|[ivxlcdm]+)/i.test(unit)
+      || /\b(contents|cover page|title page|copyright|about the author|works by|list of illustrations)\b/i.test(unit)
+      || /\b(images, illustrations and audio|sample from lord of the rings)\b/i.test(unit)
+      || (/\bor there and back again by j\.?r\.?r/i.test(unit) && !/\b(tale|adventure|quest|bilbo|dragon|encounter|perilous)\b/i.test(unit))
+      || (unit.match(/\bchapter\b/gi)?.length || 0) > 2
+      || /\bBACK\b(?:\s+\bBACK\b){2,}/.test(unit)
+      || (upperRatio > 0.65 && unit.length > 80)
+      || normalized.split(/\s+/).length < 7;
+  }
+
+  private truncateUnit(unit: string, maxLength: number): string {
+    const trimmed = unit.replace(/\s+/g, ' ').trim();
+    if (trimmed.length <= maxLength) {
+      return trimmed;
+    }
+
+    const truncated = trimmed.slice(0, maxLength);
+    const lastBoundary = Math.max(
+      truncated.lastIndexOf('.'),
+      truncated.lastIndexOf(';'),
+      truncated.lastIndexOf(',')
+    );
+
+    return `${truncated.slice(0, lastBoundary > 140 ? lastBoundary : maxLength).trim()}...`;
+  }
+
+  private isSummaryQuestion(message: string): boolean {
+    return /\b(what is|what are|what happens|happen|about|summarize|summary|tell me about|explain|story|plot)\b/i.test(message);
   }
 
   private formatYearEventAnswer(chunks: RetrievalResult['chunk'][], year: string, message: string): string | undefined {

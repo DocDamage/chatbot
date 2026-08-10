@@ -66,6 +66,15 @@ const configSchema = z.object({
   GROUNDING_MODE: z.enum(['off', 'strict']).optional(),
   GROUNDING_REQUIRED_COVERAGE: decimalText,
   RERANKER_MODE: z.enum(['heuristic', 'llm', 'embedding', 'cross_encoder']).optional(),
+
+  // Optional PyScrappy MCP research bridge
+  PYSCRAPPY_ENABLED: z.string().optional(),
+  PYSCRAPPY_MCP_COMMAND: z.string().optional(),
+  PYSCRAPPY_MCP_ARGS: z.string().optional(),
+  PYSCRAPPY_MCP_CWD: z.string().optional(),
+  PYSCRAPPY_SCRAPE_TOOL: z.string().optional(),
+  PYSCRAPPY_MAX_OUTPUT_BYTES: z.string().regex(/^\d+$/).optional(),
+
   ENABLE_RAG: booleanText,
   ENABLE_MODEL_ROUTING: booleanText,
   ENABLE_SAFETY_PIPELINE: booleanText,

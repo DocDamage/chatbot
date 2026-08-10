@@ -62,6 +62,7 @@ const localOnly = (entry: Omit<RouteManifestEntry, 'availability' | 'status'>): 
 
 export const routeManifest: RouteManifestEntry[] = [
   preview({ name: 'rag-query', readiness: true }),
+  localOnly({ name: 'research', mount: '/api/research', readiness: true, privilege: 'developer', auditAction: 'research' }),
   localOnly({ name: 'code', mount: '/api/code', readiness: true, privilege: 'developer', auditAction: 'code' }),
   localOnly({ name: 'plans', mount: '/api/plans', readiness: false, privilege: 'developer', auditAction: 'plans' }),
   localOnly({ name: 'files', mount: '/api/files', readiness: false, privilege: 'developer', auditAction: 'files' }),

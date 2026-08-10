@@ -16,6 +16,8 @@ export interface IngestOptions extends FileExtractionOptions {
   chunkOverlap?: number;
   generateEmbeddings?: boolean;
   embeddingProvider?: 'openai' | 'xenova' | 'ollama';
+  embeddingModel?: string;
+  embeddingBatchSize?: number;
 }
 
 export class DocumentIngester {
@@ -37,11 +39,16 @@ export class DocumentIngester {
     options: IngestOptions = {}
   ): Promise<DocumentChunk[]> {
     const content = await this.fileTypeRouter.extract(filePath, options);
+    const fileStats = fs.statSync(filePath);
 
     const chunks = this.chunkText(
       content.text,
       {
         ...content.metadata,
+        fileName: path.basename(filePath),
+        fileExtension: path.extname(filePath).toLowerCase(),
+        fileSizeBytes: fileStats.size,
+        modifiedAt: fileStats.mtime.toISOString(),
         extractionWarnings: content.warnings,
         supportedExtensions: this.fileTypeRouter.getSupportedExtensions()
       },
@@ -51,7 +58,7 @@ export class DocumentIngester {
 
     // Generate embeddings if requested
     if (options.generateEmbeddings && this.embeddingService && chunks.length > 0) {
-      await this.generateEmbeddings(chunks, options.embeddingProvider);
+      await this.generateEmbeddings(chunks, options.embeddingProvider, options.embeddingModel, options.embeddingBatchSize);
     }
 
     logger.info('File ingested', {
@@ -81,7 +88,7 @@ export class DocumentIngester {
     );
 
     if (options.generateEmbeddings && this.embeddingService && chunks.length > 0) {
-      await this.generateEmbeddings(chunks, options.embeddingProvider);
+      await this.generateEmbeddings(chunks, options.embeddingProvider, options.embeddingModel, options.embeddingBatchSize);
     }
 
     return chunks;
@@ -155,16 +162,17 @@ export class DocumentIngester {
     let chunkIndex = 0;
 
     if (words.length === 0) {
-      const diagnostic = metadata.error || (metadata.extractionWarnings || []).join('; ');
-      if (!diagnostic) {
-        return [];
-      }
+      const extractionWarnings = metadata.extractionWarnings || [];
+      const diagnostic = metadata.error ||
+        extractionWarnings.join('; ') ||
+        `No extractable text found for ${metadata.source || 'unknown source'}. The file may be scanned, image-only, encrypted, or otherwise unsupported without OCR.`;
 
       return [{
         id: `${metadata.source || 'doc'}-chunk-0`,
         content: `Extraction warning for ${metadata.source || 'unknown source'}: ${diagnostic}`,
         metadata: {
           ...metadata,
+          extractionWarnings: extractionWarnings.length > 0 ? extractionWarnings : [diagnostic],
           chunkIndex: 0,
           startChar: 0,
           endChar: 0,
@@ -224,18 +232,24 @@ export class DocumentIngester {
    */
   private async generateEmbeddings(
     chunks: DocumentChunk[],
-    provider?: 'openai' | 'xenova' | 'ollama'
+    provider?: 'openai' | 'xenova' | 'ollama',
+    model?: string,
+    embeddingBatchSize: number = parseInt(process.env.RAG_EMBEDDING_BATCH_SIZE || '32')
   ): Promise<void> {
     if (!this.embeddingService) {
       logger.warn('Embedding service not available, skipping embeddings');
       return;
     }
 
-    const texts = chunks.map(chunk => chunk.content);
-    const embeddings = await this.embeddingService.embedBatch(texts, { provider });
+    const batchSize = Math.max(1, embeddingBatchSize);
+    for (let offset = 0; offset < chunks.length; offset += batchSize) {
+      const batch = chunks.slice(offset, offset + batchSize);
+      const texts = batch.map(chunk => chunk.content);
+      const embeddings = await this.embeddingService.embedBatch(texts, { provider, model });
 
-    for (let i = 0; i < chunks.length; i++) {
-      chunks[i].embedding = embeddings[i];
+      for (let i = 0; i < batch.length; i++) {
+        chunks[offset + i].embedding = embeddings[i];
+      }
     }
 
     logger.debug('Embeddings generated', { chunksCount: chunks.length });

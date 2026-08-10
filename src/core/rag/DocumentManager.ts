@@ -47,7 +47,8 @@ export class DocumentManager {
 
     await this.persistChunks(chunks, {
       sourceType: chunks[0]?.metadata.type || 'file',
-      embeddingProvider: options.embeddingProvider
+      embeddingProvider: options.embeddingProvider,
+      embeddingModel: options.embeddingModel
     });
     this.ragService.addDocuments(chunks);
 
@@ -79,7 +80,8 @@ export class DocumentManager {
 
     await this.persistChunks(chunks, {
       sourceType: enrichedMetadata.type || 'text',
-      embeddingProvider: options.embeddingProvider
+      embeddingProvider: options.embeddingProvider,
+      embeddingModel: options.embeddingModel
     });
     this.ragService.addDocuments(chunks);
 
@@ -100,7 +102,8 @@ export class DocumentManager {
 
     await this.persistChunks(chunks, {
       sourceType: 'directory',
-      embeddingProvider: options.embeddingProvider
+      embeddingProvider: options.embeddingProvider,
+      embeddingModel: options.embeddingModel
     });
     this.ragService.addDocuments(chunks);
 
@@ -139,6 +142,7 @@ export class DocumentManager {
   private async persistChunks(chunks: DocumentChunk[], options: {
     sourceType?: string;
     embeddingProvider?: string;
+    embeddingModel?: string;
   }): Promise<void> {
     if (!this.documentStore) {
       return;

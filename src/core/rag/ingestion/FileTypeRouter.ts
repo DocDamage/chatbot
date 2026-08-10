@@ -5,9 +5,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { ExtractedDocument, FileExtractionOptions, FileExtractor } from './ExtractedDocument';
+import { EpubExtractor } from './EpubExtractor';
+import { HtmlExtractor } from './HtmlExtractor';
 import { ImageOcrExtractor } from './ImageOcrExtractor';
+import { MobiExtractor } from './MobiExtractor';
 import { OfficeExtractor } from './OfficeExtractor';
 import { PdfExtractor } from './PdfExtractor';
+import { RtfExtractor } from './RtfExtractor';
 import { TextLikeExtractor } from './TextLikeExtractor';
 
 export class FileTypeRouter {
@@ -16,7 +20,11 @@ export class FileTypeRouter {
   constructor(extractors?: FileExtractor[]) {
     this.extractors = extractors || [
       new TextLikeExtractor(),
+      new HtmlExtractor(),
+      new RtfExtractor(),
       new PdfExtractor(),
+      new EpubExtractor(),
+      new MobiExtractor(),
       new OfficeExtractor(),
       new ImageOcrExtractor()
     ];
@@ -38,7 +46,18 @@ export class FileTypeRouter {
       '.txt',
       '.md',
       '.json',
+      '.html',
+      '.htm',
+      '.xhtml',
+      '.mht',
+      '.mhtml',
+      '.rtf',
       '.pdf',
+      '.epub',
+      '.mobi',
+      '.azw',
+      '.azw3',
+      '.azw4',
       '.docx',
       '.doc',
       '.png',

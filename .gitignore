@@ -1,5 +1,7 @@
 node_modules/
 dist/
+coverage/
+client/coverage/
 data/
 local-tools/
 private-tools/
@@ -19,4 +21,6 @@ knowledge-base/
 *.tsbuildinfo
 .vscode/
 .idea/
+.mex/graph.db*
+.venv-pyscrappy/
 .playwright-cli/

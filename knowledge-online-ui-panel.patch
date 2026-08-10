@@ -1,0 +1,390 @@
+diff --git a/client/src/App.tsx b/client/src/App.tsx
+index f9e7632..0000000 100644
+--- a/client/src/App.tsx
++++ b/client/src/App.tsx
+@@ -1,5 +1,6 @@
+ import AssistantChat from './components/AssistantChat';
+ import GamingPlaybookPanel from './components/GamingPlaybookPanel';
++import KnowledgeOnlinePanel from './components/KnowledgeOnlinePanel';
+ import LocalToolsWorkspace from './components/LocalToolsWorkspace';
+ import SettingsMenu from './components/SettingsMenu';
+ import './App.css';
+@@ -13,6 +14,7 @@ function App() {
+       </header>
+       <AssistantChat />
+       <GamingPlaybookPanel />
++      <KnowledgeOnlinePanel />
+       <LocalToolsWorkspace />
+     </div>
+   );
+diff --git a/client/src/api/knowledge.ts b/client/src/api/knowledge.ts
+index feeb435..0000000 100644
+--- a/client/src/api/knowledge.ts
++++ b/client/src/api/knowledge.ts
+@@ -1,5 +1,43 @@
+ import { throwApiError } from './errors';
+
++export interface KnowledgeCheckResult {
++  answer: string;
++  confidence: number;
++  needsOnlineResearch: boolean;
++  suggestedQuery: string;
++  localAnswer?: unknown;
++  miss?: {
++    knowledgeMiss?: boolean;
++    domain?: string;
++    proposedWebQuery?: string;
++    recommendedSources?: string[];
++  };
++}
++
++export interface OnlineKnowledgeSource {
++  title: string;
++  url: string;
++  snippet: string;
++}
++
++export interface OnlineKnowledgePreview {
++  query: string;
++  domain: string;
++  retrievedAt: string;
++  answerPreview: string;
++  sources: OnlineKnowledgeSource[];
++  reviewToken: string;
++  requiresApproval: true;
++  sourcePolicy: {
++    accepted: number;
++    rejected: Array<{ url: string; reason: string }>;
++  };
++}
++
++export async function checkOnlineKnowledge(question: string, domain: string, confidenceThreshold?: number): Promise<KnowledgeCheckResult> {
++  const response = await fetch('/api/knowledge-online/check', {
++    method: 'POST',
++    headers: { 'Content-Type': 'application/json' },
++    body: JSON.stringify({ question, domain, confidenceThreshold })
++  });
++  if (!response.ok) await throwApiError(response, 'Knowledge confidence check failed');
++  return response.json();
++}
++
+ export async function searchOnlineKnowledge(query: string, domain: string) {
+   const response = await fetch('/api/knowledge-online/search', {
+     method: 'POST',
+@@ -21,3 +59,16 @@ export async function ingestOnlineKnowledge(preview: unknown, sessionId: string)
+   if (!response.ok) await throwApiError(response, 'Knowledge ingestion failed');
+   return response.json();
+ }
++
++export async function searchAndIngestOnlineKnowledge(input: {
++  query: string;
++  domain: string;
++  approved: boolean;
++  approvedBy: string;
++  notes?: string;
++}) {
++  const response = await fetch('/api/knowledge-online/search-and-ingest', {
++    method: 'POST',
++    headers: { 'Content-Type': 'application/json' },
++    body: JSON.stringify(input)
++  });
++  if (!response.ok) await throwApiError(response, 'Knowledge search-and-ingest failed');
++  return response.json();
++}
+diff --git a/client/src/components/KnowledgeOnlinePanel.css b/client/src/components/KnowledgeOnlinePanel.css
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/client/src/components/KnowledgeOnlinePanel.css
+@@ -0,0 +1,119 @@
++.knowledge-online-panel {
++  border-top: 1px solid #262626;
++  border-bottom: 1px solid #262626;
++  padding: 12px 16px;
++  display: grid;
++  gap: 10px;
++  background: #080808;
++  color: #ffffff;
++}
++
++.knowledge-online-header {
++  display: flex;
++  align-items: center;
++  justify-content: space-between;
++  gap: 10px;
++}
++
++.knowledge-online-header span {
++  color: #a3a3a3;
++  font-size: 12px;
++}
++
++.knowledge-online-controls {
++  display: grid;
++  grid-template-columns: 2fr 140px 120px 180px auto auto;
++  gap: 8px;
++}
++
++.knowledge-online-controls input,
++.knowledge-online-controls button {
++  border: 1px solid #333333;
++  border-radius: 6px;
++  background: #0d0d0d;
++  color: #ffffff;
++  font: inherit;
++  min-height: 32px;
++  padding: 0 10px;
++}
++
++.knowledge-online-controls button {
++  cursor: pointer;
++}
++
++.knowledge-online-controls button:hover:not(:disabled) {
++  border-color: #ffffff;
++}
++
++.knowledge-online-controls button:disabled {
++  color: #737373;
++  cursor: not-allowed;
++}
++
++.knowledge-online-error {
++  color: #ffb4a8;
++  font-size: 13px;
++}
++
++.knowledge-online-grid {
++  display: grid;
++  grid-template-columns: repeat(2, minmax(0, 1fr));
++  gap: 10px;
++}
++
++.knowledge-online-card {
++  display: grid;
++  gap: 8px;
++  border: 1px solid #262626;
++  border-radius: 8px;
++  background: #030303;
++  padding: 10px;
++}
++
++.knowledge-online-card h4 {
++  margin: 0;
++}
++
++.knowledge-online-card pre {
++  margin: 0;
++  max-height: 160px;
++  overflow: auto;
++  white-space: pre-wrap;
++  color: #d4d4d4;
++  font-size: 12px;
++}
++
++.knowledge-online-metric {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 8px;
++  color: #d4d4d4;
++  font-size: 12px;
++}
++
++.knowledge-online-source-list {
++  display: grid;
++  gap: 6px;
++}
++
++.knowledge-online-source {
++  border: 1px solid #202020;
++  border-radius: 6px;
++  padding: 8px;
++}
++
++.knowledge-online-source strong {
++  display: block;
++}
++
++.knowledge-online-source small {
++  color: #a3a3a3;
++  word-break: break-all;
++}
++
++.knowledge-online-source p {
++  margin: 4px 0 0;
++  color: #d4d4d4;
++  font-size: 12px;
++}
++
++@media (max-width: 1100px) {
++  .knowledge-online-controls,
++  .knowledge-online-grid {
++    grid-template-columns: 1fr;
++  }
++}
+diff --git a/client/src/components/KnowledgeOnlinePanel.tsx b/client/src/components/KnowledgeOnlinePanel.tsx
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/client/src/components/KnowledgeOnlinePanel.tsx
+@@ -0,0 +1,170 @@
++import { useState } from 'react';
++import {
++  checkOnlineKnowledge,
++  ingestOnlineKnowledge,
++  searchAndIngestOnlineKnowledge,
++  searchOnlineKnowledge,
++  KnowledgeCheckResult,
++  OnlineKnowledgePreview
++} from '../api/knowledge';
++import './KnowledgeOnlinePanel.css';
++
++function KnowledgeOnlinePanel() {
++  const [query, setQuery] = useState('');
++  const [domain, setDomain] = useState('ask');
++  const [threshold, setThreshold] = useState(0.55);
++  const [approvedBy, setApprovedBy] = useState('knowledge-panel');
++  const [checkResult, setCheckResult] = useState<KnowledgeCheckResult | null>(null);
++  const [preview, setPreview] = useState<OnlineKnowledgePreview | null>(null);
++  const [ingestionResult, setIngestionResult] = useState<unknown>(null);
++  const [error, setError] = useState('');
++  const [loading, setLoading] = useState(false);
++
++  const run = async (task: () => Promise<void>) => {
++    setLoading(true);
++    setError('');
++    try {
++      await task();
++    } catch (err: any) {
++      setError(err.message || 'Knowledge online action failed');
++    } finally {
++      setLoading(false);
++    }
++  };
++
++  const check = async () => {
++    await run(async () => {
++      setCheckResult(await checkOnlineKnowledge(query, domain, threshold));
++      setIngestionResult(null);
++    });
++  };
++
++  const search = async () => {
++    await run(async () => {
++      setPreview(await searchOnlineKnowledge(query, domain));
++      setIngestionResult(null);
++    });
++  };
++
++  const ingestPreview = async () => {
++    if (!preview) return;
++    await run(async () => {
++      setIngestionResult(await ingestOnlineKnowledge(preview, approvedBy || 'knowledge-panel'));
++      setPreview(null);
++    });
++  };
++
++  const searchAndIngest = async () => {
++    await run(async () => {
++      const result = await searchAndIngestOnlineKnowledge({
++        query,
++        domain,
++        approved: true,
++        approvedBy: approvedBy || 'knowledge-panel'
++      });
++      setPreview(result.preview || null);
++      setIngestionResult(result.ingestion || result);
++    });
++  };
++
++  return (
++    <section className="knowledge-online-panel" aria-label="Knowledge online">
++      <div className="knowledge-online-header">
++        <strong>Knowledge Online</strong>
++        <span>Confidence check, online preview, explicit approved ingest</span>
++      </div>
++
++      <div className="knowledge-online-controls">
++        <input value={query} onChange={event => setQuery(event.target.value)} placeholder="Question or search query" />
++        <input value={domain} onChange={event => setDomain(event.target.value)} placeholder="domain" />
++        <input
++          type="number"
++          step="0.05"
++          min="0"
++          max="1"
++          value={threshold}
++          onChange={event => setThreshold(Number(event.target.value))}
++          aria-label="confidence threshold"
++        />
++        <input value={approvedBy} onChange={event => setApprovedBy(event.target.value)} placeholder="approved by" />
++        <button type="button" onClick={check} disabled={loading || !query.trim()}>Check</button>
++        <button type="button" onClick={search} disabled={loading || !query.trim()}>Search</button>
++      </div>
++
++      <div className="knowledge-online-controls">
++        <button type="button" onClick={ingestPreview} disabled={loading || !preview}>
++          Ingest Current Preview
++        </button>
++        <button type="button" onClick={searchAndIngest} disabled={loading || !query.trim()}>
++          Search + Approved Ingest
++        </button>
++      </div>
++
++      {error && <div className="knowledge-online-error">{error}</div>}
++
++      <div className="knowledge-online-grid">
++        {checkResult && (
++          <div className="knowledge-online-card">
++            <h4>Confidence result</h4>
++            <div className="knowledge-online-metric">
++              <span>Confidence: {checkResult.confidence.toFixed(2)}</span>
++              <span>{checkResult.needsOnlineResearch ? 'Needs online research' : 'Local answer is sufficient'}</span>
++            </div>
++            <pre>{checkResult.answer}</pre>
++            {checkResult.needsOnlineResearch && (
++              <button type="button" onClick={() => setQuery(checkResult.suggestedQuery)} disabled={loading}>
++                Use suggested query
++              </button>
++            )}
++          </div>
++        )}
++
++        {preview && (
++          <div className="knowledge-online-card">
++            <h4>Online preview</h4>
++            <div className="knowledge-online-metric">
++              <span>Accepted: {preview.sourcePolicy.accepted}</span>
++              <span>Rejected: {preview.sourcePolicy.rejected.length}</span>
++            </div>
++            <pre>{preview.answerPreview}</pre>
++            <SourceList preview={preview} />
++          </div>
++        )}
++
++        {ingestionResult && (
++          <div className="knowledge-online-card">
++            <h4>Ingestion result</h4>
++            <pre>{JSON.stringify(ingestionResult, null, 2)}</pre>
++          </div>
++        )}
++      </div>
++    </section>
++  );
++}
++
++function SourceList({ preview }: { preview: OnlineKnowledgePreview }) {
++  if (!preview.sources.length) return null;
++  return (
++    <div className="knowledge-online-source-list">
++      {preview.sources.map(source => (
++        <div className="knowledge-online-source" key={source.url}>
++          <strong>{source.title}</strong>
++          <small>{source.url}</small>
++          <p>{source.snippet}</p>
++        </div>
++      ))}
++    </div>
++  );
++}
++
++export default KnowledgeOnlinePanel;

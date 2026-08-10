@@ -19,7 +19,24 @@ type WikiPage = { slug: string; title: string; content?: string; frontmatter?: R
 type Memory = { id: string; content: string; tags: string[]; status: string; confidence: number; importance: number };
 type EvidenceReport = { id: string; request: string; score: number; createdAt?: string };
 type RepoImport = { repo: string; wikiPage?: string; chunks?: number; warnings: string[] };
-type Tab = 'overview' | 'entities' | 'graph' | 'wiki' | 'memory' | 'evidence' | 'imports';
+type LibrarySource = {
+  id: string;
+  source: string;
+  sourceType?: string;
+  title: string;
+  author?: string;
+  publishedDate?: string;
+  fileExtension?: string;
+  citationLabel: string;
+  chunks: number;
+  embeddings: number;
+  warnings: string[];
+  needsOcr: boolean;
+  duplicateCount: number;
+  latestRun?: { status?: string; completedAt?: string };
+};
+type LibrarySourceResponse = { sources: LibrarySource[]; total: number; limit: number; offset: number };
+type Tab = 'overview' | 'library' | 'entities' | 'graph' | 'wiki' | 'memory' | 'evidence' | 'imports';
 
 type ActionState = {
   label: string;
@@ -41,6 +58,12 @@ function KnowledgeOSPanel() {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [reports, setReports] = useState<EvidenceReport[]>([]);
   const [imports, setImports] = useState<RepoImport[]>([]);
+  const [libraryQuery, setLibraryQuery] = useState('');
+  const [librarySources, setLibrarySources] = useState<LibrarySource[]>([]);
+  const [libraryTotal, setLibraryTotal] = useState(0);
+  const [libraryNeedsOcr, setLibraryNeedsOcr] = useState(false);
+  const [libraryDuplicatesOnly, setLibraryDuplicatesOnly] = useState(false);
+  const [ocrQueueTotal, setOcrQueueTotal] = useState(0);
   const mountedRef = useRef(true);
 
   const loadSummary = async () => {
@@ -155,6 +178,29 @@ function KnowledgeOSPanel() {
     setImports(data.results || []);
   });
 
+  const loadLibrary = () => runAction('Library load', async () => {
+    const params = new URLSearchParams({
+      limit: '75',
+      offset: '0'
+    });
+    if (libraryQuery.trim()) params.set('q', libraryQuery.trim());
+    if (libraryNeedsOcr) params.set('needsOcr', 'true');
+    if (libraryDuplicatesOnly) params.set('duplicates', 'true');
+
+    const data: LibrarySourceResponse = await requestJson(`/api/knowledge-base/sources?${params.toString()}`);
+    setLibrarySources(data.sources || []);
+    setLibraryTotal(data.total || 0);
+
+    const queue: LibrarySourceResponse = await requestJson('/api/knowledge-base/ocr-queue?limit=1');
+    setOcrQueueTotal(queue.total || 0);
+  });
+
+  useEffect(() => {
+    if (open && activeTab === 'library' && librarySources.length === 0 && !isStaticPagesBuild) {
+      void loadLibrary();
+    }
+  }, [open, activeTab]);
+
   const persistence = summary?.knowledgeBase?.persistence;
 
   return (
@@ -167,7 +213,7 @@ function KnowledgeOSPanel() {
       {open && (
         <div className="knowledge-os-body">
           <nav className="knowledge-os-tabs" aria-label="Knowledge OS screens">
-            {(['overview', 'entities', 'graph', 'wiki', 'memory', 'evidence', 'imports'] as Tab[]).map(tab => (
+            {(['overview', 'library', 'entities', 'graph', 'wiki', 'memory', 'evidence', 'imports'] as Tab[]).map(tab => (
               <button key={tab} type="button" className={activeTab === tab ? 'active' : ''} onClick={() => setActiveTab(tab)}>
                 {tab}
               </button>
@@ -192,6 +238,45 @@ function KnowledgeOSPanel() {
                 </button>
               </div>
             </>
+          )}
+
+          {activeTab === 'library' && (
+            <Screen title="Library Sources">
+              <ControlRow>
+                <input value={libraryQuery} onChange={event => setLibraryQuery(event.target.value)} placeholder="Search title, author, or path..." />
+                <button type="button" onClick={loadLibrary}>Refresh</button>
+              </ControlRow>
+              <div className="knowledge-os-switches">
+                <label>
+                  <input type="checkbox" checked={libraryNeedsOcr} onChange={event => setLibraryNeedsOcr(event.target.checked)} />
+                  <span>Needs OCR</span>
+                </label>
+                <label>
+                  <input type="checkbox" checked={libraryDuplicatesOnly} onChange={event => setLibraryDuplicatesOnly(event.target.checked)} />
+                  <span>Duplicates</span>
+                </label>
+                <span>{formatNumber(libraryTotal)} sources · {formatNumber(ocrQueueTotal)} OCR queued</span>
+              </div>
+              <div className="knowledge-os-list knowledge-os-library-list">
+                {librarySources.length === 0 && <span className="knowledge-os-empty">No library sources loaded yet.</span>}
+                {librarySources.map(source => (
+                  <div className="knowledge-os-row knowledge-os-source-row" key={source.id}>
+                    <strong>{source.title}</strong>
+                    <small>
+                      {[source.author, source.publishedDate, source.fileExtension || source.sourceType].filter(Boolean).join(' · ') || source.sourceType || 'source'}
+                    </small>
+                    <span className="knowledge-os-path">{source.source}</span>
+                    <div className="knowledge-os-badges">
+                      <Badge>{formatNumber(source.chunks)} chunks</Badge>
+                      <Badge>{formatNumber(source.embeddings)} embeddings</Badge>
+                      {source.needsOcr && <Badge tone="warn">OCR</Badge>}
+                      {source.duplicateCount > 1 && <Badge tone="info">{source.duplicateCount} copies</Badge>}
+                      {source.warnings.length > 0 && <Badge tone="warn">{source.warnings.length} warnings</Badge>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Screen>
           )}
 
           {activeTab === 'entities' && (
@@ -307,6 +392,14 @@ function Stat({ label, value, sub }: { label: string; value: string | number; su
       {sub && <small>{sub}</small>}
     </div>
   );
+}
+
+function Badge({ children, tone = 'default' }: { children: ReactNode; tone?: 'default' | 'warn' | 'info' }) {
+  return <span className={`knowledge-os-badge ${tone}`}>{children}</span>;
+}
+
+function formatNumber(value: number): string {
+  return new Intl.NumberFormat().format(Number(value || 0));
 }
 
 export default KnowledgeOSPanel;

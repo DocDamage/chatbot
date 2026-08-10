@@ -144,6 +144,15 @@ Privileged and local-only routes must not be exposed based solely on README exam
 
 Do not describe a merged feature as production-supported unless the feature manifest and evidence index show that status against an exact commit. New production-completion work must follow the one-task, one-thread handoff process in `docs/implementation/handoffs/CURRENT_HANDOFF.md`.
 
+## Optional local integrations
+
+- [PyScrappy](https://github.com/DocDamage/PyScrappy): guarded MCP research through `/api/research` when explicitly enabled.
+- [mex](https://github.com/DocDamage/mex): development-time code graph and drift checks; not required at runtime.
+- [book-to-skill](https://github.com/DocDamage/book-to-skill): source-preserving documentation export via `npm run export:skill`.
+- [E.V. assistant](https://github.com/DocDamage/ev-assistant): related local voice-assistant reference; this repository's Electron companion reuses `/api/chat` and does not execute arbitrary desktop commands.
+
+See [docs/integrations/research-and-companion.md](docs/integrations/research-and-companion.md) for setup, boundaries, and verification evidence.
+
 ## License
 
 MIT
