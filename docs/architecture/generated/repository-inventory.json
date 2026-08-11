@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1033,
-    "productionSourceFiles": 778,
-    "reachableProductionFiles": 598,
+    "sourceFiles": 1035,
+    "productionSourceFiles": 779,
+    "reachableProductionFiles": 599,
     "unreachableProductionFiles": 180,
     "routes": 355,
     "environmentVariables": 191,
@@ -2781,6 +2781,10 @@
     {
       "name": "FallbackParserProvider",
       "file": "src/core/coding/index/FallbackParserProvider.ts"
+    },
+    {
+      "name": "TreeSitterParserProvider",
+      "file": "src/core/coding/index/TreeSitterParserProvider.ts"
     },
     {
       "name": "TypeScriptParserProvider",

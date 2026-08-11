@@ -245,6 +245,7 @@
     "src/core/coding/index/ParserProvider.ts",
     "src/core/coding/index/RelationshipStore.ts",
     "src/core/coding/index/SymbolIndex.ts",
+    "src/core/coding/index/TreeSitterParserProvider.ts",
     "src/core/coding/index/TypeScriptParserProvider.ts",
     "src/core/coding/languages/LanguageCapability.ts",
     "src/core/coding/languages/LanguageCapabilityRegistry.ts",
@@ -845,6 +846,7 @@
     "src/core/coding/index/ParserProvider.ts",
     "src/core/coding/index/RelationshipStore.ts",
     "src/core/coding/index/SymbolIndex.ts",
+    "src/core/coding/index/TreeSitterParserProvider.ts",
     "src/core/coding/index/TypeScriptParserProvider.ts",
     "src/core/coding/languages/LanguageCapability.ts",
     "src/core/coding/languages/LanguageCapabilityRegistry.ts",
@@ -2856,6 +2858,7 @@
       "src/core/coding/index/ParserProvider.ts",
       "src/core/coding/index/RelationshipStore.ts",
       "src/core/coding/index/SymbolIndex.ts",
+      "src/core/coding/index/TreeSitterParserProvider.ts",
       "src/core/coding/index/TypeScriptParserProvider.ts",
       "src/core/coding/knowledge/CodingKnowledgeAuthority.ts",
       "src/core/coding/knowledge/ProvenancePolicy.ts",
@@ -2892,7 +2895,14 @@
     "src/core/coding/index/SymbolIndex.ts": [
       "src/core/coding/index/FallbackParserProvider.ts",
       "src/core/coding/index/ParserProvider.ts",
+      "src/core/coding/index/TreeSitterParserProvider.ts",
       "src/core/coding/index/TypeScriptParserProvider.ts"
+    ],
+    "src/core/coding/index/TreeSitterParserProvider.test.ts": [
+      "src/core/coding/index/TreeSitterParserProvider.ts"
+    ],
+    "src/core/coding/index/TreeSitterParserProvider.ts": [
+      "src/core/coding/index/ParserProvider.ts"
     ],
     "src/core/coding/index/TypeScriptParserProvider.test.ts": [
       "src/core/coding/index/TypeScriptParserProvider.ts"
@@ -5218,5 +5228,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1033
+  "sourceRecordCount": 1035
 }
