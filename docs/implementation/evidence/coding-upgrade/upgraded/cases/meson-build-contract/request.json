@@ -1,0 +1,12 @@
+{
+  "id": "meson-build-contract",
+  "prompt": "Keep the Meson test target portable across debug and release configurations.",
+  "expectedFiles": [
+    "meson.build",
+    "src/main.c",
+    "test-contract.json"
+  ],
+  "hiddenChecks": [
+    "meson-config-regression"
+  ]
+}

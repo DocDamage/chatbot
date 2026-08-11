@@ -1,0 +1,12 @@
+{
+  "id": "systems-objective-c-boundary",
+  "prompt": "Keep the Objective-C delegate callback nullable-safe across the bridge.",
+  "expectedFiles": [
+    "Bridge.m",
+    "BridgeTests.m",
+    "Podfile"
+  ],
+  "hiddenChecks": [
+    "delegate-boundary-regression"
+  ]
+}

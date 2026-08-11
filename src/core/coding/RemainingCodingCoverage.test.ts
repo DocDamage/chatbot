@@ -22,6 +22,8 @@ describe('coding capability integration coverage', () => {
       const result = await new CodingController(root).inspectAndReport('review the change', { mode: 'plan', runVerification: false });
       expect(result.stages).toEqual(['inspect', 'plan', 'edit', 'review', 'verify', 'report']);
       expect(result.verification.status).toBe('not_run');
+      expect(result.testStrategy.cases.length).toBeGreaterThan(0);
+      expect(result.repair).toBeUndefined();
     } finally { fs.rmSync(root, { recursive: true, force: true }); }
   });
 

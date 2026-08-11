@@ -4,6 +4,16 @@ export interface CodeSearchResult {
   path: string;
 }
 
+export interface StructuredCodeOperation {
+  operation: 'create' | 'modify' | 'delete';
+  path: string;
+  content?: string;
+  expectedContent?: string;
+  expectedHash?: string;
+  reason: string;
+  authorized: boolean;
+}
+
 export async function askCodeAgent(message: string, runVerification = false) {
   const response = await fetch('/api/code/ask', {
     method: 'POST',
@@ -67,5 +77,51 @@ export async function verifyCode(commands: string[], mode: string) {
     body: JSON.stringify({ commands, mode }),
   });
   if (!response.ok) await throwApiError(response, 'Unable to verify code');
+  return response.json();
+}
+
+export async function getCodeRepository(mode: string) {
+  const response = await fetch('/api/code/repository', { headers: { 'x-work-mode': mode } });
+  if (!response.ok) await throwApiError(response, 'Unable to inspect repository');
+  return response.json();
+}
+
+export async function retrieveCodeEvidence(query: string, mode: string) {
+  const response = await fetch('/api/code/retrieve', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-work-mode': mode },
+    body: JSON.stringify({ query }),
+  });
+  if (!response.ok) await throwApiError(response, 'Unable to retrieve code evidence');
+  return response.json();
+}
+
+export async function createStructuredCodePatch(message: string, mode: string) {
+  const response = await fetch('/api/code/patch/structured', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-work-mode': mode },
+    body: JSON.stringify({ message, mode }),
+  });
+  if (!response.ok) await throwApiError(response, 'Unable to create structured patch');
+  return response.json();
+}
+
+export async function applyStructuredCodePatch(operations: StructuredCodeOperation[], mode: string) {
+  const response = await fetch('/api/code/patch/apply', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-work-mode': mode },
+    body: JSON.stringify({ operations: operations.map(operation => ({ ...operation, authorized: true })), mode, approved: true }),
+  });
+  if (!response.ok) await throwApiError(response, 'Unable to apply structured patch');
+  return response.json();
+}
+
+export async function verifyNativeCode(mode: string, run = true) {
+  const response = await fetch('/api/code/verify/native', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-work-mode': mode },
+    body: JSON.stringify({ mode, run }),
+  });
+  if (!response.ok) await throwApiError(response, 'Unable to run native verification');
   return response.json();
 }

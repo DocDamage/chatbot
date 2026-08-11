@@ -1,0 +1,12 @@
+{
+  "id": "web-html-css-contract",
+  "prompt": "Preserve the semantic landmark and responsive layout while fixing the form label association.",
+  "expectedFiles": [
+    "index.html",
+    "styles.css",
+    "package.json"
+  ],
+  "hiddenChecks": [
+    "a11y-responsive-regression"
+  ]
+}

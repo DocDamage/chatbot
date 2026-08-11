@@ -8,6 +8,8 @@ function makeApp() {
     handle: jest.fn().mockResolvedValue({ summary: 'ok', filesInspected: [] }),
     plan: jest.fn().mockResolvedValue({ steps: ['inspect files'] }),
     createPatch: jest.fn().mockResolvedValue({ diff: '' }),
+    createStructuredPatch: jest.fn().mockReturnValue({ operations: [], diff: '', filesChanged: [], conflicts: [], applied: false }),
+    applyStructuredPatch: jest.fn().mockReturnValue({ operations: [], diff: '', filesChanged: [], conflicts: [], applied: true }),
     verify: jest.fn().mockResolvedValue({ status: 'passed', commandsRun: [] }),
     review: jest.fn().mockResolvedValue({ findings: [] }),
     searchFiles: jest.fn().mockResolvedValue([{ path: 'src/index.ts' }]),
@@ -58,5 +60,16 @@ describe('code routes', () => {
     await request(app).post('/api/code/verify').send({ mode: 'debug', commands: ['npm test'] }).expect(200);
 
     expect(codingAgent.verify).toHaveBeenCalledTimes(2);
+  });
+
+  it('requires explicit approval before applying a structured patch', async () => {
+    const { app, codingAgent } = makeApp();
+    const operations = [{ operation: 'create', path: 'src/new.ts', content: 'export const ok = true;', reason: 'requested module', authorized: true }];
+
+    await request(app).post('/api/code/patch/apply').send({ mode: 'implement', operations }).expect(403);
+    await request(app).post('/api/code/patch/apply').send({ mode: 'implement', approved: true, operations: [{ ...operations[0], authorized: false }] }).expect(403);
+    await request(app).post('/api/code/patch/apply').send({ mode: 'implement', approved: true, operations }).expect(200);
+    expect(codingAgent.createStructuredPatch).toHaveBeenCalledWith(operations);
+    expect(codingAgent.applyStructuredPatch).toHaveBeenCalledWith(expect.anything(), 'implement');
   });
 });

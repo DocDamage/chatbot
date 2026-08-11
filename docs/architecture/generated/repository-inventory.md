@@ -6,11 +6,11 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1026 |
+| Source files | 1032 |
 | Production source files | 778 |
-| Reachable production files | 597 |
-| Unreachable production files | 181 |
-| Discovered route calls | 353 |
+| Reachable production files | 598 |
+| Unreachable production files | 180 |
+| Discovered route calls | 354 |
 | Environment variables | 190 |
 | Feature flags | 18 |
 | Files above 300 lines | 66 |
@@ -119,9 +119,10 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | GET | `/api/code/repository` | `src/server/routes/code.ts:90` |
 | POST | `/api/code/retrieve` | `src/server/routes/code.ts:95` |
 | POST | `/api/code/patch/structured` | `src/server/routes/code.ts:108` |
-| POST | `/api/code/verify/native` | `src/server/routes/code.ts:122` |
-| GET | `/api/code/files/search` | `src/server/routes/code.ts:133` |
-| GET | `/api/code/symbols` | `src/server/routes/code.ts:141` |
+| POST | `/api/code/patch/apply` | `src/server/routes/code.ts:122` |
+| POST | `/api/code/verify/native` | `src/server/routes/code.ts:141` |
+| GET | `/api/code/files/search` | `src/server/routes/code.ts:152` |
+| GET | `/api/code/symbols` | `src/server/routes/code.ts:160` |
 | POST | `/api/creative/draft-scene` | `src/server/routes/creative.ts:28` |
 | POST | `/api/creative/continue-scene` | `src/server/routes/creative.ts:33` |
 | POST | `/api/creative/revise` | `src/server/routes/creative.ts:38` |
@@ -591,6 +592,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 ## External binaries
 
+- `git` — `scripts/run-coding-evals.ts`
 - `kill` — `src/core/coding/verification/CommandCapabilityRunner.ts`
 - `taskkill.exe` — `src/core/coding/verification/CommandCapabilityRunner.ts`
 - `git` — `src/core/project/ProjectIntelligenceService.ts`
@@ -611,7 +613,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `scripts/import-books.ts` | 317 |
 | `scripts/import-wikipedia-general-corpus.ts` | 337 |
 | `src/core/agents/AgentTeam.ts` | 547 |
-| `src/core/agents/CodingAgent.ts` | 390 |
+| `src/core/agents/CodingAgent.ts` | 398 |
 | `src/core/agents/MultiAgentOrchestrator.ts` | 1269 |
 | `src/core/agents/ReasoningController.ts` | 368 |
 | `src/core/analytics/AnalyticsService.ts` | 448 |

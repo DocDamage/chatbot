@@ -1,0 +1,6 @@
+{
+  "mode": "baseline",
+  "status": "unsupported",
+  "reason": "Toolchain unavailable: luau",
+  "executor": "toolchain-preflight-only"
+}

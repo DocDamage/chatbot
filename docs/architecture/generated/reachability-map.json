@@ -240,6 +240,7 @@
     "src/core/coding/authorization/CodingAuthorization.ts",
     "src/core/coding/editing/PatchConflictDetector.ts",
     "src/core/coding/editing/StructuredEditEngine.ts",
+    "src/core/coding/editing/WorkspaceWriteGate.ts",
     "src/core/coding/index/FallbackParserProvider.ts",
     "src/core/coding/index/ParserProvider.ts",
     "src/core/coding/index/RelationshipStore.ts",
@@ -839,6 +840,7 @@
     "src/core/coding/authorization/CodingAuthorization.ts",
     "src/core/coding/editing/PatchConflictDetector.ts",
     "src/core/coding/editing/StructuredEditEngine.ts",
+    "src/core/coding/editing/WorkspaceWriteGate.ts",
     "src/core/coding/index/FallbackParserProvider.ts",
     "src/core/coding/index/ParserProvider.ts",
     "src/core/coding/index/RelationshipStore.ts",
@@ -1373,7 +1375,6 @@
     "src/core/chrono/ClaimVerifier.ts",
     "src/core/coding/CodingController.ts",
     "src/core/coding/CodingRequestRouter.ts",
-    "src/core/coding/editing/WorkspaceWriteGate.ts",
     "src/core/coding/index.ts",
     "src/core/coding/knowledge/CodingKnowledgeAuthority.ts",
     "src/core/coding/knowledge/ProvenancePolicy.ts",
@@ -1896,6 +1897,12 @@
       "src/core/rag/RAGService.ts"
     ],
     "eslint.config.js": [],
+    "evals/coding/fixtures/package-manager-workspace/packages/core/index.ts": [],
+    "evals/coding/fixtures/package-manager-workspace/test-runner.mjs": [],
+    "evals/coding/fixtures/web-html-css-contract/test-runner.mjs": [],
+    "evals/coding/fixtures/web-react-ssr/src/App.test.tsx": [],
+    "evals/coding/fixtures/web-react-ssr/src/App.tsx": [],
+    "evals/coding/fixtures/web-react-ssr/test-runner.mjs": [],
     "evals/coding/fixtures/web-svelte-boundary/src/routes/+page.test.ts": [],
     "evals/coding/fixtures/web-svelte-boundary/test-runner.mjs": [],
     "jest.config.js": [],
@@ -2069,12 +2076,14 @@
       "src/core/agents/PatchGenerator.ts",
       "src/core/agents/VerificationRunner.ts",
       "src/core/coding/editing/StructuredEditEngine.ts",
+      "src/core/coding/editing/WorkspaceWriteGate.ts",
       "src/core/coding/index/SymbolIndex.ts",
       "src/core/coding/repository/RepositoryIntelligence.ts",
       "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
       "src/core/coding/retrieval/StructuralRetriever.ts",
       "src/core/coding/types.ts",
       "src/core/coding/verification/VerificationOrchestrator.ts",
+      "src/core/modes/ExecutionModePolicy.ts",
       "src/core/providers/LLMAdapter.ts",
       "src/core/tools/CommandRunner.ts",
       "src/core/tools/FunctionCaller.ts",
@@ -2810,6 +2819,7 @@
       "src/core/coding/repository/RepositoryIntelligence.ts",
       "src/core/coding/retrieval/StructuralRetriever.ts",
       "src/core/coding/review/ReviewPipeline.ts",
+      "src/core/coding/testing/TestStrategy.ts",
       "src/core/coding/types.ts",
       "src/core/coding/verification/RepairController.ts",
       "src/core/coding/verification/VerificationOrchestrator.ts"
@@ -3129,7 +3139,8 @@
       "src/core/evaluation/CodingBenchmarkRunner.ts"
     ],
     "src/core/evaluation/CodingBenchmarkRunner.ts": [
-      "src/core/coding/CodingController.ts"
+      "src/core/coding/CodingController.ts",
+      "src/core/evaluation/CodingEvalHarness.ts"
     ],
     "src/core/evaluation/CodingEvalHarness.test.ts": [
       "src/core/evaluation/CodingEvalHarness.ts"
@@ -5201,5 +5212,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1026
+  "sourceRecordCount": 1032
 }

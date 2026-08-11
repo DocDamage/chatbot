@@ -19,6 +19,8 @@ import { AdaptiveContextAllocator, AllocatedContext } from '../coding/retrieval/
 import { StructuredEditEngine } from '../coding/editing/StructuredEditEngine';
 import { EditOperation, ContextEvidence, StructuredPatch } from '../coding/types';
 import { VerificationOrchestrator, VerificationSummary as NativeVerificationSummary } from '../coding/verification/VerificationOrchestrator';
+import { WorkspaceWriteGate } from '../coding/editing/WorkspaceWriteGate';
+import { WorkMode } from '../modes/ExecutionModePolicy';
 import { LLMAdapter } from '../providers/LLMAdapter';
 
 export interface CodingAgentConfig {
@@ -66,6 +68,7 @@ export class CodingAgent {
   private readonly repositoryIntelligence: RepositoryIntelligence;
   private readonly symbolIndex: SymbolIndex;
   private readonly editEngine: StructuredEditEngine;
+  private readonly writeGate = new WorkspaceWriteGate();
   private readonly nativeVerification: VerificationOrchestrator;
 
   constructor(config: CodingAgentConfig = {}) {
@@ -175,6 +178,11 @@ export class CodingAgent {
 
   createStructuredPatchFromInstruction(message: string, authorized = false): StructuredPatch {
     return this.editEngine.fromNaturalLanguage(message, { authorized });
+  }
+
+  applyStructuredPatch(patch: StructuredPatch, mode: WorkMode): StructuredPatch {
+    this.writeGate.assertCanApply(mode, patch);
+    return this.editEngine.apply(patch);
   }
 
   async verifyNative(options: { run?: boolean; maxCommands?: number } = {}): Promise<NativeVerificationSummary> {

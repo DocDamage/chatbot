@@ -1,0 +1,12 @@
+{
+  "id": "web-react-ssr",
+  "prompt": "Keep the React component SSR-safe while adding an accessible pending state.",
+  "expectedFiles": [
+    "src/App.tsx",
+    "src/App.test.tsx",
+    "package.json"
+  ],
+  "hiddenChecks": [
+    "ssr-accessibility-regression"
+  ]
+}

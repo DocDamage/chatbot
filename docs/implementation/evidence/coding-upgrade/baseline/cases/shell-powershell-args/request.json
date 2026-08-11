@@ -1,0 +1,12 @@
+{
+  "id": "shell-powershell-args",
+  "prompt": "Pass the user-provided path as one literal PowerShell argument and preserve wildcard characters.",
+  "expectedFiles": [
+    "backup.ps1",
+    "backup.tests.ps1",
+    "test-runner.ps1"
+  ],
+  "hiddenChecks": [
+    "powershell-injection-regression"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "mode": "baseline",
+  "status": "ready",
+  "executor": "toolchain-preflight-only",
+  "score": {
+    "id": "container-build-contract",
+    "passed": false,
+    "metrics": {
+      "correctness": 0,
+      "buildTest": 0,
+      "regression": 0,
+      "minimality": 1,
+      "retrieval": 0,
+      "fileSelection": 0,
+      "symbolSelection": 1,
+      "apiAccuracy": 1,
+      "rootCauseAccuracy": 1,
+      "security": 1,
+      "reviewQuality": 1,
+      "verificationHonesty": 1
+    },
+    "failures": [
+      "expected_files_not_retrieved",
+      "build_or_visible_tests_failed",
+      "hidden_regression_failed",
+      "required_verification_missing"
+    ]
+  }
+}

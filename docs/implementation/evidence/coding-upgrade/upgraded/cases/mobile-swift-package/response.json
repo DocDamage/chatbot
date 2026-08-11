@@ -1,0 +1,6 @@
+{
+  "mode": "upgraded",
+  "status": "unsupported",
+  "reason": "Toolchain unavailable: swift",
+  "executor": "toolchain-preflight-only"
+}

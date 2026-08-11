@@ -1,0 +1,6 @@
+{
+  "mode": "upgraded",
+  "status": "unsupported",
+  "reason": "Toolchain unavailable: dxc",
+  "executor": "toolchain-preflight-only"
+}

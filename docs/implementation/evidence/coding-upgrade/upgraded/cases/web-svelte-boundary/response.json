@@ -10,5 +10,28 @@
     ],
     "verificationStatus": "not_run",
     "reviewFindingCount": 0
+  },
+  "score": {
+    "id": "web-svelte-boundary",
+    "passed": false,
+    "metrics": {
+      "correctness": 0,
+      "buildTest": 1,
+      "regression": 0,
+      "minimality": 1,
+      "retrieval": 0.5,
+      "fileSelection": 0.5,
+      "symbolSelection": 1,
+      "apiAccuracy": 1,
+      "rootCauseAccuracy": 1,
+      "security": 1,
+      "reviewQuality": 1,
+      "verificationHonesty": 1
+    },
+    "failures": [
+      "expected_files_not_retrieved",
+      "hidden_regression_failed",
+      "required_verification_missing"
+    ]
   }
 }

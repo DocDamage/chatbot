@@ -1,0 +1,12 @@
+{
+  "id": "data-sql-dialect",
+  "prompt": "Fix the migration query for the declared SQLite dialect without changing the result columns.",
+  "expectedFiles": [
+    "schema.sql",
+    "query.sql",
+    "test-contract.json"
+  ],
+  "hiddenChecks": [
+    "dialect-regression"
+  ]
+}

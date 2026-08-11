@@ -1,0 +1,6 @@
+{
+  "mode": "upgraded",
+  "status": "unsupported",
+  "reason": "Toolchain unavailable: meson",
+  "executor": "toolchain-preflight-only"
+}

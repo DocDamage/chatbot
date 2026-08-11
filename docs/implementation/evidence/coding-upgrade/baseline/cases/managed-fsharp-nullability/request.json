@@ -1,0 +1,12 @@
+{
+  "id": "managed-fsharp-nullability",
+  "prompt": "Return an explicit option instead of throwing for a missing record.",
+  "expectedFiles": [
+    "src/Validation.fs",
+    "tests/ValidationTests.fs",
+    "Validation.fsproj"
+  ],
+  "hiddenChecks": [
+    "missing-record-regression"
+  ]
+}

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1026,
+    "sourceFiles": 1032,
     "productionSourceFiles": 778,
-    "reachableProductionFiles": 597,
-    "unreachableProductionFiles": 181,
-    "routes": 353,
+    "reachableProductionFiles": 598,
+    "unreachableProductionFiles": 180,
+    "routes": 354,
     "environmentVariables": 190,
     "featureFlags": 18,
     "oversizedProductionFiles": 66
@@ -714,22 +714,29 @@
     {
       "receiver": "router",
       "method": "POST",
-      "path": "/api/code/verify/native",
+      "path": "/api/code/patch/apply",
       "line": 122,
+      "file": "src/server/routes/code.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/code/verify/native",
+      "line": 141,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/api/code/files/search",
-      "line": 133,
+      "line": 152,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/api/code/symbols",
-      "line": 141,
+      "line": 160,
       "file": "src/server/routes/code.ts"
     },
     {
@@ -4885,6 +4892,10 @@
   ],
   "externalBinaries": [
     {
+      "binary": "git",
+      "file": "scripts/run-coding-evals.ts"
+    },
+    {
       "binary": "kill",
       "file": "src/core/coding/verification/CommandCapabilityRunner.ts"
     },
@@ -4948,7 +4959,7 @@
     },
     {
       "file": "src/core/agents/CodingAgent.ts",
-      "lines": 390
+      "lines": 398
     },
     {
       "file": "src/core/agents/MultiAgentOrchestrator.ts",

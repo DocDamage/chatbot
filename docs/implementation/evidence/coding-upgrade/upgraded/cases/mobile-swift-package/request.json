@@ -1,0 +1,12 @@
+{
+  "id": "mobile-swift-package",
+  "prompt": "Preserve the Swift package API while handling an empty identifier safely.",
+  "expectedFiles": [
+    "Sources/Library.swift",
+    "Tests/LibraryTests.swift",
+    "Package.swift"
+  ],
+  "hiddenChecks": [
+    "empty-id-regression"
+  ]
+}

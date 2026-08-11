@@ -9,8 +9,8 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 
 ## Counts
 
-- Reachable production files: 597
-- Unreachable production files: 181
+- Reachable production files: 598
+- Unreachable production files: 180
 - Unresolved relative imports: 33
 
 ## Unreachable production modules
@@ -101,7 +101,6 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/chrono/ClaimVerifier.ts`
 - `src/core/coding/CodingController.ts`
 - `src/core/coding/CodingRequestRouter.ts`
-- `src/core/coding/editing/WorkspaceWriteGate.ts`
 - `src/core/coding/index.ts`
 - `src/core/coding/knowledge/CodingKnowledgeAuthority.ts`
 - `src/core/coding/knowledge/ProvenancePolicy.ts`

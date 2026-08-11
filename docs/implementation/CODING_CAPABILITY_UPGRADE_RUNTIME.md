@@ -12,7 +12,9 @@ The coding subsystem is repository-aware and remains local-only experimental unt
 ## Patch and verification workflow
 
 - `POST /api/code/patch/structured` accepts preconditioned create/modify/delete operations and returns a reviewable diff. It is available only in `implement` mode.
+- `POST /api/code/patch/apply` accepts the same structured operations but requires `mode=implement`, `approved=true`, explicit per-operation authorization, clean preconditions, and the workspace write gate before mutation.
 - `POST /api/code/verify/native` selects commands from detected project state. It is available only in `implement` or `debug` mode.
+- The code workflow panel exposes repository inspection, evidence retrieval, structured patch drafts, affected-file/conflict status, explicit approved apply, and native verification for the active work mode.
 - When the orchestrator has a configured coding-capable provider, it routes the request through that adapter and asks for the constrained JSON operation format. The result is still a non-applied draft; write authorization and precondition checks remain separate.
 - Repository commands use executable/argv plans with `shell: false`, bounded output, timeouts, and explicit unsupported-tool reporting.
 - Repair is bounded to three iterations by default and records the hypothesis, edit scope, command results, diagnostic delta, and remaining risk. It requires explicit authorization when called through the shared coding authorization service.

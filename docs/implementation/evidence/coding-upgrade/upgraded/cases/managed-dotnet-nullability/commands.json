@@ -6,8 +6,8 @@
       "--no-restore"
     ],
     "status": "failed",
-    "exitCode": 3221225477,
-    "stdout": "",
-    "stderr": "Unhandled exception. System.NullReferenceException: Object reference not set to an instance of an object.\r\n   at CustomerService.Find(Customer customer) in I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\managed-dotnet-nullability\\CustomerService.cs:line 4\r\n   at CustomerServiceTests.MissingCustomerIsNotDereferenced() in I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\managed-dotnet-nullability\\CustomerServiceTests.cs:line 5\r\n   at Program.<Main>$(String[] args) in I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\managed-dotnet-nullability\\Program.cs:line 1\n"
+    "exitCode": 1,
+    "stdout": "C:\\Program Files\\dotnet\\sdk\\10.0.302\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets(266,5): error NETSDK1004: Assets file 'I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\managed-dotnet-nullability\\obj\\project.assets.json' not found. Run a NuGet package restore to generate this file. [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\managed-dotnet-nullability\\managed-dotnet-nullability.csproj]\r\n",
+    "stderr": "\r\nThe build failed. Fix the build errors and run again.\r\n"
   }
 ]

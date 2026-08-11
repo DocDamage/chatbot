@@ -19,6 +19,11 @@
   justify-content: space-between;
 }
 
+.code-workflow-mode {
+  color: #a3a3a3;
+  font-size: 12px;
+}
+
 .code-workflow-search input {
   flex: 1;
 }
@@ -103,6 +108,18 @@
   padding: 8px;
   font-size: 12px;
   white-space: pre-wrap;
+}
+
+.code-workflow-patch-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  border: 1px solid #355c42;
+  border-radius: 6px;
+  padding: 8px;
+  color: #c7f9d4;
+  font-size: 12px;
 }
 
 .code-workflow-error {

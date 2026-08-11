@@ -1,12 +1,18 @@
 import { useRef, useState } from 'react';
 import {
   askCodeAgent,
+  applyStructuredCodePatch,
+  createStructuredCodePatch,
   createCodePatch,
+  getCodeRepository,
   getCodeSymbols,
   planCodeWork,
+  retrieveCodeEvidence,
   reviewCodeDiff,
   searchCodeFiles,
   verifyCode,
+  verifyNativeCode,
+  StructuredCodeOperation,
   CodeSearchResult
 } from '../api/code';
 import { ChatMode } from './ModeSelector';
@@ -23,6 +29,7 @@ function CodeWorkflowPanel({ mode }: CodeWorkflowPanelProps) {
   const [results, setResults] = useState<CodeSearchResult[]>([]);
   const [symbols, setSymbols] = useState<any[]>([]);
   const [output, setOutput] = useState('');
+  const [structuredPatch, setStructuredPatch] = useState<{ operations?: StructuredCodeOperation[]; filesChanged?: string[]; conflicts?: Array<{ path: string; reason: string }>; applied?: boolean } | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -62,10 +69,31 @@ function CodeWorkflowPanel({ mode }: CodeWorkflowPanelProps) {
     });
   };
 
+  const draftStructuredPatch = async () => {
+    await run(async () => {
+      const data = await createStructuredCodePatch(patchPrompt, mode);
+      setStructuredPatch(data);
+      return data;
+    });
+  };
+
+  const applyDraft = async () => {
+    if (!structuredPatch?.operations?.length) return;
+    await run(async () => {
+      const data = await applyStructuredCodePatch(structuredPatch.operations || [], mode);
+      setStructuredPatch(data);
+      return data;
+    });
+  };
+
   return (
     <section className="code-workflow-panel" aria-label="Code workflows">
       <div className="code-workflow-header">
         <strong>Code Workflows</strong>
+        <span className="code-workflow-mode">Mode: {mode}</span>
+        <button type="button" onClick={() => run(() => getCodeRepository(mode))} disabled={loading}>
+          Inspect Repository
+        </button>
         <button
           type="button"
           onClick={() => run(() => verifyCode(['npm run type-check'], mode))}
@@ -73,6 +101,9 @@ function CodeWorkflowPanel({ mode }: CodeWorkflowPanelProps) {
           title={canVerify ? 'Run code verification' : 'Switch to Implement or Debug mode to verify code'}
         >
           Verify Typecheck
+        </button>
+        <button type="button" onClick={() => run(() => verifyNativeCode(mode))} disabled={loading || !canVerify}>
+          Verify Native
         </button>
       </div>
 
@@ -118,6 +149,12 @@ function CodeWorkflowPanel({ mode }: CodeWorkflowPanelProps) {
             >
               Create Patch
             </button>
+            <button type="button" onClick={draftStructuredPatch} disabled={loading || !patchPrompt.trim() || !canPatch}>
+              Draft Safe Patch
+            </button>
+            <button type="button" onClick={() => run(() => retrieveCodeEvidence(patchPrompt, mode))} disabled={loading || !patchPrompt.trim()}>
+              Retrieve Evidence
+            </button>
           </div>
         </label>
         <label>
@@ -128,6 +165,17 @@ function CodeWorkflowPanel({ mode }: CodeWorkflowPanelProps) {
           </button>
         </label>
       </div>
+
+      {structuredPatch && (
+        <div className="code-workflow-patch-status" aria-label="Structured patch status">
+          <span>{structuredPatch.applied ? 'Applied' : 'Draft'} structured patch</span>
+          <span>{(structuredPatch.filesChanged || []).length} file(s) affected</span>
+          {(structuredPatch.conflicts || []).length > 0 && <span>{structuredPatch.conflicts?.length} conflict(s) require review</span>}
+          <button type="button" onClick={applyDraft} disabled={loading || mode !== 'implement' || structuredPatch.applied === true || (structuredPatch.conflicts || []).length > 0 || !structuredPatch.operations?.length}>
+            Apply Approved Patch
+          </button>
+        </div>
+      )}
 
       {error && <div className="code-workflow-error">{error}</div>}
       {output && <pre className="code-workflow-output">{output}</pre>}

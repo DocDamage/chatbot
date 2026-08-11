@@ -1,0 +1,40 @@
+[
+  {
+    "command": "cmake configure",
+    "argv": [
+      "-S",
+      ".",
+      "-B",
+      "build"
+    ],
+    "status": "passed",
+    "exitCode": 0,
+    "stdout": "-- Building for: Visual Studio 18 2026\n-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- The CXX compiler identification is MSVC 19.51.36243.0\n-- Detecting CXX compiler ABI info\n-- Detecting CXX compiler ABI info - done\n-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/18/Insiders/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe - skipped\n-- Detecting CXX compile features\n-- Detecting CXX compile features - done\n-- Configuring done (2.3s)\n-- Generating done (0.1s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build\n",
+    "stderr": ""
+  },
+  {
+    "command": "cmake build",
+    "argv": [
+      "--build",
+      "build"
+    ],
+    "status": "failed",
+    "exitCode": 1,
+    "stdout": "MSBuild version 18.7.1+024f5b037 for .NET Framework\r\n\r\n  1>Checking Build System\r\n  Building Custom Rule I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/CMakeLists.txt\r\n  resource.cpp\r\n  resource_test.cpp\r\n  Generating Code...\r\nresource_test.obj : error LNK2019: unresolved external symbol \"public: __cdecl ResourceOwner::ResourceOwner(int)\" (??0ResourceOwner@@QEAA@H@Z) referenced in function main [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\resource_test.vcxproj]\r\nresource_test.obj : error LNK2019: unresolved external symbol \"public: int __cdecl ResourceOwner::value(void)const \" (?value@ResourceOwner@@QEBAHXZ) referenced in function main [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\resource_test.vcxproj]\r\nI:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\Debug\\resource_test.exe : fatal error LNK1120: 2 unresolved externals [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\resource_test.vcxproj]\r\n",
+    "stderr": ""
+  },
+  {
+    "command": "cmake test",
+    "argv": [
+      "--test-dir",
+      "build",
+      "-C",
+      "Debug",
+      "--output-on-failure"
+    ],
+    "status": "failed",
+    "exitCode": 8,
+    "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build\n    Start 1: resource_contract\nCould not find executable I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/resource_test.exe\nLooked in the following places:\nI:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/resource_test.exe\nI:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/resource_test.exe.exe\nI:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/Debug/resource_test.exe\nI:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/Debug/resource_test.exe.exe\nDebug/I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/resource_test.exe\nDebug/I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/resource_test.exe.exe\n1/1 Test #1: resource_contract ................***Not Run   0.00 sec\n\n0% tests passed, 1 tests failed out of 1\n\nTotal Test time (real) =   0.01 sec\n\nThe following tests FAILED:\n\t  1 - resource_contract (Not Run)\n",
+    "stderr": "Unable to find executable: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/resource_test.exe\nErrors while running CTest\n"
+  }
+]

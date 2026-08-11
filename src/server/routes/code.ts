@@ -119,6 +119,25 @@ export function createCodeRouter(services: any): Router {
     res.json(getAgent().createStructuredPatchFromInstruction(message, false));
   }));
 
+  router.post('/api/code/patch/apply', asyncHandler(async (req, res) => {
+    const mode = currentMode(req);
+    try {
+      assertActionAllowed(mode, 'write_files');
+      const record = authorization.authorize({
+        requestId: String(req.headers['x-request-id'] || ''),
+        mode,
+        action: 'apply_patch',
+        explicitApproval: req.body.approved === true
+      });
+      authorization.assert(record);
+    } catch (error: any) {
+      return res.status(403).json({ error: error.message });
+    }
+    if (!Array.isArray(req.body.operations)) return res.status(400).json({ error: 'operations are required' });
+    if (!req.body.operations.every((operation: any) => operation && operation.authorized === true)) return res.status(403).json({ error: 'each operation requires explicit authorization' });
+    res.json(getAgent().applyStructuredPatch(getAgent().createStructuredPatch(req.body.operations), mode));
+  }));
+
   router.post('/api/code/verify/native', asyncHandler(async (req, res) => {
     const mode = currentMode(req);
     try {

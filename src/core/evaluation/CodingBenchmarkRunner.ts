@@ -3,11 +3,12 @@ import path from 'path';
 import { spawnSync } from 'child_process';
 import crypto from 'crypto';
 import { CodingController } from '../coding/CodingController';
+import { CodingEvalHarness, CodingEvalScore } from './CodingEvalHarness';
 
 export interface CodingBenchmarkCase { id: string; family: string; language: string; fixture: string; prompt: string; expectedFiles: string[]; visibleTests: string[]; hiddenChecks: string[]; requiredToolchain: string; }
 export interface CodingBenchmarkManifest { schemaVersion: number; suite: string; toolchainPolicy: string; cases: CodingBenchmarkCase[]; }
 export interface CodingBenchmarkCheck { command: string; argv: string[]; status: 'passed' | 'failed' | 'unsupported' | 'timed_out'; exitCode: number | null; stdout: string; stderr: string; }
-export interface CodingBenchmarkCaseResult { id: string; fixture: string; toolchain: string; toolchainAvailable: boolean; status: 'ready' | 'unsupported'; reason?: string; fixtureHash: string; checks?: CodingBenchmarkCheck[]; inspection?: { affectedFiles: string[]; affectedSymbols: string[]; selectedFiles: string[]; verificationStatus: string; reviewFindingCount: number }; }
+export interface CodingBenchmarkCaseResult { id: string; fixture: string; toolchain: string; toolchainAvailable: boolean; status: 'ready' | 'unsupported'; reason?: string; fixtureHash: string; checks?: CodingBenchmarkCheck[]; inspection?: { affectedFiles: string[]; affectedSymbols: string[]; selectedFiles: string[]; verificationStatus: string; reviewFindingCount: number }; score?: CodingEvalScore; }
 export interface CodingBenchmarkReport { mode: 'baseline' | 'upgraded'; suite: string; generatedAt: string; cases: CodingBenchmarkCaseResult[]; }
 
 export class CodingBenchmarkRunner {
@@ -32,6 +33,7 @@ export class CodingBenchmarkRunner {
 
   async run(manifest: CodingBenchmarkManifest, mode: CodingBenchmarkReport['mode']): Promise<CodingBenchmarkReport> {
     const report = this.inspect(manifest, mode);
+    const scorer = new CodingEvalHarness();
     for (const [index, testCase] of manifest.cases.entries()) {
       if (!report.cases[index].toolchainAvailable) { report.cases[index].checks = []; continue; }
       report.cases[index].checks = [];
@@ -52,6 +54,20 @@ export class CodingBenchmarkRunner {
           report.cases[index].reason = `Repository inspection failed: ${error.message}`;
         }
       }
+      const checks = report.cases[index].checks || [];
+      const visibleChecksPassed = checks.length > 0 && checks.every(check => check.status === 'passed');
+      const inspection = report.cases[index].inspection;
+      report.cases[index].score = scorer.score({ id: testCase.id, prompt: testCase.prompt, expectedFiles: testCase.expectedFiles, hiddenChecks: testCase.hiddenChecks, requiredVerification: true }, {
+        selectedFiles: inspection?.selectedFiles || [],
+        selectedSymbols: inspection?.affectedSymbols || [],
+        changedFiles: [],
+        buildPassed: visibleChecksPassed,
+        testsPassed: visibleChecksPassed,
+        hiddenChecksPassed: false,
+        securityFindings: inspection?.reviewFindingCount || 0,
+        verificationClaimed: false,
+        verificationRecorded: false
+      });
     }
     return report;
   }
@@ -83,6 +99,15 @@ export class CodingBenchmarkRunner {
     if (normalized === 'gradle test') return { executable: this.resolveExecutable('gradle'), argv: ['test'] };
     if (normalized === 'npm test') return { executable: process.execPath, argv: [process.env.npm_execpath || path.resolve(process.cwd(), 'node_modules/npm/bin/npm-cli.js'), 'test'] };
     if (normalized === 'shellcheck backup.sh') return { executable: this.resolveExecutable('shellcheck'), argv: ['backup.sh'] };
+    if (normalized === 'cmake configure') return { executable: this.resolveExecutable('cmake'), argv: ['-S', '.', '-B', 'build'] };
+    if (normalized === 'cmake build') return { executable: this.resolveExecutable('cmake'), argv: ['--build', 'build'] };
+    if (normalized === 'make test') return { executable: this.resolveExecutable('make'), argv: ['test'] };
+    if (normalized === 'meson setup') return { executable: this.resolveExecutable('meson'), argv: ['setup', 'build'] };
+    if (normalized === 'meson test') return { executable: this.resolveExecutable('meson'), argv: ['test', '-C', 'build'] };
+    if (normalized === 'cmake test') return { executable: this.resolveExecutable('ctest'), argv: ['--test-dir', 'build', '-C', 'Debug', '--output-on-failure'] };
+    if (normalized === 'sqlite3 check') return { executable: this.resolveExecutable('sqlite3'), argv: [':memory:', '.read schema.sql', '.read query.sql'] };
+    if (normalized === 'powershell test') return { executable: this.resolveExecutable('pwsh'), argv: ['-NoProfile', '-File', 'test-runner.ps1'] };
+    if (normalized === 'docker build') return { executable: this.resolveExecutable('docker'), argv: ['build', '--pull=false', '--tag', 'codex-polyglot-fixture:local', '.'] };
     return undefined;
   }
 
@@ -101,7 +126,7 @@ export class CodingBenchmarkRunner {
       if (!fs.existsSync(current)) return;
       for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
         const absolute = path.join(current, entry.name);
-        if (entry.isDirectory() && !['target', 'bin', 'obj', '.pytest_cache', '__pycache__', 'node_modules', '.gradle'].includes(entry.name)) walk(absolute);
+        if (entry.isDirectory() && !['target', 'bin', 'obj', 'build', '.pytest_cache', '__pycache__', 'node_modules', '.gradle'].includes(entry.name)) walk(absolute);
         else if (entry.isFile()) files.push(path.relative(directory, absolute).replace(/\\/g, '/'));
       }
     };

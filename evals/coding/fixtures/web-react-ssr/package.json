@@ -1,0 +1,2 @@
+{"scripts":{"test":"node test-runner.mjs"},"dependencies":{"react":"18.3.1"},"devDependencies":{"typescript":"5.3.3"}}
+

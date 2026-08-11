@@ -1,0 +1,39 @@
+{
+  "mode": "upgraded",
+  "status": "ready",
+  "executor": "repository-controller-inspection",
+  "inspection": {
+    "affectedFiles": [],
+    "affectedSymbols": [],
+    "selectedFiles": [
+      "tests/resource_test.cpp",
+      "src/resource.cpp"
+    ],
+    "verificationStatus": "not_run",
+    "reviewFindingCount": 0
+  },
+  "score": {
+    "id": "systems-cpp-raii",
+    "passed": false,
+    "metrics": {
+      "correctness": 0,
+      "buildTest": 0,
+      "regression": 0,
+      "minimality": 1,
+      "retrieval": 0.6666666666666666,
+      "fileSelection": 0.6666666666666666,
+      "symbolSelection": 1,
+      "apiAccuracy": 1,
+      "rootCauseAccuracy": 1,
+      "security": 1,
+      "reviewQuality": 1,
+      "verificationHonesty": 1
+    },
+    "failures": [
+      "expected_files_not_retrieved",
+      "build_or_visible_tests_failed",
+      "hidden_regression_failed",
+      "required_verification_missing"
+    ]
+  }
+}

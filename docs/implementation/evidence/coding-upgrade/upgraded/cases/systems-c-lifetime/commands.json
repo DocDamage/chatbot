@@ -1,0 +1,40 @@
+[
+  {
+    "command": "cmake configure",
+    "argv": [
+      "-S",
+      ".",
+      "-B",
+      "build"
+    ],
+    "status": "passed",
+    "exitCode": 0,
+    "stdout": "-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- Configuring done (0.0s)\n-- Generating done (0.1s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n",
+    "stderr": ""
+  },
+  {
+    "command": "cmake build",
+    "argv": [
+      "--build",
+      "build"
+    ],
+    "status": "passed",
+    "exitCode": 0,
+    "stdout": "MSBuild version 18.7.1+024f5b037 for .NET Framework\r\n\r\n  1>Checking Build System\r\n  Building Custom Rule I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/CMakeLists.txt\r\n  buffer_test.vcxproj -> I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-c-lifetime\\build\\Debug\\buffer_test.exe\r\n  Building Custom Rule I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/CMakeLists.txt\r\n",
+    "stderr": ""
+  },
+  {
+    "command": "cmake test",
+    "argv": [
+      "--test-dir",
+      "build",
+      "-C",
+      "Debug",
+      "--output-on-failure"
+    ],
+    "status": "passed",
+    "exitCode": 0,
+    "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n    Start 1: buffer_contract\n1/1 Test #1: buffer_contract ..................   Passed    0.01 sec\n\n100% tests passed, 0 tests failed out of 1\n\nTotal Test time (real) =   0.02 sec\n",
+    "stderr": ""
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "id": "jvm-java-module",
+  "prompt": "Add filtering without leaking the internal repository implementation through the public API.",
+  "expectedFiles": [
+    "src/main/java/Users.java",
+    "src/test/java/UsersTest.java",
+    "pom.xml"
+  ],
+  "hiddenChecks": [
+    "public-api-regression"
+  ]
+}

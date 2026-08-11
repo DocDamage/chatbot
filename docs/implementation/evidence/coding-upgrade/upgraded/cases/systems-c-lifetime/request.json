@@ -1,0 +1,12 @@
+{
+  "id": "systems-c-lifetime",
+  "prompt": "Fix the ownership boundary so the buffer is released exactly once.",
+  "expectedFiles": [
+    "src/buffer.c",
+    "tests/buffer_test.c",
+    "CMakeLists.txt"
+  ],
+  "hiddenChecks": [
+    "double-free-regression"
+  ]
+}

@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.20)
+project(c_lifetime C)
+add_executable(buffer_test src/buffer.c tests/buffer_test.c)
+enable_testing()
+add_test(NAME buffer_contract COMMAND buffer_test)
