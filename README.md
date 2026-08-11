@@ -122,6 +122,14 @@ See [docs/DEPLOYMENT_MODES.md](docs/DEPLOYMENT_MODES.md).
 
 The exact response shape and authorization policy must be taken from the current implementation and API documentation. Example payloads are not release certification.
 
+### Knowledge expansion and deep research
+
+When local confidence is too low, the chatbot can ask permission to search the internet. The approved research flow searches the selected category plus related categories, reviews up to twelve accepted sources, fetches readable page evidence when available, and produces a cited synthesis. The UI shows a final review containing the synthesis, sources, and cross-category searches before **Save to Knowledge Base** becomes available.
+
+Saved research is persisted through the normal `DocumentManager`/RAG path with source URLs, retrieval time, approval identity, primary and related category tags, cross-reference metadata, content hashes, and rollback information. Full webpages are not copied blindly; the stored research artifact is a synthesized, source-grounded document plus bounded evidence excerpts.
+
+The research endpoint is `POST /api/knowledge-online/research` with `{ "query": "...", "domain": "gaming" }`. Saving still requires the existing explicit approval endpoint.
+
 ### Health endpoints
 
 The repository includes health endpoints such as `/health`, `/health/live`, and `/health/ready`. Their operational meaning must be verified in the intended deployment before production use.

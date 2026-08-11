@@ -95,8 +95,18 @@ export class LocalKnowledgeAnswerer {
   }
 
   private matchesDomain(result: RetrievalResult, mode: LocalKnowledgeMode): boolean {
-    const source = String(result.chunk.metadata.source || '').toLowerCase().replace(/\\/g, '/');
+    const metadata = result.chunk.metadata || {};
+    const source = String(metadata.source || '').toLowerCase().replace(/\\/g, '/');
     const content = result.chunk.content.toLowerCase();
+    const metadataCategories = [
+      metadata.domain,
+      metadata.category,
+      ...(Array.isArray(metadata.categories) ? metadata.categories : []),
+      ...(Array.isArray(metadata.relatedCategories) ? metadata.relatedCategories : [])
+    ].map(value => String(value || '').toLowerCase());
+    if (metadataCategories.includes(mode)) {
+      return true;
+    }
     if (mode === 'pop_culture') {
       return source.includes('/popculture/') || source.includes('/pop-culture/') || content.includes('domain: pop_culture');
     }

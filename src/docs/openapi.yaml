@@ -179,6 +179,87 @@ paths:
         '503':
           description: RAG service is not initialized
 
+  /api/knowledge-online/research:
+    post:
+      summary: Build an approval-gated deep research preview
+      description: Search the requested category and related categories, collect bounded public web evidence, and return a synthesized preview. This endpoint does not write to the knowledge base.
+      tags:
+        - Knowledge Base
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - query
+              properties:
+                query:
+                  type: string
+                  minLength: 1
+                domain:
+                  type: string
+                  default: ask
+                  description: Primary specialist category used to expand related searches.
+      responses:
+        '200':
+          description: Reviewable deep research preview
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - query
+                  - answerPreview
+                  - sources
+                  - reviewToken
+                  - requiresApproval
+                properties:
+                  query:
+                    type: string
+                  answerPreview:
+                    type: string
+                  synthesis:
+                    type: string
+                  researchType:
+                    type: string
+                    enum: [deep-dive]
+                  primaryCategory:
+                    type: string
+                  relatedCategories:
+                    type: array
+                    items:
+                      type: string
+                  crossReferences:
+                    type: array
+                    items:
+                      type: object
+                  sources:
+                    type: array
+                    items:
+                      type: object
+                      required: [title, url, snippet]
+                      properties:
+                        title:
+                          type: string
+                        url:
+                          type: string
+                          format: uri
+                        snippet:
+                          type: string
+                        category:
+                          type: string
+                        fetchStatus:
+                          type: string
+                  reviewToken:
+                    type: string
+                  requiresApproval:
+                    type: boolean
+        '400':
+          description: Query is missing or blank
+        '503':
+          description: Knowledge document manager is not initialized
+
   /api/tools:
     get:
       summary: List available tools

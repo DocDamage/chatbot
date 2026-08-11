@@ -28,7 +28,7 @@ import GISMapPanel from '../features/gis/GISMapPanel';
 import { LoadedFileContext } from '../api/files';
 import { AudioFileContext } from '../api/audio';
 import type { ConversationDetail } from '../api/conversations';
-import { ingestOnlineKnowledge, searchOnlineKnowledge } from '../api/knowledge';
+import { deepResearchOnlineKnowledge, ingestOnlineKnowledge } from '../api/knowledge';
 import { isStaticPagesBuild } from '../api/runtime';
 import { throwApiError } from '../api/errors';
 import './AssistantChat.css';
@@ -433,7 +433,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
     if (!knowledgeMiss) return;
     try {
       setKnowledgeActionError('');
-      setKnowledgePreview(await searchOnlineKnowledge(knowledgeMiss.query, knowledgeMiss.domain));
+      setKnowledgePreview(await deepResearchOnlineKnowledge(knowledgeMiss.query, knowledgeMiss.domain));
     } catch (error: any) {
       setKnowledgeActionError(error.message || 'Online search failed');
     }
@@ -449,6 +449,11 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
     } catch (error: any) {
       setKnowledgeActionError(error.message || 'Knowledge ingestion failed');
     }
+  };
+
+  const discardKnowledgePreview = () => {
+    setKnowledgePreview(null);
+    setKnowledgeActionError('');
   };
 
   const openPlan = async (planId: string) => {
@@ -548,7 +553,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
               onOpenPlan={openPlan}
             />
           )}
-          {knowledgeMiss && (
+          {knowledgeMiss && !knowledgePreview && (
             <KnowledgeMissPrompt
               query={knowledgeMiss.query}
               domain={knowledgeMiss.domain}
@@ -562,8 +567,44 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
           )}
           {knowledgePreview && (
             <div className="assistant-knowledge-preview">
-              <pre>{knowledgePreview.answerPreview}</pre>
-              <button type="button" onClick={ingestPreview}>Ingest into Knowledge Base</button>
+              <div className="assistant-knowledge-review-header">
+                <div>
+                  <strong>{knowledgePreview.researchType === 'deep-dive' ? 'Deep research review' : 'Online research review'}</strong>
+                  <span>{knowledgePreview.query}</span>
+                </div>
+                <span>{knowledgePreview.sourcePolicy?.accepted || knowledgePreview.sources?.length || 0} sources</span>
+              </div>
+              {knowledgePreview.researchType === 'deep-dive' && (
+                <div className="assistant-knowledge-review-meta">
+                  <span>Primary: {knowledgePreview.primaryCategory || knowledgePreview.domain}</span>
+                  <span>Related: {(knowledgePreview.relatedCategories || []).join(', ') || 'none'}</span>
+                </div>
+              )}
+              <h4>Synthesis</h4>
+              <pre>{knowledgePreview.synthesis || knowledgePreview.answerPreview}</pre>
+              {knowledgePreview.crossReferences?.length > 0 && (
+                <div className="assistant-knowledge-crossrefs">
+                  <h4>Cross-category searches</h4>
+                  <ul>
+                    {knowledgePreview.crossReferences.map((reference: { category: string; reason: string; query: string }) => (
+                      <li key={reference.category}>{reference.category}: {reference.query}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <div className="assistant-knowledge-sources">
+                <h4>Sources</h4>
+                {knowledgePreview.sources?.map((source: { url: string; title: string; snippet: string; category?: string; fetchStatus?: string }) => (
+                  <a key={source.url} href={source.url} target="_blank" rel="noreferrer">
+                    <strong>{source.title}</strong>
+                    <span>{source.category || knowledgePreview.domain} · {source.fetchStatus === 'fetched' ? 'page reviewed' : 'search snippet'}</span>
+                  </a>
+                ))}
+              </div>
+              <div className="assistant-knowledge-review-actions">
+                <button type="button" onClick={discardKnowledgePreview}>Discard</button>
+                <button type="button" onClick={ingestPreview}>Save to Knowledge Base</button>
+              </div>
             </div>
           )}
           <ThreadPrimitive.Root className="assistant-thread">

@@ -32,6 +32,13 @@ export interface OnlineKnowledgePreview {
     accepted: number;
     rejected: Array<{ url: string; reason: string }>;
   };
+  researchType?: 'search-summary' | 'deep-dive';
+  primaryCategory?: string;
+  relatedCategories?: string[];
+  researchQueries?: Array<{ category: string; query: string }>;
+  crossReferences?: Array<{ category: string; reason: string; query: string }>;
+  synthesis?: string;
+  researchDocument?: string;
 }
 
 export async function checkOnlineKnowledge(
@@ -65,6 +72,16 @@ export async function ingestOnlineKnowledge(preview: unknown, sessionId: string)
     body: JSON.stringify({ preview, approved: true, approvedBy: sessionId })
   });
   if (!response.ok) await throwApiError(response, 'Knowledge ingestion failed');
+  return response.json();
+}
+
+export async function deepResearchOnlineKnowledge(query: string, domain: string): Promise<OnlineKnowledgePreview> {
+  const response = await fetch('/api/knowledge-online/research', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, domain })
+  });
+  if (!response.ok) await throwApiError(response, 'Deep online research failed');
   return response.json();
 }
 

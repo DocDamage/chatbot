@@ -14,10 +14,10 @@ This document began as a plan-only artifact. The repo now implements the plan's 
 - Mode guardrails: implemented with `ModePolicy`, server-side code-route restrictions, plan-mode saved Markdown output, and debug switch prompts.
 - Plan persistence: implemented with `PlanDocumentService`, `/api/plans`, chat plan actions, and reusable `PlanActionBar`.
 - Gaming module: implemented with `GamingGeniusAgent`, gaming intent/knowledge routing, phrasebook wiring, `/api/gaming`, and UI mode registration.
-- Knowledge miss and online ingestion: implemented with `KnowledgeMissHandler`, `OnlineKnowledgeIngestionService`, `/api/knowledge-online`, reusable `KnowledgeMissPrompt`, and client API calls.
+- Knowledge miss and deep online research: implemented with `KnowledgeMissHandler`, `OnlineKnowledgeIngestionService`, `/api/knowledge-online`, reusable `KnowledgeMissPrompt`, multi-category source expansion, bounded page extraction, synthesis review, provenance metadata, and client API calls.
 - Verification: covered by focused unit/API/client tests plus release-audit entries in `docs/RELEASE_COMPLETION_AUDIT.md`.
 
-Remaining scope after this update is ordinary product hardening: manual browser smoke testing, richer file-range selection UI, deeper audio analysis beyond deterministic PCM WAV statistics, and quality review of online-ingestion source ranking.
+Remaining scope after this update is ordinary product hardening: manual browser smoke testing, richer file-range selection UI, deeper audio analysis beyond deterministic PCM WAV statistics, and ongoing quality review of online-research source ranking.
 
 ## 1. Goal
 

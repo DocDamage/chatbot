@@ -55,6 +55,40 @@ describe('OnlineKnowledgeIngestionService', () => {
     expect(preview.sourcePolicy.rejected[0].reason).toBe('Local sources are not allowed');
   });
 
+  it('builds an approval-gated deep research preview with related categories', async () => {
+    const added: Array<{ text: string; metadata: Record<string, any> }> = [];
+    const service = new OnlineKnowledgeIngestionService({
+      addText: async (text: string, metadata: Record<string, any>) => {
+        added.push({ text, metadata });
+        return [{ id: `deep-chunk-${added.length}` }];
+      }
+    } as any, {
+      search: async (query: string) => [{
+        title: query.endsWith('history') ? 'History source' : query.endsWith('science') ? 'Science source' : 'Gaming source',
+        url: query.endsWith('history') ? 'https://example.com/history' : query.endsWith('science') ? 'https://example.com/science' : 'https://example.com/gaming',
+        snippet: `Evidence for ${query}`
+      }]
+    } as any, {
+      fetchPage: async url => `Full evidence from ${url}.`,
+      llmAdapter: {
+        generate: async () => ({ content: 'Synthesized answer with [Source 1] and [Source 2].' })
+      }
+    });
+
+    const preview = await service.deepResearch('video game history', 'gaming');
+    expect(preview.researchType).toBe('deep-dive');
+    expect(preview.relatedCategories).toEqual(expect.arrayContaining(['history', 'science']));
+    expect(preview.sources.length).toBeGreaterThanOrEqual(2);
+    expect(preview.synthesis).toContain('Synthesized answer');
+    expect(preview.researchDocument).toContain('Evidence sources:');
+    expect(preview.requiresApproval).toBe(true);
+
+    const ingestion = await service.ingestApproved(preview, { approved: true, approvedBy: 'reviewer-1' });
+    expect(ingestion.ingested).toBeGreaterThan(1);
+    expect(added[0].metadata.ingestionMethod).toBe('online-approved-deep-research');
+    expect(added[0].metadata.categories).toContain('history');
+  });
+
   it('requires explicit approval and supports rollback through document manager hooks', async () => {
     const deletedIds: string[][] = [];
     const service = new OnlineKnowledgeIngestionService({

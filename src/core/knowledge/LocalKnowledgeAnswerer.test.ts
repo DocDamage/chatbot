@@ -66,6 +66,32 @@ describe('LocalKnowledgeAnswerer', () => {
     expect(answer?.sources).toContain('knowledge-base-public/sixsigma/six_sigma_tools.md');
   });
 
+  it('retrieves deep-research sources through related category tags', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: 'gaming-history-research-chunk-0',
+          content: 'Video game history connects technical innovation with cultural change.',
+          metadata: {
+            source: 'online-research:gaming-history',
+            title: 'Deep research: video game history',
+            primaryCategory: 'gaming',
+            categories: ['gaming', 'history', 'science'],
+            relatedCategories: ['history', 'science']
+          }
+        },
+        score: 0.8,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answerer = new LocalKnowledgeAnswerer(store as any);
+    const answer = await answerer.answer('how did technology shape video game history?', 'history');
+
+    expect(answer?.response).toContain('technical innovation');
+    expect(answer?.sources).toContain('online-research:gaming-history');
+  });
+
   it('formats book-style answers as compact relevant passages instead of whole chunks', async () => {
     const store = {
       searchKeyword: jest.fn().mockResolvedValue([{

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   checkOnlineKnowledge,
   ingestOnlineKnowledge,
-  searchAndIngestOnlineKnowledge,
   searchOnlineKnowledge,
   KnowledgeCheckResult,
   OnlineKnowledgePreview
@@ -54,19 +53,6 @@ function KnowledgeOnlinePanel() {
     });
   };
 
-  const searchAndIngest = async () => {
-    await run(async () => {
-      const result = await searchAndIngestOnlineKnowledge({
-        query,
-        domain,
-        approved: true,
-        approvedBy: approvedBy || 'knowledge-panel'
-      });
-      setPreview(result.preview || null);
-      setIngestionResult(result.ingestion || result);
-    });
-  };
-
   return (
     <section className="knowledge-online-panel" aria-label="Knowledge online">
       <div className="knowledge-online-header">
@@ -98,9 +84,6 @@ function KnowledgeOnlinePanel() {
       <div className="knowledge-online-controls">
         <button type="button" onClick={ingestPreview} disabled={loading || !preview}>
           Ingest Current Preview
-        </button>
-        <button type="button" onClick={searchAndIngest} disabled={loading || !query.trim()}>
-          Search + Approved Ingest
         </button>
       </div>
 

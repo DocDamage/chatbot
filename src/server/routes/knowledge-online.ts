@@ -9,7 +9,11 @@ export function createKnowledgeOnlineRouter(services: any): Router {
   const router = Router();
   const missHandler = new KnowledgeMissHandler();
 
-  const createOnlineService = () => new OnlineKnowledgeIngestionService(services.documentManager, WebSearcher.fromEnv() as any);
+  const createOnlineService = () => new OnlineKnowledgeIngestionService(
+    services.documentManager,
+    WebSearcher.fromEnv() as any,
+    { llmAdapter: services?.orchestrator?.llmAdapter }
+  );
 
   router.post('/api/knowledge-online/miss', asyncHandler(async (req, res) => {
     res.json(missHandler.createMiss(String(req.body.message || ''), String(req.body.domain || 'ask')));
@@ -29,6 +33,16 @@ export function createKnowledgeOnlineRouter(services: any): Router {
       domain: String(req.body.domain || 'ask'),
       confidenceThreshold: req.body.confidenceThreshold ? Number(req.body.confidenceThreshold) : undefined
     }));
+  }));
+
+  router.post('/api/knowledge-online/research', asyncHandler(async (req, res) => {
+    if (!services?.documentManager) return res.status(503).json({ error: 'Document manager not available' });
+
+    const query = String(req.body.query || req.body.question || '').trim();
+    if (!query) return res.status(400).json({ error: 'query is required' });
+
+    const service = createOnlineService();
+    res.json(await service.deepResearch(query, String(req.body.domain || 'ask')));
   }));
 
   router.post('/api/knowledge-online/search', asyncHandler(async (req, res) => {
