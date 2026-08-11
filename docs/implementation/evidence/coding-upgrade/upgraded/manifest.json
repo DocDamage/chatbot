@@ -1,7 +1,7 @@
 {
   "suite": "polyglot-coding-upgrade",
   "mode": "upgraded",
-  "generatedAt": "2026-08-11T05:30:25.841Z",
+  "generatedAt": "2026-08-11T06:00:18.581Z",
   "fixtureRoot": "I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures",
   "cases": [
     {
@@ -10,8 +10,7 @@
       "fixtureHash": "260a7815fb7e4e2ff56f37029d708cec808da696cb14ecf07f87dbaad2a459d8",
       "toolchain": "cargo",
       "toolchainAvailable": true,
-      "status": "ready",
-      "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+      "status": "ready"
     },
     {
       "id": "systems-go-context",
@@ -28,8 +27,7 @@
       "fixtureHash": "a6057eb60d0755d18a945e3f99c8fe119d14ad1a9bf6aed2fc4df7d5041968af",
       "toolchain": "python",
       "toolchainAvailable": true,
-      "status": "ready",
-      "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+      "status": "ready"
     },
     {
       "id": "managed-dotnet-nullability",
@@ -37,8 +35,7 @@
       "fixtureHash": "e52cd5801f76392e2d55e020e0b07ff1cbb30bc72f8c0c595c3a41fc3e842b67",
       "toolchain": "dotnet",
       "toolchainAvailable": true,
-      "status": "ready",
-      "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+      "status": "ready"
     },
     {
       "id": "jvm-module-boundary",
@@ -55,8 +52,7 @@
       "fixtureHash": "da837bd401a5c89f86d6dd585e3aaae3cc08fb7e7b204e5f0eec824a2e231d86",
       "toolchain": "node",
       "toolchainAvailable": true,
-      "status": "ready",
-      "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+      "status": "ready"
     },
     {
       "id": "shell-safe-args",
@@ -82,8 +78,7 @@
       "fixtureHash": "d7ceb99f84b71fc22ff8d785785cb00f469c44fa47d04084bb59d5cf2001a8bd",
       "toolchain": "clang",
       "toolchainAvailable": true,
-      "status": "ready",
-      "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+      "status": "ready"
     },
     {
       "id": "systems-cpp-raii",
@@ -91,8 +86,7 @@
       "fixtureHash": "19ee0718775948a7f1ee29ff0e0806658ba2c750bd411f8facc45c004500c1a9",
       "toolchain": "clang++",
       "toolchainAvailable": true,
-      "status": "ready",
-      "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+      "status": "ready"
     },
     {
       "id": "systems-objective-c-boundary",
@@ -164,7 +158,7 @@
       "toolchain": "node",
       "toolchainAvailable": true,
       "status": "ready",
-      "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+      "reason": "Verification was not requested; Model output was not valid structured patch JSON; no patch was created"
     },
     {
       "id": "web-html-css-contract",
@@ -172,8 +166,7 @@
       "fixtureHash": "72e7fea033672cc29d817e1fa747e221f70bf5ce7521b34ade68ee76e230e0ff",
       "toolchain": "node",
       "toolchainAvailable": true,
-      "status": "ready",
-      "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+      "status": "ready"
     },
     {
       "id": "data-sql-dialect",
@@ -181,8 +174,7 @@
       "fixtureHash": "0bcdd6abd15e997ce9406e253b4e86caf13806e10f7e172f4c576f822b1d85f3",
       "toolchain": "sqlite3",
       "toolchainAvailable": true,
-      "status": "ready",
-      "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+      "status": "ready"
     },
     {
       "id": "shell-powershell-args",
@@ -190,8 +182,7 @@
       "fixtureHash": "37510b4205d6376318c9f3ad9fad73ab32305e327a9fa4f4ec3ff9aeabf8f0d5",
       "toolchain": "pwsh",
       "toolchainAvailable": true,
-      "status": "ready",
-      "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+      "status": "ready"
     },
     {
       "id": "shader-glsl-layout",
@@ -218,7 +209,7 @@
       "toolchain": "docker",
       "toolchainAvailable": true,
       "status": "ready",
-      "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+      "reason": "Verification was not requested; Model output was not valid structured patch JSON; no patch was created"
     },
     {
       "id": "make-build-contract",
@@ -226,8 +217,7 @@
       "fixtureHash": "20e4e02a15c9953509ff5adff6ac0cb574a04e496f2eef40542211f7466c2ffc",
       "toolchain": "make",
       "toolchainAvailable": true,
-      "status": "ready",
-      "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+      "status": "ready"
     },
     {
       "id": "meson-build-contract",
@@ -244,8 +234,7 @@
       "fixtureHash": "e332b2a709a06dd56f707c9d4d77d6616a6f834b051c4113d13e0e2543263b4a",
       "toolchain": "node",
       "toolchainAvailable": true,
-      "status": "ready",
-      "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/."
+      "status": "ready"
     }
   ]
 }

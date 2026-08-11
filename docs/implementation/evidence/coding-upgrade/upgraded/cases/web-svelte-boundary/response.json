@@ -1,8 +1,18 @@
 {
   "mode": "upgraded",
   "status": "ready",
-  "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.",
-  "executor": "repository-controller-inspection",
+  "executor": "model-adapter",
+  "execution": {
+    "executor": "model-adapter",
+    "worktree": "isolated",
+    "filesChanged": [
+      "src/routes/+page.svelte"
+    ],
+    "patchApplied": false,
+    "risks": [
+      "src/routes/+page.svelte: File already exists"
+    ]
+  },
   "inspection": {
     "affectedFiles": [],
     "affectedSymbols": [],
@@ -10,7 +20,6 @@
       "package.json",
       "hidden-check.mjs",
       "src/routes/+page.test.ts",
-      "src/routes/+page.svelte",
       "test-runner.mjs"
     ],
     "verificationStatus": "not_run",
@@ -34,8 +43,7 @@
       "verificationHonesty": 1
     },
     "failures": [
-      "hidden_regression_failed",
-      "required_verification_missing"
+      "hidden_regression_failed"
     ]
   }
 }

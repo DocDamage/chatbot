@@ -257,6 +257,7 @@
     "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
     "src/core/coding/retrieval/StructuralRetriever.ts",
     "src/core/coding/review/ReviewPipeline.ts",
+    "src/core/coding/security/WorkspacePathPolicy.ts",
     "src/core/coding/types.ts",
     "src/core/coding/verification/CommandCapabilityRunner.ts",
     "src/core/coding/verification/DiagnosticParser.ts",
@@ -858,6 +859,7 @@
     "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
     "src/core/coding/retrieval/StructuralRetriever.ts",
     "src/core/coding/review/ReviewPipeline.ts",
+    "src/core/coding/security/WorkspacePathPolicy.ts",
     "src/core/coding/types.ts",
     "src/core/coding/verification/CommandCapabilityRunner.ts",
     "src/core/coding/verification/DiagnosticParser.ts",
@@ -2085,6 +2087,7 @@
       "src/core/coding/repository/RepositoryIntelligence.ts",
       "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
       "src/core/coding/retrieval/StructuralRetriever.ts",
+      "src/core/coding/security/WorkspacePathPolicy.ts",
       "src/core/coding/types.ts",
       "src/core/coding/verification/RepairController.ts",
       "src/core/coding/verification/VerificationOrchestrator.ts",
@@ -2838,6 +2841,7 @@
       "src/core/coding/verification/DiagnosticParser.ts"
     ],
     "src/core/coding/editing/PatchConflictDetector.ts": [
+      "src/core/coding/security/WorkspacePathPolicy.ts",
       "src/core/coding/types.ts"
     ],
     "src/core/coding/editing/StructuredEditEngine.ts": [
@@ -2874,6 +2878,7 @@
       "src/core/coding/retrieval/DocumentationRetriever.ts",
       "src/core/coding/retrieval/StructuralRetriever.ts",
       "src/core/coding/review/ReviewPipeline.ts",
+      "src/core/coding/security/WorkspacePathPolicy.ts",
       "src/core/coding/testing/TestStrategy.ts",
       "src/core/coding/types.ts",
       "src/core/coding/verification/CommandCapabilityRunner.ts",
@@ -2955,7 +2960,8 @@
       "src/core/coding/repository/BuildSystemDetector.ts",
       "src/core/coding/repository/ManifestDetector.ts",
       "src/core/coding/repository/ProjectRootDetector.ts",
-      "src/core/coding/repository/WorkspaceInstructionResolver.ts"
+      "src/core/coding/repository/WorkspaceInstructionResolver.ts",
+      "src/core/coding/security/WorkspacePathPolicy.ts"
     ],
     "src/core/coding/repository/WorkspaceInstructionResolver.ts": [],
     "src/core/coding/RepositoryIntelligence.test.ts": [
@@ -2978,6 +2984,12 @@
     "src/core/coding/review/ReviewPipeline.ts": [
       "src/core/coding/types.ts"
     ],
+    "src/core/coding/security/WorkspacePathPolicy.test.ts": [
+      "src/core/agents/CodingAgent.ts",
+      "src/core/coding/security/WorkspacePathPolicy.ts",
+      "src/core/tools/RepoTools.ts"
+    ],
+    "src/core/coding/security/WorkspacePathPolicy.ts": [],
     "src/core/coding/StructuredEditEngine.test.ts": [
       "src/core/coding/editing/StructuredEditEngine.ts"
     ],
@@ -4543,6 +4555,7 @@
     ],
     "src/core/tools/RepoTools.ts": [
       "src/core/agents/CodeIndexer.ts",
+      "src/core/coding/security/WorkspacePathPolicy.ts",
       "src/core/tools/CommandRunner.ts",
       "src/types/tools.ts"
     ],
@@ -5228,5 +5241,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1035
+  "sourceRecordCount": 1037
 }

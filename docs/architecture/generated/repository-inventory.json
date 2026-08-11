@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1035,
-    "productionSourceFiles": 779,
-    "reachableProductionFiles": 599,
+    "sourceFiles": 1037,
+    "productionSourceFiles": 780,
+    "reachableProductionFiles": 600,
     "unreachableProductionFiles": 180,
     "routes": 355,
-    "environmentVariables": 191,
+    "environmentVariables": 193,
     "featureFlags": 18,
     "oversizedProductionFiles": 66
   },
@@ -4718,7 +4718,9 @@
     "CODE_EXECUTOR_SANDBOX",
     "CODE_EXECUTOR_TIMEOUT",
     "CODING_EVAL_MODEL",
+    "CODING_EVAL_PROVIDER",
     "CODING_MODEL_CONTEXT_TOKENS",
+    "CODING_MODEL_MAX_OUTPUT_TOKENS",
     "COHERE_API_KEY",
     "COHERE_MODEL",
     "COMICVINE_API_KEY",
@@ -4971,7 +4973,7 @@
     },
     {
       "file": "src/core/agents/CodingAgent.ts",
-      "lines": 412
+      "lines": 426
     },
     {
       "file": "src/core/agents/MultiAgentOrchestrator.ts",

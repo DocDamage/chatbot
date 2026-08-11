@@ -1,7 +1,7 @@
 {
   "mode": "upgraded",
   "status": "ready",
-  "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.",
+  "reason": "Verification was not requested; Model output was not valid structured patch JSON; no patch was created",
   "executor": "repository-controller-inspection",
   "inspection": {
     "affectedFiles": [],

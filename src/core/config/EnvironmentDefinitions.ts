@@ -130,6 +130,8 @@ export const ENVIRONMENT_DEFINITIONS: EnvironmentDefinition[] = [
   localOnly('CODE_EXECUTOR_SANDBOX', 'local-tools', 'Assert that the host supplied a real isolated code-execution sandbox.', 'false'),
   optional('CODING_MODEL_CONTEXT_TOKENS', 'features', 'Model context capacity used by adaptive coding context allocation.', '12000'),
   localOnly('CODING_EVAL_MODEL', 'local-tools', 'Optional model identifier for explicitly authorized live coding benchmark runs.'),
+  localOnly('CODING_EVAL_PROVIDER', 'local-tools', 'Provider selector for explicitly authorized live coding benchmark runs.'),
+  localOnly('CODING_MODEL_MAX_OUTPUT_TOKENS', 'local-tools', 'Maximum model output tokens for coding drafts.'),
   localOnly('ENABLE_LOCAL_TOOLS', 'local-tools', 'Enable local-tool routes and services.', 'false'),
   localOnly('LOCAL_EXECUTION_ENABLED', 'local-tools', 'Master local execution switch.', 'false'),
   localOnly('LOCAL_TOOLS_DIR', 'local-tools', 'Local tool bundle directory.', './local-tools'),

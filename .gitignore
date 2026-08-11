@@ -26,3 +26,7 @@ knowledge-base/
 .remembrandt/
 .venv-pyscrappy/
 .playwright-cli/
+**/obj/
+**/target/
+**/__pycache__/
+**/build/

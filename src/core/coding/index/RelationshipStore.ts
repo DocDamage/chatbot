@@ -19,9 +19,12 @@ export class RelationshipStore {
       matches.push(definition);
       definitionsByName.set(definition.name, matches);
     }
+    const relationshipKeys = new Set<string>();
     const add = (relationship: CodeRelationship) => {
-      const duplicate = this.relationships.some(existing => existing.from === relationship.from && existing.to === relationship.to && existing.kind === relationship.kind && existing.line === relationship.line);
-      if (!duplicate) this.relationships.push(relationship);
+      const key = `${relationship.from}\0${relationship.to}\0${relationship.kind}\0${relationship.line || ''}`;
+      if (relationshipKeys.has(key)) return;
+      relationshipKeys.add(key);
+      this.relationships.push(relationship);
     };
     for (const file of files) {
       let content: string;
@@ -35,7 +38,7 @@ export class RelationshipStore {
         }
         const tested = line.match(/\b(?:it|test|describe)\s*\(\s*['"`]([^'"`]+)/i)?.[1];
         if (tested) add({ from: file, to: tested, kind: 'tests', confidence: 0.6, line: index + 1 });
-        const identifiers = new Set(line.match(/[A-Za-z_$][\\w$]*/g) || []);
+        const identifiers = new Set(line.match(/[A-Za-z_$][\w$]*/g) || []);
         for (const identifier of identifiers) {
           const matches = definitionsByName.get(identifier) || [];
           if (!matches.length || identifier.length < 2) continue;

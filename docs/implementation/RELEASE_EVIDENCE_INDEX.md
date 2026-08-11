@@ -38,6 +38,6 @@ This index links verified production-completion tasks to evidence collected agai
 | Record | Status | Commit/reference | Evidence | Notes |
 |---|---|---|---|---|
 | `P01-T07` | `WAIVED` | Issue `#35` | `docs/implementation/BRANCH_PROTECTION_POLICY.md` | Repository owner declined branch-protection enforcement; this does not count as verification. |
-| `POLY-CODE-T25` | `NOT PRODUCTION VERIFIED` | `9af1d6e` | `docs/implementation/evidence/coding-upgrade/` | Polyglot coding implementation and local evidence bundle; live OpenAI benchmark was attempted but returned 429 no credits, hosted-production promotion, unsupported toolchains, and release coverage remain open. |
+| `POLY-CODE-T25` | `NOT PRODUCTION VERIFIED` | `d5ec608` | `docs/implementation/evidence/coding-upgrade/` | Polyglot coding implementation and local evidence bundle; explicit DeepSeek and Gemini live runs reached the ready fixtures, while hosted-production promotion, unsupported toolchains, and release coverage remain open. |
 
 Future tasks must append one row only after their evidence bundle and tracker status are complete.

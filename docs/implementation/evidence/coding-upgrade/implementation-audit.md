@@ -1,6 +1,6 @@
 # Polyglot coding upgrade implementation audit
 
-This bundle records the implementation boundary for the polyglot coding upgrade. The exact source SHA used for the checked-in benchmark artifacts is recorded in `baseline/environment.json` and `upgraded/environment.json`.
+This bundle records the implementation boundary for the polyglot coding upgrade. The exact source SHA used for the checked-in benchmark artifacts is recorded in `baseline/environment.json` and `upgraded/environment.json` (`d5ec608`).
 
 ## Implemented
 
@@ -16,7 +16,8 @@ This bundle records the implementation boundary for the polyglot coding upgrade.
 - `npm run type-check` — passed.
 - `npm run lint:server` and `npm run lint:client` — passed.
 - `npm run build` — passed.
-- `npm test -- --runInBand` — 148 suites passed, 459 tests passed, 2 skipped.
+- `npm test -- --runInBand` — 149 suites passed, 463 tests passed, 2 skipped.
+- Focused final coding/security/benchmark suite — 3 suites passed, 12 tests passed.
 - `npm run test:security` — 10 tests passed.
 - `npm run test:e2e:services` — 5 tests passed.
 - `npm run check:phase2` — passed.
@@ -24,9 +25,9 @@ This bundle records the implementation boundary for the polyglot coding upgrade.
 
 ## Explicit limitations
 
-- The live benchmark was attempted with `provider: openai` and `networkPolicy: explicit-live-model-only`; the endpoint returned `429 no credits remaining`, so no provider patch or hidden-regression execution evidence was produced. Preflight evidence remains recorded: 13 ready cases, 14 unsupported cases, and 12 passing checks.
+- The checked-in live benchmark uses `provider: gemini`, `model: gemini-3.6-flash`, and `networkPolicy: explicit-live-model-only`. It reached 11 model-adapter cases across 13 ready fixtures; 14 unavailable toolchains remained unsupported. A separate DeepSeek run succeeded with `deepseek-chat`; `gemini-2.0-flash` was retired by the provider.
 - The current machine reports 13 ready and 14 unsupported fixture toolchains. Unsupported tools are not counted as passes.
 - The current checked-in preflight has three hidden checks and zero hidden passes because no model patch was applied.
 - Parser support includes the TypeScript AST provider, maintained Tree-sitter grammars for the priority polyglot families, labeled resilient recovery, and explicit fallback behavior; dedicated maintained AST adapters for every listed language are not claimed.
-- `npm run release:check` still fails the repository’s existing server coverage threshold; the policy was not weakened. The failure is the uncovered-count threshold, while all collected suites pass.
+- `npm run release:check` still fails the repository’s existing server coverage threshold; the policy was not weakened. The failure is the uncovered-count threshold (14,949 statements, 8,957 branches, 13,561 lines, 3,060 functions versus the existing limits), while all collected suites pass.
 - Coding remains `LOCAL_ONLY_EXPERIMENTAL` in the production feature manifest; this implementation does not certify the feature for hosted production.

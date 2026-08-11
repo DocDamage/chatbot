@@ -21,7 +21,7 @@ async function main(): Promise<void> {
   const model = process.env.CODING_EVAL_MODEL || providerConfig.model;
   const modelAdapter = liveModel
     ? provider === 'gemini'
-      ? new GeminiAdapter(providerKey as string, model || 'gemini-2.0-flash')
+      ? new GeminiAdapter(providerKey as string, model || 'gemini-3.6-flash')
       : provider === 'deepseek'
         ? new OpenAICompatibleAdapter('deepseek', providerKey as string, 'https://api.deepseek.com/v1', model || 'deepseek-chat')
         : new OpenAIAdapter(providerKey as string, model)
@@ -37,7 +37,7 @@ async function main(): Promise<void> {
     platform: process.platform,
     architecture: process.arch,
     provider: liveModel ? provider : 'none',
-    model: process.env.CODING_EVAL_MODEL || providerConfig.model || (liveModel && provider === 'gemini' ? 'gemini-2.0-flash' : liveModel && provider === 'deepseek' ? 'deepseek-chat' : null),
+    model: process.env.CODING_EVAL_MODEL || providerConfig.model || (liveModel && provider === 'gemini' ? 'gemini-3.6-flash' : liveModel && provider === 'deepseek' ? 'deepseek-chat' : null),
     networkPolicy: process.argv.includes('--live-model') ? 'explicit-live-model-only' : 'disabled'
   }, null, 2));
   fs.writeFileSync(path.join(outputRoot, 'manifest.json'), JSON.stringify({ suite: report.suite, mode: report.mode, generatedAt: report.generatedAt, fixtureRoot: root, cases: report.cases.map(testCase => ({ id: testCase.id, fixture: testCase.fixture, fixtureHash: testCase.fixtureHash, toolchain: testCase.toolchain, toolchainAvailable: testCase.toolchainAvailable, status: testCase.status, reason: testCase.reason })) }, null, 2));

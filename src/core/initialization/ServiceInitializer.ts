@@ -517,7 +517,7 @@ export class ServiceInitializer {
     if (configuredProvider === 'gemini' && process.env.GEMINI_API_KEY) {
       const geminiAdapter = new GeminiAdapter(
         process.env.GEMINI_API_KEY,
-        process.env.GEMINI_MODEL || 'gemini-1.5-flash'
+        process.env.GEMINI_MODEL || 'gemini-3.6-flash'
       );
       adapters[ModelProvider.GOOGLE] = geminiAdapter;
       primary = primary || geminiAdapter;

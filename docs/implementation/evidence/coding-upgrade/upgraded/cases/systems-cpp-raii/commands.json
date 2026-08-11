@@ -9,7 +9,7 @@
     ],
     "status": "passed",
     "exitCode": 0,
-    "stdout": "-- Building for: Visual Studio 18 2026\n-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- The CXX compiler identification is MSVC 19.51.36243.0\n-- Detecting CXX compiler ABI info\n-- Detecting CXX compiler ABI info - done\n-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/18/Insiders/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe - skipped\n-- Detecting CXX compile features\n-- Detecting CXX compile features - done\n-- Configuring done (2.5s)\n-- Generating done (0.1s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build\n",
+    "stdout": "-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- Configuring done (0.0s)\n-- Generating done (0.1s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build\n",
     "stderr": ""
   },
   {
@@ -20,7 +20,7 @@
     ],
     "status": "failed",
     "exitCode": 1,
-    "stdout": "MSBuild version 18.7.1+024f5b037 for .NET Framework\r\n\r\n  1>Checking Build System\r\n  Building Custom Rule I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/CMakeLists.txt\r\n  resource.cpp\r\n  resource_test.cpp\r\n  Generating Code...\r\nresource_test.obj : error LNK2019: unresolved external symbol \"public: __cdecl ResourceOwner::ResourceOwner(int)\" (??0ResourceOwner@@QEAA@H@Z) referenced in function main [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\resource_test.vcxproj]\r\nresource_test.obj : error LNK2019: unresolved external symbol \"public: int __cdecl ResourceOwner::value(void)const \" (?value@ResourceOwner@@QEBAHXZ) referenced in function main [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\resource_test.vcxproj]\r\nI:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\Debug\\resource_test.exe : fatal error LNK1120: 2 unresolved externals [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\resource_test.vcxproj]\r\n",
+    "stdout": "MSBuild version 18.7.1+024f5b037 for .NET Framework\r\n\r\nresource_test.obj : error LNK2019: unresolved external symbol \"public: __cdecl ResourceOwner::ResourceOwner(int)\" (??0ResourceOwner@@QEAA@H@Z) referenced in function main [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\resource_test.vcxproj]\r\nresource_test.obj : error LNK2019: unresolved external symbol \"public: int __cdecl ResourceOwner::value(void)const \" (?value@ResourceOwner@@QEBAHXZ) referenced in function main [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\resource_test.vcxproj]\r\nI:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\Debug\\resource_test.exe : fatal error LNK1120: 2 unresolved externals [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\resource_test.vcxproj]\r\n",
     "stderr": ""
   },
   {

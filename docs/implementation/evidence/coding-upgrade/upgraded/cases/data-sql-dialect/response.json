@@ -1,8 +1,18 @@
 {
   "mode": "upgraded",
   "status": "ready",
-  "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.",
-  "executor": "repository-controller-inspection",
+  "executor": "model-adapter",
+  "execution": {
+    "executor": "model-adapter",
+    "worktree": "isolated",
+    "filesChanged": [
+      "query.sql"
+    ],
+    "patchApplied": false,
+    "risks": [
+      "query.sql: File content no longer matches the edit precondition"
+    ]
+  },
   "inspection": {
     "affectedFiles": [],
     "affectedSymbols": [],
@@ -32,8 +42,7 @@
     },
     "failures": [
       "expected_files_not_retrieved",
-      "hidden_regression_failed",
-      "required_verification_missing"
+      "hidden_regression_failed"
     ]
   }
 }

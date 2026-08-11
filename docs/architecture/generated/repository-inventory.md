@@ -6,12 +6,12 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1035 |
-| Production source files | 779 |
-| Reachable production files | 599 |
+| Source files | 1037 |
+| Production source files | 780 |
+| Reachable production files | 600 |
 | Unreachable production files | 180 |
 | Discovered route calls | 355 |
-| Environment variables | 191 |
+| Environment variables | 193 |
 | Feature flags | 18 |
 | Files above 300 lines | 66 |
 
@@ -428,7 +428,9 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `CODE_EXECUTOR_SANDBOX`
 - `CODE_EXECUTOR_TIMEOUT`
 - `CODING_EVAL_MODEL`
+- `CODING_EVAL_PROVIDER`
 - `CODING_MODEL_CONTEXT_TOKENS`
+- `CODING_MODEL_MAX_OUTPUT_TOKENS`
 - `COHERE_API_KEY`
 - `COHERE_MODEL`
 - `COMICVINE_API_KEY`
@@ -615,7 +617,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `scripts/import-books.ts` | 317 |
 | `scripts/import-wikipedia-general-corpus.ts` | 337 |
 | `src/core/agents/AgentTeam.ts` | 547 |
-| `src/core/agents/CodingAgent.ts` | 412 |
+| `src/core/agents/CodingAgent.ts` | 426 |
 | `src/core/agents/MultiAgentOrchestrator.ts` | 1269 |
 | `src/core/agents/ReasoningController.ts` | 368 |
 | `src/core/analytics/AnalyticsService.ts` | 448 |

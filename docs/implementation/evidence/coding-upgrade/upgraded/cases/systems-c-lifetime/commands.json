@@ -9,7 +9,7 @@
     ],
     "status": "passed",
     "exitCode": 0,
-    "stdout": "-- Building for: Visual Studio 18 2026\n-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- The C compiler identification is MSVC 19.51.36243.0\n-- Detecting C compiler ABI info\n-- Detecting C compiler ABI info - done\n-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/18/Insiders/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe - skipped\n-- Detecting C compile features\n-- Detecting C compile features - done\n-- Configuring done (2.5s)\n-- Generating done (0.1s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n",
+    "stdout": "-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- Configuring done (0.0s)\n-- Generating done (0.1s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n",
     "stderr": ""
   },
   {
@@ -20,7 +20,7 @@
     ],
     "status": "passed",
     "exitCode": 0,
-    "stdout": "MSBuild version 18.7.1+024f5b037 for .NET Framework\r\n\r\n  1>Checking Build System\r\n  Building Custom Rule I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/CMakeLists.txt\r\n  buffer.c\r\n  buffer_test.c\r\n  Generating Code...\r\n  buffer_test.vcxproj -> I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-c-lifetime\\build\\Debug\\buffer_test.exe\r\n  Building Custom Rule I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/CMakeLists.txt\r\n",
+    "stdout": "MSBuild version 18.7.1+024f5b037 for .NET Framework\r\n\r\n  buffer_test.vcxproj -> I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-c-lifetime\\build\\Debug\\buffer_test.exe\r\n",
     "stderr": ""
   },
   {
@@ -34,7 +34,7 @@
     ],
     "status": "passed",
     "exitCode": 0,
-    "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n    Start 1: buffer_contract\n1/1 Test #1: buffer_contract ..................   Passed    0.05 sec\n\n100% tests passed, 0 tests failed out of 1\n\nTotal Test time (real) =   0.08 sec\n",
+    "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n    Start 1: buffer_contract\n1/1 Test #1: buffer_contract ..................   Passed    0.02 sec\n\n100% tests passed, 0 tests failed out of 1\n\nTotal Test time (real) =   0.03 sec\n",
     "stderr": ""
   }
 ]

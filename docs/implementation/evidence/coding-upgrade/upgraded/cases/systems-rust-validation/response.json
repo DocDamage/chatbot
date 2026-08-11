@@ -1,8 +1,18 @@
 {
   "mode": "upgraded",
   "status": "ready",
-  "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.",
-  "executor": "repository-controller-inspection",
+  "executor": "model-adapter",
+  "execution": {
+    "executor": "model-adapter",
+    "worktree": "isolated",
+    "filesChanged": [
+      "src/lib.rs"
+    ],
+    "patchApplied": true,
+    "risks": [
+      "Verification was not requested"
+    ]
+  },
   "inspection": {
     "affectedFiles": [],
     "affectedSymbols": [],
@@ -18,11 +28,11 @@
   },
   "score": {
     "id": "systems-rust-validation",
-    "passed": false,
+    "passed": true,
     "metrics": {
-      "correctness": 0,
+      "correctness": 1,
       "buildTest": 1,
-      "regression": 0,
+      "regression": 1,
       "minimality": 1,
       "retrieval": 1,
       "fileSelection": 1,
@@ -33,9 +43,6 @@
       "reviewQuality": 1,
       "verificationHonesty": 1
     },
-    "failures": [
-      "hidden_regression_failed",
-      "required_verification_missing"
-    ]
+    "failures": []
   }
 }
