@@ -106,8 +106,6 @@ export class CodingBenchmarkRunner {
     if (!this.options.modelAdapter) return;
     const worktree = this.copyFixtureToTemp(path.join(this.fixturesRoot, testCase.fixture));
     try {
-      result.checks = [];
-      result.hiddenChecks = [];
       const agent = new CodingAgent({ workspaceRoot: worktree });
       const generated = await agent.handle({ message: testCase.prompt, model: this.options.model, modelAdapter: this.options.modelAdapter, generatePatch: true, runVerification: false });
       if (!generated.structuredPatch) {

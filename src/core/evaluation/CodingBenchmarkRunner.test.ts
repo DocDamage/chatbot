@@ -38,4 +38,27 @@ describe('CodingBenchmarkRunner', () => {
       fs.rmSync(root, { recursive: true, force: true });
     }
   });
+
+  it('retains preflight checks when the live provider is unavailable', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'coding-benchmark-provider-failure-'));
+    try {
+      fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify({ scripts: { test: 'node test-runner.mjs' } }));
+      fs.writeFileSync(path.join(root, 'test-runner.mjs'), 'process.exit(0);\n');
+      const testCase: CodingBenchmarkCase = {
+        id: 'provider-failure', family: 'web', language: 'typescript', fixture: '.', prompt: 'create generated.ts',
+        expectedFiles: ['generated.ts'], visibleTests: ['npm test'], hiddenChecks: [], hiddenTests: [], requiredToolchain: 'node'
+      };
+      const adapter: LLMAdapter = {
+        generate: async () => { throw new Error('provider unavailable'); },
+        estimateCost: () => 0,
+        getModelName: () => 'fixture-coder'
+      };
+      const report = await new CodingBenchmarkRunner(root, { modelAdapter: adapter, model: 'fixture-coder' }).run({ schemaVersion: 1, suite: 'runner-test', toolchainPolicy: 'test', cases: [testCase] }, 'upgraded');
+      expect(report.cases[0].execution).toBeUndefined();
+      expect(report.cases[0].checks?.every(check => check.status === 'passed')).toBe(true);
+      expect(report.cases[0].reason).toContain('provider unavailable');
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
 });
