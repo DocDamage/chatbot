@@ -1,7 +1,7 @@
 {
   "mode": "baseline",
   "suite": "polyglot-coding-upgrade",
-  "generatedAt": "2026-08-11T04:27:54.037Z",
+  "generatedAt": "2026-08-11T04:32:15.860Z",
   "cases": [
     {
       "id": "systems-rust-validation",
@@ -18,8 +18,8 @@
           ],
           "status": "failed",
           "exitCode": 101,
-          "stdout": "\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 2 tests\ntest accepts_a_name ... ok\ntest empty_name_is_an_error ... FAILED\n\nfailures:\n\n---- empty_name_is_an_error stdout ----\n\nthread 'empty_name_is_an_error' (17636) panicked at tests\\validation.rs:7:31:\nassertion `left == right` failed\n  left: Ok(\"\")\n right: Err(EmptyName)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    empty_name_is_an_error\n\ntest result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
-          "stderr": "   Compiling systems-rust-validation v0.1.0 (I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-rust-validation)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.52s\n     Running unittests src\\lib.rs (target\\debug\\deps\\systems_rust_validation-4027f18b6c11ad5d.exe)\n     Running tests\\validation.rs (target\\debug\\deps\\validation-877635d9ed9853bb.exe)\nerror: test failed, to rerun pass `--test validation`\n"
+          "stdout": "\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 2 tests\ntest accepts_a_name ... ok\ntest empty_name_is_an_error ... FAILED\n\nfailures:\n\n---- empty_name_is_an_error stdout ----\n\nthread 'empty_name_is_an_error' (14460) panicked at tests\\validation.rs:7:31:\nassertion `left == right` failed\n  left: Ok(\"\")\n right: Err(EmptyName)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    empty_name_is_an_error\n\ntest result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+          "stderr": "   Compiling systems-rust-validation v0.1.0 (I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-rust-validation)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.67s\n     Running unittests src\\lib.rs (target\\debug\\deps\\systems_rust_validation-4027f18b6c11ad5d.exe)\n     Running tests\\validation.rs (target\\debug\\deps\\validation-877635d9ed9853bb.exe)\nerror: test failed, to rerun pass `--test validation`\n"
         }
       ],
       "score": {
@@ -73,7 +73,7 @@
           ],
           "status": "failed",
           "exitCode": 1,
-          "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.10.11, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\python-typing\r\nconfigfile: pyproject.toml\r\ntestpaths: tests\r\nplugins: anyio-4.13.0\r\ncollected 2 items\r\n\r\ntests\\test_cart.py .F                                                    [100%]\r\n\r\n================================== FAILURES ===================================\r\n_____________________ test_negative_quantity_is_rejected ______________________\r\n\r\n    def test_negative_quantity_is_rejected():\r\n        try:\r\n            line_total(-1, 3.5)\r\n        except ValueError:\r\n            return\r\n>       raise AssertionError(\"negative quantities must be rejected\")\r\nE       AssertionError: negative quantities must be rejected\r\n\r\ntests\\test_cart.py:13: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_cart.py::test_negative_quantity_is_rejected - AssertionErro...\r\n========================= 1 failed, 1 passed in 0.05s =========================\r\n",
+          "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.10.11, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\python-typing\r\nconfigfile: pyproject.toml\r\ntestpaths: tests\r\nplugins: anyio-4.13.0\r\ncollected 2 items\r\n\r\ntests\\test_cart.py .F                                                    [100%]\r\n\r\n================================== FAILURES ===================================\r\n_____________________ test_negative_quantity_is_rejected ______________________\r\n\r\n    def test_negative_quantity_is_rejected():\r\n        try:\r\n            line_total(-1, 3.5)\r\n        except ValueError:\r\n            return\r\n>       raise AssertionError(\"negative quantities must be rejected\")\r\nE       AssertionError: negative quantities must be rejected\r\n\r\ntests\\test_cart.py:13: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_cart.py::test_negative_quantity_is_rejected - AssertionErro...\r\n========================= 1 failed, 1 passed in 0.06s =========================\r\n",
           "stderr": ""
         }
       ],
@@ -239,7 +239,7 @@
           ],
           "status": "passed",
           "exitCode": 0,
-          "stdout": "-- Building for: Visual Studio 18 2026\n-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- The C compiler identification is MSVC 19.51.36243.0\n-- Detecting C compiler ABI info\n-- Detecting C compiler ABI info - done\n-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/18/Insiders/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe - skipped\n-- Detecting C compile features\n-- Detecting C compile features - done\n-- Configuring done (2.2s)\n-- Generating done (0.1s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n",
+          "stdout": "-- Building for: Visual Studio 18 2026\n-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- The C compiler identification is MSVC 19.51.36243.0\n-- Detecting C compiler ABI info\n-- Detecting C compiler ABI info - done\n-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/18/Insiders/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe - skipped\n-- Detecting C compile features\n-- Detecting C compile features - done\n-- Configuring done (2.1s)\n-- Generating done (0.1s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n",
           "stderr": ""
         },
         {
@@ -264,7 +264,7 @@
           ],
           "status": "passed",
           "exitCode": 0,
-          "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n    Start 1: buffer_contract\n1/1 Test #1: buffer_contract ..................   Passed    0.07 sec\n\n100% tests passed, 0 tests failed out of 1\n\nTotal Test time (real) =   0.11 sec\n",
+          "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n    Start 1: buffer_contract\n1/1 Test #1: buffer_contract ..................   Passed    0.05 sec\n\n100% tests passed, 0 tests failed out of 1\n\nTotal Test time (real) =   0.08 sec\n",
           "stderr": ""
         }
       ],
@@ -310,7 +310,7 @@
           ],
           "status": "passed",
           "exitCode": 0,
-          "stdout": "-- Building for: Visual Studio 18 2026\n-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- The CXX compiler identification is MSVC 19.51.36243.0\n-- Detecting CXX compiler ABI info\n-- Detecting CXX compiler ABI info - done\n-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/18/Insiders/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe - skipped\n-- Detecting CXX compile features\n-- Detecting CXX compile features - done\n-- Configuring done (2.3s)\n-- Generating done (0.1s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build\n",
+          "stdout": "-- Building for: Visual Studio 18 2026\n-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- The CXX compiler identification is MSVC 19.51.36243.0\n-- Detecting CXX compiler ABI info\n-- Detecting CXX compiler ABI info - done\n-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/18/Insiders/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe - skipped\n-- Detecting CXX compile features\n-- Detecting CXX compile features - done\n-- Configuring done (2.2s)\n-- Generating done (0.1s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build\n",
           "stderr": ""
         },
         {

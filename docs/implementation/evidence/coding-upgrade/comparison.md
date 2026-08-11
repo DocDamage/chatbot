@@ -1,6 +1,6 @@
 # Polyglot coding benchmark comparison
 
-Generated from the executed baseline and upgraded reports. Implementation SHA: `9d65ee7ac7048a2801bf48c1930e0ff4f6725508`.
+Generated from the executed baseline and upgraded reports. Implementation SHA: `57caacd08458cce0eb99ee08f6ba58252eb2792a`.
 
 This is an evidence report, not a correctness claim: the current runner performs toolchain preflight and upgraded repository inspection, but does not invoke a live model or apply generated patches. Unsupported toolchains remain explicit and are not counted as passes.
 
