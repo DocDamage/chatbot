@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { lineCount, readText, walkFiles } from './files.mjs';
+import { lineCount, readText, toPosix, walkFiles } from './files.mjs';
 
 const SOURCE_EXTENSIONS = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs']);
 const TEST_FILE = /(?:^|\/)(?:__tests__|test|tests)(?:\/|$)|\.(?:test|spec)\.[cm]?[jt]sx?$/;
@@ -90,6 +90,7 @@ export function scanRepository(root) {
 }
 
 export function isProductionSource(file) {
-  const inProductionTree = file.startsWith('src/') || file.startsWith('client/src/');
-  return inProductionTree && SOURCE_EXTENSIONS.has(path.extname(file)) && !TEST_FILE.test(file);
+  const normalized = toPosix(file);
+  const inProductionTree = normalized.startsWith('src/') || normalized.startsWith('client/src/');
+  return inProductionTree && SOURCE_EXTENSIONS.has(path.extname(normalized)) && !TEST_FILE.test(normalized);
 }
