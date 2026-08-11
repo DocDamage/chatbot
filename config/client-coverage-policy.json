@@ -1,1 +1,1120 @@
-{"schemaVersion":1,"mode":"enforce","activeStage":"stage-1-baseline","baseline":{"commit":"2a4a4aaf361207d0abf6aac532cdb1aa2884081f","ciRun":"31068669859","recordedAt":"2026-08-06T03:33:07Z","global":{"lines":{"total":1549,"covered":912,"skipped":0,"pct":58.8767},"branches":{"total":1210,"covered":589,"skipped":0,"pct":48.6777},"functions":{"total":574,"covered":261,"skipped":0,"pct":45.4704},"statements":{"total":1744,"covered":970,"skipped":0,"pct":55.6193}}},"coverageScope":{"include":["src/**/*.{ts,tsx}"],"exclude":["src/**/*.d.ts","src/**/__tests__/**","src/**/*.test.{ts,tsx}","src/**/*.spec.{ts,tsx}","src/test/**"],"allowedExclusions":["src/**/*.d.ts","src/**/__tests__/**","src/**/*.test.{ts,tsx}","src/**/*.spec.{ts,tsx}","src/test/**"]},"globalMilestones":[{"stage":"stage-1-baseline","description":"Honest expanded client baseline plus no-regression enforcement","lines":null,"branches":null},{"stage":"stage-2","lines":65,"branches":55},{"stage":"stage-3","lines":75,"branches":65},{"stage":"final","lines":80,"branches":70}],"criticalWorkflows":{"description":"Release-critical client workflows and every production API client","target":{"lines":80,"branches":70},"enforceFromStage":"final","requiredWorkflowIds":["production-components","api-clients","mode-routing","authentication-states","dangerous-action-confirmation","file-workflow","audio-workflow","sprite-lab-workflow","local-tool-workflow","accessibility-status","error-paths"],"files":[{"path":"client/src/App.tsx","control":"Application mode and hosted/static runtime boundary","workflowIds":["production-components","mode-routing","authentication-states","error-paths"],"baseline":{"lines":{"total":2,"covered":1,"skipped":0,"pct":50},"branches":{"total":2,"covered":1,"skipped":0,"pct":50},"functions":{"total":2,"covered":1,"skipped":0,"pct":50},"statements":{"total":2,"covered":1,"skipped":0,"pct":50}}},{"path":"client/src/components/AssistantChat.tsx","control":"Core chat states and user-visible failures","workflowIds":["production-components","authentication-states","accessibility-status","error-paths"],"baseline":{"lines":{"total":168,"covered":61,"skipped":0,"pct":36.3095},"branches":{"total":159,"covered":50,"skipped":0,"pct":31.4465},"functions":{"total":56,"covered":11,"skipped":0,"pct":19.6429},"statements":{"total":195,"covered":62,"skipped":0,"pct":31.7949}}},{"path":"client/src/components/ModeSelector.tsx","control":"Specialist mode routing","workflowIds":["production-components","mode-routing","accessibility-status"],"baseline":{"lines":{"total":70,"covered":54,"skipped":0,"pct":77.1429},"branches":{"total":46,"covered":32,"skipped":0,"pct":69.5652},"functions":{"total":17,"covered":16,"skipped":0,"pct":94.1176},"statements":{"total":73,"covered":57,"skipped":0,"pct":78.0822}}},{"path":"client/src/components/SettingsMenu.tsx","control":"Runtime/provider settings and authorization-related failures","workflowIds":["production-components","authentication-states","error-paths"],"baseline":{"lines":{"total":118,"covered":63,"skipped":0,"pct":53.3898},"branches":{"total":129,"covered":52,"skipped":0,"pct":40.3101},"functions":{"total":45,"covered":11,"skipped":0,"pct":24.4444},"statements":{"total":130,"covered":67,"skipped":0,"pct":51.5385}}},{"path":"client/src/components/ConversationToolsPanel.tsx","control":"Conversation actions and failure states","workflowIds":["production-components","error-paths"],"baseline":{"lines":{"total":47,"covered":47,"skipped":0,"pct":100},"branches":{"total":34,"covered":27,"skipped":0,"pct":79.4118},"functions":{"total":25,"covered":25,"skipped":0,"pct":100},"statements":{"total":52,"covered":52,"skipped":0,"pct":100}}},{"path":"client/src/components/CodeWorkflowPanel.tsx","control":"Plan, patch, and verification actions","workflowIds":["production-components","dangerous-action-confirmation","error-paths"],"baseline":{"lines":{"total":44,"covered":44,"skipped":0,"pct":100},"branches":{"total":33,"covered":30,"skipped":0,"pct":90.9091},"functions":{"total":22,"covered":22,"skipped":0,"pct":100},"statements":{"total":50,"covered":50,"skipped":0,"pct":100}}},{"path":"client/src/components/PlanActionBar.tsx","control":"Dangerous action controls and status announcements","workflowIds":["production-components","dangerous-action-confirmation","accessibility-status"],"baseline":{"lines":{"total":4,"covered":4,"skipped":0,"pct":100},"branches":{"total":0,"covered":0,"skipped":0,"pct":100},"functions":{"total":3,"covered":3,"skipped":0,"pct":100},"statements":{"total":4,"covered":4,"skipped":0,"pct":100}}},{"path":"client/src/components/KnowledgeOnlinePanel.tsx","control":"Explicit online-ingest approval workflow","workflowIds":["production-components","dangerous-action-confirmation","error-paths"],"baseline":{"lines":{"total":43,"covered":34,"skipped":0,"pct":79.0698},"branches":{"total":34,"covered":21,"skipped":0,"pct":61.7647},"functions":{"total":17,"covered":11,"skipped":0,"pct":64.7059},"statements":{"total":45,"covered":34,"skipped":0,"pct":75.5556}}},{"path":"client/src/components/FileExplorerPanel.tsx","control":"File discovery and selection workflow","workflowIds":["production-components","file-workflow","accessibility-status","error-paths"],"baseline":{"lines":{"total":80,"covered":22,"skipped":0,"pct":27.5},"branches":{"total":64,"covered":10,"skipped":0,"pct":15.625},"functions":{"total":22,"covered":5,"skipped":0,"pct":22.7273},"statements":{"total":93,"covered":24,"skipped":0,"pct":25.8065}}},{"path":"client/src/components/FilePreviewPane.tsx","control":"Safe file preview states","workflowIds":["production-components","file-workflow","error-paths"],"baseline":{"lines":{"total":4,"covered":2,"skipped":0,"pct":50},"branches":{"total":2,"covered":1,"skipped":0,"pct":50},"functions":{"total":2,"covered":1,"skipped":0,"pct":50},"statements":{"total":4,"covered":2,"skipped":0,"pct":50}}},{"path":"client/src/components/LoadedFilesBar.tsx","control":"Loaded-file state and removal controls","workflowIds":["production-components","file-workflow","accessibility-status"],"baseline":{"lines":{"total":4,"covered":1,"skipped":0,"pct":25},"branches":{"total":4,"covered":3,"skipped":0,"pct":75},"functions":{"total":5,"covered":1,"skipped":0,"pct":20},"statements":{"total":7,"covered":2,"skipped":0,"pct":28.5714}}},{"path":"client/src/components/AudioPreviewBrowser.tsx","control":"Audio discovery and preview workflow","workflowIds":["production-components","audio-workflow","accessibility-status","error-paths"],"baseline":{"lines":{"total":48,"covered":27,"skipped":0,"pct":56.25},"branches":{"total":25,"covered":9,"skipped":0,"pct":36},"functions":{"total":15,"covered":4,"skipped":0,"pct":26.6667},"statements":{"total":55,"covered":28,"skipped":0,"pct":50.9091}}},{"path":"client/src/components/LocalRunApprovalPanel.tsx","control":"Exact local-run review and approval","workflowIds":["production-components","dangerous-action-confirmation","local-tool-workflow","accessibility-status","error-paths"],"baseline":{"lines":{"total":112,"covered":77,"skipped":0,"pct":68.75},"branches":{"total":92,"covered":59,"skipped":0,"pct":64.1304},"functions":{"total":29,"covered":18,"skipped":0,"pct":62.069},"statements":{"total":126,"covered":84,"skipped":0,"pct":66.6667}}},{"path":"client/src/components/LocalToolsWorkspace.tsx","control":"Local-tool planning, execution, and output states","workflowIds":["production-components","local-tool-workflow","error-paths"],"baseline":{"lines":{"total":2,"covered":0,"skipped":0,"pct":0},"branches":{"total":2,"covered":0,"skipped":0,"pct":0},"functions":{"total":1,"covered":0,"skipped":0,"pct":0},"statements":{"total":3,"covered":0,"skipped":0,"pct":0}}},{"path":"client/src/components/SpriteLabPanel.tsx","control":"Sprite Lab workflow and local-run integration","workflowIds":["production-components","sprite-lab-workflow","accessibility-status","error-paths"],"baseline":{"lines":{"total":125,"covered":76,"skipped":0,"pct":60.8},"branches":{"total":122,"covered":63,"skipped":0,"pct":51.6393},"functions":{"total":50,"covered":25,"skipped":0,"pct":50},"statements":{"total":139,"covered":78,"skipped":0,"pct":56.1151}}},{"path":"client/src/components/StatusBar.tsx","control":"Asynchronous and degraded status announcements","workflowIds":["production-components","accessibility-status","error-paths"],"baseline":{"lines":{"total":8,"covered":7,"skipped":0,"pct":87.5},"branches":{"total":6,"covered":5,"skipped":0,"pct":83.3333},"functions":{"total":4,"covered":3,"skipped":0,"pct":75},"statements":{"total":9,"covered":8,"skipped":0,"pct":88.8889}}},{"path":"client/src/clipboard.ts","control":"Clipboard success, unavailable, rejection, and fallback behavior","workflowIds":["accessibility-status","error-paths"],"baseline":{"lines":{"total":45,"covered":44,"skipped":0,"pct":97.7778},"branches":{"total":20,"covered":17,"skipped":0,"pct":85},"functions":{"total":3,"covered":3,"skipped":0,"pct":100},"statements":{"total":48,"covered":46,"skipped":0,"pct":95.8333}}},{"path":"client/src/api/audio.ts","control":"Audio API client","workflowIds":["api-clients","audio-workflow","error-paths"],"baseline":{"lines":{"total":8,"covered":7,"skipped":0,"pct":87.5},"branches":{"total":11,"covered":10,"skipped":0,"pct":90.9091},"functions":{"total":2,"covered":2,"skipped":0,"pct":100},"statements":{"total":11,"covered":10,"skipped":0,"pct":90.9091}}},{"path":"client/src/api/code.ts","control":"Coding workflow API client","workflowIds":["api-clients","dangerous-action-confirmation","error-paths"],"baseline":{"lines":{"total":25,"covered":25,"skipped":0,"pct":100},"branches":{"total":20,"covered":12,"skipped":0,"pct":60},"functions":{"total":7,"covered":7,"skipped":0,"pct":100},"statements":{"total":32,"covered":26,"skipped":0,"pct":81.25}}},{"path":"client/src/api/conversations.ts","control":"Conversation API client","workflowIds":["api-clients","production-components","error-paths"],"baseline":{"lines":{"total":33,"covered":33,"skipped":0,"pct":100},"branches":{"total":28,"covered":16,"skipped":0,"pct":57.1429},"functions":{"total":7,"covered":7,"skipped":0,"pct":100},"statements":{"total":42,"covered":36,"skipped":0,"pct":85.7143}}},{"path":"client/src/api/errors.ts","control":"Shared API error normalization","workflowIds":["api-clients","authentication-states","error-paths"],"baseline":{"lines":{"total":15,"covered":15,"skipped":0,"pct":100},"branches":{"total":11,"covered":11,"skipped":0,"pct":100},"functions":{"total":3,"covered":3,"skipped":0,"pct":100},"statements":{"total":16,"covered":16,"skipped":0,"pct":100}}},{"path":"client/src/api/files.ts","control":"File API client","workflowIds":["api-clients","file-workflow","error-paths"],"baseline":{"lines":{"total":14,"covered":13,"skipped":0,"pct":92.8571},"branches":{"total":18,"covered":15,"skipped":0,"pct":83.3333},"functions":{"total":3,"covered":3,"skipped":0,"pct":100},"statements":{"total":20,"covered":17,"skipped":0,"pct":85}}},{"path":"client/src/api/gaming.ts","control":"Gaming API client","workflowIds":["api-clients","error-paths"],"baseline":{"lines":{"total":3,"covered":0,"skipped":0,"pct":0},"branches":{"total":2,"covered":0,"skipped":0,"pct":0},"functions":{"total":1,"covered":0,"skipped":0,"pct":0},"statements":{"total":4,"covered":0,"skipped":0,"pct":0}}},{"path":"client/src/api/knowledge.ts","control":"Knowledge and approval API client","workflowIds":["api-clients","dangerous-action-confirmation","error-paths"],"baseline":{"lines":{"total":12,"covered":12,"skipped":0,"pct":100},"branches":{"total":8,"covered":5,"skipped":0,"pct":62.5},"functions":{"total":4,"covered":4,"skipped":0,"pct":100},"statements":{"total":16,"covered":13,"skipped":0,"pct":81.25}}},{"path":"client/src/api/localRunApprovals.ts","control":"Local-run approval API client","workflowIds":["api-clients","dangerous-action-confirmation","local-tool-workflow","error-paths"],"baseline":{"lines":{"total":19,"covered":16,"skipped":0,"pct":84.2105},"branches":{"total":13,"covered":6,"skipped":0,"pct":46.1538},"functions":{"total":7,"covered":6,"skipped":0,"pct":85.7143},"statements":{"total":25,"covered":16,"skipped":0,"pct":64}}},{"path":"client/src/api/localTools.ts","control":"Local tools API client","workflowIds":["api-clients","local-tool-workflow","error-paths"],"baseline":{"lines":{"total":12,"covered":0,"skipped":0,"pct":0},"branches":{"total":8,"covered":0,"skipped":0,"pct":0},"functions":{"total":4,"covered":0,"skipped":0,"pct":0},"statements":{"total":16,"covered":0,"skipped":0,"pct":0}}},{"path":"client/src/api/runtime.ts","control":"Runtime capability and authentication-related state client","workflowIds":["api-clients","authentication-states","error-paths"],"baseline":{"lines":{"total":10,"covered":10,"skipped":0,"pct":100},"branches":{"total":16,"covered":16,"skipped":0,"pct":100},"functions":{"total":1,"covered":1,"skipped":0,"pct":100},"statements":{"total":10,"covered":10,"skipped":0,"pct":100}}},{"path":"client/src/api/spriteLab.ts","control":"Sprite Lab API client","workflowIds":["api-clients","sprite-lab-workflow","error-paths"],"baseline":{"lines":{"total":16,"covered":9,"skipped":0,"pct":56.25},"branches":{"total":4,"covered":2,"skipped":0,"pct":50},"functions":{"total":12,"covered":5,"skipped":0,"pct":41.6667},"statements":{"total":18,"covered":9,"skipped":0,"pct":50}}},{"path":"client/src/features/gis/gisApi.ts","control":"GIS API client","workflowIds":["api-clients","error-paths"],"baseline":{"lines":{"total":8,"covered":7,"skipped":0,"pct":87.5},"branches":{"total":6,"covered":4,"skipped":0,"pct":66.6667},"functions":{"total":5,"covered":3,"skipped":0,"pct":60},"statements":{"total":9,"covered":7,"skipped":0,"pct":77.7778}}}]}}
+{
+  "schemaVersion": 1,
+  "mode": "enforce",
+  "activeStage": "stage-1-baseline",
+  "baseline": {
+    "commit": "25cba266e350e4e5e96b76acc419ee9da51acb94",
+    "ciRun": "31530629319",
+    "recordedAt": "2026-08-11T20:03:00Z",
+    "global": {
+      "lines": {
+        "total": 1800,
+        "covered": 952,
+        "skipped": 0,
+        "pct": 52.8889
+      },
+      "branches": {
+        "total": 1471,
+        "covered": 641,
+        "skipped": 0,
+        "pct": 43.5758
+      },
+      "functions": {
+        "total": 690,
+        "covered": 276,
+        "skipped": 0,
+        "pct": 40
+      },
+      "statements": {
+        "total": 2058,
+        "covered": 1011,
+        "skipped": 0,
+        "pct": 49.1254
+      }
+    }
+  },
+  "coverageScope": {
+    "include": [
+      "src/**/*.{ts,tsx}"
+    ],
+    "exclude": [
+      "src/**/*.d.ts",
+      "src/**/__tests__/**",
+      "src/**/*.test.{ts,tsx}",
+      "src/**/*.spec.{ts,tsx}",
+      "src/test/**"
+    ],
+    "allowedExclusions": [
+      "src/**/*.d.ts",
+      "src/**/__tests__/**",
+      "src/**/*.test.{ts,tsx}",
+      "src/**/*.spec.{ts,tsx}",
+      "src/test/**"
+    ]
+  },
+  "globalMilestones": [
+    {
+      "stage": "stage-1-baseline",
+      "description": "Honest expanded client baseline plus no-regression enforcement",
+      "lines": null,
+      "branches": null
+    },
+    {
+      "stage": "stage-2",
+      "lines": 65,
+      "branches": 55
+    },
+    {
+      "stage": "stage-3",
+      "lines": 75,
+      "branches": 65
+    },
+    {
+      "stage": "final",
+      "lines": 80,
+      "branches": 70
+    }
+  ],
+  "criticalWorkflows": {
+    "description": "Release-critical client workflows and every production API client",
+    "target": {
+      "lines": 80,
+      "branches": 70
+    },
+    "enforceFromStage": "final",
+    "requiredWorkflowIds": [
+      "production-components",
+      "api-clients",
+      "mode-routing",
+      "authentication-states",
+      "dangerous-action-confirmation",
+      "file-workflow",
+      "audio-workflow",
+      "sprite-lab-workflow",
+      "local-tool-workflow",
+      "accessibility-status",
+      "error-paths"
+    ],
+    "files": [
+      {
+        "path": "client/src/App.tsx",
+        "control": "Application mode and hosted/static runtime boundary",
+        "workflowIds": [
+          "production-components",
+          "mode-routing",
+          "authentication-states",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 4,
+            "covered": 1,
+            "skipped": 0,
+            "pct": 25
+          },
+          "branches": {
+            "total": 6,
+            "covered": 1,
+            "skipped": 0,
+            "pct": 16.6667
+          },
+          "functions": {
+            "total": 4,
+            "covered": 1,
+            "skipped": 0,
+            "pct": 25
+          },
+          "statements": {
+            "total": 5,
+            "covered": 1,
+            "skipped": 0,
+            "pct": 20
+          }
+        }
+      },
+      {
+        "path": "client/src/components/AssistantChat.tsx",
+        "control": "Core chat states and user-visible failures",
+        "workflowIds": [
+          "production-components",
+          "authentication-states",
+          "accessibility-status",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 181,
+            "covered": 64,
+            "skipped": 0,
+            "pct": 35.3591
+          },
+          "branches": {
+            "total": 197,
+            "covered": 59,
+            "skipped": 0,
+            "pct": 29.9492
+          },
+          "functions": {
+            "total": 65,
+            "covered": 11,
+            "skipped": 0,
+            "pct": 16.9231
+          },
+          "statements": {
+            "total": 208,
+            "covered": 65,
+            "skipped": 0,
+            "pct": 31.25
+          }
+        }
+      },
+      {
+        "path": "client/src/components/ModeSelector.tsx",
+        "control": "Specialist mode routing",
+        "workflowIds": [
+          "production-components",
+          "mode-routing",
+          "accessibility-status"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 70,
+            "covered": 54,
+            "skipped": 0,
+            "pct": 77.1429
+          },
+          "branches": {
+            "total": 46,
+            "covered": 32,
+            "skipped": 0,
+            "pct": 69.5652
+          },
+          "functions": {
+            "total": 17,
+            "covered": 16,
+            "skipped": 0,
+            "pct": 94.1176
+          },
+          "statements": {
+            "total": 73,
+            "covered": 57,
+            "skipped": 0,
+            "pct": 78.0822
+          }
+        }
+      },
+      {
+        "path": "client/src/components/SettingsMenu.tsx",
+        "control": "Runtime/provider settings and authorization-related failures",
+        "workflowIds": [
+          "production-components",
+          "authentication-states",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 120,
+            "covered": 63,
+            "skipped": 0,
+            "pct": 52.5
+          },
+          "branches": {
+            "total": 132,
+            "covered": 54,
+            "skipped": 0,
+            "pct": 40.9091
+          },
+          "functions": {
+            "total": 46,
+            "covered": 11,
+            "skipped": 0,
+            "pct": 23.913
+          },
+          "statements": {
+            "total": 132,
+            "covered": 67,
+            "skipped": 0,
+            "pct": 50.7576
+          }
+        }
+      },
+      {
+        "path": "client/src/components/ConversationToolsPanel.tsx",
+        "control": "Conversation actions and failure states",
+        "workflowIds": [
+          "production-components",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 47,
+            "covered": 47,
+            "skipped": 0,
+            "pct": 100
+          },
+          "branches": {
+            "total": 34,
+            "covered": 27,
+            "skipped": 0,
+            "pct": 79.4118
+          },
+          "functions": {
+            "total": 25,
+            "covered": 25,
+            "skipped": 0,
+            "pct": 100
+          },
+          "statements": {
+            "total": 52,
+            "covered": 52,
+            "skipped": 0,
+            "pct": 100
+          }
+        }
+      },
+      {
+        "path": "client/src/components/CodeWorkflowPanel.tsx",
+        "control": "Plan, patch, and verification actions",
+        "workflowIds": [
+          "production-components",
+          "dangerous-action-confirmation",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 63,
+            "covered": 60,
+            "skipped": 0,
+            "pct": 95.2381
+          },
+          "branches": {
+            "total": 71,
+            "covered": 60,
+            "skipped": 0,
+            "pct": 84.507
+          },
+          "functions": {
+            "total": 34,
+            "covered": 28,
+            "skipped": 0,
+            "pct": 82.3529
+          },
+          "statements": {
+            "total": 75,
+            "covered": 67,
+            "skipped": 0,
+            "pct": 89.3333
+          }
+        }
+      },
+      {
+        "path": "client/src/components/PlanActionBar.tsx",
+        "control": "Dangerous action controls and status announcements",
+        "workflowIds": [
+          "production-components",
+          "dangerous-action-confirmation",
+          "accessibility-status"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 4,
+            "covered": 4,
+            "skipped": 0,
+            "pct": 100
+          },
+          "branches": {
+            "total": 0,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 100
+          },
+          "functions": {
+            "total": 3,
+            "covered": 3,
+            "skipped": 0,
+            "pct": 100
+          },
+          "statements": {
+            "total": 4,
+            "covered": 4,
+            "skipped": 0,
+            "pct": 100
+          }
+        }
+      },
+      {
+        "path": "client/src/components/KnowledgeOnlinePanel.tsx",
+        "control": "Explicit online-ingest approval workflow",
+        "workflowIds": [
+          "production-components",
+          "dangerous-action-confirmation",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 38,
+            "covered": 33,
+            "skipped": 0,
+            "pct": 86.8421
+          },
+          "branches": {
+            "total": 26,
+            "covered": 19,
+            "skipped": 0,
+            "pct": 73.0769
+          },
+          "functions": {
+            "total": 15,
+            "covered": 11,
+            "skipped": 0,
+            "pct": 73.3333
+          },
+          "statements": {
+            "total": 40,
+            "covered": 33,
+            "skipped": 0,
+            "pct": 82.5
+          }
+        }
+      },
+      {
+        "path": "client/src/components/FileExplorerPanel.tsx",
+        "control": "File discovery and selection workflow",
+        "workflowIds": [
+          "production-components",
+          "file-workflow",
+          "accessibility-status",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 81,
+            "covered": 23,
+            "skipped": 0,
+            "pct": 28.3951
+          },
+          "branches": {
+            "total": 68,
+            "covered": 14,
+            "skipped": 0,
+            "pct": 20.5882
+          },
+          "functions": {
+            "total": 22,
+            "covered": 5,
+            "skipped": 0,
+            "pct": 22.7273
+          },
+          "statements": {
+            "total": 94,
+            "covered": 25,
+            "skipped": 0,
+            "pct": 26.5957
+          }
+        }
+      },
+      {
+        "path": "client/src/components/FilePreviewPane.tsx",
+        "control": "Safe file preview states",
+        "workflowIds": [
+          "production-components",
+          "file-workflow",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 4,
+            "covered": 2,
+            "skipped": 0,
+            "pct": 50
+          },
+          "branches": {
+            "total": 2,
+            "covered": 1,
+            "skipped": 0,
+            "pct": 50
+          },
+          "functions": {
+            "total": 2,
+            "covered": 1,
+            "skipped": 0,
+            "pct": 50
+          },
+          "statements": {
+            "total": 4,
+            "covered": 2,
+            "skipped": 0,
+            "pct": 50
+          }
+        }
+      },
+      {
+        "path": "client/src/components/LoadedFilesBar.tsx",
+        "control": "Loaded-file state and removal controls",
+        "workflowIds": [
+          "production-components",
+          "file-workflow",
+          "accessibility-status"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 4,
+            "covered": 1,
+            "skipped": 0,
+            "pct": 25
+          },
+          "branches": {
+            "total": 4,
+            "covered": 3,
+            "skipped": 0,
+            "pct": 75
+          },
+          "functions": {
+            "total": 5,
+            "covered": 1,
+            "skipped": 0,
+            "pct": 20
+          },
+          "statements": {
+            "total": 7,
+            "covered": 2,
+            "skipped": 0,
+            "pct": 28.5714
+          }
+        }
+      },
+      {
+        "path": "client/src/components/AudioPreviewBrowser.tsx",
+        "control": "Audio discovery and preview workflow",
+        "workflowIds": [
+          "production-components",
+          "audio-workflow",
+          "accessibility-status",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 48,
+            "covered": 27,
+            "skipped": 0,
+            "pct": 56.25
+          },
+          "branches": {
+            "total": 25,
+            "covered": 9,
+            "skipped": 0,
+            "pct": 36
+          },
+          "functions": {
+            "total": 15,
+            "covered": 4,
+            "skipped": 0,
+            "pct": 26.6667
+          },
+          "statements": {
+            "total": 55,
+            "covered": 28,
+            "skipped": 0,
+            "pct": 50.9091
+          }
+        }
+      },
+      {
+        "path": "client/src/components/LocalRunApprovalPanel.tsx",
+        "control": "Exact local-run review and approval",
+        "workflowIds": [
+          "production-components",
+          "dangerous-action-confirmation",
+          "local-tool-workflow",
+          "accessibility-status",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 112,
+            "covered": 77,
+            "skipped": 0,
+            "pct": 68.75
+          },
+          "branches": {
+            "total": 92,
+            "covered": 59,
+            "skipped": 0,
+            "pct": 64.1304
+          },
+          "functions": {
+            "total": 29,
+            "covered": 18,
+            "skipped": 0,
+            "pct": 62.069
+          },
+          "statements": {
+            "total": 126,
+            "covered": 84,
+            "skipped": 0,
+            "pct": 66.6667
+          }
+        }
+      },
+      {
+        "path": "client/src/components/LocalToolsWorkspace.tsx",
+        "control": "Local-tool planning, execution, and output states",
+        "workflowIds": [
+          "production-components",
+          "local-tool-workflow",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 2,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 0
+          },
+          "branches": {
+            "total": 2,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 0
+          },
+          "functions": {
+            "total": 1,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 0
+          },
+          "statements": {
+            "total": 3,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 0
+          }
+        }
+      },
+      {
+        "path": "client/src/components/SpriteLabPanel.tsx",
+        "control": "Sprite Lab workflow and local-run integration",
+        "workflowIds": [
+          "production-components",
+          "sprite-lab-workflow",
+          "accessibility-status",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 125,
+            "covered": 76,
+            "skipped": 0,
+            "pct": 60.8
+          },
+          "branches": {
+            "total": 122,
+            "covered": 63,
+            "skipped": 0,
+            "pct": 51.6393
+          },
+          "functions": {
+            "total": 50,
+            "covered": 25,
+            "skipped": 0,
+            "pct": 50
+          },
+          "statements": {
+            "total": 139,
+            "covered": 78,
+            "skipped": 0,
+            "pct": 56.1151
+          }
+        }
+      },
+      {
+        "path": "client/src/components/StatusBar.tsx",
+        "control": "Asynchronous and degraded status announcements",
+        "workflowIds": [
+          "production-components",
+          "accessibility-status",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 8,
+            "covered": 8,
+            "skipped": 0,
+            "pct": 100
+          },
+          "branches": {
+            "total": 6,
+            "covered": 6,
+            "skipped": 0,
+            "pct": 100
+          },
+          "functions": {
+            "total": 4,
+            "covered": 4,
+            "skipped": 0,
+            "pct": 100
+          },
+          "statements": {
+            "total": 9,
+            "covered": 9,
+            "skipped": 0,
+            "pct": 100
+          }
+        }
+      },
+      {
+        "path": "client/src/clipboard.ts",
+        "control": "Clipboard success, unavailable, rejection, and fallback behavior",
+        "workflowIds": [
+          "accessibility-status",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 45,
+            "covered": 44,
+            "skipped": 0,
+            "pct": 97.7778
+          },
+          "branches": {
+            "total": 20,
+            "covered": 17,
+            "skipped": 0,
+            "pct": 85
+          },
+          "functions": {
+            "total": 3,
+            "covered": 3,
+            "skipped": 0,
+            "pct": 100
+          },
+          "statements": {
+            "total": 48,
+            "covered": 46,
+            "skipped": 0,
+            "pct": 95.8333
+          }
+        }
+      },
+      {
+        "path": "client/src/api/audio.ts",
+        "control": "Audio API client",
+        "workflowIds": [
+          "api-clients",
+          "audio-workflow",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 8,
+            "covered": 7,
+            "skipped": 0,
+            "pct": 87.5
+          },
+          "branches": {
+            "total": 11,
+            "covered": 10,
+            "skipped": 0,
+            "pct": 90.9091
+          },
+          "functions": {
+            "total": 2,
+            "covered": 2,
+            "skipped": 0,
+            "pct": 100
+          },
+          "statements": {
+            "total": 11,
+            "covered": 10,
+            "skipped": 0,
+            "pct": 90.9091
+          }
+        }
+      },
+      {
+        "path": "client/src/api/code.ts",
+        "control": "Coding workflow API client",
+        "workflowIds": [
+          "api-clients",
+          "dangerous-action-confirmation",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 45,
+            "covered": 45,
+            "skipped": 0,
+            "pct": 100
+          },
+          "branches": {
+            "total": 34,
+            "covered": 20,
+            "skipped": 0,
+            "pct": 58.8235
+          },
+          "functions": {
+            "total": 15,
+            "covered": 15,
+            "skipped": 0,
+            "pct": 100
+          },
+          "statements": {
+            "total": 58,
+            "covered": 46,
+            "skipped": 0,
+            "pct": 79.3103
+          }
+        }
+      },
+      {
+        "path": "client/src/api/conversations.ts",
+        "control": "Conversation API client",
+        "workflowIds": [
+          "api-clients",
+          "production-components",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 33,
+            "covered": 33,
+            "skipped": 0,
+            "pct": 100
+          },
+          "branches": {
+            "total": 28,
+            "covered": 16,
+            "skipped": 0,
+            "pct": 57.1429
+          },
+          "functions": {
+            "total": 7,
+            "covered": 7,
+            "skipped": 0,
+            "pct": 100
+          },
+          "statements": {
+            "total": 42,
+            "covered": 36,
+            "skipped": 0,
+            "pct": 85.7143
+          }
+        }
+      },
+      {
+        "path": "client/src/api/errors.ts",
+        "control": "Shared API error normalization",
+        "workflowIds": [
+          "api-clients",
+          "authentication-states",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 15,
+            "covered": 15,
+            "skipped": 0,
+            "pct": 100
+          },
+          "branches": {
+            "total": 11,
+            "covered": 11,
+            "skipped": 0,
+            "pct": 100
+          },
+          "functions": {
+            "total": 3,
+            "covered": 3,
+            "skipped": 0,
+            "pct": 100
+          },
+          "statements": {
+            "total": 16,
+            "covered": 16,
+            "skipped": 0,
+            "pct": 100
+          }
+        }
+      },
+      {
+        "path": "client/src/api/files.ts",
+        "control": "File API client",
+        "workflowIds": [
+          "api-clients",
+          "file-workflow",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 14,
+            "covered": 13,
+            "skipped": 0,
+            "pct": 92.8571
+          },
+          "branches": {
+            "total": 18,
+            "covered": 15,
+            "skipped": 0,
+            "pct": 83.3333
+          },
+          "functions": {
+            "total": 3,
+            "covered": 3,
+            "skipped": 0,
+            "pct": 100
+          },
+          "statements": {
+            "total": 20,
+            "covered": 17,
+            "skipped": 0,
+            "pct": 85
+          }
+        }
+      },
+      {
+        "path": "client/src/api/gaming.ts",
+        "control": "Gaming API client",
+        "workflowIds": [
+          "api-clients",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 3,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 0
+          },
+          "branches": {
+            "total": 2,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 0
+          },
+          "functions": {
+            "total": 1,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 0
+          },
+          "statements": {
+            "total": 4,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 0
+          }
+        }
+      },
+      {
+        "path": "client/src/api/knowledge.ts",
+        "control": "Knowledge and approval API client",
+        "workflowIds": [
+          "api-clients",
+          "dangerous-action-confirmation",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 15,
+            "covered": 12,
+            "skipped": 0,
+            "pct": 80
+          },
+          "branches": {
+            "total": 10,
+            "covered": 5,
+            "skipped": 0,
+            "pct": 50
+          },
+          "functions": {
+            "total": 5,
+            "covered": 4,
+            "skipped": 0,
+            "pct": 80
+          },
+          "statements": {
+            "total": 20,
+            "covered": 13,
+            "skipped": 0,
+            "pct": 65
+          }
+        }
+      },
+      {
+        "path": "client/src/api/localRunApprovals.ts",
+        "control": "Local-run approval API client",
+        "workflowIds": [
+          "api-clients",
+          "dangerous-action-confirmation",
+          "local-tool-workflow",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 19,
+            "covered": 16,
+            "skipped": 0,
+            "pct": 84.2105
+          },
+          "branches": {
+            "total": 13,
+            "covered": 6,
+            "skipped": 0,
+            "pct": 46.1538
+          },
+          "functions": {
+            "total": 7,
+            "covered": 6,
+            "skipped": 0,
+            "pct": 85.7143
+          },
+          "statements": {
+            "total": 25,
+            "covered": 16,
+            "skipped": 0,
+            "pct": 64
+          }
+        }
+      },
+      {
+        "path": "client/src/api/localTools.ts",
+        "control": "Local tools API client",
+        "workflowIds": [
+          "api-clients",
+          "local-tool-workflow",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 12,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 0
+          },
+          "branches": {
+            "total": 8,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 0
+          },
+          "functions": {
+            "total": 4,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 0
+          },
+          "statements": {
+            "total": 16,
+            "covered": 0,
+            "skipped": 0,
+            "pct": 0
+          }
+        }
+      },
+      {
+        "path": "client/src/api/runtime.ts",
+        "control": "Runtime capability and authentication-related state client",
+        "workflowIds": [
+          "api-clients",
+          "authentication-states",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 10,
+            "covered": 10,
+            "skipped": 0,
+            "pct": 100
+          },
+          "branches": {
+            "total": 16,
+            "covered": 16,
+            "skipped": 0,
+            "pct": 100
+          },
+          "functions": {
+            "total": 1,
+            "covered": 1,
+            "skipped": 0,
+            "pct": 100
+          },
+          "statements": {
+            "total": 10,
+            "covered": 10,
+            "skipped": 0,
+            "pct": 100
+          }
+        }
+      },
+      {
+        "path": "client/src/api/spriteLab.ts",
+        "control": "Sprite Lab API client",
+        "workflowIds": [
+          "api-clients",
+          "sprite-lab-workflow",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 16,
+            "covered": 9,
+            "skipped": 0,
+            "pct": 56.25
+          },
+          "branches": {
+            "total": 4,
+            "covered": 2,
+            "skipped": 0,
+            "pct": 50
+          },
+          "functions": {
+            "total": 12,
+            "covered": 5,
+            "skipped": 0,
+            "pct": 41.6667
+          },
+          "statements": {
+            "total": 18,
+            "covered": 9,
+            "skipped": 0,
+            "pct": 50
+          }
+        }
+      },
+      {
+        "path": "client/src/features/gis/gisApi.ts",
+        "control": "GIS API client",
+        "workflowIds": [
+          "api-clients",
+          "error-paths"
+        ],
+        "baseline": {
+          "lines": {
+            "total": 8,
+            "covered": 7,
+            "skipped": 0,
+            "pct": 87.5
+          },
+          "branches": {
+            "total": 6,
+            "covered": 4,
+            "skipped": 0,
+            "pct": 66.6667
+          },
+          "functions": {
+            "total": 5,
+            "covered": 3,
+            "skipped": 0,
+            "pct": 60
+          },
+          "statements": {
+            "total": 9,
+            "covered": 7,
+            "skipped": 0,
+            "pct": 77.7778
+          }
+        }
+      }
+    ]
+  }
+}
