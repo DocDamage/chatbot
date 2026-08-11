@@ -1564,6 +1564,14 @@
       "specifier": "./thing"
     },
     {
+      "importer": "src/__tests__/coverage-gap.test.ts",
+      "specifier": "../core/cache/DiskCache"
+    },
+    {
+      "importer": "src/__tests__/coverage-gap.test.ts",
+      "specifier": "../core/cache/MultiLevelCache"
+    },
+    {
       "importer": "src/core/coding/index/RelationshipStore.test.ts",
       "specifier": "./b"
     },
@@ -2021,6 +2029,20 @@
     "src/__tests__/core/tools/ToolRegistry.test.ts": [
       "src/core/tools/ToolRegistry.ts",
       "src/types/tools.ts"
+    ],
+    "src/__tests__/coverage-gap.test.ts": [
+      "src/core/agents/gamedev/BalanceSimulator.ts",
+      "src/core/knowledge/KnowledgeGraph.ts",
+      "src/core/knowledge/QueryEnhancer.ts",
+      "src/core/learning/FeedbackCollector.ts",
+      "src/core/optimization/ToonSerializer.ts",
+      "src/mesh/CircuitBreaker.ts",
+      "src/middleware/rateLimiter.ts",
+      "src/services/ServiceRegistry.ts",
+      "src/utils/cache.ts",
+      "src/utils/errors.ts",
+      "src/utils/memoize.ts",
+      "src/utils/retry.ts"
     ],
     "src/__tests__/setup.ts": [],
     "src/__tests__/utils/test-helpers.ts": [
@@ -3591,6 +3613,9 @@
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/NewsSource.test.ts": [
+      "src/core/knowledge/NewsSource.ts"
+    ],
     "src/core/knowledge/NewsSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
@@ -3767,6 +3792,9 @@
     ],
     "src/core/memory/PrivateMemoryStore.ts": [
       "src/core/database/Database.ts"
+    ],
+    "src/core/memory/ProjectContext.test.ts": [
+      "src/core/memory/ProjectContext.ts"
     ],
     "src/core/memory/ProjectContext.ts": [
       "src/core/observability/logger.ts"
@@ -4331,6 +4359,10 @@
     "src/core/tools/business/PricingModelTool.ts": [],
     "src/core/tools/business/SwotTool.ts": [],
     "src/core/tools/business/UnitEconomicsTool.ts": [],
+    "src/core/tools/catalog/ToolCatalogService.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/tools/catalog/ToolCatalogService.ts"
+    ],
     "src/core/tools/catalog/ToolCatalogService.ts": [
       "src/core/database/Database.ts",
       "src/core/database/ExpansionDatabase.ts"
@@ -4938,6 +4970,9 @@
     "src/server/routes/__tests__/rag-query.test.ts": [
       "src/server/routes/rag-query.ts"
     ],
+    "src/server/routes/__tests__/settings-routes.test.ts": [
+      "src/server/routes/settings.ts"
+    ],
     "src/server/routes/__tests__/sixsigma-routes.test.ts": [
       "src/server/routes/sixsigma.ts"
     ],
@@ -4957,6 +4992,12 @@
       "src/server/routes/gamedev.ts",
       "src/server/routes/market.ts",
       "src/server/routes/math.ts"
+    ],
+    "src/server/routes/__tests__/sprite-lab-routes.test.ts": [
+      "src/core/sprite-lab/InternalSpriteImageAdapter.ts",
+      "src/core/sprite-lab/SpriteExternalToolAdapter.ts",
+      "src/core/sprite-lab/SpriteLabPlanService.ts",
+      "src/server/routes/sprite-lab.ts"
     ],
     "src/server/routes/admin.test.ts": [
       "src/core/auth/AuthService.ts",
@@ -5238,5 +5279,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1034
+  "sourceRecordCount": 1040
 }

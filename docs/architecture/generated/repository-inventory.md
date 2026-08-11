@@ -6,7 +6,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1034 |
+| Source files | 1040 |
 | Production source files | 780 |
 | Reachable production files | 600 |
 | Unreachable production files | 180 |

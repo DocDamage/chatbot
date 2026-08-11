@@ -248,4 +248,70 @@ describe('knowledge OS routes', () => {
 
     expect(response.status).toBe(500);
   });
+
+  it('covers graph, wiki, memory, database, import, and governance branches', async () => {
+    const services = {
+      entityLinkingService: {
+        searchEntities: jest.fn().mockResolvedValue([{ id: 'e1' }]),
+        stats: jest.fn().mockResolvedValue({ total: 1 }),
+        link: jest.fn().mockReturnValue({ linked: true }),
+      },
+      knowledgeGraphIndexer: {
+        build: jest.fn().mockResolvedValue({ nodes: [], edges: [] }),
+        persist: jest.fn().mockResolvedValue({ persisted: true }),
+        stats: jest.fn().mockResolvedValue({ nodes: 1, edges: 0 }),
+      },
+      githubRepoKnowledgeImporter: {
+        importRepo: jest.fn().mockResolvedValue({ repo: 'owner/repo' }),
+        importRecommended: jest.fn().mockResolvedValue([{ repo: 'recommended/repo' }]),
+      },
+      localKnowledgeWiki: {
+        list: jest.fn().mockReturnValue([{ slug: 'one', title: 'One', content: 'one', frontmatter: {} }]),
+        search: jest.fn().mockReturnValue([{ slug: 'one' }]),
+        read: jest.fn().mockReturnValue({ slug: 'one', title: 'One', content: 'one', frontmatter: {} }),
+        write: jest.fn().mockReturnValue({ slug: 'new', title: 'New', content: 'new' }),
+      },
+      documentManager: {
+        addText: jest.fn().mockResolvedValue([{ id: 'chunk' }]),
+      },
+      privateMemoryStore: {
+        recall: jest.fn().mockResolvedValue([{ id: 'memory' }]),
+        stats: jest.fn().mockResolvedValue({ total: 1 }),
+        approve: jest.fn().mockResolvedValue(undefined),
+        get: jest.fn().mockResolvedValue({ id: 'memory', status: 'rejected' }),
+        remember: jest.fn().mockResolvedValue({ id: 'memory' }),
+      },
+      safeDatabaseQuestionAgent: {
+        queryReadOnly: jest.fn().mockResolvedValue({ rows: [] }),
+        schemaSummary: jest.fn().mockReturnValue({ tables: [] }),
+      },
+      governanceEvidenceService: {
+        createReport: jest.fn().mockResolvedValue({ id: 'report' }),
+        listReports: jest.fn().mockResolvedValue([{ id: 'report' }]),
+        runGoldenTasks: jest.fn().mockResolvedValue({ passed: 1 }),
+      },
+    };
+    const app = express();
+    app.use(express.json());
+    app.use(createKnowledgeOsRouter(services));
+
+    await request(app).get('/api/knowledge-os/entities/search').expect(400);
+    await request(app).get('/api/knowledge-os/entities/stats').expect(200);
+    await request(app).post('/api/knowledge-os/graph/build').send({ persist: true, maxFiles: 999, maxChunks: 9999 }).expect(200);
+    await request(app).get('/api/knowledge-os/graph/stats').expect(200);
+    await request(app).post('/api/knowledge-os/import/repositories').send({ repositories: [{ owner: '', repo: '' }] }).expect(400);
+    await request(app).post('/api/knowledge-os/import/repositories').send({ repositories: [{ owner: 'owner', repo: 'repo', branch: 'main' }] }).expect(200);
+    await request(app).get('/api/knowledge-os/wiki/pages').expect(200);
+    await request(app).get('/api/knowledge-os/wiki/search').expect(400);
+    await request(app).get('/api/knowledge-os/wiki/search?q=one').expect(200);
+    await request(app).get('/api/knowledge-os/wiki/pages/one').expect(200);
+    await request(app).post('/api/knowledge-os/wiki/ingest').send({}).expect(200);
+    await request(app).get('/api/knowledge-os/memory/recall?q=one&includePending=true&limit=200').expect(200);
+    await request(app).get('/api/knowledge-os/memory/stats?userId=user').expect(200);
+    await request(app).post('/api/knowledge-os/memory/memory/approval').send({ status: 'rejected' }).expect(200);
+    await request(app).post('/api/knowledge-os/db/query').send({ sql: 'SELECT 1', params: ['x'] }).expect(200);
+    await request(app).get('/api/knowledge-os/db/schema').expect(200);
+    await request(app).get('/api/knowledge-os/governance/evidence?limit=2').expect(200);
+    await request(app).post('/api/knowledge-os/governance/golden-tasks').send({ tasks: [{ id: 't' }], answers: { t: 'ok' } }).expect(200);
+  });
 });
