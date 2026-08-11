@@ -16,7 +16,7 @@ This bundle records the implementation boundary for the polyglot coding upgrade.
 - `npm run type-check` — passed.
 - `npm run lint:server` and `npm run lint:client` — passed.
 - `npm run build` — passed.
-- `npm test -- --runInBand` — 147 suites passed, 449 tests passed, 2 skipped.
+- `npm test -- --runInBand` — 148 suites passed, 459 tests passed, 2 skipped.
 - `npm run test:security` — 10 tests passed.
 - `npm run test:e2e:services` — 5 tests passed.
 - `npm run check:phase2` — passed.
@@ -24,9 +24,9 @@ This bundle records the implementation boundary for the polyglot coding upgrade.
 
 ## Explicit limitations
 
-- The checked-in benchmark run used `provider: none` and `networkPolicy: disabled`; it performed preflight/inspection only. An authorized `--live-model` run is required to produce provider request/response, applied patch, and hidden-regression improvement evidence.
+- The live benchmark was attempted with `provider: openai` and `networkPolicy: explicit-live-model-only`; the endpoint returned `429 no credits remaining`, so no provider patch or hidden-regression execution evidence was produced. Preflight evidence remains recorded: 13 ready cases, 14 unsupported cases, and 12 passing checks.
 - The current machine reports 13 ready and 14 unsupported fixture toolchains. Unsupported tools are not counted as passes.
 - The current checked-in preflight has three hidden checks and zero hidden passes because no model patch was applied.
-- Parser support is a maintained TypeScript AST provider plus labeled fallback behavior; dedicated maintained AST adapters for every listed language are not claimed.
+- Parser support includes the TypeScript AST provider, maintained Tree-sitter grammars for the priority polyglot families, labeled resilient recovery, and explicit fallback behavior; dedicated maintained AST adapters for every listed language are not claimed.
 - `npm run release:check` still fails the repository’s existing server coverage threshold; the policy was not weakened. The failure is the uncovered-count threshold, while all collected suites pass.
 - Coding remains `LOCAL_ONLY_EXPERIMENTAL` in the production feature manifest; this implementation does not certify the feature for hosted production.

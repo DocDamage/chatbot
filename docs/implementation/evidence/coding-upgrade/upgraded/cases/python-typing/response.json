@@ -1,19 +1,16 @@
 {
   "mode": "upgraded",
   "status": "ready",
+  "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.",
   "executor": "repository-controller-inspection",
   "inspection": {
     "affectedFiles": [],
     "affectedSymbols": [],
     "selectedFiles": [
+      "pyproject.toml",
+      "src/cart.py",
       "tests/hidden/test_cart_regression.py",
-      "tests/test_cart.py",
-      ".pytest_cache/.gitignore",
-      ".pytest_cache/CACHEDIR.TAG",
-      ".pytest_cache/README.md",
-      ".pytest_cache/v/cache/lastfailed",
-      ".pytest_cache/v/cache/nodeids",
-      "pyproject.toml"
+      "tests/test_cart.py"
     ],
     "verificationStatus": "not_run",
     "reviewFindingCount": 0
@@ -26,8 +23,8 @@
       "buildTest": 1,
       "regression": 0,
       "minimality": 1,
-      "retrieval": 0.6666666666666666,
-      "fileSelection": 0.6666666666666666,
+      "retrieval": 1,
+      "fileSelection": 1,
       "symbolSelection": 1,
       "apiAccuracy": 1,
       "rootCauseAccuracy": 1,
@@ -36,7 +33,6 @@
       "verificationHonesty": 1
     },
     "failures": [
-      "expected_files_not_retrieved",
       "hidden_regression_failed",
       "required_verification_missing"
     ]

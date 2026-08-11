@@ -1,15 +1,17 @@
 {
   "mode": "upgraded",
   "status": "ready",
+  "reason": "Repository inspection failed: 429 You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.",
   "executor": "repository-controller-inspection",
   "inspection": {
     "affectedFiles": [],
     "affectedSymbols": [],
     "selectedFiles": [
       "package.json",
-      "packages/core/index.ts",
       "packages/core/package.json",
-      "pnpm-workspace.yaml"
+      "pnpm-workspace.yaml",
+      "test-runner.mjs",
+      "packages/core/index.ts"
     ],
     "verificationStatus": "not_run",
     "reviewFindingCount": 0

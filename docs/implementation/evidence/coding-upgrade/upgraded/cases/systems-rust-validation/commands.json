@@ -8,6 +8,6 @@
     "status": "passed",
     "exitCode": 0,
     "stdout": "\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
-    "stderr": "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running unittests src\\lib.rs (target\\debug\\deps\\systems_rust_validation-4027f18b6c11ad5d.exe)\n"
+    "stderr": "   Compiling systems-rust-validation v0.1.0 (I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-rust-validation)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s\n     Running unittests src\\lib.rs (target\\debug\\deps\\systems_rust_validation-4027f18b6c11ad5d.exe)\n"
   }
 ]

@@ -2,7 +2,7 @@
 
 - Task: repository-aware polyglot coding capability upgrade implementation.
 - Branch: `codex/polyglot-coding-upgrade`.
-- Implementation commit: `334215c217852a1e412ef81fe195f22e1f1bc3fb`.
+- Implementation commits: `cff12d6` and `9af1d6e`.
 - Evidence: `docs/implementation/evidence/coding-upgrade/`.
 - Runtime boundary: coding remains `LOCAL_ONLY_EXPERIMENTAL`; the production feature manifest and `P07-T05` production-completion task were not promoted.
 
@@ -12,11 +12,11 @@ Capability registry, repository intelligence, structured retrieval, adaptive con
 
 ## Verification
 
-`npm run type-check`, server/client lint, `npm run build`, full Jest (`147` suites and `449` tests passed; `2` skipped), security (`10` passed), e2e services (`5` passed), and `npm run check:phase2` passed. The focused isolated model executor and bounded repair tests passed.
+`npm run type-check`, server/client lint, `npm run build`, full Jest (`148` suites and `459` tests passed; `2` skipped), security (`10` passed), e2e services (`5` passed), and `npm run check:phase2` passed. The focused isolated model executor, provider-failure evidence preservation, parser, and bounded repair tests passed.
 
 ## Open release boundaries
 
-- Benchmark artifacts were generated with no provider call. Use the explicit `npm run eval:coding -- --upgraded --live-model` flow only with an authorized provider configuration to collect live model request/response and applied-patch evidence.
+- The explicit live benchmark reached the OpenAI endpoint but returned `429 no credits remaining`; no model patch was produced. The evidence bundle records `provider: openai`, 13 ready and 14 unsupported toolchains, 12 passing preflight checks, zero executor cases, and zero hidden-check passes.
 - Fourteen fixture toolchains are unavailable on this Windows environment and are reported as unsupported.
 - `npm run release:check` still fails the existing server uncovered-count threshold; the threshold was not reduced or bypassed.
 - Maintained AST adapters for every listed language and hosted-production certification remain out of scope for this handoff.
