@@ -1,0 +1,48 @@
+{
+  "mode": "upgraded",
+  "status": "ready",
+  "executor": "model-adapter",
+  "execution": {
+    "executor": "model-adapter",
+    "worktree": "isolated",
+    "filesChanged": [
+      "tests/buffer_test.c"
+    ],
+    "patchApplied": false,
+    "risks": [
+      "tests/buffer_test.c: File content no longer matches the edit precondition"
+    ]
+  },
+  "inspection": {
+    "affectedFiles": [],
+    "affectedSymbols": [],
+    "selectedFiles": [
+      "CMakeLists.txt",
+      "tests/buffer_test.c",
+      "src/buffer.c"
+    ],
+    "verificationStatus": "not_run",
+    "reviewFindingCount": 0
+  },
+  "score": {
+    "id": "systems-c-lifetime",
+    "passed": false,
+    "metrics": {
+      "correctness": 0,
+      "buildTest": 1,
+      "regression": 0,
+      "minimality": 1,
+      "retrieval": 1,
+      "fileSelection": 1,
+      "symbolSelection": 1,
+      "apiAccuracy": 1,
+      "rootCauseAccuracy": 1,
+      "security": 1,
+      "reviewQuality": 1,
+      "verificationHonesty": 1
+    },
+    "failures": [
+      "hidden_regression_failed"
+    ]
+  }
+}

@@ -96,4 +96,41 @@ describe('CodeWorkflowPanel', () => {
     await waitFor(() => expect(screen.getByText('q is required')).toBeTruthy());
     expect(screen.queryByText(/server-only-token/i)).toBeNull();
   });
+
+  it('shows a structured draft and requires the explicit apply control', async () => {
+    const user = userEvent.setup();
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        operations: [{ operation: 'create', path: 'src/new.ts', content: 'export {}\n', reason: 'requested change', authorized: true }],
+        filesChanged: ['src/new.ts'],
+        conflicts: [],
+        applied: false,
+      }),
+    } as Response);
+
+    render(<CodeWorkflowPanel mode="implement" />);
+    await user.type(screen.getByLabelText(/code prompt/i), 'create src/new.ts');
+    await user.click(screen.getByRole('button', { name: /draft safe patch/i }));
+
+    await waitFor(() => expect(screen.getByText(/draft structured patch/i)).toBeTruthy());
+    expect(screen.getByRole('button', { name: /apply approved patch/i })).toBeTruthy();
+    await user.click(screen.getByRole('button', { name: /apply approved patch/i }));
+    await waitFor(() => expect(fetch).toHaveBeenCalledWith('/api/code/patch/apply', expect.objectContaining({ method: 'POST' })));
+  });
+
+  it('exposes bounded repair only in debug mode', async () => {
+    const user = userEvent.setup();
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ operations: [{ operation: 'modify', path: 'src/app.ts', content: 'fixed', expectedContent: 'broken', reason: 'diagnostic repair', authorized: true }], filesChanged: ['src/app.ts'], conflicts: [] }),
+    } as Response);
+    const view = render(<CodeWorkflowPanel mode="implement" />);
+    await user.type(screen.getByLabelText(/code prompt/i), 'repair src/app.ts');
+    await user.click(screen.getByRole('button', { name: /draft safe patch/i }));
+    view.rerender(<CodeWorkflowPanel mode="debug" />);
+    await waitFor(() => expect(screen.getByRole('button', { name: /run bounded repair/i })).toBeTruthy());
+    await user.click(screen.getByRole('button', { name: /run bounded repair/i }));
+    await waitFor(() => expect(fetch).toHaveBeenCalledWith('/api/code/repair', expect.objectContaining({ method: 'POST' })));
+  });
 });

@@ -37,4 +37,24 @@ describe('EnhancedOrchestrator coding delegation', () => {
     expect(response.model).toBe('coding-agent');
     expect(response.response).toContain('coding answer');
   });
+
+  it('routes a configured coding provider into structured patch generation', async () => {
+    const adapter = new TemplateAdapter();
+    const codingAgent = {
+      handle: jest.fn().mockResolvedValue({
+        intent: 'write_feature', summary: 'provider-backed coding answer', filesInspected: [],
+        plan: { steps: [], requiredEvidence: [], intent: 'write_feature' },
+        patch: { diff: '', format: 'unified-diff', filesChanged: [], explanation: '' },
+        commandsRun: [], verification: { status: 'not_run', commandsRun: [], results: [], remainingRisks: [] },
+        review: { findings: [], summary: 'ok' }, risks: []
+      })
+    };
+    const response = await new EnhancedOrchestrator(adapter, undefined, {
+      useRAG: false, useSafetyPipeline: false, useSemanticCache: false,
+      useModelRouting: true, codingAgent: codingAgent as any, useToolCalling: true
+    }).processRequest({ message: 'implement this code change', sessionId: 's1' });
+
+    expect(codingAgent.handle).toHaveBeenCalledWith(expect.objectContaining({ generatePatch: true, modelAdapter: adapter }));
+    expect(response.model).toBe('coding-agent:template/template');
+  });
 });

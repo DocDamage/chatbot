@@ -177,10 +177,26 @@ export class EnhancedOrchestrator {
     const taskType = this.inferTaskType(request.message);
 
     if (taskType === TaskType.CODE_GENERATION && this.codingAgent) {
+      let codingModel = 'coding-agent';
+      let codingAdapter: LLMAdapter | undefined;
+      if (this.modelRouter && !this.ensembleAdapter) {
+        try {
+          const routed = await this.modelRouter.route(taskType, { prompt: request.message }, contract.max_cost_per_request);
+          const selection = routed.selection;
+          codingAdapter = routed.adapter;
+          codingModel = `coding-agent:${selection.provider}/${selection.model}`;
+          logger.info('Coding model capability selected', { model: codingModel, confidence: selection.confidence, reasoning: selection.reasoning });
+        } catch (error: any) {
+          logger.warn('Coding model routing failed; continuing without model-generated patch', { error: error.message });
+        }
+      }
       const codingResult = await this.codingAgent.handle({
         message: request.message,
         runVerification: false,
-        context: buildChatContextBundle(request)
+        context: buildChatContextBundle(request),
+        modelAdapter: codingAdapter,
+        model: codingModel === 'coding-agent' ? undefined : codingModel.split('/').pop(),
+        generatePatch: Boolean(codingAdapter)
       });
       const artifactId = uuidv4();
       const response = this.formatCodingResponse(codingResult);
@@ -189,7 +205,7 @@ export class EnhancedOrchestrator {
         artifactId,
         contractVersion: contract.version,
         latency: Date.now() - startTime,
-        model: 'coding-agent',
+        model: codingModel,
         warnings: codingResult.risks
       };
     }
@@ -478,12 +494,16 @@ export class EnhancedOrchestrator {
       `Files inspected\n${result.filesInspected.length ? result.filesInspected.map(file => `- ${file}`).join('\n') : '- none'}`,
       `Plan\n${result.plan.steps.map(step => `- ${step}`).join('\n')}`,
       `Patch\n${result.patch.diff || '(no patch generated)'}`,
-      `Verification\n${result.verification.status}${result.commandsRun.length ? `: ${result.commandsRun.join(', ')}` : ''}`
+      `Patch status\n${result.structuredPatch ? `${result.structuredPatch.filesChanged.length} structured file(s) proposed; explicit approval is required before apply.` : 'No structured patch was produced.'}`,
+      `Verification\n${result.verification.status}${result.commandsRun.length ? `: ${result.commandsRun.join(', ')}` : ''}`,
+      `Verification scope\n${result.plan.steps.length ? result.plan.steps.map(step => `- ${step}`).join('\n') : '- project-native checks required'}`
     ];
 
     if (result.review.findings.length > 0) {
       sections.push(`Review findings\n${result.review.findings.map(finding => `- ${finding.severity}: ${finding.issue}`).join('\n')}`);
     }
+
+    if (result.risks.length > 0) sections.push(`Unverified risks\n${result.risks.map(risk => `- ${risk}`).join('\n')}`);
 
     return sections.join('\n\n');
   }

@@ -322,5 +322,5 @@ curl -X POST http://localhost:3001/api/knowledge/specialized-topics \
 - **Hip Hop History**: Complete history from origins to present
 - **Connecticut History**: Detailed Connecticut historical information
 
-All sources are production-ready and integrated! 🚀
+These sources are documented or partially integrated options; they are not a blanket production-readiness claim.
 

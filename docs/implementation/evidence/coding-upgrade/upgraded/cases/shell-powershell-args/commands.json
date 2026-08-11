@@ -1,0 +1,14 @@
+[
+  {
+    "command": "powershell test",
+    "argv": [
+      "-NoProfile",
+      "-File",
+      "test-runner.ps1"
+    ],
+    "status": "passed",
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

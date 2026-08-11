@@ -1,0 +1,6 @@
+{
+  "mode": "upgraded",
+  "status": "unsupported",
+  "reason": "Toolchain unavailable: fsharpc",
+  "executor": "toolchain-preflight-only"
+}

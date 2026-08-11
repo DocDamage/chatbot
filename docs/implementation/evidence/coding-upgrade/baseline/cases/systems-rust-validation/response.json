@@ -1,0 +1,28 @@
+{
+  "mode": "baseline",
+  "status": "ready",
+  "executor": "toolchain-preflight-only",
+  "score": {
+    "id": "systems-rust-validation",
+    "passed": false,
+    "metrics": {
+      "correctness": 0,
+      "buildTest": 1,
+      "regression": 0,
+      "minimality": 1,
+      "retrieval": 0,
+      "fileSelection": 0,
+      "symbolSelection": 1,
+      "apiAccuracy": 1,
+      "rootCauseAccuracy": 1,
+      "security": 1,
+      "reviewQuality": 1,
+      "verificationHonesty": 1
+    },
+    "failures": [
+      "expected_files_not_retrieved",
+      "hidden_regression_failed",
+      "required_verification_missing"
+    ]
+  }
+}

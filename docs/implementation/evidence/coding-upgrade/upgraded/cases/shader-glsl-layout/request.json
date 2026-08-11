@@ -1,0 +1,12 @@
+{
+  "id": "shader-glsl-layout",
+  "prompt": "Correct the GLSL uniform layout without changing the descriptor binding.",
+  "expectedFiles": [
+    "shader.frag",
+    "shader.test.json"
+  ],
+  "hiddenChecks": [
+    "glsl-layout-regression"
+  ],
+  "hiddenTests": []
+}

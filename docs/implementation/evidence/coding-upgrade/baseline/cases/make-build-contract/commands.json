@@ -1,0 +1,12 @@
+[
+  {
+    "command": "make test",
+    "argv": [
+      "test"
+    ],
+    "status": "failed",
+    "exitCode": 2,
+    "stdout": "mkdir -p build\r\ncc -Wall -Wextra src/main.c -o build/main\r\n",
+    "stderr": "process_begin: CreateProcess(NULL, cc -Wall -Wextra src/main.c -o build/main, ...) failed.\r\nmake (e=2): The system cannot find the file specified.\r\nmake: *** [Makefile:5: build/main] Error 2\r\n"
+  }
+]

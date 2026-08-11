@@ -9,9 +9,9 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 
 ## Counts
 
-- Reachable production files: 574
-- Unreachable production files: 170
-- Unresolved relative imports: 32
+- Reachable production files: 600
+- Unreachable production files: 180
+- Unresolved relative imports: 33
 
 ## Unreachable production modules
 
@@ -99,6 +99,14 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/automation/AutoDrive.ts`
 - `src/core/browser/BrowserAgent.ts`
 - `src/core/chrono/ClaimVerifier.ts`
+- `src/core/coding/CodingController.ts`
+- `src/core/coding/CodingRequestRouter.ts`
+- `src/core/coding/index.ts`
+- `src/core/coding/knowledge/CodingKnowledgeAuthority.ts`
+- `src/core/coding/knowledge/ProvenancePolicy.ts`
+- `src/core/coding/model/CodingModelRouter.ts`
+- `src/core/coding/retrieval/DocumentationRetriever.ts`
+- `src/core/coding/testing/TestStrategy.ts`
 - `src/core/config/APIKeyManager.ts`
 - `src/core/config/ProfileManager.ts`
 - `src/core/contracts/UniversalContract.ts`
@@ -107,6 +115,8 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/creative/PromptPackLibrary.ts`
 - `src/core/creative/RoleplaySessionEngine.ts`
 - `src/core/creative/StoryBibleStore.ts`
+- `src/core/evaluation/CodingBenchmarkRunner.ts`
+- `src/core/evaluation/CodingEvalHarness.ts`
 - `src/core/evaluation/EvalHarness.ts`
 - `src/core/index.ts`
 - `src/core/knowledge/SmartKnowledgeSource.ts`

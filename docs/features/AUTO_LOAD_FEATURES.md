@@ -193,7 +193,7 @@ GET /api/models/free
 - **Automatic discovery** - Finds and uses available services
 - **Graceful degradation** - Works with whatever is available
 - **Comprehensive logging** - See exactly what loaded
-- **Production ready** - All features initialized properly
+- **Initialization implemented** - Runtime readiness still depends on the feature manifest, provider availability, and release gates.
 
 ## 📝 Notes
 

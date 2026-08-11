@@ -1,0 +1,12 @@
+{
+  "id": "shell-safe-args",
+  "prompt": "Pass a user-provided filename as one argument and preserve shell metacharacters literally.",
+  "expectedFiles": [
+    "backup.sh",
+    "backup.bats"
+  ],
+  "hiddenChecks": [
+    "shell-injection-regression"
+  ],
+  "hiddenTests": []
+}

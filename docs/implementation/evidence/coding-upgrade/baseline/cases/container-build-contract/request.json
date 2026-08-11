@@ -1,0 +1,13 @@
+{
+  "id": "container-build-contract",
+  "prompt": "Keep the runtime image minimal while preserving the non-root entrypoint contract.",
+  "expectedFiles": [
+    "Dockerfile",
+    "app.sh",
+    "test-contract.json"
+  ],
+  "hiddenChecks": [
+    "non-root-regression"
+  ],
+  "hiddenTests": []
+}

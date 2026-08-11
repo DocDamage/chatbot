@@ -1,206 +1,138 @@
 # AI Chatbot Hub
 
-AI Chatbot Hub is a broad TypeScript/React chatbot application with provider abstraction, specialist modes, memory, RAG, local-development tools, creative workflows, and operational endpoints.
+AI Chatbot Hub is a TypeScript/React chatbot workspace with provider adapters, specialist modes, memory, RAG, creative workflows, local development tools, and a repository-aware coding workflow.
 
-> **Release classification:** This repository is under a formal production-completion program. It is not currently certified as production-ready. At the `P00-T02` classification baseline, commit `027eacd948cadb0f8b749385c51acd13a287051c` dated `2026-08-04`, the manifest contained 136 records: 0 `PRODUCTION_SUPPORTED`, 105 `PRODUCTION_PREVIEW`, 24 `LOCAL_ONLY_EXPERIMENTAL`, and 7 `DISABLED_OR_REMOVED`.
+## Current status
 
-## Authoritative release status
+The implementation is active and suitable for local development, evaluation, and trusted internal use. It is not yet certified for public production or commercial launch.
 
-Use these files for current release decisions:
+- Canonical branch: `main`.
+- Latest implementation line: polyglot repository-aware coding, structural retrieval, safe structured edits, verification, bounded repair, and review.
+- Coding and desktop/local filesystem capabilities remain `LOCAL_ONLY_EXPERIMENTAL`.
+- Full automated Jest suite: 149 suites passed, 463 tests passed, 2 skipped.
+- Build and Phase 2 release checks pass.
+- The full release gate remains open because of existing uncovered-count thresholds, incomplete hosted certification, unsupported native toolchains on the Windows runner, and provider quota limits.
 
-- [Master Production Completion Tracker](docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md) — authoritative task status.
-- [Production Feature Manifest](docs/implementation/PRODUCTION_FEATURE_MANIFEST.md) — authoritative feature boundary and support category.
-- [Release Evidence Index](docs/implementation/RELEASE_EVIDENCE_INDEX.md) — commit-bound evidence for verified tasks.
+For release decisions, use the [current project status](docs/PROJECT_STATUS.md), [production feature manifest](docs/implementation/PRODUCTION_FEATURE_MANIFEST.md), [master completion tracker](docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md), and [release evidence index](docs/implementation/RELEASE_EVIDENCE_INDEX.md). Historical documents are retained for audit context and do not override those sources.
 
-The older May 2026 status, audit, and feature-tracker documents are historical snapshots. Their former `Fixed` or `Verified` labels describe implementation or checks performed at the time; they do not certify current manual QA, deployment verification, security review, backup/restore, accessibility, provider canaries, or production support.
+## Capabilities
 
-### Verification vocabulary
+- Conversation-first chat with Ask, Plan, Build, Debug, and Explain modes.
+- OpenAI-compatible, Anthropic, Gemini, DeepSeek, Ollama, and other provider adapters.
+- Specialist workflows for creative writing, gaming, GIS, research, Knowledge OS, engineering, health, and more.
+- Memory, RAG, provenance, source-grounded research, document review, and local knowledge workspaces.
+- Local-only file, audio, project-intelligence, mock API, website workspace, Sprite Lab, and desktop-companion features.
+- Repository-aware coding with polyglot capability detection, manifests, instructions, symbol/relationship indexing, structural retrieval, adaptive context allocation, preconditioned multi-file patches, diagnostics, verification, repair, and review.
 
-- **Implemented:** code or documentation exists; no verification is implied.
-- **Automated-verified:** named automated checks passed against a stated commit and date.
-- **Manual-verified:** a documented human runtime workflow passed against a stated commit, environment, and date.
-- **Deployment-verified:** the intended deployed environment passed smoke, dependency, persistence, security, and operational checks against a stated commit and date.
-- **Production-supported:** all applicable release gates are verified and recorded in the manifest and evidence index.
-- **Production preview:** implemented or reachable, but one or more release gates remain unverified.
-- **Local-only experimental:** intended only for a trusted local machine and not approved for hosted exposure.
-- **Disabled or removed:** not reachable in the supported product surface.
-
-## Feature overview
-
-The repository contains or explores:
-
-- Ollama and remote LLM provider adapters.
-- Specialist chat modes and routing.
-- Conversation, memory, RAG, provenance, and validation services.
-- Creative writing, gaming, GIS, SEC, Knowledge OS, and other specialist workflows.
-- File, audio, coding, local-tool, Sprite Lab, project-intelligence, document-review, mock-API, website-workspace, and desktop-companion features.
-- Health, metrics, administration, export, webhook, and deployment support.
-
-Presence in the repository does not establish production support. Consult the feature manifest before relying on a capability.
-
-## Architecture
-
-```text
-Client → Gateway → Router/Orchestrator → Contract Gate
-       → State Snapshot → Memory/RAG → Specialist Agent
-       → Validators → Persistence/Provenance → Response
-```
-
-## Getting started for development evaluation
+## Local development
 
 ### Prerequisites
 
-- Node.js 20 LTS or newer.
+- Node.js 20 or newer.
 - npm.
-- Ollama for local text generation, or a configured supported remote provider.
-- Optional native tools only for the local features that require them.
+- Ollama for local models, or credentials for a supported remote provider.
+- Optional native tools only for the local features that need them.
 
 ### Install
 
 ```bash
 npm ci
 npm --prefix client ci
+cp .env.example .env
 ```
 
-Copy the canonical [`.env.example`](.env.example) to `.env` and supply development-safe values. Follow [Setup Prerequisites](docs/guides/SETUP_PREREQUISITES.md) for OS-specific and optional native dependencies. Do not reuse production secrets.
+On PowerShell, use `Copy-Item .env.example .env` instead of `cp`.
 
-Typical local settings include:
+Configure only the providers and integrations you intend to use. Never commit `.env`, API keys, or files from the `API Keys` directory.
 
-```env
-PORT=3001
-NODE_ENV=development
-JWT_SECRET=replace-with-at-least-32-random-characters
-CORS_ORIGIN=http://localhost:3000
-USE_OLLAMA=true
-OLLAMA_URL=http://localhost:11434
-OLLAMA_MODEL=llama2
-LOG_LEVEL=info
-```
-
-### Development mode
+### Run the development app
 
 ```bash
 npm run dev
 ```
 
-- Client: `http://localhost:3000`
-- API: `http://localhost:3001`
+- Client: <http://localhost:3000>
+- API: <http://localhost:3001>
 
-### Client layout
-
-The default client opens to a focused, conversation-first chat view with a small set of practical modes: Ask, Plan, Build, Debug, and Explain. Provider configuration and advanced tools are intentionally kept behind the gear-shaped **Settings** menu. Use **Open advanced workspace** there when you need specialist modes, file/audio context, research, local tools, GIS, DAW controls, or Sprite Lab.
-
-### Built local evaluation
+### Run the built local app
 
 ```bash
 npm run build
 npm start
 ```
 
-Then open `http://localhost:3001`. This proves only that the documented local build/start path works when it is actually run successfully. It does not by itself prove production deployment readiness.
+Open <http://localhost:3001>. A successful local build is not production certification.
+
+## Coding workflow
+
+The coding workflow is intended for a trusted local workspace. It can:
+
+1. Inspect repository instructions, manifests, build systems, symbols, relationships, diagnostics, and tests.
+2. Allocate evidence to the selected model according to task intent and context budget.
+3. Produce an unauthorized structured patch for review.
+4. Apply changes only through explicit authorization and file preconditions.
+5. Run supported verification commands, report unavailable toolchains honestly, and perform bounded repair/review flows.
+
+Credential paths are excluded from repository discovery, reads, and edits. The coding workflow does not provide a hosted sandbox or certify arbitrary code execution.
+
+## Provider configuration
+
+Provider secrets belong in local environment configuration, not in source or documentation. Common variables include:
+
+```env
+OPENAI_API_KEY=
+OPENAI_MODEL=
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-3.6-flash
+DEEPSEEK_API_KEY=
+DEEPSEEK_MODEL=deepseek-chat
+OLLAMA_URL=http://localhost:11434
+OLLAMA_MODEL=llama2
+```
+
+The explicitly authorized coding benchmark supports `openai`, `gemini`, and `deepseek` through `CODING_EVAL_PROVIDER` and `CODING_EVAL_MODEL`. Benchmark network access is disabled unless `--live-model` is explicitly supplied.
+
+## Verification commands
+
+```bash
+npm run type-check:server
+npm run type-check:tests
+npm run lint:server
+npm test -- --runInBand
+npm run build
+npm run test:security
+npm run test:e2e:services
+npm run check:phase2
+npm run release:check
+```
+
+`release:check` is the final release gate. Do not lower or bypass its thresholds to claim readiness.
 
 ## Deployment boundaries
 
-See [docs/DEPLOYMENT_MODES.md](docs/DEPLOYMENT_MODES.md).
+See [Deployment Modes](docs/DEPLOYMENT_MODES.md).
 
-- A local development or built-local run is not a production deployment.
-- GitHub Pages or another static host is only a static demo unless it is deliberately connected to a separately deployed API.
-- Local filesystem, local command, Sprite Lab, FL Studio, and similar desktop integrations must remain local-only unless a later verified task changes their classification.
-- Production architecture, database, Redis, secrets, TLS, backups, monitoring, rollback, and provider support remain subject to later tasks and ADRs.
+- Local development and built-local runs are not production deployments.
+- GitHub Pages is a static demo unless connected to a separately deployed API.
+- Local filesystem, command execution, Sprite Lab, FL Studio, desktop capture, and similar integrations must remain local-only until separately certified.
+- A market release still requires hosted architecture, authentication and tenancy review, secrets management, TLS, backups, monitoring, rollback, abuse controls, provider canaries, cross-platform QA, and release-candidate sign-off.
 
-## Current API examples
+## Documentation map
 
-### `POST /api/chat`
-
-```json
-{
-  "message": "Hello",
-  "sessionId": "unique-session-id",
-  "userId": "optional-user-id"
-}
-```
-
-The exact response shape and authorization policy must be taken from the current implementation and API documentation. Example payloads are not release certification.
-
-### Knowledge expansion and deep research
-
-When local confidence is too low, the chatbot can ask permission to search the internet. The approved research flow searches the selected category plus related categories, reviews up to twelve accepted sources, fetches readable page evidence when available, and produces a cited synthesis. The UI shows a final review containing the synthesis, sources, and cross-category searches before **Save to Knowledge Base** becomes available.
-
-Saved research is persisted through the normal `DocumentManager`/RAG path with source URLs, retrieval time, approval identity, primary and related category tags, cross-reference metadata, content hashes, and rollback information. Full webpages are not copied blindly; the stored research artifact is a synthesized, source-grounded document plus bounded evidence excerpts.
-
-The research endpoint is `POST /api/knowledge-online/research` with `{ "query": "...", "domain": "gaming" }`. Saving still requires the existing explicit approval endpoint.
-
-### Built-server browser verification
-
-The release E2E gate runs the compiled server and compiled client together in Playwright. It covers authenticated chat, settings, mode switching, streaming, persisted history, file/audio context, Knowledge Online approval, local-tool/Sprite Lab workflows, degraded-provider behavior, and a mobile chat smoke path.
-
-Run the isolated browser suite locally with:
-
-```bash
-npm run test:browser
-```
-
-This creates deterministic fixtures and stores its SQLite database under `data/browser-e2e-output`; it does not reset the normal local `data/chatbot.db`. The previous Jest service scenarios remain available as `npm run test:e2e:services`, while `npm run test:e2e` runs both layers.
-
-### Advanced local workspaces
-
-The default chat surface stays intentionally small. Open **Settings → Open advanced workspace** for the local-only capability workspaces:
-
-- Project intelligence combines the existing `mex`/knowledge graph direction with DevLens-style file complexity, symbol counts, git churn, risk hotspots, duplicate candidates, and recommendations.
-- Project memory uses a Remembrandt-compatible `.remembrandt/entries` layout and generated `MEMORY.md`. It is ignored by Git by default because it is local project state.
-- Document workspace provides Monoleaf/Lexicon-inspired Markdown drafting, structural review, deterministic writing transforms, and a required final review token before the draft is saved into the normal RAG knowledge base.
-- Curated utilities provide a small, safe subset of Norito Dev Toolbox functionality: JSON, regex, Markdown inspection, and encoding helpers.
-- Mock API sandbox imports JSON or CSV fixtures into `data/mock-api` and exposes local collection previews for Build/Debug work.
-- Website workspace uses OpenForge-inspired JSON blocks, a sandboxed preview, and a local HTML export path. It intentionally does not embed an arbitrary script-running website builder.
-- Desktop companion exposes an explicit-consent boundary for SpeakoFlow-style voice/screen context. Browser screen capture is never automatic; an optional native companion must be connected for OS-level capture and paste.
-
-These workspaces are developer-authenticated and classified `LOCAL_ONLY_EXPERIMENTAL`. Their generated state is local and is not suitable for hosted exposure without a separate security, tenancy, persistence, and operational review.
-
-### Health endpoints
-
-The repository includes health endpoints such as `/health`, `/health/live`, and `/health/ready`. Their operational meaning must be verified in the intended deployment before production use.
-
-## Security note
-
-Privileged and local-only routes must not be exposed based solely on README examples. Authentication, authorization, CSRF, CORS, path safety, upload policy, outbound-request policy, local execution, secret handling, and audit controls remain subject to the production-completion tracker.
-
-## Project structure
-
-```text
-.
-├── src/                         # Server, core services, providers, policies, types
-├── client/                      # React/Vite client
-├── config/                      # Production boundary and release configuration
-├── scripts/release/             # Reproducible inventories and Phase 2 policy checks
-├── docs/architecture/generated/ # Generated repository and reachability evidence
-├── docs/implementation/         # Authoritative production-completion governance
-├── docs/                        # Product, setup, and historical documentation
-└── package.json                 # Root scripts and dependencies
-```
+- [Project status and next release work](docs/PROJECT_STATUS.md)
+- [Quickstart](docs/guides/QUICKSTART.md)
+- [Setup guide](docs/guides/SETUP_GUIDE.md)
+- [Setup prerequisites](docs/guides/SETUP_PREREQUISITES.md)
+- [Deployment modes](docs/DEPLOYMENT_MODES.md)
+- [Production feature manifest](docs/implementation/PRODUCTION_FEATURE_MANIFEST.md)
+- [Master production tracker](docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md)
+- [Polyglot coding plan](docs/implementation/POLYGLOT_CODING_CAPABILITY_UPGRADE_PLAN.md)
+- [Coding benchmark evidence](docs/implementation/evidence/coding-upgrade/)
+- [Architecture](docs/architecture/ARCHITECTURE.md)
 
 ## Contributing
 
-Do not describe a merged feature as production-supported unless the feature manifest and evidence index show that status against an exact commit. New production-completion work must follow the one-task, one-thread handoff process in `docs/implementation/handoffs/CURRENT_HANDOFF.md`.
-
-## Optional local integrations
-
-- [PyScrappy](https://github.com/DocDamage/PyScrappy): guarded MCP research through `/api/research` when explicitly enabled.
-- [mex](https://github.com/DocDamage/mex): development-time code graph and drift checks; not required at runtime.
-- [book-to-skill](https://github.com/DocDamage/book-to-skill): source-preserving documentation export via `npm run export:skill`.
-- [E.V. assistant](https://github.com/DocDamage/ev-assistant): related local voice-assistant reference; this repository's Electron companion reuses `/api/chat` and does not execute arbitrary desktop commands.
-- [devlens-agent](https://github.com/DocDamage/devlens-agent): source of the project-intelligence metrics and recommendation direction.
-- [Monoleaf](https://github.com/DocDamage/Monoleaf): source of the Markdown-first review/workspace direction.
-- [norito-devtoolbox](https://github.com/DocDamage/norito-devtoolbox): source of the curated utility selection; the full toolbox is not embedded.
-- [capsule](https://github.com/DocDamage/capsule): source of the local mock-API fixture workflow.
-- [OpenForge No-code website builder](https://github.com/DocDamage/OpenForge_No-code-website-builder): source of the block-based local website workspace direction.
-- [remembrandt](https://github.com/DocDamage/remembrandt): source of the file-based project-memory layout.
-- [basemind](https://github.com/DocDamage/basemind): architectural reference for combining code maps, docs, search, git context, and memory; its full MCP server is not embedded.
-- [SpeakoFlow](https://github.com/DocDamage/SpeakoFlow): source of the optional desktop voice/screen-companion boundary.
-- [Lexicon](https://github.com/DocDamage/Lexicon): source of the local writing-assistance and document-review direction.
-
-UNICODER was reviewed and intentionally excluded from the chatbot scope.
-
-See [docs/integrations/research-and-companion.md](docs/integrations/research-and-companion.md) for setup, boundaries, and verification evidence.
+Keep user-facing documentation aligned with the feature manifest and release evidence. Do not describe an implementation as production-supported unless the relevant feature record and exact-commit evidence say so. Run the applicable type-check, lint, test, build, security, and release checks before publishing changes.
 
 ## License
 

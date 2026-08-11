@@ -1,0 +1,13 @@
+[
+  {
+    "command": "dotnet run",
+    "argv": [
+      "run",
+      "--no-restore"
+    ],
+    "status": "failed",
+    "exitCode": 1,
+    "stdout": "C:\\Program Files\\dotnet\\sdk\\10.0.302\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets(266,5): error NETSDK1004: Assets file 'I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\managed-dotnet-nullability\\obj\\project.assets.json' not found. Run a NuGet package restore to generate this file. [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\managed-dotnet-nullability\\managed-dotnet-nullability.csproj]\r\n",
+    "stderr": "\r\nThe build failed. Fix the build errors and run again.\r\n"
+  }
+]

@@ -1,0 +1,49 @@
+{
+  "mode": "upgraded",
+  "status": "ready",
+  "executor": "model-adapter",
+  "execution": {
+    "executor": "model-adapter",
+    "worktree": "isolated",
+    "filesChanged": [
+      "src/routes/+page.svelte"
+    ],
+    "patchApplied": false,
+    "risks": [
+      "src/routes/+page.svelte: File already exists"
+    ]
+  },
+  "inspection": {
+    "affectedFiles": [],
+    "affectedSymbols": [],
+    "selectedFiles": [
+      "package.json",
+      "hidden-check.mjs",
+      "src/routes/+page.test.ts",
+      "test-runner.mjs"
+    ],
+    "verificationStatus": "not_run",
+    "reviewFindingCount": 0
+  },
+  "score": {
+    "id": "web-svelte-boundary",
+    "passed": false,
+    "metrics": {
+      "correctness": 0,
+      "buildTest": 1,
+      "regression": 0,
+      "minimality": 1,
+      "retrieval": 1,
+      "fileSelection": 1,
+      "symbolSelection": 1,
+      "apiAccuracy": 1,
+      "rootCauseAccuracy": 1,
+      "security": 1,
+      "reviewQuality": 1,
+      "verificationHonesty": 1
+    },
+    "failures": [
+      "hidden_regression_failed"
+    ]
+  }
+}

@@ -77,7 +77,7 @@ export const LLM_PROVIDERS: LLMProviderInfo[] = [
         signupUrl: 'https://aistudio.google.com',
         apiKeyUrl: 'https://aistudio.google.com/app/apikey',
         docsUrl: 'https://ai.google.dev/docs',
-        freeModels: ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash-exp'],
+        freeModels: ['gemini-3.6-flash', 'gemini-3.5-flash-lite'],
         freeTier: 'FREE tier: 15 requests/min, 1500 requests/day',
         logoEmoji: '✨',
         priority: 8,

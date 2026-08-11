@@ -6,14 +6,14 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 972 |
-| Production source files | 744 |
-| Reachable production files | 574 |
-| Unreachable production files | 170 |
-| Discovered route calls | 349 |
-| Environment variables | 187 |
-| Feature flags | 17 |
-| Files above 300 lines | 65 |
+| Source files | 1037 |
+| Production source files | 780 |
+| Reachable production files | 600 |
+| Unreachable production files | 180 |
+| Discovered route calls | 355 |
+| Environment variables | 193 |
+| Feature flags | 18 |
+| Files above 300 lines | 66 |
 
 ## Server route calls
 
@@ -111,13 +111,19 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/business/market` | `src/server/routes/business.ts:19` |
 | POST | `/api/business/unit-economics` | `src/server/routes/business.ts:23` |
 | POST | `/api/chrono/ask` | `src/server/routes/chrono.ts:6` |
-| POST | `/api/code/ask` | `src/server/routes/code.ts:22` |
-| POST | `/api/code/plan` | `src/server/routes/code.ts:30` |
-| POST | `/api/code/patch` | `src/server/routes/code.ts:45` |
-| POST | `/api/code/review` | `src/server/routes/code.ts:61` |
-| POST | `/api/code/verify` | `src/server/routes/code.ts:69` |
-| GET | `/api/code/files/search` | `src/server/routes/code.ts:82` |
-| GET | `/api/code/symbols` | `src/server/routes/code.ts:90` |
+| POST | `/api/code/ask` | `src/server/routes/code.ts:31` |
+| POST | `/api/code/plan` | `src/server/routes/code.ts:46` |
+| POST | `/api/code/patch` | `src/server/routes/code.ts:61` |
+| POST | `/api/code/review` | `src/server/routes/code.ts:77` |
+| POST | `/api/code/verify` | `src/server/routes/code.ts:85` |
+| GET | `/api/code/repository` | `src/server/routes/code.ts:98` |
+| POST | `/api/code/retrieve` | `src/server/routes/code.ts:103` |
+| POST | `/api/code/patch/structured` | `src/server/routes/code.ts:116` |
+| POST | `/api/code/patch/apply` | `src/server/routes/code.ts:130` |
+| POST | `/api/code/verify/native` | `src/server/routes/code.ts:149` |
+| POST | `/api/code/repair` | `src/server/routes/code.ts:160` |
+| GET | `/api/code/files/search` | `src/server/routes/code.ts:179` |
+| GET | `/api/code/symbols` | `src/server/routes/code.ts:187` |
 | POST | `/api/creative/draft-scene` | `src/server/routes/creative.ts:28` |
 | POST | `/api/creative/continue-scene` | `src/server/routes/creative.ts:33` |
 | POST | `/api/creative/revise` | `src/server/routes/creative.ts:38` |
@@ -419,7 +425,12 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `CEREBRAS_API_KEY`
 - `CEREBRAS_MODEL`
 - `CLAUDE_MODEL`
+- `CODE_EXECUTOR_SANDBOX`
 - `CODE_EXECUTOR_TIMEOUT`
+- `CODING_EVAL_MODEL`
+- `CODING_EVAL_PROVIDER`
+- `CODING_MODEL_CONTEXT_TOKENS`
+- `CODING_MODEL_MAX_OUTPUT_TOKENS`
 - `COHERE_API_KEY`
 - `COHERE_MODEL`
 - `COMICVINE_API_KEY`
@@ -439,6 +450,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `EMBEDDING_USE_TRANSFORMERS`
 - `ENABLE_AGENT_PATCH_APPLY`
 - `ENABLE_BASH_EXECUTOR`
+- `ENABLE_CODE_EXECUTOR`
 - `ENABLE_DISK_CACHE`
 - `ENABLE_ENSEMBLE`
 - `ENABLE_FILE_LOGGING`
@@ -584,6 +596,9 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 ## External binaries
 
+- `git` — `scripts/run-coding-evals.ts`
+- `kill` — `src/core/coding/verification/CommandCapabilityRunner.ts`
+- `taskkill.exe` — `src/core/coding/verification/CommandCapabilityRunner.ts`
 - `git` — `src/core/project/ProjectIntelligenceService.ts`
 - `git` — `src/core/tools/RepoTools.ts`
 
@@ -602,6 +617,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `scripts/import-books.ts` | 317 |
 | `scripts/import-wikipedia-general-corpus.ts` | 337 |
 | `src/core/agents/AgentTeam.ts` | 547 |
+| `src/core/agents/CodingAgent.ts` | 426 |
 | `src/core/agents/MultiAgentOrchestrator.ts` | 1269 |
 | `src/core/agents/ReasoningController.ts` | 368 |
 | `src/core/analytics/AnalyticsService.ts` | 448 |
@@ -616,7 +632,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/database/ExpansionMigrations.ts` | 383 |
 | `src/core/gis/GISService.ts` | 581 |
 | `src/core/graph/KnowledgeGraphIndexer.ts` | 319 |
-| `src/core/initialization/ServiceInitializer.ts` | 848 |
+| `src/core/initialization/ServiceInitializer.ts` | 852 |
 | `src/core/knowledge/GitHubSource.ts` | 323 |
 | `src/core/knowledge/LocalKnowledgeAnswerer.ts` | 598 |
 | `src/core/knowledge/OnlineKnowledgeIngestionService.ts` | 554 |
@@ -628,7 +644,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/multimodal/ImageProcessor.ts` | 607 |
 | `src/core/multimodal/VideoProcessor.ts` | 591 |
 | `src/core/notifications/TwilioAdapter.ts` | 360 |
-| `src/core/orchestrator/EnhancedOrchestrator.ts` | 564 |
+| `src/core/orchestrator/EnhancedOrchestrator.ts` | 584 |
 | `src/core/orchestrator/Orchestrator.ts` | 375 |
 | `src/core/personalization/UserProfiler.ts` | 493 |
 | `src/core/providers/DeviceAdapter.ts` | 353 |
@@ -654,5 +670,5 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/voice/VoiceAgent.ts` | 437 |
 | `src/server/index.ts` | 1169 |
 | `src/server/routes/admin.ts` | 317 |
-| `src/server/routes/legacy-chat.ts` | 348 |
+| `src/server/routes/legacy-chat.ts` | 356 |
 | `src/server/routes/setup.ts` | 437 |

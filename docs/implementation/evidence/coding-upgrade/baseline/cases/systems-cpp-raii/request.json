@@ -1,0 +1,13 @@
+{
+  "id": "systems-cpp-raii",
+  "prompt": "Preserve RAII ownership while fixing the move-only resource wrapper.",
+  "expectedFiles": [
+    "src/resource.cpp",
+    "tests/resource_test.cpp",
+    "CMakeLists.txt"
+  ],
+  "hiddenChecks": [
+    "raii-lifetime-regression"
+  ],
+  "hiddenTests": []
+}

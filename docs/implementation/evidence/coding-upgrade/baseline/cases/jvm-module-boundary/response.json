@@ -1,0 +1,6 @@
+{
+  "mode": "baseline",
+  "status": "unsupported",
+  "reason": "Toolchain unavailable: gradle",
+  "executor": "toolchain-preflight-only"
+}

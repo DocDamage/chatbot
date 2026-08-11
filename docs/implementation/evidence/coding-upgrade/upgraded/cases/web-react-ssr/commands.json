@@ -1,0 +1,13 @@
+[
+  {
+    "command": "npm test",
+    "argv": [
+      "C:\\Users\\dferr\\AppData\\Roaming\\npm\\node_modules\\npm\\bin\\npm-cli.js",
+      "test"
+    ],
+    "status": "passed",
+    "exitCode": 0,
+    "stdout": "\n> test\n> node test-runner.mjs\n\nReact SSR/accessibility fixture checks passed.\n",
+    "stderr": ""
+  }
+]

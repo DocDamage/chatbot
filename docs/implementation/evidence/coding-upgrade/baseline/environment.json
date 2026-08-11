@@ -1,0 +1,10 @@
+{
+  "generatedAt": "2026-08-11T04:57:47.908Z",
+  "implementationSha": "334215c217852a1e412ef81fe195f22e1f1bc3fb",
+  "node": "v24.14.1",
+  "platform": "win32",
+  "architecture": "x64",
+  "provider": "none",
+  "model": null,
+  "networkPolicy": "disabled"
+}

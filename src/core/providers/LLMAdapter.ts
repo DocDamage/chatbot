@@ -274,7 +274,7 @@ export class GeminiAdapter implements LLMAdapter {
   private client: GoogleGenerativeAI;
   private model: string;
 
-  constructor(apiKey: string, model: string = 'gemini-1.5-flash') {
+  constructor(apiKey: string, model: string = 'gemini-3.6-flash') {
     this.client = new GoogleGenerativeAI(apiKey);
     this.model = model;
   }

@@ -1,0 +1,13 @@
+{
+  "id": "make-build-contract",
+  "prompt": "Preserve parallel-safe dependency ordering in the Makefile.",
+  "expectedFiles": [
+    "Makefile",
+    "src/main.c",
+    "test-contract.json"
+  ],
+  "hiddenChecks": [
+    "parallel-order-regression"
+  ],
+  "hiddenTests": []
+}

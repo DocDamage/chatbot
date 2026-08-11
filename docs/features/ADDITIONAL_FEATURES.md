@@ -319,5 +319,5 @@ curl -X POST \
 8. **Debugging**: Detailed debug information
 9. **Content Safety**: Enhanced moderation
 
-All features are production-ready and fully integrated! 🚀
+These features are implemented or documented in the repository. Production support remains subject to the current feature manifest and release evidence.
 

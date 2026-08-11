@@ -1,0 +1,14 @@
+[
+  {
+    "command": "sqlite3 check",
+    "argv": [
+      ":memory:",
+      ".read schema.sql",
+      ".read query.sql"
+    ],
+    "status": "passed",
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

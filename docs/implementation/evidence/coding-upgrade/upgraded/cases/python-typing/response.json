@@ -1,0 +1,48 @@
+{
+  "mode": "upgraded",
+  "status": "ready",
+  "executor": "model-adapter",
+  "execution": {
+    "executor": "model-adapter",
+    "worktree": "isolated",
+    "filesChanged": [
+      "src/cart.py",
+      "tests/test_cart.py"
+    ],
+    "patchApplied": true,
+    "risks": [
+      "Verification was not requested"
+    ]
+  },
+  "inspection": {
+    "affectedFiles": [],
+    "affectedSymbols": [],
+    "selectedFiles": [
+      "pyproject.toml",
+      "src/cart.py",
+      "tests/hidden/test_cart_regression.py",
+      "tests/test_cart.py"
+    ],
+    "verificationStatus": "not_run",
+    "reviewFindingCount": 0
+  },
+  "score": {
+    "id": "python-typing",
+    "passed": true,
+    "metrics": {
+      "correctness": 1,
+      "buildTest": 1,
+      "regression": 1,
+      "minimality": 1,
+      "retrieval": 1,
+      "fileSelection": 1,
+      "symbolSelection": 1,
+      "apiAccuracy": 1,
+      "rootCauseAccuracy": 1,
+      "security": 1,
+      "reviewQuality": 1,
+      "verificationHonesty": 1
+    },
+    "failures": []
+  }
+}

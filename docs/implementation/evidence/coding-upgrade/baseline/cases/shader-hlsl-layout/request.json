@@ -1,0 +1,12 @@
+{
+  "id": "shader-hlsl-layout",
+  "prompt": "Keep the HLSL register contract stable while fixing the matrix packing.",
+  "expectedFiles": [
+    "shader.hlsl",
+    "shader.test.json"
+  ],
+  "hiddenChecks": [
+    "hlsl-register-regression"
+  ],
+  "hiddenTests": []
+}

@@ -1,0 +1,15 @@
+{
+  "id": "python-typing",
+  "prompt": "Reject negative quantities and add a regression test using the project test convention.",
+  "expectedFiles": [
+    "src/cart.py",
+    "tests/test_cart.py",
+    "tests/hidden/test_cart_regression.py"
+  ],
+  "hiddenChecks": [
+    "negative-quantity-regression"
+  ],
+  "hiddenTests": [
+    "pytest tests/hidden/test_cart_regression.py"
+  ]
+}

@@ -160,5 +160,5 @@ curl -X DELETE -H "Authorization: Bearer <token>" \
 5. **Export Formats**: CSV, PDF, Markdown export options
 6. **Bulk Operations**: Bulk delete, bulk export
 
-All feature improvements are production-ready and integrated! 🎉
+Feature improvements are implemented or planned according to this document; production support requires current manifest and release evidence.
 

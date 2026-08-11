@@ -1,0 +1,50 @@
+{
+  "mode": "upgraded",
+  "status": "ready",
+  "executor": "model-adapter",
+  "execution": {
+    "executor": "model-adapter",
+    "worktree": "isolated",
+    "filesChanged": [
+      "CustomerService.cs"
+    ],
+    "patchApplied": true,
+    "risks": [
+      "Verification was not requested"
+    ]
+  },
+  "inspection": {
+    "affectedFiles": [],
+    "affectedSymbols": [],
+    "selectedFiles": [
+      "managed-dotnet-nullability.csproj",
+      "CustomerService.cs",
+      "CustomerServiceTests.cs",
+      "Program.cs"
+    ],
+    "verificationStatus": "not_run",
+    "reviewFindingCount": 0
+  },
+  "score": {
+    "id": "managed-dotnet-nullability",
+    "passed": false,
+    "metrics": {
+      "correctness": 0,
+      "buildTest": 0,
+      "regression": 0,
+      "minimality": 1,
+      "retrieval": 1,
+      "fileSelection": 1,
+      "symbolSelection": 1,
+      "apiAccuracy": 1,
+      "rootCauseAccuracy": 1,
+      "security": 1,
+      "reviewQuality": 1,
+      "verificationHonesty": 1
+    },
+    "failures": [
+      "build_or_visible_tests_failed",
+      "hidden_regression_failed"
+    ]
+  }
+}

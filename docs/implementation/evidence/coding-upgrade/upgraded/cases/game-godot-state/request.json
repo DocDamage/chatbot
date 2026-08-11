@@ -1,0 +1,13 @@
+{
+  "id": "game-godot-state",
+  "prompt": "Make the Godot state transition idempotent when the signal fires twice.",
+  "expectedFiles": [
+    "project.godot",
+    "scripts/player.gd",
+    "tests/player_test.gd"
+  ],
+  "hiddenChecks": [
+    "duplicate-signal-regression"
+  ],
+  "hiddenTests": []
+}

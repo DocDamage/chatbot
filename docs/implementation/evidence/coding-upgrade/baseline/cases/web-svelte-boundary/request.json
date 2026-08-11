@@ -1,0 +1,14 @@
+{
+  "id": "web-svelte-boundary",
+  "prompt": "Add an accessible loading state without reading browser globals during SSR.",
+  "expectedFiles": [
+    "src/routes/+page.svelte",
+    "src/routes/+page.test.ts"
+  ],
+  "hiddenChecks": [
+    "ssr-and-accessibility-regression"
+  ],
+  "hiddenTests": [
+    "node hidden-check.mjs"
+  ]
+}

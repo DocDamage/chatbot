@@ -1,0 +1,14 @@
+{
+  "id": "package-manager-workspace",
+  "prompt": "Keep the workspace package boundary and lockfile policy intact while updating the shared script.",
+  "expectedFiles": [
+    "package.json",
+    "pnpm-workspace.yaml",
+    "packages/core/package.json",
+    "packages/core/index.ts"
+  ],
+  "hiddenChecks": [
+    "workspace-boundary-regression"
+  ],
+  "hiddenTests": []
+}

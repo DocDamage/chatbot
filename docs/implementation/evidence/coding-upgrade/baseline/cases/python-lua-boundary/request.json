@@ -1,0 +1,13 @@
+{
+  "id": "python-lua-boundary",
+  "prompt": "Keep plain Lua table semantics and reject an invalid record without using Luau APIs.",
+  "expectedFiles": [
+    "src/normalize.lua",
+    "tests/normalize_spec.lua",
+    ".luacheckrc"
+  ],
+  "hiddenChecks": [
+    "plain-lua-regression"
+  ],
+  "hiddenTests": []
+}

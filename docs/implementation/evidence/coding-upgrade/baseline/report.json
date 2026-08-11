@@ -1,0 +1,832 @@
+{
+  "mode": "baseline",
+  "suite": "polyglot-coding-upgrade",
+  "generatedAt": "2026-08-11T04:57:47.908Z",
+  "cases": [
+    {
+      "id": "systems-rust-validation",
+      "fixture": "systems-rust-validation",
+      "toolchain": "cargo",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "260a7815fb7e4e2ff56f37029d708cec808da696cb14ecf07f87dbaad2a459d8",
+      "checks": [
+        {
+          "command": "cargo test --lib",
+          "argv": [
+            "test",
+            "--lib"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+          "stderr": "   Compiling systems-rust-validation v0.1.0 (I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-rust-validation)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.50s\n     Running unittests src\\lib.rs (target\\debug\\deps\\systems_rust_validation-4027f18b6c11ad5d.exe)\n"
+        }
+      ],
+      "hiddenChecks": [
+        {
+          "command": "cargo test --test hidden_validation",
+          "argv": [
+            "test",
+            "--test",
+            "hidden_validation"
+          ],
+          "status": "failed",
+          "exitCode": 101,
+          "stdout": "\nrunning 1 test\ntest empty_name_is_an_error ... FAILED\n\nfailures:\n\n---- empty_name_is_an_error stdout ----\n\nthread 'empty_name_is_an_error' (37368) panicked at tests\\hidden_validation.rs:4:31:\nassertion `left == right` failed\n  left: Ok(\"\")\n right: Err(EmptyName)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    empty_name_is_an_error\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+          "stderr": "   Compiling systems-rust-validation v0.1.0 (I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-rust-validation)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.39s\n     Running tests\\hidden_validation.rs (target\\debug\\deps\\hidden_validation-b68252f12a6aec4b.exe)\nerror: test failed, to rerun pass `--test hidden_validation`\n"
+        }
+      ],
+      "score": {
+        "id": "systems-rust-validation",
+        "passed": false,
+        "metrics": {
+          "correctness": 0,
+          "buildTest": 1,
+          "regression": 0,
+          "minimality": 1,
+          "retrieval": 0,
+          "fileSelection": 0,
+          "symbolSelection": 1,
+          "apiAccuracy": 1,
+          "rootCauseAccuracy": 1,
+          "security": 1,
+          "reviewQuality": 1,
+          "verificationHonesty": 1
+        },
+        "failures": [
+          "expected_files_not_retrieved",
+          "hidden_regression_failed",
+          "required_verification_missing"
+        ]
+      }
+    },
+    {
+      "id": "systems-go-context",
+      "fixture": "systems-go-context",
+      "toolchain": "go",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: go",
+      "fixtureHash": "2f31272799f55d52dea7e87fba615599ea6a862fd712f3b91e7c110d74ddae0e",
+      "checks": []
+    },
+    {
+      "id": "python-typing",
+      "fixture": "python-typing",
+      "toolchain": "python",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "a6057eb60d0755d18a945e3f99c8fe119d14ad1a9bf6aed2fc4df7d5041968af",
+      "checks": [
+        {
+          "command": "pytest tests/test_cart.py",
+          "argv": [
+            "-m",
+            "pytest",
+            "tests/test_cart.py"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.10.11, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\python-typing\r\nconfigfile: pyproject.toml\r\nplugins: anyio-4.13.0\r\ncollected 1 item\r\n\r\ntests\\test_cart.py .                                                     [100%]\r\n\r\n============================== 1 passed in 0.02s ==============================\r\n",
+          "stderr": ""
+        }
+      ],
+      "hiddenChecks": [
+        {
+          "command": "pytest tests/hidden/test_cart_regression.py",
+          "argv": [
+            "-m",
+            "pytest",
+            "tests/hidden/test_cart_regression.py"
+          ],
+          "status": "failed",
+          "exitCode": 1,
+          "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.10.11, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\python-typing\r\nconfigfile: pyproject.toml\r\nplugins: anyio-4.13.0\r\ncollected 1 item\r\n\r\ntests\\hidden\\test_cart_regression.py F                                   [100%]\r\n\r\n================================== FAILURES ===================================\r\n_____________________ test_negative_quantity_is_rejected ______________________\r\n\r\n    def test_negative_quantity_is_rejected():\r\n        try:\r\n            line_total(-1, 3.5)\r\n        except ValueError:\r\n            return\r\n>       raise AssertionError(\"negative quantities must be rejected\")\r\nE       AssertionError: negative quantities must be rejected\r\n\r\ntests\\hidden\\test_cart_regression.py:9: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/hidden/test_cart_regression.py::test_negative_quantity_is_rejected\r\n============================== 1 failed in 0.06s ==============================\r\n",
+          "stderr": ""
+        }
+      ],
+      "score": {
+        "id": "python-typing",
+        "passed": false,
+        "metrics": {
+          "correctness": 0,
+          "buildTest": 1,
+          "regression": 0,
+          "minimality": 1,
+          "retrieval": 0,
+          "fileSelection": 0,
+          "symbolSelection": 1,
+          "apiAccuracy": 1,
+          "rootCauseAccuracy": 1,
+          "security": 1,
+          "reviewQuality": 1,
+          "verificationHonesty": 1
+        },
+        "failures": [
+          "expected_files_not_retrieved",
+          "hidden_regression_failed",
+          "required_verification_missing"
+        ]
+      }
+    },
+    {
+      "id": "managed-dotnet-nullability",
+      "fixture": "managed-dotnet-nullability",
+      "toolchain": "dotnet",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "e52cd5801f76392e2d55e020e0b07ff1cbb30bc72f8c0c595c3a41fc3e842b67",
+      "checks": [
+        {
+          "command": "dotnet run",
+          "argv": [
+            "run",
+            "--no-restore"
+          ],
+          "status": "failed",
+          "exitCode": 1,
+          "stdout": "C:\\Program Files\\dotnet\\sdk\\10.0.302\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.PackageDependencyResolution.targets(266,5): error NETSDK1004: Assets file 'I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\managed-dotnet-nullability\\obj\\project.assets.json' not found. Run a NuGet package restore to generate this file. [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\managed-dotnet-nullability\\managed-dotnet-nullability.csproj]\r\n",
+          "stderr": "\r\nThe build failed. Fix the build errors and run again.\r\n"
+        }
+      ],
+      "hiddenChecks": [],
+      "score": {
+        "id": "managed-dotnet-nullability",
+        "passed": false,
+        "metrics": {
+          "correctness": 0,
+          "buildTest": 0,
+          "regression": 0,
+          "minimality": 1,
+          "retrieval": 0,
+          "fileSelection": 0,
+          "symbolSelection": 1,
+          "apiAccuracy": 1,
+          "rootCauseAccuracy": 1,
+          "security": 1,
+          "reviewQuality": 1,
+          "verificationHonesty": 1
+        },
+        "failures": [
+          "expected_files_not_retrieved",
+          "build_or_visible_tests_failed",
+          "hidden_regression_failed",
+          "required_verification_missing"
+        ]
+      }
+    },
+    {
+      "id": "jvm-module-boundary",
+      "fixture": "jvm-module-boundary",
+      "toolchain": "gradle",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: gradle",
+      "fixtureHash": "53436629d9f259034ba6f1dcda023a9a5101e70ce10a71329a9ca396ed894e9a",
+      "checks": []
+    },
+    {
+      "id": "web-svelte-boundary",
+      "fixture": "web-svelte-boundary",
+      "toolchain": "node",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "da837bd401a5c89f86d6dd585e3aaae3cc08fb7e7b204e5f0eec824a2e231d86",
+      "checks": [
+        {
+          "command": "npm test",
+          "argv": [
+            "C:\\Users\\dferr\\AppData\\Roaming\\npm\\node_modules\\npm\\bin\\npm-cli.js",
+            "test"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "\n> test\n> node ./test-runner.mjs\n\nSSR and accessibility fixture checks are represented by the fixture contract.\n",
+          "stderr": ""
+        }
+      ],
+      "hiddenChecks": [
+        {
+          "command": "node hidden-check.mjs",
+          "argv": [
+            "hidden-check.mjs"
+          ],
+          "status": "failed",
+          "exitCode": 1,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "score": {
+        "id": "web-svelte-boundary",
+        "passed": false,
+        "metrics": {
+          "correctness": 0,
+          "buildTest": 1,
+          "regression": 0,
+          "minimality": 1,
+          "retrieval": 0,
+          "fileSelection": 0,
+          "symbolSelection": 1,
+          "apiAccuracy": 1,
+          "rootCauseAccuracy": 1,
+          "security": 1,
+          "reviewQuality": 1,
+          "verificationHonesty": 1
+        },
+        "failures": [
+          "expected_files_not_retrieved",
+          "hidden_regression_failed",
+          "required_verification_missing"
+        ]
+      }
+    },
+    {
+      "id": "shell-safe-args",
+      "fixture": "shell-safe-args",
+      "toolchain": "shellcheck",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: shellcheck",
+      "fixtureHash": "6cd496a4ca3e2ab24573adc2fc2ac134898029cd93e704f74ee613c558d9c311",
+      "checks": []
+    },
+    {
+      "id": "shader-config",
+      "fixture": "shader-config",
+      "toolchain": "shader-validator",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: shader-validator",
+      "fixtureHash": "f0f37fb3653082568b0f3358ee1636316617e3cc99466d7e17634d2c9523f508",
+      "checks": []
+    },
+    {
+      "id": "systems-c-lifetime",
+      "fixture": "systems-c-lifetime",
+      "toolchain": "clang",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "d7ceb99f84b71fc22ff8d785785cb00f469c44fa47d04084bb59d5cf2001a8bd",
+      "checks": [
+        {
+          "command": "cmake configure",
+          "argv": [
+            "-S",
+            ".",
+            "-B",
+            "build"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "-- Building for: Visual Studio 18 2026\n-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- The C compiler identification is MSVC 19.51.36243.0\n-- Detecting C compiler ABI info\n-- Detecting C compiler ABI info - done\n-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/18/Insiders/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe - skipped\n-- Detecting C compile features\n-- Detecting C compile features - done\n-- Configuring done (2.1s)\n-- Generating done (0.1s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n",
+          "stderr": ""
+        },
+        {
+          "command": "cmake build",
+          "argv": [
+            "--build",
+            "build"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "MSBuild version 18.7.1+024f5b037 for .NET Framework\r\n\r\n  1>Checking Build System\r\n  Building Custom Rule I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/CMakeLists.txt\r\n  buffer.c\r\n  buffer_test.c\r\n  Generating Code...\r\n  buffer_test.vcxproj -> I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-c-lifetime\\build\\Debug\\buffer_test.exe\r\n  Building Custom Rule I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/CMakeLists.txt\r\n",
+          "stderr": ""
+        },
+        {
+          "command": "cmake test",
+          "argv": [
+            "--test-dir",
+            "build",
+            "-C",
+            "Debug",
+            "--output-on-failure"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n    Start 1: buffer_contract\n1/1 Test #1: buffer_contract ..................   Passed    0.04 sec\n\n100% tests passed, 0 tests failed out of 1\n\nTotal Test time (real) =   0.08 sec\n",
+          "stderr": ""
+        }
+      ],
+      "hiddenChecks": [],
+      "score": {
+        "id": "systems-c-lifetime",
+        "passed": false,
+        "metrics": {
+          "correctness": 0,
+          "buildTest": 1,
+          "regression": 0,
+          "minimality": 1,
+          "retrieval": 0,
+          "fileSelection": 0,
+          "symbolSelection": 1,
+          "apiAccuracy": 1,
+          "rootCauseAccuracy": 1,
+          "security": 1,
+          "reviewQuality": 1,
+          "verificationHonesty": 1
+        },
+        "failures": [
+          "expected_files_not_retrieved",
+          "hidden_regression_failed",
+          "required_verification_missing"
+        ]
+      }
+    },
+    {
+      "id": "systems-cpp-raii",
+      "fixture": "systems-cpp-raii",
+      "toolchain": "clang++",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "19ee0718775948a7f1ee29ff0e0806658ba2c750bd411f8facc45c004500c1a9",
+      "checks": [
+        {
+          "command": "cmake configure",
+          "argv": [
+            "-S",
+            ".",
+            "-B",
+            "build"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "-- Building for: Visual Studio 18 2026\n-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- The CXX compiler identification is MSVC 19.51.36243.0\n-- Detecting CXX compiler ABI info\n-- Detecting CXX compiler ABI info - done\n-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/18/Insiders/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe - skipped\n-- Detecting CXX compile features\n-- Detecting CXX compile features - done\n-- Configuring done (2.2s)\n-- Generating done (0.1s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build\n",
+          "stderr": ""
+        },
+        {
+          "command": "cmake build",
+          "argv": [
+            "--build",
+            "build"
+          ],
+          "status": "failed",
+          "exitCode": 1,
+          "stdout": "MSBuild version 18.7.1+024f5b037 for .NET Framework\r\n\r\n  1>Checking Build System\r\n  Building Custom Rule I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/CMakeLists.txt\r\n  resource.cpp\r\n  resource_test.cpp\r\n  Generating Code...\r\nresource_test.obj : error LNK2019: unresolved external symbol \"public: __cdecl ResourceOwner::ResourceOwner(int)\" (??0ResourceOwner@@QEAA@H@Z) referenced in function main [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\resource_test.vcxproj]\r\nresource_test.obj : error LNK2019: unresolved external symbol \"public: int __cdecl ResourceOwner::value(void)const \" (?value@ResourceOwner@@QEBAHXZ) referenced in function main [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\resource_test.vcxproj]\r\nI:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\Debug\\resource_test.exe : fatal error LNK1120: 2 unresolved externals [I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-cpp-raii\\build\\resource_test.vcxproj]\r\n",
+          "stderr": ""
+        },
+        {
+          "command": "cmake test",
+          "argv": [
+            "--test-dir",
+            "build",
+            "-C",
+            "Debug",
+            "--output-on-failure"
+          ],
+          "status": "failed",
+          "exitCode": 8,
+          "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build\n    Start 1: resource_contract\nCould not find executable I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/resource_test.exe\nLooked in the following places:\nI:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/resource_test.exe\nI:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/resource_test.exe.exe\nI:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/Debug/resource_test.exe\nI:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/Debug/resource_test.exe.exe\nDebug/I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/resource_test.exe\nDebug/I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/resource_test.exe.exe\n1/1 Test #1: resource_contract ................***Not Run   0.00 sec\n\n0% tests passed, 1 tests failed out of 1\n\nTotal Test time (real) =   0.01 sec\n\nThe following tests FAILED:\n\t  1 - resource_contract (Not Run)\n",
+          "stderr": "Unable to find executable: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/resource_test.exe\nErrors while running CTest\n"
+        }
+      ],
+      "hiddenChecks": [],
+      "score": {
+        "id": "systems-cpp-raii",
+        "passed": false,
+        "metrics": {
+          "correctness": 0,
+          "buildTest": 0,
+          "regression": 0,
+          "minimality": 1,
+          "retrieval": 0,
+          "fileSelection": 0,
+          "symbolSelection": 1,
+          "apiAccuracy": 1,
+          "rootCauseAccuracy": 1,
+          "security": 1,
+          "reviewQuality": 1,
+          "verificationHonesty": 1
+        },
+        "failures": [
+          "expected_files_not_retrieved",
+          "build_or_visible_tests_failed",
+          "hidden_regression_failed",
+          "required_verification_missing"
+        ]
+      }
+    },
+    {
+      "id": "systems-objective-c-boundary",
+      "fixture": "systems-objective-c-boundary",
+      "toolchain": "xcodebuild",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: xcodebuild",
+      "fixtureHash": "1d2416db102b2d1be2523c1bc2439688eebc0eaea3f44fa78bd6ef9c9d15800f",
+      "checks": []
+    },
+    {
+      "id": "managed-fsharp-nullability",
+      "fixture": "managed-fsharp-nullability",
+      "toolchain": "fsharpc",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: fsharpc",
+      "fixtureHash": "29e31c08d8b784e0c144647170152e5062f680cd83b19e81d989219621017026",
+      "checks": []
+    },
+    {
+      "id": "jvm-java-module",
+      "fixture": "jvm-java-module",
+      "toolchain": "mvn",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: mvn",
+      "fixtureHash": "9f24cf2650ac0ca48d035cb6d1e450ee89ebd4e3f9d2b0c5fe6b798243f1a54f",
+      "checks": []
+    },
+    {
+      "id": "mobile-swift-package",
+      "fixture": "mobile-swift-package",
+      "toolchain": "swift",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: swift",
+      "fixtureHash": "7ef4a75826b1b7906c14dce1b8ea897e9b4d0b34118741569ada7a4df9e7ba82",
+      "checks": []
+    },
+    {
+      "id": "python-lua-boundary",
+      "fixture": "python-lua-boundary",
+      "toolchain": "lua",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: lua",
+      "fixtureHash": "4327e8f541662bb1fb91e8daf8dbe7ed518ffd47802faef6a98888e5fc116ded",
+      "checks": []
+    },
+    {
+      "id": "game-luau-module",
+      "fixture": "game-luau-module",
+      "toolchain": "luau",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: luau",
+      "fixtureHash": "129e2226987ada37d318b0a9626475128c14efcab8e6d01d664cc9f9366656db",
+      "checks": []
+    },
+    {
+      "id": "game-godot-state",
+      "fixture": "game-godot-state",
+      "toolchain": "godot",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: godot",
+      "fixtureHash": "f46fb83653349a73a68fbcd4588a8f71d4a50236c45e47672cf7cacd1fd02e64",
+      "checks": []
+    },
+    {
+      "id": "web-react-ssr",
+      "fixture": "web-react-ssr",
+      "toolchain": "node",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "b6d396846610fac5521a1b338ebff87af187a00af3c2ab70f64f34f1c840ed3e",
+      "checks": [
+        {
+          "command": "npm test",
+          "argv": [
+            "C:\\Users\\dferr\\AppData\\Roaming\\npm\\node_modules\\npm\\bin\\npm-cli.js",
+            "test"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "\n> test\n> node test-runner.mjs\n\nReact SSR/accessibility fixture checks passed.\n",
+          "stderr": ""
+        }
+      ],
+      "hiddenChecks": [],
+      "score": {
+        "id": "web-react-ssr",
+        "passed": false,
+        "metrics": {
+          "correctness": 0,
+          "buildTest": 1,
+          "regression": 0,
+          "minimality": 1,
+          "retrieval": 0,
+          "fileSelection": 0,
+          "symbolSelection": 1,
+          "apiAccuracy": 1,
+          "rootCauseAccuracy": 1,
+          "security": 1,
+          "reviewQuality": 1,
+          "verificationHonesty": 1
+        },
+        "failures": [
+          "expected_files_not_retrieved",
+          "hidden_regression_failed",
+          "required_verification_missing"
+        ]
+      }
+    },
+    {
+      "id": "web-html-css-contract",
+      "fixture": "web-html-css-contract",
+      "toolchain": "node",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "72e7fea033672cc29d817e1fa747e221f70bf5ce7521b34ade68ee76e230e0ff",
+      "checks": [
+        {
+          "command": "npm test",
+          "argv": [
+            "C:\\Users\\dferr\\AppData\\Roaming\\npm\\node_modules\\npm\\bin\\npm-cli.js",
+            "test"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "\n> test\n> node test-runner.mjs\n\nHTML/CSS semantic and responsive checks passed.\n",
+          "stderr": ""
+        }
+      ],
+      "hiddenChecks": [],
+      "score": {
+        "id": "web-html-css-contract",
+        "passed": false,
+        "metrics": {
+          "correctness": 0,
+          "buildTest": 1,
+          "regression": 0,
+          "minimality": 1,
+          "retrieval": 0,
+          "fileSelection": 0,
+          "symbolSelection": 1,
+          "apiAccuracy": 1,
+          "rootCauseAccuracy": 1,
+          "security": 1,
+          "reviewQuality": 1,
+          "verificationHonesty": 1
+        },
+        "failures": [
+          "expected_files_not_retrieved",
+          "hidden_regression_failed",
+          "required_verification_missing"
+        ]
+      }
+    },
+    {
+      "id": "data-sql-dialect",
+      "fixture": "data-sql-dialect",
+      "toolchain": "sqlite3",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "0bcdd6abd15e997ce9406e253b4e86caf13806e10f7e172f4c576f822b1d85f3",
+      "checks": [
+        {
+          "command": "sqlite3 check",
+          "argv": [
+            ":memory:",
+            ".read schema.sql",
+            ".read query.sql"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "hiddenChecks": [],
+      "score": {
+        "id": "data-sql-dialect",
+        "passed": false,
+        "metrics": {
+          "correctness": 0,
+          "buildTest": 1,
+          "regression": 0,
+          "minimality": 1,
+          "retrieval": 0,
+          "fileSelection": 0,
+          "symbolSelection": 1,
+          "apiAccuracy": 1,
+          "rootCauseAccuracy": 1,
+          "security": 1,
+          "reviewQuality": 1,
+          "verificationHonesty": 1
+        },
+        "failures": [
+          "expected_files_not_retrieved",
+          "hidden_regression_failed",
+          "required_verification_missing"
+        ]
+      }
+    },
+    {
+      "id": "shell-powershell-args",
+      "fixture": "shell-powershell-args",
+      "toolchain": "pwsh",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "37510b4205d6376318c9f3ad9fad73ab32305e327a9fa4f4ec3ff9aeabf8f0d5",
+      "checks": [
+        {
+          "command": "powershell test",
+          "argv": [
+            "-NoProfile",
+            "-File",
+            "test-runner.ps1"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "hiddenChecks": [],
+      "score": {
+        "id": "shell-powershell-args",
+        "passed": false,
+        "metrics": {
+          "correctness": 0,
+          "buildTest": 1,
+          "regression": 0,
+          "minimality": 1,
+          "retrieval": 0,
+          "fileSelection": 0,
+          "symbolSelection": 1,
+          "apiAccuracy": 1,
+          "rootCauseAccuracy": 1,
+          "security": 1,
+          "reviewQuality": 1,
+          "verificationHonesty": 1
+        },
+        "failures": [
+          "expected_files_not_retrieved",
+          "hidden_regression_failed",
+          "required_verification_missing"
+        ]
+      }
+    },
+    {
+      "id": "shader-glsl-layout",
+      "fixture": "shader-glsl-layout",
+      "toolchain": "glslc",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: glslc",
+      "fixtureHash": "ed689abc2e4cd01f6cfa1d2ed7bc30e21dcb8047cef58cf6833240399903074b",
+      "checks": []
+    },
+    {
+      "id": "shader-hlsl-layout",
+      "fixture": "shader-hlsl-layout",
+      "toolchain": "dxc",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: dxc",
+      "fixtureHash": "7e892cae91b82a140c7ad4f610a31f3d76707824c0127105136fa938b652e7cb",
+      "checks": []
+    },
+    {
+      "id": "container-build-contract",
+      "fixture": "container-build-contract",
+      "toolchain": "docker",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "f05753dc85d9cf534f6fde940cb037eb4450e2b63a15fedea2f47406f9013f50",
+      "checks": [
+        {
+          "command": "docker build",
+          "argv": [
+            "build",
+            "--pull=false",
+            "--tag",
+            "codex-polyglot-fixture:local",
+            "."
+          ],
+          "status": "failed",
+          "exitCode": 1,
+          "stdout": "",
+          "stderr": "ERROR: failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.\n"
+        }
+      ],
+      "hiddenChecks": [],
+      "score": {
+        "id": "container-build-contract",
+        "passed": false,
+        "metrics": {
+          "correctness": 0,
+          "buildTest": 0,
+          "regression": 0,
+          "minimality": 1,
+          "retrieval": 0,
+          "fileSelection": 0,
+          "symbolSelection": 1,
+          "apiAccuracy": 1,
+          "rootCauseAccuracy": 1,
+          "security": 1,
+          "reviewQuality": 1,
+          "verificationHonesty": 1
+        },
+        "failures": [
+          "expected_files_not_retrieved",
+          "build_or_visible_tests_failed",
+          "hidden_regression_failed",
+          "required_verification_missing"
+        ]
+      }
+    },
+    {
+      "id": "make-build-contract",
+      "fixture": "make-build-contract",
+      "toolchain": "make",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "20e4e02a15c9953509ff5adff6ac0cb574a04e496f2eef40542211f7466c2ffc",
+      "checks": [
+        {
+          "command": "make test",
+          "argv": [
+            "test"
+          ],
+          "status": "failed",
+          "exitCode": 2,
+          "stdout": "mkdir -p build\r\ncc -Wall -Wextra src/main.c -o build/main\r\n",
+          "stderr": "process_begin: CreateProcess(NULL, cc -Wall -Wextra src/main.c -o build/main, ...) failed.\r\nmake (e=2): The system cannot find the file specified.\r\nmake: *** [Makefile:5: build/main] Error 2\r\n"
+        }
+      ],
+      "hiddenChecks": [],
+      "score": {
+        "id": "make-build-contract",
+        "passed": false,
+        "metrics": {
+          "correctness": 0,
+          "buildTest": 0,
+          "regression": 0,
+          "minimality": 1,
+          "retrieval": 0,
+          "fileSelection": 0,
+          "symbolSelection": 1,
+          "apiAccuracy": 1,
+          "rootCauseAccuracy": 1,
+          "security": 1,
+          "reviewQuality": 1,
+          "verificationHonesty": 1
+        },
+        "failures": [
+          "expected_files_not_retrieved",
+          "build_or_visible_tests_failed",
+          "hidden_regression_failed",
+          "required_verification_missing"
+        ]
+      }
+    },
+    {
+      "id": "meson-build-contract",
+      "fixture": "meson-build-contract",
+      "toolchain": "meson",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: meson",
+      "fixtureHash": "17bc19ad18c748de4fd7b0ba04d4658c40c6c9995bfcdb99d845ec48429865b7",
+      "checks": []
+    },
+    {
+      "id": "package-manager-workspace",
+      "fixture": "package-manager-workspace",
+      "toolchain": "node",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "e332b2a709a06dd56f707c9d4d77d6616a6f834b051c4113d13e0e2543263b4a",
+      "checks": [
+        {
+          "command": "npm test",
+          "argv": [
+            "C:\\Users\\dferr\\AppData\\Roaming\\npm\\node_modules\\npm\\bin\\npm-cli.js",
+            "test"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "\n> test\n> node test-runner.mjs\n\nworkspace contract passed\n",
+          "stderr": ""
+        }
+      ],
+      "hiddenChecks": [],
+      "score": {
+        "id": "package-manager-workspace",
+        "passed": false,
+        "metrics": {
+          "correctness": 0,
+          "buildTest": 1,
+          "regression": 0,
+          "minimality": 1,
+          "retrieval": 0,
+          "fileSelection": 0,
+          "symbolSelection": 1,
+          "apiAccuracy": 1,
+          "rootCauseAccuracy": 1,
+          "security": 1,
+          "reviewQuality": 1,
+          "verificationHonesty": 1
+        },
+        "failures": [
+          "expected_files_not_retrieved",
+          "hidden_regression_failed",
+          "required_verification_missing"
+        ]
+      }
+    }
+  ]
+}

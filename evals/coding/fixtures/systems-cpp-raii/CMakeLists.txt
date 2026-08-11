@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.20)
+project(cpp_raii CXX)
+set(CMAKE_CXX_STANDARD 20)
+add_executable(resource_test src/resource.cpp tests/resource_test.cpp)
+enable_testing()
+add_test(NAME resource_contract COMMAND resource_test)

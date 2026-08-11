@@ -1,0 +1,13 @@
+{
+  "id": "game-luau-module",
+  "prompt": "Preserve the Luau module contract while validating the player state.",
+  "expectedFiles": [
+    "src/Player.luau",
+    "tests/Player.spec.luau",
+    "wally.toml"
+  ],
+  "hiddenChecks": [
+    "player-state-regression"
+  ],
+  "hiddenTests": []
+}

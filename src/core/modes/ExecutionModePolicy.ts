@@ -17,7 +17,7 @@ const allowedActions: Record<WorkMode, WorkAction[]> = {
   plan: ['create_plan', 'update_plan', 'read_files', 'search_files'],
   implement: ['read_files', 'write_files', 'run_tests', 'create_patch'],
   debug: ['read_logs', 'run_tests', 'inspect_error', 'write_debug_fix'],
-  chat: ['chat']
+  chat: ['chat', 'read_files', 'search_files']
 };
 
 export function normalizeWorkMode(mode?: string): WorkMode {

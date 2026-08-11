@@ -2,6 +2,8 @@
 
 This directory is the authoritative workspace for production-completion governance.
 
+For a user-facing summary, read [`docs/PROJECT_STATUS.md`](../PROJECT_STATUS.md). The repository is locally implementation-complete for its current scope but is not certified for hosted production or public launch.
+
 ## Contents
 
 - `MASTER_PRODUCTION_COMPLETION_TRACKER.md` — one row for every authorized task.

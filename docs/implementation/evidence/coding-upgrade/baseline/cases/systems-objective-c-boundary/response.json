@@ -1,0 +1,6 @@
+{
+  "mode": "baseline",
+  "status": "unsupported",
+  "reason": "Toolchain unavailable: xcodebuild",
+  "executor": "toolchain-preflight-only"
+}
