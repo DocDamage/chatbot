@@ -1,0 +1,14 @@
+{
+  "mode": "upgraded",
+  "status": "ready",
+  "executor": "repository-controller-inspection",
+  "inspection": {
+    "affectedFiles": [],
+    "affectedSymbols": [],
+    "selectedFiles": [
+      "src/routes/+page.test.ts"
+    ],
+    "verificationStatus": "not_run",
+    "reviewFindingCount": 0
+  }
+}

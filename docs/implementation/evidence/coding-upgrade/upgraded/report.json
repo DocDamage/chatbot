@@ -1,0 +1,173 @@
+{
+  "mode": "upgraded",
+  "suite": "polyglot-coding-upgrade",
+  "generatedAt": "2026-08-11T04:07:16.337Z",
+  "cases": [
+    {
+      "id": "systems-rust-validation",
+      "fixture": "systems-rust-validation",
+      "toolchain": "cargo",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "99ee5b3d40675bf2e331aa059554bb0759b62a07f7178b96dad010dfab53946d",
+      "checks": [
+        {
+          "command": "cargo test",
+          "argv": [
+            "test"
+          ],
+          "status": "failed",
+          "exitCode": 101,
+          "stdout": "\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 2 tests\ntest accepts_a_name ... ok\ntest empty_name_is_an_error ... FAILED\n\nfailures:\n\n---- empty_name_is_an_error stdout ----\n\nthread 'empty_name_is_an_error' (22372) panicked at tests\\validation.rs:7:31:\nassertion `left == right` failed\n  left: Ok(\"\")\n right: Err(EmptyName)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    empty_name_is_an_error\n\ntest result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+          "stderr": "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s\n     Running unittests src\\lib.rs (target\\debug\\deps\\systems_rust_validation-4027f18b6c11ad5d.exe)\n     Running tests\\validation.rs (target\\debug\\deps\\validation-877635d9ed9853bb.exe)\nerror: test failed, to rerun pass `--test validation`\n"
+        }
+      ],
+      "inspection": {
+        "affectedFiles": [],
+        "affectedSymbols": [],
+        "selectedFiles": [
+          "tests/validation.rs"
+        ],
+        "verificationStatus": "not_run",
+        "reviewFindingCount": 0
+      }
+    },
+    {
+      "id": "systems-go-context",
+      "fixture": "systems-go-context",
+      "toolchain": "go",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: go",
+      "fixtureHash": "2f31272799f55d52dea7e87fba615599ea6a862fd712f3b91e7c110d74ddae0e",
+      "checks": []
+    },
+    {
+      "id": "python-typing",
+      "fixture": "python-typing",
+      "toolchain": "python",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "69a58b5476310388e4bade4122d4e9f09912722a5b7c504176a8e8e9eb733a1e",
+      "checks": [
+        {
+          "command": "pytest",
+          "argv": [
+            "-m",
+            "pytest"
+          ],
+          "status": "failed",
+          "exitCode": 1,
+          "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.10.11, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\python-typing\r\nconfigfile: pyproject.toml\r\ntestpaths: tests\r\nplugins: anyio-4.13.0\r\ncollected 2 items\r\n\r\ntests\\test_cart.py .F                                                    [100%]\r\n\r\n================================== FAILURES ===================================\r\n_____________________ test_negative_quantity_is_rejected ______________________\r\n\r\n    def test_negative_quantity_is_rejected():\r\n        try:\r\n            line_total(-1, 3.5)\r\n        except ValueError:\r\n            return\r\n>       raise AssertionError(\"negative quantities must be rejected\")\r\nE       AssertionError: negative quantities must be rejected\r\n\r\ntests\\test_cart.py:13: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_cart.py::test_negative_quantity_is_rejected - AssertionErro...\r\n========================= 1 failed, 1 passed in 0.05s =========================\r\n",
+          "stderr": ""
+        }
+      ],
+      "inspection": {
+        "affectedFiles": [],
+        "affectedSymbols": [],
+        "selectedFiles": [
+          "tests/test_cart.py",
+          ".pytest_cache/.gitignore",
+          ".pytest_cache/CACHEDIR.TAG",
+          ".pytest_cache/README.md",
+          ".pytest_cache/v/cache/lastfailed",
+          ".pytest_cache/v/cache/nodeids",
+          "pyproject.toml"
+        ],
+        "verificationStatus": "not_run",
+        "reviewFindingCount": 0
+      }
+    },
+    {
+      "id": "managed-dotnet-nullability",
+      "fixture": "managed-dotnet-nullability",
+      "toolchain": "dotnet",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "e52cd5801f76392e2d55e020e0b07ff1cbb30bc72f8c0c595c3a41fc3e842b67",
+      "checks": [
+        {
+          "command": "dotnet run",
+          "argv": [
+            "run",
+            "--no-restore"
+          ],
+          "status": "failed",
+          "exitCode": 3221225477,
+          "stdout": "",
+          "stderr": "Unhandled exception. System.NullReferenceException: Object reference not set to an instance of an object.\r\n   at CustomerService.Find(Customer customer) in I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\managed-dotnet-nullability\\CustomerService.cs:line 4\r\n   at CustomerServiceTests.MissingCustomerIsNotDereferenced() in I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\managed-dotnet-nullability\\CustomerServiceTests.cs:line 5\r\n   at Program.<Main>$(String[] args) in I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\managed-dotnet-nullability\\Program.cs:line 1\n"
+        }
+      ],
+      "inspection": {
+        "affectedFiles": [],
+        "affectedSymbols": [],
+        "selectedFiles": [
+          "CustomerService.cs",
+          "CustomerServiceTests.cs"
+        ],
+        "verificationStatus": "not_run",
+        "reviewFindingCount": 0
+      }
+    },
+    {
+      "id": "jvm-module-boundary",
+      "fixture": "jvm-module-boundary",
+      "toolchain": "gradle",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: gradle",
+      "fixtureHash": "53436629d9f259034ba6f1dcda023a9a5101e70ce10a71329a9ca396ed894e9a",
+      "checks": []
+    },
+    {
+      "id": "web-svelte-boundary",
+      "fixture": "web-svelte-boundary",
+      "toolchain": "node",
+      "toolchainAvailable": true,
+      "status": "ready",
+      "fixtureHash": "e8328399498c3e338a7ee8206496bbc734968bcd2d307644a2774967fa685a5e",
+      "checks": [
+        {
+          "command": "npm test",
+          "argv": [
+            "C:\\Users\\dferr\\AppData\\Roaming\\npm\\node_modules\\npm\\bin\\npm-cli.js",
+            "test"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "\n> test\n> node ./test-runner.mjs\n\nSSR and accessibility fixture checks are represented by the fixture contract.\n",
+          "stderr": ""
+        }
+      ],
+      "inspection": {
+        "affectedFiles": [],
+        "affectedSymbols": [],
+        "selectedFiles": [
+          "src/routes/+page.test.ts"
+        ],
+        "verificationStatus": "not_run",
+        "reviewFindingCount": 0
+      }
+    },
+    {
+      "id": "shell-safe-args",
+      "fixture": "shell-safe-args",
+      "toolchain": "shellcheck",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: shellcheck",
+      "fixtureHash": "6cd496a4ca3e2ab24573adc2fc2ac134898029cd93e704f74ee613c558d9c311",
+      "checks": []
+    },
+    {
+      "id": "shader-config",
+      "fixture": "shader-config",
+      "toolchain": "shader-validator",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: shader-validator",
+      "fixtureHash": "f0f37fb3653082568b0f3358ee1636316617e3cc99466d7e17634d2c9523f508",
+      "checks": []
+    }
+  ]
+}

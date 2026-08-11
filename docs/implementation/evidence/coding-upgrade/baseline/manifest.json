@@ -1,0 +1,76 @@
+{
+  "suite": "polyglot-coding-upgrade",
+  "mode": "baseline",
+  "generatedAt": "2026-08-11T04:07:12.093Z",
+  "fixtureRoot": "I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures",
+  "cases": [
+    {
+      "id": "systems-rust-validation",
+      "fixture": "systems-rust-validation",
+      "fixtureHash": "99ee5b3d40675bf2e331aa059554bb0759b62a07f7178b96dad010dfab53946d",
+      "toolchain": "cargo",
+      "toolchainAvailable": true,
+      "status": "ready"
+    },
+    {
+      "id": "systems-go-context",
+      "fixture": "systems-go-context",
+      "fixtureHash": "2f31272799f55d52dea7e87fba615599ea6a862fd712f3b91e7c110d74ddae0e",
+      "toolchain": "go",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: go"
+    },
+    {
+      "id": "python-typing",
+      "fixture": "python-typing",
+      "fixtureHash": "69a58b5476310388e4bade4122d4e9f09912722a5b7c504176a8e8e9eb733a1e",
+      "toolchain": "python",
+      "toolchainAvailable": true,
+      "status": "ready"
+    },
+    {
+      "id": "managed-dotnet-nullability",
+      "fixture": "managed-dotnet-nullability",
+      "fixtureHash": "e52cd5801f76392e2d55e020e0b07ff1cbb30bc72f8c0c595c3a41fc3e842b67",
+      "toolchain": "dotnet",
+      "toolchainAvailable": true,
+      "status": "ready"
+    },
+    {
+      "id": "jvm-module-boundary",
+      "fixture": "jvm-module-boundary",
+      "fixtureHash": "53436629d9f259034ba6f1dcda023a9a5101e70ce10a71329a9ca396ed894e9a",
+      "toolchain": "gradle",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: gradle"
+    },
+    {
+      "id": "web-svelte-boundary",
+      "fixture": "web-svelte-boundary",
+      "fixtureHash": "e8328399498c3e338a7ee8206496bbc734968bcd2d307644a2774967fa685a5e",
+      "toolchain": "node",
+      "toolchainAvailable": true,
+      "status": "ready"
+    },
+    {
+      "id": "shell-safe-args",
+      "fixture": "shell-safe-args",
+      "fixtureHash": "6cd496a4ca3e2ab24573adc2fc2ac134898029cd93e704f74ee613c558d9c311",
+      "toolchain": "shellcheck",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: shellcheck"
+    },
+    {
+      "id": "shader-config",
+      "fixture": "shader-config",
+      "fixtureHash": "f0f37fb3653082568b0f3358ee1636316617e3cc99466d7e17634d2c9523f508",
+      "toolchain": "shader-validator",
+      "toolchainAvailable": false,
+      "status": "unsupported",
+      "reason": "Toolchain unavailable: shader-validator"
+    }
+  ]
+}

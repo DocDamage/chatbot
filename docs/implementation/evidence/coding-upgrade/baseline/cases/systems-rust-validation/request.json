@@ -1,0 +1,11 @@
+{
+  "id": "systems-rust-validation",
+  "prompt": "Add validation for an empty user name and preserve the existing error contract.",
+  "expectedFiles": [
+    "src/lib.rs",
+    "tests/validation.rs"
+  ],
+  "hiddenChecks": [
+    "empty-name-regression"
+  ]
+}

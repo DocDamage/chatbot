@@ -1,0 +1,20 @@
+{
+  "mode": "upgraded",
+  "status": "ready",
+  "executor": "repository-controller-inspection",
+  "inspection": {
+    "affectedFiles": [],
+    "affectedSymbols": [],
+    "selectedFiles": [
+      "tests/test_cart.py",
+      ".pytest_cache/.gitignore",
+      ".pytest_cache/CACHEDIR.TAG",
+      ".pytest_cache/README.md",
+      ".pytest_cache/v/cache/lastfailed",
+      ".pytest_cache/v/cache/nodeids",
+      "pyproject.toml"
+    ],
+    "verificationStatus": "not_run",
+    "reviewFindingCount": 0
+  }
+}

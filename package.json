@@ -62,6 +62,7 @@
     "eval:language": "tsx scripts/run-domain-evals.ts language",
     "eval:geography": "tsx scripts/run-domain-evals.ts geography",
     "eval:engineering": "tsx scripts/run-domain-evals.ts engineering",
+    "eval:coding": "tsx scripts/run-coding-evals.ts",
     "eval:nlu": "tsx scripts/run-domain-evals.ts nlu",
     "eval:knowledge-os": "tsx scripts/run-domain-evals.ts knowledge-os",
     "import:general": "tsx scripts/import-wikipedia-general-corpus.ts",

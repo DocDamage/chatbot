@@ -1,0 +1,11 @@
+{
+  "id": "shader-config",
+  "prompt": "Correct the shader uniform layout without changing the bind group contract.",
+  "expectedFiles": [
+    "shader.wgsl",
+    "shader.test.json"
+  ],
+  "hiddenChecks": [
+    "uniform-layout-regression"
+  ]
+}

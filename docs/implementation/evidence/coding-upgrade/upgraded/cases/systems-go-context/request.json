@@ -1,0 +1,11 @@
+{
+  "id": "systems-go-context",
+  "prompt": "Make the lookup honor context cancellation without changing the successful result.",
+  "expectedFiles": [
+    "lookup.go",
+    "lookup_test.go"
+  ],
+  "hiddenChecks": [
+    "cancellation-regression"
+  ]
+}

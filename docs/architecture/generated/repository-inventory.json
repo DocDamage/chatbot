@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 972,
-    "productionSourceFiles": 744,
-    "reachableProductionFiles": 574,
-    "unreachableProductionFiles": 170,
-    "routes": 349,
-    "environmentVariables": 187,
-    "featureFlags": 17,
-    "oversizedProductionFiles": 65
+    "sourceFiles": 1026,
+    "productionSourceFiles": 778,
+    "reachableProductionFiles": 597,
+    "unreachableProductionFiles": 181,
+    "routes": 353,
+    "environmentVariables": 190,
+    "featureFlags": 18,
+    "oversizedProductionFiles": 66
   },
   "routes": [
     {
@@ -659,49 +659,77 @@
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/ask",
-      "line": 22,
+      "line": 24,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/plan",
-      "line": 30,
+      "line": 38,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/patch",
-      "line": 45,
+      "line": 53,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/review",
-      "line": 61,
+      "line": 69,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/verify",
-      "line": 69,
+      "line": 77,
+      "file": "src/server/routes/code.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/code/repository",
+      "line": 90,
+      "file": "src/server/routes/code.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/code/retrieve",
+      "line": 95,
+      "file": "src/server/routes/code.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/code/patch/structured",
+      "line": 108,
+      "file": "src/server/routes/code.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/code/verify/native",
+      "line": 122,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/api/code/files/search",
-      "line": 82,
+      "line": 133,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/api/code/symbols",
-      "line": 90,
+      "line": 141,
       "file": "src/server/routes/code.ts"
     },
     {
@@ -2519,6 +2547,22 @@
       "file": "src/core/auth/UserService.ts"
     },
     {
+      "name": "CodingController",
+      "file": "src/core/coding/CodingController.ts"
+    },
+    {
+      "name": "LanguageCapabilityRegistry",
+      "file": "src/core/coding/languages/LanguageCapabilityRegistry.ts"
+    },
+    {
+      "name": "RepairController",
+      "file": "src/core/coding/verification/RepairController.ts"
+    },
+    {
+      "name": "VerificationOrchestrator",
+      "file": "src/core/coding/verification/VerificationOrchestrator.ts"
+    },
+    {
       "name": "APIKeyManager",
       "file": "src/core/config/APIKeyManager.ts"
     },
@@ -2720,6 +2764,14 @@
     }
   ],
   "providers": [
+    {
+      "name": "FallbackParserProvider",
+      "file": "src/core/coding/index/FallbackParserProvider.ts"
+    },
+    {
+      "name": "TypeScriptParserProvider",
+      "file": "src/core/coding/index/TypeScriptParserProvider.ts"
+    },
     {
       "name": "ArcGISFeatureServiceProvider",
       "file": "src/core/gis/providers/ArcGISFeatureServiceProvider.ts"
@@ -4471,6 +4523,12 @@
       ]
     },
     {
+      "file": "src/core/coding/verification/CommandCapabilityRunner.ts",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
       "file": "src/core/index.ts",
       "signals": [
         "queue-or-worker"
@@ -4639,7 +4697,9 @@
     "CEREBRAS_API_KEY",
     "CEREBRAS_MODEL",
     "CLAUDE_MODEL",
+    "CODE_EXECUTOR_SANDBOX",
     "CODE_EXECUTOR_TIMEOUT",
+    "CODING_MODEL_CONTEXT_TOKENS",
     "COHERE_API_KEY",
     "COHERE_MODEL",
     "COMICVINE_API_KEY",
@@ -4659,6 +4719,7 @@
     "EMBEDDING_USE_TRANSFORMERS",
     "ENABLE_AGENT_PATCH_APPLY",
     "ENABLE_BASH_EXECUTOR",
+    "ENABLE_CODE_EXECUTOR",
     "ENABLE_DISK_CACHE",
     "ENABLE_ENSEMBLE",
     "ENABLE_FILE_LOGGING",
@@ -4805,6 +4866,7 @@
   "featureFlags": [
     "ENABLE_AGENT_PATCH_APPLY",
     "ENABLE_BASH_EXECUTOR",
+    "ENABLE_CODE_EXECUTOR",
     "ENABLE_DISK_CACHE",
     "ENABLE_ENSEMBLE",
     "ENABLE_FILE_LOGGING",
@@ -4822,6 +4884,14 @@
     "USE_OLLAMA"
   ],
   "externalBinaries": [
+    {
+      "binary": "kill",
+      "file": "src/core/coding/verification/CommandCapabilityRunner.ts"
+    },
+    {
+      "binary": "taskkill.exe",
+      "file": "src/core/coding/verification/CommandCapabilityRunner.ts"
+    },
     {
       "binary": "git",
       "file": "src/core/project/ProjectIntelligenceService.ts"
@@ -4875,6 +4945,10 @@
     {
       "file": "src/core/agents/AgentTeam.ts",
       "lines": 547
+    },
+    {
+      "file": "src/core/agents/CodingAgent.ts",
+      "lines": 390
     },
     {
       "file": "src/core/agents/MultiAgentOrchestrator.ts",
@@ -4934,7 +5008,7 @@
     },
     {
       "file": "src/core/initialization/ServiceInitializer.ts",
-      "lines": 848
+      "lines": 852
     },
     {
       "file": "src/core/knowledge/GitHubSource.ts",
@@ -4982,7 +5056,7 @@
     },
     {
       "file": "src/core/orchestrator/EnhancedOrchestrator.ts",
-      "lines": 564
+      "lines": 580
     },
     {
       "file": "src/core/orchestrator/Orchestrator.ts",
@@ -5086,7 +5160,7 @@
     },
     {
       "file": "src/server/routes/legacy-chat.ts",
-      "lines": 348
+      "lines": 356
     },
     {
       "file": "src/server/routes/setup.ts",

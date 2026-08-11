@@ -12,9 +12,18 @@ import { PatchGenerator, GeneratedPatch } from './PatchGenerator';
 import { VerificationRunner, VerificationSummary } from './VerificationRunner';
 import { CodeContext, CodeContextBudgeter } from './CodeContextBudgeter';
 import { ChatContextBundle, renderChatContext } from '../../types/chat';
+import { RepositoryIntelligence, RepositorySnapshot } from '../coding/repository/RepositoryIntelligence';
+import { SymbolIndex } from '../coding/index/SymbolIndex';
+import { StructuralRetriever } from '../coding/retrieval/StructuralRetriever';
+import { AdaptiveContextAllocator, AllocatedContext } from '../coding/retrieval/AdaptiveContextAllocator';
+import { StructuredEditEngine } from '../coding/editing/StructuredEditEngine';
+import { EditOperation, ContextEvidence, StructuredPatch } from '../coding/types';
+import { VerificationOrchestrator, VerificationSummary as NativeVerificationSummary } from '../coding/verification/VerificationOrchestrator';
+import { LLMAdapter } from '../providers/LLMAdapter';
 
 export interface CodingAgentConfig {
   workspaceRoot?: string;
+  modelContextTokens?: number;
   toolRegistry?: ToolRegistry;
   functionCaller?: FunctionCaller;
   verificationRunner?: VerificationRunner;
@@ -24,6 +33,9 @@ export interface CodingAgentRequest {
   message: string;
   runVerification?: boolean;
   context?: ChatContextBundle;
+  modelAdapter?: LLMAdapter;
+  model?: string;
+  generatePatch?: boolean;
 }
 
 export interface CodingAgentResult {
@@ -37,6 +49,7 @@ export interface CodingAgentResult {
   review: CodeReviewResult;
   toolCalls: ToolCall[];
   context: CodeContext;
+  adaptiveContext?: AllocatedContext;
   risks: string[];
   nextStep?: string;
 }
@@ -46,13 +59,18 @@ export class CodingAgent {
   private readonly planner = new CodePlanner();
   private readonly reviewer = new CodeReviewer();
   private readonly patchGenerator = new PatchGenerator();
-  private readonly contextBudgeter = new CodeContextBudgeter(4000);
+  private readonly contextBudgeter: CodeContextBudgeter;
   private readonly indexer: CodeIndexer;
   private readonly functionCaller: FunctionCaller;
   private readonly verificationRunner: VerificationRunner;
+  private readonly repositoryIntelligence: RepositoryIntelligence;
+  private readonly symbolIndex: SymbolIndex;
+  private readonly editEngine: StructuredEditEngine;
+  private readonly nativeVerification: VerificationOrchestrator;
 
   constructor(config: CodingAgentConfig = {}) {
     this.workspaceRoot = config.workspaceRoot || process.cwd();
+    this.contextBudgeter = new CodeContextBudgeter(config.modelContextTokens || Number(process.env.CODING_MODEL_CONTEXT_TOKENS || 12000));
     this.indexer = new CodeIndexer(this.workspaceRoot);
 
     const registry = config.toolRegistry || new ToolRegistry();
@@ -63,6 +81,10 @@ export class CodingAgent {
     }
     this.functionCaller = config.functionCaller || new FunctionCaller(registry);
     this.verificationRunner = config.verificationRunner || new VerificationRunner(new CommandRunner(this.workspaceRoot));
+    this.repositoryIntelligence = new RepositoryIntelligence(this.workspaceRoot);
+    this.symbolIndex = new SymbolIndex(this.workspaceRoot);
+    this.editEngine = new StructuredEditEngine(this.workspaceRoot);
+    this.nativeVerification = new VerificationOrchestrator(this.workspaceRoot);
   }
 
   classifyIntent(message: string): CodingIntent {
@@ -81,12 +103,28 @@ export class CodingAgent {
       packageScripts: evidence.packageScripts,
       architectureNotes: evidence.architectureNotes
     });
+    const adaptiveContext = new AdaptiveContextAllocator().allocate({
+      modelContextTokens: context.tokenBudget,
+      outputTokens: Math.max(256, Math.ceil(contextualMessage.length / 4)),
+      intent: plan.intent,
+      repositorySize: evidence.filesInspected.length,
+      evidence: [
+        { kind: 'request', label: 'User request', content: contextualMessage, authority: 'user', reason: 'user task', confidence: 1 },
+        ...evidence.fileExcerpts.map(file => ({ kind: 'source' as const, label: file.path, content: file.content, path: file.path, authority: 'repository' as const, reason: 'inspected implementation', confidence: 0.9 })),
+        ...evidence.relatedTests.map(file => ({ kind: 'test' as const, label: file.path, content: file.content, path: file.path, authority: 'repository' as const, reason: 'related test', confidence: 0.85 })),
+        ...evidence.architectureNotes.map((note, index) => ({ kind: 'architecture' as const, label: `architecture-${index + 1}`, content: note, authority: 'repository' as const, reason: 'repository architecture note', confidence: 0.8 }))
+      ]
+    });
     const summary = this.summarizeFromEvidence(contextualMessage, filesInspected, evidence);
-    const patch = this.patchGenerator.createEmptyPatch();
+    const modelPatch = request.generatePatch && request.modelAdapter
+      ? await this.generateModelPatch(request.modelAdapter, request.model, contextualMessage, context)
+      : undefined;
+    const patch = modelPatch?.patch || this.patchGenerator.createEmptyPatch();
     const verification = request.runVerification
       ? await this.verificationRunner.runStandardSuite()
       : { status: 'not_run' as const, commandsRun: [], results: [], remainingRisks: ['Verification was not requested'] };
     const review = this.reviewer.review(patch.diff);
+    const risks = [...verification.remainingRisks, ...(modelPatch?.risks || [])];
 
     return {
       intent: plan.intent,
@@ -99,7 +137,8 @@ export class CodingAgent {
       review,
       toolCalls: evidence.toolCalls,
       context,
-      risks: verification.remainingRisks,
+      adaptiveContext,
+      risks,
       nextStep: request.runVerification ? undefined : 'Run /api/code/verify before trusting behavior-changing code.'
     };
   }
@@ -118,6 +157,32 @@ export class CodingAgent {
 
   async review(diff: string, focus: string[] = []): Promise<CodeReviewResult> {
     return this.reviewer.review(diff, focus);
+  }
+
+  getRepositorySnapshot(): RepositorySnapshot {
+    return this.repositoryIntelligence.snapshot();
+  }
+
+  async retrieveEvidence(request: { query: string; files?: string[]; symbols?: string[]; diagnostics?: Array<{ file?: string; message: string }>; maxItems?: number }): Promise<ContextEvidence[]> {
+    const snapshot = this.getRepositorySnapshot();
+    this.symbolIndex.indexFiles(snapshot.files.filter(file => !file.binary).map(file => file.path));
+    return new StructuralRetriever(this.workspaceRoot, snapshot, this.symbolIndex).retrieve(request);
+  }
+
+  createStructuredPatch(operations: EditOperation[]): StructuredPatch {
+    return this.editEngine.createPatch(operations);
+  }
+
+  createStructuredPatchFromInstruction(message: string, authorized = false): StructuredPatch {
+    return this.editEngine.fromNaturalLanguage(message, { authorized });
+  }
+
+  async verifyNative(options: { run?: boolean; maxCommands?: number } = {}): Promise<NativeVerificationSummary> {
+    return this.nativeVerification.verify(options);
+  }
+
+  allocateContext(input: { modelContextTokens: number; outputTokens: number; intent: string; evidence: ContextEvidence[]; repositorySize: number; errorCount?: number }) {
+    return new AdaptiveContextAllocator().allocate(input);
   }
 
   async searchFiles(query: string): Promise<Array<{ path: string }>> {
@@ -238,6 +303,57 @@ export class CodingAgent {
     return rendered.trim()
       ? `${rendered}\n\nUser request:\n${message}`
       : message;
+  }
+
+  private async generateModelPatch(
+    adapter: LLMAdapter,
+    model: string | undefined,
+    request: string,
+    context: CodeContext
+  ): Promise<{ patch: GeneratedPatch; risks: string[] }> {
+    const response = await adapter.generate({
+      model,
+      temperature: 0,
+      maxTokens: Math.min(4000, Math.max(1000, Math.floor(context.tokenBudget / 2))),
+      systemPrompt: [
+        'You are a repository coding agent.',
+        'Return only JSON with this shape: {"operations":[{"operation":"create|modify|delete","path":"relative/path","content":"new content for create/modify","expectedContent":"current content for modify/delete","reason":"why","authorized":false}]}',
+        'Use repository-relative paths. Never claim an operation is authorized. Do not include markdown fences or shell commands.'
+      ].join(' '),
+      prompt: `${request}\n\nRepository evidence:\n${context.items.map(item => `${item.kind}: ${item.label}\n${item.content}`).join('\n\n')}`
+    });
+    const parsed = this.parseModelOperations(response.content);
+    if (!parsed) {
+      return { patch: this.patchGenerator.createEmptyPatch('The selected coding model did not return the required structured operation format.'), risks: ['Model output was not valid structured patch JSON; no patch was created'] };
+    }
+    const structured = this.editEngine.createPatch(parsed);
+    return {
+      patch: { format: 'unified-diff', diff: structured.diff, filesChanged: structured.filesChanged, explanation: structured.conflicts.length ? 'Model patch requires conflict review before application.' : 'Structured patch proposed by the selected coding model.' },
+      risks: structured.conflicts.map(conflict => `${conflict.path}: ${conflict.reason}`)
+    };
+  }
+
+  private parseModelOperations(content: string): EditOperation[] | undefined {
+    const candidate = content.match(/\{[\s\S]*\}/)?.[0];
+    if (!candidate) return undefined;
+    try {
+      const value = JSON.parse(candidate) as { operations?: unknown };
+      if (!Array.isArray(value.operations)) return undefined;
+      const operations = value.operations.filter((operation): operation is EditOperation => {
+        if (!operation || typeof operation !== 'object') return false;
+        const item = operation as Record<string, unknown>;
+        return (item.operation === 'create' || item.operation === 'modify' || item.operation === 'delete')
+          && typeof item.path === 'string'
+          && typeof item.reason === 'string'
+          && (item.content === undefined || typeof item.content === 'string')
+          && (item.expectedContent === undefined || typeof item.expectedContent === 'string');
+      // This flag only permits construction of a reviewable draft. The draft is
+      // never applied here; application still goes through the write gate.
+      }).map(operation => ({ ...operation, authorized: true }));
+      return operations;
+    } catch {
+      return undefined;
+    }
   }
 
   private extractArchitectureNotes(files: string[]): string[] {

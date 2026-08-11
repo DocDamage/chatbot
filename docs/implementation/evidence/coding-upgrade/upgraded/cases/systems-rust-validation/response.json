@@ -1,0 +1,14 @@
+{
+  "mode": "upgraded",
+  "status": "ready",
+  "executor": "repository-controller-inspection",
+  "inspection": {
+    "affectedFiles": [],
+    "affectedSymbols": [],
+    "selectedFiles": [
+      "tests/validation.rs"
+    ],
+    "verificationStatus": "not_run",
+    "reviewFindingCount": 0
+  }
+}

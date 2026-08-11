@@ -42,6 +42,7 @@ export class CodeExecutor {
       };
     }
 
+    let tempDir: string | undefined;
     try {
       let executable: string;
       let args: string[];
@@ -66,7 +67,7 @@ export class CodeExecutor {
           };
       }
 
-      const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'chatbot-code-'));
+      tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'chatbot-code-'));
       const { stdout, stderr } = await this.spawnCode(executable, args, tempDir);
       const executionTime = Date.now() - startTime;
 
@@ -105,6 +106,10 @@ export class CodeExecutor {
           executionTime
         }
       };
+    } finally {
+      if (tempDir) {
+        try { fs.rmSync(tempDir, { recursive: true, force: true }); } catch (cleanupError: any) { logger.warn('Code executor temp workspace cleanup failed', { error: cleanupError.message }); }
+      }
     }
   }
 

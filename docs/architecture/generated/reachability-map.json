@@ -237,6 +237,29 @@
     "src/core/chrono/SourceAuthorityRanker.ts",
     "src/core/chrono/TimeRangeParser.ts",
     "src/core/chrono/TimelineBuilder.ts",
+    "src/core/coding/authorization/CodingAuthorization.ts",
+    "src/core/coding/editing/PatchConflictDetector.ts",
+    "src/core/coding/editing/StructuredEditEngine.ts",
+    "src/core/coding/index/FallbackParserProvider.ts",
+    "src/core/coding/index/ParserProvider.ts",
+    "src/core/coding/index/RelationshipStore.ts",
+    "src/core/coding/index/SymbolIndex.ts",
+    "src/core/coding/index/TypeScriptParserProvider.ts",
+    "src/core/coding/languages/LanguageCapability.ts",
+    "src/core/coding/languages/LanguageCapabilityRegistry.ts",
+    "src/core/coding/repository/BuildSystemDetector.ts",
+    "src/core/coding/repository/ManifestDetector.ts",
+    "src/core/coding/repository/ProjectRootDetector.ts",
+    "src/core/coding/repository/RepositoryIntelligence.ts",
+    "src/core/coding/repository/WorkspaceInstructionResolver.ts",
+    "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
+    "src/core/coding/retrieval/StructuralRetriever.ts",
+    "src/core/coding/review/ReviewPipeline.ts",
+    "src/core/coding/types.ts",
+    "src/core/coding/verification/CommandCapabilityRunner.ts",
+    "src/core/coding/verification/DiagnosticParser.ts",
+    "src/core/coding/verification/RepairController.ts",
+    "src/core/coding/verification/VerificationOrchestrator.ts",
     "src/core/config/ConfigValidator.ts",
     "src/core/config/EnvironmentDefinitions.ts",
     "src/core/contracts/ContractGate.ts",
@@ -813,6 +836,29 @@
     "src/core/chrono/SourceAuthorityRanker.ts",
     "src/core/chrono/TimeRangeParser.ts",
     "src/core/chrono/TimelineBuilder.ts",
+    "src/core/coding/authorization/CodingAuthorization.ts",
+    "src/core/coding/editing/PatchConflictDetector.ts",
+    "src/core/coding/editing/StructuredEditEngine.ts",
+    "src/core/coding/index/FallbackParserProvider.ts",
+    "src/core/coding/index/ParserProvider.ts",
+    "src/core/coding/index/RelationshipStore.ts",
+    "src/core/coding/index/SymbolIndex.ts",
+    "src/core/coding/index/TypeScriptParserProvider.ts",
+    "src/core/coding/languages/LanguageCapability.ts",
+    "src/core/coding/languages/LanguageCapabilityRegistry.ts",
+    "src/core/coding/repository/BuildSystemDetector.ts",
+    "src/core/coding/repository/ManifestDetector.ts",
+    "src/core/coding/repository/ProjectRootDetector.ts",
+    "src/core/coding/repository/RepositoryIntelligence.ts",
+    "src/core/coding/repository/WorkspaceInstructionResolver.ts",
+    "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
+    "src/core/coding/retrieval/StructuralRetriever.ts",
+    "src/core/coding/review/ReviewPipeline.ts",
+    "src/core/coding/types.ts",
+    "src/core/coding/verification/CommandCapabilityRunner.ts",
+    "src/core/coding/verification/DiagnosticParser.ts",
+    "src/core/coding/verification/RepairController.ts",
+    "src/core/coding/verification/VerificationOrchestrator.ts",
     "src/core/config/ConfigValidator.ts",
     "src/core/config/EnvironmentDefinitions.ts",
     "src/core/contracts/ContractGate.ts",
@@ -1325,6 +1371,15 @@
     "src/core/automation/AutoDrive.ts",
     "src/core/browser/BrowserAgent.ts",
     "src/core/chrono/ClaimVerifier.ts",
+    "src/core/coding/CodingController.ts",
+    "src/core/coding/CodingRequestRouter.ts",
+    "src/core/coding/editing/WorkspaceWriteGate.ts",
+    "src/core/coding/index.ts",
+    "src/core/coding/knowledge/CodingKnowledgeAuthority.ts",
+    "src/core/coding/knowledge/ProvenancePolicy.ts",
+    "src/core/coding/model/CodingModelRouter.ts",
+    "src/core/coding/retrieval/DocumentationRetriever.ts",
+    "src/core/coding/testing/TestStrategy.ts",
     "src/core/config/APIKeyManager.ts",
     "src/core/config/ProfileManager.ts",
     "src/core/contracts/UniversalContract.ts",
@@ -1333,6 +1388,8 @@
     "src/core/creative/PromptPackLibrary.ts",
     "src/core/creative/RoleplaySessionEngine.ts",
     "src/core/creative/StoryBibleStore.ts",
+    "src/core/evaluation/CodingBenchmarkRunner.ts",
+    "src/core/evaluation/CodingEvalHarness.ts",
     "src/core/evaluation/EvalHarness.ts",
     "src/core/index.ts",
     "src/core/knowledge/SmartKnowledgeSource.ts",
@@ -1500,6 +1557,10 @@
     {
       "importer": "scripts/release/__tests__/phase2-scanners.test.mjs",
       "specifier": "./thing"
+    },
+    {
+      "importer": "src/core/coding/index/RelationshipStore.test.ts",
+      "specifier": "./b"
     },
     {
       "importer": "src/core/initialization/ServiceInitializer.ts",
@@ -1835,6 +1896,8 @@
       "src/core/rag/RAGService.ts"
     ],
     "eslint.config.js": [],
+    "evals/coding/fixtures/web-svelte-boundary/src/routes/+page.test.ts": [],
+    "evals/coding/fixtures/web-svelte-boundary/test-runner.mjs": [],
     "jest.config.js": [],
     "prettier.config.js": [],
     "scripts/backup-knowledge-db.ts": [],
@@ -1924,6 +1987,9 @@
     "scripts/release/smoke-pages-artifact.mjs": [],
     "scripts/release/smoke-pages-deployment.mjs": [],
     "scripts/release/verify-ci-graph.mjs": [],
+    "scripts/run-coding-evals.ts": [
+      "src/core/evaluation/CodingBenchmarkRunner.ts"
+    ],
     "scripts/run-domain-evals.ts": [],
     "scripts/run-evals.ts": [
       "src/core/evaluation/EvalHarness.ts"
@@ -1988,9 +2054,12 @@
     "src/core/agents/CodeContextBudgeter.ts": [],
     "src/core/agents/CodeIndexer.ts": [],
     "src/core/agents/CodePlanner.ts": [],
-    "src/core/agents/CodeReviewer.ts": [],
+    "src/core/agents/CodeReviewer.ts": [
+      "src/core/coding/review/ReviewPipeline.ts"
+    ],
     "src/core/agents/CodingAgent.test.ts": [
-      "src/core/agents/CodingAgent.ts"
+      "src/core/agents/CodingAgent.ts",
+      "src/core/providers/LLMAdapter.ts"
     ],
     "src/core/agents/CodingAgent.ts": [
       "src/core/agents/CodeContextBudgeter.ts",
@@ -1999,6 +2068,14 @@
       "src/core/agents/CodeReviewer.ts",
       "src/core/agents/PatchGenerator.ts",
       "src/core/agents/VerificationRunner.ts",
+      "src/core/coding/editing/StructuredEditEngine.ts",
+      "src/core/coding/index/SymbolIndex.ts",
+      "src/core/coding/repository/RepositoryIntelligence.ts",
+      "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
+      "src/core/coding/retrieval/StructuralRetriever.ts",
+      "src/core/coding/types.ts",
+      "src/core/coding/verification/VerificationOrchestrator.ts",
+      "src/core/providers/LLMAdapter.ts",
       "src/core/tools/CommandRunner.ts",
       "src/core/tools/FunctionCaller.ts",
       "src/core/tools/RepoTools.ts",
@@ -2717,6 +2794,204 @@
     "src/core/chrono/TimeRangeParser.ts": [
       "src/core/chrono/ChronoDate.ts"
     ],
+    "src/core/coding/AdaptiveContextAllocator.test.ts": [
+      "src/core/coding/retrieval/AdaptiveContextAllocator.ts"
+    ],
+    "src/core/coding/authorization/CodingAuthorization.test.ts": [
+      "src/core/coding/authorization/CodingAuthorization.ts"
+    ],
+    "src/core/coding/authorization/CodingAuthorization.ts": [
+      "src/core/modes/ExecutionModePolicy.ts"
+    ],
+    "src/core/coding/CodingController.ts": [
+      "src/core/coding/CodingRequestRouter.ts",
+      "src/core/coding/editing/StructuredEditEngine.ts",
+      "src/core/coding/index/SymbolIndex.ts",
+      "src/core/coding/repository/RepositoryIntelligence.ts",
+      "src/core/coding/retrieval/StructuralRetriever.ts",
+      "src/core/coding/review/ReviewPipeline.ts",
+      "src/core/coding/types.ts",
+      "src/core/coding/verification/RepairController.ts",
+      "src/core/coding/verification/VerificationOrchestrator.ts"
+    ],
+    "src/core/coding/CodingRequestRouter.ts": [
+      "src/core/agents/CodePlanner.ts",
+      "src/core/coding/types.ts",
+      "src/core/modes/ExecutionModePolicy.ts"
+    ],
+    "src/core/coding/DiagnosticParser.test.ts": [
+      "src/core/coding/verification/DiagnosticParser.ts"
+    ],
+    "src/core/coding/editing/PatchConflictDetector.ts": [
+      "src/core/coding/types.ts"
+    ],
+    "src/core/coding/editing/StructuredEditEngine.ts": [
+      "src/core/coding/editing/PatchConflictDetector.ts",
+      "src/core/coding/types.ts"
+    ],
+    "src/core/coding/editing/WorkspaceWriteGate.ts": [
+      "src/core/coding/types.ts",
+      "src/core/modes/ExecutionModePolicy.ts"
+    ],
+    "src/core/coding/index.ts": [
+      "src/core/coding/CodingController.ts",
+      "src/core/coding/CodingRequestRouter.ts",
+      "src/core/coding/authorization/CodingAuthorization.ts",
+      "src/core/coding/editing/PatchConflictDetector.ts",
+      "src/core/coding/editing/StructuredEditEngine.ts",
+      "src/core/coding/editing/WorkspaceWriteGate.ts",
+      "src/core/coding/index/ParserProvider.ts",
+      "src/core/coding/index/RelationshipStore.ts",
+      "src/core/coding/index/SymbolIndex.ts",
+      "src/core/coding/index/TypeScriptParserProvider.ts",
+      "src/core/coding/knowledge/CodingKnowledgeAuthority.ts",
+      "src/core/coding/knowledge/ProvenancePolicy.ts",
+      "src/core/coding/languages/LanguageCapability.ts",
+      "src/core/coding/languages/LanguageCapabilityRegistry.ts",
+      "src/core/coding/model/CodingModelRouter.ts",
+      "src/core/coding/repository/BuildSystemDetector.ts",
+      "src/core/coding/repository/ManifestDetector.ts",
+      "src/core/coding/repository/ProjectRootDetector.ts",
+      "src/core/coding/repository/RepositoryIntelligence.ts",
+      "src/core/coding/repository/WorkspaceInstructionResolver.ts",
+      "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
+      "src/core/coding/retrieval/DocumentationRetriever.ts",
+      "src/core/coding/retrieval/StructuralRetriever.ts",
+      "src/core/coding/review/ReviewPipeline.ts",
+      "src/core/coding/testing/TestStrategy.ts",
+      "src/core/coding/types.ts",
+      "src/core/coding/verification/CommandCapabilityRunner.ts",
+      "src/core/coding/verification/DiagnosticParser.ts",
+      "src/core/coding/verification/RepairController.ts",
+      "src/core/coding/verification/VerificationOrchestrator.ts"
+    ],
+    "src/core/coding/index/FallbackParserProvider.ts": [
+      "src/core/coding/index/ParserProvider.ts"
+    ],
+    "src/core/coding/index/ParserProvider.ts": [],
+    "src/core/coding/index/RelationshipStore.test.ts": [
+      "src/core/coding/index/RelationshipStore.ts",
+      "src/core/coding/index/SymbolIndex.ts"
+    ],
+    "src/core/coding/index/RelationshipStore.ts": [
+      "src/core/coding/index/ParserProvider.ts"
+    ],
+    "src/core/coding/index/SymbolIndex.ts": [
+      "src/core/coding/index/FallbackParserProvider.ts",
+      "src/core/coding/index/ParserProvider.ts",
+      "src/core/coding/index/TypeScriptParserProvider.ts"
+    ],
+    "src/core/coding/index/TypeScriptParserProvider.test.ts": [
+      "src/core/coding/index/TypeScriptParserProvider.ts"
+    ],
+    "src/core/coding/index/TypeScriptParserProvider.ts": [
+      "src/core/coding/index/ParserProvider.ts"
+    ],
+    "src/core/coding/knowledge/CodingKnowledgeAuthority.ts": [
+      "src/core/coding/knowledge/ProvenancePolicy.ts"
+    ],
+    "src/core/coding/knowledge/ProvenancePolicy.test.ts": [
+      "src/core/coding/knowledge/CodingKnowledgeAuthority.ts"
+    ],
+    "src/core/coding/knowledge/ProvenancePolicy.ts": [],
+    "src/core/coding/LanguageCapabilityRegistry.test.ts": [
+      "src/core/coding/languages/LanguageCapabilityRegistry.ts"
+    ],
+    "src/core/coding/languages/LanguageCapability.ts": [],
+    "src/core/coding/languages/LanguageCapabilityRegistry.ts": [
+      "src/core/coding/languages/LanguageCapability.ts"
+    ],
+    "src/core/coding/model/CodingModelRouter.ts": [
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/coding/RemainingCodingCoverage.test.ts": [
+      "src/core/coding/CodingController.ts",
+      "src/core/coding/CodingRequestRouter.ts",
+      "src/core/coding/editing/StructuredEditEngine.ts",
+      "src/core/coding/editing/WorkspaceWriteGate.ts",
+      "src/core/coding/index/SymbolIndex.ts",
+      "src/core/coding/knowledge/CodingKnowledgeAuthority.ts",
+      "src/core/coding/model/CodingModelRouter.ts",
+      "src/core/coding/repository/RepositoryIntelligence.ts",
+      "src/core/coding/retrieval/StructuralRetriever.ts",
+      "src/core/coding/verification/VerificationOrchestrator.ts"
+    ],
+    "src/core/coding/repository/BuildSystemDetector.test.ts": [
+      "src/core/coding/repository/BuildSystemDetector.ts"
+    ],
+    "src/core/coding/repository/BuildSystemDetector.ts": [
+      "src/core/coding/languages/LanguageCapabilityRegistry.ts",
+      "src/core/coding/repository/ManifestDetector.ts"
+    ],
+    "src/core/coding/repository/ManifestDetector.ts": [],
+    "src/core/coding/repository/ProjectRootDetector.ts": [],
+    "src/core/coding/repository/RepositoryIntelligence.ts": [
+      "src/core/coding/index/RelationshipStore.ts",
+      "src/core/coding/index/SymbolIndex.ts",
+      "src/core/coding/languages/LanguageCapabilityRegistry.ts",
+      "src/core/coding/repository/BuildSystemDetector.ts",
+      "src/core/coding/repository/ManifestDetector.ts",
+      "src/core/coding/repository/ProjectRootDetector.ts",
+      "src/core/coding/repository/WorkspaceInstructionResolver.ts"
+    ],
+    "src/core/coding/repository/WorkspaceInstructionResolver.ts": [],
+    "src/core/coding/RepositoryIntelligence.test.ts": [
+      "src/core/coding/repository/RepositoryIntelligence.ts"
+    ],
+    "src/core/coding/retrieval/AdaptiveContextAllocator.ts": [
+      "src/core/coding/types.ts"
+    ],
+    "src/core/coding/retrieval/DocumentationRetriever.test.ts": [
+      "src/core/coding/retrieval/DocumentationRetriever.ts"
+    ],
+    "src/core/coding/retrieval/DocumentationRetriever.ts": [
+      "src/core/coding/types.ts"
+    ],
+    "src/core/coding/retrieval/StructuralRetriever.ts": [
+      "src/core/coding/index/SymbolIndex.ts",
+      "src/core/coding/repository/RepositoryIntelligence.ts",
+      "src/core/coding/types.ts"
+    ],
+    "src/core/coding/review/ReviewPipeline.ts": [
+      "src/core/coding/types.ts"
+    ],
+    "src/core/coding/StructuredEditEngine.test.ts": [
+      "src/core/coding/editing/StructuredEditEngine.ts"
+    ],
+    "src/core/coding/testing/TestStrategy.test.ts": [
+      "src/core/coding/testing/TestStrategy.ts"
+    ],
+    "src/core/coding/testing/TestStrategy.ts": [
+      "src/core/coding/types.ts"
+    ],
+    "src/core/coding/types.ts": [
+      "src/core/modes/ExecutionModePolicy.ts"
+    ],
+    "src/core/coding/verification/CommandCapabilityRunner.test.ts": [
+      "src/core/coding/verification/CommandCapabilityRunner.ts"
+    ],
+    "src/core/coding/verification/CommandCapabilityRunner.ts": [
+      "src/core/coding/repository/BuildSystemDetector.ts"
+    ],
+    "src/core/coding/verification/DiagnosticParser.ts": [
+      "src/core/coding/types.ts"
+    ],
+    "src/core/coding/verification/RepairController.test.ts": [
+      "src/core/coding/verification/RepairController.ts"
+    ],
+    "src/core/coding/verification/RepairController.ts": [
+      "src/core/coding/types.ts"
+    ],
+    "src/core/coding/verification/VerificationOrchestrator.ts": [
+      "src/core/coding/languages/LanguageCapabilityRegistry.ts",
+      "src/core/coding/repository/BuildSystemDetector.ts",
+      "src/core/coding/repository/ManifestDetector.ts",
+      "src/core/coding/repository/RepositoryIntelligence.ts",
+      "src/core/coding/types.ts",
+      "src/core/coding/verification/CommandCapabilityRunner.ts",
+      "src/core/coding/verification/DiagnosticParser.ts",
+      "src/core/coding/verification/RepairController.ts"
+    ],
     "src/core/config/APIKeyManager.test.ts": [
       "src/core/config/APIKeyManager.ts"
     ],
@@ -2850,6 +3125,16 @@
     "src/core/entity/EntityLinkingService.ts": [
       "src/core/database/Database.ts"
     ],
+    "src/core/evaluation/CodingBenchmarkRunner.test.ts": [
+      "src/core/evaluation/CodingBenchmarkRunner.ts"
+    ],
+    "src/core/evaluation/CodingBenchmarkRunner.ts": [
+      "src/core/coding/CodingController.ts"
+    ],
+    "src/core/evaluation/CodingEvalHarness.test.ts": [
+      "src/core/evaluation/CodingEvalHarness.ts"
+    ],
+    "src/core/evaluation/CodingEvalHarness.ts": [],
     "src/core/evaluation/EvalHarness.test.ts": [
       "src/core/evaluation/EvalHarness.ts"
     ],
@@ -4666,6 +4951,7 @@
       "src/middleware/errorHandler.ts"
     ],
     "src/server/routes/code.ts": [
+      "src/core/coding/authorization/CodingAuthorization.ts",
       "src/core/modes/ExecutionModePolicy.ts",
       "src/core/modes/ModePolicy.ts",
       "src/middleware/errorHandler.ts",
@@ -4756,6 +5042,7 @@
       "src/server/routes/legacy-chat.ts"
     ],
     "src/server/routes/legacy-chat.ts": [
+      "src/core/coding/authorization/CodingAuthorization.ts",
       "src/core/conversation/ConversationManager.ts",
       "src/core/creative/CreativeWritingAgent.ts",
       "src/core/knowledge-os/KnowledgeOsChatAgent.ts",
@@ -4914,5 +5201,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 972
+  "sourceRecordCount": 1026
 }

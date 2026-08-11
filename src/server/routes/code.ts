@@ -3,6 +3,7 @@ import { asyncHandler } from '../../middleware/errorHandler';
 import { sanitizeInput } from '../../middleware/validator';
 import { isDebugLikeCommand } from '../../core/modes/ModePolicy';
 import { assertActionAllowed, modeFromRequest } from '../../core/modes/ExecutionModePolicy';
+import { CodingAuthorization } from '../../core/coding/authorization/CodingAuthorization';
 
 export function createCodeRouter(services: any): Router {
   const router = Router();
@@ -13,6 +14,7 @@ export function createCodeRouter(services: any): Router {
     }
     return services.codingAgent;
   };
+  const authorization = new CodingAuthorization();
 
   const currentMode = (req: any) => modeFromRequest({
     headerMode: req.headers['x-work-mode'],
@@ -20,6 +22,12 @@ export function createCodeRouter(services: any): Router {
   });
 
   router.post('/api/code/ask', asyncHandler(async (req, res) => {
+    const mode = currentMode(req);
+    try {
+      assertActionAllowed(mode, 'read_files');
+    } catch (error: any) {
+      return res.status(403).json({ error: error.message });
+    }
     const message = sanitizeInput(String(req.body.message || ''));
     if (!message.trim()) {
       return res.status(400).json({ error: 'message is required' });
@@ -77,6 +85,49 @@ export function createCodeRouter(services: any): Router {
       return res.status(403).json({ error: error.message });
     }
     res.json(await getAgent().verify(commands));
+  }));
+
+  router.get('/api/code/repository', asyncHandler(async (req, res) => {
+    try { assertActionAllowed(currentMode(req), 'read_files'); } catch (error: any) { return res.status(403).json({ error: error.message }); }
+    res.json(getAgent().getRepositorySnapshot());
+  }));
+
+  router.post('/api/code/retrieve', asyncHandler(async (req, res) => {
+    try { assertActionAllowed(currentMode(req), 'search_files'); } catch (error: any) { return res.status(403).json({ error: error.message }); }
+    const query = sanitizeInput(String(req.body.query || req.body.message || ''));
+    if (!query.trim()) return res.status(400).json({ error: 'query is required' });
+    res.json({ evidence: await getAgent().retrieveEvidence({
+      query,
+      files: Array.isArray(req.body.files) ? req.body.files.map(String) : undefined,
+      symbols: Array.isArray(req.body.symbols) ? req.body.symbols.map(String) : undefined,
+      diagnostics: Array.isArray(req.body.diagnostics) ? req.body.diagnostics : undefined,
+      maxItems: Number.isFinite(req.body.maxItems) ? Number(req.body.maxItems) : undefined
+    }) });
+  }));
+
+  router.post('/api/code/patch/structured', asyncHandler(async (req, res) => {
+    const mode = currentMode(req);
+    try {
+      assertActionAllowed(mode, 'create_patch');
+      authorization.assert(authorization.authorize({ requestId: String(req.headers['x-request-id'] || ''), mode, action: 'create_patch' }));
+    } catch (error: any) {
+      return res.status(403).json({ error: error.message });
+    }
+    if (Array.isArray(req.body.operations)) return res.json(getAgent().createStructuredPatch(req.body.operations));
+    const message = sanitizeInput(String(req.body.message || ''));
+    if (!message.trim()) return res.status(400).json({ error: 'operations or message is required' });
+    res.json(getAgent().createStructuredPatchFromInstruction(message, false));
+  }));
+
+  router.post('/api/code/verify/native', asyncHandler(async (req, res) => {
+    const mode = currentMode(req);
+    try {
+      assertActionAllowed(mode, 'run_tests');
+      authorization.assert(authorization.authorize({ requestId: String(req.headers['x-request-id'] || ''), mode, action: 'run_verification' }));
+    } catch (error: any) {
+      return res.status(403).json({ error: error.message });
+    }
+    res.json(await getAgent().verifyNative({ run: req.body.run !== false, maxCommands: Number.isFinite(req.body.maxCommands) ? Number(req.body.maxCommands) : undefined }));
   }));
 
   router.get('/api/code/files/search', asyncHandler(async (req, res) => {

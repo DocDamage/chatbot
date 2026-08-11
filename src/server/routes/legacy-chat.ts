@@ -12,6 +12,7 @@ import { rateLimiter } from '../../middleware/rateLimiter';
 import { sanitizeInput, validateChatRequest } from '../../middleware/validator';
 import { ChatRequestDto, buildChatContextBundle } from '../../types/chat';
 import { enrichChatRequestWithPlan } from '../chatRequest';
+import { CodingAuthorization } from '../../core/coding/authorization/CodingAuthorization';
 
 type ChatSpecialistMode =
   | 'coding'
@@ -82,6 +83,7 @@ export interface LegacyChatRouteDeps {
 
 export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHandler[] {
   const humanLanguageRouter = new HumanLanguageRouter();
+  const codingAuthorization = new CodingAuthorization();
 
   const processSpecialistChat = async (
     message: string,
@@ -111,12 +113,18 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
     }
 
     if (mode === 'coding' && services.codingAgent) {
+      const authorization = codingAuthorization.authorize({
+        requestId: request?.sessionId,
+        mode: request?.mode,
+        action: 'inspect'
+      });
+      codingAuthorization.assert(authorization);
       const result = await services.codingAgent.handle({
         message,
         runVerification: false,
         context: request ? buildChatContextBundle(request) : undefined,
       });
-      return { ...result, nlu };
+      return { ...result, nlu, codingAuthorization: authorization };
     }
 
     if (mode === 'math' && services.mathGeniusAgent) return { ...(await services.mathGeniusAgent.solve(message)), nlu };

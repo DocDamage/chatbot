@@ -1,0 +1,11 @@
+{
+  "id": "jvm-module-boundary",
+  "prompt": "Keep the public module API stable while adding the requested filtering behavior.",
+  "expectedFiles": [
+    "src/main/kotlin/Users.kt",
+    "src/test/kotlin/UsersTest.kt"
+  ],
+  "hiddenChecks": [
+    "public-api-regression"
+  ]
+}

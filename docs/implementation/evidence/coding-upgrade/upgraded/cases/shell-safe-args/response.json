@@ -1,0 +1,6 @@
+{
+  "mode": "upgraded",
+  "status": "unsupported",
+  "reason": "Toolchain unavailable: shellcheck",
+  "executor": "toolchain-preflight-only"
+}

@@ -1,0 +1,1 @@
+{"name":"web-svelte-boundary","private":true,"scripts":{"test":"node ./test-runner.mjs"},"devDependencies":{"svelte":"^4.0.0"}}

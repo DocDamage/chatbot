@@ -759,11 +759,15 @@ export class ServiceInitializer {
     const knowledgeLearner = new KnowledgeLearner(codingKB);
 
     // 4. Code executor
-    const codeExecutor = new CodeExecutor(
-      parseInt(process.env.CODE_EXECUTOR_TIMEOUT || '5000'),
-      process.env.ENABLE_BASH_EXECUTOR === 'true' ? ['python', 'javascript', 'bash'] : ['python', 'javascript']
-    );
-    registry.register(codeExecutor.createTool());
+    // CodeExecutor is not a sandbox. Keep it disabled for repository work unless
+    // an explicitly provisioned isolated runtime opts in at the host boundary.
+    if (process.env.ENABLE_CODE_EXECUTOR === 'true' && process.env.CODE_EXECUTOR_SANDBOX === 'true') {
+      const codeExecutor = new CodeExecutor(
+        parseInt(process.env.CODE_EXECUTOR_TIMEOUT || '5000'),
+        process.env.ENABLE_BASH_EXECUTOR === 'true' ? ['python', 'javascript', 'bash'] : ['python', 'javascript']
+      );
+      registry.register(codeExecutor.createTool());
+    }
 
     // 5. Repo-aware coding tools
     const commandRunner = new CommandRunner(process.cwd());

@@ -1,0 +1,12 @@
+{
+  "id": "managed-dotnet-nullability",
+  "prompt": "Return an explicit not-found result instead of dereferencing a missing customer.",
+  "expectedFiles": [
+    "CustomerService.cs",
+    "CustomerServiceTests.cs",
+    "Program.cs"
+  ],
+  "hiddenChecks": [
+    "missing-customer-regression"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "mode": "upgraded",
+  "status": "ready",
+  "executor": "repository-controller-inspection",
+  "inspection": {
+    "affectedFiles": [],
+    "affectedSymbols": [],
+    "selectedFiles": [
+      "CustomerService.cs",
+      "CustomerServiceTests.cs"
+    ],
+    "verificationStatus": "not_run",
+    "reviewFindingCount": 0
+  }
+}
