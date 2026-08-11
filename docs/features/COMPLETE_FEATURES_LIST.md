@@ -175,5 +175,5 @@
    - Batch processing UI
    - Advanced caching strategies
 
-All core features are production-ready! 🚀
+Core features are implemented to varying degrees. Consult the production feature manifest for verified support status.
 

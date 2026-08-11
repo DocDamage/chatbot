@@ -1,6 +1,6 @@
 # Polyglot coding upgrade implementation audit
 
-This bundle records the implementation boundary for the polyglot coding upgrade. The exact source SHA used for the checked-in benchmark artifacts is recorded in `baseline/environment.json` and `upgraded/environment.json` (`d5ec608`).
+This bundle records the implementation boundary for the polyglot coding upgrade. The exact source SHA used for the checked-in benchmark artifacts is recorded in `baseline/environment.json` and `upgraded/environment.json` (`54623a7`).
 
 ## Implemented
 

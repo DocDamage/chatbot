@@ -290,5 +290,5 @@ POST /api/knowledge/fuse
 - Reddit: Community knowledge
 - YouTube: Educational content
 
-All sources are production-ready and integrated! 🚀
+These sources are documented integrations or research options. Availability, licensing, runtime support, and production approval must be verified separately.
 

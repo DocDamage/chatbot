@@ -1,4 +1,6 @@
-# Implementation Complete - All Features Functional
+# Historical Implementation Record — Features Implemented for the Recorded Scope
+
+> This document records an earlier implementation snapshot. It is not a current production-readiness or market-launch claim. Use [`docs/PROJECT_STATUS.md`](../PROJECT_STATUS.md) and the production feature manifest for current status.
 
 ## ✅ All Missing Features Implemented
 

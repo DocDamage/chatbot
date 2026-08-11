@@ -55,7 +55,7 @@ Express routes / chat request
 
 ### 2.3 Current integration and release boundary
 
-The production feature manifest classifies the coding workflow (`SPEC-002`), code workflow UI (`UI-007`), implement/debug modes, and coding knowledge bootstrap as `LOCAL_ONLY_EXPERIMENTAL`. The current release tracker has verified governance/CI tasks through `P03-T04`, but the coding workflow remains a later feature-completion task (`P07-T05`) and is not production-supported. The current handoff is a closed `P03-T04` handoff that points to `P03-T05`; it is not an authorization to implement this upgrade. The checkout is `main`, so the checkout, not stale branch metadata in the handoff, is the source of truth for source inspection.
+The production feature manifest classifies the coding workflow (`SPEC-002`), code workflow UI (`UI-007`), implement/debug modes, and coding knowledge bootstrap as `LOCAL_ONLY_EXPERIMENTAL`. The release tracker has verified governance/CI tasks through `P03-T04`, but the coding workflow remains a later feature-completion task (`P07-T05`) and is not production-supported. This plan describes the implementation baseline and its local-only boundary; current status is maintained in [`docs/PROJECT_STATUS.md`](../PROJECT_STATUS.md) and [`docs/implementation/handoffs/CURRENT_HANDOFF.md`](handoffs/CURRENT_HANDOFF.md).
 
 ### 2.4 Baseline verification actually run
 

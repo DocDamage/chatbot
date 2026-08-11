@@ -174,5 +174,5 @@ New environment variables:
 - Observability (7 improvements)
 - Features (10 improvements)
 
-All improvements are production-ready and tested for compatibility.
+Improvements are implemented or proposed in this planning record. Production readiness requires current release evidence and is not implied here.
 

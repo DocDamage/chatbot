@@ -85,7 +85,7 @@ This document tracks what has been implemented from the detailed implementation 
 
 ## Summary
 
-**Completed**: Core infrastructure for a production-ready chatbot
+**Completed for the recorded scope**: Core chatbot infrastructure. This planning document does not certify the current repository for production; see [`docs/PROJECT_STATUS.md`](../PROJECT_STATUS.md).
 - All Phase A components implemented
 - Basic Phase C caching
 - Provider abstraction in place

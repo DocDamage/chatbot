@@ -328,5 +328,5 @@ How does ML work?,Machine Learning...,Technical
 ]
 ```
 
-All features are production-ready and integrated! 🚀
+These datasets and intelligence features are documented or partially integrated options; they are not a blanket production-readiness claim.
 
