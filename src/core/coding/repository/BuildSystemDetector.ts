@@ -22,14 +22,39 @@ export class BuildSystemDetector {
   }
 
   private hasExecutableSource(executable: string, args: string[], files: string[], manifests: ManifestRecord[], systems: string[]): boolean {
-    const system = executable === 'npm' || executable === 'pnpm' || executable === 'yarn' ? executable : executable;
+    const normalizedFiles = files.map(file => file.replace(/\\/g, '/').toLowerCase());
+    const names = new Set(normalizedFiles.map(file => file.split('/').pop() || file));
+    const manifestKinds = new Set(manifests.map(manifest => manifest.kind.toLowerCase()));
+    const hasSource = (extensions: string[]): boolean => normalizedFiles.some(file => extensions.some(extension => file.endsWith(extension)));
+    const hasAny = (...values: string[]): boolean => values.some(value => names.has(value.toLowerCase()) || manifestKinds.has(value.toLowerCase()));
     if (['npm', 'pnpm', 'yarn'].includes(executable)) {
       const packageManifest = manifests.find(manifest => manifest.kind === 'package.json');
       const scripts = packageManifest?.data?.scripts;
       const scriptName = args[0] === 'run' ? args[1] : args[0];
       return Boolean(scripts && typeof scripts === 'object' && scriptName && Object.prototype.hasOwnProperty.call(scripts, scriptName));
     }
-    return systems.includes(system) || manifests.length > 0 && ['go', 'cargo', 'dotnet', 'mvn', 'gradle', 'swift', 'cmake', 'meson', 'make', 'pytest', 'ruff', 'mypy', 'shellcheck', 'PSScriptAnalyzer'].includes(executable) && files.length > 0;
+    switch (executable) {
+      case 'cmake': return hasAny('cmakelists.txt');
+      case 'ctest': return hasAny('cmakelists.txt') && (systems.includes('cmake') || systems.includes('ninja'));
+      case 'make': return hasAny('makefile', 'gnumakefile');
+      case 'meson': return hasAny('meson.build');
+      case 'go': return hasSource(['.go']) && hasAny('go.mod', 'go.work');
+      case 'gofmt': return hasSource(['.go']);
+      case 'cargo': return hasAny('cargo.toml');
+      case 'dotnet': return hasSource(['.cs', '.fs', '.fsx', '.fsi']) && normalizedFiles.some(file => /\.(sln|csproj|fsproj)$/.test(file));
+      case 'mvn': return hasSource(['.java']) && hasAny('pom.xml');
+      case 'gradle': return hasSource(['.java', '.kt', '.kts']) && normalizedFiles.some(file => /(^|\/)(build\.gradle(?:\.kts)?|settings\.gradle(?:\.kts)?)$/.test(file));
+      case 'swift': return hasSource(['.swift']) && hasAny('package.swift');
+      case 'pytest': return hasSource(['.py', '.pyi']) && hasAny('pyproject.toml', 'requirements.txt', 'setup.py', 'tox.ini', 'pipfile', 'poetry.lock', 'uv.lock');
+      case 'ruff':
+      case 'mypy': return hasSource(['.py', '.pyi']) && hasAny('pyproject.toml', 'setup.cfg', 'mypy.ini', 'requirements.txt', 'tox.ini', 'pipfile', 'poetry.lock', 'uv.lock');
+      case 'shellcheck': return hasSource(['.sh', '.bash']);
+      case 'PSScriptAnalyzer': return hasSource(['.ps1', '.psm1', '.psd1']);
+      case 'xcodebuild': return hasSource(['.m', '.mm', '.swift']) && normalizedFiles.some(file => /\.(xcodeproj|xcworkspace)$/.test(file));
+      case 'godot': return hasAny('project.godot');
+      case 'docker': return hasAny('dockerfile', 'containerfile');
+      default: return false;
+    }
   }
 
   private dedupe(commands: BuildCommandPlan[]): BuildCommandPlan[] {

@@ -5,6 +5,7 @@ client/coverage/
 data/
 local-tools/
 private-tools/
+API Keys/
 client/node_modules/
 client/dist/
 client/.next/

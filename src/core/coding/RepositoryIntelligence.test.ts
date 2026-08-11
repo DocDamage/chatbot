@@ -15,11 +15,15 @@ describe('RepositoryIntelligence', () => {
     fs.mkdirSync(path.join(root, 'services', 'worker'), { recursive: true });
     fs.writeFileSync(path.join(root, 'services', 'worker', 'Cargo.toml'), '[package]\nname="worker"');
     fs.writeFileSync(path.join(root, 'src', 'main.rs'), 'fn main() {}');
+    fs.mkdirSync(path.join(root, '.pytest_cache'), { recursive: true });
+    fs.writeFileSync(path.join(root, '.pytest_cache', 'lastfailed'), '{}');
     const snapshot = new RepositoryIntelligence(root).snapshot();
     expect(snapshot.instructions[0].path).toBe('AGENTS.md');
     expect(snapshot.manifests.map(manifest => manifest.path)).toContain('package.json');
     expect(snapshot.languages.languages.map(language => language.language)).toContain('rust');
     expect(snapshot.projectRoots.length).toBeGreaterThan(0);
     expect(snapshot.projectRoots.some(project => project.path.endsWith(path.join('services', 'worker')))).toBe(true);
+    expect(snapshot.parserHealth.some(parser => parser.parser.startsWith('tree-sitter:rust'))).toBe(true);
+    expect(snapshot.files.some(file => file.path.includes('.pytest_cache'))).toBe(false);
   });
 });

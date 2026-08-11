@@ -50,11 +50,23 @@ describe('coding capability integration coverage', () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'coding-retrieval-'));
     try {
       fs.mkdirSync(path.join(root, 'src'), { recursive: true });
+      fs.mkdirSync(path.join(root, 'tests'), { recursive: true });
       fs.writeFileSync(path.join(root, 'src', 'app.ts'), 'export function loadUser() { return true; }');
+      fs.writeFileSync(path.join(root, 'tests', 'app.test.ts'), 'test loadUser');
+      fs.writeFileSync(path.join(root, 'package.json'), '{"scripts":{"test":"jest"}}');
       const index = new SymbolIndex(root); index.indexFiles(['src/app.ts']);
-      const snapshot = { root, version: '1', files: [{ path: 'src/app.ts', size: 45, language: 'typescript', generated: false, binary: false }], projectRoots: [], instructions: [], manifests: [], languages: { languages: [], frameworks: [], conflicts: [] }, buildSystems: [], commandPlans: [], relationships: [] } as RepositorySnapshot;
-      const evidence = new StructuralRetriever(root, snapshot, index).retrieve({ query: 'loadUser', symbols: ['loadUser'] });
+      const snapshot = { root, version: '1', files: [
+        { path: 'src/app.ts', size: 45, language: 'typescript', generated: false, binary: false },
+        { path: 'tests/app.test.ts', size: 15, language: 'typescript', generated: false, binary: false },
+        { path: 'package.json', size: 28, language: 'json', generated: false, binary: false }
+      ], projectRoots: [], instructions: [{ path: 'AGENTS.md', scope: '.', content: 'Keep changes minimal.', precedence: 0, trustedForPolicy: false }], manifests: [{ path: 'package.json', kind: 'package.json', data: { scripts: { test: 'jest' } } }], languages: { languages: [], frameworks: [], conflicts: [] }, buildSystems: ['npm'], commandPlans: [{ executable: 'npm', argv: ['test'], purpose: 'test', source: 'typescript', supported: true }], relationships: [{ from: 'src/app.ts', to: 'tests/app.test.ts', kind: 'tests', confidence: 0.9 }], parserHealth: [] } as RepositorySnapshot;
+      const retriever = new StructuralRetriever(root, snapshot, index);
+      const evidence = retriever.retrieve({ query: 'loadUser', symbols: ['loadUser'] });
+      const userPathEvidence = retriever.retrieve({ query: 'loadUser', files: ['src/app.ts'] });
       expect(evidence.some(item => item.reason.includes('definition'))).toBe(true);
+      expect(userPathEvidence.some(item => item.path === 'package.json' && item.kind === 'dependency')).toBe(true);
+      expect(userPathEvidence.some(item => item.path === 'tests/app.test.ts' && item.kind === 'test')).toBe(true);
+      expect(userPathEvidence.some(item => item.path === 'AGENTS.md' && item.kind === 'instruction')).toBe(true);
     } finally { fs.rmSync(root, { recursive: true, force: true }); }
   });
 

@@ -9,9 +9,10 @@ import { SymbolIndex } from '../index/SymbolIndex';
 import { RelationshipStore, CodeRelationship } from '../index/RelationshipStore';
 
 export interface RepositoryFile { path: string; size: number; language?: string; generated: boolean; binary: boolean; }
-export interface RepositorySnapshot { version: string; root: string; files: RepositoryFile[]; projectRoots: ProjectRoot[]; instructions: WorkspaceInstruction[]; manifests: ManifestRecord[]; languages: ReturnType<LanguageCapabilityRegistry['detect']>; buildSystems: string[]; commandPlans: BuildCommandPlan[]; relationships: CodeRelationship[]; }
+export interface ParserHealth { parser: string; files: number; symbols: number; averageConfidence: number; fallback: boolean; }
+export interface RepositorySnapshot { version: string; root: string; files: RepositoryFile[]; projectRoots: ProjectRoot[]; instructions: WorkspaceInstruction[]; manifests: ManifestRecord[]; languages: ReturnType<LanguageCapabilityRegistry['detect']>; buildSystems: string[]; commandPlans: BuildCommandPlan[]; relationships: CodeRelationship[]; parserHealth: ParserHealth[]; }
 
-const IGNORED = new Set(['node_modules', '.git', 'dist', 'coverage', 'build', '.next', '.venv', 'target']);
+const IGNORED = new Set(['node_modules', '.git', 'dist', 'coverage', 'build', '.next', '.venv', 'target', 'obj', 'bin', '.gradle', '.idea', '.vscode', '.pytest_cache', '__pycache__', '.mypy_cache', '.ruff_cache', 'vendor']);
 
 export class RepositoryIntelligence {
   private readonly registry: LanguageCapabilityRegistry;
@@ -35,7 +36,14 @@ export class RepositoryIntelligence {
     index.indexFiles(files.filter(file => !file.binary).map(file => file.path));
     const relationships = new RelationshipStore(this.workspaceRoot);
     relationships.build(files.filter(file => !file.binary).map(file => file.path), index.all());
-    return { version: this.version(names), root: path.resolve(this.workspaceRoot), files, projectRoots, instructions, manifests, languages, buildSystems: build.systems, commandPlans: build.commands, relationships: relationships.all() };
+    const parserGroups = new Map<string, { files: Set<string>; symbols: number; confidence: number }>();
+    for (const symbol of index.all()) {
+      const group = parserGroups.get(symbol.parser) || { files: new Set<string>(), symbols: 0, confidence: 0 };
+      group.files.add(symbol.file); group.symbols += 1; group.confidence += symbol.confidence;
+      parserGroups.set(symbol.parser, group);
+    }
+    const parserHealth = [...parserGroups.entries()].map(([parser, group]) => ({ parser, files: group.files.size, symbols: group.symbols, averageConfidence: group.symbols ? group.confidence / group.symbols : 0, fallback: parser.includes('fallback') })).sort((a, b) => b.averageConfidence - a.averageConfidence);
+    return { version: this.version(names), root: path.resolve(this.workspaceRoot), files, projectRoots, instructions, manifests, languages, buildSystems: build.systems, commandPlans: build.commands, relationships: relationships.all(), parserHealth };
   }
 
   private listFiles(): string[] {

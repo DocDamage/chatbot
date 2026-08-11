@@ -2,12 +2,13 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { FallbackParserProvider } from './FallbackParserProvider';
 import { IndexedSymbol, ParserProvider } from './ParserProvider';
+import { TreeSitterParserProvider } from './TreeSitterParserProvider';
 import { TypeScriptParserProvider } from './TypeScriptParserProvider';
 
 export class SymbolIndex {
   private readonly providers: ParserProvider[];
   private readonly symbols = new Map<string, IndexedSymbol[]>();
-  constructor(private readonly workspaceRoot: string, providers: ParserProvider[] = []) { this.providers = [...providers, new TypeScriptParserProvider(), new FallbackParserProvider()]; }
+  constructor(private readonly workspaceRoot: string, providers: ParserProvider[] = []) { this.providers = [...providers, new TypeScriptParserProvider(), new TreeSitterParserProvider(), new FallbackParserProvider()]; }
 
   indexFile(file: string): IndexedSymbol[] {
     const absolute = path.resolve(this.workspaceRoot, file);

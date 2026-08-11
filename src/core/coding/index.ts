@@ -11,6 +11,7 @@ export * from './repository/RepositoryIntelligence';
 export * from './index/ParserProvider';
 export * from './index/SymbolIndex';
 export * from './index/TypeScriptParserProvider';
+export * from './index/TreeSitterParserProvider';
 export * from './index/RelationshipStore';
 export * from './retrieval/StructuralRetriever';
 export * from './retrieval/DocumentationRetriever';
