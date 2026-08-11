@@ -1609,9 +1609,6 @@
     }
   ],
   "importGraph": {
-    ".venv-pyscrappy/Lib/site-packages/pip/_vendor/urllib3/contrib/emscripten/emscripten_fetch_worker.js": [],
-    ".venv-pyscrappy/Lib/site-packages/win32com/test/testPyScriptlet.js": [],
-    ".venv-pyscrappy/Lib/site-packages/win32com/test/testxslt.js": [],
     "client/playwright.a11y.config.mjs": [],
     "client/playwright.browser.config.mjs": [],
     "client/scripts/prepare-a11y-tools.mjs": [],
@@ -5241,5 +5238,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1037
+  "sourceRecordCount": 1034
 }
