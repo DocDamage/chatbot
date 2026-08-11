@@ -1,9 +1,10 @@
-import { cleanup, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { act, cleanup, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import StatusBar from './StatusBar';
 
 afterEach(() => {
   cleanup();
+  vi.restoreAllMocks();
 });
 
 describe('StatusBar', () => {
@@ -31,5 +32,20 @@ describe('StatusBar', () => {
 
     expect(liveStatus.textContent).toContain('Connected');
     expect(liveStatus.textContent).toContain('1 message');
+  });
+
+  it('refreshes the displayed time on the interval', () => {
+    const toLocaleTimeString = vi.spyOn(Date.prototype, 'toLocaleTimeString');
+    const setIntervalSpy = vi.spyOn(globalThis, 'setInterval');
+
+    render(<StatusBar />);
+    expect(toLocaleTimeString).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      const intervalCallback = setIntervalSpy.mock.calls[0]?.[0] as (() => void) | undefined;
+      intervalCallback?.();
+    });
+
+    expect(toLocaleTimeString).toHaveBeenCalledTimes(2);
   });
 });
