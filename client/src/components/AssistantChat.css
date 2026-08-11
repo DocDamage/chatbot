@@ -455,12 +455,20 @@
   border: 0;
   background: transparent;
   color: #e6e6e6;
+  color-scheme: dark;
   font: inherit;
   font-weight: 700;
 }
 
 .simple-category-picker select {
   max-width: 190px;
+  color-scheme: dark;
+}
+
+.simple-mode-picker select option,
+.simple-category-picker select option {
+  background: #1d1d1d;
+  color: #e6e6e6;
 }
 
 .assistant-viewport {
