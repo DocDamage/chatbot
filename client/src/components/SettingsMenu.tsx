@@ -235,8 +235,8 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
       setHuggingFaceKey('');
       setAnthropicKey('');
       setGeminiKey('');
-      setMessage(`Saved. Active provider: ${data.status?.activeProvider || provider}.`);
       await loadSettings();
+      setMessage(`Saved. Active provider: ${data.status?.activeProvider || provider}.`);
     } catch (error: any) {
       setMessage(`Save failed: ${error.message}`);
     } finally {

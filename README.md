@@ -130,6 +130,18 @@ Saved research is persisted through the normal `DocumentManager`/RAG path with s
 
 The research endpoint is `POST /api/knowledge-online/research` with `{ "query": "...", "domain": "gaming" }`. Saving still requires the existing explicit approval endpoint.
 
+### Built-server browser verification
+
+The release E2E gate runs the compiled server and compiled client together in Playwright. It covers authenticated chat, settings, mode switching, streaming, persisted history, file/audio context, Knowledge Online approval, local-tool/Sprite Lab workflows, degraded-provider behavior, and a mobile chat smoke path.
+
+Run the isolated browser suite locally with:
+
+```bash
+npm run test:browser
+```
+
+This creates deterministic fixtures and stores its SQLite database under `data/browser-e2e-output`; it does not reset the normal local `data/chatbot.db`. The previous Jest service scenarios remain available as `npm run test:e2e:services`, while `npm run test:e2e` runs both layers.
+
 ### Health endpoints
 
 The repository includes health endpoints such as `/health`, `/health/live`, and `/health/ready`. Their operational meaning must be verified in the intended deployment before production use.

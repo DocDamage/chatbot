@@ -9,7 +9,7 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 
 ## Counts
 
-- Reachable production files: 551
+- Reachable production files: 557
 - Unreachable production files: 171
 - Unresolved relative imports: 31
 

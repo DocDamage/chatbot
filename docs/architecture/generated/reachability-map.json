@@ -73,6 +73,7 @@
         "src/server/routes/knowledge-base.ts",
         "src/server/routes/knowledge-os.ts",
         "src/server/routes/legacy-chat.ts",
+        "src/server/routes/rag-query.ts",
         "src/server/routes/settings.ts",
         "src/server/routes/v1/chat.ts",
         "src/server/routes/v2/chat.ts",
@@ -388,13 +389,18 @@
     "src/core/rag/RAGInjectionScanner.ts",
     "src/core/rag/RAGService.ts",
     "src/core/rag/ReRanker.ts",
+    "src/core/rag/ingestion/EpubExtractor.ts",
     "src/core/rag/ingestion/ExtractedDocument.ts",
     "src/core/rag/ingestion/FileTypeRouter.ts",
+    "src/core/rag/ingestion/HtmlExtractor.ts",
     "src/core/rag/ingestion/ImageOcrExtractor.ts",
+    "src/core/rag/ingestion/MobiExtractor.ts",
     "src/core/rag/ingestion/OfficeExtractor.ts",
     "src/core/rag/ingestion/PdfExtractor.ts",
+    "src/core/rag/ingestion/RtfExtractor.ts",
     "src/core/rag/ingestion/TextLikeExtractor.ts",
     "src/core/realtime/WebSocketServer.ts",
+    "src/core/research/PyScrappyService.ts",
     "src/core/router/IntentRouter.ts",
     "src/core/safety/BiasMitigator.ts",
     "src/core/safety/ConstitutionalAI.ts",
@@ -614,6 +620,7 @@
     "src/server/routes/plans.ts",
     "src/server/routes/pop-culture.ts",
     "src/server/routes/rag-query.ts",
+    "src/server/routes/research.ts",
     "src/server/routes/science.ts",
     "src/server/routes/sec.ts",
     "src/server/routes/security.ts",
@@ -941,13 +948,18 @@
     "src/core/rag/RAGInjectionScanner.ts",
     "src/core/rag/RAGService.ts",
     "src/core/rag/ReRanker.ts",
+    "src/core/rag/ingestion/EpubExtractor.ts",
     "src/core/rag/ingestion/ExtractedDocument.ts",
     "src/core/rag/ingestion/FileTypeRouter.ts",
+    "src/core/rag/ingestion/HtmlExtractor.ts",
     "src/core/rag/ingestion/ImageOcrExtractor.ts",
+    "src/core/rag/ingestion/MobiExtractor.ts",
     "src/core/rag/ingestion/OfficeExtractor.ts",
     "src/core/rag/ingestion/PdfExtractor.ts",
+    "src/core/rag/ingestion/RtfExtractor.ts",
     "src/core/rag/ingestion/TextLikeExtractor.ts",
     "src/core/realtime/WebSocketServer.ts",
+    "src/core/research/PyScrappyService.ts",
     "src/core/router/IntentRouter.ts",
     "src/core/safety/BiasMitigator.ts",
     "src/core/safety/ConstitutionalAI.ts",
@@ -1167,6 +1179,7 @@
     "src/server/routes/plans.ts",
     "src/server/routes/pop-culture.ts",
     "src/server/routes/rag-query.ts",
+    "src/server/routes/research.ts",
     "src/server/routes/science.ts",
     "src/server/routes/sec.ts",
     "src/server/routes/security.ts",
@@ -1493,7 +1506,11 @@
     }
   ],
   "importGraph": {
+    ".venv-pyscrappy/Lib/site-packages/pip/_vendor/urllib3/contrib/emscripten/emscripten_fetch_worker.js": [],
+    ".venv-pyscrappy/Lib/site-packages/win32com/test/testPyScriptlet.js": [],
+    ".venv-pyscrappy/Lib/site-packages/win32com/test/testxslt.js": [],
     "client/playwright.a11y.config.mjs": [],
+    "client/playwright.browser.config.mjs": [],
     "client/scripts/prepare-a11y-tools.mjs": [],
     "client/src/api/audio.test.ts": [
       "client/src/api/audio.ts"
@@ -1725,7 +1742,25 @@
     "client/tests/accessibility/static-demo.a11y.pw.mjs": [
       "client/tests/accessibility/accessibility-helpers.mjs"
     ],
+    "client/tests/browser/chat-and-auth.browser.pw.mjs": [
+      "client/tests/browser/helpers.mjs"
+    ],
+    "client/tests/browser/degraded.browser.pw.mjs": [
+      "client/tests/browser/helpers.mjs"
+    ],
+    "client/tests/browser/files-audio.browser.pw.mjs": [
+      "client/tests/browser/helpers.mjs"
+    ],
+    "client/tests/browser/helpers.mjs": [],
+    "client/tests/browser/knowledge-local-sprite.browser.pw.mjs": [
+      "client/tests/browser/helpers.mjs"
+    ],
+    "client/tests/browser/mobile.browser.pw.mjs": [
+      "client/tests/browser/helpers.mjs"
+    ],
     "client/vite.config.ts": [],
+    "desktop-companion/src/main.cjs": [],
+    "desktop-companion/src/renderer.js": [],
     "docs/extract_all_snippets.js": [],
     "docs/extract_snippets.js": [],
     "e2e/chat-flow.test.ts": [
@@ -1749,9 +1784,21 @@
     "eslint.config.js": [],
     "jest.config.js": [],
     "prettier.config.js": [],
+    "scripts/backup-knowledge-db.ts": [],
+    "scripts/browser/local-tool-fixture.mjs": [],
+    "scripts/browser/prepare-browser-e2e.mjs": [],
+    "scripts/export-skill.ts": [],
     "scripts/extract_encyclopedia.js": [],
     "scripts/extract_encyclopedia.ts": [],
     "scripts/import-blackbelt-knowledge.ts": [],
+    "scripts/import-books.ts": [
+      "src/core/database/Database.ts",
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/rag/DocumentIngester.ts",
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/core/rag/ingestion/FileTypeRouter.ts",
+      "src/types/rag.ts"
+    ],
     "scripts/import-europeana.ts": [],
     "scripts/import-loc-history.ts": [],
     "scripts/import-musicbrainz.ts": [],
@@ -1762,6 +1809,14 @@
     "scripts/import-wikidata-chrono.ts": [],
     "scripts/import-wikimedia-history.ts": [],
     "scripts/import-wikipedia-general-corpus.ts": [],
+    "scripts/ocr-queue.ts": [
+      "src/core/database/Database.ts",
+      "src/core/embeddings/EmbeddingService.ts",
+      "src/core/rag/DocumentIngester.ts",
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/core/rag/ingestion/FileTypeRouter.ts",
+      "src/types/rag.ts"
+    ],
     "scripts/release/__tests__/client-coverage-policy.test.mjs": [
       "scripts/release/lib/client-coverage-policy.mjs"
     ],
@@ -2934,6 +2989,7 @@
       "src/core/rag/DocumentManager.ts",
       "src/core/rag/RAGDocumentStore.ts",
       "src/core/rag/RAGService.ts",
+      "src/core/research/PyScrappyService.ts",
       "src/core/safety/SafetyPipeline.ts",
       "src/core/tools/CodeExecutor.ts",
       "src/core/tools/CodingKnowledgeTool.ts",
@@ -3164,7 +3220,9 @@
     "src/core/knowledge/OnlineKnowledgeIngestionService.test.ts": [
       "src/core/knowledge/OnlineKnowledgeIngestionService.ts"
     ],
-    "src/core/knowledge/OnlineKnowledgeIngestionService.ts": [],
+    "src/core/knowledge/OnlineKnowledgeIngestionService.ts": [
+      "src/core/observability/logger.ts"
+    ],
     "src/core/knowledge/PersonalResearchSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
@@ -3661,15 +3719,30 @@
       "src/core/rag/RAGInjectionScanner.ts",
       "src/types/rag.ts"
     ],
+    "src/core/rag/ingestion/EpubExtractor.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/rag/ingestion/ExtractedDocument.ts"
+    ],
     "src/core/rag/ingestion/ExtractedDocument.ts": [],
     "src/core/rag/ingestion/FileTypeRouter.ts": [
+      "src/core/rag/ingestion/EpubExtractor.ts",
       "src/core/rag/ingestion/ExtractedDocument.ts",
+      "src/core/rag/ingestion/HtmlExtractor.ts",
       "src/core/rag/ingestion/ImageOcrExtractor.ts",
+      "src/core/rag/ingestion/MobiExtractor.ts",
       "src/core/rag/ingestion/OfficeExtractor.ts",
       "src/core/rag/ingestion/PdfExtractor.ts",
+      "src/core/rag/ingestion/RtfExtractor.ts",
       "src/core/rag/ingestion/TextLikeExtractor.ts"
     ],
+    "src/core/rag/ingestion/HtmlExtractor.ts": [
+      "src/core/rag/ingestion/ExtractedDocument.ts"
+    ],
     "src/core/rag/ingestion/ImageOcrExtractor.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/rag/ingestion/ExtractedDocument.ts"
+    ],
+    "src/core/rag/ingestion/MobiExtractor.ts": [
       "src/core/observability/logger.ts",
       "src/core/rag/ingestion/ExtractedDocument.ts"
     ],
@@ -3679,6 +3752,9 @@
     ],
     "src/core/rag/ingestion/PdfExtractor.ts": [
       "src/core/observability/logger.ts",
+      "src/core/rag/ingestion/ExtractedDocument.ts"
+    ],
+    "src/core/rag/ingestion/RtfExtractor.ts": [
       "src/core/rag/ingestion/ExtractedDocument.ts"
     ],
     "src/core/rag/ingestion/TextLikeExtractor.ts": [
@@ -3734,6 +3810,14 @@
     ],
     "src/core/realtime/WebSocketServer.ts": [
       "src/core/observability/logger.ts"
+    ],
+    "src/core/research/PyScrappyService.test.ts": [
+      "src/core/research/PyScrappyService.ts"
+    ],
+    "src/core/research/PyScrappyService.ts": [
+      "src/core/mcp/McpClientService.ts",
+      "src/core/observability/logger.ts",
+      "src/types/tools.ts"
     ],
     "src/core/rl/FeedbackCollector.ts": [
       "src/core/observability/logger.ts",
@@ -4354,6 +4438,7 @@
       "src/server/routes/knowledge-base.ts",
       "src/server/routes/knowledge-os.ts",
       "src/server/routes/legacy-chat.ts",
+      "src/server/routes/rag-query.ts",
       "src/server/routes/settings.ts",
       "src/server/routes/v1/chat.ts",
       "src/server/routes/v2/chat.ts",
@@ -4396,6 +4481,7 @@
       "src/server/routes/plans.ts",
       "src/server/routes/pop-culture.ts",
       "src/server/routes/rag-query.ts",
+      "src/server/routes/research.ts",
       "src/server/routes/science.ts",
       "src/server/routes/sec.ts",
       "src/server/routes/security.ts",
@@ -4640,6 +4726,10 @@
       "src/middleware/errorHandler.ts",
       "src/middleware/validator.ts"
     ],
+    "src/server/routes/research.ts": [
+      "src/core/research/PyScrappyService.ts",
+      "src/middleware/errorHandler.ts"
+    ],
     "src/server/routes/science.ts": [
       "src/middleware/errorHandler.ts"
     ],
@@ -4727,5 +4817,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 929
+  "sourceRecordCount": 954
 }

@@ -10,7 +10,7 @@ export function createAudioRouter(workspaceRoot = process.cwd()): Router {
     res.json(await audio.listAudioFiles(String(req.query.root || '.'), String(req.query.q || ''), {
       limit: Number(req.query.limit || 50),
       offset: Number(req.query.offset || 0),
-      maxFiles: Number(req.query.maxFiles || 1000)
+      maxFiles: Number(req.query.maxFiles || process.env.AUDIO_SEARCH_MAX_FILES || 1000)
     }));
   }));
 

@@ -18,9 +18,12 @@ await writeFile(join(toolRoot, 'package.json'), JSON.stringify({
   },
 }, null, 2));
 
-const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const npmCommand = process.platform === 'win32' ? (process.env.ComSpec || 'cmd.exe') : 'npm';
+const npmArgs = process.platform === 'win32'
+  ? ['/d', '/s', '/c', 'npm', 'install']
+  : ['install'];
 const install = spawnSync(npmCommand, [
-  'install',
+  ...npmArgs,
   '--prefix', toolRoot,
   '--package-lock=false',
   '--ignore-scripts',

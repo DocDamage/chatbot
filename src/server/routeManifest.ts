@@ -28,6 +28,7 @@ import { createPhilosophyGeniusRouter } from './routes/philosophy';
 import { createPlansRouter } from './routes/plans';
 import { createPopCultureRouter } from './routes/pop-culture';
 import { createRagQueryRouter } from './routes/rag-query';
+import { createResearchRouter } from './routes/research';
 import { createScienceRouter } from './routes/science';
 import { createSecurityGeniusRouter } from './routes/security';
 import { createSECRouter } from './routes/sec';
@@ -116,6 +117,7 @@ interface RegisterRouteDeps {
 export function registerManifestRoutes(deps: RegisterRouteDeps): void {
   const routerFactories: Record<string, () => RequestHandler> = {
     'rag-query': () => createRagQueryRouter(deps.getServices()),
+    research: () => createResearchRouter(deps.getServices()),
     code: () => createCodeRouter(deps.getServices()),
     plans: () => createPlansRouter(deps.workspaceRoot),
     files: () => createFilesRouter(deps.workspaceRoot),
