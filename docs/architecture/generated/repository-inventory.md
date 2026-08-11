@@ -6,11 +6,11 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 954 |
-| Production source files | 728 |
-| Reachable production files | 557 |
-| Unreachable production files | 171 |
-| Discovered route calls | 331 |
+| Source files | 972 |
+| Production source files | 744 |
+| Reachable production files | 574 |
+| Unreachable production files | 170 |
+| Discovered route calls | 349 |
 | Environment variables | 187 |
 | Feature flags | 17 |
 | Files above 300 lines | 65 |
@@ -127,6 +127,11 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/creative/roleplay-turn` | `src/server/routes/creative.ts:58` |
 | POST | `/api/creative/continuity-summary` | `src/server/routes/creative.ts:63` |
 | POST | `/api/creative/export` | `src/server/routes/creative.ts:68` |
+| GET | `/api/desktop-companion/capabilities` | `src/server/routes/desktop-companion.ts:10` |
+| POST | `/api/desktop-companion/context` | `src/server/routes/desktop-companion.ts:17` |
+| POST | `/api/document-workspace/review` | `src/server/routes/document-workspace.ts:14` |
+| POST | `/api/document-workspace/transform` | `src/server/routes/document-workspace.ts:20` |
+| POST | `/api/document-workspace/save` | `src/server/routes/document-workspace.ts:24` |
 | GET | `/api/education/sources` | `src/server/routes/education.ts:11` |
 | GET | `/api/education/stats` | `src/server/routes/education.ts:15` |
 | POST | `/api/education/plans` | `src/server/routes/education.ts:19` |
@@ -257,6 +262,9 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/math/ask` | `src/server/routes/math.ts:7` |
 | POST | `/api/math/solve` | `src/server/routes/math.ts:11` |
 | POST | `/api/math/verify` | `src/server/routes/math.ts:15` |
+| GET | `/api/mock-api/status` | `src/server/routes/mock-api.ts:9` |
+| GET | `/api/mock-api/collections` | `src/server/routes/mock-api.ts:10` |
+| POST | `/api/mock-api/import` | `src/server/routes/mock-api.ts:11` |
 | POST | `/api/music/mix/analyze` | `src/server/routes/music.ts:17` |
 | POST | `/api/music/mix/plan` | `src/server/routes/music.ts:21` |
 | POST | `/api/music/mix/apply` | `src/server/routes/music.ts:25` |
@@ -287,6 +295,13 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/pop-culture/timeline` | `src/server/routes/pop-culture.ts:7` |
 | POST | `/api/pop-culture/franchise` | `src/server/routes/pop-culture.ts:8` |
 | POST | `/api/pop-culture/compare` | `src/server/routes/pop-culture.ts:9` |
+| GET | `/api/project-intelligence/overview` | `src/server/routes/project-intelligence.ts:10` |
+| GET | `/api/project-intelligence/file` | `src/server/routes/project-intelligence.ts:14` |
+| GET | `/api/project-intelligence/history` | `src/server/routes/project-intelligence.ts:20` |
+| GET | `/api/project-memory/status` | `src/server/routes/project-memory.ts:10` |
+| GET | `/api/project-memory/entries` | `src/server/routes/project-memory.ts:12` |
+| POST | `/api/project-memory/entries` | `src/server/routes/project-memory.ts:16` |
+| POST | `/api/project-memory/resume` | `src/server/routes/project-memory.ts:27` |
 | POST | `/api/rag/query` | `src/server/routes/rag-query.ts:8` |
 | GET | `/api/research/status` | `src/server/routes/research.ts:9` |
 | POST | `/api/research/scrape` | `src/server/routes/research.ts:13` |
@@ -350,6 +365,9 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/chat` | `src/server/routes/v1/chat.ts:14` |
 | POST | `/chat` | `src/server/routes/v2/chat.ts:16` |
 | POST | `/chat/stream` | `src/server/routes/v2/chat.ts:36` |
+| GET | `/api/website-workspace/project` | `src/server/routes/website-workspace.ts:9` |
+| POST | `/api/website-workspace/project` | `src/server/routes/website-workspace.ts:10` |
+| POST | `/api/website-workspace/preview` | `src/server/routes/website-workspace.ts:11` |
 
 ## Client panels and workspaces
 
@@ -357,6 +375,8 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `client/src/components/CodeWorkflowPanel.tsx`
 - `client/src/components/ConversationToolsPanel.tsx`
 - `client/src/components/CreativeComposerPanel.tsx`
+- `client/src/components/DesktopCompanionPanel.tsx`
+- `client/src/components/DocumentWorkspacePanel.tsx`
 - `client/src/components/FLStudioControlPanel.tsx`
 - `client/src/components/FileExplorerPanel.tsx`
 - `client/src/components/GamingPlaybookPanel.tsx`
@@ -364,8 +384,12 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `client/src/components/KnowledgeOnlinePanel.tsx`
 - `client/src/components/LocalRunApprovalPanel.tsx`
 - `client/src/components/LocalToolsWorkspace.tsx`
+- `client/src/components/MockApiWorkspacePanel.tsx`
+- `client/src/components/ProjectIntelligencePanel.tsx`
 - `client/src/components/SettingsMenu.tsx`
 - `client/src/components/SpriteLabPanel.tsx`
+- `client/src/components/UtilityWorkbenchPanel.tsx`
+- `client/src/components/WebsiteWorkspacePanel.tsx`
 - `client/src/features/gis/GISMapPanel.tsx`
 
 ## Environment variables
@@ -560,6 +584,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 ## External binaries
 
+- `git` — `src/core/project/ProjectIntelligenceService.ts`
 - `git` — `src/core/tools/RepoTools.ts`
 
 ## Files above 300 lines

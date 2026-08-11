@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const DEFAULT_IGNORED_DIRECTORIES = new Set([
-  '.git', '.next', '.playwright-cli', 'cache', 'coverage', 'data', 'dist',
+  '.git', '.next', '.playwright-cli', '.remembrandt', 'cache', 'coverage', 'data', 'dist',
   'knowledge-base', 'knowledge-base-public', 'local-tools', 'node_modules',
   'private-tools', 'tmp', 'vendor'
 ]);

@@ -9,9 +9,9 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 
 ## Counts
 
-- Reachable production files: 557
-- Unreachable production files: 171
-- Unresolved relative imports: 31
+- Reachable production files: 574
+- Unreachable production files: 170
+- Unresolved relative imports: 32
 
 ## Unreachable production modules
 
@@ -121,7 +121,6 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/memory/HierarchicalMemory.ts`
 - `src/core/memory/MemoryConsolidator.ts`
 - `src/core/memory/MemoryRetrievalNetwork.ts`
-- `src/core/memory/ProjectContext.ts`
 - `src/core/moderation/ContentModerator.ts`
 - `src/core/multimodal/ImageProcessor.ts`
 - `src/core/multimodal/VideoProcessor.ts`

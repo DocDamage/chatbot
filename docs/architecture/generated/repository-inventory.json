@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 954,
-    "productionSourceFiles": 728,
-    "reachableProductionFiles": 557,
-    "unreachableProductionFiles": 171,
-    "routes": 331,
+    "sourceFiles": 972,
+    "productionSourceFiles": 744,
+    "reachableProductionFiles": 574,
+    "unreachableProductionFiles": 170,
+    "routes": 349,
     "environmentVariables": 187,
     "featureFlags": 17,
     "oversizedProductionFiles": 65
@@ -766,6 +766,41 @@
       "path": "/api/creative/export",
       "line": 68,
       "file": "src/server/routes/creative.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/desktop-companion/capabilities",
+      "line": 10,
+      "file": "src/server/routes/desktop-companion.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/desktop-companion/context",
+      "line": 17,
+      "file": "src/server/routes/desktop-companion.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/document-workspace/review",
+      "line": 14,
+      "file": "src/server/routes/document-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/document-workspace/transform",
+      "line": 20,
+      "file": "src/server/routes/document-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/document-workspace/save",
+      "line": 24,
+      "file": "src/server/routes/document-workspace.ts"
     },
     {
       "receiver": "router",
@@ -1679,6 +1714,27 @@
     },
     {
       "receiver": "router",
+      "method": "GET",
+      "path": "/api/mock-api/status",
+      "line": 9,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/mock-api/collections",
+      "line": 10,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/mock-api/import",
+      "line": 11,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
       "method": "POST",
       "path": "/api/music/mix/analyze",
       "line": 17,
@@ -1886,6 +1942,55 @@
       "path": "/api/pop-culture/compare",
       "line": 9,
       "file": "src/server/routes/pop-culture.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/project-intelligence/overview",
+      "line": 10,
+      "file": "src/server/routes/project-intelligence.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/project-intelligence/file",
+      "line": 14,
+      "file": "src/server/routes/project-intelligence.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/project-intelligence/history",
+      "line": 20,
+      "file": "src/server/routes/project-intelligence.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/project-memory/status",
+      "line": 10,
+      "file": "src/server/routes/project-memory.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/project-memory/entries",
+      "line": 12,
+      "file": "src/server/routes/project-memory.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/project-memory/entries",
+      "line": 16,
+      "file": "src/server/routes/project-memory.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/project-memory/resume",
+      "line": 27,
+      "file": "src/server/routes/project-memory.ts"
     },
     {
       "receiver": "router",
@@ -2327,6 +2432,27 @@
       "path": "/chat/stream",
       "line": 36,
       "file": "src/server/routes/v2/chat.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/website-workspace/project",
+      "line": 9,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/project",
+      "line": 10,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/preview",
+      "line": 11,
+      "file": "src/server/routes/website-workspace.ts"
     }
   ],
   "clientPanels": [
@@ -2334,6 +2460,8 @@
     "client/src/components/CodeWorkflowPanel.tsx",
     "client/src/components/ConversationToolsPanel.tsx",
     "client/src/components/CreativeComposerPanel.tsx",
+    "client/src/components/DesktopCompanionPanel.tsx",
+    "client/src/components/DocumentWorkspacePanel.tsx",
     "client/src/components/FLStudioControlPanel.tsx",
     "client/src/components/FileExplorerPanel.tsx",
     "client/src/components/GamingPlaybookPanel.tsx",
@@ -2341,8 +2469,12 @@
     "client/src/components/KnowledgeOnlinePanel.tsx",
     "client/src/components/LocalRunApprovalPanel.tsx",
     "client/src/components/LocalToolsWorkspace.tsx",
+    "client/src/components/MockApiWorkspacePanel.tsx",
+    "client/src/components/ProjectIntelligencePanel.tsx",
     "client/src/components/SettingsMenu.tsx",
     "client/src/components/SpriteLabPanel.tsx",
+    "client/src/components/UtilityWorkbenchPanel.tsx",
+    "client/src/components/WebsiteWorkspacePanel.tsx",
     "client/src/features/gis/GISMapPanel.tsx"
   ],
   "services": [
@@ -2409,6 +2541,10 @@
     {
       "name": "DocumentMetadataManager",
       "file": "src/core/documents/DocumentMetadata.ts"
+    },
+    {
+      "name": "DocumentReviewService",
+      "file": "src/core/documents/DocumentReviewService.ts"
     },
     {
       "name": "EducationService",
@@ -2499,6 +2635,14 @@
       "file": "src/core/planning/PlanDocumentService.ts"
     },
     {
+      "name": "ProjectIntelligenceService",
+      "file": "src/core/project/ProjectIntelligenceService.ts"
+    },
+    {
+      "name": "ProjectMemoryService",
+      "file": "src/core/project/ProjectMemoryService.ts"
+    },
+    {
       "name": "FreeModelRegistry",
       "file": "src/core/providers/FreeModelRegistry.ts"
     },
@@ -2557,6 +2701,10 @@
     {
       "name": "WebhookService",
       "file": "src/core/webhooks/WebhookService.ts"
+    },
+    {
+      "name": "WebsiteWorkspaceService",
+      "file": "src/core/website/WebsiteWorkspaceService.ts"
     },
     {
       "name": "TracingService",
@@ -4674,6 +4822,10 @@
     "USE_OLLAMA"
   ],
   "externalBinaries": [
+    {
+      "binary": "git",
+      "file": "src/core/project/ProjectIntelligenceService.ts"
+    },
     {
       "binary": "git",
       "file": "src/core/tools/RepoTools.ts"

@@ -6,6 +6,8 @@ import { createBusinessGeniusRouter } from './routes/business';
 import { createChronoRouter } from './routes/chrono';
 import { createCodeRouter } from './routes/code';
 import { createCreativeWritingRouter } from './routes/creative';
+import { createDocumentWorkspaceRouter } from './routes/document-workspace';
+import { createDesktopCompanionRouter } from './routes/desktop-companion';
 import { createEducationRouter } from './routes/education';
 import { createEngineeringGeniusRouter } from './routes/engineering';
 import { createExportRouter } from './routes/export';
@@ -27,6 +29,9 @@ import { createMusicProductionGeniusRouter } from './routes/music';
 import { createPhilosophyGeniusRouter } from './routes/philosophy';
 import { createPlansRouter } from './routes/plans';
 import { createPopCultureRouter } from './routes/pop-culture';
+import { createProjectIntelligenceRouter } from './routes/project-intelligence';
+import { createProjectMemoryRouter } from './routes/project-memory';
+import { createMockApiRouter } from './routes/mock-api';
 import { createRagQueryRouter } from './routes/rag-query';
 import { createResearchRouter } from './routes/research';
 import { createScienceRouter } from './routes/science';
@@ -36,6 +41,7 @@ import { createSixSigmaRouter } from './routes/sixsigma';
 import { createSpriteLabRouter } from './routes/sprite-lab';
 import { createStoryGeniusRouter } from './routes/story';
 import { createToolCatalogRouter } from './routes/toolCatalog';
+import { createWebsiteWorkspaceRouter } from './routes/website-workspace';
 
 export type RouteAvailability = 'hosted-and-local' | 'local-only';
 export type FeatureStatus = 'PRODUCTION_PREVIEW' | 'LOCAL_ONLY_EXPERIMENTAL';
@@ -69,6 +75,12 @@ export const routeManifest: RouteManifestEntry[] = [
   localOnly({ name: 'files', mount: '/api/files', readiness: false, privilege: 'developer', auditAction: 'files' }),
   localOnly({ name: 'audio', mount: '/api/audio', readiness: false, privilege: 'developer', auditAction: 'audio' }),
   localOnly({ name: 'local-tools', mount: '/api/local-tools', readiness: true, privilege: 'developer', auditAction: 'local-tools' }),
+  localOnly({ name: 'project-intelligence', mount: '/api/project-intelligence', readiness: true, privilege: 'developer', auditAction: 'project-intelligence' }),
+  localOnly({ name: 'project-memory', mount: '/api/project-memory', readiness: true, privilege: 'developer', auditAction: 'project-memory' }),
+  localOnly({ name: 'document-workspace', mount: '/api/document-workspace', readiness: true, privilege: 'developer', auditAction: 'document-workspace' }),
+  localOnly({ name: 'mock-api', mount: '/api/mock-api', readiness: true, privilege: 'developer', auditAction: 'mock-api' }),
+  localOnly({ name: 'website-workspace', mount: '/api/website-workspace', readiness: true, privilege: 'developer', auditAction: 'website-workspace' }),
+  localOnly({ name: 'desktop-companion', mount: '/api/desktop-companion', readiness: true, privilege: 'developer', auditAction: 'desktop-companion' }),
   preview({ name: 'tool-catalog', mount: '/api/tool-catalog', readiness: true, privilege: 'developer', auditAction: 'tool-catalog' }),
   preview({ name: 'sec', mount: '/api/sec', readiness: true, privilege: 'developer', auditAction: 'sec' }),
   preview({ name: 'education', mount: '/api/education', readiness: true, privilege: 'developer', auditAction: 'education' }),
@@ -123,6 +135,12 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
     files: () => createFilesRouter(deps.workspaceRoot),
     audio: () => createAudioRouter(deps.workspaceRoot),
     'local-tools': () => createLocalToolsRouter(deps.getServices(), deps.workspaceRoot),
+    'project-intelligence': () => createProjectIntelligenceRouter(deps.workspaceRoot),
+    'project-memory': () => createProjectMemoryRouter(deps.workspaceRoot),
+    'document-workspace': () => createDocumentWorkspaceRouter(deps.getServices(), deps.workspaceRoot),
+    'mock-api': () => createMockApiRouter(deps.workspaceRoot),
+    'website-workspace': () => createWebsiteWorkspaceRouter(deps.workspaceRoot),
+    'desktop-companion': () => createDesktopCompanionRouter(deps.workspaceRoot),
     'tool-catalog': () => createToolCatalogRouter(deps.getServices()),
     sec: () => createSECRouter(deps.getServices()),
     education: () => createEducationRouter(deps.getServices()),

@@ -33,7 +33,7 @@ The repository contains or explores:
 - Specialist chat modes and routing.
 - Conversation, memory, RAG, provenance, and validation services.
 - Creative writing, gaming, GIS, SEC, Knowledge OS, and other specialist workflows.
-- File, audio, coding, local-tool, Sprite Lab, and desktop-integration features.
+- File, audio, coding, local-tool, Sprite Lab, project-intelligence, document-review, mock-API, website-workspace, and desktop-companion features.
 - Health, metrics, administration, export, webhook, and deployment support.
 
 Presence in the repository does not establish production support. Consult the feature manifest before relying on a capability.
@@ -142,6 +142,20 @@ npm run test:browser
 
 This creates deterministic fixtures and stores its SQLite database under `data/browser-e2e-output`; it does not reset the normal local `data/chatbot.db`. The previous Jest service scenarios remain available as `npm run test:e2e:services`, while `npm run test:e2e` runs both layers.
 
+### Advanced local workspaces
+
+The default chat surface stays intentionally small. Open **Settings → Open advanced workspace** for the local-only capability workspaces:
+
+- Project intelligence combines the existing `mex`/knowledge graph direction with DevLens-style file complexity, symbol counts, git churn, risk hotspots, duplicate candidates, and recommendations.
+- Project memory uses a Remembrandt-compatible `.remembrandt/entries` layout and generated `MEMORY.md`. It is ignored by Git by default because it is local project state.
+- Document workspace provides Monoleaf/Lexicon-inspired Markdown drafting, structural review, deterministic writing transforms, and a required final review token before the draft is saved into the normal RAG knowledge base.
+- Curated utilities provide a small, safe subset of Norito Dev Toolbox functionality: JSON, regex, Markdown inspection, and encoding helpers.
+- Mock API sandbox imports JSON or CSV fixtures into `data/mock-api` and exposes local collection previews for Build/Debug work.
+- Website workspace uses OpenForge-inspired JSON blocks, a sandboxed preview, and a local HTML export path. It intentionally does not embed an arbitrary script-running website builder.
+- Desktop companion exposes an explicit-consent boundary for SpeakoFlow-style voice/screen context. Browser screen capture is never automatic; an optional native companion must be connected for OS-level capture and paste.
+
+These workspaces are developer-authenticated and classified `LOCAL_ONLY_EXPERIMENTAL`. Their generated state is local and is not suitable for hosted exposure without a separate security, tenancy, persistence, and operational review.
+
 ### Health endpoints
 
 The repository includes health endpoints such as `/health`, `/health/live`, and `/health/ready`. Their operational meaning must be verified in the intended deployment before production use.
@@ -174,6 +188,17 @@ Do not describe a merged feature as production-supported unless the feature mani
 - [mex](https://github.com/DocDamage/mex): development-time code graph and drift checks; not required at runtime.
 - [book-to-skill](https://github.com/DocDamage/book-to-skill): source-preserving documentation export via `npm run export:skill`.
 - [E.V. assistant](https://github.com/DocDamage/ev-assistant): related local voice-assistant reference; this repository's Electron companion reuses `/api/chat` and does not execute arbitrary desktop commands.
+- [devlens-agent](https://github.com/DocDamage/devlens-agent): source of the project-intelligence metrics and recommendation direction.
+- [Monoleaf](https://github.com/DocDamage/Monoleaf): source of the Markdown-first review/workspace direction.
+- [norito-devtoolbox](https://github.com/DocDamage/norito-devtoolbox): source of the curated utility selection; the full toolbox is not embedded.
+- [capsule](https://github.com/DocDamage/capsule): source of the local mock-API fixture workflow.
+- [OpenForge No-code website builder](https://github.com/DocDamage/OpenForge_No-code-website-builder): source of the block-based local website workspace direction.
+- [remembrandt](https://github.com/DocDamage/remembrandt): source of the file-based project-memory layout.
+- [basemind](https://github.com/DocDamage/basemind): architectural reference for combining code maps, docs, search, git context, and memory; its full MCP server is not embedded.
+- [SpeakoFlow](https://github.com/DocDamage/SpeakoFlow): source of the optional desktop voice/screen-companion boundary.
+- [Lexicon](https://github.com/DocDamage/Lexicon): source of the local writing-assistance and document-review direction.
+
+UNICODER was reviewed and intentionally excluded from the chatbot scope.
 
 See [docs/integrations/research-and-companion.md](docs/integrations/research-and-companion.md) for setup, boundaries, and verification evidence.
 

@@ -1,6 +1,6 @@
 # Research and desktop companion integrations
 
-Related upstream projects: [PyScrappy](https://github.com/DocDamage/PyScrappy), [E.V. assistant](https://github.com/DocDamage/ev-assistant), [mex](https://github.com/DocDamage/mex), and [book-to-skill](https://github.com/DocDamage/book-to-skill).
+Related upstream projects: [PyScrappy](https://github.com/DocDamage/PyScrappy), [E.V. assistant](https://github.com/DocDamage/ev-assistant), [mex](https://github.com/DocDamage/mex), and [book-to-skill](https://github.com/DocDamage/book-to-skill). The broader capability review and implementation boundaries are documented in [capability-workspaces.md](capability-workspaces.md).
 
 ## mex
 

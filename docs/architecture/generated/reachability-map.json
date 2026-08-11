@@ -106,6 +106,8 @@
     "client/src/components/CodeWorkflowPanel.tsx",
     "client/src/components/ConversationToolsPanel.tsx",
     "client/src/components/CreativeComposerPanel.tsx",
+    "client/src/components/DesktopCompanionPanel.tsx",
+    "client/src/components/DocumentWorkspacePanel.tsx",
     "client/src/components/FLStudioControlPanel.tsx",
     "client/src/components/FileExplorerPanel.tsx",
     "client/src/components/FilePreviewPane.tsx",
@@ -116,12 +118,16 @@
     "client/src/components/LoadedFilesBar.tsx",
     "client/src/components/LocalRunApprovalPanel.tsx",
     "client/src/components/LocalToolsWorkspace.tsx",
+    "client/src/components/MockApiWorkspacePanel.tsx",
     "client/src/components/ModeSelector.tsx",
     "client/src/components/PlanActionBar.tsx",
+    "client/src/components/ProjectIntelligencePanel.tsx",
     "client/src/components/SettingsMenu.tsx",
     "client/src/components/SpriteLabPanel.tsx",
     "client/src/components/StaticDemo.tsx",
     "client/src/components/StatusBar.tsx",
+    "client/src/components/UtilityWorkbenchPanel.tsx",
+    "client/src/components/WebsiteWorkspacePanel.tsx",
     "client/src/features/gis/GISMapCard.tsx",
     "client/src/features/gis/GISMapPanel.tsx",
     "client/src/features/gis/gisApi.ts",
@@ -247,6 +253,7 @@
     "src/core/database/SafeDatabaseQuestionAgent.ts",
     "src/core/debug/DebugMode.ts",
     "src/core/documents/DocumentMetadata.ts",
+    "src/core/documents/DocumentReviewService.ts",
     "src/core/education/EducationService.ts",
     "src/core/embeddings/EmbeddingService.ts",
     "src/core/entity/EntityLinkingService.ts",
@@ -337,6 +344,7 @@
     "src/core/mcp/McpToolRegistry.ts",
     "src/core/memory/MemoryService.ts",
     "src/core/memory/PrivateMemoryStore.ts",
+    "src/core/memory/ProjectContext.ts",
     "src/core/modes/ExecutionModePolicy.ts",
     "src/core/modes/ModePolicy.ts",
     "src/core/nlu/ClarifyingQuestionBuilder.ts",
@@ -369,6 +377,8 @@
     "src/core/orchestrator/EnhancedOrchestrator.ts",
     "src/core/orchestrator/Orchestrator.ts",
     "src/core/planning/PlanDocumentService.ts",
+    "src/core/project/ProjectIntelligenceService.ts",
+    "src/core/project/ProjectMemoryService.ts",
     "src/core/provenance/ProvenanceLedger.ts",
     "src/core/providers/EnsembleAdapter.ts",
     "src/core/providers/FreeModelRegistry.ts",
@@ -576,6 +586,7 @@
     "src/core/user/CustomInstructions.ts",
     "src/core/validator/Validators.ts",
     "src/core/webhooks/WebhookService.ts",
+    "src/core/website/WebsiteWorkspaceService.ts",
     "src/core/wiki/LocalKnowledgeWiki.ts",
     "src/middleware/apiErrorSchema.ts",
     "src/middleware/auth.ts",
@@ -595,6 +606,8 @@
     "src/server/routes/chrono.ts",
     "src/server/routes/code.ts",
     "src/server/routes/creative.ts",
+    "src/server/routes/desktop-companion.ts",
+    "src/server/routes/document-workspace.ts",
     "src/server/routes/education.ts",
     "src/server/routes/engineering.ts",
     "src/server/routes/export.ts",
@@ -615,10 +628,13 @@
     "src/server/routes/local-tools.ts",
     "src/server/routes/market.ts",
     "src/server/routes/math.ts",
+    "src/server/routes/mock-api.ts",
     "src/server/routes/music.ts",
     "src/server/routes/philosophy.ts",
     "src/server/routes/plans.ts",
     "src/server/routes/pop-culture.ts",
+    "src/server/routes/project-intelligence.ts",
+    "src/server/routes/project-memory.ts",
     "src/server/routes/rag-query.ts",
     "src/server/routes/research.ts",
     "src/server/routes/science.ts",
@@ -631,6 +647,7 @@
     "src/server/routes/toolCatalog.ts",
     "src/server/routes/v1/chat.ts",
     "src/server/routes/v2/chat.ts",
+    "src/server/routes/website-workspace.ts",
     "src/server/security/webhookUrl.ts",
     "src/types/chat.ts",
     "src/types/contract.ts",
@@ -665,6 +682,8 @@
     "client/src/components/CodeWorkflowPanel.tsx",
     "client/src/components/ConversationToolsPanel.tsx",
     "client/src/components/CreativeComposerPanel.tsx",
+    "client/src/components/DesktopCompanionPanel.tsx",
+    "client/src/components/DocumentWorkspacePanel.tsx",
     "client/src/components/FLStudioControlPanel.tsx",
     "client/src/components/FileExplorerPanel.tsx",
     "client/src/components/FilePreviewPane.tsx",
@@ -675,12 +694,16 @@
     "client/src/components/LoadedFilesBar.tsx",
     "client/src/components/LocalRunApprovalPanel.tsx",
     "client/src/components/LocalToolsWorkspace.tsx",
+    "client/src/components/MockApiWorkspacePanel.tsx",
     "client/src/components/ModeSelector.tsx",
     "client/src/components/PlanActionBar.tsx",
+    "client/src/components/ProjectIntelligencePanel.tsx",
     "client/src/components/SettingsMenu.tsx",
     "client/src/components/SpriteLabPanel.tsx",
     "client/src/components/StaticDemo.tsx",
     "client/src/components/StatusBar.tsx",
+    "client/src/components/UtilityWorkbenchPanel.tsx",
+    "client/src/components/WebsiteWorkspacePanel.tsx",
     "client/src/features/gis/GISMapCard.tsx",
     "client/src/features/gis/GISMapPanel.tsx",
     "client/src/features/gis/gisApi.ts",
@@ -806,6 +829,7 @@
     "src/core/database/SafeDatabaseQuestionAgent.ts",
     "src/core/debug/DebugMode.ts",
     "src/core/documents/DocumentMetadata.ts",
+    "src/core/documents/DocumentReviewService.ts",
     "src/core/education/EducationService.ts",
     "src/core/embeddings/EmbeddingService.ts",
     "src/core/entity/EntityLinkingService.ts",
@@ -896,6 +920,7 @@
     "src/core/mcp/McpToolRegistry.ts",
     "src/core/memory/MemoryService.ts",
     "src/core/memory/PrivateMemoryStore.ts",
+    "src/core/memory/ProjectContext.ts",
     "src/core/modes/ExecutionModePolicy.ts",
     "src/core/modes/ModePolicy.ts",
     "src/core/nlu/ClarifyingQuestionBuilder.ts",
@@ -928,6 +953,8 @@
     "src/core/orchestrator/EnhancedOrchestrator.ts",
     "src/core/orchestrator/Orchestrator.ts",
     "src/core/planning/PlanDocumentService.ts",
+    "src/core/project/ProjectIntelligenceService.ts",
+    "src/core/project/ProjectMemoryService.ts",
     "src/core/provenance/ProvenanceLedger.ts",
     "src/core/providers/EnsembleAdapter.ts",
     "src/core/providers/FreeModelRegistry.ts",
@@ -1135,6 +1162,7 @@
     "src/core/user/CustomInstructions.ts",
     "src/core/validator/Validators.ts",
     "src/core/webhooks/WebhookService.ts",
+    "src/core/website/WebsiteWorkspaceService.ts",
     "src/core/wiki/LocalKnowledgeWiki.ts",
     "src/middleware/apiErrorSchema.ts",
     "src/middleware/auth.ts",
@@ -1154,6 +1182,8 @@
     "src/server/routes/chrono.ts",
     "src/server/routes/code.ts",
     "src/server/routes/creative.ts",
+    "src/server/routes/desktop-companion.ts",
+    "src/server/routes/document-workspace.ts",
     "src/server/routes/education.ts",
     "src/server/routes/engineering.ts",
     "src/server/routes/export.ts",
@@ -1174,10 +1204,13 @@
     "src/server/routes/local-tools.ts",
     "src/server/routes/market.ts",
     "src/server/routes/math.ts",
+    "src/server/routes/mock-api.ts",
     "src/server/routes/music.ts",
     "src/server/routes/philosophy.ts",
     "src/server/routes/plans.ts",
     "src/server/routes/pop-culture.ts",
+    "src/server/routes/project-intelligence.ts",
+    "src/server/routes/project-memory.ts",
     "src/server/routes/rag-query.ts",
     "src/server/routes/research.ts",
     "src/server/routes/science.ts",
@@ -1190,6 +1223,7 @@
     "src/server/routes/toolCatalog.ts",
     "src/server/routes/v1/chat.ts",
     "src/server/routes/v2/chat.ts",
+    "src/server/routes/website-workspace.ts",
     "src/server/security/webhookUrl.ts",
     "src/types/chat.ts",
     "src/types/contract.ts",
@@ -1313,7 +1347,6 @@
     "src/core/memory/HierarchicalMemory.ts",
     "src/core/memory/MemoryConsolidator.ts",
     "src/core/memory/MemoryRetrievalNetwork.ts",
-    "src/core/memory/ProjectContext.ts",
     "src/core/moderation/ContentModerator.ts",
     "src/core/multimodal/ImageProcessor.ts",
     "src/core/multimodal/VideoProcessor.ts",
@@ -1503,6 +1536,10 @@
     {
       "importer": "src/server/routes/local-tools.ts",
       "specifier": "../../core/local-tools/LocalToolService"
+    },
+    {
+      "importer": "src/server/routes/mock-api.ts",
+      "specifier": "../../core/local-tools/MockApiWorkspaceService"
     }
   ],
   "importGraph": {
@@ -1637,6 +1674,10 @@
       "client/src/components/CreativeComposerPanel.tsx"
     ],
     "client/src/components/CreativeComposerPanel.tsx": [],
+    "client/src/components/DesktopCompanionPanel.tsx": [],
+    "client/src/components/DocumentWorkspacePanel.tsx": [
+      "client/src/api/runtime.ts"
+    ],
     "client/src/components/FileExplorerPanel.test.tsx": [
       "client/src/components/FileExplorerPanel.tsx"
     ],
@@ -1682,9 +1723,16 @@
     ],
     "client/src/components/LocalToolsWorkspace.tsx": [
       "client/src/api/runtime.ts",
+      "client/src/components/DesktopCompanionPanel.tsx",
+      "client/src/components/DocumentWorkspacePanel.tsx",
       "client/src/components/LocalRunApprovalPanel.tsx",
-      "client/src/components/SpriteLabPanel.tsx"
+      "client/src/components/MockApiWorkspacePanel.tsx",
+      "client/src/components/ProjectIntelligencePanel.tsx",
+      "client/src/components/SpriteLabPanel.tsx",
+      "client/src/components/UtilityWorkbenchPanel.tsx",
+      "client/src/components/WebsiteWorkspacePanel.tsx"
     ],
+    "client/src/components/MockApiWorkspacePanel.tsx": [],
     "client/src/components/ModeSelector.test.tsx": [
       "client/src/components/ModeSelector.tsx"
     ],
@@ -1693,6 +1741,9 @@
       "client/src/components/PlanActionBar.tsx"
     ],
     "client/src/components/PlanActionBar.tsx": [],
+    "client/src/components/ProjectIntelligencePanel.tsx": [
+      "client/src/api/runtime.ts"
+    ],
     "client/src/components/SettingsMenu.test.tsx": [
       "client/src/components/SettingsMenu.tsx"
     ],
@@ -1715,6 +1766,8 @@
       "client/src/components/StatusBar.tsx"
     ],
     "client/src/components/StatusBar.tsx": [],
+    "client/src/components/UtilityWorkbenchPanel.tsx": [],
+    "client/src/components/WebsiteWorkspacePanel.tsx": [],
     "client/src/features/gis/gisApi.ts": [
       "client/src/features/gis/gisTypes.ts"
     ],
@@ -2779,6 +2832,10 @@
       "src/core/database/Database.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/documents/DocumentReviewService.test.ts": [
+      "src/core/documents/DocumentReviewService.ts"
+    ],
+    "src/core/documents/DocumentReviewService.ts": [],
     "src/core/education/EducationService.ts": [
       "src/core/database/Database.ts",
       "src/core/database/ExpansionDatabase.ts"
@@ -3603,6 +3660,11 @@
       "src/core/planning/PlanDocumentService.ts"
     ],
     "src/core/planning/PlanDocumentService.ts": [],
+    "src/core/project/ProjectIntelligenceService.ts": [
+      "src/core/agents/CodeIndexer.ts",
+      "src/core/memory/ProjectContext.ts"
+    ],
+    "src/core/project/ProjectMemoryService.ts": [],
     "src/core/provenance/ProvenanceLedger.ts": [
       "src/core/observability/logger.ts",
       "src/types/contract.ts",
@@ -4271,6 +4333,10 @@
       "src/core/observability/logger.ts",
       "src/utils/retry.ts"
     ],
+    "src/core/website/WebsiteWorkspaceService.test.ts": [
+      "src/core/website/WebsiteWorkspaceService.ts"
+    ],
+    "src/core/website/WebsiteWorkspaceService.ts": [],
     "src/core/wiki/LocalKnowledgeWiki.ts": [],
     "src/evals/run-domain-evals.test.ts": [],
     "src/mesh/CircuitBreaker.ts": [
@@ -4459,6 +4525,8 @@
       "src/server/routes/chrono.ts",
       "src/server/routes/code.ts",
       "src/server/routes/creative.ts",
+      "src/server/routes/desktop-companion.ts",
+      "src/server/routes/document-workspace.ts",
       "src/server/routes/education.ts",
       "src/server/routes/engineering.ts",
       "src/server/routes/export.ts",
@@ -4476,10 +4544,13 @@
       "src/server/routes/local-tools.ts",
       "src/server/routes/market.ts",
       "src/server/routes/math.ts",
+      "src/server/routes/mock-api.ts",
       "src/server/routes/music.ts",
       "src/server/routes/philosophy.ts",
       "src/server/routes/plans.ts",
       "src/server/routes/pop-culture.ts",
+      "src/server/routes/project-intelligence.ts",
+      "src/server/routes/project-memory.ts",
       "src/server/routes/rag-query.ts",
       "src/server/routes/research.ts",
       "src/server/routes/science.ts",
@@ -4488,7 +4559,8 @@
       "src/server/routes/sixsigma.ts",
       "src/server/routes/sprite-lab.ts",
       "src/server/routes/story.ts",
-      "src/server/routes/toolCatalog.ts"
+      "src/server/routes/toolCatalog.ts",
+      "src/server/routes/website-workspace.ts"
     ],
     "src/server/routes/__tests__/chrono-routes.test.ts": [
       "src/server/routes/chrono.ts",
@@ -4605,6 +4677,14 @@
       "src/middleware/errorHandler.ts",
       "src/utils/errors.ts"
     ],
+    "src/server/routes/desktop-companion.ts": [
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/document-workspace.ts": [
+      "src/core/documents/DocumentReviewService.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts"
+    ],
     "src/server/routes/education.ts": [
       "src/core/education/EducationService.ts",
       "src/middleware/errorHandler.ts",
@@ -4705,6 +4785,9 @@
     "src/server/routes/math.ts": [
       "src/middleware/errorHandler.ts"
     ],
+    "src/server/routes/mock-api.ts": [
+      "src/middleware/errorHandler.ts"
+    ],
     "src/server/routes/music.ts": [
       "src/core/agents/music/MusicProductionGeniusAgent.ts",
       "src/core/agents/music/mix/MixGeniusAgent.ts",
@@ -4721,6 +4804,16 @@
     ],
     "src/server/routes/pop-culture.ts": [
       "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/project-intelligence.ts": [
+      "src/core/project/ProjectIntelligenceService.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts"
+    ],
+    "src/server/routes/project-memory.ts": [
+      "src/core/project/ProjectMemoryService.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts"
     ],
     "src/server/routes/rag-query.ts": [
       "src/middleware/errorHandler.ts",
@@ -4787,6 +4880,10 @@
       "src/middleware/validator.ts",
       "src/server/routes/chat-stream.ts"
     ],
+    "src/server/routes/website-workspace.ts": [
+      "src/core/website/WebsiteWorkspaceService.ts",
+      "src/middleware/errorHandler.ts"
+    ],
     "src/server/security/webhookUrl.ts": [
       "src/utils/errors.ts"
     ],
@@ -4817,5 +4914,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 954
+  "sourceRecordCount": 972
 }

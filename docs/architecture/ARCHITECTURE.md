@@ -187,6 +187,10 @@ User Message
 
 ## Key Design Decisions
 
+### 6. Advanced capability workspaces
+
+The default client is conversation-first. Developer capabilities are grouped behind Settings so local project intelligence, file-based memory, document review, curated utilities, mock APIs, website prototyping, and desktop-companion context do not complicate ordinary chat. These routes are local-only and auditable through the route manifest. See [capability-workspaces.md](../integrations/capability-workspaces.md).
+
 ### 1. Contracts Over Prompts
 
 Every request is bound by an explicit contract. This provides:

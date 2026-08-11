@@ -22,5 +22,6 @@ knowledge-base/
 .vscode/
 .idea/
 .mex/graph.db*
+.remembrandt/
 .venv-pyscrappy/
 .playwright-cli/
