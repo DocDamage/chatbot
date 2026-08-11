@@ -1,7 +1,7 @@
 {
   "mode": "upgraded",
   "suite": "polyglot-coding-upgrade",
-  "generatedAt": "2026-08-11T04:51:39.653Z",
+  "generatedAt": "2026-08-11T04:58:03.728Z",
   "cases": [
     {
       "id": "systems-rust-validation",
@@ -33,7 +33,7 @@
           ],
           "status": "failed",
           "exitCode": 101,
-          "stdout": "\nrunning 1 test\ntest empty_name_is_an_error ... FAILED\n\nfailures:\n\n---- empty_name_is_an_error stdout ----\n\nthread 'empty_name_is_an_error' (33908) panicked at tests\\hidden_validation.rs:4:31:\nassertion `left == right` failed\n  left: Ok(\"\")\n right: Err(EmptyName)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    empty_name_is_an_error\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+          "stdout": "\nrunning 1 test\ntest empty_name_is_an_error ... FAILED\n\nfailures:\n\n---- empty_name_is_an_error stdout ----\n\nthread 'empty_name_is_an_error' (39716) panicked at tests\\hidden_validation.rs:4:31:\nassertion `left == right` failed\n  left: Ok(\"\")\n right: Err(EmptyName)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    empty_name_is_an_error\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
           "stderr": "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running tests\\hidden_validation.rs (target\\debug\\deps\\hidden_validation-b68252f12a6aec4b.exe)\nerror: test failed, to rerun pass `--test hidden_validation`\n"
         }
       ],
@@ -112,7 +112,7 @@
           ],
           "status": "failed",
           "exitCode": 1,
-          "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.10.11, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\python-typing\r\nconfigfile: pyproject.toml\r\nplugins: anyio-4.13.0\r\ncollected 1 item\r\n\r\ntests\\hidden\\test_cart_regression.py F                                   [100%]\r\n\r\n================================== FAILURES ===================================\r\n_____________________ test_negative_quantity_is_rejected ______________________\r\n\r\n    def test_negative_quantity_is_rejected():\r\n        try:\r\n            line_total(-1, 3.5)\r\n        except ValueError:\r\n            return\r\n>       raise AssertionError(\"negative quantities must be rejected\")\r\nE       AssertionError: negative quantities must be rejected\r\n\r\ntests\\hidden\\test_cart_regression.py:9: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/hidden/test_cart_regression.py::test_negative_quantity_is_rejected\r\n============================== 1 failed in 0.05s ==============================\r\n",
+          "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.10.11, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\python-typing\r\nconfigfile: pyproject.toml\r\nplugins: anyio-4.13.0\r\ncollected 1 item\r\n\r\ntests\\hidden\\test_cart_regression.py F                                   [100%]\r\n\r\n================================== FAILURES ===================================\r\n_____________________ test_negative_quantity_is_rejected ______________________\r\n\r\n    def test_negative_quantity_is_rejected():\r\n        try:\r\n            line_total(-1, 3.5)\r\n        except ValueError:\r\n            return\r\n>       raise AssertionError(\"negative quantities must be rejected\")\r\nE       AssertionError: negative quantities must be rejected\r\n\r\ntests\\hidden\\test_cart_regression.py:9: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/hidden/test_cart_regression.py::test_negative_quantity_is_rejected\r\n============================== 1 failed in 0.04s ==============================\r\n",
           "stderr": ""
         }
       ],

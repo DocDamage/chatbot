@@ -34,7 +34,7 @@
     ],
     "status": "passed",
     "exitCode": 0,
-    "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n    Start 1: buffer_contract\n1/1 Test #1: buffer_contract ..................   Passed    0.05 sec\n\n100% tests passed, 0 tests failed out of 1\n\nTotal Test time (real) =   0.09 sec\n",
+    "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n    Start 1: buffer_contract\n1/1 Test #1: buffer_contract ..................   Passed    0.04 sec\n\n100% tests passed, 0 tests failed out of 1\n\nTotal Test time (real) =   0.08 sec\n",
     "stderr": ""
   }
 ]

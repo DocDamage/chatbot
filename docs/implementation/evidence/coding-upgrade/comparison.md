@@ -1,6 +1,6 @@
 # Polyglot coding benchmark comparison
 
-Generated from the executed baseline and upgraded reports. Implementation SHA: `94c334c95431b90aa6f3575dafe59e13ff83f2da`.
+Generated from the executed baseline and upgraded reports. Implementation SHA: `334215c217852a1e412ef81fe195f22e1f1bc3fb`.
 
 This is an evidence report: ordinary runs perform toolchain preflight and upgraded repository inspection; an explicit --live-model run can invoke the configured provider and apply its structured patch only in an isolated worktree. Unsupported toolchains remain explicit and are not counted as passes.
 

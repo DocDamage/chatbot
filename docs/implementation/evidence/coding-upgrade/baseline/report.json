@@ -1,7 +1,7 @@
 {
   "mode": "baseline",
   "suite": "polyglot-coding-upgrade",
-  "generatedAt": "2026-08-11T04:51:21.194Z",
+  "generatedAt": "2026-08-11T04:57:47.908Z",
   "cases": [
     {
       "id": "systems-rust-validation",
@@ -20,7 +20,7 @@
           "status": "passed",
           "exitCode": 0,
           "stdout": "\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
-          "stderr": "   Compiling systems-rust-validation v0.1.0 (I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-rust-validation)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.48s\n     Running unittests src\\lib.rs (target\\debug\\deps\\systems_rust_validation-4027f18b6c11ad5d.exe)\n"
+          "stderr": "   Compiling systems-rust-validation v0.1.0 (I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-rust-validation)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.50s\n     Running unittests src\\lib.rs (target\\debug\\deps\\systems_rust_validation-4027f18b6c11ad5d.exe)\n"
         }
       ],
       "hiddenChecks": [
@@ -33,8 +33,8 @@
           ],
           "status": "failed",
           "exitCode": 101,
-          "stdout": "\nrunning 1 test\ntest empty_name_is_an_error ... FAILED\n\nfailures:\n\n---- empty_name_is_an_error stdout ----\n\nthread 'empty_name_is_an_error' (29096) panicked at tests\\hidden_validation.rs:4:31:\nassertion `left == right` failed\n  left: Ok(\"\")\n right: Err(EmptyName)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    empty_name_is_an_error\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
-          "stderr": "   Compiling systems-rust-validation v0.1.0 (I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-rust-validation)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.38s\n     Running tests\\hidden_validation.rs (target\\debug\\deps\\hidden_validation-b68252f12a6aec4b.exe)\nerror: test failed, to rerun pass `--test hidden_validation`\n"
+          "stdout": "\nrunning 1 test\ntest empty_name_is_an_error ... FAILED\n\nfailures:\n\n---- empty_name_is_an_error stdout ----\n\nthread 'empty_name_is_an_error' (37368) panicked at tests\\hidden_validation.rs:4:31:\nassertion `left == right` failed\n  left: Ok(\"\")\n right: Err(EmptyName)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    empty_name_is_an_error\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+          "stderr": "   Compiling systems-rust-validation v0.1.0 (I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\systems-rust-validation)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.39s\n     Running tests\\hidden_validation.rs (target\\debug\\deps\\hidden_validation-b68252f12a6aec4b.exe)\nerror: test failed, to rerun pass `--test hidden_validation`\n"
         }
       ],
       "score": {
@@ -102,7 +102,7 @@
           ],
           "status": "failed",
           "exitCode": 1,
-          "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.10.11, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\python-typing\r\nconfigfile: pyproject.toml\r\nplugins: anyio-4.13.0\r\ncollected 1 item\r\n\r\ntests\\hidden\\test_cart_regression.py F                                   [100%]\r\n\r\n================================== FAILURES ===================================\r\n_____________________ test_negative_quantity_is_rejected ______________________\r\n\r\n    def test_negative_quantity_is_rejected():\r\n        try:\r\n            line_total(-1, 3.5)\r\n        except ValueError:\r\n            return\r\n>       raise AssertionError(\"negative quantities must be rejected\")\r\nE       AssertionError: negative quantities must be rejected\r\n\r\ntests\\hidden\\test_cart_regression.py:9: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/hidden/test_cart_regression.py::test_negative_quantity_is_rejected\r\n============================== 1 failed in 0.05s ==============================\r\n",
+          "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.10.11, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\python-typing\r\nconfigfile: pyproject.toml\r\nplugins: anyio-4.13.0\r\ncollected 1 item\r\n\r\ntests\\hidden\\test_cart_regression.py F                                   [100%]\r\n\r\n================================== FAILURES ===================================\r\n_____________________ test_negative_quantity_is_rejected ______________________\r\n\r\n    def test_negative_quantity_is_rejected():\r\n        try:\r\n            line_total(-1, 3.5)\r\n        except ValueError:\r\n            return\r\n>       raise AssertionError(\"negative quantities must be rejected\")\r\nE       AssertionError: negative quantities must be rejected\r\n\r\ntests\\hidden\\test_cart_regression.py:9: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/hidden/test_cart_regression.py::test_negative_quantity_is_rejected\r\n============================== 1 failed in 0.06s ==============================\r\n",
           "stderr": ""
         }
       ],
@@ -305,7 +305,7 @@
           ],
           "status": "passed",
           "exitCode": 0,
-          "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n    Start 1: buffer_contract\n1/1 Test #1: buffer_contract ..................   Passed    0.05 sec\n\n100% tests passed, 0 tests failed out of 1\n\nTotal Test time (real) =   0.09 sec\n",
+          "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n    Start 1: buffer_contract\n1/1 Test #1: buffer_contract ..................   Passed    0.04 sec\n\n100% tests passed, 0 tests failed out of 1\n\nTotal Test time (real) =   0.08 sec\n",
           "stderr": ""
         }
       ],

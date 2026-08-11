@@ -38,5 +38,6 @@ This index links verified production-completion tasks to evidence collected agai
 | Record | Status | Commit/reference | Evidence | Notes |
 |---|---|---|---|---|
 | `P01-T07` | `WAIVED` | Issue `#35` | `docs/implementation/BRANCH_PROTECTION_POLICY.md` | Repository owner declined branch-protection enforcement; this does not count as verification. |
+| `POLY-CODE-T25` | `NOT PRODUCTION VERIFIED` | `334215c217852a1e412ef81fe195f22e1f1bc3fb` | `docs/implementation/evidence/coding-upgrade/` | Polyglot coding implementation and local evidence bundle; hosted-production promotion, live-provider benchmark execution, unsupported toolchains, and release coverage remain open. |
 
 Future tasks must append one row only after their evidence bundle and tracker status are complete.
