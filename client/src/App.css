@@ -231,11 +231,11 @@
   height: 100vh;
   min-height: 100vh;
   max-height: none;
-  background: #f7f5f0;
+  background: #1d1d1d;
   border: 0;
   border-radius: 0;
   box-shadow: none;
-  color: #3d3732;
+  color: #e6e6e6;
 }
 
 .app-header {
@@ -244,8 +244,8 @@
   justify-content: space-between;
   gap: 20px;
   padding: 16px 28px;
-  background: #f7f5f0;
-  border-bottom: 1px solid #e7e1d8;
+  background: #1b1b1b;
+  border-bottom: 1px solid #303030;
   text-align: left;
 }
 
@@ -256,14 +256,14 @@
 }
 
 .brand-mark {
-  color: #d97757;
+  color: #c7c7c7;
   font-size: 1.35rem;
 }
 
 .app-header h1 {
   margin: 0;
-  color: #2f2a26;
-  font-family: Georgia, 'Times New Roman', serif;
+  color: #f0f0f0;
+  font-family: inherit;
   font-size: 1.25rem;
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -271,7 +271,7 @@
 
 .app-header .subtitle {
   margin: 2px 0 0;
-  color: #857a70;
+  color: #929292;
   font-size: 0.78rem;
 }
 

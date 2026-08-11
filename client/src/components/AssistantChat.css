@@ -419,8 +419,8 @@
 /* Claude-inspired default presentation: quiet canvas, readable messages, compact composer. */
 .assistant-workspace,
 .assistant-chat {
-  background: #f7f5f0;
-  color: #3d3732;
+  background: #1d1d1d;
+  color: #e6e6e6;
 }
 
 .assistant-toolbar {
@@ -432,14 +432,14 @@
 }
 
 .assistant-mode-hint {
-  color: #8a7e74;
+  color: #929292;
 }
 
 .simple-mode-picker {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #6f645b;
+  color: #a0a0a0;
   font-size: 13px;
 }
 
@@ -447,31 +447,31 @@
   padding: 4px 24px 4px 0;
   border: 0;
   background: transparent;
-  color: #3d3732;
+  color: #e6e6e6;
   font: inherit;
   font-weight: 700;
 }
 
 .assistant-viewport {
   padding: 40px 24px 32px;
-  background: #f7f5f0;
+  background: #1d1d1d;
 }
 
 .assistant-empty-icon {
   border: 0;
   border-radius: 14px;
-  background: #e9e1d7;
-  color: #d97757;
+  background: #2c2c2c;
+  color: #c7c7c7;
 }
 
 .assistant-empty h2 {
-  color: #2f2a26;
-  font-family: Georgia, 'Times New Roman', serif;
+  color: #ededed;
+  font-family: inherit;
   font-size: 26px;
 }
 
 .assistant-empty p {
-  color: #82766c;
+  color: #929292;
 }
 
 .assistant-message {
@@ -485,14 +485,14 @@
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  color: #3d3732;
+  color: #e2e2e2;
 }
 
 .assistant-message-user .assistant-message-shell {
   border: 0;
   border-radius: 18px;
-  background: #ebe5de;
-  color: #3d3732;
+  background: #303030;
+  color: #ededed;
   box-shadow: none;
 }
 
@@ -512,12 +512,12 @@
 
 .assistant-action {
   background: transparent;
-  color: #8a7e74;
+  color: #929292;
 }
 
 .assistant-action:hover {
-  background: #ebe5de;
-  color: #3d3732;
+  background: #303030;
+  color: #ededed;
 }
 
 .assistant-composer {
@@ -525,10 +525,10 @@
   margin: 0 auto 18px;
   gap: 8px;
   padding: 12px;
-  border: 1px solid #ded6cc;
+  border: 1px solid #404040;
   border-radius: 22px;
-  background: #fffdf9;
-  box-shadow: 0 8px 30px rgba(73, 57, 42, 0.08);
+  background: #252525;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.24);
 }
 
 .assistant-input {
@@ -536,7 +536,7 @@
   padding: 12px;
   border: 0;
   background: transparent;
-  color: #3d3732;
+  color: #ededed;
   box-shadow: none;
 }
 
@@ -546,32 +546,40 @@
 }
 
 .assistant-input::placeholder {
-  color: #a3978c;
+  color: #858585;
 }
 
 .assistant-send-button {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: #d97757;
-  color: #fff;
+  background: #ededed;
+  color: #171717;
 }
 
 .assistant-send-button:hover {
-  background: #c76345;
+  background: #ffffff;
   transform: none;
 }
 
 .assistant-stop-button {
   height: 42px;
   border-radius: 999px;
-  background: #eee7df;
-  color: #5f544c;
+  background: #333333;
+  color: #d0d0d0;
 }
 
 .status-bar,
 .loaded-files-bar {
   background: transparent;
-  border-color: #e7e1d8;
-  color: #8a7e74;
+  border-color: #303030;
+  color: #929292;
+}
+
+.assistant-cta-bar,
+.assistant-knowledge-preview,
+.assistant-error-bar {
+  background: #242424;
+  border-color: #353535;
+  color: #e6e6e6;
 }

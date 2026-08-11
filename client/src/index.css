@@ -10,8 +10,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #f5f3ee;
-  color: #3d3732;
+  background: #171717;
+  color: #e6e6e6;
   min-height: 100vh;
   display: flex;
   align-items: stretch;

@@ -278,38 +278,124 @@
   position: static;
   width: 36px;
   height: 36px;
-  border: 1px solid #ded6cc;
+  border: 1px solid #404040;
   border-radius: 50%;
   background: transparent;
-  color: #6b625a;
+  color: #b5b5b5;
   box-shadow: none;
   font-size: 1rem;
 }
 
 .settings-button:hover {
-  background: #ebe5de;
-  color: #3d3732;
+  background: #2d2d2d;
+  color: #f0f0f0;
   transform: none;
 }
 
 .settings-workspace-section {
-  background: #faf7f2;
-  border: 1px solid #e7dfd5;
+  background: #262626;
+  border: 1px solid #3a3a3a;
   border-radius: 12px;
 }
 
 .settings-workspace-button {
   min-height: 38px;
   padding: 0 14px;
-  border: 1px solid #d97757;
+  border: 1px solid #777777;
   border-radius: 8px;
   background: transparent;
-  color: #b85e40;
+  color: #e0e0e0;
   cursor: pointer;
   font-size: 0.86rem;
   font-weight: 700;
 }
 
 .settings-workspace-button:hover {
-  background: #fff0e9;
+  background: #333333;
+}
+
+.settings-backdrop {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.settings-dialog {
+  background: #202020;
+  border: 1px solid #383838;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+}
+
+.settings-header {
+  border-color: #383838;
+  color: #eeeeee;
+}
+
+.settings-header p,
+.settings-help {
+  color: #999999;
+}
+
+.settings-close {
+  border-color: #444444;
+  background: #2a2a2a;
+  color: #cfcfcf;
+}
+
+.settings-body {
+  background: #202020;
+}
+
+.settings-section h3 {
+  color: #eeeeee;
+}
+
+.provider-option,
+.compatible-option {
+  border-color: #444444;
+  background: #292929;
+  color: #d5d5d5;
+}
+
+.provider-option.selected,
+.compatible-option.selected {
+  border-color: #858585;
+  background: #383838;
+  color: #ffffff;
+}
+
+.settings-grid label,
+.settings-section label {
+  color: #bdbdbd;
+}
+
+.settings-grid input,
+.settings-grid select,
+.settings-section input,
+.settings-section select {
+  border-color: #444444;
+  background: #171717;
+  color: #eeeeee;
+}
+
+.settings-message.success,
+.settings-message.error {
+  background: #292929;
+  border-color: #3b3b3b;
+  color: #d5d5d5;
+}
+
+.settings-actions {
+  background: #1b1b1b;
+  border-color: #383838;
+  box-shadow: 0 -12px 26px rgba(0, 0, 0, 0.18);
+}
+
+.primary-action {
+  background: #eeeeee;
+  color: #171717;
+}
+
+.secondary-action {
+  border-color: #444444;
+  background: #292929;
+  color: #d5d5d5;
 }
