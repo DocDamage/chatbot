@@ -22,6 +22,7 @@ import { VerificationOrchestrator, VerificationSummary as NativeVerificationSumm
 import { WorkspaceWriteGate } from '../coding/editing/WorkspaceWriteGate';
 import { WorkMode } from '../modes/ExecutionModePolicy';
 import { LLMAdapter } from '../providers/LLMAdapter';
+import { RepairRun } from '../coding/verification/RepairController';
 
 export interface CodingAgentConfig {
   workspaceRoot?: string;
@@ -46,6 +47,7 @@ export interface CodingAgentResult {
   filesInspected: string[];
   plan: CodePlan;
   patch: GeneratedPatch;
+  structuredPatch?: StructuredPatch;
   commandsRun: string[];
   verification: VerificationSummary;
   review: CodeReviewResult;
@@ -135,6 +137,7 @@ export class CodingAgent {
       filesInspected,
       plan,
       patch,
+      structuredPatch: modelPatch?.structuredPatch,
       commandsRun: verification.commandsRun,
       verification,
       review,
@@ -176,8 +179,8 @@ export class CodingAgent {
     return this.editEngine.createPatch(operations);
   }
 
-  createStructuredPatchFromInstruction(message: string, authorized = false): StructuredPatch {
-    return this.editEngine.fromNaturalLanguage(message, { authorized });
+  createStructuredPatchFromInstruction(message: string, authorized = false, reviewOnly = false): StructuredPatch {
+    return this.editEngine.fromNaturalLanguage(message, { authorized, requireAuthorization: !reviewOnly });
   }
 
   applyStructuredPatch(patch: StructuredPatch, mode: WorkMode): StructuredPatch {
@@ -187,6 +190,18 @@ export class CodingAgent {
 
   async verifyNative(options: { run?: boolean; maxCommands?: number } = {}): Promise<NativeVerificationSummary> {
     return this.nativeVerification.verify(options);
+  }
+
+  async repair(options: { operations: EditOperation[]; mode: WorkMode; maxIterations?: number }): Promise<RepairRun> {
+    return this.nativeVerification.verifyWithRepair({
+      propose: async (diagnostics, iteration) => iteration === 1 && diagnostics.length > 0
+        ? { hypothesis: `Apply the approved repair proposal after ${diagnostics.length} diagnostic(s).`, operations: options.operations }
+        : undefined,
+      apply: async operations => {
+        const patch = this.createStructuredPatch(operations.map(operation => ({ ...operation, authorized: true })));
+        this.applyStructuredPatch(patch, options.mode);
+      }
+    }, { maxIterations: options.maxIterations });
   }
 
   allocateContext(input: { modelContextTokens: number; outputTokens: number; intent: string; evidence: ContextEvidence[]; repositorySize: number; errorCount?: number }) {
@@ -318,7 +333,7 @@ export class CodingAgent {
     model: string | undefined,
     request: string,
     context: CodeContext
-  ): Promise<{ patch: GeneratedPatch; risks: string[] }> {
+  ): Promise<{ patch: GeneratedPatch; structuredPatch?: StructuredPatch; risks: string[] }> {
     const response = await adapter.generate({
       model,
       temperature: 0,
@@ -334,9 +349,10 @@ export class CodingAgent {
     if (!parsed) {
       return { patch: this.patchGenerator.createEmptyPatch('The selected coding model did not return the required structured operation format.'), risks: ['Model output was not valid structured patch JSON; no patch was created'] };
     }
-    const structured = this.editEngine.createPatch(parsed);
+    const structured = this.editEngine.createPatch(parsed, { requireAuthorization: false });
     return {
       patch: { format: 'unified-diff', diff: structured.diff, filesChanged: structured.filesChanged, explanation: structured.conflicts.length ? 'Model patch requires conflict review before application.' : 'Structured patch proposed by the selected coding model.' },
+      structuredPatch: structured,
       risks: structured.conflicts.map(conflict => `${conflict.path}: ${conflict.reason}`)
     };
   }
@@ -355,9 +371,7 @@ export class CodingAgent {
           && typeof item.reason === 'string'
           && (item.content === undefined || typeof item.content === 'string')
           && (item.expectedContent === undefined || typeof item.expectedContent === 'string');
-      // This flag only permits construction of a reviewable draft. The draft is
-      // never applied here; application still goes through the write gate.
-      }).map(operation => ({ ...operation, authorized: true }));
+      }).map(operation => ({ ...operation, authorized: false }));
       return operations;
     } catch {
       return undefined;

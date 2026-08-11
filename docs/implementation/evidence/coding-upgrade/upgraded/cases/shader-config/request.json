@@ -7,5 +7,6 @@
   ],
   "hiddenChecks": [
     "uniform-layout-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

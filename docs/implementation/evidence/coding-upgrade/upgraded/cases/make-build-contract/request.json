@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "parallel-order-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

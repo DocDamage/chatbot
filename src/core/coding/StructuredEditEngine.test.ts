@@ -28,11 +28,17 @@ describe('StructuredEditEngine', () => {
     expect(patch.conflicts[0].reason).toContain('precondition');
   });
 
-  it('turns natural-language multi-file edits into unauthorized reviewable operations by default', () => {
+  it('keeps natural-language drafts unauthorized and conflict-free until application', () => {
     fs.writeFileSync(path.join(root, 'a.ts'), 'const answer = "old";\n');
     const patch = new StructuredEditEngine(root).fromNaturalLanguage('replace "old" with "new" in a.ts; create file b.ts with "export const ok = true;"');
     expect(patch.operations).toHaveLength(2);
-    expect(patch.conflicts.map(conflict => conflict.reason)).toEqual(expect.arrayContaining(['Operation requires explicit authorization']));
-    expect(patch.diff).toBe('');
+    expect(patch.conflicts).toEqual([]);
+    expect(patch.operations.every(operation => operation.authorized)).toBe(false);
+    expect(patch.diff).toContain('a.ts');
+  });
+
+  it('rejects unauthorized operations when constructing an application patch', () => {
+    const patch = new StructuredEditEngine(root).createPatch([{ operation: 'create', path: 'a.ts', content: 'new\n', reason: 'Fix', authorized: false }]);
+    expect(patch.conflicts.map(conflict => conflict.reason)).toContain('Operation requires explicit authorization');
   });
 });

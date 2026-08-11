@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1032,
+    "sourceFiles": 1033,
     "productionSourceFiles": 778,
     "reachableProductionFiles": 598,
     "unreachableProductionFiles": 180,
-    "routes": 354,
-    "environmentVariables": 190,
+    "routes": 355,
+    "environmentVariables": 191,
     "featureFlags": 18,
     "oversizedProductionFiles": 66
   },
@@ -659,84 +659,91 @@
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/ask",
-      "line": 24,
+      "line": 31,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/plan",
-      "line": 38,
+      "line": 46,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/patch",
-      "line": 53,
+      "line": 61,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/review",
-      "line": 69,
+      "line": 77,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/verify",
-      "line": 77,
+      "line": 85,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/api/code/repository",
-      "line": 90,
+      "line": 98,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/retrieve",
-      "line": 95,
+      "line": 103,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/patch/structured",
-      "line": 108,
+      "line": 116,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/patch/apply",
-      "line": 122,
+      "line": 130,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/code/verify/native",
-      "line": 141,
+      "line": 149,
+      "file": "src/server/routes/code.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/code/repair",
+      "line": 160,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/api/code/files/search",
-      "line": 152,
+      "line": 179,
       "file": "src/server/routes/code.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/api/code/symbols",
-      "line": 160,
+      "line": 187,
       "file": "src/server/routes/code.ts"
     },
     {
@@ -4706,6 +4713,7 @@
     "CLAUDE_MODEL",
     "CODE_EXECUTOR_SANDBOX",
     "CODE_EXECUTOR_TIMEOUT",
+    "CODING_EVAL_MODEL",
     "CODING_MODEL_CONTEXT_TOKENS",
     "COHERE_API_KEY",
     "COHERE_MODEL",
@@ -4959,7 +4967,7 @@
     },
     {
       "file": "src/core/agents/CodingAgent.ts",
-      "lines": 398
+      "lines": 412
     },
     {
       "file": "src/core/agents/MultiAgentOrchestrator.ts",
@@ -5067,7 +5075,7 @@
     },
     {
       "file": "src/core/orchestrator/EnhancedOrchestrator.ts",
-      "lines": 580
+      "lines": 584
     },
     {
       "file": "src/core/orchestrator/Orchestrator.ts",

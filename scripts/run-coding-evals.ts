@@ -2,15 +2,29 @@ import fs from 'fs';
 import path from 'path';
 import { execFileSync } from 'child_process';
 import { CodingBenchmarkRunner } from '../src/core/evaluation/CodingBenchmarkRunner';
+import { OpenAIAdapter } from '../src/core/providers/LLMAdapter';
 
 const mode = process.argv.includes('--upgraded') ? 'upgraded' : 'baseline';
 const root = path.resolve(process.cwd(), 'evals/coding/fixtures');
-const runner = new CodingBenchmarkRunner(root);
 
 async function main(): Promise<void> {
+  const liveModel = process.argv.includes('--live-model');
+  if (liveModel && !process.env.OPENAI_API_KEY) throw new Error('--live-model requires OPENAI_API_KEY; no provider call was made');
+  const model = process.env.CODING_EVAL_MODEL || process.env.OPENAI_MODEL;
+  const runner = new CodingBenchmarkRunner(root, liveModel ? { modelAdapter: new OpenAIAdapter(process.env.OPENAI_API_KEY as string, model), model } : {});
   const report = await runner.run(runner.loadManifest(), mode);
   const outputRoot = path.resolve(process.cwd(), 'docs/implementation/evidence/coding-upgrade', mode);
   fs.mkdirSync(outputRoot, { recursive: true });
+  fs.writeFileSync(path.join(outputRoot, 'environment.json'), JSON.stringify({
+    generatedAt: report.generatedAt,
+    implementationSha: safeGitSha(),
+    node: process.version,
+    platform: process.platform,
+    architecture: process.arch,
+    provider: process.argv.includes('--live-model') ? 'openai' : 'none',
+    model: process.env.CODING_EVAL_MODEL || process.env.OPENAI_MODEL || null,
+    networkPolicy: process.argv.includes('--live-model') ? 'explicit-live-model-only' : 'disabled'
+  }, null, 2));
   fs.writeFileSync(path.join(outputRoot, 'manifest.json'), JSON.stringify({ suite: report.suite, mode: report.mode, generatedAt: report.generatedAt, fixtureRoot: root, cases: report.cases.map(testCase => ({ id: testCase.id, fixture: testCase.fixture, fixtureHash: testCase.fixtureHash, toolchain: testCase.toolchain, toolchainAvailable: testCase.toolchainAvailable, status: testCase.status, reason: testCase.reason })) }, null, 2));
   fs.writeFileSync(path.join(outputRoot, 'report.json'), JSON.stringify(report, null, 2));
   const sourceManifest = runner.loadManifest();
@@ -19,8 +33,8 @@ async function main(): Promise<void> {
     if (!testCase) continue;
     const caseRoot = path.join(outputRoot, 'cases', result.id);
     fs.mkdirSync(caseRoot, { recursive: true });
-    fs.writeFileSync(path.join(caseRoot, 'request.json'), JSON.stringify({ id: testCase.id, prompt: testCase.prompt, expectedFiles: testCase.expectedFiles, hiddenChecks: testCase.hiddenChecks }, null, 2));
-    fs.writeFileSync(path.join(caseRoot, 'response.json'), JSON.stringify({ mode, status: result.status, reason: result.reason, executor: result.inspection ? 'repository-controller-inspection' : 'toolchain-preflight-only', inspection: result.inspection, score: result.score }, null, 2));
+    fs.writeFileSync(path.join(caseRoot, 'request.json'), JSON.stringify({ id: testCase.id, prompt: testCase.prompt, expectedFiles: testCase.expectedFiles, hiddenChecks: testCase.hiddenChecks, hiddenTests: testCase.hiddenTests || [] }, null, 2));
+    fs.writeFileSync(path.join(caseRoot, 'response.json'), JSON.stringify({ mode, status: result.status, reason: result.reason, executor: result.execution?.executor || (result.inspection ? 'repository-controller-inspection' : 'toolchain-preflight-only'), execution: result.execution, inspection: result.inspection, score: result.score }, null, 2));
     fs.writeFileSync(path.join(caseRoot, 'diff.patch'), '');
     fs.writeFileSync(path.join(caseRoot, 'commands.json'), JSON.stringify(result.checks || [], null, 2));
     fs.writeFileSync(path.join(caseRoot, 'diagnostics.json'), JSON.stringify({ parsed: false, reason: 'No generated patch was executed by the preflight runner' }, null, 2));
@@ -46,7 +60,7 @@ function writeComparison(outputRoot: string): void {
     '',
     `Generated from the executed baseline and upgraded reports. Implementation SHA: \`${safeGitSha()}\`.`,
     '',
-    'This is an evidence report, not a correctness claim: the current runner performs toolchain preflight and upgraded repository inspection, but does not invoke a live model or apply generated patches. Unsupported toolchains remain explicit and are not counted as passes.',
+    'This is an evidence report: ordinary runs perform toolchain preflight and upgraded repository inspection; an explicit --live-model run can invoke the configured provider and apply its structured patch only in an isolated worktree. Unsupported toolchains remain explicit and are not counted as passes.',
     '',
     '| Case | Baseline | Upgraded | Build/test | Regression | Retrieval | Minimality | API accuracy | Root cause | Security | Review | Honesty | Fixture hash |',
     '|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|'

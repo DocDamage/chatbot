@@ -1903,6 +1903,7 @@
     "evals/coding/fixtures/web-react-ssr/src/App.test.tsx": [],
     "evals/coding/fixtures/web-react-ssr/src/App.tsx": [],
     "evals/coding/fixtures/web-react-ssr/test-runner.mjs": [],
+    "evals/coding/fixtures/web-svelte-boundary/hidden-check.mjs": [],
     "evals/coding/fixtures/web-svelte-boundary/src/routes/+page.test.ts": [],
     "evals/coding/fixtures/web-svelte-boundary/test-runner.mjs": [],
     "jest.config.js": [],
@@ -1995,7 +1996,8 @@
     "scripts/release/smoke-pages-deployment.mjs": [],
     "scripts/release/verify-ci-graph.mjs": [],
     "scripts/run-coding-evals.ts": [
-      "src/core/evaluation/CodingBenchmarkRunner.ts"
+      "src/core/evaluation/CodingBenchmarkRunner.ts",
+      "src/core/providers/LLMAdapter.ts"
     ],
     "scripts/run-domain-evals.ts": [],
     "scripts/run-evals.ts": [
@@ -2082,6 +2084,7 @@
       "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
       "src/core/coding/retrieval/StructuralRetriever.ts",
       "src/core/coding/types.ts",
+      "src/core/coding/verification/RepairController.ts",
       "src/core/coding/verification/VerificationOrchestrator.ts",
       "src/core/modes/ExecutionModePolicy.ts",
       "src/core/providers/LLMAdapter.ts",
@@ -3136,11 +3139,14 @@
       "src/core/database/Database.ts"
     ],
     "src/core/evaluation/CodingBenchmarkRunner.test.ts": [
-      "src/core/evaluation/CodingBenchmarkRunner.ts"
+      "src/core/evaluation/CodingBenchmarkRunner.ts",
+      "src/core/providers/LLMAdapter.ts"
     ],
     "src/core/evaluation/CodingBenchmarkRunner.ts": [
+      "src/core/agents/CodingAgent.ts",
       "src/core/coding/CodingController.ts",
-      "src/core/evaluation/CodingEvalHarness.ts"
+      "src/core/evaluation/CodingEvalHarness.ts",
+      "src/core/providers/LLMAdapter.ts"
     ],
     "src/core/evaluation/CodingEvalHarness.test.ts": [
       "src/core/evaluation/CodingEvalHarness.ts"
@@ -5212,5 +5218,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1032
+  "sourceRecordCount": 1033
 }

@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "double-free-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import * as path from 'path';
 import { BuildCommandPlan } from '../repository/BuildSystemDetector';
 
 export interface CapabilityRun { command: string; argv: string[]; exitCode: number | null; stdout: string; stderr: string; durationMs: number; status: 'passed' | 'failed' | 'timed_out' | 'blocked'; reason?: string; }
@@ -10,7 +11,8 @@ export class CommandCapabilityRunner {
     const start = Date.now();
     if (!plan.supported) return { command: plan.executable, argv: plan.argv, exitCode: null, stdout: '', stderr: '', durationMs: 0, status: 'blocked', reason: plan.reason || 'Command is not authorized by detected project state' };
     return new Promise(resolve => {
-      const child = spawn(this.resolveExecutable(plan.executable), plan.argv, { cwd: this.cwd, shell: false, windowsHide: true, env: process.env });
+      const invocation = this.resolveInvocation(plan.executable, plan.argv);
+      const child = spawn(invocation.executable, invocation.argv, { cwd: this.cwd, shell: false, windowsHide: true, env: process.env });
       let stdout = ''; let stderr = ''; let settled = false;
       const append = (current: string, value: string) => { const next = current + value; return Buffer.byteLength(next) > this.maxOutputBytes ? next.slice(-this.maxOutputBytes) : next; };
       const finish = (result: CapabilityRun) => { if (settled) return; settled = true; clearTimeout(timeout); resolve(result); };
@@ -23,6 +25,13 @@ export class CommandCapabilityRunner {
   }
 
   private resolveExecutable(executable: string): string { return process.platform === 'win32' && ['npm', 'pnpm', 'yarn'].includes(executable) ? `${executable}.cmd` : executable; }
+
+  private resolveInvocation(executable: string, argv: string[]): { executable: string; argv: string[] } {
+    if (process.platform === 'win32' && executable === 'npm') {
+      return { executable: process.execPath, argv: [process.env.npm_execpath || path.resolve(process.cwd(), 'node_modules/npm/bin/npm-cli.js'), ...argv] };
+    }
+    return { executable: this.resolveExecutable(executable), argv };
+  }
 
   private stopProcessTree(pid: number | undefined): void {
     if (!pid) return;

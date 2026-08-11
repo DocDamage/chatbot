@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "duplicate-signal-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

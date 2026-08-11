@@ -21,6 +21,13 @@ export function createCodeRouter(services: any): Router {
     bodyMode: req.body?.mode
   });
 
+  const configuredCodingAdapter = () => {
+    if (services?.codingModelAdapter) return services.codingModelAdapter;
+    const adapter = services?.orchestrator?.llmAdapter;
+    const provider = process.env.LLM_PROVIDER || (process.env.OPENAI_API_KEY ? 'openai' : 'template');
+    return adapter && provider !== 'template' ? adapter : undefined;
+  };
+
   router.post('/api/code/ask', asyncHandler(async (req, res) => {
     const mode = currentMode(req);
     try {
@@ -32,7 +39,8 @@ export function createCodeRouter(services: any): Router {
     if (!message.trim()) {
       return res.status(400).json({ error: 'message is required' });
     }
-    res.json(await getAgent().handle({ message, runVerification: req.body.runVerification === true }));
+    const modelAdapter = configuredCodingAdapter();
+    res.json(await getAgent().handle({ message, runVerification: req.body.runVerification === true, modelAdapter, model: modelAdapter?.getModelName?.(), generatePatch: Boolean(modelAdapter) }));
   }));
 
   router.post('/api/code/plan', asyncHandler(async (req, res) => {
@@ -116,7 +124,7 @@ export function createCodeRouter(services: any): Router {
     if (Array.isArray(req.body.operations)) return res.json(getAgent().createStructuredPatch(req.body.operations));
     const message = sanitizeInput(String(req.body.message || ''));
     if (!message.trim()) return res.status(400).json({ error: 'operations or message is required' });
-    res.json(getAgent().createStructuredPatchFromInstruction(message, false));
+    res.json(getAgent().createStructuredPatchFromInstruction(message, false, true));
   }));
 
   router.post('/api/code/patch/apply', asyncHandler(async (req, res) => {
@@ -147,6 +155,25 @@ export function createCodeRouter(services: any): Router {
       return res.status(403).json({ error: error.message });
     }
     res.json(await getAgent().verifyNative({ run: req.body.run !== false, maxCommands: Number.isFinite(req.body.maxCommands) ? Number(req.body.maxCommands) : undefined }));
+  }));
+
+  router.post('/api/code/repair', asyncHandler(async (req, res) => {
+    const mode = currentMode(req);
+    try {
+      assertActionAllowed(mode, 'run_tests');
+      const record = authorization.authorize({
+        requestId: String(req.headers['x-request-id'] || ''),
+        mode,
+        action: 'repair',
+        explicitApproval: req.body.approved === true
+      });
+      authorization.assert(record);
+    } catch (error: any) {
+      return res.status(403).json({ error: error.message });
+    }
+    if (!Array.isArray(req.body.operations)) return res.status(400).json({ error: 'operations are required' });
+    if (!req.body.operations.every((operation: any) => operation && operation.authorized === true)) return res.status(403).json({ error: 'each operation requires explicit authorization' });
+    res.json(await getAgent().repair({ operations: req.body.operations, mode, maxIterations: Number.isFinite(req.body.maxIterations) ? Number(req.body.maxIterations) : undefined }));
   }));
 
   router.get('/api/code/files/search', asyncHandler(async (req, res) => {

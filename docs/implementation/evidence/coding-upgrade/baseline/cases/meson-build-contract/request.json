@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "meson-config-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

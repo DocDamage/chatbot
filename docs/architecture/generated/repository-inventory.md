@@ -6,12 +6,12 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1032 |
+| Source files | 1033 |
 | Production source files | 778 |
 | Reachable production files | 598 |
 | Unreachable production files | 180 |
-| Discovered route calls | 354 |
-| Environment variables | 190 |
+| Discovered route calls | 355 |
+| Environment variables | 191 |
 | Feature flags | 18 |
 | Files above 300 lines | 66 |
 
@@ -111,18 +111,19 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/business/market` | `src/server/routes/business.ts:19` |
 | POST | `/api/business/unit-economics` | `src/server/routes/business.ts:23` |
 | POST | `/api/chrono/ask` | `src/server/routes/chrono.ts:6` |
-| POST | `/api/code/ask` | `src/server/routes/code.ts:24` |
-| POST | `/api/code/plan` | `src/server/routes/code.ts:38` |
-| POST | `/api/code/patch` | `src/server/routes/code.ts:53` |
-| POST | `/api/code/review` | `src/server/routes/code.ts:69` |
-| POST | `/api/code/verify` | `src/server/routes/code.ts:77` |
-| GET | `/api/code/repository` | `src/server/routes/code.ts:90` |
-| POST | `/api/code/retrieve` | `src/server/routes/code.ts:95` |
-| POST | `/api/code/patch/structured` | `src/server/routes/code.ts:108` |
-| POST | `/api/code/patch/apply` | `src/server/routes/code.ts:122` |
-| POST | `/api/code/verify/native` | `src/server/routes/code.ts:141` |
-| GET | `/api/code/files/search` | `src/server/routes/code.ts:152` |
-| GET | `/api/code/symbols` | `src/server/routes/code.ts:160` |
+| POST | `/api/code/ask` | `src/server/routes/code.ts:31` |
+| POST | `/api/code/plan` | `src/server/routes/code.ts:46` |
+| POST | `/api/code/patch` | `src/server/routes/code.ts:61` |
+| POST | `/api/code/review` | `src/server/routes/code.ts:77` |
+| POST | `/api/code/verify` | `src/server/routes/code.ts:85` |
+| GET | `/api/code/repository` | `src/server/routes/code.ts:98` |
+| POST | `/api/code/retrieve` | `src/server/routes/code.ts:103` |
+| POST | `/api/code/patch/structured` | `src/server/routes/code.ts:116` |
+| POST | `/api/code/patch/apply` | `src/server/routes/code.ts:130` |
+| POST | `/api/code/verify/native` | `src/server/routes/code.ts:149` |
+| POST | `/api/code/repair` | `src/server/routes/code.ts:160` |
+| GET | `/api/code/files/search` | `src/server/routes/code.ts:179` |
+| GET | `/api/code/symbols` | `src/server/routes/code.ts:187` |
 | POST | `/api/creative/draft-scene` | `src/server/routes/creative.ts:28` |
 | POST | `/api/creative/continue-scene` | `src/server/routes/creative.ts:33` |
 | POST | `/api/creative/revise` | `src/server/routes/creative.ts:38` |
@@ -426,6 +427,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `CLAUDE_MODEL`
 - `CODE_EXECUTOR_SANDBOX`
 - `CODE_EXECUTOR_TIMEOUT`
+- `CODING_EVAL_MODEL`
 - `CODING_MODEL_CONTEXT_TOKENS`
 - `COHERE_API_KEY`
 - `COHERE_MODEL`
@@ -613,7 +615,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `scripts/import-books.ts` | 317 |
 | `scripts/import-wikipedia-general-corpus.ts` | 337 |
 | `src/core/agents/AgentTeam.ts` | 547 |
-| `src/core/agents/CodingAgent.ts` | 398 |
+| `src/core/agents/CodingAgent.ts` | 412 |
 | `src/core/agents/MultiAgentOrchestrator.ts` | 1269 |
 | `src/core/agents/ReasoningController.ts` | 368 |
 | `src/core/analytics/AnalyticsService.ts` | 448 |
@@ -640,7 +642,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/multimodal/ImageProcessor.ts` | 607 |
 | `src/core/multimodal/VideoProcessor.ts` | 591 |
 | `src/core/notifications/TwilioAdapter.ts` | 360 |
-| `src/core/orchestrator/EnhancedOrchestrator.ts` | 580 |
+| `src/core/orchestrator/EnhancedOrchestrator.ts` | 584 |
 | `src/core/orchestrator/Orchestrator.ts` | 375 |
 | `src/core/personalization/UserProfiler.ts` | 493 |
 | `src/core/providers/DeviceAdapter.ts` | 353 |

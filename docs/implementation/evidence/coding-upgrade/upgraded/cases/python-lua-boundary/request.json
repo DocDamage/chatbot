@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "plain-lua-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

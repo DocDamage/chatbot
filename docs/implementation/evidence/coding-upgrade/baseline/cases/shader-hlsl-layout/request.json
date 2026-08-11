@@ -7,5 +7,6 @@
   ],
   "hiddenChecks": [
     "hlsl-register-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

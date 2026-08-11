@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "raii-lifetime-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

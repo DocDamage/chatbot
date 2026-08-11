@@ -1,7 +1,7 @@
 {
   "mode": "upgraded",
   "suite": "polyglot-coding-upgrade",
-  "generatedAt": "2026-08-11T04:32:30.111Z",
+  "generatedAt": "2026-08-11T04:51:39.653Z",
   "cases": [
     {
       "id": "systems-rust-validation",
@@ -9,23 +9,39 @@
       "toolchain": "cargo",
       "toolchainAvailable": true,
       "status": "ready",
-      "fixtureHash": "99ee5b3d40675bf2e331aa059554bb0759b62a07f7178b96dad010dfab53946d",
+      "fixtureHash": "260a7815fb7e4e2ff56f37029d708cec808da696cb14ecf07f87dbaad2a459d8",
       "checks": [
         {
-          "command": "cargo test",
+          "command": "cargo test --lib",
           "argv": [
-            "test"
+            "test",
+            "--lib"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+          "stderr": "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running unittests src\\lib.rs (target\\debug\\deps\\systems_rust_validation-4027f18b6c11ad5d.exe)\n"
+        }
+      ],
+      "hiddenChecks": [
+        {
+          "command": "cargo test --test hidden_validation",
+          "argv": [
+            "test",
+            "--test",
+            "hidden_validation"
           ],
           "status": "failed",
           "exitCode": 101,
-          "stdout": "\nrunning 0 tests\n\ntest result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 2 tests\ntest accepts_a_name ... ok\ntest empty_name_is_an_error ... FAILED\n\nfailures:\n\n---- empty_name_is_an_error stdout ----\n\nthread 'empty_name_is_an_error' (23924) panicked at tests\\validation.rs:7:31:\nassertion `left == right` failed\n  left: Ok(\"\")\n right: Err(EmptyName)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    empty_name_is_an_error\n\ntest result: FAILED. 1 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
-          "stderr": "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running unittests src\\lib.rs (target\\debug\\deps\\systems_rust_validation-4027f18b6c11ad5d.exe)\n     Running tests\\validation.rs (target\\debug\\deps\\validation-877635d9ed9853bb.exe)\nerror: test failed, to rerun pass `--test validation`\n"
+          "stdout": "\nrunning 1 test\ntest empty_name_is_an_error ... FAILED\n\nfailures:\n\n---- empty_name_is_an_error stdout ----\n\nthread 'empty_name_is_an_error' (33908) panicked at tests\\hidden_validation.rs:4:31:\nassertion `left == right` failed\n  left: Ok(\"\")\n right: Err(EmptyName)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\n\nfailures:\n    empty_name_is_an_error\n\ntest result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+          "stderr": "    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running tests\\hidden_validation.rs (target\\debug\\deps\\hidden_validation-b68252f12a6aec4b.exe)\nerror: test failed, to rerun pass `--test hidden_validation`\n"
         }
       ],
       "inspection": {
         "affectedFiles": [],
         "affectedSymbols": [],
         "selectedFiles": [
+          "tests/hidden_validation.rs",
           "tests/validation.rs"
         ],
         "verificationStatus": "not_run",
@@ -36,11 +52,11 @@
         "passed": false,
         "metrics": {
           "correctness": 0,
-          "buildTest": 0,
+          "buildTest": 1,
           "regression": 0,
           "minimality": 1,
-          "retrieval": 0.5,
-          "fileSelection": 0.5,
+          "retrieval": 0.6666666666666666,
+          "fileSelection": 0.6666666666666666,
           "symbolSelection": 1,
           "apiAccuracy": 1,
           "rootCauseAccuracy": 1,
@@ -50,7 +66,6 @@
         },
         "failures": [
           "expected_files_not_retrieved",
-          "build_or_visible_tests_failed",
           "hidden_regression_failed",
           "required_verification_missing"
         ]
@@ -72,17 +87,32 @@
       "toolchain": "python",
       "toolchainAvailable": true,
       "status": "ready",
-      "fixtureHash": "69a58b5476310388e4bade4122d4e9f09912722a5b7c504176a8e8e9eb733a1e",
+      "fixtureHash": "a6057eb60d0755d18a945e3f99c8fe119d14ad1a9bf6aed2fc4df7d5041968af",
       "checks": [
         {
-          "command": "pytest",
+          "command": "pytest tests/test_cart.py",
           "argv": [
             "-m",
-            "pytest"
+            "pytest",
+            "tests/test_cart.py"
+          ],
+          "status": "passed",
+          "exitCode": 0,
+          "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.10.11, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\python-typing\r\nconfigfile: pyproject.toml\r\nplugins: anyio-4.13.0\r\ncollected 1 item\r\n\r\ntests\\test_cart.py .                                                     [100%]\r\n\r\n============================== 1 passed in 0.01s ==============================\r\n",
+          "stderr": ""
+        }
+      ],
+      "hiddenChecks": [
+        {
+          "command": "pytest tests/hidden/test_cart_regression.py",
+          "argv": [
+            "-m",
+            "pytest",
+            "tests/hidden/test_cart_regression.py"
           ],
           "status": "failed",
           "exitCode": 1,
-          "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.10.11, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\python-typing\r\nconfigfile: pyproject.toml\r\ntestpaths: tests\r\nplugins: anyio-4.13.0\r\ncollected 2 items\r\n\r\ntests\\test_cart.py .F                                                    [100%]\r\n\r\n================================== FAILURES ===================================\r\n_____________________ test_negative_quantity_is_rejected ______________________\r\n\r\n    def test_negative_quantity_is_rejected():\r\n        try:\r\n            line_total(-1, 3.5)\r\n        except ValueError:\r\n            return\r\n>       raise AssertionError(\"negative quantities must be rejected\")\r\nE       AssertionError: negative quantities must be rejected\r\n\r\ntests\\test_cart.py:13: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/test_cart.py::test_negative_quantity_is_rejected - AssertionErro...\r\n========================= 1 failed, 1 passed in 0.05s =========================\r\n",
+          "stdout": "============================= test session starts =============================\r\nplatform win32 -- Python 3.10.11, pytest-9.0.3, pluggy-1.6.0\r\nrootdir: I:\\Coding Projects\\ChatBot\\evals\\coding\\fixtures\\python-typing\r\nconfigfile: pyproject.toml\r\nplugins: anyio-4.13.0\r\ncollected 1 item\r\n\r\ntests\\hidden\\test_cart_regression.py F                                   [100%]\r\n\r\n================================== FAILURES ===================================\r\n_____________________ test_negative_quantity_is_rejected ______________________\r\n\r\n    def test_negative_quantity_is_rejected():\r\n        try:\r\n            line_total(-1, 3.5)\r\n        except ValueError:\r\n            return\r\n>       raise AssertionError(\"negative quantities must be rejected\")\r\nE       AssertionError: negative quantities must be rejected\r\n\r\ntests\\hidden\\test_cart_regression.py:9: AssertionError\r\n=========================== short test summary info ===========================\r\nFAILED tests/hidden/test_cart_regression.py::test_negative_quantity_is_rejected\r\n============================== 1 failed in 0.05s ==============================\r\n",
           "stderr": ""
         }
       ],
@@ -90,6 +120,7 @@
         "affectedFiles": [],
         "affectedSymbols": [],
         "selectedFiles": [
+          "tests/hidden/test_cart_regression.py",
           "tests/test_cart.py",
           ".pytest_cache/.gitignore",
           ".pytest_cache/CACHEDIR.TAG",
@@ -106,11 +137,11 @@
         "passed": false,
         "metrics": {
           "correctness": 0,
-          "buildTest": 0,
+          "buildTest": 1,
           "regression": 0,
           "minimality": 1,
-          "retrieval": 0.5,
-          "fileSelection": 0.5,
+          "retrieval": 0.6666666666666666,
+          "fileSelection": 0.6666666666666666,
           "symbolSelection": 1,
           "apiAccuracy": 1,
           "rootCauseAccuracy": 1,
@@ -120,7 +151,6 @@
         },
         "failures": [
           "expected_files_not_retrieved",
-          "build_or_visible_tests_failed",
           "hidden_regression_failed",
           "required_verification_missing"
         ]
@@ -146,6 +176,7 @@
           "stderr": "\r\nThe build failed. Fix the build errors and run again.\r\n"
         }
       ],
+      "hiddenChecks": [],
       "inspection": {
         "affectedFiles": [],
         "affectedSymbols": [],
@@ -197,7 +228,7 @@
       "toolchain": "node",
       "toolchainAvailable": true,
       "status": "ready",
-      "fixtureHash": "e8328399498c3e338a7ee8206496bbc734968bcd2d307644a2774967fa685a5e",
+      "fixtureHash": "da837bd401a5c89f86d6dd585e3aaae3cc08fb7e7b204e5f0eec824a2e231d86",
       "checks": [
         {
           "command": "npm test",
@@ -208,6 +239,18 @@
           "status": "passed",
           "exitCode": 0,
           "stdout": "\n> test\n> node ./test-runner.mjs\n\nSSR and accessibility fixture checks are represented by the fixture contract.\n",
+          "stderr": ""
+        }
+      ],
+      "hiddenChecks": [
+        {
+          "command": "node hidden-check.mjs",
+          "argv": [
+            "hidden-check.mjs"
+          ],
+          "status": "failed",
+          "exitCode": 1,
+          "stdout": "",
           "stderr": ""
         }
       ],
@@ -311,6 +354,7 @@
           "stderr": ""
         }
       ],
+      "hiddenChecks": [],
       "inspection": {
         "affectedFiles": [],
         "affectedSymbols": [],
@@ -392,6 +436,7 @@
           "stderr": "Unable to find executable: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-cpp-raii/build/Debug/resource_test.exe\nErrors while running CTest\n"
         }
       ],
+      "hiddenChecks": [],
       "inspection": {
         "affectedFiles": [],
         "affectedSymbols": [],
@@ -517,6 +562,7 @@
           "stderr": ""
         }
       ],
+      "hiddenChecks": [],
       "inspection": {
         "affectedFiles": [],
         "affectedSymbols": [],
@@ -570,6 +616,7 @@
           "stderr": ""
         }
       ],
+      "hiddenChecks": [],
       "inspection": {
         "affectedFiles": [],
         "affectedSymbols": [],
@@ -622,6 +669,7 @@
           "stderr": ""
         }
       ],
+      "hiddenChecks": [],
       "inspection": {
         "affectedFiles": [],
         "affectedSymbols": [],
@@ -676,6 +724,7 @@
           "stderr": ""
         }
       ],
+      "hiddenChecks": [],
       "inspection": {
         "affectedFiles": [],
         "affectedSymbols": [],
@@ -750,6 +799,7 @@
           "stderr": "ERROR: failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.\n"
         }
       ],
+      "hiddenChecks": [],
       "inspection": {
         "affectedFiles": [],
         "affectedSymbols": [],
@@ -803,6 +853,7 @@
           "stderr": "process_begin: CreateProcess(NULL, cc -Wall -Wextra src/main.c -o build/main, ...) failed.\r\nmake (e=2): The system cannot find the file specified.\r\nmake: *** [Makefile:5: build/main] Error 2\r\n"
         }
       ],
+      "hiddenChecks": [],
       "inspection": {
         "affectedFiles": [],
         "affectedSymbols": [],
@@ -867,6 +918,7 @@
           "stderr": ""
         }
       ],
+      "hiddenChecks": [],
       "inspection": {
         "affectedFiles": [],
         "affectedSymbols": [],

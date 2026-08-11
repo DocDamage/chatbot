@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "empty-id-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

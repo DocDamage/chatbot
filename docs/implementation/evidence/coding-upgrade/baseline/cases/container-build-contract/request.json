@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "non-root-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

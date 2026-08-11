@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "player-state-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

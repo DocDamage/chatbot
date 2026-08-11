@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "ssr-accessibility-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

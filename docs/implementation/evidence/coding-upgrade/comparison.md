@@ -1,17 +1,17 @@
 # Polyglot coding benchmark comparison
 
-Generated from the executed baseline and upgraded reports. Implementation SHA: `57caacd08458cce0eb99ee08f6ba58252eb2792a`.
+Generated from the executed baseline and upgraded reports. Implementation SHA: `94c334c95431b90aa6f3575dafe59e13ff83f2da`.
 
-This is an evidence report, not a correctness claim: the current runner performs toolchain preflight and upgraded repository inspection, but does not invoke a live model or apply generated patches. Unsupported toolchains remain explicit and are not counted as passes.
+This is an evidence report: ordinary runs perform toolchain preflight and upgraded repository inspection; an explicit --live-model run can invoke the configured provider and apply its structured patch only in an isolated worktree. Unsupported toolchains remain explicit and are not counted as passes.
 
 | Case | Baseline | Upgraded | Build/test | Regression | Retrieval | Minimality | API accuracy | Root cause | Security | Review | Honesty | Fixture hash |
 |---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| systems-rust-validation | ready / check failed | ready / check failed | 0→0 | 0→0 | 0→0.5 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | `99ee5b3d40675bf2e331aa059554bb0759b62a07f7178b96dad010dfab53946d` |
+| systems-rust-validation | ready / check passed | ready / check passed | 1→1 | 0→0 | 0→0.6666666666666666 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | `260a7815fb7e4e2ff56f37029d708cec808da696cb14ecf07f87dbaad2a459d8` |
 | systems-go-context | unsupported | unsupported | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | `2f31272799f55d52dea7e87fba615599ea6a862fd712f3b91e7c110d74ddae0e` |
-| python-typing | ready / check failed | ready / check failed | 0→0 | 0→0 | 0→0.5 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | `69a58b5476310388e4bade4122d4e9f09912722a5b7c504176a8e8e9eb733a1e` |
+| python-typing | ready / check passed | ready / check passed | 1→1 | 0→0 | 0→0.6666666666666666 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | `a6057eb60d0755d18a945e3f99c8fe119d14ad1a9bf6aed2fc4df7d5041968af` |
 | managed-dotnet-nullability | ready / check failed | ready / check failed | 0→0 | 0→0 | 0→0.6666666666666666 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | `e52cd5801f76392e2d55e020e0b07ff1cbb30bc72f8c0c595c3a41fc3e842b67` |
 | jvm-module-boundary | unsupported | unsupported | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | `53436629d9f259034ba6f1dcda023a9a5101e70ce10a71329a9ca396ed894e9a` |
-| web-svelte-boundary | ready / check passed | ready / check passed | 1→1 | 0→0 | 0→0.5 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | `e8328399498c3e338a7ee8206496bbc734968bcd2d307644a2774967fa685a5e` |
+| web-svelte-boundary | ready / check passed | ready / check passed | 1→1 | 0→0 | 0→0.5 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | `da837bd401a5c89f86d6dd585e3aaae3cc08fb7e7b204e5f0eec824a2e231d86` |
 | shell-safe-args | unsupported | unsupported | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | `6cd496a4ca3e2ab24573adc2fc2ac134898029cd93e704f74ee613c558d9c311` |
 | shader-config | unsupported | unsupported | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | `f0f37fb3653082568b0f3358ee1636316617e3cc99466d7e17634d2c9523f508` |
 | systems-c-lifetime | ready / check passed | ready / check passed | 1→1 | 0→0 | 0→0.6666666666666666 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | `d7ceb99f84b71fc22ff8d785785cb00f469c44fa47d04084bb59d5cf2001a8bd` |

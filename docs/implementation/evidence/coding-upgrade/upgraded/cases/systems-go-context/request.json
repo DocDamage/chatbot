@@ -7,5 +7,6 @@
   ],
   "hiddenChecks": [
     "cancellation-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

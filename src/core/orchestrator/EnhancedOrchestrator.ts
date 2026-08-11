@@ -494,12 +494,16 @@ export class EnhancedOrchestrator {
       `Files inspected\n${result.filesInspected.length ? result.filesInspected.map(file => `- ${file}`).join('\n') : '- none'}`,
       `Plan\n${result.plan.steps.map(step => `- ${step}`).join('\n')}`,
       `Patch\n${result.patch.diff || '(no patch generated)'}`,
-      `Verification\n${result.verification.status}${result.commandsRun.length ? `: ${result.commandsRun.join(', ')}` : ''}`
+      `Patch status\n${result.structuredPatch ? `${result.structuredPatch.filesChanged.length} structured file(s) proposed; explicit approval is required before apply.` : 'No structured patch was produced.'}`,
+      `Verification\n${result.verification.status}${result.commandsRun.length ? `: ${result.commandsRun.join(', ')}` : ''}`,
+      `Verification scope\n${result.plan.steps.length ? result.plan.steps.map(step => `- ${step}`).join('\n') : '- project-native checks required'}`
     ];
 
     if (result.review.findings.length > 0) {
       sections.push(`Review findings\n${result.review.findings.map(finding => `- ${finding.severity}: ${finding.issue}`).join('\n')}`);
     }
+
+    if (result.risks.length > 0) sections.push(`Unverified risks\n${result.risks.map(risk => `- ${risk}`).join('\n')}`);
 
     return sections.join('\n\n');
   }

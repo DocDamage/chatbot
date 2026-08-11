@@ -125,3 +125,13 @@ export async function verifyNativeCode(mode: string, run = true) {
   if (!response.ok) await throwApiError(response, 'Unable to run native verification');
   return response.json();
 }
+
+export async function repairCode(operations: StructuredCodeOperation[], mode: string, maxIterations = 3) {
+  const response = await fetch('/api/code/repair', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-work-mode': mode },
+    body: JSON.stringify({ operations: operations.map(operation => ({ ...operation, authorized: true })), mode, approved: true, maxIterations }),
+  });
+  if (!response.ok) await throwApiError(response, 'Unable to run bounded repair');
+  return response.json();
+}

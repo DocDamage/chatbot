@@ -3,9 +3,13 @@
   "prompt": "Add validation for an empty user name and preserve the existing error contract.",
   "expectedFiles": [
     "src/lib.rs",
-    "tests/validation.rs"
+    "tests/validation.rs",
+    "tests/hidden_validation.rs"
   ],
   "hiddenChecks": [
     "empty-name-regression"
+  ],
+  "hiddenTests": [
+    "cargo test --test hidden_validation"
   ]
 }

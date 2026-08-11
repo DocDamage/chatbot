@@ -24,6 +24,9 @@ export class VerificationOrchestrator {
       const result = await runner.run(plan);
       const output = `${result.stdout}\n${result.stderr}`;
       const diagnostics: Diagnostic[] = parser.parse(plan.executable, output).map(diagnostic => ({ ...diagnostic, file: diagnostic.file?.replace(/\\/g, '/') }));
+      if (['failed', 'timed_out'].includes(result.status) && diagnostics.length === 0) {
+        diagnostics.push({ tool: plan.executable, severity: 'error', message: `Command failed with exit code ${result.exitCode ?? 'unknown'}`, raw: output.trim() || result.status });
+      }
       results.push({ command: [plan.executable, ...plan.argv].join(' '), argv: [plan.executable, ...plan.argv], exitCode: result.exitCode, durationMs: result.durationMs, diagnostics, stdout: result.stdout, stderr: result.stderr, status: result.status });
       if (result.status === 'failed' || result.status === 'timed_out') break;
     }

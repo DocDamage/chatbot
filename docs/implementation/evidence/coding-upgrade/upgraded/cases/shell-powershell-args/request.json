@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "powershell-injection-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

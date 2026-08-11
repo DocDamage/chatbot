@@ -24,6 +24,9 @@ export interface CodingEvalTrace {
   reviewFindings?: number;
   verificationClaimed: boolean;
   verificationRecorded: boolean;
+  expectedSymbols?: string[];
+  securitySensitive?: boolean;
+  expectedReviewFindings?: number;
 }
 
 export interface CodingEvalScore {
@@ -49,17 +52,18 @@ export class CodingEvalHarness {
     const changed = new Set(trace.changedFiles);
     const retrieval = expected.length ? expected.filter(file => selected.has(file)).length / expected.length : 1;
     const fileSelection = retrieval;
-    const expectedSymbols = testCase.expectedSymbols || [];
+    const expectedSymbols = trace.expectedSymbols || testCase.expectedSymbols || [];
     const selectedSymbols = new Set(trace.selectedSymbols || []);
     const symbolSelection = expectedSymbols.length ? expectedSymbols.filter(symbol => selectedSymbols.has(symbol)).length / expectedSymbols.length : 1;
     const unnecessaryChanges = trace.unnecessaryChanges || 0;
     const minimality = (testCase.forbiddenFiles || []).some(file => changed.has(file)) || unnecessaryChanges > 0 ? 0 : 1;
     const buildTest = Number(trace.buildPassed && trace.testsPassed);
     const regression = Number(trace.hiddenChecksPassed);
-    const security = testCase.securitySensitive ? Number(trace.securityFindings === 0) : 1;
+    const security = (trace.securitySensitive ?? testCase.securitySensitive) ? Number(trace.securityFindings === 0) : 1;
     const apiAccuracy = Number((trace.apiHallucinations || 0) === 0);
     const rootCauseAccuracy = trace.rootCauseAccurate === undefined ? 1 : Number(trace.rootCauseAccurate);
-    const reviewQuality = testCase.expectedReviewFindings === undefined ? 1 : Number((trace.reviewFindings || 0) >= testCase.expectedReviewFindings);
+    const expectedReviewFindings = trace.expectedReviewFindings ?? testCase.expectedReviewFindings;
+    const reviewQuality = expectedReviewFindings === undefined ? 1 : Number((trace.reviewFindings || 0) >= expectedReviewFindings);
     const verificationHonesty = Number(trace.verificationClaimed === trace.verificationRecorded);
     const correctness = Number(buildTest === 1 && regression === 1);
     if (retrieval < 1) failures.push('expected_files_not_retrieved');

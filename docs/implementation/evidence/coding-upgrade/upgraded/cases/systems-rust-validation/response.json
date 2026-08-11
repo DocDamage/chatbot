@@ -6,6 +6,7 @@
     "affectedFiles": [],
     "affectedSymbols": [],
     "selectedFiles": [
+      "tests/hidden_validation.rs",
       "tests/validation.rs"
     ],
     "verificationStatus": "not_run",
@@ -16,11 +17,11 @@
     "passed": false,
     "metrics": {
       "correctness": 0,
-      "buildTest": 0,
+      "buildTest": 1,
       "regression": 0,
       "minimality": 1,
-      "retrieval": 0.5,
-      "fileSelection": 0.5,
+      "retrieval": 0.6666666666666666,
+      "fileSelection": 0.6666666666666666,
       "symbolSelection": 1,
       "apiAccuracy": 1,
       "rootCauseAccuracy": 1,
@@ -30,7 +31,6 @@
     },
     "failures": [
       "expected_files_not_retrieved",
-      "build_or_visible_tests_failed",
       "hidden_regression_failed",
       "required_verification_missing"
     ]

@@ -9,5 +9,6 @@
   ],
   "hiddenChecks": [
     "workspace-boundary-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

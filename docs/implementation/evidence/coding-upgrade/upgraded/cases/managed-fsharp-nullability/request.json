@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "missing-record-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

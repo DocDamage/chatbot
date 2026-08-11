@@ -35,6 +35,7 @@ describe('coding capability integration coverage', () => {
       const gate = new WorkspaceWriteGate();
       expect(() => gate.assertCanApply('plan', patch)).toThrow(/not allowed/);
       expect(() => gate.assertCanApply('implement', patch)).not.toThrow();
+      expect(() => gate.assertCanApply('debug', patch)).not.toThrow();
     } finally { fs.rmSync(root, { recursive: true, force: true }); }
   });
 

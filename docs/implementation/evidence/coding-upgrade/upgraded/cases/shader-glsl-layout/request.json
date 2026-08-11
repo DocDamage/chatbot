@@ -7,5 +7,6 @@
   ],
   "hiddenChecks": [
     "glsl-layout-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

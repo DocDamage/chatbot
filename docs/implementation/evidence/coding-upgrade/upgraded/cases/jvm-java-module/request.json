@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "public-api-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

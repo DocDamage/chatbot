@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { applyStructuredCodePatch, askCodeAgent, createCodePatch, createStructuredCodePatch, getCodeRepository, getCodeSymbols, planCodeWork, retrieveCodeEvidence, reviewCodeDiff, searchCodeFiles, verifyCode, verifyNativeCode } from './code';
+import { applyStructuredCodePatch, askCodeAgent, createCodePatch, createStructuredCodePatch, getCodeRepository, getCodeSymbols, planCodeWork, repairCode, retrieveCodeEvidence, reviewCodeDiff, searchCodeFiles, verifyCode, verifyNativeCode } from './code';
 
 describe('code API client', () => {
   beforeEach(() => {
@@ -49,12 +49,14 @@ describe('code API client', () => {
     await createStructuredCodePatch('create a.ts with "export {}"', 'implement');
     await applyStructuredCodePatch(operations, 'implement');
     await verifyNativeCode('debug');
+    await repairCode(operations, 'debug');
 
     expect(fetch).toHaveBeenNthCalledWith(1, '/api/code/repository', expect.objectContaining({ headers: { 'x-work-mode': 'plan' } }));
     expect(fetch).toHaveBeenNthCalledWith(2, '/api/code/retrieve', expect.objectContaining({ method: 'POST' }));
     expect(fetch).toHaveBeenNthCalledWith(3, '/api/code/patch/structured', expect.objectContaining({ method: 'POST' }));
     expect(fetch).toHaveBeenNthCalledWith(4, '/api/code/patch/apply', expect.objectContaining({ method: 'POST' }));
     expect(fetch).toHaveBeenNthCalledWith(5, '/api/code/verify/native', expect.objectContaining({ method: 'POST' }));
+    expect(fetch).toHaveBeenNthCalledWith(6, '/api/code/repair', expect.objectContaining({ method: 'POST' }));
     expect((fetch as any).mock.calls[3][1].body).toContain('"authorized":true');
   });
 });

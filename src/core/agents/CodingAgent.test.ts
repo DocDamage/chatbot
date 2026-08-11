@@ -1,3 +1,6 @@
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import { CodingAgent } from './CodingAgent';
 import { LLMAdapter } from '../providers/LLMAdapter';
 
@@ -56,6 +59,9 @@ describe('CodingAgent', () => {
     expect(adapter.generate).toHaveBeenCalled();
     expect(result.patch.filesChanged).toEqual(['generated.ts']);
     expect(result.patch.diff).toContain('generated.ts');
+    expect(result.structuredPatch?.operations[0].path).toBe('generated.ts');
+    expect(result.structuredPatch?.operations[0].authorized).toBe(false);
+    expect(result.structuredPatch?.conflicts).toEqual([]);
     expect(result.patch.explanation).toContain('Structured patch');
   });
 
@@ -69,5 +75,24 @@ describe('CodingAgent', () => {
 
     expect(result.patch.filesChanged).toEqual([]);
     expect(result.risks).toContain('Model output was not valid structured patch JSON; no patch was created');
+  });
+
+  it('runs a bounded debug repair after a failed native command', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'coding-agent-repair-'));
+    try {
+      fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify({ scripts: { test: 'node test.mjs' } }));
+      fs.writeFileSync(path.join(root, 'state.txt'), 'broken');
+      fs.writeFileSync(path.join(root, 'test.mjs'), "import fs from 'node:fs'; process.exit(fs.readFileSync('state.txt', 'utf8') === 'fixed' ? 0 : 1);\n");
+      const result = await new CodingAgent({ workspaceRoot: root }).repair({
+        mode: 'debug',
+        operations: [{ operation: 'modify', path: 'state.txt', expectedContent: 'broken', content: 'fixed', reason: 'repair failed native test', authorized: true }]
+      });
+      expect(result.status).toBe('passed');
+      expect(result.attempts).toHaveLength(1);
+      expect(result.attempts[0].diagnosticDelta.before).toBeGreaterThan(0);
+      expect(fs.readFileSync(path.join(root, 'state.txt'), 'utf8')).toBe('fixed');
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
   });
 });

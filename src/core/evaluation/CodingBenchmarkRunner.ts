@@ -1,18 +1,22 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { spawnSync } from 'child_process';
 import crypto from 'crypto';
 import { CodingController } from '../coding/CodingController';
+import { CodingAgent } from '../agents/CodingAgent';
+import { LLMAdapter } from '../providers/LLMAdapter';
 import { CodingEvalHarness, CodingEvalScore } from './CodingEvalHarness';
 
-export interface CodingBenchmarkCase { id: string; family: string; language: string; fixture: string; prompt: string; expectedFiles: string[]; visibleTests: string[]; hiddenChecks: string[]; requiredToolchain: string; }
+export interface CodingBenchmarkCase { id: string; family: string; language: string; fixture: string; prompt: string; expectedFiles: string[]; expectedSymbols?: string[]; visibleTests: string[]; hiddenChecks: string[]; hiddenTests?: string[]; requiredToolchain: string; expectedReviewFindings?: number; securitySensitive?: boolean; }
 export interface CodingBenchmarkManifest { schemaVersion: number; suite: string; toolchainPolicy: string; cases: CodingBenchmarkCase[]; }
 export interface CodingBenchmarkCheck { command: string; argv: string[]; status: 'passed' | 'failed' | 'unsupported' | 'timed_out'; exitCode: number | null; stdout: string; stderr: string; }
-export interface CodingBenchmarkCaseResult { id: string; fixture: string; toolchain: string; toolchainAvailable: boolean; status: 'ready' | 'unsupported'; reason?: string; fixtureHash: string; checks?: CodingBenchmarkCheck[]; inspection?: { affectedFiles: string[]; affectedSymbols: string[]; selectedFiles: string[]; verificationStatus: string; reviewFindingCount: number }; score?: CodingEvalScore; }
+export interface CodingBenchmarkCaseResult { id: string; fixture: string; toolchain: string; toolchainAvailable: boolean; status: 'ready' | 'unsupported'; reason?: string; fixtureHash: string; checks?: CodingBenchmarkCheck[]; hiddenChecks?: CodingBenchmarkCheck[]; execution?: { executor: 'model-adapter'; worktree: 'isolated'; filesChanged: string[]; patchApplied: boolean; risks: string[] }; inspection?: { affectedFiles: string[]; affectedSymbols: string[]; selectedFiles: string[]; verificationStatus: string; reviewFindingCount: number }; score?: CodingEvalScore; }
 export interface CodingBenchmarkReport { mode: 'baseline' | 'upgraded'; suite: string; generatedAt: string; cases: CodingBenchmarkCaseResult[]; }
+export interface CodingBenchmarkRunnerOptions { modelAdapter?: LLMAdapter; model?: string; }
 
 export class CodingBenchmarkRunner {
-  constructor(private readonly fixturesRoot: string) {}
+  constructor(private readonly fixturesRoot: string, private readonly options: CodingBenchmarkRunnerOptions = {}) {}
 
   loadManifest(manifestPath = path.join(this.fixturesRoot, '..', 'manifest.json')): CodingBenchmarkManifest {
     return JSON.parse(fs.readFileSync(manifestPath, 'utf8')) as CodingBenchmarkManifest;
@@ -38,6 +42,8 @@ export class CodingBenchmarkRunner {
       if (!report.cases[index].toolchainAvailable) { report.cases[index].checks = []; continue; }
       report.cases[index].checks = [];
       for (const command of testCase.visibleTests) report.cases[index].checks.push(await this.runCheck(command, path.join(this.fixturesRoot, testCase.fixture)));
+      report.cases[index].hiddenChecks = [];
+      for (const command of testCase.hiddenTests || []) report.cases[index].hiddenChecks.push(await this.runCheck(command, path.join(this.fixturesRoot, testCase.fixture)));
       if (mode === 'upgraded') {
         try {
           const controller = new CodingController(path.join(this.fixturesRoot, testCase.fixture));
@@ -50,23 +56,30 @@ export class CodingBenchmarkRunner {
             verificationStatus: result.verification.status,
             reviewFindingCount: result.review.findings.length
           };
+          if (this.options.modelAdapter) await this.executeModelCase(testCase, report.cases[index]);
         } catch (error: any) {
           report.cases[index].reason = `Repository inspection failed: ${error.message}`;
         }
       }
       const checks = report.cases[index].checks || [];
       const visibleChecksPassed = checks.length > 0 && checks.every(check => check.status === 'passed');
+      const hiddenChecks = report.cases[index].hiddenChecks || [];
+      const hiddenChecksPassed = hiddenChecks.length > 0 && hiddenChecks.every(check => check.status === 'passed');
       const inspection = report.cases[index].inspection;
+      const execution = report.cases[index].execution;
       report.cases[index].score = scorer.score({ id: testCase.id, prompt: testCase.prompt, expectedFiles: testCase.expectedFiles, hiddenChecks: testCase.hiddenChecks, requiredVerification: true }, {
-        selectedFiles: inspection?.selectedFiles || [],
+        selectedFiles: execution ? [...new Set([...(inspection?.selectedFiles || []), ...execution.filesChanged])] : inspection?.selectedFiles || [],
         selectedSymbols: inspection?.affectedSymbols || [],
-        changedFiles: [],
+        changedFiles: execution?.filesChanged || [],
         buildPassed: visibleChecksPassed,
         testsPassed: visibleChecksPassed,
-        hiddenChecksPassed: false,
+        hiddenChecksPassed,
         securityFindings: inspection?.reviewFindingCount || 0,
-        verificationClaimed: false,
-        verificationRecorded: false
+        verificationClaimed: Boolean(execution),
+        verificationRecorded: Boolean(execution && (checks.length > 0 || hiddenChecks.length > 0)),
+        expectedSymbols: testCase.expectedSymbols,
+        securitySensitive: testCase.securitySensitive,
+        expectedReviewFindings: testCase.expectedReviewFindings
       });
     }
     return report;
@@ -89,11 +102,50 @@ export class CodingBenchmarkRunner {
     });
   }
 
+  private async executeModelCase(testCase: CodingBenchmarkCase, result: CodingBenchmarkCaseResult): Promise<void> {
+    if (!this.options.modelAdapter) return;
+    const worktree = this.copyFixtureToTemp(path.join(this.fixturesRoot, testCase.fixture));
+    try {
+      result.checks = [];
+      result.hiddenChecks = [];
+      const agent = new CodingAgent({ workspaceRoot: worktree });
+      const generated = await agent.handle({ message: testCase.prompt, model: this.options.model, modelAdapter: this.options.modelAdapter, generatePatch: true, runVerification: false });
+      if (!generated.structuredPatch) {
+        result.reason = generated.risks.join('; ') || 'Model did not return a structured patch';
+        return;
+      }
+      const authorizedOperations = generated.structuredPatch.operations.map(operation => ({ ...operation, authorized: true }));
+      const reviewablePatch = agent.createStructuredPatch(authorizedOperations);
+      if (reviewablePatch.conflicts.length) {
+        result.execution = { executor: 'model-adapter', worktree: 'isolated', filesChanged: reviewablePatch.filesChanged, patchApplied: false, risks: reviewablePatch.conflicts.map(conflict => `${conflict.path}: ${conflict.reason}`) };
+        return;
+      }
+      agent.applyStructuredPatch(reviewablePatch, 'implement');
+      result.execution = { executor: 'model-adapter', worktree: 'isolated', filesChanged: reviewablePatch.filesChanged, patchApplied: true, risks: generated.risks };
+      result.checks = [];
+      for (const command of testCase.visibleTests) result.checks.push(await this.runCheck(command, worktree));
+      result.hiddenChecks = [];
+      for (const command of testCase.hiddenTests || []) result.hiddenChecks.push(await this.runCheck(command, worktree));
+    } finally {
+      fs.rmSync(worktree, { recursive: true, force: true });
+    }
+  }
+
+  private copyFixtureToTemp(source: string): string {
+    const worktree = fs.mkdtempSync(path.join(os.tmpdir(), 'coding-benchmark-'));
+    fs.cpSync(source, worktree, { recursive: true, filter: candidate => !['target', 'bin', 'obj', 'build', '.pytest_cache', '__pycache__', 'node_modules', '.gradle'].includes(path.basename(candidate)) });
+    return worktree;
+  }
+
   private commandPlan(command: string): { executable: string; argv: string[] } | undefined {
     const normalized = command.trim();
     if (normalized === 'cargo test') return { executable: process.platform === 'win32' ? 'cargo.exe' : 'cargo', argv: ['test'] };
+    if (normalized === 'cargo test --lib') return { executable: process.platform === 'win32' ? 'cargo.exe' : 'cargo', argv: ['test', '--lib'] };
+    if (normalized === 'cargo test --test hidden_validation') return { executable: process.platform === 'win32' ? 'cargo.exe' : 'cargo', argv: ['test', '--test', 'hidden_validation'] };
     if (normalized === 'go test ./...') return { executable: process.platform === 'win32' ? 'go.exe' : 'go', argv: ['test', './...'] };
     if (normalized === 'pytest') return { executable: process.platform === 'win32' ? 'python.exe' : 'python', argv: ['-m', 'pytest'] };
+    if (normalized === 'pytest tests/test_cart.py') return { executable: process.platform === 'win32' ? 'python.exe' : 'python', argv: ['-m', 'pytest', 'tests/test_cart.py'] };
+    if (normalized === 'pytest tests/hidden/test_cart_regression.py') return { executable: process.platform === 'win32' ? 'python.exe' : 'python', argv: ['-m', 'pytest', 'tests/hidden/test_cart_regression.py'] };
     if (normalized === 'dotnet test') return { executable: process.platform === 'win32' ? 'dotnet.exe' : 'dotnet', argv: ['test'] };
     if (normalized === 'dotnet run') return { executable: process.platform === 'win32' ? 'dotnet.exe' : 'dotnet', argv: ['run', '--no-restore'] };
     if (normalized === 'gradle test') return { executable: this.resolveExecutable('gradle'), argv: ['test'] };
@@ -108,6 +160,7 @@ export class CodingBenchmarkRunner {
     if (normalized === 'sqlite3 check') return { executable: this.resolveExecutable('sqlite3'), argv: [':memory:', '.read schema.sql', '.read query.sql'] };
     if (normalized === 'powershell test') return { executable: this.resolveExecutable('pwsh'), argv: ['-NoProfile', '-File', 'test-runner.ps1'] };
     if (normalized === 'docker build') return { executable: this.resolveExecutable('docker'), argv: ['build', '--pull=false', '--tag', 'codex-polyglot-fixture:local', '.'] };
+    if (normalized === 'node hidden-check.mjs') return { executable: process.execPath, argv: ['hidden-check.mjs'] };
     return undefined;
   }
 

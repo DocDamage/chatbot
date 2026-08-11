@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "a11y-responsive-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

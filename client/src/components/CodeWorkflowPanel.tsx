@@ -7,6 +7,7 @@ import {
   getCodeRepository,
   getCodeSymbols,
   planCodeWork,
+  repairCode,
   retrieveCodeEvidence,
   reviewCodeDiff,
   searchCodeFiles,
@@ -35,6 +36,7 @@ function CodeWorkflowPanel({ mode }: CodeWorkflowPanelProps) {
   const abortRef = useRef<AbortController | null>(null);
   const canPatch = mode === 'implement';
   const canVerify = mode === 'implement' || mode === 'debug';
+  const canRepair = mode === 'debug';
 
   const run = async (task: () => Promise<unknown>) => {
     setLoading(true);
@@ -84,6 +86,11 @@ function CodeWorkflowPanel({ mode }: CodeWorkflowPanelProps) {
       setStructuredPatch(data);
       return data;
     });
+  };
+
+  const runRepair = async () => {
+    if (!structuredPatch?.operations?.length || !canRepair) return;
+    await run(() => repairCode(structuredPatch.operations || [], mode));
   };
 
   return (
@@ -173,6 +180,9 @@ function CodeWorkflowPanel({ mode }: CodeWorkflowPanelProps) {
           {(structuredPatch.conflicts || []).length > 0 && <span>{structuredPatch.conflicts?.length} conflict(s) require review</span>}
           <button type="button" onClick={applyDraft} disabled={loading || mode !== 'implement' || structuredPatch.applied === true || (structuredPatch.conflicts || []).length > 0 || !structuredPatch.operations?.length}>
             Apply Approved Patch
+          </button>
+          <button type="button" onClick={runRepair} disabled={loading || !canRepair || (structuredPatch.conflicts || []).length > 0 || !structuredPatch.operations?.length} title={canRepair ? 'Run a bounded, explicitly approved repair loop' : 'Switch to Debug mode to run repair'}>
+            Run Bounded Repair
           </button>
         </div>
       )}

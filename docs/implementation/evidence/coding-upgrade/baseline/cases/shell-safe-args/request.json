@@ -7,5 +7,6 @@
   ],
   "hiddenChecks": [
     "shell-injection-regression"
-  ]
+  ],
+  "hiddenTests": []
 }

@@ -7,7 +7,7 @@
     "passed": false,
     "metrics": {
       "correctness": 0,
-      "buildTest": 0,
+      "buildTest": 1,
       "regression": 0,
       "minimality": 1,
       "retrieval": 0,
@@ -21,7 +21,6 @@
     },
     "failures": [
       "expected_files_not_retrieved",
-      "build_or_visible_tests_failed",
       "hidden_regression_failed",
       "required_verification_missing"
     ]

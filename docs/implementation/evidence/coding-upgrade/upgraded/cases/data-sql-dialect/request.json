@@ -8,5 +8,6 @@
   ],
   "hiddenChecks": [
     "dialect-regression"
-  ]
+  ],
+  "hiddenTests": []
 }
