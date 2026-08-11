@@ -431,6 +431,13 @@
   border-bottom: 0;
 }
 
+.assistant-toolbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  min-width: 0;
+}
+
 .assistant-mode-hint {
   color: #929292;
 }
@@ -450,6 +457,10 @@
   color: #e6e6e6;
   font: inherit;
   font-weight: 700;
+}
+
+.simple-category-picker select {
+  max-width: 190px;
 }
 
 .assistant-viewport {

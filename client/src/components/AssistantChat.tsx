@@ -122,6 +122,36 @@ const simpleModeOptions: Array<{ value: ChatMode; label: string }> = [
   { value: 'explain', label: 'Explain' }
 ];
 
+const categoryOptions: Array<{ value: ChatMode; label: string }> = [
+  { value: 'pop_culture', label: 'Pop Culture' },
+  { value: 'history', label: 'History' },
+  { value: 'science', label: 'Science' },
+  { value: 'gaming', label: 'Gaming' },
+  { value: 'math', label: 'Math' },
+  { value: 'market', label: 'Market' },
+  { value: 'gamedev', label: 'Game Dev' },
+  { value: 'music', label: 'Music' },
+  { value: 'suno', label: 'Suno' },
+  { value: 'fl_studio', label: 'FL Studio' },
+  { value: 'fl_studio_control', label: 'FL Control' },
+  { value: 'pro_tools', label: 'Pro Tools' },
+  { value: 'logic', label: 'Logic Pro' },
+  { value: 'mix_master', label: 'Mix/Master' },
+  { value: 'story', label: 'Story' },
+  { value: 'creative_writing', label: 'Creative Writing' },
+  { value: 'roleplay', label: 'Roleplay' },
+  { value: 'legal', label: 'Legal/Civic' },
+  { value: 'health', label: 'Health' },
+  { value: 'security', label: 'Security' },
+  { value: 'business', label: 'Business' },
+  { value: 'philosophy', label: 'Philosophy' },
+  { value: 'language', label: 'Language' },
+  { value: 'geography', label: 'Geography' },
+  { value: 'gis', label: 'GIS' },
+  { value: 'engineering', label: 'Engineering' },
+  { value: 'knowledge_os', label: 'Knowledge OS' }
+];
+
 const placeholders: Record<ChatMode, string> = {
   ask: 'Ask a question...',
   plan: 'Describe what you want to build...',
@@ -450,21 +480,38 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
         {showBackendPanels && <FileExplorerPanel onLoadFile={addLoadedFile} />}
         <section className="assistant-chat" aria-label="AI chat">
           <div className="assistant-toolbar">
-            {advancedOpen ? (
-              <ModeSelector mode={mode} onModeChange={setMode} />
-            ) : (
-              <label className="simple-mode-picker">
-                <span>Mode</span>
-                <select value={mode} onChange={event => setMode(event.target.value as ChatMode)} aria-label="Chat mode">
-                  {!simpleModeOptions.some(option => option.value === mode) && (
-                    <option value={mode}>{modeHints[mode]}</option>
-                  )}
-                  {simpleModeOptions.map(option => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
-                  ))}
-                </select>
-              </label>
-            )}
+            <div className="assistant-toolbar-controls">
+              {advancedOpen ? (
+                <ModeSelector mode={mode} onModeChange={setMode} />
+              ) : (
+                <label className="simple-mode-picker">
+                  <span>Mode</span>
+                  <select value={mode} onChange={event => setMode(event.target.value as ChatMode)} aria-label="Chat mode">
+                    {!simpleModeOptions.some(option => option.value === mode) && (
+                      <option value={mode}>{modeHints[mode]}</option>
+                    )}
+                    {simpleModeOptions.map(option => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
+              {!advancedOpen && (
+                <label className="simple-mode-picker simple-category-picker">
+                  <span>Category</span>
+                  <select
+                    value={categoryOptions.some(option => option.value === mode) ? mode : ''}
+                    onChange={event => setMode(event.target.value as ChatMode)}
+                    aria-label="Chat category"
+                  >
+                    <option value="">Choose a category</option>
+                    {categoryOptions.map(option => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
+            </div>
             <span className="assistant-mode-hint">{advancedOpen ? modeHints[mode] : 'Focused chat'}</span>
           </div>
           {showBackendPanels && <KnowledgeOSPanel />}
