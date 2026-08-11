@@ -25,7 +25,7 @@ This bundle records the implementation boundary for the polyglot coding upgrade.
 
 ## Explicit limitations
 
-- The checked-in live benchmark uses `provider: gemini`, `model: gemini-3.6-flash`, and `networkPolicy: explicit-live-model-only`. It reached 11 model-adapter cases across 13 ready fixtures; 14 unavailable toolchains remained unsupported. A separate DeepSeek run succeeded with `deepseek-chat`; `gemini-2.0-flash` was retired by the provider.
+- The checked-in live benchmark uses `provider: gemini`, `model: gemini-3.6-flash`, and `networkPolicy: explicit-live-model-only` at implementation SHA `54623a7`. It reached five model-adapter cases across 13 ready fixtures; subsequent ready cases record the provider’s free-tier 429 quota response, and 14 unavailable toolchains remained unsupported. A separate DeepSeek run succeeded with `deepseek-chat`; `gemini-2.0-flash` was retired by the provider.
 - The current machine reports 13 ready and 14 unsupported fixture toolchains. Unsupported tools are not counted as passes.
 - The current checked-in preflight has three hidden checks and zero hidden passes because no model patch was applied.
 - Parser support includes the TypeScript AST provider, maintained Tree-sitter grammars for the priority polyglot families, labeled resilient recovery, and explicit fallback behavior; dedicated maintained AST adapters for every listed language are not claimed.

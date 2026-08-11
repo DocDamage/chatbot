@@ -1,22 +1,8 @@
 {
   "mode": "upgraded",
   "status": "ready",
-  "executor": "model-adapter",
-  "execution": {
-    "executor": "model-adapter",
-    "worktree": "isolated",
-    "filesChanged": [
-      "src/resource.h",
-      "CMakeLists.txt",
-      "src/resource.cpp",
-      "tests/resource_test.cpp"
-    ],
-    "patchApplied": false,
-    "risks": [
-      "src/resource.cpp: File content no longer matches the edit precondition",
-      "tests/resource_test.cpp: File content no longer matches the edit precondition"
-    ]
-  },
+  "reason": "Verification was not requested; Model output was not valid structured patch JSON; no patch was created",
+  "executor": "repository-controller-inspection",
   "inspection": {
     "affectedFiles": [],
     "affectedSymbols": [],
@@ -47,7 +33,8 @@
     },
     "failures": [
       "build_or_visible_tests_failed",
-      "hidden_regression_failed"
+      "hidden_regression_failed",
+      "required_verification_missing"
     ]
   }
 }

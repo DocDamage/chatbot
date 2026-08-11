@@ -1,6 +1,6 @@
 # Polyglot coding benchmark comparison
 
-Generated from the executed baseline and upgraded reports. Implementation SHA: `d5ec6086d61e90c3586af382b1587f7ec7cae7db`.
+Generated from the executed baseline and upgraded reports. Implementation SHA: `54623a7e5e616324bf1311f789960cb8e03d723e`.
 
 This is an evidence report: ordinary runs perform toolchain preflight and upgraded repository inspection; an explicit --live-model run can invoke the configured provider and apply its structured patch only in an isolated worktree. Unsupported toolchains remain explicit and are not counted as passes.
 
@@ -24,7 +24,7 @@ This is an evidence report: ordinary runs perform toolchain preflight and upgrad
 | game-luau-module | unsupported | unsupported | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | `129e2226987ada37d318b0a9626475128c14efcab8e6d01d664cc9f9366656db` |
 | game-godot-state | unsupported | unsupported | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | `f46fb83653349a73a68fbcd4588a8f71d4a50236c45e47672cf7cacd1fd02e64` |
 | web-react-ssr | ready / check passed | ready / check passed | 1→1 | 0→0 | 0→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | `b6d396846610fac5521a1b338ebff87af187a00af3c2ab70f64f34f1c840ed3e` |
-| web-html-css-contract | ready / check passed | ready / check passed | 1→1 | 0→0 | 0→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | `72e7fea033672cc29d817e1fa747e221f70bf5ce7521b34ade68ee76e230e0ff` |
+| web-html-css-contract | ready / check passed | ready / check passed | 1→1 | 0→0 | 0→0.6666666666666666 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | `72e7fea033672cc29d817e1fa747e221f70bf5ce7521b34ade68ee76e230e0ff` |
 | data-sql-dialect | ready / check passed | ready / check passed | 1→1 | 0→0 | 0→0.6666666666666666 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | `0bcdd6abd15e997ce9406e253b4e86caf13806e10f7e172f4c576f822b1d85f3` |
 | shell-powershell-args | ready / check passed | ready / check passed | 1→1 | 0→0 | 0→0.6666666666666666 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | 1→1 | `37510b4205d6376318c9f3ad9fad73ab32305e327a9fa4f4ec3ff9aeabf8f0d5` |
 | shader-glsl-layout | unsupported | unsupported | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | n/a→n/a | `ed689abc2e4cd01f6cfa1d2ed7bc30e21dcb8047cef58cf6833240399903074b` |

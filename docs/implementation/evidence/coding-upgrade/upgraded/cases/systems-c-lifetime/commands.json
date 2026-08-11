@@ -9,7 +9,7 @@
     ],
     "status": "passed",
     "exitCode": 0,
-    "stdout": "-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- Configuring done (0.0s)\n-- Generating done (0.1s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n",
+    "stdout": "-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.\n-- Configuring done (0.2s)\n-- Generating done (0.2s)\n-- Build files have been written to: I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n",
     "stderr": ""
   },
   {
@@ -34,7 +34,7 @@
     ],
     "status": "passed",
     "exitCode": 0,
-    "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n    Start 1: buffer_contract\n1/1 Test #1: buffer_contract ..................   Passed    0.02 sec\n\n100% tests passed, 0 tests failed out of 1\n\nTotal Test time (real) =   0.03 sec\n",
+    "stdout": "Test project I:/Coding Projects/ChatBot/evals/coding/fixtures/systems-c-lifetime/build\n    Start 1: buffer_contract\n1/1 Test #1: buffer_contract ..................   Passed    0.03 sec\n\n100% tests passed, 0 tests failed out of 1\n\nTotal Test time (real) =   0.05 sec\n",
     "stderr": ""
   }
 ]
