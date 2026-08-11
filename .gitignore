@@ -3,7 +3,7 @@ dist/
 coverage/
 client/coverage/
 data/
-local-tools/
+/local-tools/
 private-tools/
 API Keys/
 client/node_modules/

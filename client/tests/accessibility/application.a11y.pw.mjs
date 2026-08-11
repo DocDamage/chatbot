@@ -4,7 +4,7 @@ import { expectNoAxeViolations, mockApplicationApi } from './accessibility-helpe
 test.beforeEach(async ({ page }) => {
   await mockApplicationApi(page);
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'AI Chatbot Hub' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Chatbot' })).toBeVisible();
 });
 
 test('application shell and primary chat workflow pass Axe', async ({ page }) => {
@@ -15,6 +15,10 @@ test('application shell and primary chat workflow pass Axe', async ({ page }) =>
 });
 
 test('keyboard-only mode selection exposes the selected mode accessibly', async ({ page }) => {
+  await page.getByRole('button', { name: 'Open settings' }).click();
+  await expect(page.getByRole('dialog', { name: 'Settings' })).toBeVisible();
+  await page.getByRole('button', { name: 'Open advanced workspace' }).click();
+
   const modeButton = page.locator('.mode-selector-button');
   await modeButton.focus();
   await page.keyboard.press('ArrowDown');

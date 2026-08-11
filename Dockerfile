@@ -9,6 +9,7 @@ RUN apt-get update \
 
 COPY package.json package-lock.json ./
 COPY client/package.json client/package-lock.json ./client/
+COPY .npmrc ./
 RUN npm ci \
   && npm --prefix client ci
 
