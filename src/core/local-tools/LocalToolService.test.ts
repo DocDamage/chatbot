@@ -43,7 +43,48 @@ describe('LocalToolService policy and persistence branches', () => {
     expect((service as any).isKnownPath(path.join(root, 'Steam', 'steamapps', 'demo'))).toBe(true);
     expect((service as any).isKnownPath(path.join('C:', 'Program Files', 'demo'))).toBe(true);
     expect((service as any).isKnownPath(path.join(root, 'other', 'demo'))).toBe(false);
-    expect((service as any).knownExecutablePaths('demo', 'aseprite').length).toBeGreaterThan(0);
+    const knownPaths = (service as any).knownExecutablePaths('demo', 'aseprite');
+    if (process.platform === 'win32') {
+      expect(knownPaths.length).toBeGreaterThan(0);
+    } else {
+      expect(knownPaths).toEqual([]);
+    }
+  });
+
+  it('covers Windows installation discovery paths on every host', () => {
+    const originalPlatform = process.platform;
+    const originalProgramFiles = process.env.ProgramFiles;
+    const originalProgramFilesX86 = process.env['ProgramFiles(x86)'];
+    const originalPath = process.env.PATH;
+    const programFiles = path.join(root, 'Program Files');
+    const programFilesX86 = path.join(root, 'Program Files (x86)');
+    const bin = path.join(root, 'windows-bin');
+
+    fs.mkdirSync(path.join(programFiles, 'Aseprite'), { recursive: true });
+    fs.mkdirSync(path.join(programFiles, 'Steam', 'steamapps', 'common', 'Aseprite'), { recursive: true });
+    fs.mkdirSync(path.join(programFiles, 'Blender Foundation', 'Blender'), { recursive: true });
+    fs.mkdirSync(path.join(programFiles, 'Godot'), { recursive: true });
+    fs.mkdirSync(bin, { recursive: true });
+    fs.writeFileSync(path.join(programFiles, 'Aseprite', 'Aseprite.exe'), '');
+    fs.writeFileSync(path.join(bin, 'demo.exe'), '');
+
+    try {
+      Object.defineProperty(process, 'platform', { configurable: true, value: 'win32' });
+      process.env.ProgramFiles = programFiles;
+      process.env['ProgramFiles(x86)'] = programFilesX86;
+      process.env.PATH = bin;
+
+      expect((service as any).knownExecutablePaths('demo', 'aseprite').length).toBeGreaterThan(2);
+      expect((service as any).knownExecutablePaths('demo', 'blender').length).toBeGreaterThan(1);
+      expect((service as any).knownExecutablePaths('demo', 'godot').length).toBeGreaterThan(1);
+      expect((service as any).knownExecutablePaths('demo')).toContain(path.join(root, 'local-tools', 'demo', 'demo.exe'));
+      expect((service as any).findExecutableCandidates('demo')).toContain(path.resolve(bin, 'demo.exe'));
+    } finally {
+      Object.defineProperty(process, 'platform', { configurable: true, value: originalPlatform });
+      process.env.ProgramFiles = originalProgramFiles;
+      process.env['ProgramFiles(x86)'] = originalProgramFilesX86;
+      process.env.PATH = originalPath;
+    }
   });
 
   it('covers executable resolution, listing, manual registration, and detection updates', async () => {
