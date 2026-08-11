@@ -65,6 +65,35 @@ describe('CodingAgent', () => {
     expect(result.patch.explanation).toContain('Structured patch');
   });
 
+  it('feeds structural definitions, tests, and manifests into the model context', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'coding-agent-structural-'));
+    try {
+      fs.mkdirSync(path.join(root, 'src'), { recursive: true });
+      fs.mkdirSync(path.join(root, 'tests'), { recursive: true });
+      fs.writeFileSync(path.join(root, 'package.json'), '{"scripts":{"test":"pytest"}}\n');
+      fs.writeFileSync(path.join(root, 'pyproject.toml'), '[project]\nname = "fixture"\n');
+      fs.writeFileSync(path.join(root, 'src', 'app.py'), 'from .base import calculate\n\ndef run(value):\n    return calculate(value)\n');
+      fs.writeFileSync(path.join(root, 'src', 'base.py'), 'def calculate(value):\n    return value + 1\n');
+      fs.writeFileSync(path.join(root, 'tests', 'test_app.py'), 'from src.app import run\n\ndef test_run():\n    assert run(1) == 2\n');
+      const adapter: LLMAdapter = {
+        generate: jest.fn().mockResolvedValue({ content: '{"operations":[]}', model: 'fixture-coder' }),
+        estimateCost: () => 0,
+        getModelName: () => 'fixture-coder'
+      };
+      const result = await new CodingAgent({ workspaceRoot: root }).handle({
+        message: 'fix calculate in src/app.py',
+        modelAdapter: adapter,
+        generatePatch: true
+      });
+
+      expect(result.filesInspected).toEqual(expect.arrayContaining(['src/app.py', 'src/base.py', 'tests/test_app.py', 'pyproject.toml']));
+      expect((adapter.generate as jest.Mock).mock.calls[0][0].prompt).toEqual(expect.stringContaining('pyproject.toml'));
+      expect((adapter.generate as jest.Mock).mock.calls[0][0].prompt).toEqual(expect.stringContaining('tests/test_app.py'));
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   it('reports malformed provider output without creating a patch', async () => {
     const adapter: LLMAdapter = {
       generate: jest.fn().mockResolvedValue({ content: 'not structured output', model: 'test-coder' }),

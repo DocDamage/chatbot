@@ -13,6 +13,12 @@ export class RelationshipStore {
     this.relationships.length = 0;
     const knownFiles = new Set(files.map(file => file.replace(/\\/g, '/')));
     const definitions = symbols.filter(symbol => !['import', 'export', 'test'].includes(symbol.kind));
+    const definitionsByName = new Map<string, IndexedSymbol[]>();
+    for (const definition of definitions) {
+      const matches = definitionsByName.get(definition.name) || [];
+      matches.push(definition);
+      definitionsByName.set(definition.name, matches);
+    }
     const add = (relationship: CodeRelationship) => {
       const duplicate = this.relationships.some(existing => existing.from === relationship.from && existing.to === relationship.to && existing.kind === relationship.kind && existing.line === relationship.line);
       if (!duplicate) this.relationships.push(relationship);
@@ -29,16 +35,19 @@ export class RelationshipStore {
         }
         const tested = line.match(/\b(?:it|test|describe)\s*\(\s*['"`]([^'"`]+)/i)?.[1];
         if (tested) add({ from: file, to: tested, kind: 'tests', confidence: 0.6, line: index + 1 });
-        for (const definition of definitions) {
-          if (definition.file === file || definition.name.length < 2) continue;
-          const usage = new RegExp(`\\b${this.escapeRegExp(definition.name)}\\b`).test(line);
-          if (!usage) continue;
-          const calling = new RegExp(`\\b${this.escapeRegExp(definition.name)}\\s*\\(`).test(line);
-          add({ from: file, to: definition.file, kind: calling ? 'callers' : 'references', confidence: Math.min(0.9, definition.confidence), line: index + 1 });
+        const identifiers = new Set(line.match(/[A-Za-z_$][\\w$]*/g) || []);
+        for (const identifier of identifiers) {
+          const matches = definitionsByName.get(identifier) || [];
+          if (!matches.length || identifier.length < 2) continue;
+          const calling = new RegExp(`\\b${this.escapeRegExp(identifier)}\\s*\\(`).test(line);
+          for (const definition of matches) {
+            if (definition.file === file) continue;
+            add({ from: file, to: definition.file, kind: calling ? 'callers' : 'references', confidence: Math.min(0.9, definition.confidence), line: index + 1 });
+          }
         }
         const implementation = line.match(/(?:\b(?:implements|extends)\s+|\bclass\s+\w+\s*\(\s*|:\s*)([A-Za-z_$][\w$]*)/i)?.[1];
         if (implementation) {
-          const target = definitions.find(definition => definition.name === implementation && definition.file !== file);
+          const target = (definitionsByName.get(implementation) || []).find(definition => definition.file !== file);
           if (target) add({ from: file, to: target.file, kind: 'implements', confidence: 0.82, line: index + 1 });
         }
       });

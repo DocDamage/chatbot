@@ -4,6 +4,7 @@ import * as path from 'path';
 import { Tool, ToolCategory, ToolResult } from '../../types/tools';
 import { CodeIndexer } from '../agents/CodeIndexer';
 import { CommandRunner } from './CommandRunner';
+import { isSensitiveWorkspacePath } from '../coding/security/WorkspacePathPolicy';
 
 const IGNORED_DIRS = new Set(['node_modules', '.git', 'dist', 'coverage', '.next', 'build']);
 
@@ -27,10 +28,12 @@ export function createRepoTools(workspaceRoot: string = process.cwd(), commandRu
       for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
         if (results.length >= maxFiles || IGNORED_DIRS.has(entry.name)) continue;
         const absolute = path.join(current, entry.name);
+        const relative = path.relative(workspaceRoot, absolute).replace(/\\/g, '/');
+        if (isSensitiveWorkspacePath(relative)) continue;
         if (entry.isDirectory()) {
           walk(absolute);
         } else {
-          results.push(path.relative(workspaceRoot, absolute).replace(/\\/g, '/'));
+          results.push(relative);
         }
       }
     };
@@ -85,6 +88,7 @@ export function createRepoTools(workspaceRoot: string = process.cwd(), commandRu
       { name: 'path', type: 'string', description: 'Workspace-relative file path', required: true },
       { name: 'maxBytes', type: 'number', description: 'Maximum bytes to return', required: false }
     ], async params => {
+      if (isSensitiveWorkspacePath(String(params.path || ''))) return { success: false, error: 'Sensitive credential paths are not available to coding tools.' };
       const absolute = safePath(params.path);
       const content = fs.readFileSync(absolute, 'utf8').slice(0, params.maxBytes || 60000);
       return { success: true, data: { path: params.path, content } };

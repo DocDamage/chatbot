@@ -29,3 +29,4 @@ export * from './authorization/CodingAuthorization';
 export * from './knowledge/ProvenancePolicy';
 export * from './knowledge/CodingKnowledgeAuthority';
 export * from './model/CodingModelRouter';
+export * from './security/WorkspacePathPolicy';

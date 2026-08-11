@@ -2,16 +2,31 @@ import fs from 'fs';
 import path from 'path';
 import { execFileSync } from 'child_process';
 import { CodingBenchmarkRunner } from '../src/core/evaluation/CodingBenchmarkRunner';
-import { OpenAIAdapter } from '../src/core/providers/LLMAdapter';
+import { GeminiAdapter, OpenAIAdapter, OpenAICompatibleAdapter } from '../src/core/providers/LLMAdapter';
 
 const mode = process.argv.includes('--upgraded') ? 'upgraded' : 'baseline';
 const root = path.resolve(process.cwd(), 'evals/coding/fixtures');
 
 async function main(): Promise<void> {
   const liveModel = process.argv.includes('--live-model');
-  if (liveModel && !process.env.OPENAI_API_KEY) throw new Error('--live-model requires OPENAI_API_KEY; no provider call was made');
-  const model = process.env.CODING_EVAL_MODEL || process.env.OPENAI_MODEL;
-  const runner = new CodingBenchmarkRunner(root, liveModel ? { modelAdapter: new OpenAIAdapter(process.env.OPENAI_API_KEY as string, model), model } : {});
+  const provider = process.env.CODING_EVAL_PROVIDER || 'openai';
+  const providerConfig = {
+    openai: { key: process.env.OPENAI_API_KEY, envVar: 'OPENAI_API_KEY', model: process.env.OPENAI_MODEL },
+    gemini: { key: process.env.GEMINI_API_KEY, envVar: 'GEMINI_API_KEY', model: process.env.GEMINI_MODEL },
+    deepseek: { key: process.env.DEEPSEEK_API_KEY, envVar: 'DEEPSEEK_API_KEY', model: process.env.DEEPSEEK_MODEL }
+  }[provider as 'openai' | 'gemini' | 'deepseek'];
+  if (!providerConfig) throw new Error(`Unsupported coding evaluation provider: ${provider}`);
+  const providerKey = providerConfig.key;
+  if (liveModel && !providerKey) throw new Error(`--live-model requires ${providerConfig.envVar}; no provider call was made`);
+  const model = process.env.CODING_EVAL_MODEL || providerConfig.model;
+  const modelAdapter = liveModel
+    ? provider === 'gemini'
+      ? new GeminiAdapter(providerKey as string, model || 'gemini-2.0-flash')
+      : provider === 'deepseek'
+        ? new OpenAICompatibleAdapter('deepseek', providerKey as string, 'https://api.deepseek.com/v1', model || 'deepseek-chat')
+        : new OpenAIAdapter(providerKey as string, model)
+    : undefined;
+  const runner = new CodingBenchmarkRunner(root, modelAdapter ? { modelAdapter, model } : {});
   const report = await runner.run(runner.loadManifest(), mode);
   const outputRoot = path.resolve(process.cwd(), 'docs/implementation/evidence/coding-upgrade', mode);
   fs.mkdirSync(outputRoot, { recursive: true });
@@ -21,8 +36,8 @@ async function main(): Promise<void> {
     node: process.version,
     platform: process.platform,
     architecture: process.arch,
-    provider: process.argv.includes('--live-model') ? 'openai' : 'none',
-    model: process.env.CODING_EVAL_MODEL || process.env.OPENAI_MODEL || null,
+    provider: liveModel ? provider : 'none',
+    model: process.env.CODING_EVAL_MODEL || providerConfig.model || (liveModel && provider === 'gemini' ? 'gemini-2.0-flash' : liveModel && provider === 'deepseek' ? 'deepseek-chat' : null),
     networkPolicy: process.argv.includes('--live-model') ? 'explicit-live-model-only' : 'disabled'
   }, null, 2));
   fs.writeFileSync(path.join(outputRoot, 'manifest.json'), JSON.stringify({ suite: report.suite, mode: report.mode, generatedAt: report.generatedAt, fixtureRoot: root, cases: report.cases.map(testCase => ({ id: testCase.id, fixture: testCase.fixture, fixtureHash: testCase.fixtureHash, toolchain: testCase.toolchain, toolchainAvailable: testCase.toolchainAvailable, status: testCase.status, reason: testCase.reason })) }, null, 2));

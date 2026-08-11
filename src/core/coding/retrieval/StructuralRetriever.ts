@@ -52,7 +52,7 @@ export class StructuralRetriever {
       if (!terms.length) continue;
       const pathScore = terms.filter(term => file.path.toLowerCase().includes(term)).length;
       let contentScore = 0;
-      if (!file.binary && pathScore === 0) {
+      if (!file.binary && file.size <= 200000 && this.isSearchable(file.path) && pathScore === 0) {
         try {
           const content = fs.readFileSync(path.resolve(this.workspaceRoot, file.path), 'utf8').slice(0, 24000).toLowerCase();
           contentScore = terms.filter(term => content.includes(term)).length;
@@ -65,4 +65,9 @@ export class StructuralRetriever {
   }
 
   private isTest(file: string): boolean { return /(^|\/)(__tests__|tests?)(\/|$)|\.(test|spec)\./i.test(file); }
+
+  private isSearchable(file: string): boolean {
+    return /\.(?:c|cc|cpp|cxx|cs|css|fs|fsi|fsx|go|h|hh|hpp|hxx|html?|java|js|jsx|json|kt|kts|lua|m|md|mm|mjs|py|pyi|rs|scss|sh|sql|swift|toml|ts|tsx|txt|xml|yaml|yml)$/i.test(file)
+      || /(^|\/)(?:Dockerfile|Makefile|CMakeLists\.txt)$/i.test(file);
+  }
 }

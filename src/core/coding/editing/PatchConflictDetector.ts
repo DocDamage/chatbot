@@ -2,6 +2,7 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import { EditOperation } from '../types';
+import { isSensitiveWorkspacePath } from '../security/WorkspacePathPolicy';
 
 export class PatchConflictDetector {
   constructor(private readonly workspaceRoot: string) {}
@@ -22,6 +23,7 @@ export class PatchConflictDetector {
     const relative = path.relative(root, absolute);
     if (relative.startsWith('..') || path.isAbsolute(relative)) throw new Error(`Path is outside workspace: ${file}`);
     if (relative === '.git' || relative.startsWith(`.git${path.sep}`)) throw new Error('Git metadata cannot be edited');
+    if (isSensitiveWorkspacePath(relative)) throw new Error('Sensitive credential paths cannot be edited');
     const rootReal = fs.realpathSync(root);
     const existing = fs.existsSync(absolute) ? absolute : path.dirname(absolute);
     const realTarget = fs.realpathSync(existing);

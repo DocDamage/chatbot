@@ -23,6 +23,7 @@ import { WorkspaceWriteGate } from '../coding/editing/WorkspaceWriteGate';
 import { WorkMode } from '../modes/ExecutionModePolicy';
 import { LLMAdapter } from '../providers/LLMAdapter';
 import { RepairRun } from '../coding/verification/RepairController';
+import { isSensitiveWorkspacePath } from '../coding/security/WorkspacePathPolicy';
 
 export interface CodingAgentConfig {
   workspaceRoot?: string;
@@ -122,7 +123,7 @@ export class CodingAgent {
     });
     const summary = this.summarizeFromEvidence(contextualMessage, filesInspected, evidence);
     const modelPatch = request.generatePatch && request.modelAdapter
-      ? await this.generateModelPatch(request.modelAdapter, request.model, contextualMessage, context)
+      ? await this.generateModelPatch(request.modelAdapter, request.model, contextualMessage, adaptiveContext)
       : undefined;
     const patch = modelPatch?.patch || this.patchGenerator.createEmptyPatch();
     const verification = request.runVerification
@@ -252,6 +253,11 @@ export class CodingAgent {
     });
 
     const lower = message.toLowerCase();
+    const structuralEvidence = await this.retrieveEvidence({ query: message, maxItems: 24 });
+    const structurallySelected = structuralEvidence
+      .map(item => item.path)
+      .filter((file): file is string => Boolean(file))
+      .filter(file => !isSensitiveWorkspacePath(file));
     const files = this.listFiles('.', 1000);
     const scored = files
       .filter(file => /\.(ts|tsx|js|jsx|json|md)$/.test(file))
@@ -271,7 +277,8 @@ export class CodingAgent {
       .slice(0, 5)
       .map(item => item.file);
 
-    const selected = scored.length > 0 ? scored : ['package.json'];
+    const fallback = scored.length > 0 ? scored : ['package.json'];
+    const selected = [...new Set([...structurallySelected, ...fallback])].slice(0, 24);
     const fileExcerpts: Array<{ path: string; content: string }> = [];
     const relatedTests: Array<{ path: string; content: string }> = [];
     for (const file of selected) {
@@ -294,7 +301,12 @@ export class CodingAgent {
       fileExcerpts,
       relatedTests,
       packageScripts: scriptsResult.success ? scriptsResult.data?.scripts || {} : {},
-      architectureNotes: this.extractArchitectureNotes(selected),
+      architectureNotes: [
+        ...this.extractArchitectureNotes(selected),
+        ...structuralEvidence
+          .filter(item => item.kind === 'architecture' || item.kind === 'dependency' || item.kind === 'instruction')
+          .map(item => `${item.reason}: ${item.label}`)
+      ].slice(0, 24),
       toolCalls
     };
   }
@@ -332,12 +344,12 @@ export class CodingAgent {
     adapter: LLMAdapter,
     model: string | undefined,
     request: string,
-    context: CodeContext
+    context: AllocatedContext
   ): Promise<{ patch: GeneratedPatch; structuredPatch?: StructuredPatch; risks: string[] }> {
     const response = await adapter.generate({
       model,
       temperature: 0,
-      maxTokens: Math.min(4000, Math.max(1000, Math.floor(context.tokenBudget / 2))),
+      maxTokens: Math.max(256, Math.min(context.tokenBudget, Number(process.env.CODING_MODEL_MAX_OUTPUT_TOKENS || 8192))),
       systemPrompt: [
         'You are a repository coding agent.',
         'Return only JSON with this shape: {"operations":[{"operation":"create|modify|delete","path":"relative/path","content":"new content for create/modify","expectedContent":"current content for modify/delete","reason":"why","authorized":false}]}',
@@ -398,6 +410,8 @@ export class CodingAgent {
       for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
         if (results.length >= maxFiles || ignored.has(entry.name)) continue;
         const absolute = path.join(current, entry.name);
+        const relative = path.relative(this.workspaceRoot, absolute).replace(/\\/g, '/');
+        if (isSensitiveWorkspacePath(relative)) continue;
         if (entry.isDirectory()) {
           walk(absolute);
         } else {

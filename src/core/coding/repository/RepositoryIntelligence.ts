@@ -7,12 +7,18 @@ import { ManifestDetector, ManifestRecord } from './ManifestDetector';
 import { BuildCommandPlan, BuildSystemDetector } from './BuildSystemDetector';
 import { SymbolIndex } from '../index/SymbolIndex';
 import { RelationshipStore, CodeRelationship } from '../index/RelationshipStore';
+import { isSensitiveWorkspacePath } from '../security/WorkspacePathPolicy';
 
 export interface RepositoryFile { path: string; size: number; language?: string; generated: boolean; binary: boolean; }
 export interface ParserHealth { parser: string; files: number; symbols: number; averageConfidence: number; fallback: boolean; }
 export interface RepositorySnapshot { version: string; root: string; files: RepositoryFile[]; projectRoots: ProjectRoot[]; instructions: WorkspaceInstruction[]; manifests: ManifestRecord[]; languages: ReturnType<LanguageCapabilityRegistry['detect']>; buildSystems: string[]; commandPlans: BuildCommandPlan[]; relationships: CodeRelationship[]; parserHealth: ParserHealth[]; }
 
-const IGNORED = new Set(['node_modules', '.git', 'dist', 'coverage', 'build', '.next', '.venv', 'target', 'obj', 'bin', '.gradle', '.idea', '.vscode', '.pytest_cache', '__pycache__', '.mypy_cache', '.ruff_cache', 'vendor']);
+const IGNORED = new Set([
+  'node_modules', '.git', 'dist', 'coverage', 'build', '.next', '.venv', '.venv-pyscrappy',
+  'target', 'obj', 'bin', '.gradle', '.idea', '.vscode', '.pytest_cache', '__pycache__',
+  '.mypy_cache', '.ruff_cache', 'vendor', 'cache', 'logs', 'data', 'knowledge-base',
+  'knowledge-base-public', '.mex', '.playwright-cli', '.remembrandt', '.tmp-skill-test'
+]);
 
 export class RepositoryIntelligence {
   private readonly registry: LanguageCapabilityRegistry;
@@ -32,10 +38,11 @@ export class RepositoryIntelligence {
     const instructions = new WorkspaceInstructionResolver(this.workspaceRoot).resolve(names);
     const languages = this.registry.detect(names, Object.fromEntries(manifests.map(item => [item.path, item.data || {}])));
     const build = new BuildSystemDetector(this.registry).detect(names, manifests);
+    const indexableFiles = files.filter(file => !file.binary && this.isIndexable(file.path)).map(file => file.path);
     const index = new SymbolIndex(this.workspaceRoot);
-    index.indexFiles(files.filter(file => !file.binary).map(file => file.path));
+    index.indexFiles(indexableFiles);
     const relationships = new RelationshipStore(this.workspaceRoot);
-    relationships.build(files.filter(file => !file.binary).map(file => file.path), index.all());
+    relationships.build(indexableFiles, index.all());
     const parserGroups = new Map<string, { files: Set<string>; symbols: number; confidence: number }>();
     for (const symbol of index.all()) {
       const group = parserGroups.get(symbol.parser) || { files: new Set<string>(), symbols: 0, confidence: 0 };
@@ -53,8 +60,10 @@ export class RepositoryIntelligence {
         if (IGNORED.has(entry.name) || entry.name.startsWith('.tmp')) continue;
         if (entry.isSymbolicLink()) continue;
         const absolute = path.join(directory, entry.name);
+        const relative = path.relative(this.workspaceRoot, absolute).replace(/\\/g, '/');
+        if (isSensitiveWorkspacePath(relative)) continue;
         if (entry.isDirectory()) walk(absolute);
-        else results.push(path.relative(this.workspaceRoot, absolute).replace(/\\/g, '/'));
+        else results.push(relative);
       }
     };
     walk(path.resolve(this.workspaceRoot));
@@ -62,6 +71,11 @@ export class RepositoryIntelligence {
   }
 
   private isGenerated(file: string): boolean { return /(^|\/)(generated|gen|vendor|fixtures?)\//i.test(file) || /\.generated\.|\.min\./i.test(file); }
+
+  private isIndexable(file: string): boolean {
+    return /\.(?:c|cc|cpp|cxx|cs|fs|fsi|fsx|go|h|hh|hpp|hxx|java|js|jsx|kt|kts|lua|m|mm|mjs|py|pyi|rs|sh|swift|ts|tsx|bash)$/i.test(file)
+      || /(^|\/)(?:Dockerfile|Makefile|CMakeLists\.txt)$/i.test(file);
+  }
 
   private isBinary(file: string): boolean {
     try { return fs.readFileSync(file).subarray(0, 4096).includes(0); } catch { return true; }
