@@ -78,6 +78,7 @@ test('plans, approves, and runs the safe local harness, then completes an intern
 
   await openBuiltApplication(page);
   await openAdvancedWorkspace(page);
+  await page.getByRole('button', { name: 'Automation' }).click();
   const localPanel = page.getByRole('region', { name: 'Local run approvals' });
   const runCard = localPanel.locator('.local-run-card').filter({ hasText: 'local-tool-fixture.mjs' }).first();
   await expect(runCard).toBeVisible();
