@@ -606,12 +606,12 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | File | Lines |
 |---|---|
-| `client/src/components/AssistantChat.tsx` | 763 |
+| `client/src/components/AssistantChat.tsx` | 791 |
 | `client/src/components/CreativeComposerPanel.tsx` | 456 |
 | `client/src/components/FLStudioControlPanel.tsx` | 622 |
 | `client/src/components/KnowledgeOSPanel.tsx` | 406 |
 | `client/src/components/ModeSelector.tsx` | 393 |
-| `client/src/components/SettingsMenu.tsx` | 517 |
+| `client/src/components/SettingsMenu.tsx` | 567 |
 | `client/src/components/SpriteLabPanel.tsx` | 378 |
 | `docs/extract_all_snippets.js` | 364 |
 | `scripts/import-books.ts` | 317 |
@@ -634,7 +634,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/graph/KnowledgeGraphIndexer.ts` | 319 |
 | `src/core/initialization/ServiceInitializer.ts` | 852 |
 | `src/core/knowledge/GitHubSource.ts` | 323 |
-| `src/core/knowledge/LocalKnowledgeAnswerer.ts` | 598 |
+| `src/core/knowledge/LocalKnowledgeAnswerer.ts` | 606 |
 | `src/core/knowledge/OnlineKnowledgeIngestionService.ts` | 554 |
 | `src/core/knowledge/QueryEnhancer.ts` | 440 |
 | `src/core/knowledge/ScientificPapersSource.ts` | 325 |
@@ -670,5 +670,5 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/voice/VoiceAgent.ts` | 437 |
 | `src/server/index.ts` | 1169 |
 | `src/server/routes/admin.ts` | 317 |
-| `src/server/routes/legacy-chat.ts` | 356 |
+| `src/server/routes/legacy-chat.ts` | 367 |
 | `src/server/routes/setup.ts` | 437 |

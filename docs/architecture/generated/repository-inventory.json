@@ -4929,7 +4929,7 @@
   "oversizedFiles": [
     {
       "file": "client/src/components/AssistantChat.tsx",
-      "lines": 763
+      "lines": 791
     },
     {
       "file": "client/src/components/CreativeComposerPanel.tsx",
@@ -4949,7 +4949,7 @@
     },
     {
       "file": "client/src/components/SettingsMenu.tsx",
-      "lines": 517
+      "lines": 567
     },
     {
       "file": "client/src/components/SpriteLabPanel.tsx",
@@ -5041,7 +5041,7 @@
     },
     {
       "file": "src/core/knowledge/LocalKnowledgeAnswerer.ts",
-      "lines": 598
+      "lines": 606
     },
     {
       "file": "src/core/knowledge/OnlineKnowledgeIngestionService.ts",
@@ -5185,7 +5185,7 @@
     },
     {
       "file": "src/server/routes/legacy-chat.ts",
-      "lines": 356
+      "lines": 367
     },
     {
       "file": "src/server/routes/setup.ts",
