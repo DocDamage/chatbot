@@ -45,7 +45,7 @@ test.describe.serial('built-server chat, authentication, and persistence', () =>
     const dialog = page.getByRole('dialog', { name: 'Settings' });
     await expect(dialog).toBeVisible();
     await dialog.getByRole('tab', { name: 'AI connection' }).click();
-    await dialog.getByRole('button', { name: 'Local fallback' }).click();
+    await dialog.getByRole('radio', { name: 'Local fallback' }).click();
     const settingsResponse = page.waitForResponse(response =>
       response.url().endsWith('/api/settings')
       && response.request().method() === 'PUT',
