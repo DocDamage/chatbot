@@ -97,4 +97,26 @@ describe('SettingsMenu accessibility', () => {
     expect(screen.queryByText(/fl studio mcp bridge/i)).toBeNull();
     expect(screen.getByRole('tab', { name: /advanced/i }).getAttribute('title')).toContain('embeddings');
   });
+
+  it('surfaces provider and advanced controls without exposing them all at once', async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => settingsPayload,
+    }));
+
+    render(<SettingsMenu />);
+
+    await user.click(screen.getByRole('button', { name: /open settings/i }));
+    await user.click(screen.getByRole('tab', { name: /ai connection/i }));
+    await user.click(screen.getByRole('radio', { name: 'Gemini' }));
+    expect(screen.getByLabelText('Gemini API key')).toBeTruthy();
+    expect(screen.getByLabelText('Gemini model')).toBeTruthy();
+
+    await user.click(screen.getByRole('tab', { name: /advanced/i }));
+    expect(screen.getByLabelText('Embedding provider')).toBeTruthy();
+    await user.click(screen.getByRole('checkbox', { name: /use native transformers/i }));
+    expect((screen.getByRole('checkbox', { name: /use native transformers/i }) as HTMLInputElement).checked).toBe(true);
+    expect(screen.getByLabelText('MCP command').getAttribute('placeholder')).toBe('fl-studio-mcp.cmd');
+  });
 });

@@ -53,6 +53,7 @@ vi.mock('./KnowledgeOnlinePanel', () => ({ default: () => <div>Knowledge Online<
 
 afterEach(() => {
   cleanup();
+  vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
 
@@ -72,7 +73,7 @@ async function selectMode(user: { click: (element: Element) => Promise<void> }, 
 
 describe('AssistantChat specialist panel scoping', () => {
   it('shows Knowledge Online in ask mode without showing Gaming playbooks', () => {
-    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true } as Response));
 
     render(<AssistantChat />);
 
@@ -81,7 +82,7 @@ describe('AssistantChat specialist panel scoping', () => {
   });
 
   it('shows Gaming playbooks only after switching to Gaming mode', async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true } as Response));
     const user = userEvent.setup();
 
     render(<AssistantChat />);
@@ -93,7 +94,7 @@ describe('AssistantChat specialist panel scoping', () => {
   });
 
   it('hides both panels in Story mode', async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true } as Response);
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true } as Response));
     const user = userEvent.setup();
 
     render(<AssistantChat />);
@@ -102,5 +103,19 @@ describe('AssistantChat specialist panel scoping', () => {
 
     await waitFor(() => expect(screen.queryByText('Knowledge Online')).toBeNull());
     expect(screen.queryByText('Gaming Playbooks')).toBeNull();
+  });
+
+  it('keeps specialist context available without opening the advanced workspace', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true } as Response));
+    const user = userEvent.setup();
+
+    render(<AssistantChat advancedOpen={false} />);
+
+    await user.click(screen.getByRole('button', { name: /context\s*general/i }));
+    expect(screen.getByRole('dialog', { name: /chat context/i })).toBeTruthy();
+    await user.selectOptions(screen.getByRole('combobox', { name: 'Chat category' }), 'pop_culture');
+
+    expect(screen.getByRole('button', { name: /context\s*pop culture/i })).toBeTruthy();
+    expect(screen.getByText(/Focus the answer without opening developer tools/i)).toBeTruthy();
   });
 });
