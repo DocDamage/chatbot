@@ -189,6 +189,8 @@ const placeholders: Record<ChatMode, string> = {
 
 const onlineResearchModes: ChatMode[] = [
   'ask',
+  'pop_culture',
+  'music',
   'knowledge_os',
   'gaming',
   'gamedev',
@@ -238,6 +240,7 @@ interface AssistantChatProps {
 function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [mode, setMode] = useState<ChatMode>('ask');
+  const [contextOpen, setContextOpen] = useState(false);
   const [sessionId] = useState(() => uuidv4());
   const [isRunning, setIsRunning] = useState(false);
   const [loadedFiles, setLoadedFiles] = useState<LoadedFileContext[]>([]);
@@ -256,6 +259,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
   const showGISPanel = showBackendPanels && mode === 'gis';
   const showGamingPlaybooks = showBackendPanels && (mode === 'gaming' || mode === 'gamedev');
   const showKnowledgeOnlinePanel = showBackendPanels && onlineResearchModes.includes(mode);
+  const selectedCategoryLabel = categoryOptions.find(option => option.value === mode)?.label || 'General';
 
   useEffect(() => {
     let active = true;
@@ -491,7 +495,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
               ) : (
                 <label className="simple-mode-picker">
                   <span>Mode</span>
-                  <select value={mode} onChange={event => setMode(event.target.value as ChatMode)} aria-label="Chat mode">
+                    <select value={mode} onChange={event => setMode(event.target.value as ChatMode)} aria-label="Chat mode" title="Choose how the assistant should work: ask, plan, build, debug, or explain">
                     {!simpleModeOptions.some(option => option.value === mode) && (
                       <option value={mode}>{modeHints[mode]}</option>
                     )}
@@ -502,19 +506,43 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
                 </label>
               )}
               {!advancedOpen && (
-                <label className="simple-mode-picker simple-category-picker">
-                  <span>Category</span>
-                  <select
-                    value={categoryOptions.some(option => option.value === mode) ? mode : ''}
-                    onChange={event => setMode(event.target.value as ChatMode)}
-                    aria-label="Chat category"
+                <div className="context-control">
+                  <button
+                    type="button"
+                    className="context-toggle"
+                    aria-expanded={contextOpen}
+                    aria-controls="chat-context-panel"
+                    title="Choose a specialist category without opening the full workspace"
+                    onClick={() => setContextOpen(previous => !previous)}
                   >
-                    <option value="">Choose a category</option>
-                    {categoryOptions.map(option => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                  </select>
-                </label>
+                    <span>Context</span>
+                    <strong>{selectedCategoryLabel}</strong>
+                    <span aria-hidden="true">⌄</span>
+                  </button>
+                  {contextOpen && (
+                    <div id="chat-context-panel" className="context-popover" role="dialog" aria-label="Chat context">
+                      <div className="context-popover-heading">
+                        <strong>Conversation context</strong>
+                        <span>Focus the answer without opening developer tools.</span>
+                      </div>
+                      <label className="context-picker">
+                        <span>Specialist category</span>
+                        <select
+                          value={categoryOptions.some(option => option.value === mode) ? mode : ''}
+                          onChange={event => setMode(event.target.value as ChatMode)}
+                          aria-label="Chat category"
+                          title="Choose the subject area for this conversation"
+                        >
+                          <option value="">General</option>
+                          {categoryOptions.map(option => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </label>
+                      <p>{modeHints[mode]}</p>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
             <span className="assistant-mode-hint">{advancedOpen ? modeHints[mode] : 'Focused chat'}</span>

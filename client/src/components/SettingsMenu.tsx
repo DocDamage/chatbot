@@ -25,7 +25,7 @@ const defaultSettings = {
   OPENAI_COMPATIBLE_BASE_URL: 'https://api.deepseek.com',
   OPENAI_COMPATIBLE_MODEL: 'deepseek-chat',
   ANTHROPIC_MODEL: 'claude-3-5-sonnet-20241022',
-  GEMINI_MODEL: 'gemini-1.5-flash',
+  GEMINI_MODEL: 'gemini-3.6-flash',
   EMBEDDING_PROVIDER: 'xenova',
   EMBEDDING_MODEL: 'Xenova/all-MiniLM-L6-v2',
   EMBEDDING_USE_TRANSFORMERS: 'false',
@@ -97,6 +97,18 @@ const compatibleProviders = [
   }
 ];
 
+const providerDescriptions: Record<Provider, string> = {
+  template: 'Works offline with the built-in fallback responses.',
+  ollama: 'Use a model running locally on your machine.',
+  openai: 'Connect an OpenAI chat model with your own API key.',
+  huggingface: 'Use a Hugging Face inference endpoint.',
+  anthropic: 'Connect Claude for general conversation and reasoning.',
+  gemini: 'Connect Google Gemini for general conversation and reasoning.',
+  'openai-compatible': 'Connect DeepSeek or another OpenAI-compatible provider.'
+};
+
+type SettingsSection = 'workspace' | 'connection' | 'advanced';
+
 interface SettingsMenuProps {
   advancedOpen?: boolean;
   onAdvancedToggle?: () => void;
@@ -114,6 +126,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
+  const [activeSection, setActiveSection] = useState<SettingsSection>('workspace');
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -198,8 +211,8 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
         ANTHROPIC_API_KEY: data.secrets.ANTHROPIC_API_KEY?.preview || '',
         GEMINI_API_KEY: data.secrets.GEMINI_API_KEY?.preview || ''
       });
-    } catch (error: any) {
-      setMessage(`Could not load settings: ${error.message}`);
+    } catch {
+      setMessage('The local service is unavailable. Safe defaults are shown until it reconnects.');
     } finally {
       setLoading(false);
     }
@@ -237,8 +250,8 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
       setGeminiKey('');
       await loadSettings();
       setMessage(`Saved. Active provider: ${data.status?.activeProvider || provider}.`);
-    } catch (error: any) {
-      setMessage(`Save failed: ${error.message}`);
+    } catch {
+      setMessage('Settings could not be saved. Make sure the local service is running and try again.');
     } finally {
       setSaving(false);
     }
@@ -257,7 +270,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
 
   return (
     <>
-      <button ref={triggerRef} className="settings-button" type="button" onClick={() => setOpen(true)} aria-label="Open settings">
+      <button ref={triggerRef} className="settings-button" type="button" onClick={() => setOpen(true)} aria-label="Open settings" title="Open settings and connections">
         ⚙
       </button>
 
@@ -269,21 +282,48 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
                 <h2 id="settings-title">Settings</h2>
                 <p>Active provider: {providerLabel}</p>
               </div>
-              <button ref={closeRef} className="settings-close" type="button" onClick={() => setOpen(false)} aria-label="Close settings">×</button>
+              <button ref={closeRef} className="settings-close" type="button" onClick={() => setOpen(false)} aria-label="Close settings" title="Close settings">×</button>
             </div>
 
             {loading ? (
               <div className="settings-loading">Loading settings...</div>
             ) : (
               <div className="settings-body">
-                <div className="settings-section settings-workspace-section">
-                  <h3>Workspace</h3>
+                <div className="settings-intro">
+                  <span className="settings-eyebrow">Control center</span>
+                  <h3>Make the chat fit your work</h3>
+                  <p>Keep everyday choices close to the conversation. Technical connections and local-tool controls stay in Advanced.</p>
+                </div>
+
+                <div className="settings-tabs" role="tablist" aria-label="Settings sections">
+                  {([
+                    ['workspace', 'Workspace', 'Choose what is visible while you chat.'],
+                    ['connection', 'AI connection', 'Choose the model provider and model.'],
+                    ['advanced', 'Advanced', 'Manage embeddings and local integrations.']
+                  ] as Array<[SettingsSection, string, string]>).map(([value, label, description]) => (
+                    <button
+                      key={value}
+                      type="button"
+                      role="tab"
+                      aria-selected={activeSection === value}
+                      className={`settings-tab ${activeSection === value ? 'selected' : ''}`}
+                      onClick={() => setActiveSection(value)}
+                      title={description}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+
+                {activeSection === 'workspace' && <div className="settings-section settings-workspace-section">
+                  <h3>Workspace visibility</h3>
                   <p className="settings-help">
                     Keep the main screen focused on the conversation. Open the advanced workspace when you need tools, files, modes, or integrations.
                   </p>
                   <button
                     type="button"
                     className="settings-workspace-button"
+                    title="Show or hide tools, files, and specialist panels on the main screen"
                     onClick={() => {
                       onAdvancedToggle?.();
                       setOpen(false);
@@ -291,8 +331,9 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
                   >
                     {advancedOpen ? 'Hide advanced workspace' : 'Open advanced workspace'}
                   </button>
-                </div>
+                </div>}
 
+                {activeSection === 'connection' && <>
                 <div className="settings-section">
                   <h3>Model Provider</h3>
                   <div className="provider-grid" role="radiogroup" aria-label="Model provider">
@@ -308,6 +349,9 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
                       <button
                         key={value}
                         type="button"
+                        role="radio"
+                        aria-checked={provider === value}
+                        title={providerDescriptions[value as Provider]}
                         className={`provider-option ${provider === value ? 'selected' : ''}`}
                         onClick={() => setProvider(value as Provider)}
                       >
@@ -393,9 +437,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
                         onChange={event => updateSetting('GEMINI_MODEL', event.target.value)}
                       />
                       <datalist id="gemini-models">
-                        <option value="gemini-1.5-flash" />
-                        <option value="gemini-1.5-pro" />
-                        <option value="gemini-2.0-flash-exp" />
+                        <option value="gemini-3.6-flash" />
                         <option value="gemini-2.5-flash" />
                         <option value="gemini-2.5-pro" />
                       </datalist>
@@ -458,7 +500,14 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
                   </div>
                 )}
 
+                </>}
+
+                {activeSection === 'advanced' && <>
                 <div className="settings-section settings-grid">
+                  <div className="settings-section-heading">
+                    <h3>Knowledge and search</h3>
+                    <p className="settings-help">These controls affect how the local knowledge base finds related context. Most users can leave them unchanged.</p>
+                  </div>
                   <label>
                     Embedding provider
                     <select value={settings.EMBEDDING_PROVIDER || 'xenova'} onChange={event => updateSetting('EMBEDDING_PROVIDER', event.target.value)}>
@@ -495,10 +544,11 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
                     <input value={settings.FL_STUDIO_MCP_CWD || ''} onChange={event => updateSetting('FL_STUDIO_MCP_CWD', event.target.value)} placeholder="Optional path to bridge repo" />
                   </label>
                 </div>
+                </>}
               </div>
             )}
 
-            {message && <div className={`settings-message ${message.startsWith('Save failed') || message.startsWith('Could not') ? 'error' : 'success'}`}>{message}</div>}
+            {message && <div className={`settings-message ${/unavailable|could not be saved/i.test(message) ? 'error' : 'success'}`} role="status">{message}</div>}
 
             <div className="settings-actions">
               <button type="button" className="secondary-action" onClick={loadSettings} disabled={loading || saving}>Refresh</button>

@@ -34,7 +34,7 @@ export class LocalKnowledgeAnswerer {
 
     let effectiveMode = mode;
     let results = await this.search(message, mode);
-    if (results.length === 0 && mode !== 'ask') {
+    if (results.length === 0 && mode !== 'ask' && this.shouldUseBroadFallback(message, mode)) {
       results = await this.search(message, 'ask');
       effectiveMode = 'ask';
     }
@@ -111,6 +111,14 @@ export class LocalKnowledgeAnswerer {
       return source.includes('/popculture/') || source.includes('/pop-culture/') || content.includes('domain: pop_culture');
     }
     return source.includes(`/${mode}/`) || content.includes(`domain: ${mode}`);
+  }
+
+  private shouldUseBroadFallback(message: string, mode: LocalKnowledgeMode): boolean {
+    if (mode !== 'pop_culture') {
+      return true;
+    }
+
+    return !/\b(?:music industry|record industry|music business|music history|record label|album|song|concert|tour)\b/i.test(message);
   }
 
   private cleanChunk(content: string): string {

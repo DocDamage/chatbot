@@ -158,4 +158,56 @@ describe('legacy chat knowledge miss contract', () => {
 
     expect(orchestrator.processRequest).not.toHaveBeenCalled();
   });
+
+  it('routes music-industry history to pop-culture instead of generic year retrieval', async () => {
+    const app = express();
+    const conversationManager = new ConversationManager();
+    const orchestrator = { processRequest: jest.fn() };
+    const popCultureGeniusAgent = {
+      ask: jest.fn().mockResolvedValue({
+        response: 'Music-industry context for 1997.',
+        sources: ['Official Charts']
+      })
+    };
+    const ragDocumentStore = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: '1997-general-chunk-0',
+          content: 'Domain: general\n1997 was a common year with many events.',
+          metadata: {
+            source: 'knowledge-base-public/general/wikipedia-summaries/1997.md',
+            title: '1997.md'
+          }
+        },
+        score: 0.9,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    app.use(express.json());
+    app.post('/api/chat', ...createLegacyChatHandlers({
+      getServices: () => ({ popCultureGeniusAgent, ragDocumentStore }),
+      getOrchestrator: () => orchestrator,
+      waitForReady: jest.fn().mockResolvedValue(undefined),
+      getConversationManager: () => conversationManager,
+    }));
+
+    await request(app)
+      .post('/api/chat')
+      .send({
+        message: 'tell me about the music industry in 1997',
+        sessionId: 'music-industry-1997-session',
+        mode: 'ask',
+      })
+      .expect(200)
+      .expect(response => {
+        expect(response.body.response).toBe('Music-industry context for 1997.');
+        expect(response.body.model).toBe('pop-culture-specialist');
+        expect(response.body.nlu.normalizedQuery).toBe('tell me about the music industry in 1997');
+      });
+
+    expect(popCultureGeniusAgent.ask).toHaveBeenCalledWith('tell me about the music industry in 1997');
+    expect(ragDocumentStore.searchKeyword).not.toHaveBeenCalled();
+    expect(orchestrator.processRequest).not.toHaveBeenCalled();
+  });
 });

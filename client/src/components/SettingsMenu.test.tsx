@@ -76,8 +76,25 @@ describe('SettingsMenu accessibility', () => {
     render(<SettingsMenu />);
 
     await user.click(screen.getByRole('button', { name: /open settings/i }));
+    await user.click(screen.getByRole('tab', { name: /advanced/i }));
 
     expect(await screen.findByText(/fl studio mcp bridge \(dry-run first\)/i)).toBeTruthy();
     expect(screen.getByText(/control actions remain dry-run unless the bridge is connected/i)).toBeTruthy();
+  });
+
+  it('keeps technical settings behind clear section tabs', async () => {
+    const user = userEvent.setup();
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => settingsPayload,
+    }));
+
+    render(<SettingsMenu />);
+
+    await user.click(screen.getByRole('button', { name: /open settings/i }));
+
+    expect(screen.getByRole('tab', { name: /workspace/i }).getAttribute('aria-selected')).toBe('true');
+    expect(screen.queryByText(/fl studio mcp bridge/i)).toBeNull();
+    expect(screen.getByRole('tab', { name: /advanced/i }).getAttribute('title')).toContain('embeddings');
   });
 });

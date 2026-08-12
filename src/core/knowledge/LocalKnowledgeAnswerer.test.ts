@@ -298,4 +298,28 @@ describe('LocalKnowledgeAnswerer', () => {
     expect(answer?.mode).toBe('ask');
     expect(answer?.model).toBe('local-knowledge-base');
   });
+
+  it('does not use a generic year record for a music-industry question', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: '1997-general-chunk-0',
+          content: 'Domain: general\n1997 was a common year with many events.',
+          metadata: {
+            source: 'knowledge-base-public/general/wikipedia-summaries/1997.md',
+            title: '1997.md'
+          }
+        },
+        score: 0.9,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answerer = new LocalKnowledgeAnswerer(store as any);
+    const answer = await answerer.answer('tell me about the music industry in 1997', 'pop_culture');
+
+    expect(answer?.knowledgeMiss).toBe(true);
+    expect(answer?.sources).toEqual([]);
+    expect(answer?.response).not.toContain('1997 was a common year');
+  });
 });

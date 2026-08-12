@@ -133,8 +133,13 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
     if (mode === 'gaming' && services.gamingGeniusAgent) return { ...(await services.gamingGeniusAgent.ask(message)), nlu };
 
     if (mode === 'pop_culture' || mode === 'history' || mode === 'science') {
+      if (mode === 'pop_culture' && isMusicIndustryHistoryQuestion(message) && services.popCultureGeniusAgent) {
+        const result = await services.popCultureGeniusAgent.ask(message);
+        return { response: result.response, sources: result.sources, mode, model: 'pop-culture-specialist', nlu };
+      }
+
       const localAnswer = await new LocalKnowledgeAnswerer(services.ragDocumentStore).answer(message, mode);
-      if (localAnswer && (localAnswer.sources.length > 0 || /\b(?:\d{1,5}\s*(?:bc|bce)|1[0-9]{3}|20[0-2]\d)\b/i.test(message))) {
+      if (localAnswer && !localAnswer.knowledgeMiss && localAnswer.sources.length > 0) {
         return { ...localAnswer, nlu };
       }
     }
@@ -303,11 +308,17 @@ function isRecognizedSpecialistMode(mode: string | undefined): mode is ChatSpeci
   return !!mode && specialistModes.has(mode);
 }
 
+function isMusicIndustryHistoryQuestion(message: string): boolean {
+  return /\b(?:music industry|record industry|music business|music history|record label)\b/i.test(message)
+    && /\b(?:19\d{2}|20\d{2})\b/.test(message);
+}
+
 function inferChatSpecialistMode(message: string, mode?: string): ChatSpecialistMode | undefined {
   if (mode && specialistModes.has(mode)) return mode as ChatSpecialistMode;
 
   const text = message.toLowerCase();
   if (/\b(knowledge os|knowledge system|local database|database status|how many chunks|how many sources|knowledge graph|graph centrality|private memory|local wiki)\b/.test(text)) return 'knowledge_os';
+  if (/\b(?:music industry|record industry|music business|music history|record label)\b/.test(text)) return 'pop_culture';
   if (/\b(video game|gaming|game lore|speedrun|speedrunning|modding|rom hack|emulation|save editor|esports|competitive mechanics|game platform|steam deck|nintendo|playstation|xbox)\b/.test(text)) return 'gaming';
   if (/\b(connect to fl|control fl|fl studio control|piano roll|channel rack|mixer track|send chord|send notes|step sequence|solo the drums|turn down track|transport)\b/.test(text)) return 'fl_studio_control';
   if (/\b(suno|fl studio|pro tools|logic pro|logic|daw|loop|beat|808|bpm|mix|mastering|muddy|chord|drum pattern|sample|soundtrack|neptunes|genre timeline|vocal chain|channel rack|piano roll)\b/.test(text)) return 'music';
