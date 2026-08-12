@@ -1792,6 +1792,9 @@
       "client/src/api/localRunApprovals.ts",
       "client/src/clipboard.ts"
     ],
+    "client/src/components/LocalToolsWorkspace.test.tsx": [
+      "client/src/components/LocalToolsWorkspace.tsx"
+    ],
     "client/src/components/LocalToolsWorkspace.tsx": [
       "client/src/api/runtime.ts",
       "client/src/components/DesktopCompanionPanel.tsx",
@@ -5279,5 +5282,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1040
+  "sourceRecordCount": 1041
 }
