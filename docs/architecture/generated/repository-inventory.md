@@ -611,7 +611,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `client/src/components/FLStudioControlPanel.tsx` | 622 |
 | `client/src/components/KnowledgeOSPanel.tsx` | 406 |
 | `client/src/components/ModeSelector.tsx` | 393 |
-| `client/src/components/SettingsMenu.tsx` | 567 |
+| `client/src/components/SettingsMenu.tsx` | 568 |
 | `client/src/components/SpriteLabPanel.tsx` | 378 |
 | `docs/extract_all_snippets.js` | 364 |
 | `scripts/import-books.ts` | 317 |

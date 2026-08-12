@@ -152,6 +152,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
   useEffect(() => {
     if (open) {
       restoreFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      setActiveSection('workspace');
       loadSettings();
       requestAnimationFrame(() => closeRef.current?.focus());
     }
