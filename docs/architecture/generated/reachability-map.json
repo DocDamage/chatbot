@@ -257,6 +257,7 @@
     "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
     "src/core/coding/retrieval/StructuralRetriever.ts",
     "src/core/coding/review/ReviewPipeline.ts",
+    "src/core/coding/security/ApprovedRepositoryGateway.ts",
     "src/core/coding/security/WorkspacePathPolicy.ts",
     "src/core/coding/types.ts",
     "src/core/coding/verification/CommandCapabilityRunner.ts",
@@ -859,6 +860,7 @@
     "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
     "src/core/coding/retrieval/StructuralRetriever.ts",
     "src/core/coding/review/ReviewPipeline.ts",
+    "src/core/coding/security/ApprovedRepositoryGateway.ts",
     "src/core/coding/security/WorkspacePathPolicy.ts",
     "src/core/coding/types.ts",
     "src/core/coding/verification/CommandCapabilityRunner.ts",
@@ -2087,7 +2089,9 @@
       "src/core/agents/CodeContextBudgeter.ts"
     ],
     "src/core/agents/CodeContextBudgeter.ts": [],
-    "src/core/agents/CodeIndexer.ts": [],
+    "src/core/agents/CodeIndexer.ts": [
+      "src/core/coding/security/ApprovedRepositoryGateway.ts"
+    ],
     "src/core/agents/CodePlanner.ts": [],
     "src/core/agents/CodeReviewer.ts": [
       "src/core/coding/review/ReviewPipeline.ts"
@@ -2917,13 +2921,15 @@
       "src/core/coding/index/SymbolIndex.ts"
     ],
     "src/core/coding/index/RelationshipStore.ts": [
-      "src/core/coding/index/ParserProvider.ts"
+      "src/core/coding/index/ParserProvider.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts"
     ],
     "src/core/coding/index/SymbolIndex.ts": [
       "src/core/coding/index/FallbackParserProvider.ts",
       "src/core/coding/index/ParserProvider.ts",
       "src/core/coding/index/TreeSitterParserProvider.ts",
-      "src/core/coding/index/TypeScriptParserProvider.ts"
+      "src/core/coding/index/TypeScriptParserProvider.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts"
     ],
     "src/core/coding/index/TreeSitterParserProvider.test.ts": [
       "src/core/coding/index/TreeSitterParserProvider.ts"
@@ -3005,6 +3011,13 @@
     ],
     "src/core/coding/review/ReviewPipeline.ts": [
       "src/core/coding/types.ts"
+    ],
+    "src/core/coding/security/ApprovedRepositoryGateway.test.ts": [
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
+      "src/core/tools/RepoTools.ts"
+    ],
+    "src/core/coding/security/ApprovedRepositoryGateway.ts": [
+      "src/core/coding/security/WorkspacePathPolicy.ts"
     ],
     "src/core/coding/security/WorkspacePathPolicy.test.ts": [
       "src/core/agents/CodingAgent.ts",
@@ -4587,7 +4600,7 @@
     ],
     "src/core/tools/RepoTools.ts": [
       "src/core/agents/CodeIndexer.ts",
-      "src/core/coding/security/WorkspacePathPolicy.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
       "src/core/tools/CommandRunner.ts",
       "src/types/tools.ts"
     ],
@@ -5282,5 +5295,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1041
+  "sourceRecordCount": 1043
 }
