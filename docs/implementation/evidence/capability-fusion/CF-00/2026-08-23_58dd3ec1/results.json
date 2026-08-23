@@ -1,0 +1,29 @@
+{
+  "taskId": "CF-00",
+  "commit": "58dd3ec1076928a973496c63daa72cba52e77db3",
+  "branch": "agent/p07-t05-capability-fusion-foundation",
+  "status": "VERIFIED",
+  "commands": [
+    {
+      "command": "GitHub Actions CI run 32668575991 / Required CI gate",
+      "exitCode": 0
+    }
+  ],
+  "automatedTestsPassed": true,
+  "runtimeQaRequired": true,
+  "runtimeQaPassed": true,
+  "knownLimitations": [
+    "CF-00 is a verified subtask only; P04-T05 and P07-T05 remain open release tasks.",
+    "Coding and filesystem capabilities remain LOCAL_ONLY_EXPERIMENTAL.",
+    "Windows junction containment is implemented and test-selected on Windows but was not executed by the Ubuntu CI matrix.",
+    "The broader File Explorer and legacy filesystem surfaces have not yet been migrated to this gateway.",
+    "No external capability beyond the foundation policy and repository gateway is production-supported."
+  ],
+  "evidenceGeneratedAt": "2026-08-23T21:55:00Z",
+  "verificationRun": 32668575991,
+  "pullRequest": 163,
+  "releaseTaskImpact": {
+    "P04-T05": "OPEN",
+    "P07-T05": "OPEN"
+  }
+}
