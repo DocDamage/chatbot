@@ -379,46 +379,6 @@ jobs:
       - name: Validate documentation
         run: npm run check:docs
 
-  refresh-capability-inventory:
-    name: Temporary exact capability inventory refresh
-    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'agent/p07-t05-capability-fusion-foundation' }}
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Checkout pull-request head branch
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Regenerate tracked repository inventory
-        run: node scripts/release/generate-repository-inventory.mjs
-      - name: Commit exact generated artifacts
-        shell: bash
-        run: |
-          set -euo pipefail
-          paths=(
-            docs/architecture/generated/repository-inventory.json
-            docs/architecture/generated/repository-inventory.md
-            docs/architecture/generated/reachability-map.json
-            docs/architecture/generated/reachability-map.md
-          )
-          git add -- "${paths[@]}"
-          if git diff --cached --quiet; then
-            echo "Generated inventory is already current."
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore(docs): refresh repository inventory [inventory generated]"
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
-
   release-evidence:
     name: Release evidence validation
     runs-on: ubuntu-latest
