@@ -6,9 +6,9 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1043 |
-| Production source files | 781 |
-| Reachable production files | 601 |
+| Source files | 1064 |
+| Production source files | 796 |
+| Reachable production files | 616 |
 | Unreachable production files | 180 |
 | Discovered route calls | 355 |
 | Environment variables | 193 |

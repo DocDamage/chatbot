@@ -237,6 +237,20 @@
     "src/core/chrono/SourceAuthorityRanker.ts",
     "src/core/chrono/TimeRangeParser.ts",
     "src/core/chrono/TimelineBuilder.ts",
+    "src/core/coding/architecture/ArchitectureDetectors.ts",
+    "src/core/coding/architecture/ArchitectureFeatureCollector.ts",
+    "src/core/coding/architecture/ArchitectureGraphCollector.ts",
+    "src/core/coding/architecture/ArchitectureIdentity.ts",
+    "src/core/coding/architecture/ArchitectureRelationshipCollector.ts",
+    "src/core/coding/architecture/ArchitectureRelationships.ts",
+    "src/core/coding/architecture/ArchitectureStructureCollector.ts",
+    "src/core/coding/architecture/ArchitectureTypes.ts",
+    "src/core/coding/architecture/RepositoryArchitectureBuilder.ts",
+    "src/core/coding/architecture/RepositoryArchitectureCache.ts",
+    "src/core/coding/architecture/RepositoryArchitectureQuery.ts",
+    "src/core/coding/architecture/RepositoryArchitectureSchema.ts",
+    "src/core/coding/architecture/RepositorySourceScanner.ts",
+    "src/core/coding/architecture/index.ts",
     "src/core/coding/authorization/CodingAuthorization.ts",
     "src/core/coding/editing/PatchConflictDetector.ts",
     "src/core/coding/editing/StructuredEditEngine.ts",
@@ -456,6 +470,7 @@
     "src/core/sprite-lab/SpriteExternalToolAdapter.ts",
     "src/core/sprite-lab/SpriteLabPlanService.ts",
     "src/core/suggestions/QuickReplies.ts",
+    "src/core/tools/ArchitectureRepoTools.ts",
     "src/core/tools/CodeExecutor.ts",
     "src/core/tools/CodingKnowledgeTool.ts",
     "src/core/tools/CommandRunner.ts",
@@ -840,6 +855,20 @@
     "src/core/chrono/SourceAuthorityRanker.ts",
     "src/core/chrono/TimeRangeParser.ts",
     "src/core/chrono/TimelineBuilder.ts",
+    "src/core/coding/architecture/ArchitectureDetectors.ts",
+    "src/core/coding/architecture/ArchitectureFeatureCollector.ts",
+    "src/core/coding/architecture/ArchitectureGraphCollector.ts",
+    "src/core/coding/architecture/ArchitectureIdentity.ts",
+    "src/core/coding/architecture/ArchitectureRelationshipCollector.ts",
+    "src/core/coding/architecture/ArchitectureRelationships.ts",
+    "src/core/coding/architecture/ArchitectureStructureCollector.ts",
+    "src/core/coding/architecture/ArchitectureTypes.ts",
+    "src/core/coding/architecture/RepositoryArchitectureBuilder.ts",
+    "src/core/coding/architecture/RepositoryArchitectureCache.ts",
+    "src/core/coding/architecture/RepositoryArchitectureQuery.ts",
+    "src/core/coding/architecture/RepositoryArchitectureSchema.ts",
+    "src/core/coding/architecture/RepositorySourceScanner.ts",
+    "src/core/coding/architecture/index.ts",
     "src/core/coding/authorization/CodingAuthorization.ts",
     "src/core/coding/editing/PatchConflictDetector.ts",
     "src/core/coding/editing/StructuredEditEngine.ts",
@@ -1059,6 +1088,7 @@
     "src/core/sprite-lab/SpriteExternalToolAdapter.ts",
     "src/core/sprite-lab/SpriteLabPlanService.ts",
     "src/core/suggestions/QuickReplies.ts",
+    "src/core/tools/ArchitectureRepoTools.ts",
     "src/core/tools/CodeExecutor.ts",
     "src/core/tools/CodingKnowledgeTool.ts",
     "src/core/tools/CommandRunner.ts",
@@ -1572,6 +1602,14 @@
     {
       "importer": "src/__tests__/coverage-gap.test.ts",
       "specifier": "../core/cache/MultiLevelCache"
+    },
+    {
+      "importer": "src/core/coding/architecture/__tests__/ArchitectureFixture.ts",
+      "specifier": "./routes"
+    },
+    {
+      "importer": "src/core/coding/architecture/__tests__/ArchitectureFixture.ts",
+      "specifier": "./service"
     },
     {
       "importer": "src/core/coding/index/RelationshipStore.test.ts",
@@ -2840,6 +2878,98 @@
     "src/core/coding/AdaptiveContextAllocator.test.ts": [
       "src/core/coding/retrieval/AdaptiveContextAllocator.ts"
     ],
+    "src/core/coding/architecture/__tests__/ArchitectureFixture.ts": [],
+    "src/core/coding/architecture/ArchitectureDetectors.ts": [
+      "src/core/coding/architecture/ArchitectureIdentity.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/repository/ManifestDetector.ts"
+    ],
+    "src/core/coding/architecture/ArchitectureFeatureCollector.ts": [
+      "src/core/coding/architecture/ArchitectureDetectors.ts",
+      "src/core/coding/architecture/ArchitectureGraphCollector.ts",
+      "src/core/coding/architecture/ArchitectureIdentity.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/repository/BuildSystemDetector.ts"
+    ],
+    "src/core/coding/architecture/ArchitectureGraphCollector.ts": [
+      "src/core/coding/architecture/ArchitectureIdentity.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts"
+    ],
+    "src/core/coding/architecture/ArchitectureIdentity.ts": [
+      "src/core/coding/architecture/ArchitectureTypes.ts"
+    ],
+    "src/core/coding/architecture/ArchitectureRelationshipCollector.ts": [
+      "src/core/coding/architecture/ArchitectureGraphCollector.ts",
+      "src/core/coding/architecture/ArchitectureIdentity.ts",
+      "src/core/coding/architecture/ArchitectureRelationships.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/index/ParserProvider.ts"
+    ],
+    "src/core/coding/architecture/ArchitectureRelationships.ts": [
+      "src/core/coding/architecture/ArchitectureDetectors.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/index/ParserProvider.ts"
+    ],
+    "src/core/coding/architecture/ArchitectureStructureCollector.ts": [
+      "src/core/coding/architecture/ArchitectureDetectors.ts",
+      "src/core/coding/architecture/ArchitectureGraphCollector.ts",
+      "src/core/coding/architecture/ArchitectureIdentity.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/index/ParserProvider.ts"
+    ],
+    "src/core/coding/architecture/ArchitectureTypes.ts": [
+      "src/core/coding/index/ParserProvider.ts"
+    ],
+    "src/core/coding/architecture/index.ts": [
+      "src/core/coding/architecture/ArchitectureIdentity.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/architecture/RepositoryArchitectureBuilder.ts",
+      "src/core/coding/architecture/RepositoryArchitectureCache.ts",
+      "src/core/coding/architecture/RepositoryArchitectureQuery.ts",
+      "src/core/coding/architecture/RepositoryArchitectureSchema.ts"
+    ],
+    "src/core/coding/architecture/RepositoryArchitectureBuilder.test.ts": [
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/architecture/RepositoryArchitectureBuilder.ts",
+      "src/core/coding/architecture/RepositoryArchitectureSchema.ts",
+      "src/core/coding/architecture/__tests__/ArchitectureFixture.ts"
+    ],
+    "src/core/coding/architecture/RepositoryArchitectureBuilder.ts": [
+      "src/core/coding/architecture/ArchitectureDetectors.ts",
+      "src/core/coding/architecture/ArchitectureFeatureCollector.ts",
+      "src/core/coding/architecture/ArchitectureGraphCollector.ts",
+      "src/core/coding/architecture/ArchitectureIdentity.ts",
+      "src/core/coding/architecture/ArchitectureRelationshipCollector.ts",
+      "src/core/coding/architecture/ArchitectureStructureCollector.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/architecture/RepositorySourceScanner.ts"
+    ],
+    "src/core/coding/architecture/RepositoryArchitectureCache.ts": [
+      "src/core/coding/architecture/ArchitectureIdentity.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/index/ParserProvider.ts"
+    ],
+    "src/core/coding/architecture/RepositoryArchitectureQuery.test.ts": [
+      "src/core/coding/architecture/RepositoryArchitectureBuilder.ts",
+      "src/core/coding/architecture/RepositoryArchitectureQuery.ts",
+      "src/core/coding/architecture/__tests__/ArchitectureFixture.ts"
+    ],
+    "src/core/coding/architecture/RepositoryArchitectureQuery.ts": [
+      "src/core/coding/architecture/ArchitectureTypes.ts"
+    ],
+    "src/core/coding/architecture/RepositoryArchitectureSchema.ts": [
+      "src/core/coding/architecture/ArchitectureIdentity.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts"
+    ],
+    "src/core/coding/architecture/RepositorySourceScanner.ts": [
+      "src/core/coding/architecture/ArchitectureDetectors.ts",
+      "src/core/coding/architecture/ArchitectureIdentity.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/architecture/RepositoryArchitectureCache.ts",
+      "src/core/coding/index/SymbolIndex.ts",
+      "src/core/coding/languages/LanguageCapabilityRegistry.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts"
+    ],
     "src/core/coding/authorization/CodingAuthorization.test.ts": [
       "src/core/coding/authorization/CodingAuthorization.ts"
     ],
@@ -2923,6 +3053,10 @@
     "src/core/coding/index/RelationshipStore.ts": [
       "src/core/coding/index/ParserProvider.ts",
       "src/core/coding/security/ApprovedRepositoryGateway.ts"
+    ],
+    "src/core/coding/index/SymbolIndex.architecture.test.ts": [
+      "src/core/coding/index/ParserProvider.ts",
+      "src/core/coding/index/SymbolIndex.ts"
     ],
     "src/core/coding/index/SymbolIndex.ts": [
       "src/core/coding/index/FallbackParserProvider.ts",
@@ -3011,6 +3145,9 @@
     ],
     "src/core/coding/review/ReviewPipeline.ts": [
       "src/core/coding/types.ts"
+    ],
+    "src/core/coding/security/ApprovedRepositoryGateway.architecture.test.ts": [
+      "src/core/coding/security/ApprovedRepositoryGateway.ts"
     ],
     "src/core/coding/security/ApprovedRepositoryGateway.test.ts": [
       "src/core/coding/security/ApprovedRepositoryGateway.ts",
@@ -4360,6 +4497,15 @@
       "src/core/observability/logger.ts",
       "src/core/providers/LLMAdapter.ts"
     ],
+    "src/core/tools/ArchitectureRepoTools.test.ts": [
+      "src/core/coding/architecture/__tests__/ArchitectureFixture.ts",
+      "src/core/tools/ArchitectureRepoTools.ts"
+    ],
+    "src/core/tools/ArchitectureRepoTools.ts": [
+      "src/core/coding/architecture/index.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
+      "src/types/tools.ts"
+    ],
     "src/core/tools/audio/AudioAnalyzerTool.ts": [],
     "src/core/tools/audio/DynamicRangeTool.ts": [],
     "src/core/tools/audio/LoudnessMeterTool.ts": [],
@@ -4601,6 +4747,7 @@
     "src/core/tools/RepoTools.ts": [
       "src/core/agents/CodeIndexer.ts",
       "src/core/coding/security/ApprovedRepositoryGateway.ts",
+      "src/core/tools/ArchitectureRepoTools.ts",
       "src/core/tools/CommandRunner.ts",
       "src/types/tools.ts"
     ],
@@ -5295,5 +5442,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1043
+  "sourceRecordCount": 1064
 }
