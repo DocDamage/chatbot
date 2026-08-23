@@ -229,7 +229,7 @@ export class ApprovedRepositoryGateway {
     const relationship = path.relative(root, candidate);
     if (relationship === '') return;
     if (path.isAbsolute(relationship) || relationship === '..' || relationship.startsWith(`..${path.sep}`)) {
-      throw new RepositoryAccessError(code, 'Path resolves outside the approved repository root.');
+      throw new RepositoryAccessError(code, 'Path resolves outside the workspace approved repository root.');
     }
   }
 
