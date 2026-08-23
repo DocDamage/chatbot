@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import { ApprovedRepositoryGateway, RepositoryAccessError } from '../coding/security/ApprovedRepositoryGateway';
 
 export interface CodeSymbol {
   kind: 'class' | 'function' | 'method' | 'interface' | 'type' | 'import' | 'export' | 'route' | 'test';
@@ -10,15 +9,22 @@ export interface CodeSymbol {
 }
 
 export class CodeIndexer {
-  constructor(private readonly workspaceRoot: string = process.cwd()) {}
+  private readonly repository: ApprovedRepositoryGateway;
+
+  constructor(workspaceRoot: string = process.cwd(), repository?: ApprovedRepositoryGateway) {
+    this.repository = repository || new ApprovedRepositoryGateway(workspaceRoot, {
+      maxReadBytes: 2 * 1024 * 1024
+    });
+  }
 
   getFileSymbols(filePath: string): CodeSymbol[] {
-    const absolute = this.resolveInsideWorkspace(filePath);
-    const content = fs.readFileSync(absolute, 'utf8');
-    const relative = path.relative(this.workspaceRoot, absolute).replace(/\\/g, '/');
+    const source = this.repository.readTextFile(filePath, 2 * 1024 * 1024);
+    if (source.truncated) {
+      throw new RepositoryAccessError('LIMIT_EXCEEDED', `Source file exceeds the indexing limit: ${filePath}`);
+    }
     const symbols: CodeSymbol[] = [];
 
-    content.split(/\r?\n/).forEach((line, index) => {
+    source.content.split(/\r?\n/).forEach((line, index) => {
       const lineNumber = index + 1;
       const checks: Array<[CodeSymbol['kind'], RegExp]> = [
         ['class', /\b(?:export\s+)?class\s+([A-Za-z0-9_]+)/],
@@ -38,7 +44,7 @@ export class CodeIndexer {
           symbols.push({
             kind,
             name: match[2] || match[1],
-            file: relative,
+            file: source.path,
             signature: line.trim(),
             line: lineNumber
           });
@@ -47,14 +53,5 @@ export class CodeIndexer {
     });
 
     return symbols;
-  }
-
-  private resolveInsideWorkspace(filePath: string): string {
-    const absolute = path.resolve(this.workspaceRoot, filePath);
-    const relative = path.relative(this.workspaceRoot, absolute);
-    if (relative.startsWith('..') || path.isAbsolute(relative)) {
-      throw new Error(`Path is outside the workspace: ${filePath}`);
-    }
-    return absolute;
   }
 }
