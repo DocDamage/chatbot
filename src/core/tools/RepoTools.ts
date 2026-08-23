@@ -1,50 +1,37 @@
 import { spawn } from 'child_process';
-import * as fs from 'fs';
-import * as path from 'path';
 import { Tool, ToolCategory, ToolResult } from '../../types/tools';
 import { CodeIndexer } from '../agents/CodeIndexer';
+import { ApprovedRepositoryGateway, RepositoryAccessError } from '../coding/security/ApprovedRepositoryGateway';
 import { CommandRunner } from './CommandRunner';
-import { isSensitiveWorkspacePath } from '../coding/security/WorkspacePathPolicy';
 
-const IGNORED_DIRS = new Set(['node_modules', '.git', 'dist', 'coverage', '.next', 'build']);
+export function createRepoTools(
+  workspaceRoot: string = process.cwd(),
+  commandRunner = new CommandRunner(workspaceRoot),
+  repository = new ApprovedRepositoryGateway(workspaceRoot)
+): Tool[] {
+  const indexer = new CodeIndexer(workspaceRoot, repository);
 
-export function createRepoTools(workspaceRoot: string = process.cwd(), commandRunner = new CommandRunner(workspaceRoot)): Tool[] {
-  const indexer = new CodeIndexer(workspaceRoot);
+  const repositoryError = (error: unknown): string => {
+    if (error instanceof RepositoryAccessError) return `${error.code}: ${error.message}`;
+    if (error instanceof Error) return error.message;
+    return 'Repository operation failed.';
+  };
 
-  const safePath = (inputPath: string): string => {
-    const absolute = path.resolve(workspaceRoot, inputPath);
-    const relative = path.relative(workspaceRoot, absolute);
-    if (relative.startsWith('..') || path.isAbsolute(relative)) {
-      throw new Error(`Path is outside the workspace: ${inputPath}`);
+  const guarded = async (action: () => ToolResult | Promise<ToolResult>): Promise<ToolResult> => {
+    try {
+      return await action();
+    } catch (error) {
+      return { success: false, error: repositoryError(error) };
     }
-    return absolute;
   };
 
-  const listFiles = (dir = '.', maxFiles = 200): string[] => {
-    const start = safePath(dir);
-    const results: string[] = [];
-    const walk = (current: string) => {
-      if (results.length >= maxFiles) return;
-      for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
-        if (results.length >= maxFiles || IGNORED_DIRS.has(entry.name)) continue;
-        const absolute = path.join(current, entry.name);
-        const relative = path.relative(workspaceRoot, absolute).replace(/\\/g, '/');
-        if (isSensitiveWorkspacePath(relative)) continue;
-        if (entry.isDirectory()) {
-          walk(absolute);
-        } else {
-          results.push(relative);
-        }
-      }
-    };
-    walk(start);
-    return results;
+  const optionalNumber = (value: unknown): number | undefined => {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
   };
-
-  const isTextFile = (file: string): boolean => /\.(ts|tsx|js|jsx|json|md|txt|css|html|yaml|yml|sql)$/i.test(file);
 
   const runGitDiff = async (): Promise<string> => new Promise(resolve => {
-    const child = spawn('git', ['diff', '--', '.'], { cwd: workspaceRoot, shell: false, windowsHide: true });
+    const child = spawn('git', ['diff', '--', '.'], { cwd: repository.approvedRoot, shell: false, windowsHide: true });
     let stdout = '';
     child.stdout?.on('data', chunk => { stdout += chunk.toString(); });
     child.on('close', () => resolve(stdout));
@@ -60,84 +47,85 @@ export function createRepoTools(workspaceRoot: string = process.cwd(), commandRu
   ): Tool => ({ id, name, description, category: ToolCategory.CODING, parameters, execute });
 
   return [
-    tool('list_project_files', 'listProjectFiles', 'List source files in the current repository.', [
-      { name: 'dir', type: 'string', description: 'Directory to list from', required: false },
+    tool('list_project_files', 'listProjectFiles', 'List source files inside the approved repository.', [
+      { name: 'dir', type: 'string', description: 'Repository-relative directory', required: false },
       { name: 'maxFiles', type: 'number', description: 'Maximum files to return', required: false }
-    ], async params => ({ success: true, data: { files: listFiles(params.dir || '.', params.maxFiles || 200) } })),
+    ], async params => guarded(() => {
+      const files = repository.listFiles(String(params.dir || '.'), optionalNumber(params.maxFiles) || 200);
+      return { success: true, data: { files } };
+    })),
 
-    tool('search_repo', 'searchRepo', 'Search repository files for literal text.', [
+    tool('search_repo', 'searchRepo', 'Search approved repository text files for literal text.', [
       { name: 'query', type: 'string', description: 'Text to search for', required: true },
       { name: 'maxResults', type: 'number', description: 'Maximum matches', required: false }
-    ], async params => {
-      const query = String(params.query || '').toLowerCase();
-      const matches: Array<{ path: string; line: number; text: string }> = [];
-      for (const file of listFiles('.', 1000).filter(isTextFile)) {
-        if (matches.length >= (params.maxResults || 50)) break;
-        const absolute = safePath(file);
-        const text = fs.readFileSync(absolute, 'utf8');
-        text.split(/\r?\n/).forEach((line, index) => {
-          if (matches.length < (params.maxResults || 50) && line.toLowerCase().includes(query)) {
-            matches.push({ path: file, line: index + 1, text: line.trim() });
-          }
-        });
-      }
-      return { success: true, data: { matches } };
-    }),
+    ], async params => guarded(() => {
+      const result = repository.searchText(String(params.query || ''), {
+        maxResults: optionalNumber(params.maxResults),
+        maxFiles: 1000
+      });
+      return { success: true, data: result };
+    })),
 
-    tool('read_project_file', 'readProjectFile', 'Read a source file from the current repository by path.', [
-      { name: 'path', type: 'string', description: 'Workspace-relative file path', required: true },
+    tool('read_project_file', 'readProjectFile', 'Read a bounded text file from the approved repository.', [
+      { name: 'path', type: 'string', description: 'Repository-relative file path', required: true },
       { name: 'maxBytes', type: 'number', description: 'Maximum bytes to return', required: false }
-    ], async params => {
-      if (isSensitiveWorkspacePath(String(params.path || ''))) return { success: false, error: 'Sensitive credential paths are not available to coding tools.' };
-      const absolute = safePath(params.path);
-      const content = fs.readFileSync(absolute, 'utf8').slice(0, params.maxBytes || 60000);
-      return { success: true, data: { path: params.path, content } };
-    }),
+    ], async params => guarded(() => ({
+      success: true,
+      data: repository.readTextFile(String(params.path || ''), optionalNumber(params.maxBytes))
+    }))),
 
-    tool('get_package_scripts', 'getPackageScripts', 'Read package.json scripts from the repo.', [], async () => {
-      const packageJson = JSON.parse(fs.readFileSync(safePath('package.json'), 'utf8'));
+    tool('get_package_scripts', 'getPackageScripts', 'Read package.json scripts from the approved repository.', [], async () => guarded(() => {
+      const packageJson = JSON.parse(repository.readTextFile('package.json').content);
       return { success: true, data: { scripts: packageJson.scripts || {} } };
-    }),
+    })),
 
     tool('git_diff', 'gitDiff', 'Return the current git diff without modifying files.', [], async () => ({
       success: true,
       data: { diff: await runGitDiff() }
     })),
 
-    tool('get_file_symbols', 'getFileSymbols', 'Return AST-like symbols found in a source file.', [
-      { name: 'path', type: 'string', description: 'Workspace-relative source file path', required: true }
-    ], async params => ({ success: true, data: { symbols: indexer.getFileSymbols(params.path) } })),
+    tool('get_file_symbols', 'getFileSymbols', 'Return AST-like symbols found in an approved source file.', [
+      { name: 'path', type: 'string', description: 'Repository-relative source file path', required: true }
+    ], async params => guarded(() => ({
+      success: true,
+      data: { symbols: indexer.getFileSymbols(String(params.path || '')) }
+    }))),
 
-    tool('find_references', 'findReferences', 'Find literal references to a symbol in the repo.', [
+    tool('find_references', 'findReferences', 'Find literal references to a symbol in approved repository text files.', [
       { name: 'symbol', type: 'string', description: 'Symbol name', required: true }
-    ], async params => {
-      const query = String(params.symbol || '').toLowerCase();
-      const matches: Array<{ path: string; line: number; text: string }> = [];
-      for (const file of listFiles('.', 1000).filter(isTextFile)) {
-        const text = fs.readFileSync(safePath(file), 'utf8');
-        text.split(/\r?\n/).forEach((line, index) => {
-          if (line.toLowerCase().includes(query)) {
-            matches.push({ path: file, line: index + 1, text: line.trim() });
-          }
-        });
-      }
-      return { success: true, data: { references: matches.slice(0, 100) } };
-    }),
+    ], async params => guarded(() => {
+      const result = repository.searchText(String(params.symbol || ''), { maxResults: 100, maxFiles: 1000 });
+      return {
+        success: true,
+        data: {
+          references: result.matches,
+          scannedFiles: result.scannedFiles,
+          skippedFiles: result.skippedFiles,
+          truncated: result.truncated
+        }
+      };
+    })),
 
-    tool('get_import_graph', 'getImportGraph', 'Return import relationships for repository source files.', [
-      { name: 'path', type: 'string', description: 'Optional workspace-relative file path', required: false }
-    ], async params => {
-      const files = params.path ? [String(params.path)] : listFiles('src', 500).filter(file => /\.(ts|tsx|js|jsx)$/i.test(file));
-      const graph = files.map(file => ({
-        file,
-        imports: fs.readFileSync(safePath(file), 'utf8')
-          .split(/\r?\n/)
-          .map(line => line.match(/^\s*import\s+.*from\s+['"]([^'"]+)['"]/))
-          .filter((match): match is RegExpMatchArray => !!match)
-          .map(match => match[1])
-      }));
+    tool('get_import_graph', 'getImportGraph', 'Return import relationships for approved JavaScript and TypeScript files.', [
+      { name: 'path', type: 'string', description: 'Optional repository-relative file path', required: false }
+    ], async params => guarded(() => {
+      const files = params.path
+        ? [repository.readTextFile(String(params.path)).path]
+        : repository.listFiles('.', 1000).filter(file => /\.(ts|tsx|js|jsx|mjs|cjs)$/i.test(file));
+      const graph = files.map(file => {
+        const source = repository.readTextFile(file);
+        return {
+          file,
+          truncated: source.truncated,
+          imports: source.content
+            .split(/\r?\n/)
+            .map(line => line.match(/^\s*import\s+.*from\s+['"]([^'"]+)['"]/))
+            .filter((match): match is RegExpMatchArray => Boolean(match))
+            .map(match => match[1])
+        };
+      });
       return { success: true, data: { graph } };
-    }),
+    })),
 
     tool('run_command', 'runCommand', 'Run an allowlisted repository command.', [
       { name: 'command', type: 'string', description: 'Allowlisted command to run', required: true }

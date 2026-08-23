@@ -20,6 +20,7 @@ Each ADR identifies status, date, decision owners, context, decision, alternativ
 | [ADR-0008](ADR-0008-production-hosting-target.md) | Managed Linux OCI container platform with managed data services | Accepted |
 | [ADR-0009](ADR-0009-experimental-module-support-policy.md) | Manifest categories control registration and support promotion | Accepted |
 | [ADR-0010](ADR-0010-telemetry-and-privacy-policy.md) | Data-minimized operational telemetry; no content analytics by default | Accepted |
+| [ADR-0011](ADR-0011-external-capability-integration-boundaries.md) | Integrate external capabilities through licensed, bounded native modules or isolated adapters | Accepted |
 
 ## Governance
 

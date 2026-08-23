@@ -1,5 +1,5 @@
-import * as fs from 'fs';
 import * as path from 'path';
+import { ApprovedRepositoryGateway } from '../security/ApprovedRepositoryGateway';
 import { IndexedSymbol } from './ParserProvider';
 
 export type RelationshipKind = 'imports' | 'references' | 'implements' | 'tests' | 'callers' | 'depends_on';
@@ -7,7 +7,13 @@ export interface CodeRelationship { from: string; to: string; kind: Relationship
 
 export class RelationshipStore {
   private readonly relationships: CodeRelationship[] = [];
-  constructor(private readonly workspaceRoot: string) {}
+  private readonly repository: ApprovedRepositoryGateway;
+
+  constructor(workspaceRoot: string, repository?: ApprovedRepositoryGateway) {
+    this.repository = repository || new ApprovedRepositoryGateway(workspaceRoot, {
+      maxReadBytes: 2 * 1024 * 1024
+    });
+  }
 
   build(files: string[], symbols: IndexedSymbol[]): void {
     this.relationships.length = 0;
@@ -26,9 +32,16 @@ export class RelationshipStore {
       relationshipKeys.add(key);
       this.relationships.push(relationship);
     };
+
     for (const file of files) {
       let content: string;
-      try { content = fs.readFileSync(path.resolve(this.workspaceRoot, file), 'utf8'); } catch { continue; }
+      try {
+        const source = this.repository.readTextFile(file, 2 * 1024 * 1024);
+        if (source.truncated) continue;
+        content = source.content;
+      } catch {
+        continue;
+      }
       content.split(/\r?\n/).forEach((line, index) => {
         const imported = line.match(/(?:import\s+.*?\s+from\s+|from\s+|#include\s*[<"]|require\s*\(\s*|using\s+|use\s+)[<("']?([^)>'"\s;]+)/i)?.[1];
         if (imported) {
@@ -45,32 +58,72 @@ export class RelationshipStore {
           const calling = new RegExp(`\\b${this.escapeRegExp(identifier)}\\s*\\(`).test(line);
           for (const definition of matches) {
             if (definition.file === file) continue;
-            add({ from: file, to: definition.file, kind: calling ? 'callers' : 'references', confidence: Math.min(0.9, definition.confidence), line: index + 1 });
+            add({
+              from: file,
+              to: definition.file,
+              kind: calling ? 'callers' : 'references',
+              confidence: Math.min(0.9, definition.confidence),
+              line: index + 1
+            });
           }
         }
         const implementation = line.match(/(?:\b(?:implements|extends)\s+|\bclass\s+\w+\s*\(\s*|:\s*)([A-Za-z_$][\w$]*)/i)?.[1];
         if (implementation) {
-          const target = (definitionsByName.get(implementation) || []).find(definition => definition.file !== file);
-          if (target) add({ from: file, to: target.file, kind: 'implements', confidence: 0.82, line: index + 1 });
+          const target = (definitionsByName.get(implementation) || [])
+            .find(definition => definition.file !== file);
+          if (target) add({
+            from: file,
+            to: target.file,
+            kind: 'implements',
+            confidence: 0.82,
+            line: index + 1
+          });
         }
       });
     }
+
     for (const symbol of symbols.filter(candidate => candidate.kind === 'test')) {
       const target = definitions.find(definition => symbol.name.toLowerCase().includes(definition.name.toLowerCase()));
-      if (target) add({ from: symbol.file, to: target.file, kind: 'tests', confidence: Math.min(0.85, symbol.confidence), line: symbol.line });
+      if (target) add({
+        from: symbol.file,
+        to: target.file,
+        kind: 'tests',
+        confidence: Math.min(0.85, symbol.confidence),
+        line: symbol.line
+      });
     }
   }
 
-  query(kind: RelationshipKind, target?: string): CodeRelationship[] { return this.relationships.filter(relationship => relationship.kind === kind && (!target || relationship.from === target || relationship.to === target)); }
-  all(): CodeRelationship[] { return [...this.relationships]; }
+  query(kind: RelationshipKind, target?: string): CodeRelationship[] {
+    return this.relationships.filter(relationship => relationship.kind === kind
+      && (!target || relationship.from === target || relationship.to === target));
+  }
+
+  all(): CodeRelationship[] {
+    return [...this.relationships];
+  }
 
   private resolveImport(from: string, imported: string, knownFiles: Set<string>): string | undefined {
     if (!imported.startsWith('.') && !imported.startsWith('/')) return undefined;
-    const importPath = imported.startsWith('.') && !imported.startsWith('./') && !imported.startsWith('../') ? `./${imported.slice(1)}` : imported;
-    const base = path.posix.normalize(path.posix.join(path.posix.dirname(from.replace(/\\/g, '/')), importPath.replace(/\\/g, '/'))).replace(/^\.\//, '');
-    const candidates = [base, ...['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.py', '.go', '.rs', '.java', '.kt', '.swift', '.c', '.h', '.cpp', '.hpp'].map(extension => `${base}${extension}`), `${base}/index.ts`, `${base}/index.js`, `${base}/__init__.py`];
+    const importPath = imported.startsWith('.') && !imported.startsWith('./') && !imported.startsWith('../')
+      ? `./${imported.slice(1)}`
+      : imported;
+    const base = path.posix.normalize(path.posix.join(
+      path.posix.dirname(from.replace(/\\/g, '/')),
+      importPath.replace(/\\/g, '/')
+    )).replace(/^\.\//, '');
+    const candidates = [
+      base,
+      ...['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.py', '.go', '.rs', '.java', '.kt', '.swift', '.c', '.h', '.cpp', '.hpp']
+        .map(extension => `${base}${extension}`),
+      `${base}/index.ts`,
+      `${base}/index.js`,
+      `${base}/__init__.py`
+    ];
     return candidates.find(candidate => knownFiles.has(candidate));
   }
 
-  private escapeRegExp(value: string): string { return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+  private escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
 }

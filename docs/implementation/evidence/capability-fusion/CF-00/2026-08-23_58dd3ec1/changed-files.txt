@@ -1,0 +1,13 @@
+docs/architecture/generated/reachability-map.json
+docs/architecture/generated/reachability-map.md
+docs/architecture/generated/repository-inventory.json
+docs/architecture/generated/repository-inventory.md
+docs/implementation/CAPABILITY_FUSION_ROADMAP.md
+docs/implementation/decisions/ADR-0011-external-capability-integration-boundaries.md
+docs/implementation/decisions/README.md
+src/core/agents/CodeIndexer.ts
+src/core/coding/index/RelationshipStore.ts
+src/core/coding/index/SymbolIndex.ts
+src/core/coding/security/ApprovedRepositoryGateway.test.ts
+src/core/coding/security/ApprovedRepositoryGateway.ts
+src/core/tools/RepoTools.ts
