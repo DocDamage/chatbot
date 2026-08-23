@@ -19,6 +19,12 @@ export interface RepositoryReadResult {
   truncated: boolean;
 }
 
+export interface RepositoryPathMetadata {
+  path: string;
+  size: number;
+  kind: 'file' | 'directory';
+}
+
 export interface RepositorySearchMatch {
   path: string;
   line: number;
@@ -85,6 +91,16 @@ export class ApprovedRepositoryGateway {
 
   get approvedRoot(): string {
     return this.realRoot;
+  }
+
+  describePath(inputPath: string, expectedKind: RepositoryPathKind = 'any'): RepositoryPathMetadata {
+    const absolute = this.resolveExisting(inputPath, expectedKind);
+    const stats = fs.statSync(absolute);
+    return {
+      path: this.relative(absolute),
+      size: stats.size,
+      kind: stats.isDirectory() ? 'directory' : 'file'
+    };
   }
 
   listFiles(directory = '.', requestedMaxFiles = 200): string[] {

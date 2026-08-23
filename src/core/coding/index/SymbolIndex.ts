@@ -4,6 +4,11 @@ import { IndexedSymbol, ParserProvider } from './ParserProvider';
 import { TreeSitterParserProvider } from './TreeSitterParserProvider';
 import { TypeScriptParserProvider } from './TypeScriptParserProvider';
 
+export interface SymbolIndexReport {
+  parser: string;
+  symbols: IndexedSymbol[];
+}
+
 export class SymbolIndex {
   private readonly providers: ParserProvider[];
   private readonly symbols = new Map<string, IndexedSymbol[]>();
@@ -25,15 +30,32 @@ export class SymbolIndex {
     });
   }
 
+  get parserVersion(): string {
+    return this.providers.map(provider => provider.id).join('|');
+  }
+
+  indexContentWithReport(file: string, content: string): SymbolIndexReport {
+    const normalized = file.replace(/\\/g, '/').replace(/^\.\//, '');
+    for (const provider of this.providers) {
+      if (!provider.supports(normalized)) continue;
+      try {
+        const symbols = provider.parse(normalized, content);
+        this.symbols.set(normalized, symbols);
+        return { parser: symbols[0]?.parser || provider.id, symbols };
+      } catch {
+        // Try the next maintained or fallback parser without executing repository code.
+      }
+    }
+    this.symbols.set(normalized, []);
+    return { parser: 'unparsed', symbols: [] };
+  }
+
   indexFile(file: string): IndexedSymbol[] {
     const source = this.repository.readTextFile(file, 2 * 1024 * 1024);
     if (source.truncated) {
       throw new RepositoryAccessError('LIMIT_EXCEEDED', `Source file exceeds the indexing limit: ${file}`);
     }
-    const provider = this.providers.find(candidate => candidate.supports(source.path));
-    const result = provider ? provider.parse(source.path, source.content) : [];
-    this.symbols.set(source.path, result);
-    return result;
+    return this.indexContentWithReport(source.path, source.content).symbols;
   }
 
   indexFiles(files: string[]): void {

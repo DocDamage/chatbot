@@ -2,6 +2,7 @@ import { spawn } from 'child_process';
 import { Tool, ToolCategory, ToolResult } from '../../types/tools';
 import { CodeIndexer } from '../agents/CodeIndexer';
 import { ApprovedRepositoryGateway, RepositoryAccessError } from '../coding/security/ApprovedRepositoryGateway';
+import { createArchitectureRepoTools } from './ArchitectureRepoTools';
 import { CommandRunner } from './CommandRunner';
 
 export function createRepoTools(
@@ -47,6 +48,7 @@ export function createRepoTools(
   ): Tool => ({ id, name, description, category: ToolCategory.CODING, parameters, execute });
 
   return [
+    ...createArchitectureRepoTools(workspaceRoot, repository),
     tool('list_project_files', 'listProjectFiles', 'List source files inside the approved repository.', [
       { name: 'dir', type: 'string', description: 'Repository-relative directory', required: false },
       { name: 'maxFiles', type: 'number', description: 'Maximum files to return', required: false }
