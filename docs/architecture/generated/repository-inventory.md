@@ -6,10 +6,10 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1074 |
-| Production source files | 799 |
+| Source files | 1081 |
+| Production source files | 803 |
 | Reachable production files | 618 |
-| Unreachable production files | 181 |
+| Unreachable production files | 185 |
 | Discovered route calls | 355 |
 | Environment variables | 193 |
 | Feature flags | 18 |
@@ -672,3 +672,4 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/server/routes/admin.ts` | 317 |
 | `src/server/routes/legacy-chat.ts` | 367 |
 | `src/server/routes/setup.ts` | 437 |
+
