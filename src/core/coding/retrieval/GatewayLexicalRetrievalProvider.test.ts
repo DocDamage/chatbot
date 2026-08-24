@@ -85,7 +85,7 @@ describe('GatewayLexicalRetrievalProvider', () => {
     const provider = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(root), { maxPostings: 1 });
     const generation = await provider.build({ repositoryVersion: 'fixture-v1' });
     expect(generation.documentCount).toBeGreaterThan(0);
-    expect((await provider.search({ query: 'repository' })).results).toHaveLength(1);
+    expect((await provider.search({ query: 'export' })).results).toHaveLength(1);
   });
 
 });
