@@ -32,3 +32,18 @@ Run #358 passed the entire Required CI matrix, including full coverage with the 
 - Capability remains local-only experimental.
 - Branch-protection configuration could not be changed through the available GitHub connector and must be verified by a repository administrator.
 - PR #168 must remain open for review until the user explicitly merges it.
+
+
+## Next authorized task after merge
+
+Milestone A is complete pending review and explicit merge of PR #168. Do not begin a new capability-fusion milestone until this PR is reviewed, merged, and main has been post-merge verified.
+
+## NEW THREAD START PROMPT
+
+```text
+Review the merged Capability Fusion Milestone A evidence and decide the next authorized milestone. Do not reopen or expand Milestone A without new evidence.
+```
+
+## Thread closure
+
+Milestone A delivery is closed for implementation. PR #168 remains open for user review and must not be merged automatically.
