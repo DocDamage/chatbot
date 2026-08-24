@@ -55,7 +55,7 @@ export interface LexicalBuildInput {
   signal?: AbortSignal;
 }
 
-export interface LexicalUpdateInput extends LexicalBuildInput {}
+export type LexicalUpdateInput = LexicalBuildInput;
 
 export interface LexicalRetrievalProvider {
   build(input: LexicalBuildInput): Promise<LexicalIndexGeneration>;
