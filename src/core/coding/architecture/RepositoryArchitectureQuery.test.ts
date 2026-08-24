@@ -75,4 +75,68 @@ describe('RepositoryArchitectureQuery', () => {
       fixture.cleanup();
     }
   });
+
+  it('uses safe query defaults and bounds tests added after dependency traversal', () => {
+    const fixture = createArchitectureFixture();
+    try {
+      const snapshot = new RepositoryArchitectureBuilder(fixture.root).build();
+      const serviceFile = snapshot.nodes.find(node =>
+        node.kind === 'file' && node.path === 'src/service.ts'
+      )!;
+      const isolatedTest = {
+        ...serviceFile,
+        id: 'isolated-test-node',
+        kind: 'test' as const,
+        label: 'isolated coverage test',
+        path: 'isolated.coverage.test.ts'
+      };
+      const orphanTest = {
+        ...isolatedTest,
+        id: 'orphan-test-node',
+        label: 'orphan coverage test',
+        path: 'orphan.coverage.test.ts'
+      };
+      const edgeTemplate = snapshot.edges[0];
+      snapshot.nodes.push(isolatedTest, orphanTest);
+      snapshot.edges.push(
+        {
+          ...edgeTemplate,
+          id: 'incoming-non-containment-edge',
+          kind: 'references',
+          source: serviceFile.id,
+          target: isolatedTest.id
+        },
+        {
+          ...edgeTemplate,
+          id: 'isolated-reference-edge',
+          kind: 'references',
+          source: isolatedTest.id,
+          target: serviceFile.id
+        },
+        {
+          ...edgeTemplate,
+          id: 'isolated-test-edge',
+          kind: 'tests',
+          source: isolatedTest.id,
+          target: serviceFile.id
+        }
+      );
+
+      const query = new RepositoryArchitectureQuery(snapshot);
+      expect(query.find('isolated').nodeIds).toContain(isolatedTest.id);
+      expect(query.neighborhood(serviceFile.id).nodeIds).toContain(serviceFile.id);
+      expect(query.reverseDependencies(serviceFile.id).nodeIds).toContain(serviceFile.id);
+      expect(query.testImpact(serviceFile.id).nodeIds).toContain(isolatedTest.id);
+      expect(query.entrypointReachability(serviceFile.id).nodeIds).toContain(serviceFile.id);
+      expect(query.find('repository').nodeIds.length).toBeGreaterThan(0);
+
+      const bounded = query.testImpact(serviceFile.id, { maxDepth: 0, maxNodes: 1 });
+      expect(bounded).toEqual(expect.objectContaining({
+        truncated: true,
+        warnings: [expect.objectContaining({ code: 'TRAVERSAL_LIMIT_REACHED' })]
+      }));
+    } finally {
+      fixture.cleanup();
+    }
+  });
 });
