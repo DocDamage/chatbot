@@ -13,13 +13,13 @@ describe('HybridRepositoryRetriever', () => {
       const provider = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(root));
       await provider.build({ repositoryVersion: 'fixture-v1' });
       const retriever = new HybridRepositoryRetriever(provider);
-      const first = await retriever.search({ query: 'resolve scoped symbol', repositoryVersion: 'fixture-v1', symbols: ['resolveScopedSymbol'] });
+      const first = await retriever.search({ query: 'resolve scoped symbol', repositoryVersion: 'fixture-v1', symbols: ['resolveScopedSymbol'], diagnostics: ['src.ts'] });
       const second = await retriever.search({ query: 'resolve scoped symbol', repositoryVersion: 'fixture-v1', symbols: ['resolveScopedSymbol'] });
 
       expect(first).toEqual(second);
       expect(first.results[0]).toEqual(expect.objectContaining({
         path: 'src.ts',
-        scores: expect.objectContaining({ bm25: expect.any(Number), symbol: 1, final: expect.any(Number) }),
+        scores: expect.objectContaining({ bm25: expect.any(Number), symbol: 1, diagnostic: 0.5, final: expect.any(Number) }),
         reasons: expect.arrayContaining(['BM25 lexical match', 'Exact symbol match'])
       }));
       expect(first.warnings).toEqual(expect.arrayContaining([
