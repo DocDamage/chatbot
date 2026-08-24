@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import { FunctionCaller } from '../tools/FunctionCaller';
 import { ToolCall } from '../../types/tools';
 import { ToolRegistry } from '../tools/ToolRegistry';
@@ -23,7 +21,6 @@ import { WorkspaceWriteGate } from '../coding/editing/WorkspaceWriteGate';
 import { WorkMode } from '../modes/ExecutionModePolicy';
 import { LLMAdapter } from '../providers/LLMAdapter';
 import { RepairRun } from '../coding/verification/RepairController';
-import { isSensitiveWorkspacePath } from '../coding/security/WorkspacePathPolicy';
 import { ApprovedRepositoryGateway } from '../coding/security/ApprovedRepositoryGateway';
 import { GatewayLexicalRetrievalProvider } from '../coding/retrieval/GatewayLexicalRetrievalProvider';
 import { HybridRepositoryRetriever } from '../coding/retrieval/HybridRepositoryRetriever';
@@ -78,6 +75,7 @@ export class CodingAgent {
   private readonly nativeVerification: VerificationOrchestrator;
   private readonly lexicalRetriever: GatewayLexicalRetrievalProvider;
   private readonly hybridRetriever: HybridRepositoryRetriever;
+  private readonly repositoryGateway: ApprovedRepositoryGateway;
 
   constructor(config: CodingAgentConfig = {}) {
     this.workspaceRoot = config.workspaceRoot || process.cwd();
@@ -96,7 +94,8 @@ export class CodingAgent {
     this.symbolIndex = new SymbolIndex(this.workspaceRoot);
     this.editEngine = new StructuredEditEngine(this.workspaceRoot);
     this.nativeVerification = new VerificationOrchestrator(this.workspaceRoot);
-    this.lexicalRetriever = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(this.workspaceRoot));
+    this.repositoryGateway = new ApprovedRepositoryGateway(this.workspaceRoot);
+    this.lexicalRetriever = new GatewayLexicalRetrievalProvider(this.repositoryGateway);
     this.hybridRetriever = new HybridRepositoryRetriever(this.lexicalRetriever);
   }
 
@@ -436,24 +435,6 @@ export class CodingAgent {
   }
 
   private listFiles(dir: string, maxFiles: number): string[] {
-    const root = path.resolve(this.workspaceRoot, dir);
-    const results: string[] = [];
-    const ignored = new Set(['node_modules', '.git', 'dist', 'coverage', 'build']);
-    const walk = (current: string) => {
-      if (results.length >= maxFiles) return;
-      for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
-        if (results.length >= maxFiles || ignored.has(entry.name)) continue;
-        const absolute = path.join(current, entry.name);
-        const relative = path.relative(this.workspaceRoot, absolute).replace(/\\/g, '/');
-        if (isSensitiveWorkspacePath(relative)) continue;
-        if (entry.isDirectory()) {
-          walk(absolute);
-        } else {
-          results.push(path.relative(this.workspaceRoot, absolute).replace(/\\/g, '/'));
-        }
-      }
-    };
-    walk(root);
-    return results;
+    return this.repositoryGateway.listFiles(dir, maxFiles);
   }
 }
