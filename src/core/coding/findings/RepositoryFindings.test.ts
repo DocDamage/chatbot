@@ -42,6 +42,12 @@ describe('repository findings', () => {
     ] }] });
     expect(findings).toEqual([]);
   });
+  it('accepts JSON SARIF input, normalizes Windows separators, and tolerates empty runs', () => {
+    const findings = ingestSarif(JSON.stringify({ version: '2.1.0', runs: [{}, { results: [{ locations: [{ physicalLocation: { artifactLocation: { uri: 'src\\windows.ts' } } }] }] }] }));
+    expect(findings).toEqual([expect.objectContaining({ evidence: [expect.objectContaining({ path: 'src/windows.ts' })] })]);
+    expect(ingestSarif({ version: '2.1.0', runs: [] })).toEqual([]);
+    expect(() => validateSarifDocument({ version: '2.1.0', runs: [{ results: undefined }] })).not.toThrow();
+  });
   it('generates a deterministic CycloneDX 1.5 document from gateway access', () => {
     const gateway = new ApprovedRepositoryGateway(root);
     expect(generateCycloneDxSbom(gateway)).toEqual(generateCycloneDxSbom(gateway));
@@ -64,6 +70,10 @@ describe('repository findings', () => {
   it('returns no synthetic dependency finding when no package manifest exists', () => {
     fs.unlinkSync(path.join(root, 'package.json'));
     expect(new RepositoryFindingsAnalyzer(new ApprovedRepositoryGateway(root)).analyze().findings).toEqual([]);
+  });
+  it('recognizes supported dependency lockfiles', () => {
+    fs.writeFileSync(path.join(root, 'package-lock.json'), '{}');
+    expect(new RepositoryFindingsAnalyzer(new ApprovedRepositoryGateway(root)).analyze().findings.some(value => value.ruleId === 'CF03-DEPENDENCY-LOCKFILE')).toBe(false);
   });
 });
 
