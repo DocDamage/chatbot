@@ -39,7 +39,7 @@ describe('GatewayLexicalRetrievalProvider', () => {
       .toEqual(expect.arrayContaining(['BM25 lexical match']));
     const controller = new AbortController();
     controller.abort();
-    await expect(provider.search({ query: 'repository', signal: controller.signal } as never)).rejects.toThrow('cancelled');
+    await expect(provider.search({ query: 'repository' }, controller.signal)).rejects.toThrow('cancelled');
     expect((await provider.rebuild()).id).toBe(provider.status().activeGeneration?.id);
   });
 });
