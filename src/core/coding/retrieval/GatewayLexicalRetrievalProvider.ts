@@ -183,7 +183,6 @@ export class GatewayLexicalRetrievalProvider implements LexicalRetrievalProvider
       const idf = Math.log(1 + (generation.documentCount - df + 0.5) / (df + 0.5));
       bm25 += idf * (count * (k1 + 1)) / (count + k1 * (1 - b + b * document.length / Math.max(1, generation.averageLength)));
     }
-    if (!bm25) return undefined;
     const phrase = query.phrase ? phraseScore(document, terms) : 0;
     const proximity = query.proximity ? proximityScore(document, terms, query.proximity) : 0;
     const score = bm25 + phrase + proximity;
