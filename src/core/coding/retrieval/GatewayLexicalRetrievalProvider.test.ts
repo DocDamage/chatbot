@@ -56,11 +56,11 @@ describe('GatewayLexicalRetrievalProvider', () => {
   });
 
   it('reports unbuilt, oversized, and bounded-result queries without fabricating matches', async () => {
-    const provider = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(root), { maxQueryLength: 8, maxResults: 1 });
+    const provider = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(root), { maxQueryLength: 16, maxResults: 1 });
     expect((await provider.search({ query: 'repository' })).warnings).toEqual(['Lexical index is not built.']);
     await provider.build({ repositoryVersion: 'fixture-v1' });
     expect((await provider.search({ query: 'this query is too long' })).warnings).toEqual(['Query exceeds lexical retrieval limit.']);
-    expect((await provider.search({ query: 'repository', maxResults: 1 })).truncated).toBe(true);
+    expect((await provider.search({ query: 'path', maxResults: 1 })).truncated).toBe(true);
   });
 
   it('fails a rebuild without a previous repository version and honors an aborted build', async () => {
