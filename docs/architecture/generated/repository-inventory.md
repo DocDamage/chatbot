@@ -672,3 +672,4 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/server/routes/admin.ts` | 317 |
 | `src/server/routes/legacy-chat.ts` | 367 |
 | `src/server/routes/setup.ts` | 437 |
+
