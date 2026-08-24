@@ -10,4 +10,4 @@
 - [x] SARIF ingestion, suppression audit, and CycloneDX SBOM tooling integration.
 - [x] Secret, dependency, route-policy, and dangerous-capability detectors.
 - [x] Deterministic accessible graph/table overlay data and final evidence.
-- [ ] Exact final-head CI matrix and Required CI gate.
+- [x] Exact final-head CI matrix and Required CI gate: run #394 passed on `faafd9e8602e8c573a3d845849654e2862e11400`.
