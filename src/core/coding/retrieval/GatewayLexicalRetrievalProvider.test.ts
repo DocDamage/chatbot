@@ -55,4 +55,20 @@ describe('GatewayLexicalRetrievalProvider', () => {
     expect((await provider.search({ query: 'incremental index lifecycle' })).results).toEqual([]);
   });
 
+  it('reports unbuilt, oversized, and bounded-result queries without fabricating matches', async () => {
+    const provider = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(root), { maxQueryLength: 8, maxResults: 1 });
+    expect((await provider.search({ query: 'repository' })).warnings).toEqual(['Lexical index is not built.']);
+    await provider.build({ repositoryVersion: 'fixture-v1' });
+    expect((await provider.search({ query: 'this query is too long' })).warnings).toEqual(['Query exceeds lexical retrieval limit.']);
+    expect((await provider.search({ query: 'repository', maxResults: 1 })).truncated).toBe(true);
+  });
+
+  it('fails a rebuild without a previous repository version and honors an aborted build', async () => {
+    const provider = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(root));
+    await expect(provider.rebuild()).rejects.toThrow('No repository version');
+    const controller = new AbortController();
+    controller.abort();
+    await expect(provider.build({ repositoryVersion: 'fixture-v1', signal: controller.signal })).rejects.toThrow('cancelled');
+  });
+
 });
