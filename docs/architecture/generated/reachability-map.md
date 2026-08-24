@@ -202,4 +202,3 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - Computed module paths cannot be resolved statically.
 - Framework or runtime registration outside literal imports requires explicit boundary metadata.
 - Reachability proves registration possibility, not production support or runtime verification.
-
