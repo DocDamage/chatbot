@@ -229,6 +229,10 @@ describe('CF-01 relationship branch coverage', () => {
       value.sourceFile === 'src/use-dup.ts'
       && value.targetSymbol?.name === 'duplicate'
     )).toBe(false);
+    expect(find(relationships, value =>
+      value.sourceFile === 'src/use-dup.ts'
+      && value.ambiguousSymbol === 'duplicate'
+    )).toEqual(expect.objectContaining({ kind: 'references', confidence: 0.35 }));
     expect(relationships.some(value => value.targetSymbol?.name === 'localOnly')).toBe(false);
   });
 
@@ -281,6 +285,10 @@ describe('CF-01 relationship branch coverage', () => {
       expect.objectContaining({
         code: 'UNRESOLVED_LOCAL_IMPORT',
         file: 'cmd/main.go'
+      }),
+      expect.objectContaining({
+        code: 'AMBIGUOUS_SYMBOL_REFERENCE',
+        file: 'src/use-dup.ts'
       })
     ]));
 
