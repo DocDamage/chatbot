@@ -7,7 +7,7 @@ interface SarifLog { version?: string; runs?: Array<{ tool?: { driver?: { name?:
 export function ingestSarif(input: string | SarifLog): RepositoryFinding[] {
   const log: SarifLog = typeof input === 'string' ? JSON.parse(input) : input;
   validateSarifDocument(log);
-  return (log.runs || []).flatMap(run => (run.results || []).flatMap(result => {
+  return log.runs!.flatMap(run => (run.results || []).flatMap(result => {
     const location = result.locations?.[0]?.physicalLocation;
     const path = safePath(location?.artifactLocation?.uri);
     if (!path) return [];
