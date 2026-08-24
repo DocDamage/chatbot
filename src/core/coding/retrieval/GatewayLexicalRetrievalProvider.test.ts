@@ -81,4 +81,11 @@ describe('GatewayLexicalRetrievalProvider', () => {
     expect((await provider.search({ query: 'unfindable vocabulary' })).results).toEqual([]);
   });
 
+  it('stops accepting postings at the configured resource budget', async () => {
+    const provider = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(root), { maxPostings: 1 });
+    const generation = await provider.build({ repositoryVersion: 'fixture-v1' });
+    expect(generation.documentCount).toBeGreaterThan(0);
+    expect((await provider.search({ query: 'repository' })).results).toHaveLength(1);
+  });
+
 });
