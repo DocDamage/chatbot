@@ -1691,7 +1691,1576 @@ Total output lines: 5200
       "receiver": "router",
       "method": "POST",
       "path": "/api/local-tools/runs/:runId/cancel",
-  …12277 tokens truncated…ols/sixsigma/SigmaDpmoTool.ts"
+      "line": 92,
+      "file": "src/server/routes/local-tools.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/local-tools/runs/:runId/files",
+      "line": 113,
+      "file": "src/server/routes/local-tools.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/local-tools/runs/:runId/files/:fileName",
+      "line": 137,
+      "file": "src/server/routes/local-tools.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/market/analyze",
+      "line": 7,
+      "file": "src/server/routes/market.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/market/backtest",
+      "line": 11,
+      "file": "src/server/routes/market.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/market/filing",
+      "line": 15,
+      "file": "src/server/routes/market.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/market/macro",
+      "line": 19,
+      "file": "src/server/routes/market.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/math/ask",
+      "line": 7,
+      "file": "src/server/routes/math.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/math/solve",
+      "line": 11,
+      "file": "src/server/routes/math.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/math/verify",
+      "line": 15,
+      "file": "src/server/routes/math.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/mock-api/status",
+      "line": 9,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/mock-api/collections",
+      "line": 10,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/mock-api/import",
+      "line": 11,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/mix/analyze",
+      "line": 17,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/mix/plan",
+      "line": 21,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/mix/apply",
+      "line": 25,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/mix/revise",
+      "line": 29,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/mix/master",
+      "line": 33,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/ask",
+      "line": 37,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/suno",
+      "line": 40,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/fl-studio",
+      "line": 43,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/pro-tools",
+      "line": 46,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/logic",
+      "line": 49,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/beat",
+      "line": 52,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/mix",
+      "line": 55,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/master",
+      "line": 58,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/arrangement",
+      "line": 61,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/daw-translate",
+      "line": 64,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/theory",
+      "line": 67,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/genre-timeline",
+      "line": 70,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music/arrangement-review",
+      "line": 73,
+      "file": "src/server/routes/music.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/philosophy/ask",
+      "line": 7,
+      "file": "src/server/routes/philosophy.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/philosophy/argument",
+      "line": 11,
+      "file": "src/server/routes/philosophy.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/philosophy/debate",
+      "line": 15,
+      "file": "src/server/routes/philosophy.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/philosophy/ethics",
+      "line": 19,
+      "file": "src/server/routes/philosophy.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/plans",
+      "line": 10,
+      "file": "src/server/routes/plans.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/plans",
+      "line": 24,
+      "file": "src/server/routes/plans.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/plans/:planId",
+      "line": 28,
+      "file": "src/server/routes/plans.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/plans/:planId/load",
+      "line": 34,
+      "file": "src/server/routes/plans.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/pop-culture/ask",
+      "line": 6,
+      "file": "src/server/routes/pop-culture.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/pop-culture/timeline",
+      "line": 7,
+      "file": "src/server/routes/pop-culture.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/pop-culture/franchise",
+      "line": 8,
+      "file": "src/server/routes/pop-culture.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/pop-culture/compare",
+      "line": 9,
+      "file": "src/server/routes/pop-culture.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/project-intelligence/overview",
+      "line": 10,
+      "file": "src/server/routes/project-intelligence.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/project-intelligence/file",
+      "line": 14,
+      "file": "src/server/routes/project-intelligence.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/project-intelligence/history",
+      "line": 20,
+      "file": "src/server/routes/project-intelligence.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/project-memory/status",
+      "line": 10,
+      "file": "src/server/routes/project-memory.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/project-memory/entries",
+      "line": 12,
+      "file": "src/server/routes/project-memory.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/project-memory/entries",
+      "line": 16,
+      "file": "src/server/routes/project-memory.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/project-memory/resume",
+      "line": 27,
+      "file": "src/server/routes/project-memory.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/rag/query",
+      "line": 8,
+      "file": "src/server/routes/rag-query.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/research/status",
+      "line": 9,
+      "file": "src/server/routes/research.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/research/scrape",
+      "line": 13,
+      "file": "src/server/routes/research.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/science/ask",
+      "line": 6,
+      "file": "src/server/routes/science.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/science/invention",
+      "line": 7,
+      "file": "src/server/routes/science.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/science/timeline",
+      "line": 8,
+      "file": "src/server/routes/science.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/science/papers",
+      "line": 9,
+      "file": "src/server/routes/science.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/science/patents",
+      "line": 10,
+      "file": "src/server/routes/science.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/sec/status",
+      "line": 11,
+      "file": "src/server/routes/sec.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/sec/companies/search",
+      "line": 15,
+      "file": "src/server/routes/sec.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/sec/live/tickers",
+      "line": 21,
+      "file": "src/server/routes/sec.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/sec/live/submissions/:cik",
+      "line": 25,
+      "file": "src/server/routes/sec.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/sec/live/facts/:cik",
+      "line": 31,
+      "file": "src/server/routes/sec.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sec/ingest/plan",
+      "line": 37,
+      "file": "src/server/routes/sec.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sec/ingest/company/cik/:cik",
+      "line": 45,
+      "file": "src/server/routes/sec.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sec/ingest/company/ticker/:ticker",
+      "line": 57,
+      "file": "src/server/routes/sec.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sec/ingest/queue",
+      "line": 69,
+      "file": "src/server/routes/sec.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/sec/ingest/queue",
+      "line": 80,
+      "file": "src/server/routes/sec.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sec/ingest/recover-stale",
+      "line": 86,
+      "file": "src/server/routes/sec.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sec/ingest/process",
+      "line": 90,
+      "file": "src/server/routes/sec.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sec/filings/parse",
+      "line": 97,
+      "file": "src/server/routes/sec.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/security/ask",
+      "line": 7,
+      "file": "src/server/routes/security.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/security/review-code",
+      "line": 11,
+      "file": "src/server/routes/security.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/security/threat-model",
+      "line": 15,
+      "file": "src/server/routes/security.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/security/privacy",
+      "line": 19,
+      "file": "src/server/routes/security.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/security/dependencies",
+      "line": 23,
+      "file": "src/server/routes/security.ts"
+    },
+    {
+      "receiver": "app",
+      "method": "GET",
+      "path": "/api/settings",
+      "line": 43,
+      "file": "src/server/routes/settings.ts"
+    },
+    {
+      "receiver": "app",
+      "method": "PUT",
+      "path": "/api/settings",
+      "line": 64,
+      "file": "src/server/routes/settings.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/providers",
+      "line": 19,
+      "file": "src/server/routes/setup.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/providers/free",
+      "line": 40,
+      "file": "src/server/routes/setup.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/provider/:id",
+      "line": 59,
+      "file": "src/server/routes/setup.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/key/:provider",
+      "line": 171,
+      "file": "src/server/routes/setup.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "DELETE",
+      "path": "/key/:provider",
+      "line": 212,
+      "file": "src/server/routes/setup.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/status",
+      "line": 233,
+      "file": "src/server/routes/setup.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/guide",
+      "line": 266,
+      "file": "src/server/routes/setup.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/import",
+      "line": 278,
+      "file": "src/server/routes/setup.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/export",
+      "line": 306,
+      "file": "src/server/routes/setup.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/embed/:provider",
+      "line": 317,
+      "file": "src/server/routes/setup.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sixsigma/ask",
+      "line": 7,
+      "file": "src/server/routes/sixsigma.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sixsigma/calculate",
+      "line": 11,
+      "file": "src/server/routes/sixsigma.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sixsigma/project",
+      "line": 15,
+      "file": "src/server/routes/sixsigma.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sixsigma/certification",
+      "line": 19,
+      "file": "src/server/routes/sixsigma.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sixsigma/simulate",
+      "line": 23,
+      "file": "src/server/routes/sixsigma.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sixsigma/export",
+      "line": 27,
+      "file": "src/server/routes/sixsigma.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sixsigma/study-plan",
+      "line": 31,
+      "file": "src/server/routes/sixsigma.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/sprite-lab/status",
+      "line": 15,
+      "file": "src/server/routes/sprite-lab.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sprite-lab/plan",
+      "line": 19,
+      "file": "src/server/routes/sprite-lab.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sprite-lab/external/plan",
+      "line": 31,
+      "file": "src/server/routes/sprite-lab.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sprite-lab/external/run",
+      "line": 52,
+      "file": "src/server/routes/sprite-lab.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sprite-lab/internal/slice-grid",
+      "line": 76,
+      "file": "src/server/routes/sprite-lab.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sprite-lab/internal/palette",
+      "line": 87,
+      "file": "src/server/routes/sprite-lab.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sprite-lab/internal/manifest",
+      "line": 100,
+      "file": "src/server/routes/sprite-lab.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/story/ask",
+      "line": 7,
+      "file": "src/server/routes/story.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/story/plot",
+      "line": 11,
+      "file": "src/server/routes/story.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/story/character",
+      "line": 15,
+      "file": "src/server/routes/story.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/story/worldbuild",
+      "line": 19,
+      "file": "src/server/routes/story.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/story/dialogue",
+      "line": 23,
+      "file": "src/server/routes/story.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/story/continuity",
+      "line": 27,
+      "file": "src/server/routes/story.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/tool-catalog",
+      "line": 11,
+      "file": "src/server/routes/toolCatalog.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/tool-catalog/stats",
+      "line": 19,
+      "file": "src/server/routes/toolCatalog.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/chat",
+      "line": 14,
+      "file": "src/server/routes/v1/chat.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/chat",
+      "line": 16,
+      "file": "src/server/routes/v2/chat.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/chat/stream",
+      "line": 36,
+      "file": "src/server/routes/v2/chat.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/website-workspace/project",
+      "line": 9,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/project",
+      "line": 10,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/preview",
+      "line": 11,
+      "file": "src/server/routes/website-workspace.ts"
+    }
+  ],
+  "clientPanels": [
+    "client/src/components/AudioPreviewBrowser.tsx",
+    "client/src/components/CodeWorkflowPanel.tsx",
+    "client/src/components/ConversationToolsPanel.tsx",
+    "client/src/components/CreativeComposerPanel.tsx",
+    "client/src/components/DesktopCompanionPanel.tsx",
+    "client/src/components/DocumentWorkspacePanel.tsx",
+    "client/src/components/FLStudioControlPanel.tsx",
+    "client/src/components/FileExplorerPanel.tsx",
+    "client/src/components/GamingPlaybookPanel.tsx",
+    "client/src/components/KnowledgeOSPanel.tsx",
+    "client/src/components/KnowledgeOnlinePanel.tsx",
+    "client/src/components/LocalRunApprovalPanel.tsx",
+    "client/src/components/LocalToolsWorkspace.tsx",
+    "client/src/compone…2277 tokens truncated…dapter.ts"
+    },
+    {
+      "name": "TemplateAdapter",
+      "file": "src/core/providers/LLMAdapter.ts"
+    },
+    {
+      "name": "OpenAICompatibleAdapter",
+      "file": "src/core/providers/LLMAdapter.ts"
+    },
+    {
+      "name": "AnthropicAdapter",
+      "file": "src/core/providers/LLMAdapter.ts"
+    },
+    {
+      "name": "GeminiAdapter",
+      "file": "src/core/providers/LLMAdapter.ts"
+    },
+    {
+      "name": "ModelRouter",
+      "file": "src/core/providers/ModelRouter.ts"
+    },
+    {
+      "name": "OllamaAdapter",
+      "file": "src/core/providers/OllamaAdapter.ts"
+    },
+    {
+      "name": "StableDiffusionAdapter",
+      "file": "src/core/providers/StableDiffusionAdapter.ts"
+    },
+    {
+      "name": "BrowserStableDiffusionAdapter",
+      "file": "src/core/providers/StableDiffusionAdapter.ts"
+    },
+    {
+      "name": "UniversalLLM",
+      "file": "src/core/providers/UniversalLLM.ts"
+    },
+    {
+      "name": "GPT4VAdapter",
+      "file": "src/core/providers/VisionAdapter.ts"
+    },
+    {
+      "name": "LLaVAAdapter",
+      "file": "src/core/providers/VisionAdapter.ts"
+    },
+    {
+      "name": "GeminiVisionAdapter",
+      "file": "src/core/providers/VisionAdapter.ts"
+    },
+    {
+      "name": "EDGARClient",
+      "file": "src/core/sec/EDGARClient.ts"
+    },
+    {
+      "name": "InternalSpriteImageAdapter",
+      "file": "src/core/sprite-lab/InternalSpriteImageAdapter.ts"
+    },
+    {
+      "name": "SpriteExternalToolAdapter",
+      "file": "src/core/sprite-lab/SpriteExternalToolAdapter.ts"
+    }
+  ],
+  "tools": [
+    {
+      "name": "PhilosophyTimelineTool",
+      "file": "src/core/agents/philosophy/PhilosophyTimelineTool.ts"
+    },
+    {
+      "name": "BaseUniversalTool",
+      "file": "src/core/contracts/UniversalContract.ts"
+    },
+    {
+      "name": "CodeExecutor",
+      "file": "src/core/tools/CodeExecutor.ts"
+    },
+    {
+      "name": "CodingKnowledgeTool",
+      "file": "src/core/tools/CodingKnowledgeTool.ts"
+    },
+    {
+      "name": "CommandRunner",
+      "file": "src/core/tools/CommandRunner.ts"
+    },
+    {
+      "name": "FunctionCaller",
+      "file": "src/core/tools/FunctionCaller.ts"
+    },
+    {
+      "name": "PersonalKnowledgeTool",
+      "file": "src/core/tools/PersonalKnowledgeTool.ts"
+    },
+    {
+      "name": "ToolComposer",
+      "file": "src/core/tools/ToolComposer.ts"
+    },
+    {
+      "name": "ToolRegistry",
+      "file": "src/core/tools/ToolRegistry.ts"
+    },
+    {
+      "name": "WebSearcher",
+      "file": "src/core/tools/WebSearcher.ts"
+    },
+    {
+      "name": "AudioAnalyzerTool",
+      "file": "src/core/tools/audio/AudioAnalyzerTool.ts"
+    },
+    {
+      "name": "DynamicRangeTool",
+      "file": "src/core/tools/audio/DynamicRangeTool.ts"
+    },
+    {
+      "name": "AudioLoudnessMeterTool",
+      "file": "src/core/tools/audio/LoudnessMeterTool.ts"
+    },
+    {
+      "name": "MaskingDetectorTool",
+      "file": "src/core/tools/audio/MaskingDetectorTool.ts"
+    },
+    {
+      "name": "ReferenceCompareTool",
+      "file": "src/core/tools/audio/ReferenceCompareTool.ts"
+    },
+    {
+      "name": "SpectrumAnalyzerTool",
+      "file": "src/core/tools/audio/SpectrumAnalyzerTool.ts"
+    },
+    {
+      "name": "StemAnalyzerTool",
+      "file": "src/core/tools/audio/StemAnalyzerTool.ts"
+    },
+    {
+      "name": "StereoImageTool",
+      "file": "src/core/tools/audio/StereoImageTool.ts"
+    },
+    {
+      "name": "BusinessModelCanvasTool",
+      "file": "src/core/tools/business/BusinessModelCanvasTool.ts"
+    },
+    {
+      "name": "CompetitorResearchTool",
+      "file": "src/core/tools/business/CompetitorResearchTool.ts"
+    },
+    {
+      "name": "KpiDashboardTool",
+      "file": "src/core/tools/business/KpiDashboardTool.ts"
+    },
+    {
+      "name": "LeanCanvasTool",
+      "file": "src/core/tools/business/LeanCanvasTool.ts"
+    },
+    {
+      "name": "PricingModelTool",
+      "file": "src/core/tools/business/PricingModelTool.ts"
+    },
+    {
+      "name": "SwotTool",
+      "file": "src/core/tools/business/SwotTool.ts"
+    },
+    {
+      "name": "UnitEconomicsTool",
+      "file": "src/core/tools/business/UnitEconomicsTool.ts"
+    },
+    {
+      "name": "ToolCatalogService",
+      "file": "src/core/tools/catalog/ToolCatalogService.ts"
+    },
+    {
+      "name": "AwardLookupTool",
+      "file": "src/core/tools/culture/AwardLookupTool.ts"
+    },
+    {
+      "name": "FranchiseGraphTool",
+      "file": "src/core/tools/culture/FranchiseGraphTool.ts"
+    },
+    {
+      "name": "MusicBrainzTool",
+      "file": "src/core/tools/culture/MusicBrainzTool.ts"
+    },
+    {
+      "name": "OpenLibraryTool",
+      "file": "src/core/tools/culture/OpenLibraryTool.ts"
+    },
+    {
+      "name": "PopCultureTimelineTool",
+      "file": "src/core/tools/culture/PopCultureTimelineTool.ts"
+    },
+    {
+      "name": "TMDBTool",
+      "file": "src/core/tools/culture/TMDBTool.ts"
+    },
+    {
+      "name": "WikidataEntityTool",
+      "file": "src/core/tools/culture/WikidataEntityTool.ts"
+    },
+    {
+      "name": "BOMBuilderTool",
+      "file": "src/core/tools/engineering/BOMBuilderTool.ts"
+    },
+    {
+      "name": "BeamLoadTool",
+      "file": "src/core/tools/engineering/BeamLoadTool.ts"
+    },
+    {
+      "name": "CircuitChecklistTool",
+      "file": "src/core/tools/engineering/CircuitChecklistTool.ts"
+    },
+    {
+      "name": "MotorSizingTool",
+      "file": "src/core/tools/engineering/MotorSizingTool.ts"
+    },
+    {
+      "name": "OhmsLawTool",
+      "file": "src/core/tools/engineering/OhmsLawTool.ts"
+    },
+    {
+      "name": "RoboticsKinematicsTool",
+      "file": "src/core/tools/engineering/RoboticsKinematicsTool.ts"
+    },
+    {
+      "name": "UnitConversionTool",
+      "file": "src/core/tools/engineering/UnitConversionTool.ts"
+    },
+    {
+      "name": "FLMixerControlTool",
+      "file": "src/core/tools/flstudio/FLMixerControlTool.ts"
+    },
+    {
+      "name": "FLPluginParamTool",
+      "file": "src/core/tools/flstudio/FLPluginParamTool.ts"
+    },
+    {
+      "name": "FLRenderTool",
+      "file": "src/core/tools/flstudio/FLRenderTool.ts"
+    },
+    {
+      "name": "FLTemplateInspectorTool",
+      "file": "src/core/tools/flstudio/FLTemplateInspectorTool.ts"
+    },
+    {
+      "name": "FLTransportTool",
+      "file": "src/core/tools/flstudio/FLTransportTool.ts"
+    },
+    {
+      "name": "BalanceSimTool",
+      "file": "src/core/tools/gamedev/BalanceSimTool.ts"
+    },
+    {
+      "name": "GodotTool",
+      "file": "src/core/tools/gamedev/GodotTool.ts"
+    },
+    {
+      "name": "PhaserTool",
+      "file": "src/core/tools/gamedev/PhaserTool.ts"
+    },
+    {
+      "name": "UnityTool",
+      "file": "src/core/tools/gamedev/UnityTool.ts"
+    },
+    {
+      "name": "UnrealTool",
+      "file": "src/core/tools/gamedev/UnrealTool.ts"
+    },
+    {
+      "name": "CountryProfileTool",
+      "file": "src/core/tools/geography/CountryProfileTool.ts"
+    },
+    {
+      "name": "CulturalEtiquetteTool",
+      "file": "src/core/tools/geography/CulturalEtiquetteTool.ts"
+    },
+    {
+      "name": "DemographicsTool",
+      "file": "src/core/tools/geography/DemographicsTool.ts"
+    },
+    {
+      "name": "GeoTimelineTool",
+      "file": "src/core/tools/geography/GeoTimelineTool.ts"
+    },
+    {
+      "name": "LanguageRegionTool",
+      "file": "src/core/tools/geography/LanguageRegionTool.ts"
+    },
+    {
+      "name": "MapLookupTool",
+      "file": "src/core/tools/geography/MapLookupTool.ts"
+    },
+    {
+      "name": "AnatomyLookupTool",
+      "file": "src/core/tools/health/AnatomyLookupTool.ts"
+    },
+    {
+      "name": "FitnessPlanTool",
+      "file": "src/core/tools/health/FitnessPlanTool.ts"
+    },
+    {
+      "name": "MedicalSourceRouterTool",
+      "file": "src/core/tools/health/MedicalSourceRouterTool.ts"
+    },
+    {
+      "name": "MedicationInteractionWarningTool",
+      "file": "src/core/tools/health/MedicationInteractionWarningTool.ts"
+    },
+    {
+      "name": "NutritionMacroTool",
+      "file": "src/core/tools/health/NutritionMacroTool.ts"
+    },
+    {
+      "name": "RedFlagTriageTool",
+      "file": "src/core/tools/health/RedFlagTriageTool.ts"
+    },
+    {
+      "name": "ChronologyTool",
+      "file": "src/core/tools/history/ChronologyTool.ts"
+    },
+    {
+      "name": "EuropeanaTool",
+      "file": "src/core/tools/history/EuropeanaTool.ts"
+    },
+    {
+      "name": "LibraryOfCongressTool",
+      "file": "src/core/tools/history/LibraryOfCongressTool.ts"
+    },
+    {
+      "name": "MapContextTool",
+      "file": "src/core/tools/history/MapContextTool.ts"
+    },
+    {
+      "name": "SmithsonianTool",
+      "file": "src/core/tools/history/SmithsonianTool.ts"
+    },
+    {
+      "name": "SourceCriticismTool",
+      "file": "src/core/tools/history/SourceCriticismTool.ts"
+    },
+    {
+      "name": "WikidataHistoryTool",
+      "file": "src/core/tools/history/WikidataHistoryTool.ts"
+    },
+    {
+      "name": "GrammarDiagnosticTool",
+      "file": "src/core/tools/language/GrammarDiagnosticTool.ts"
+    },
+    {
+      "name": "ReadabilityTool",
+      "file": "src/core/tools/language/ReadabilityTool.ts"
+    },
+    {
+      "name": "RhetoricAnalyzerTool",
+      "file": "src/core/tools/language/RhetoricAnalyzerTool.ts"
+    },
+    {
+      "name": "SpeechOutlineTool",
+      "file": "src/core/tools/language/SpeechOutlineTool.ts"
+    },
+    {
+      "name": "ToneRewriteTool",
+      "file": "src/core/tools/language/ToneRewriteTool.ts"
+    },
+    {
+      "name": "TranslationTool",
+      "file": "src/core/tools/language/TranslationTool.ts"
+    },
+    {
+      "name": "CaseLawSummaryTool",
+      "file": "src/core/tools/legal/CaseLawSummaryTool.ts"
+    },
+    {
+      "name": "ContractClauseExplainerTool",
+      "file": "src/core/tools/legal/ContractClauseExplainerTool.ts"
+    },
+    {
+      "name": "JurisdictionRouterTool",
+      "file": "src/core/tools/legal/JurisdictionRouterTool.ts"
+    },
+    {
+      "name": "LegalRiskChecklistTool",
+      "file": "src/core/tools/legal/LegalRiskChecklistTool.ts"
+    },
+    {
+      "name": "PlainEnglishLegalTool",
+      "file": "src/core/tools/legal/PlainEnglishLegalTool.ts"
+    },
+    {
+      "name": "StatuteLookupTool",
+      "file": "src/core/tools/legal/StatuteLookupTool.ts"
+    },
+    {
+      "name": "FredMacroTool",
+      "file": "src/core/tools/market/FredMacroTool.ts"
+    },
+    {
+      "name": "FundamentalsTool",
+      "file": "src/core/tools/market/FundamentalsTool.ts"
+    },
+    {
+      "name": "NewsEventTool",
+      "file": "src/core/tools/market/NewsEventTool.ts"
+    },
+    {
+      "name": "PriceDataTool",
+      "file": "src/core/tools/market/PriceDataTool.ts"
+    },
+    {
+      "name": "SecEdgarTool",
+      "file": "src/core/tools/market/SecEdgarTool.ts"
+    },
+    {
+      "name": "TechnicalIndicatorTool",
+      "file": "src/core/tools/market/TechnicalIndicatorTool.ts"
+    },
+    {
+      "name": "ValuationTool",
+      "file": "src/core/tools/market/ValuationTool.ts"
+    },
+    {
+      "name": "LeanProofTool",
+      "file": "src/core/tools/math/LeanProofTool.ts"
+    },
+    {
+      "name": "NumericSolverTool",
+      "file": "src/core/tools/math/NumericSolverTool.ts"
+    },
+    {
+      "name": "SymPyTool",
+      "file": "src/core/tools/math/SymPyTool.ts"
+    },
+    {
+      "name": "Z3SolverTool",
+      "file": "src/core/tools/math/Z3SolverTool.ts"
+    },
+    {
+      "name": "ArrangementCriticTool",
+      "file": "src/core/tools/music/ArrangementCriticTool.ts"
+    },
+    {
+      "name": "ArrangementMapTool",
+      "file": "src/core/tools/music/ArrangementMapTool.ts"
+    },
+    {
+      "name": "BpmKeyDetectorTool",
+      "file": "src/core/tools/music/BpmKeyDetectorTool.ts"
+    },
+    {
+      "name": "BpmTool",
+      "file": "src/core/tools/music/BpmTool.ts"
+    },
+    {
+      "name": "ChordProgressionTool",
+      "file": "src/core/tools/music/ChordProgressionTool.ts"
+    },
+    {
+      "name": "DawWorkflowMapTool",
+      "file": "src/core/tools/music/DawWorkflowMapTool.ts"
+    },
+    {
+      "name": "DrumPatternGeneratorTool",
+      "file": "src/core/tools/music/DrumPatternGeneratorTool.ts"
+    },
+    {
+      "name": "DrumPatternTool",
+      "file": "src/core/tools/music/DrumPatternTool.ts"
+    },
+    {
+      "name": "FLAutomationTool",
+      "file": "src/core/tools/music/FLAutomationTool.ts"
+    },
+    {
+      "name": "FLEdisonWorkflowTool",
+      "file": "src/core/tools/music/FLEdisonWorkflowTool.ts"
+    },
+    {
+      "name": "FLExportSettingsTool",
+      "file": "src/core/tools/music/FLExportSettingsTool.ts"
+    },
+    {
+      "name": "FLGrossBeatAdvisorTool",
+      "file": "src/core/tools/music/FLGrossBeatAdvisorTool.ts"
+    },
+    {
+      "name": "FLMixerRoutingTool",
+      "file": "src/core/tools/music/FLMixerRoutingTool.ts"
+    },
+    {
+      "name": "FLPianoRollTool",
+      "file": "src/core/tools/music/FLPianoRollTool.ts"
+    },
+    {
+      "name": "FLPluginChainTool",
+      "file": "src/core/tools/music/FLPluginChainTool.ts"
+    },
+    {
+      "name": "FLStepSequencerPatternTool",
+      "file": "src/core/tools/music/FLStepSequencerPatternTool.ts"
+    },
+    {
+      "name": "GenreInfluenceGraphTool",
+      "file": "src/core/tools/music/GenreInfluenceGraphTool.ts"
+    },
+    {
+      "name": "KeyScaleTool",
+      "file": "src/core/tools/music/KeyScaleTool.ts"
+    },
+    {
+      "name": "LogicAlchemyAdvisorTool",
+      "file": "src/core/tools/music/LogicAlchemyAdvisorTool.ts"
+    },
+    {
+      "name": "LogicArrangementMarkerTool",
+      "file": "src/core/tools/music/LogicArrangementMarkerTool.ts"
+    },
+    {
+      "name": "LogicBounceExportTool",
+      "file": "src/core/tools/music/LogicBounceExportTool.ts"
+    },
+    {
+      "name": "LogicDrummerSessionPlayerTool",
+      "file": "src/core/tools/music/LogicDrummerSessionPlayerTool.ts"
+    },
+    {
+      "name": "LogicMidiWorkflowTool",
+      "file": "src/core/tools/music/LogicMidiWorkflowTool.ts"
+    },
+    {
+      "name": "LogicProjectSetupTool",
+      "file": "src/core/tools/music/LogicProjectSetupTool.ts"
+    },
+    {
+      "name": "LogicStockPluginChainTool",
+      "file": "src/core/tools/music/LogicStockPluginChainTool.ts"
+    },
+    {
+      "name": "LogicVocalChainTool",
+      "file": "src/core/tools/music/LogicVocalChainTool.ts"
+    },
+    {
+      "name": "LoudnessMeterTool",
+      "file": "src/core/tools/music/LoudnessMeterTool.ts"
+    },
+    {
+      "name": "LoudnessTargetTool",
+      "file": "src/core/tools/music/LoudnessTargetTool.ts"
+    },
+    {
+      "name": "MasteringChecklistTool",
+      "file": "src/core/tools/music/MasteringChecklistTool.ts"
+    },
+    {
+      "name": "MixChecklistTool",
+      "file": "src/core/tools/music/MixChecklistTool.ts"
+    },
+    {
+      "name": "MixDiagnosticTool",
+      "file": "src/core/tools/music/MixDiagnosticTool.ts"
+    },
+    {
+      "name": "ProToolsBusRoutingTool",
+      "file": "src/core/tools/music/ProToolsBusRoutingTool.ts"
+    },
+    {
+      "name": "ProToolsEditWorkflowTool",
+      "file": "src/core/tools/music/ProToolsEditWorkflowTool.ts"
+    },
+    {
+      "name": "ProToolsExportStemTool",
+      "file": "src/core/tools/music/ProToolsExportStemTool.ts"
+    },
+    {
+      "name": "ProToolsPlaylistAdvisorTool",
+      "file": "src/core/tools/music/ProToolsPlaylistAdvisorTool.ts"
+    },
+    {
+      "name": "ProToolsPostAudioTool",
+      "file": "src/core/tools/music/ProToolsPostAudioTool.ts"
+    },
+    {
+      "name": "ProToolsSessionSetupTool",
+      "file": "src/core/tools/music/ProToolsSessionSetupTool.ts"
+    },
+    {
+      "name": "ProToolsSignalFlowTool",
+      "file": "src/core/tools/music/ProToolsSignalFlowTool.ts"
+    },
+    {
+      "name": "ProToolsVocalCompTool",
+      "file": "src/core/tools/music/ProToolsVocalCompTool.ts"
+    },
+    {
+      "name": "SampleClearanceAdvisorTool",
+      "file": "src/core/tools/music/SampleClearanceAdvisorTool.ts"
+    },
+    {
+      "name": "SunoHookTool",
+      "file": "src/core/tools/music/SunoHookTool.ts"
+    },
+    {
+      "name": "SunoPromptTool",
+      "file": "src/core/tools/music/SunoPromptTool.ts"
+    },
+    {
+      "name": "SunoRevisionTool",
+      "file": "src/core/tools/music/SunoRevisionTool.ts"
+    },
+    {
+      "name": "SunoRightsGuardrailTool",
+      "file": "src/core/tools/music/SunoRightsGuardrailTool.ts"
+    },
+    {
+      "name": "SunoStructureTool",
+      "file": "src/core/tools/music/SunoStructureTool.ts"
+    },
+    {
+      "name": "SunoStyleBlendTool",
+      "file": "src/core/tools/music/SunoStyleBlendTool.ts"
+    },
+    {
+      "name": "VocalChainTool",
+      "file": "src/core/tools/music/VocalChainTool.ts"
+    },
+    {
+      "name": "ArgumentMapTool",
+      "file": "src/core/tools/philosophy/ArgumentMapTool.ts"
+    },
+    {
+      "name": "CounterargumentTool",
+      "file": "src/core/tools/philosophy/CounterargumentTool.ts"
+    },
+    {
+      "name": "EthicalFrameworkTool",
+      "file": "src/core/tools/philosophy/EthicalFrameworkTool.ts"
+    },
+    {
+      "name": "FallacyDetectionTool",
+      "file": "src/core/tools/philosophy/FallacyDetectionTool.ts"
+    },
+    {
+      "name": "PhilosophyTimelineTool",
+      "file": "src/core/tools/philosophy/PhilosophyTimelineTool.ts"
+    },
+    {
+      "name": "SocraticQuestionTool",
+      "file": "src/core/tools/philosophy/SocraticQuestionTool.ts"
+    },
+    {
+      "name": "GBIFTool",
+      "file": "src/core/tools/science/GBIFTool.ts"
+    },
+    {
+      "name": "InventionTimelineTool",
+      "file": "src/core/tools/science/InventionTimelineTool.ts"
+    },
+    {
+      "name": "NasaDataTool",
+      "file": "src/core/tools/science/NasaDataTool.ts"
+    },
+    {
+      "name": "OpenAlexTool",
+      "file": "src/core/tools/science/OpenAlexTool.ts"
+    },
+    {
+      "name": "ScientificConsensusTool",
+      "file": "src/core/tools/science/ScientificConsensusTool.ts"
+    },
+    {
+      "name": "USPTOPatentTool",
+      "file": "src/core/tools/science/USPTOPatentTool.ts"
+    },
+    {
+      "name": "WikidataScienceTool",
+      "file": "src/core/tools/science/WikidataScienceTool.ts"
+    },
+    {
+      "name": "AuthFlowReviewTool",
+      "file": "src/core/tools/security/AuthFlowReviewTool.ts"
+    },
+    {
+      "name": "DependencyAuditTool",
+      "file": "src/core/tools/security/DependencyAuditTool.ts"
+    },
+    {
+      "name": "HeadersAuditTool",
+      "file": "src/core/tools/security/HeadersAuditTool.ts"
+    },
+    {
+      "name": "PrivacyChecklistTool",
+      "file": "src/core/tools/security/PrivacyChecklistTool.ts"
+    },
+    {
+      "name": "SecretsScanTool",
+      "file": "src/core/tools/security/SecretsScanTool.ts"
+    },
+    {
+      "name": "SecureCodeScanTool",
+      "file": "src/core/tools/security/SecureCodeScanTool.ts"
+    },
+    {
+      "name": "ThreatModelTool",
+      "file": "src/core/tools/security/ThreatModelTool.ts"
+    },
+    {
+      "name": "AnalysisApiTool",
+      "file": "src/core/tools/sixsigma/AnalysisApiTool.ts"
+    },
+    {
+      "name": "AnovaTool",
+      "file": "src/core/tools/sixsigma/AnovaTool.ts"
+    },
+    {
+      "name": "ControlChartBuilderTool",
+      "file": "src/core/tools/sixsigma/ControlChartBuilderTool.ts"
+    },
+    {
+      "name": "ControlChartConstantsTool",
+      "file": "src/core/tools/sixsigma/ControlChartConstantsTool.ts"
+    },
+    {
+      "name": "CopqTool",
+      "file": "src/core/tools/sixsigma/CopqTool.ts"
+    },
+    {
+      "name": "CpkCalculatorTool",
+      "file": "src/core/tools/sixsigma/CpkCalculatorTool.ts"
+    },
+    {
+      "name": "DoePlannerTool",
+      "file": "src/core/tools/sixsigma/DoePlannerTool.ts"
+    },
+    {
+      "name": "GageRRTool",
+      "file": "src/core/tools/sixsigma/GageRRTool.ts"
+    },
+    {
+      "name": "ProcessMapAnalyzerTool",
+      "file": "src/core/tools/sixsigma/ProcessMapAnalyzerTool.ts"
+    },
+    {
+      "name": "RegressionTool",
+      "file": "src/core/tools/sixsigma/RegressionTool.ts"
+    },
+    {
+      "name": "SampleSizeTool",
+      "file": "src/core/tools/sixsigma/SampleSizeTool.ts"
+    },
+    {
+      "name": "SigmaDpmoTool",
+      "file": "src/core/tools/sixsigma/SigmaDpmoTool.ts"
     },
     {
       "name": "StatSoftwareExportTool",
