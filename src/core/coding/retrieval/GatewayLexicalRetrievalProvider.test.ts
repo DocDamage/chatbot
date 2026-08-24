@@ -88,4 +88,10 @@ describe('GatewayLexicalRetrievalProvider', () => {
     expect((await provider.search({ query: 'export' })).results).toHaveLength(1);
   });
 
+  it('retains a positive match when another query term has no posting', async () => {
+    const provider = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(root));
+    await provider.build({ repositoryVersion: 'fixture-v1' });
+    expect((await provider.search({ query: 'repository absentterm' })).results).toHaveLength(2);
+  });
+
 });
