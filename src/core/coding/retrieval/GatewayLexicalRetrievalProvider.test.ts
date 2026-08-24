@@ -42,4 +42,17 @@ describe('GatewayLexicalRetrievalProvider', () => {
     await expect(provider.search({ query: 'repository' }, controller.signal)).rejects.toThrow('cancelled');
     expect((await provider.rebuild()).id).toBe(provider.status().activeGeneration?.id);
   });
+  it('removes stale results after add, rename, and delete lifecycle updates', async () => {
+    const provider = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(root));
+    await provider.build({ repositoryVersion: 'fixture-v1' });
+    fs.renameSync(path.join(root, 'alpha.ts'), path.join(root, 'renamed.ts'));
+    fs.writeFileSync(path.join(root, 'added.ts'), 'export const incrementalIndexLifecycle = true;');
+    await provider.update({ repositoryVersion: 'fixture-v2' });
+    expect((await provider.search({ query: 'parse repository path' })).results.some(value => value.path === 'alpha.ts')).toBe(false);
+    expect((await provider.search({ query: 'incremental index lifecycle' })).results[0].path).toBe('added.ts');
+    fs.rmSync(path.join(root, 'added.ts'));
+    await provider.update({ repositoryVersion: 'fixture-v3' });
+    expect((await provider.search({ query: 'incremental index lifecycle' })).results).toEqual([]);
+  });
+
 });
