@@ -33,6 +33,15 @@ describe('repository findings', () => {
     ] }] });
     expect(findings).toEqual(expect.arrayContaining([expect.objectContaining({ ruleId: 'fixture-unknown', severity: 'high', message: 'SARIF finding' }), expect.objectContaining({ severity: 'info', evidence: [expect.objectContaining({ lineStart: 4, lineEnd: 6 })] })]));
   });
+  it('drops SARIF results without a safe repository location', () => {
+    const findings = ingestSarif({ version: '2.1.0', runs: [{ results: [
+      {},
+      { locations: [{ physicalLocation: { artifactLocation: { uri: '/absolute.ts' } } }] },
+      { locations: [{ physicalLocation: { artifactLocation: { uri: 'https://example.test/a.ts' } } }] },
+      { locations: [{ physicalLocation: { artifactLocation: { uri: 'src/../escape.ts' } } }] }
+    ] }] });
+    expect(findings).toEqual([]);
+  });
   it('generates a deterministic CycloneDX 1.5 document from gateway access', () => {
     const gateway = new ApprovedRepositoryGateway(root);
     expect(generateCycloneDxSbom(gateway)).toEqual(generateCycloneDxSbom(gateway));
@@ -44,6 +53,17 @@ describe('repository findings', () => {
     const bom = generateCycloneDxSbom(new ApprovedRepositoryGateway(root));
     expect(bom).toEqual(expect.objectContaining({ metadata: expect.objectContaining({ component: expect.objectContaining({ name: 'repository', version: '0.0.0' }) }), components: [] }));
     expect(() => validateCycloneDxSbom({ ...bom, components: [{ type: 'library', name: '', version: '', purl: 'invalid' }] })).toThrow('component');
+  });
+  it('encodes scoped packages and scans supported route-policy source files', () => {
+    fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify({ dependencies: { '@scope/pkg': '1.0.0' } }));
+    fs.writeFileSync(path.join(root, 'route.yaml'), 'router.get(');
+    const bom = generateCycloneDxSbom(new ApprovedRepositoryGateway(root));
+    expect(bom.components[0].purl).toBe('pkg:npm/%40scope%2Fpkg@1.0.0');
+    expect(new RepositoryFindingsAnalyzer(new ApprovedRepositoryGateway(root)).analyze().findings).toEqual(expect.arrayContaining([expect.objectContaining({ ruleId: 'CF03-ROUTE-POLICY' })]));
+  });
+  it('returns no synthetic dependency finding when no package manifest exists', () => {
+    fs.unlinkSync(path.join(root, 'package.json'));
+    expect(new RepositoryFindingsAnalyzer(new ApprovedRepositoryGateway(root)).analyze().findings).toEqual([]);
   });
 });
 
