@@ -36,6 +36,26 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
+      - name: Narrow ambiguous duplicate assertion
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          target = Path('src/core/coding/architecture/ArchitectureRelationshipsCoverage.test.ts')
+          text = target.read_text(encoding='utf-8')
+          old = "    expect(relationships.some(value => value.targetSymbol?.name === 'duplicate')).toBe(false);"
+          new = "\n".join([
+              "    expect(relationships.some(value =>",
+              "      value.sourceFile === 'src/use-dup.ts'",
+              "      && value.targetSymbol?.name === 'duplicate'",
+              "    )).toBe(false);"
+          ])
+          if text.count(old) != 1:
+              raise SystemExit('expected the broad duplicate assertion exactly once')
+          target.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+
       - name: Install dependencies with bounded retry
         shell: bash
         run: |
