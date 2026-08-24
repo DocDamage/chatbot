@@ -27,5 +27,9 @@ describe('repository overlay data', () => {
     const finding: RepositoryFinding = { id: 'f4', ruleId: 'CF03-ROUTE-POLICY', severity: 'medium', disposition: 'signal', title: 'route', message: '', confidence: 0.5, source: 'repository-rule', evidence: [{ path: 'route.ts', lineStart: 1, lineEnd: 1, excerpt: '', digest: 'd' }] };
     expect(buildRepositoryOverlayData([finding], { trustBoundaries: new Set() })[0].trustBoundary).toBe(true);
   });
+  it('uses path order as the deterministic hotspot tie-breaker', () => {
+    const finding = (id: string, path: string): RepositoryFinding => ({ id, ruleId: 'plain', severity: 'low', disposition: 'signal', title: 'low', message: '', confidence: 0.5, source: 'repository-rule', evidence: [{ path, lineStart: 1, lineEnd: 1, excerpt: '', digest: id }] });
+    expect(buildRepositoryOverlayData([finding('b', 'b.ts'), finding('a', 'a.ts')]).map(value => value.path)).toEqual(['a.ts', 'b.ts']);
+  });
 });
 
