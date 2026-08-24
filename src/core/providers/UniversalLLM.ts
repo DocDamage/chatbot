@@ -84,7 +84,28 @@ export class UniversalLLM {
             logger.debug('HuggingFace not available');
         }
 
-        // 3. Try OpenAI (paid)
+        // 3. Try Local Model Adapter (CF-04) if enabled or configured
+        try {
+            const localEnabled = process.env.LOCAL_MODEL_ENABLED === 'true' || Boolean(process.env.LOCAL_MODEL_ENDPOINT);
+            if (localEnabled) {
+                const { ExternalLocalModelAdapter } = await import('./local/ExternalLocalModelAdapter');
+                const localAdapter = new ExternalLocalModelAdapter({
+                    baseUrl: process.env.LOCAL_MODEL_ENDPOINT || 'http://127.0.0.1:11434/v1',
+                    model: process.env.LOCAL_MODEL_NAME || 'llama3:8b'
+                });
+                this.adapters.set('local_cf04', localAdapter);
+                available.push(`local:${localAdapter.getModelName()}`);
+
+                if (this.config.preferFree && !this.primaryAdapter) {
+                    this.primaryAdapter = localAdapter;
+                }
+                logger.info('Local Model Adapter (CF-04) registered', { model: localAdapter.getModelName() });
+            }
+        } catch (error) {
+            logger.debug('Local Model Adapter (CF-04) not available or failed initialization');
+        }
+
+        // 4. Try OpenAI (paid)
         if (process.env.OPENAI_API_KEY) {
             try {
                 const { OpenAIAdapter } = await import('../providers/LLMAdapter');
@@ -103,7 +124,7 @@ export class UniversalLLM {
             }
         }
 
-        // 4. Fallback to template if nothing else available
+        // 5. Fallback to template if nothing else available
         if (!this.primaryAdapter && this.config.fallbackToTemplate) {
             const { TemplateAdapter } = await import('../providers/LLMAdapter');
             const template = new TemplateAdapter();

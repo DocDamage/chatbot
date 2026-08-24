@@ -30,3 +30,5 @@ knowledge-base/
 **/target/
 **/__pycache__/
 **/build/
+.capabilities/
+.worktrees/

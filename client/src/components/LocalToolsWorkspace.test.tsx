@@ -12,6 +12,7 @@ vi.mock('./WebsiteWorkspacePanel', () => ({ default: () => <div>Website workspac
 vi.mock('./DesktopCompanionPanel', () => ({ default: () => <div>Desktop companion panel</div> }));
 vi.mock('./LocalRunApprovalPanel', () => ({ default: () => <div>Local run panel</div> }));
 vi.mock('./SpriteLabPanel', () => ({ default: () => <div>Sprite lab panel</div> }));
+vi.mock('./CapabilityHubPanel', () => ({ default: () => <div>Capability hub panel</div> }));
 
 afterEach(() => cleanup());
 

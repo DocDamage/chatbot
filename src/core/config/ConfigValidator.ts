@@ -40,6 +40,17 @@ const configSchema = z.object({
   OPENAI_COMPATIBLE_BASE_URL: optionalUrl,
   OPENAI_COMPATIBLE_MODEL: z.string().optional(),
   OPENAI_COMPATIBLE_PROVIDER_NAME: z.string().optional(),
+  LOCAL_MODEL_ENABLED: booleanText,
+  LOCAL_MODEL_BASE_URL: optionalUrl,
+  LOCAL_MODEL_PROVIDER_NAME: z.string().optional(),
+  LOCAL_MODEL_API_KEY: z.string().optional(),
+  LOCAL_MODEL_ALLOWLIST: z.string().optional(),
+  LOCAL_MODEL_MAX_CONCURRENCY: integerText,
+  LOCAL_MODEL_MAX_QUEUE_DEPTH: integerText,
+  LOCAL_MODEL_TIMEOUT_MS: integerText,
+  LOCAL_MODEL_ROUTING_PRIVACY_MODE: z.enum(['strict_local', 'prefer_local', 'cloud_allowed', 'local_disabled']).optional(),
+  CF_ACCESSIBILITY_CERTIFIED: booleanText,
+  CF_RELEASE_CERTIFIED: booleanText,
   ANTHROPIC_API_KEY: z.string().optional(),
   ANTHROPIC_MODEL: z.string().optional(),
   GEMINI_API_KEY: z.string().optional(),
@@ -172,10 +183,12 @@ export class ConfigValidator {
       if (!config.CORS_ORIGIN || config.CORS_ORIGIN === '*') errors.push('CORS_ORIGIN: hosted mode requires an explicit origin');
       if (config.CORS_ORIGIN?.includes(',')) warnings.push('CORS_ORIGIN: verify each configured origin is intentional');
       if (localExecution) errors.push('LOCAL_EXECUTION_ENABLED: hosted mode forbids local execution and desktop bridges');
+      if (enabled(config.LOCAL_MODEL_ENABLED)) errors.push('LOCAL_MODEL_ENABLED: hosted mode forbids local model endpoints and process management');
       if (!config.API_KEY_ENCRYPTION_SECRET) warnings.push('API_KEY_ENCRYPTION_SECRET: required before persistent provider-key storage is production supported');
     }
     validateUrlPolicy('OLLAMA_URL', config.OLLAMA_URL, profile, errors);
     validateUrlPolicy('OPENAI_COMPATIBLE_BASE_URL', config.OPENAI_COMPATIBLE_BASE_URL, profile, errors);
+    validateUrlPolicy('LOCAL_MODEL_BASE_URL', config.LOCAL_MODEL_BASE_URL, profile, errors);
     validateUrlPolicy('REDIS_URL', config.REDIS_URL, profile, errors);
   }
 
@@ -202,14 +215,14 @@ export class ConfigValidator {
     config: ValidatedConfig = this.getValidatedConfig(),
     profile: RuntimeProfile = resolveDeploymentMode()
   ): SanitizedConfigurationSummary {
-    const credentialNames = ['OPENAI_API_KEY', 'OPENAI_COMPATIBLE_API_KEY', 'ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'HUGGINGFACE_API_KEY']
+    const credentialNames = ['OPENAI_API_KEY', 'OPENAI_COMPATIBLE_API_KEY', 'LOCAL_MODEL_API_KEY', 'ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'HUGGINGFACE_API_KEY']
       .filter(name => Boolean(config[name]));
     return {
       environment: config.NODE_ENV,
       deploymentMode: profile,
       port: config.PORT,
       corsOrigin: config.CORS_ORIGIN ?? null,
-      provider: String(config.LLM_PROVIDER ?? (enabled(config.USE_OLLAMA) ? 'ollama' : 'template')),
+      provider: String(config.LLM_PROVIDER ?? (enabled(config.USE_OLLAMA) ? 'ollama' : enabled(config.LOCAL_MODEL_ENABLED) ? (config.LOCAL_MODEL_PROVIDER_NAME || 'local') : 'template')),
       configuredProviderCredentials: credentialNames,
       database: config.DATABASE_URL || config.RAG_DATABASE_URL ? 'postgresql' : config.RAG_SQLITE_PATH ? 'sqlite' : 'memory-or-unspecified',
       redisConfigured: Boolean(config.REDIS_URL),

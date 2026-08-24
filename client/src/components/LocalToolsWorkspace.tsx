@@ -8,6 +8,7 @@ import UtilityWorkbenchPanel from './UtilityWorkbenchPanel';
 import MockApiWorkspacePanel from './MockApiWorkspacePanel';
 import WebsiteWorkspacePanel from './WebsiteWorkspacePanel';
 import DesktopCompanionPanel from './DesktopCompanionPanel';
+import CapabilityHubPanel from './CapabilityHubPanel';
 import './LocalToolsWorkspace.css';
 
 export default function LocalToolsWorkspace() {
@@ -27,6 +28,7 @@ export default function LocalToolsWorkspace() {
       </div>
       <nav className="advanced-workspace-nav" aria-label="Advanced workspace areas">
         <button type="button" className={activeGroup === 'overview' ? 'active' : ''} aria-pressed={activeGroup === 'overview'} onClick={() => setActiveGroup('overview')} title="Project context, memory, and documents">Workspace</button>
+        <button type="button" className={activeGroup === 'hub' ? 'active' : ''} aria-pressed={activeGroup === 'hub'} onClick={() => setActiveGroup('hub')} title="Unified Capability Hub, job lifecycle, and policy">Capability Hub</button>
         <button type="button" className={activeGroup === 'build' ? 'active' : ''} aria-pressed={activeGroup === 'build'} onClick={() => setActiveGroup('build')} title="Utilities, mock APIs, and website tools">Build &amp; connect</button>
         <button type="button" className={activeGroup === 'automation' ? 'active' : ''} aria-pressed={activeGroup === 'automation'} onClick={() => setActiveGroup('automation')} title="Local runs, approvals, and sprite generation">Automation</button>
       </nav>
@@ -35,6 +37,7 @@ export default function LocalToolsWorkspace() {
           <ProjectIntelligencePanel />
           <DocumentWorkspacePanel />
         </>}
+        {activeGroup === 'hub' && <CapabilityHubPanel />}
         {activeGroup === 'build' && <>
           <UtilityWorkbenchPanel />
           <MockApiWorkspacePanel />

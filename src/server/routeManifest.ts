@@ -42,6 +42,7 @@ import { createSpriteLabRouter } from './routes/sprite-lab';
 import { createStoryGeniusRouter } from './routes/story';
 import { createToolCatalogRouter } from './routes/toolCatalog';
 import { createWebsiteWorkspaceRouter } from './routes/website-workspace';
+import { createCapabilityRouter } from './routes/capabilities';
 
 export type RouteAvailability = 'hosted-and-local' | 'local-only';
 export type FeatureStatus = 'PRODUCTION_PREVIEW' | 'LOCAL_ONLY_EXPERIMENTAL';
@@ -82,6 +83,7 @@ export const routeManifest: RouteManifestEntry[] = [
   localOnly({ name: 'website-workspace', mount: '/api/website-workspace', readiness: true, privilege: 'developer', auditAction: 'website-workspace' }),
   localOnly({ name: 'desktop-companion', mount: '/api/desktop-companion', readiness: true, privilege: 'developer', auditAction: 'desktop-companion' }),
   preview({ name: 'tool-catalog', mount: '/api/tool-catalog', readiness: true, privilege: 'developer', auditAction: 'tool-catalog' }),
+  preview({ name: 'capabilities', mount: '/api/capabilities', readiness: true, privilege: 'developer', auditAction: 'capabilities' }),
   preview({ name: 'sec', mount: '/api/sec', readiness: true, privilege: 'developer', auditAction: 'sec' }),
   preview({ name: 'education', mount: '/api/education', readiness: true, privilege: 'developer', auditAction: 'education' }),
   localOnly({ name: 'sprite-lab', mount: '/api/sprite-lab', readiness: true, privilege: 'developer', auditAction: 'sprite-lab' }),
@@ -127,6 +129,7 @@ interface RegisterRouteDeps {
 }
 
 export function registerManifestRoutes(deps: RegisterRouteDeps): void {
+  const relativeRouterNames = new Set(['capabilities', 'admin', 'export']);
   const routerFactories: Record<string, () => RequestHandler> = {
     'rag-query': () => createRagQueryRouter(deps.getServices()),
     research: () => createResearchRouter(deps.getServices()),
@@ -142,6 +145,7 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
     'website-workspace': () => createWebsiteWorkspaceRouter(deps.workspaceRoot),
     'desktop-companion': () => createDesktopCompanionRouter(deps.workspaceRoot),
     'tool-catalog': () => createToolCatalogRouter(deps.getServices()),
+    capabilities: () => createCapabilityRouter(deps.workspaceRoot),
     sec: () => createSECRouter(deps.getServices()),
     education: () => createEducationRouter(deps.getServices()),
     'sprite-lab': () => createSpriteLabRouter(deps.getServices(), deps.workspaceRoot),
@@ -182,9 +186,18 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
         ? deps.adminOnly
         : entry.privilege === 'developer' ? deps.developerOnly : [];
       const audit = entry.auditAction ? [auditPrivilegedRequest(entry.auditAction)] : [];
-      deps.app.use(entry.mount, ...authHandlers, ...audit);
+      if (relativeRouterNames.has(entry.name)) {
+        // Routers whose route definitions are relative to the declared mount.
+        deps.app.use(entry.mount, ...authHandlers, ...audit, ...routeHandlers);
+      } else {
+        // Legacy routers currently define absolute `/api/...` paths internally.
+        // Preserve that contract while still applying guards at the prefix.
+        deps.app.use(entry.mount, ...authHandlers, ...audit);
+        deps.app.use(...routeHandlers);
+      }
+    } else {
+      deps.app.use(...routeHandlers);
     }
-    deps.app.use(...routeHandlers);
   }
 }
 
