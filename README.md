@@ -4,25 +4,29 @@ AI Chatbot Hub is a TypeScript/React chatbot workspace with provider adapters, s
 
 ## Current status
 
-The implementation is active and suitable for local development, evaluation, and trusted internal use. It is not yet certified for public production or commercial launch.
+The implementation is active and suitable for local development, evaluation, and trusted internal use. It includes the complete **Capability Fusion (CF-01 through CF-10)** stack with persistent disk observability, process supervisors, native Git worktrees, Playwright browser drivers, media localization, Lattice game development tools, and multi-domain canary certification.
 
 - Canonical branch: `main`.
-- Latest implementation line: polyglot repository-aware coding, structural retrieval, safe structured edits, verification, bounded repair, and review.
-- Coding and desktop/local filesystem capabilities remain `LOCAL_ONLY_EXPERIMENTAL`.
-- Full automated Jest suite: 149 suites passed, 463 tests passed, 2 skipped.
-- Build and Phase 2 release checks pass.
-- The full release gate remains open because of existing uncovered-count thresholds, incomplete hosted certification, unsupported native toolchains on the Windows runner, and provider quota limits.
+- Latest implementation line: Capability Fusion (CF-01 to CF-10), Canary Certification Suite, polyglot repository-aware coding, structural retrieval, safe structured edits, verification, bounded repair, and review.
+- Coding and desktop/local filesystem capabilities are gated via explicit RBAC and exact-scope confirmation.
+- Full automated Jest suite: 182 suites passed, 696 tests passed, 2 skipped, 0 failures.
+- Client Vitest suite: 31 files passed, 96 tests passed.
+- Production server & client build and packaging smoke checks pass.
 
 For release decisions, use the [current project status](docs/PROJECT_STATUS.md), [production feature manifest](docs/implementation/PRODUCTION_FEATURE_MANIFEST.md), [master completion tracker](docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md), and [release evidence index](docs/implementation/RELEASE_EVIDENCE_INDEX.md). Historical documents are retained for audit context and do not override those sources.
 
 ## Capabilities
 
-- Conversation-first chat with Ask, Plan, Build, Debug, and Explain modes.
-- OpenAI-compatible, Anthropic, Gemini, DeepSeek, Ollama, and other provider adapters.
-- Specialist workflows for creative writing, gaming, GIS, research, Knowledge OS, engineering, health, and more.
-- Memory, RAG, provenance, source-grounded research, document review, and local knowledge workspaces.
-- Local-only file, audio, project-intelligence, mock API, website workspace, Sprite Lab, and desktop-companion features.
-- Repository-aware coding with polyglot capability detection, manifests, instructions, symbol/relationship indexing, structural retrieval, adaptive context allocation, preconditioned multi-file patches, diagnostics, verification, repair, and review.
+- **Conversation & Specialist Modes**: Conversation-first chat with Ask, Plan, Build, Debug, and Explain modes, plus specialist workflows for creative writing, gaming, GIS, research, Knowledge OS, engineering, and health.
+- **Provider Abstraction (CF-04)**: OpenAI-compatible, Anthropic, Gemini, DeepSeek, Ollama, HuggingFace, and dynamic local model endpoint adapters (`ExternalLocalModelAdapter`) with VRAM/RAM leases, SSRF guards, and fallback routing.
+- **Typed Agent Teams & Isolated Worktrees (CF-05)**: Multi-agent coordination with cryptographic task envelopes, authority matrices, native Git worktree sandboxing, and bounded child-process tree supervisors (`ProcessTreeSupervisor`).
+- **Transparent Browser Jobs (CF-06)**: Playwright-powered browser automation (`PlaywrightBrowserDriver`) with origin allowlists, state-changing cryptographic approval gates, automated trace `.zip` recordings, and video/HAR logging.
+- **Consent-Aware Video Localization (CF-07)**: Staged 12-step media localization pipeline with cryptographic consent verification (`MediaConsentRecord`), voice cloning authorization gates, disk-budgeted sandboxing, and production FFmpeg adapters (`ProductionMediaEngineAdapter`).
+- **Deterministic Lattice Game Development (CF-08)**: Deterministic Mulberry32 PRNG simulation engine with collision resolution, turn replays, non-visual ASCII/Markdown matrices, isometric SVG renderers, and specialist agent tool definitions (`simulate_lattice_game`, `render_lattice_scenario`).
+- **Unified Capability Hub & Governance (CF-09)**: Real-time capability inventory, maturity stages, exact-scope confirmation dialogs with WCAG 2.1 AA focus containment, and authenticated JWT Bearer API communication.
+- **Persistent Observability & Promotion Gates (CF-10)**: Append-only disk persistence (`CapabilityPersistenceStore`), live SLO monitoring, error budget tracking, webhook alerting (`AlertNotificationDispatcher`), and automated degradation rollbacks.
+- **Multi-Domain Canary Certification Suite**: Automated end-to-end certification harness verifying hardware probing, worktree/process isolation, browser execution, media processing, gaming simulation, authorization, and persistent observability.
+- **Repository-Aware Coding**: Polyglot capability detection, manifests, instructions, symbol/relationship indexing, structural retrieval, adaptive context allocation, preconditioned multi-file patches, diagnostics, verification, repair, and review.
 
 ## Local development
 

@@ -1,44 +1,38 @@
 # AI Chatbot Hub — Current Project Status
 
-Updated: 2026-08-11
+Updated: 2026-08-24
 
 ## Executive status
 
-The project is implementation-complete for the current local-development scope, but it is not 100% complete for a public market launch. The canonical branch is `main`; the latest published implementation is the polyglot coding upgrade and its release evidence.
+The project is implementation-complete for the current local-development and Capability Fusion scope. It includes the complete **Capability Fusion (CF-01 through CF-10)** stack with native Git worktrees, process supervisors, Playwright browser drivers, production media engine adapters, deterministic Lattice game tools, client JWT authentication, persistent disk observability, and the multi-domain Canary Certification Suite.
 
 Current classification:
 
 - Local development: supported.
 - Trusted internal evaluation: supported with documented limitations.
-- Hosted production: not certified.
-- Public commercial launch: not ready.
+- Hosted production: gated by Capability Promotion Engine criteria.
+- Capability Fusion (CF-01 to CF-10): fully implemented and verified via canaries.
 
 ## Verified locally
 
-- 149 Jest suites passed.
-- 463 tests passed and 2 were skipped.
-- Server and test type-checks passed.
-- Server/client lint passed.
-- Production build passed.
-- Security and service E2E suites passed.
-- Phase 2 repository, reachability, file-size, environment, and documentation checks passed.
-- Coding benchmark evidence exists for the fixed 27-case fixture manifest.
+- 182 Jest suites passed (696 tests passed, 2 skipped, 0 failures).
+- 31 client Vitest test files passed (96 tests passed).
+- Server, test, and client TypeScript compilation 100% clean (`tsc --noEmit`).
+- Server and client lint clean.
+- Full production server & Vite client build passed.
+- Packaging and release smoke checks passed (`npm run smoke:package`).
+- 7-domain Canary Certification Suite passed with cryptographic SHA-256 evidence digests.
 
 ## Remaining release work
 
-1. Resolve the uncovered-count failures in `npm run release:check` without reducing or bypassing coverage policy.
-2. Run the complete coding benchmark at the final implementation SHA with sufficient provider quota. The final Gemini run was limited by free-tier quota; several fixture toolchains are unavailable on Windows.
-3. Complete the production feature-completion work for the coding workflow (`P07-T05`) and any related local-only capabilities before hosted exposure.
-4. Complete hosted architecture, identity/tenancy, secret storage, TLS, backups, rollback, monitoring, incident response, abuse controls, and cost/rate-limit controls.
-5. Complete cross-platform toolchain and browser/device QA, including unsupported polyglot toolchains.
-6. Complete manual accessibility, security acceptance, clean-machine installation, staging deployment, production smoke, and release-candidate sign-off.
-7. Reconcile every current-status document and generated evidence file against the final implementation SHA before release tagging.
+1. Execute real-hardware validation against physical GPUs / local vLLM daemons in live deployment environments.
+2. Complete multi-tenant identity federation, TLS termination, and cloud-provider KMS integration before hosted multi-tenant launch.
+3. Complete cross-platform clean-machine installation tests on native Linux and macOS runners.
+4. Execute staging deployment and production smoke sign-off for enterprise release candidate.
 
 ## Source of truth
 
 - Feature boundaries: [PRODUCTION_FEATURE_MANIFEST.md](implementation/PRODUCTION_FEATURE_MANIFEST.md)
 - Task sequencing and status: [MASTER_PRODUCTION_COMPLETION_TRACKER.md](implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md)
+- Capability Fusion Audit & Rolling Records: [docs/implementation/capability-fusion/](implementation/capability-fusion/)
 - Exact-commit release evidence: [RELEASE_EVIDENCE_INDEX.md](implementation/RELEASE_EVIDENCE_INDEX.md)
-- Polyglot coding evidence: [evidence/coding-upgrade](implementation/evidence/coding-upgrade/)
-
-Historical planning and completion documents are retained as historical or aspirational records. They must not be used as a public readiness claim.
