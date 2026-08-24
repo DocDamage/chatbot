@@ -289,8 +289,7 @@ export class CodingAgent {
     const structuralEvidence = await this.retrieveEvidence({ query: message, maxItems: 24 });
     const structurallySelected = structuralEvidence
       .map(item => item.path)
-      .filter((file): file is string => Boolean(file))
-      .filter(file => !isSensitiveWorkspacePath(file));
+      .filter((file): file is string => Boolean(file));
     const files = this.listFiles('.', 1000);
     const scored = files
       .filter(file => /\.(ts|tsx|js|jsx|json|md)$/.test(file))
