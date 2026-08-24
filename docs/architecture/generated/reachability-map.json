@@ -1612,6 +1612,22 @@
       "specifier": "./service"
     },
     {
+      "importer": "src/core/coding/architecture/ArchitectureCollectorCoverage.test.ts",
+      "specifier": "./service"
+    },
+    {
+      "importer": "src/core/coding/architecture/ArchitectureRelationshipsCoverage.test.ts",
+      "specifier": "./base.css"
+    },
+    {
+      "importer": "src/core/coding/architecture/ArchitectureRelationshipsCoverage.test.ts",
+      "specifier": "./does-not-exist"
+    },
+    {
+      "importer": "src/core/coding/architecture/ArchitectureRelationshipsCoverage.test.ts",
+      "specifier": "./helper"
+    },
+    {
       "importer": "src/core/coding/index/RelationshipStore.test.ts",
       "specifier": "./b"
     },
@@ -2889,6 +2905,15 @@
       "src/core/coding/architecture/RepositoryArchitectureSchema.ts",
       "src/core/coding/architecture/__tests__/ArchitectureFixture.ts"
     ],
+    "src/core/coding/architecture/ArchitectureCollectorCoverage.test.ts": [
+      "src/core/coding/architecture/ArchitectureFeatureCollector.ts",
+      "src/core/coding/architecture/ArchitectureGraphCollector.ts",
+      "src/core/coding/architecture/ArchitectureIdentity.ts",
+      "src/core/coding/architecture/ArchitectureStructureCollector.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/architecture/RepositoryArchitectureBuilder.ts",
+      "src/core/coding/index/ParserProvider.ts"
+    ],
     "src/core/coding/architecture/ArchitectureDetectors.ts": [
       "src/core/coding/architecture/ArchitectureIdentity.ts",
       "src/core/coding/architecture/ArchitectureTypes.ts",
@@ -2917,6 +2942,16 @@
     ],
     "src/core/coding/architecture/ArchitectureRelationships.ts": [
       "src/core/coding/architecture/ArchitectureDetectors.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/index/ParserProvider.ts"
+    ],
+    "src/core/coding/architecture/ArchitectureRelationshipsCoverage.test.ts": [
+      "src/core/coding/architecture/ArchitectureFeatureCollector.ts",
+      "src/core/coding/architecture/ArchitectureGraphCollector.ts",
+      "src/core/coding/architecture/ArchitectureIdentity.ts",
+      "src/core/coding/architecture/ArchitectureRelationshipCollector.ts",
+      "src/core/coding/architecture/ArchitectureRelationships.ts",
+      "src/core/coding/architecture/ArchitectureStructureCollector.ts",
       "src/core/coding/architecture/ArchitectureTypes.ts",
       "src/core/coding/index/ParserProvider.ts"
     ],
@@ -5459,5 +5494,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1066
+  "sourceRecordCount": 1068
 }

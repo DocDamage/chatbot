@@ -63,6 +63,7 @@ function relationshipFiles(): ScannedArchitectureFile[] {
       "import express from 'express';",
       "import fs from 'node:fs';",
       "import scoped from '@scope/pkg/subpath';",
+      'export class MissingBaseChild extends NotDefined {}',
       'export class Service extends Base {',
       '  reference() { const held = helper; return held; }',
       '  run() { return helper(); }',
@@ -72,11 +73,11 @@ function relationshipFiles(): ScannedArchitectureFile[] {
       'localOnly();',
       'const zz = 1;'
     ].join('\n'), [
-      symbol('src/service.ts', 'Service', 'class', 5),
-      symbol('src/service.ts', 'reference', 'method', 6),
-      symbol('src/service.ts', 'run', 'method', 7),
-      symbol('src/service.ts', 'Worker', 'class', 9),
-      symbol('src/service.ts', 'localOnly', 'function', 10)
+      symbol('src/service.ts', 'Service', 'class', 6),
+      symbol('src/service.ts', 'reference', 'method', 7),
+      symbol('src/service.ts', 'run', 'method', 8),
+      symbol('src/service.ts', 'Worker', 'class', 10),
+      symbol('src/service.ts', 'localOnly', 'function', 11)
     ]),
     source('src/service.test.ts', [
       "import { helper } from './helper';",
@@ -102,6 +103,7 @@ function relationshipFiles(): ScannedArchitectureFile[] {
     ]),
     source('native/main.c', [
       '#include "helper.h"',
+      '#include "missing.h"',
       '#include <stdio.h>',
       'int main(void) { return helper(); }'
     ].join('\n')),
@@ -121,6 +123,9 @@ function relationshipFiles(): ScannedArchitectureFile[] {
     source('internal/api/api.go', 'package api\nfunc Run() {}', [
       symbol('internal/api/api.go', 'Run', 'function', 2)
     ]),
+    source('nested/go.mod', 'module nested.example/demo\n\ngo 1.24'),
+    source('nested/main.go', 'package main\nimport "nested.example/demo/internal/thing"'),
+    source('nested/internal/thing/thing.go', 'package thing'),
     source('rust/Cargo.toml', [
       '[package]',
       'name = "relationship-rust"',
@@ -220,7 +225,10 @@ describe('CF-01 relationship branch coverage', () => {
     expect(find(relationships, value =>
       value.kind === 'calls' && value.targetSymbol?.name === 'helper'
     )).toBeDefined();
-    expect(relationships.some(value => value.targetSymbol?.name === 'duplicate')).toBe(false);
+    expect(relationships.some(value =>
+      value.sourceFile === 'src/use-dup.ts'
+      && value.targetSymbol?.name === 'duplicate'
+    )).toBe(false);
     expect(relationships.some(value => value.targetSymbol?.name === 'localOnly')).toBe(false);
   });
 
