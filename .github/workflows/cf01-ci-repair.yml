@@ -68,6 +68,11 @@ jobs:
               r'dependencies: dedupe(dependencies, value => `${value.scope}\0${value.name}`),',
               'dependencies: dedupe(dependencies, value => value.name),'
           )
+          replace_once(
+              detectors,
+              '(?:[<>=!~].*)?',
+              '(?:[<>=!~][^\'\"]*)?'
+          )
 
           tools = 'src/core/tools/ArchitectureRepoTools.ts'
           old_tools = (
