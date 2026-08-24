@@ -24,7 +24,7 @@ export interface HybridStructuralCandidate {
   reason: string;
 }
 
-export interface HybridVectorCandidate extends HybridStructuralCandidate {}
+export type HybridVectorCandidate = HybridStructuralCandidate;
 
 export interface HybridSearchInput {
   query: string;
