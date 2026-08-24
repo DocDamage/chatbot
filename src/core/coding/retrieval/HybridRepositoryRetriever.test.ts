@@ -14,7 +14,7 @@ describe('HybridRepositoryRetriever', () => {
       await provider.build({ repositoryVersion: 'fixture-v1' });
       const retriever = new HybridRepositoryRetriever(provider);
       const first = await retriever.search({ query: 'resolve scoped symbol', repositoryVersion: 'fixture-v1', symbols: ['resolveScopedSymbol'], diagnostics: ['src.ts'] });
-      const second = await retriever.search({ query: 'resolve scoped symbol', repositoryVersion: 'fixture-v1', symbols: ['resolveScopedSymbol'] });
+      const second = await retriever.search({ query: 'resolve scoped symbol', repositoryVersion: 'fixture-v1', symbols: ['resolveScopedSymbol'], diagnostics: ['src.ts'] });
 
       expect(first).toEqual(second);
       expect(first.results[0]).toEqual(expect.objectContaining({
