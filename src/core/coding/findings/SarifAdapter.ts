@@ -1,5 +1,3 @@
-[ERROR] - (starship::print): Under a 'dumb' terminal (TERM=dumb).
-
 import { createHash } from 'crypto';
 import { FindingSeverity, RepositoryFinding } from './RepositoryFindings';
 
