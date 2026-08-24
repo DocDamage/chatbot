@@ -89,6 +89,7 @@ describe('CodingAgent', () => {
       expect(result.filesInspected).toEqual(expect.arrayContaining(['src/app.py', 'src/base.py', 'tests/test_app.py', 'pyproject.toml']));
       expect((adapter.generate as jest.Mock).mock.calls[0][0].prompt).toEqual(expect.stringContaining('pyproject.toml'));
       expect((adapter.generate as jest.Mock).mock.calls[0][0].prompt).toEqual(expect.stringContaining('tests/test_app.py'));
+      expect(result.adaptiveContext?.items.some(item => item.reason.includes('BM25 lexical match'))).toBe(true);
     } finally {
       fs.rmSync(root, { recursive: true, force: true });
     }
