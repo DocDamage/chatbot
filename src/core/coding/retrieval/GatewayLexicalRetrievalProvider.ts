@@ -179,7 +179,7 @@ export class GatewayLexicalRetrievalProvider implements LexicalRetrievalProvider
     for (const term of terms) {
       const count = document.terms.get(term)?.length;
       if (!count) continue;
-      const df = generation.postings.get(term)?.size || 0;
+      const df = generation.postings.get(term)!.size;
       const idf = Math.log(1 + (generation.documentCount - df + 0.5) / (df + 0.5));
       bm25 += idf * (count * (k1 + 1)) / (count + k1 * (1 - b + b * document.length / Math.max(1, generation.averageLength)));
     }
