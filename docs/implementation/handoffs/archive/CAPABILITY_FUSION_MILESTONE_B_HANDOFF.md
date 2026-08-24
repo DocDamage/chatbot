@@ -17,7 +17,7 @@
 
 ## Verification
 
-Focused type checks, tests, lint, and SBOM generation passed locally. Final completion requires the exact final PR head to pass the full CI matrix and Required CI gate.
+CI run #394 passed the complete matrix and Required CI gate on `faafd9e8602e8c573a3d845849654e2862e11400`.
 
 ## Limitations
 
