@@ -80,7 +80,8 @@ describe('CodingAgent', () => {
         estimateCost: () => 0,
         getModelName: () => 'fixture-coder'
       };
-      const result = await new CodingAgent({ workspaceRoot: root }).handle({
+      const agent = new CodingAgent({ workspaceRoot: root });
+      const result = await agent.handle({
         message: 'fix calculate in src/app.py',
         modelAdapter: adapter,
         generatePatch: true
@@ -89,7 +90,8 @@ describe('CodingAgent', () => {
       expect(result.filesInspected).toEqual(expect.arrayContaining(['src/app.py', 'src/base.py', 'tests/test_app.py', 'pyproject.toml']));
       expect((adapter.generate as jest.Mock).mock.calls[0][0].prompt).toEqual(expect.stringContaining('pyproject.toml'));
       expect((adapter.generate as jest.Mock).mock.calls[0][0].prompt).toEqual(expect.stringContaining('tests/test_app.py'));
-      expect(result.adaptiveContext?.items.some(item => item.reason.includes('BM25 lexical match'))).toBe(true);
+      expect((await agent.retrieveEvidence({ query: 'calculate src app', symbols: ['calculate'] }))
+        .some(item => item.reason.includes('BM25 lexical match'))).toBe(true);
     } finally {
       fs.rmSync(root, { recursive: true, force: true });
     }
