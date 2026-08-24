@@ -1,1 +1,1 @@
-{"status":"passed","verificationHead":"faafd9e8602e8c573a3d845849654e2862e11400","workflowRun":32725082931,"requiredCiGate":"success","maturity":"LOCAL_ONLY_EXPERIMENTAL"}
+{"status":"passed","verificationHead":"d591afb48bfd6986ca9704568eb9a67c870f4f0a","workflowRun":32725484088,"requiredCiGate":"success","maturity":"LOCAL_ONLY_EXPERIMENTAL","scope":"documentation-finalized CF-03 PR head"}
