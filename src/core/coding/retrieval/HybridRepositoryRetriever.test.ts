@@ -30,4 +30,29 @@ describe('HybridRepositoryRetriever', () => {
       fs.rmSync(root, { recursive: true, force: true });
     }
   });
+  it('merges structural/vector-only candidates and honors cancellation', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'hybrid-retrieval-'));
+    try {
+      const provider = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(root));
+      await provider.build({ repositoryVersion: 'fixture-v1' });
+      const retriever = new HybridRepositoryRetriever(provider);
+      const result = await retriever.search({
+        query: 'no lexical match',
+        repositoryVersion: 'fixture-v1',
+        structural: [{ path: 'architecture.ts', lineStart: 3, score: 0.8, reason: 'structural neighborhood' }],
+        vector: [{ path: 'architecture.ts', lineStart: 3, score: 0.7, reason: 'vector similarity' }]
+      });
+      expect(result.results[0]).toEqual(expect.objectContaining({
+        path: 'architecture.ts',
+        warnings: [expect.stringContaining('degraded optional provider')],
+        scores: expect.objectContaining({ structural: 0.8, vector: 0.7 })
+      }));
+      const controller = new AbortController();
+      controller.abort();
+      await expect(retriever.search({ query: 'x', repositoryVersion: 'fixture-v1' }, controller.signal)).rejects.toThrow('cancelled');
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
 });
