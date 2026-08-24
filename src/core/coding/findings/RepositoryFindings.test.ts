@@ -57,6 +57,13 @@ describe('repository findings', () => {
     ] }] });
     expect(findings).toEqual([expect.objectContaining({ ruleId: 'explicit', message: 'exact', evidence: [expect.objectContaining({ lineStart: 1, lineEnd: 1 })] })]);
   });
+  it('sorts multiple valid SARIF results deterministically', () => {
+    const results = ingestSarif({ version: '2.1.0', runs: [{ results: [
+      { ruleId: 'z-rule', locations: [{ physicalLocation: { artifactLocation: { uri: 'src/z.ts' } } }] },
+      { ruleId: 'a-rule', locations: [{ physicalLocation: { artifactLocation: { uri: 'src/a.ts' } } }] }
+    ] }] });
+    expect(results.map(value => value.id)).toEqual([...results.map(value => value.id)].sort());
+  });
   it('generates a deterministic CycloneDX 1.5 document from gateway access', () => {
     const gateway = new ApprovedRepositoryGateway(root);
     expect(generateCycloneDxSbom(gateway)).toEqual(generateCycloneDxSbom(gateway));
@@ -83,6 +90,10 @@ describe('repository findings', () => {
   it('recognizes supported dependency lockfiles', () => {
     fs.writeFileSync(path.join(root, 'package-lock.json'), '{}');
     expect(new RepositoryFindingsAnalyzer(new ApprovedRepositoryGateway(root)).analyze().findings.some(value => value.ruleId === 'CF03-DEPENDENCY-LOCKFILE')).toBe(false);
+  });
+  it('skips non-source files while preserving bounded repository analysis', () => {
+    fs.writeFileSync(path.join(root, 'notes.md'), 'eval(');
+    expect(new RepositoryFindingsAnalyzer(new ApprovedRepositoryGateway(root)).analyze().findings.some(value => value.evidence.some(item => item.path === 'notes.md'))).toBe(false);
   });
 });
 
