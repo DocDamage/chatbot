@@ -26,11 +26,24 @@ describe('repository findings', () => {
     expect(() => ingestSarif({ version: '2.0.0' })).toThrow('2.1.0');
     expect(() => validateSarifDocument({ version: '2.1.0', runs: {} as never })).toThrow('runs');
   });
+  it('maps SARIF levels and defaults missing result metadata safely', () => {
+    const findings = ingestSarif({ version: '2.1.0', runs: [{ tool: { driver: { name: 'fixture' } }, results: [
+      { level: 'error', locations: [{ physicalLocation: { artifactLocation: { uri: 'src/error.ts' } } }] },
+      { level: 'note', locations: [{ physicalLocation: { artifactLocation: { uri: 'src/note.ts' }, region: { startLine: 4, endLine: 6 } } }] }
+    ] }] });
+    expect(findings).toEqual(expect.arrayContaining([expect.objectContaining({ ruleId: 'fixture-unknown', severity: 'high', message: 'SARIF finding' }), expect.objectContaining({ severity: 'info', evidence: [expect.objectContaining({ lineStart: 4, lineEnd: 6 })] })]));
+  });
   it('generates a deterministic CycloneDX 1.5 document from gateway access', () => {
     const gateway = new ApprovedRepositoryGateway(root);
     expect(generateCycloneDxSbom(gateway)).toEqual(generateCycloneDxSbom(gateway));
     expect(generateCycloneDxSbom(gateway)).toEqual(expect.objectContaining({ bomFormat: 'CycloneDX', specVersion: '1.5', components: [expect.objectContaining({ name: 'zod', purl: 'pkg:npm/zod@%5E3.0.0' })] }));
     expect(() => validateCycloneDxSbom({ ...generateCycloneDxSbom(gateway), specVersion: '1.4' as '1.5' })).toThrow('Invalid');
+  });
+  it('uses safe defaults for unnamed dependency-free manifests and rejects invalid components', () => {
+    fs.writeFileSync(path.join(root, 'package.json'), '{}');
+    const bom = generateCycloneDxSbom(new ApprovedRepositoryGateway(root));
+    expect(bom).toEqual(expect.objectContaining({ metadata: expect.objectContaining({ component: expect.objectContaining({ name: 'repository', version: '0.0.0' }) }), components: [] }));
+    expect(() => validateCycloneDxSbom({ ...bom, components: [{ type: 'library', name: '', version: '', purl: 'invalid' }] })).toThrow('component');
   });
 });
 
