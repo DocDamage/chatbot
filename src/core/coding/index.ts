@@ -1,3 +1,5 @@
+[ERROR] - (starship::print): Under a 'dumb' terminal (TERM=dumb).
+
 export * from './types';
 export * from './CodingController';
 export * from './CodingRequestRouter';
@@ -30,3 +32,8 @@ export * from './knowledge/ProvenancePolicy';
 export * from './knowledge/CodingKnowledgeAuthority';
 export * from './model/CodingModelRouter';
 export * from './security/WorkspacePathPolicy';
+export * from './security/ApprovedRepositoryGateway';
+export * from './findings/RepositoryFindings';
+export * from './findings/SarifAdapter';
+export * from './findings/CycloneDxSbom';
+
