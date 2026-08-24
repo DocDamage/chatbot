@@ -72,7 +72,7 @@ describe('GatewayLexicalRetrievalProvider', () => {
   });
 
   it('distinguishes empty, phrase, and no-match searches', async () => {
-    fs.writeFileSync(path.join(root, 'phrase.ts'), 'export const exact phrase token = true;');
+    fs.writeFileSync(path.join(root, 'phrase.ts'), '// exact phrase token\nexport const exactPhraseToken = true;');
     const provider = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(root));
     await provider.build({ repositoryVersion: 'fixture-v1' });
     expect((await provider.search({ query: ' ' })).warnings).toEqual(['Query contains no searchable terms.']);
