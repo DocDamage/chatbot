@@ -48,6 +48,15 @@ describe('repository findings', () => {
     expect(ingestSarif({ version: '2.1.0', runs: [] })).toEqual([]);
     expect(() => validateSarifDocument({ version: '2.1.0', runs: [{ results: undefined }] })).not.toThrow();
   });
+  it('rejects malformed SARIF result arrays and handles explicit and null-byte values', () => {
+    expect(() => validateSarifDocument({ version: '2.1.0', runs: [{ results: {} as never }] })).toThrow('results');
+    const findings = ingestSarif({ version: '2.1.0', runs: [{ results: [
+      { ruleId: 'explicit', message: { text: 'exact' }, locations: [{ physicalLocation: { artifactLocation: { uri: 'src/exact.ts' }, region: { startLine: 0, endLine: 0 } } }] },
+      { locations: [{ physicalLocation: { artifactLocation: { uri: 'src/blocked\0.ts' } } }] },
+      { locations: [{ physicalLocation: { artifactLocation: { uri: '' } } }] }
+    ] }] });
+    expect(findings).toEqual([expect.objectContaining({ ruleId: 'explicit', message: 'exact', evidence: [expect.objectContaining({ lineStart: 1, lineEnd: 1 })] })]);
+  });
   it('generates a deterministic CycloneDX 1.5 document from gateway access', () => {
     const gateway = new ApprovedRepositoryGateway(root);
     expect(generateCycloneDxSbom(gateway)).toEqual(generateCycloneDxSbom(gateway));
