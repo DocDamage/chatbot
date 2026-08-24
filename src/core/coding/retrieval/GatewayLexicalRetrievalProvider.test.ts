@@ -71,4 +71,14 @@ describe('GatewayLexicalRetrievalProvider', () => {
     await expect(provider.build({ repositoryVersion: 'fixture-v1', signal: controller.signal })).rejects.toThrow('cancelled');
   });
 
+  it('distinguishes empty, phrase, and no-match searches', async () => {
+    fs.writeFileSync(path.join(root, 'phrase.ts'), 'export const exact phrase token = true;');
+    const provider = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(root));
+    await provider.build({ repositoryVersion: 'fixture-v1' });
+    expect((await provider.search({ query: ' ' })).warnings).toEqual(['Query contains no searchable terms.']);
+    expect((await provider.search({ query: 'exact phrase token', phrase: true })).results[0].reasons)
+      .toEqual(expect.arrayContaining(['Exact phrase match']));
+    expect((await provider.search({ query: 'unfindable vocabulary' })).results).toEqual([]);
+  });
+
 });
