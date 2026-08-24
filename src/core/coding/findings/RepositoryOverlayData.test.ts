@@ -23,5 +23,9 @@ describe('repository overlay data', () => {
     expect(buildRepositoryOverlayData([finding], { ownership: new Map(), churn: new Map(), testedPaths: new Set(), trustBoundaries: new Set() })).toEqual([expect.objectContaining({ ownership: undefined, churn: undefined, testGap: true, trustBoundary: false, hotspot: 0 })]);
     expect(buildRepositoryOverlayData([])).toEqual([]);
   });
+  it('derives a trust boundary from a route finding when explicit metrics do not flag it', () => {
+    const finding: RepositoryFinding = { id: 'f4', ruleId: 'CF03-ROUTE-POLICY', severity: 'medium', disposition: 'signal', title: 'route', message: '', confidence: 0.5, source: 'repository-rule', evidence: [{ path: 'route.ts', lineStart: 1, lineEnd: 1, excerpt: '', digest: 'd' }] };
+    expect(buildRepositoryOverlayData([finding], { trustBoundaries: new Set() })[0].trustBoundary).toBe(true);
+  });
 });
 
