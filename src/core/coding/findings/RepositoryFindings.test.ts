@@ -2,9 +2,9 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { ApprovedRepositoryGateway } from '../security/ApprovedRepositoryGateway';
-import { generateCycloneDxSbom } from './CycloneDxSbom';
+import { generateCycloneDxSbom, validateCycloneDxSbom } from './CycloneDxSbom';
 import { RepositoryFindingsAnalyzer } from './RepositoryFindings';
-import { ingestSarif } from './SarifAdapter';
+import { ingestSarif, validateSarifDocument } from './SarifAdapter';
 
 describe('repository findings', () => {
   let root: string;
@@ -24,11 +24,13 @@ describe('repository findings', () => {
     const findings = ingestSarif({ version: '2.1.0', runs: [{ results: [{ ruleId: 'example-rule', level: 'warning', message: { text: 'review me' }, locations: [{ physicalLocation: { artifactLocation: { uri: 'src/a.ts' }, region: { startLine: 2 } } }] }, { locations: [{ physicalLocation: { artifactLocation: { uri: '../escape.ts' } } }] }] }] });
     expect(findings).toEqual([expect.objectContaining({ ruleId: 'example-rule', severity: 'medium', evidence: [expect.objectContaining({ path: 'src/a.ts', lineStart: 2 })] })]);
     expect(() => ingestSarif({ version: '2.0.0' })).toThrow('2.1.0');
+    expect(() => validateSarifDocument({ version: '2.1.0', runs: {} as never })).toThrow('runs');
   });
   it('generates a deterministic CycloneDX 1.5 document from gateway access', () => {
     const gateway = new ApprovedRepositoryGateway(root);
     expect(generateCycloneDxSbom(gateway)).toEqual(generateCycloneDxSbom(gateway));
     expect(generateCycloneDxSbom(gateway)).toEqual(expect.objectContaining({ bomFormat: 'CycloneDX', specVersion: '1.5', components: [expect.objectContaining({ name: 'zod', purl: 'pkg:npm/zod@%5E3.0.0' })] }));
+    expect(() => validateCycloneDxSbom({ ...generateCycloneDxSbom(gateway), specVersion: '1.4' as '1.5' })).toThrow('Invalid');
   });
 });
 
