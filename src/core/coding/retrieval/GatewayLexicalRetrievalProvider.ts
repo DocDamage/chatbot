@@ -200,7 +200,7 @@ export class GatewayLexicalRetrievalProvider implements LexicalRetrievalProvider
 }
 
 function tokenize(value: string): string[] {
-  return value.toLowerCase().replace(/([a-z])([A-Z])/g, '$1 $2').split(/[^a-z0-9_]+/).filter(term => term.length > 1);
+  return value.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().split(/[^a-z0-9_]+/).filter(term => term.length > 1);
 }
 function positions(tokens: string[]): Map<string, number[]> {
   return tokens.reduce((result, token, index) => { const values = result.get(token) || []; values.push(index); result.set(token, values); return result; }, new Map<string, number[]>());
