@@ -1,0 +1,453 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:43cfa2dd03630dfaea04b4c1d739771a",
+  "version": 1,
+  "metadata": {
+    "component": {
+      "type": "application",
+      "name": "ai-chatbot-hub",
+      "version": "1.0.0"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "@anthropic-ai/sdk",
+      "version": "^0.20.9",
+      "purl": "pkg:npm/%40anthropic-ai%2Fsdk@%5E0.20.9"
+    },
+    {
+      "type": "library",
+      "name": "@google/generative-ai",
+      "version": "^0.24.1",
+      "purl": "pkg:npm/%40google%2Fgenerative-ai@%5E0.24.1"
+    },
+    {
+      "type": "library",
+      "name": "@huggingface/transformers",
+      "version": "^4.2.0",
+      "purl": "pkg:npm/%40huggingface%2Ftransformers@%5E4.2.0"
+    },
+    {
+      "type": "library",
+      "name": "@toon-format/toon",
+      "version": "^2.1.0",
+      "purl": "pkg:npm/%40toon-format%2Ftoon@%5E2.1.0"
+    },
+    {
+      "type": "library",
+      "name": "@types/better-sqlite3",
+      "version": "^7.6.8",
+      "purl": "pkg:npm/%40types%2Fbetter-sqlite3@%5E7.6.8"
+    },
+    {
+      "type": "library",
+      "name": "@types/cors",
+      "version": "^2.8.17",
+      "purl": "pkg:npm/%40types%2Fcors@%5E2.8.17"
+    },
+    {
+      "type": "library",
+      "name": "@types/express",
+      "version": "^4.17.21",
+      "purl": "pkg:npm/%40types%2Fexpress@%5E4.17.21"
+    },
+    {
+      "type": "library",
+      "name": "@types/fluent-ffmpeg",
+      "version": "^2.1.28",
+      "purl": "pkg:npm/%40types%2Ffluent-ffmpeg@%5E2.1.28"
+    },
+    {
+      "type": "library",
+      "name": "@types/jest",
+      "version": "^29.5.12",
+      "purl": "pkg:npm/%40types%2Fjest@%5E29.5.12"
+    },
+    {
+      "type": "library",
+      "name": "@types/jsonwebtoken",
+      "version": "^9.0.6",
+      "purl": "pkg:npm/%40types%2Fjsonwebtoken@%5E9.0.6"
+    },
+    {
+      "type": "library",
+      "name": "@types/multer",
+      "version": "^1.4.11",
+      "purl": "pkg:npm/%40types%2Fmulter@%5E1.4.11"
+    },
+    {
+      "type": "library",
+      "name": "@types/natural",
+      "version": "^5.1.5",
+      "purl": "pkg:npm/%40types%2Fnatural@%5E5.1.5"
+    },
+    {
+      "type": "library",
+      "name": "@types/node",
+      "version": "^20.10.5",
+      "purl": "pkg:npm/%40types%2Fnode@%5E20.10.5"
+    },
+    {
+      "type": "library",
+      "name": "@types/node-cron",
+      "version": "^3.0.11",
+      "purl": "pkg:npm/%40types%2Fnode-cron@%5E3.0.11"
+    },
+    {
+      "type": "library",
+      "name": "@types/pdf-parse",
+      "version": "^1.1.4",
+      "purl": "pkg:npm/%40types%2Fpdf-parse@%5E1.1.4"
+    },
+    {
+      "type": "library",
+      "name": "@types/pg",
+      "version": "^8.10.9",
+      "purl": "pkg:npm/%40types%2Fpg@%5E8.10.9"
+    },
+    {
+      "type": "library",
+      "name": "@types/supertest",
+      "version": "^6.0.2",
+      "purl": "pkg:npm/%40types%2Fsupertest@%5E6.0.2"
+    },
+    {
+      "type": "library",
+      "name": "@types/uuid",
+      "version": "^9.0.8",
+      "purl": "pkg:npm/%40types%2Fuuid@%5E9.0.8"
+    },
+    {
+      "type": "library",
+      "name": "@types/ws",
+      "version": "^8.5.10",
+      "purl": "pkg:npm/%40types%2Fws@%5E8.5.10"
+    },
+    {
+      "type": "library",
+      "name": "@typescript-eslint/eslint-plugin",
+      "version": "^8.59.4",
+      "purl": "pkg:npm/%40typescript-eslint%2Feslint-plugin@%5E8.59.4"
+    },
+    {
+      "type": "library",
+      "name": "@typescript-eslint/parser",
+      "version": "^8.59.4",
+      "purl": "pkg:npm/%40typescript-eslint%2Fparser@%5E8.59.4"
+    },
+    {
+      "type": "library",
+      "name": "7zip-bin",
+      "version": "^5.2.0",
+      "purl": "pkg:npm/7zip-bin@%5E5.2.0"
+    },
+    {
+      "type": "library",
+      "name": "adm-zip",
+      "version": "^0.5.17",
+      "purl": "pkg:npm/adm-zip@%5E0.5.17"
+    },
+    {
+      "type": "library",
+      "name": "axios",
+      "version": "^1.13.2",
+      "purl": "pkg:npm/axios@%5E1.13.2"
+    },
+    {
+      "type": "library",
+      "name": "better-sqlite3",
+      "version": "^12.10.0",
+      "purl": "pkg:npm/better-sqlite3@%5E12.10.0"
+    },
+    {
+      "type": "library",
+      "name": "cheerio",
+      "version": "^1.0.0-rc.12",
+      "purl": "pkg:npm/cheerio@%5E1.0.0-rc.12"
+    },
+    {
+      "type": "library",
+      "name": "compromise",
+      "version": "^14.14.5",
+      "purl": "pkg:npm/compromise@%5E14.14.5"
+    },
+    {
+      "type": "library",
+      "name": "concurrently",
+      "version": "^8.2.2",
+      "purl": "pkg:npm/concurrently@%5E8.2.2"
+    },
+    {
+      "type": "library",
+      "name": "cors",
+      "version": "^2.8.5",
+      "purl": "pkg:npm/cors@%5E2.8.5"
+    },
+    {
+      "type": "library",
+      "name": "csv-parse",
+      "version": "^5.5.2",
+      "purl": "pkg:npm/csv-parse@%5E5.5.2"
+    },
+    {
+      "type": "library",
+      "name": "dotenv",
+      "version": "^16.3.1",
+      "purl": "pkg:npm/dotenv@%5E16.3.1"
+    },
+    {
+      "type": "library",
+      "name": "eslint",
+      "version": "^8.56.0",
+      "purl": "pkg:npm/eslint@%5E8.56.0"
+    },
+    {
+      "type": "library",
+      "name": "express",
+      "version": "^4.18.2",
+      "purl": "pkg:npm/express@%5E4.18.2"
+    },
+    {
+      "type": "library",
+      "name": "fluent-ffmpeg",
+      "version": "^2.1.3",
+      "purl": "pkg:npm/fluent-ffmpeg@%5E2.1.3"
+    },
+    {
+      "type": "library",
+      "name": "helmet",
+      "version": "^8.1.0",
+      "purl": "pkg:npm/helmet@%5E8.1.0"
+    },
+    {
+      "type": "library",
+      "name": "ioredis",
+      "version": "^5.3.2",
+      "purl": "pkg:npm/ioredis@%5E5.3.2"
+    },
+    {
+      "type": "library",
+      "name": "jest",
+      "version": "^29.7.0",
+      "purl": "pkg:npm/jest@%5E29.7.0"
+    },
+    {
+      "type": "library",
+      "name": "jsonwebtoken",
+      "version": "^9.0.2",
+      "purl": "pkg:npm/jsonwebtoken@%5E9.0.2"
+    },
+    {
+      "type": "library",
+      "name": "mammoth",
+      "version": "^1.12.0",
+      "purl": "pkg:npm/mammoth@%5E1.12.0"
+    },
+    {
+      "type": "library",
+      "name": "ml-distance",
+      "version": "^2.1.1",
+      "purl": "pkg:npm/ml-distance@%5E2.1.1"
+    },
+    {
+      "type": "library",
+      "name": "mobi",
+      "version": "^0.0.1",
+      "purl": "pkg:npm/mobi@%5E0.0.1"
+    },
+    {
+      "type": "library",
+      "name": "multer",
+      "version": "^1.4.5-lts.1",
+      "purl": "pkg:npm/multer@%5E1.4.5-lts.1"
+    },
+    {
+      "type": "library",
+      "name": "natural",
+      "version": "^6.12.0",
+      "purl": "pkg:npm/natural@%5E6.12.0"
+    },
+    {
+      "type": "library",
+      "name": "node-cache",
+      "version": "^5.1.2",
+      "purl": "pkg:npm/node-cache@%5E5.1.2"
+    },
+    {
+      "type": "library",
+      "name": "node-cron",
+      "version": "^4.2.1",
+      "purl": "pkg:npm/node-cron@%5E4.2.1"
+    },
+    {
+      "type": "library",
+      "name": "openai",
+      "version": "^4.20.1",
+      "purl": "pkg:npm/openai@%5E4.20.1"
+    },
+    {
+      "type": "library",
+      "name": "pdf-parse",
+      "version": "^1.1.1",
+      "purl": "pkg:npm/pdf-parse@%5E1.1.1"
+    },
+    {
+      "type": "library",
+      "name": "pg",
+      "version": "^8.16.3",
+      "purl": "pkg:npm/pg@%5E8.16.3"
+    },
+    {
+      "type": "library",
+      "name": "prettier",
+      "version": "^3.2.4",
+      "purl": "pkg:npm/prettier@%5E3.2.4"
+    },
+    {
+      "type": "library",
+      "name": "puppeteer",
+      "version": "^24.34.0",
+      "purl": "pkg:npm/puppeteer@%5E24.34.0"
+    },
+    {
+      "type": "library",
+      "name": "sharp",
+      "version": "^0.34.5",
+      "purl": "pkg:npm/sharp@%5E0.34.5"
+    },
+    {
+      "type": "library",
+      "name": "supertest",
+      "version": "^6.3.3",
+      "purl": "pkg:npm/supertest@%5E6.3.3"
+    },
+    {
+      "type": "library",
+      "name": "tesseract.js",
+      "version": "^7.0.0",
+      "purl": "pkg:npm/tesseract.js@%5E7.0.0"
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter",
+      "version": "^0.25.1",
+      "purl": "pkg:npm/tree-sitter@%5E0.25.1"
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter-bash",
+      "version": "^0.25.1",
+      "purl": "pkg:npm/tree-sitter-bash@%5E0.25.1"
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter-c",
+      "version": "^0.24.1",
+      "purl": "pkg:npm/tree-sitter-c@%5E0.24.1"
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter-cpp",
+      "version": "^0.23.4",
+      "purl": "pkg:npm/tree-sitter-cpp@%5E0.23.4"
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter-go",
+      "version": "^0.25.0",
+      "purl": "pkg:npm/tree-sitter-go@%5E0.25.0"
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter-java",
+      "version": "^0.23.5",
+      "purl": "pkg:npm/tree-sitter-java@%5E0.23.5"
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter-javascript",
+      "version": "^0.25.0",
+      "purl": "pkg:npm/tree-sitter-javascript@%5E0.25.0"
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter-kotlin",
+      "version": "^0.3.8",
+      "purl": "pkg:npm/tree-sitter-kotlin@%5E0.3.8"
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter-python",
+      "version": "^0.25.0",
+      "purl": "pkg:npm/tree-sitter-python@%5E0.25.0"
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter-rust",
+      "version": "^0.24.0",
+      "purl": "pkg:npm/tree-sitter-rust@%5E0.24.0"
+    },
+    {
+      "type": "library",
+      "name": "tree-sitter-swift",
+      "version": "^0.7.1",
+      "purl": "pkg:npm/tree-sitter-swift@%5E0.7.1"
+    },
+    {
+      "type": "library",
+      "name": "ts-jest",
+      "version": "^29.1.2",
+      "purl": "pkg:npm/ts-jest@%5E29.1.2"
+    },
+    {
+      "type": "library",
+      "name": "tsx",
+      "version": "^4.7.0",
+      "purl": "pkg:npm/tsx@%5E4.7.0"
+    },
+    {
+      "type": "library",
+      "name": "twilio",
+      "version": "^5.11.1",
+      "purl": "pkg:npm/twilio@%5E5.11.1"
+    },
+    {
+      "type": "library",
+      "name": "typescript",
+      "version": "^5.3.3",
+      "purl": "pkg:npm/typescript@%5E5.3.3"
+    },
+    {
+      "type": "library",
+      "name": "uuid",
+      "version": "^9.0.1",
+      "purl": "pkg:npm/uuid@%5E9.0.1"
+    },
+    {
+      "type": "library",
+      "name": "winston",
+      "version": "^3.11.0",
+      "purl": "pkg:npm/winston@%5E3.11.0"
+    },
+    {
+      "type": "library",
+      "name": "ws",
+      "version": "^8.16.0",
+      "purl": "pkg:npm/ws@%5E8.16.0"
+    },
+    {
+      "type": "library",
+      "name": "xml2js",
+      "version": "^0.6.2",
+      "purl": "pkg:npm/xml2js@%5E0.6.2"
+    },
+    {
+      "type": "library",
+      "name": "zod",
+      "version": "^3.22.4",
+      "purl": "pkg:npm/zod@%5E3.22.4"
+    }
+  ]
+}

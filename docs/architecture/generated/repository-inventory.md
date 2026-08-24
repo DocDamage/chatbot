@@ -6,14 +6,14 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1074 |
-| Production source files | 799 |
-| Reachable production files | 618 |
-| Unreachable production files | 181 |
-| Discovered route calls | 355 |
-| Environment variables | 193 |
+| Source files | 1131 |
+| Production source files | 842 |
+| Reachable production files | 643 |
+| Unreachable production files | 199 |
+| Discovered route calls | 369 |
+| Environment variables | 202 |
 | Feature flags | 18 |
-| Files above 300 lines | 66 |
+| Files above 300 lines | 82 |
 
 ## Server route calls
 
@@ -110,6 +110,20 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/business/pricing` | `src/server/routes/business.ts:15` |
 | POST | `/api/business/market` | `src/server/routes/business.ts:19` |
 | POST | `/api/business/unit-economics` | `src/server/routes/business.ts:23` |
+| GET | `/` | `src/server/routes/capabilities.ts:44` |
+| GET | `/jobs/list` | `src/server/routes/capabilities.ts:62` |
+| POST | `/evaluations/run` | `src/server/routes/capabilities.ts:80` |
+| GET | `/metrics/dashboard` | `src/server/routes/capabilities.ts:99` |
+| GET | `/support-bundle` | `src/server/routes/capabilities.ts:110` |
+| GET | `/repository-findings` | `src/server/routes/capabilities.ts:121` |
+| POST | `/promotions/evaluate` | `src/server/routes/capabilities.ts:134` |
+| GET | `/promotions/decisions` | `src/server/routes/capabilities.ts:152` |
+| POST | `/promotions/promote` | `src/server/routes/capabilities.ts:157` |
+| POST | `/promotions/rollback` | `src/server/routes/capabilities.ts:194` |
+| GET | `/:id` | `src/server/routes/capabilities.ts:227` |
+| POST | `/:id/action` | `src/server/routes/capabilities.ts:243` |
+| POST | `/jobs/:id/cancel` | `src/server/routes/capabilities.ts:280` |
+| POST | `/jobs/:id/confirm` | `src/server/routes/capabilities.ts:295` |
 | POST | `/api/chrono/ask` | `src/server/routes/chrono.ts:6` |
 | POST | `/api/code/ask` | `src/server/routes/code.ts:31` |
 | POST | `/api/code/plan` | `src/server/routes/code.ts:46` |
@@ -378,6 +392,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 ## Client panels and workspaces
 
 - `client/src/components/AudioPreviewBrowser.tsx`
+- `client/src/components/CapabilityHubPanel.tsx`
 - `client/src/components/CodeWorkflowPanel.tsx`
 - `client/src/components/ConversationToolsPanel.tsx`
 - `client/src/components/CreativeComposerPanel.tsx`
@@ -424,6 +439,8 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `CARTESIA_API_KEY`
 - `CEREBRAS_API_KEY`
 - `CEREBRAS_MODEL`
+- `CF_ACCESSIBILITY_CERTIFIED`
+- `CF_RELEASE_CERTIFIED`
 - `CLAUDE_MODEL`
 - `CODE_EXECUTOR_SANDBOX`
 - `CODE_EXECUTOR_TIMEOUT`
@@ -441,6 +458,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `DEBUG_MODE`
 - `DEEPSEEK_API_KEY`
 - `DEEPSEEK_MODEL`
+- `DEPLOYMENT_MODE`
 - `DISK_CACHE_DIR`
 - `EAGER_CODING_KNOWLEDGE_LOAD`
 - `EAGER_KNOWLEDGE_LOAD`
@@ -508,6 +526,12 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `LLAVA_MODEL`
 - `LLM_PROVIDER`
 - `LOCAL_KNOWLEDGE_WIKI_DIR`
+- `LOCAL_MODEL_ALLOWLIST`
+- `LOCAL_MODEL_API_KEY`
+- `LOCAL_MODEL_BASE_URL`
+- `LOCAL_MODEL_ENABLED`
+- `LOCAL_MODEL_PROVIDER_NAME`
+- `LOCAL_MODEL_TIMEOUT_MS`
 - `LOGS_DIR`
 - `LOG_LEVEL`
 - `NEWS_API_KEY`
@@ -607,10 +631,13 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | File | Lines |
 |---|---|
 | `client/src/components/AssistantChat.tsx` | 791 |
+| `client/src/components/CapabilityHubPanel.tsx` | 813 |
+| `client/src/components/CapabilityPromotionView.tsx` | 411 |
 | `client/src/components/CreativeComposerPanel.tsx` | 456 |
 | `client/src/components/FLStudioControlPanel.tsx` | 622 |
 | `client/src/components/KnowledgeOSPanel.tsx` | 406 |
 | `client/src/components/ModeSelector.tsx` | 393 |
+| `client/src/components/RepositoryFindingsView.tsx` | 316 |
 | `client/src/components/SettingsMenu.tsx` | 568 |
 | `client/src/components/SpriteLabPanel.tsx` | 378 |
 | `docs/extract_all_snippets.js` | 364 |
@@ -623,13 +650,22 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/analytics/AnalyticsService.ts` | 448 |
 | `src/core/audio/AudioLibraryService.ts` | 458 |
 | `src/core/automation/AutoDrive.ts` | 497 |
+| `src/core/browser/AuthorizedBrowserJob.ts` | 419 |
 | `src/core/browser/BrowserAgent.ts` | 388 |
+| `src/core/browser/BrowserJobRunner.ts` | 444 |
+| `src/core/capabilities/CapabilityRegistry.ts` | 782 |
+| `src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts` | 534 |
+| `src/core/capabilities/observability/CapabilityObservabilityService.ts` | 314 |
+| `src/core/capabilities/promotion/CapabilityPromotionEngine.ts` | 352 |
+| `src/core/coding/teams/AgentTeamCoordinator.ts` | 394 |
+| `src/core/coding/teams/WorktreeLifecycleService.ts` | 332 |
 | `src/core/config/APIKeyManager.ts` | 644 |
 | `src/core/config/ProfileManager.ts` | 434 |
 | `src/core/contracts/UniversalContract.ts` | 321 |
 | `src/core/creative/CreativeWritingAgent.ts` | 345 |
 | `src/core/database/Database.ts` | 550 |
 | `src/core/database/ExpansionMigrations.ts` | 383 |
+| `src/core/gaming/lattice/LatticeSimulationEngine.ts` | 387 |
 | `src/core/gis/GISService.ts` | 581 |
 | `src/core/graph/KnowledgeGraphIndexer.ts` | 319 |
 | `src/core/initialization/ServiceInitializer.ts` | 852 |
@@ -643,6 +679,8 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/memory/ProjectContext.ts` | 536 |
 | `src/core/multimodal/ImageProcessor.ts` | 607 |
 | `src/core/multimodal/VideoProcessor.ts` | 591 |
+| `src/core/multimodal/localization/VideoLocalizationJob.ts` | 305 |
+| `src/core/multimodal/localization/VideoLocalizationPipeline.ts` | 487 |
 | `src/core/notifications/TwilioAdapter.ts` | 360 |
 | `src/core/orchestrator/EnhancedOrchestrator.ts` | 584 |
 | `src/core/orchestrator/Orchestrator.ts` | 375 |
@@ -651,6 +689,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/providers/LLMAdapter.ts` | 316 |
 | `src/core/providers/ModelRouter.ts` | 358 |
 | `src/core/providers/VisionAdapter.ts` | 375 |
+| `src/core/providers/local/ExternalLocalModelAdapter.ts` | 333 |
 | `src/core/quality/AutoReview.ts` | 398 |
 | `src/core/rag/AudioRAG.ts` | 422 |
 | `src/core/rag/CorrectiveRetriever.ts` | 460 |
@@ -670,5 +709,6 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/voice/VoiceAgent.ts` | 437 |
 | `src/server/index.ts` | 1169 |
 | `src/server/routes/admin.ts` | 317 |
+| `src/server/routes/capabilities.ts` | 316 |
 | `src/server/routes/legacy-chat.ts` | 367 |
 | `src/server/routes/setup.ts` | 437 |

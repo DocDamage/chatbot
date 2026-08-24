@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1074,
-    "productionSourceFiles": 799,
-    "reachableProductionFiles": 618,
-    "unreachableProductionFiles": 181,
-    "routes": 355,
-    "environmentVariables": 193,
+    "sourceFiles": 1131,
+    "productionSourceFiles": 842,
+    "reachableProductionFiles": 643,
+    "unreachableProductionFiles": 199,
+    "routes": 369,
+    "environmentVariables": 202,
     "featureFlags": 18,
-    "oversizedProductionFiles": 66
+    "oversizedProductionFiles": 82
   },
   "routes": [
     {
@@ -647,6 +647,104 @@
       "path": "/api/business/unit-economics",
       "line": 23,
       "file": "src/server/routes/business.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/",
+      "line": 44,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/jobs/list",
+      "line": 62,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/evaluations/run",
+      "line": 80,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/metrics/dashboard",
+      "line": 99,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/support-bundle",
+      "line": 110,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/repository-findings",
+      "line": 121,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/promotions/evaluate",
+      "line": 134,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/promotions/decisions",
+      "line": 152,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/promotions/promote",
+      "line": 157,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/promotions/rollback",
+      "line": 194,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/:id",
+      "line": 227,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/:id/action",
+      "line": 243,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/jobs/:id/cancel",
+      "line": 280,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/jobs/:id/confirm",
+      "line": 295,
+      "file": "src/server/routes/capabilities.ts"
     },
     {
       "receiver": "router",
@@ -2499,6 +2597,7 @@
   ],
   "clientPanels": [
     "client/src/components/AudioPreviewBrowser.tsx",
+    "client/src/components/CapabilityHubPanel.tsx",
     "client/src/components/CodeWorkflowPanel.tsx",
     "client/src/components/ConversationToolsPanel.tsx",
     "client/src/components/CreativeComposerPanel.tsx",
@@ -2561,12 +2660,32 @@
       "file": "src/core/auth/UserService.ts"
     },
     {
+      "name": "CapabilityJobManager",
+      "file": "src/core/capabilities/CapabilityJobManager.ts"
+    },
+    {
+      "name": "CapabilityRegistry",
+      "file": "src/core/capabilities/CapabilityRegistry.ts"
+    },
+    {
+      "name": "CapabilityObservabilityService",
+      "file": "src/core/capabilities/observability/CapabilityObservabilityService.ts"
+    },
+    {
       "name": "CodingController",
       "file": "src/core/coding/CodingController.ts"
     },
     {
       "name": "LanguageCapabilityRegistry",
       "file": "src/core/coding/languages/LanguageCapabilityRegistry.ts"
+    },
+    {
+      "name": "AgentTeamCoordinator",
+      "file": "src/core/coding/teams/AgentTeamCoordinator.ts"
+    },
+    {
+      "name": "WorktreeLifecycleService",
+      "file": "src/core/coding/teams/WorktreeLifecycleService.ts"
     },
     {
       "name": "RepairController",
@@ -2705,6 +2824,10 @@
       "file": "src/core/providers/FreeModelRegistry.ts"
     },
     {
+      "name": "LocalResourceManager",
+      "file": "src/core/providers/local/LocalResourceManager.ts"
+    },
+    {
       "name": "DocumentManager",
       "file": "src/core/rag/DocumentManager.ts"
     },
@@ -2779,6 +2902,10 @@
   ],
   "providers": [
     {
+      "name": "PydollAdapter",
+      "file": "src/core/browser/PydollAdapter.ts"
+    },
+    {
       "name": "FallbackParserProvider",
       "file": "src/core/coding/index/FallbackParserProvider.ts"
     },
@@ -2793,6 +2920,10 @@
     {
       "name": "GatewayLexicalRetrievalProvider",
       "file": "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.ts"
+    },
+    {
+      "name": "LatticeGameAdapter",
+      "file": "src/core/gaming/lattice/LatticeGameAdapter.ts"
     },
     {
       "name": "ArcGISFeatureServiceProvider",
@@ -2825,6 +2956,10 @@
     {
       "name": "FLStudioMcpClient",
       "file": "src/core/integrations/flstudio/FLStudioMcpClient.ts"
+    },
+    {
+      "name": "MockLocalizationEngineAdapter",
+      "file": "src/core/multimodal/localization/VideoLocalizationPipeline.ts"
     },
     {
       "name": "TwilioAdapter",
@@ -2901,6 +3036,34 @@
     {
       "name": "GeminiVisionAdapter",
       "file": "src/core/providers/VisionAdapter.ts"
+    },
+    {
+      "name": "ExternalLocalModelAdapter",
+      "file": "src/core/providers/local/ExternalLocalModelAdapter.ts"
+    },
+    {
+      "name": "LocalEndpointSecurityError",
+      "file": "src/core/providers/local/LocalEndpointPolicy.ts"
+    },
+    {
+      "name": "LocalEndpointPolicy",
+      "file": "src/core/providers/local/LocalEndpointPolicy.ts"
+    },
+    {
+      "name": "LocalModelDiscovery",
+      "file": "src/core/providers/local/LocalModelDiscovery.ts"
+    },
+    {
+      "name": "LocalModelRoutingPolicy",
+      "file": "src/core/providers/local/LocalModelRoutingPolicy.ts"
+    },
+    {
+      "name": "LocalResourceOverloadedError",
+      "file": "src/core/providers/local/LocalResourceManager.ts"
+    },
+    {
+      "name": "LocalResourceManager",
+      "file": "src/core/providers/local/LocalResourceManager.ts"
     },
     {
       "name": "EDGARClient",
@@ -4496,6 +4659,18 @@
       ]
     },
     {
+      "file": "client/src/components/CapabilityHubPanel.tsx",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "client/src/components/ExactScopeConfirmModal.tsx",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
       "file": "client/src/components/FileExplorerPanel.tsx",
       "signals": [
         "timer"
@@ -4539,8 +4714,47 @@
       ]
     },
     {
+      "file": "src/core/browser/AuthorizedBrowserJob.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
       "file": "src/core/browser/BrowserAgent.ts",
       "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "src/core/browser/BrowserJobRunner.ts",
+      "signals": [
+        "queue-or-worker",
+        "timer"
+      ]
+    },
+    {
+      "file": "src/core/browser/BrowserJobSandbox.ts",
+      "signals": [
+        "queue-or-worker",
+        "timer"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/CapabilityJobManager.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/coding/teams/AgentTeamCoordinator.ts",
+      "signals": [
+        "queue-or-worker",
         "timer"
       ]
     },
@@ -4548,6 +4762,12 @@
       "file": "src/core/coding/verification/CommandCapabilityRunner.ts",
       "signals": [
         "timer"
+      ]
+    },
+    {
+      "file": "src/core/gaming/lattice/LatticeSimulationEngine.ts",
+      "signals": [
+        "queue-or-worker"
       ]
     },
     {
@@ -4569,6 +4789,31 @@
       ]
     },
     {
+      "file": "src/core/multimodal/localization/MediaConsentRecord.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/multimodal/localization/MediaLocalizationSandbox.ts",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "src/core/multimodal/localization/VideoLocalizationJob.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/multimodal/localization/VideoLocalizationPipeline.ts",
+      "signals": [
+        "queue-or-worker",
+        "timer"
+      ]
+    },
+    {
       "file": "src/core/notifications/TwilioAdapter.ts",
       "signals": [
         "timer"
@@ -4582,6 +4827,18 @@
     },
     {
       "file": "src/core/providers/UniversalLLM.ts",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "src/core/providers/local/ExternalLocalModelAdapter.ts",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "src/core/providers/local/LocalResourceManager.ts",
       "signals": [
         "timer"
       ]
@@ -4718,6 +4975,8 @@
     "CARTESIA_API_KEY",
     "CEREBRAS_API_KEY",
     "CEREBRAS_MODEL",
+    "CF_ACCESSIBILITY_CERTIFIED",
+    "CF_RELEASE_CERTIFIED",
     "CLAUDE_MODEL",
     "CODE_EXECUTOR_SANDBOX",
     "CODE_EXECUTOR_TIMEOUT",
@@ -4735,6 +4994,7 @@
     "DEBUG_MODE",
     "DEEPSEEK_API_KEY",
     "DEEPSEEK_MODEL",
+    "DEPLOYMENT_MODE",
     "DISK_CACHE_DIR",
     "EAGER_CODING_KNOWLEDGE_LOAD",
     "EAGER_KNOWLEDGE_LOAD",
@@ -4802,6 +5062,12 @@
     "LLAVA_MODEL",
     "LLM_PROVIDER",
     "LOCAL_KNOWLEDGE_WIKI_DIR",
+    "LOCAL_MODEL_ALLOWLIST",
+    "LOCAL_MODEL_API_KEY",
+    "LOCAL_MODEL_BASE_URL",
+    "LOCAL_MODEL_ENABLED",
+    "LOCAL_MODEL_PROVIDER_NAME",
+    "LOCAL_MODEL_TIMEOUT_MS",
     "LOGS_DIR",
     "LOG_LEVEL",
     "NEWS_API_KEY",
@@ -4936,6 +5202,14 @@
       "lines": 791
     },
     {
+      "file": "client/src/components/CapabilityHubPanel.tsx",
+      "lines": 813
+    },
+    {
+      "file": "client/src/components/CapabilityPromotionView.tsx",
+      "lines": 411
+    },
+    {
       "file": "client/src/components/CreativeComposerPanel.tsx",
       "lines": 456
     },
@@ -4950,6 +5224,10 @@
     {
       "file": "client/src/components/ModeSelector.tsx",
       "lines": 393
+    },
+    {
+      "file": "client/src/components/RepositoryFindingsView.tsx",
+      "lines": 316
     },
     {
       "file": "client/src/components/SettingsMenu.tsx",
@@ -5000,8 +5278,40 @@
       "lines": 497
     },
     {
+      "file": "src/core/browser/AuthorizedBrowserJob.ts",
+      "lines": 419
+    },
+    {
       "file": "src/core/browser/BrowserAgent.ts",
       "lines": 388
+    },
+    {
+      "file": "src/core/browser/BrowserJobRunner.ts",
+      "lines": 444
+    },
+    {
+      "file": "src/core/capabilities/CapabilityRegistry.ts",
+      "lines": 782
+    },
+    {
+      "file": "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+      "lines": 534
+    },
+    {
+      "file": "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+      "lines": 314
+    },
+    {
+      "file": "src/core/capabilities/promotion/CapabilityPromotionEngine.ts",
+      "lines": 352
+    },
+    {
+      "file": "src/core/coding/teams/AgentTeamCoordinator.ts",
+      "lines": 394
+    },
+    {
+      "file": "src/core/coding/teams/WorktreeLifecycleService.ts",
+      "lines": 332
     },
     {
       "file": "src/core/config/APIKeyManager.ts",
@@ -5026,6 +5336,10 @@
     {
       "file": "src/core/database/ExpansionMigrations.ts",
       "lines": 383
+    },
+    {
+      "file": "src/core/gaming/lattice/LatticeSimulationEngine.ts",
+      "lines": 387
     },
     {
       "file": "src/core/gis/GISService.ts",
@@ -5080,6 +5394,14 @@
       "lines": 591
     },
     {
+      "file": "src/core/multimodal/localization/VideoLocalizationJob.ts",
+      "lines": 305
+    },
+    {
+      "file": "src/core/multimodal/localization/VideoLocalizationPipeline.ts",
+      "lines": 487
+    },
+    {
       "file": "src/core/notifications/TwilioAdapter.ts",
       "lines": 360
     },
@@ -5110,6 +5432,10 @@
     {
       "file": "src/core/providers/VisionAdapter.ts",
       "lines": 375
+    },
+    {
+      "file": "src/core/providers/local/ExternalLocalModelAdapter.ts",
+      "lines": 333
     },
     {
       "file": "src/core/quality/AutoReview.ts",
@@ -5186,6 +5512,10 @@
     {
       "file": "src/server/routes/admin.ts",
       "lines": 317
+    },
+    {
+      "file": "src/server/routes/capabilities.ts",
+      "lines": 316
     },
     {
       "file": "src/server/routes/legacy-chat.ts",
