@@ -18,4 +18,9 @@ describe('Retrieval benchmark contract', () => {
     expect(result.exactPathAccuracy).toBe(0);
     expect(result.reciprocalRank).toBe(0.5);
   });
+  it('reports zero ranking metrics when no result is returned', () => {
+    const result = scoreRetrievalBenchmark('literal', RETRIEVAL_BENCHMARK_FIXTURES.slice(0, 1), new Map());
+    expect(result).toEqual(expect.objectContaining({ recallAtK: 0, reciprocalRank: 0, exactPathAccuracy: 0 }));
+  });
+
 });
