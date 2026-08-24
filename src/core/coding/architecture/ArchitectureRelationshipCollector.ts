@@ -14,6 +14,14 @@ export class ArchitectureRelationshipCollector {
     dependencyIds: Map<string, string>
   ): void {
     for (const relationship of detectArchitectureRelationships(files)) {
+      if (relationship.ambiguousSymbol) {
+        graph.warn(
+          'AMBIGUOUS_SYMBOL_REFERENCE',
+          `Could not deterministically resolve symbol ${relationship.ambiguousSymbol}: ${relationship.detail}`,
+          relationship.sourceFile
+        );
+        continue;
+      }
       if (relationship.unresolvedLocal) {
         graph.warn(
           'UNRESOLVED_LOCAL_IMPORT',
