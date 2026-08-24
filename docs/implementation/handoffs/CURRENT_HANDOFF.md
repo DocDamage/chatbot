@@ -1,49 +1,45 @@
-# Capability Fusion Milestone A Handoff
+# Capability Fusion Milestone B — CF-03 Handoff
 
 ## Status
 
 - Repository: `DocDamage/chatbot`
-- Milestone branch: `milestone/capability-fusion-a-retrieval-continuation`
-- Draft review PR: #168
-- Authoritative original start: `1c5bf8d7120c534cc44efd9d8f25dec734f30a06`
-- Verified implementation CI head: `8c8cbba5a8e0f02a72870c2cf446d0956cbb9dcf`
+- Milestone branch: `milestone/capability-fusion-b-findings`
+- Draft review PR: #169
+- Base commit: `7a3066fdd5c808628fa6c2b2ddd35ac983c482f3`
 - Maturity: `LOCAL_ONLY_EXPERIMENTAL`
 
 ## Delivered
 
-- Scoped duplicate-symbol identity and explicit unresolved ambiguity warnings.
-- Removal of the temporary write-enabled CF-01 repair workflow.
-- Gateway-backed deterministic BM25 lexical retrieval with phrase/proximity, bounds, cancellation, lifecycle, source evidence, and clean-room provenance.
-- Explainable hybrid path/symbol/BM25/phrase/proximity/structural/vector/diagnostic/authority fusion with deterministic ranking and degradation warnings.
-- Hybrid repository evidence in coding-agent context without authority expansion.
-- Verification tiers and repository-owned deterministic retrieval benchmark contracts.
-- Current deterministic inventory/reachability outputs and refreshed large-file register.
+- Provider-neutral repository findings carrying exact evidence, digest, confidence, provenance, and a clear signal/weakness/defect/risk disposition.
+- Safe SARIF 2.1 ingestion that accepts only repository-relative evidence paths.
+- Deterministic CycloneDX 1.5 SBOM generation through `ApprovedRepositoryGateway`.
+- Deterministic secret, dependency, route-policy, and dangerous-capability signals.
+- Scoped, reasoned suppression audit records and accessible 2D graph/table overlay data for hotspots, ownership, churn, test gaps, and trust boundaries.
 
 ## Verification
 
-Run #358 passed the entire Required CI matrix, including full coverage with the existing 8217 uncovered-branch allowance, security, browser E2E, accessibility, container/package smoke, and documentation policy checks.
+CI run #395 passed the complete matrix and Required CI gate on `d591afb48bfd6986ca9704568eb9a67c870f4f0a`, including coverage, security, browser E2E, accessibility, Docker/package smoke, documentation policy, and release-evidence validation.
 
 ## Evidence
 
-`docs/implementation/evidence/capability-fusion/MILESTONE-A/2026-08-24_8c8cbba/`
+`docs/implementation/evidence/capability-fusion/CF-03/2026-08-24_35903b0/`
 
 ## Limitations
 
-- Capability remains local-only experimental.
-- Branch-protection configuration could not be changed through the available GitHub connector and must be verified by a repository administrator.
-- PR #168 must remain open for review until the user explicitly merges it.
-
+- Findings are evidence-backed signals, not a claim of vulnerability proof.
+- External scanner execution and production promotion remain out of scope.
+- Branch protection configuration still requires a repository administrator.
 
 ## Next authorized task after merge
 
-Milestone A is complete pending review and explicit merge of PR #168. Do not begin a new capability-fusion milestone until this PR is reviewed, merged, and main has been post-merge verified.
+CF-04 — local model and resource adapter layer. Do not begin it until this PR is merged and `main` is post-merge verified.
 
 ## NEW THREAD START PROMPT
 
-```text
-Review the merged Capability Fusion Milestone A evidence and decide the next authorized milestone. Do not reopen or expand Milestone A without new evidence.
-```
+\`\`\`text
+Review the merged Capability Fusion Milestone B evidence and decide whether to authorize CF-04. Do not expand CF-03 without new evidence.
+\`\`\`
 
 ## Thread closure
 
-Milestone A delivery is closed for implementation. PR #168 remains open for user review and must not be merged automatically.
+Milestone B is ready for review only after the exact final PR head completes the required CI matrix. PR #169 must not be merged automatically.

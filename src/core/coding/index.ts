@@ -30,3 +30,9 @@ export * from './knowledge/ProvenancePolicy';
 export * from './knowledge/CodingKnowledgeAuthority';
 export * from './model/CodingModelRouter';
 export * from './security/WorkspacePathPolicy';
+export * from './security/ApprovedRepositoryGateway';
+export * from './findings/RepositoryFindings';
+export * from './findings/SarifAdapter';
+export * from './findings/CycloneDxSbom';
+export * from './findings/RepositoryOverlayData';
+
