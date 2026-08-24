@@ -1,1 +1,1 @@
-{"status":"awaiting-exact-head-ci","maturity":"LOCAL_ONLY_EXPERIMENTAL","localChecks":["type-check:server","type-check:tests","findings-tests","generate:sbom","lint:server"]}
+{"status":"passed","verificationHead":"faafd9e8602e8c573a3d845849654e2862e11400","workflowRun":32725082931,"requiredCiGate":"success","maturity":"LOCAL_ONLY_EXPERIMENTAL"}
