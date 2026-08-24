@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import { FunctionCaller } from '../tools/FunctionCaller';
 import { ToolCall } from '../../types/tools';
 import { ToolRegistry } from '../tools/ToolRegistry';
@@ -23,7 +21,9 @@ import { WorkspaceWriteGate } from '../coding/editing/WorkspaceWriteGate';
 import { WorkMode } from '../modes/ExecutionModePolicy';
 import { LLMAdapter } from '../providers/LLMAdapter';
 import { RepairRun } from '../coding/verification/RepairController';
-import { isSensitiveWorkspacePath } from '../coding/security/WorkspacePathPolicy';
+import { ApprovedRepositoryGateway } from '../coding/security/ApprovedRepositoryGateway';
+import { GatewayLexicalRetrievalProvider } from '../coding/retrieval/GatewayLexicalRetrievalProvider';
+import { HybridRepositoryRetriever } from '../coding/retrieval/HybridRepositoryRetriever';
 
 export interface CodingAgentConfig {
   workspaceRoot?: string;
@@ -73,6 +73,9 @@ export class CodingAgent {
   private readonly editEngine: StructuredEditEngine;
   private readonly writeGate = new WorkspaceWriteGate();
   private readonly nativeVerification: VerificationOrchestrator;
+  private readonly lexicalRetriever: GatewayLexicalRetrievalProvider;
+  private readonly hybridRetriever: HybridRepositoryRetriever;
+  private readonly repositoryGateway: ApprovedRepositoryGateway;
 
   constructor(config: CodingAgentConfig = {}) {
     this.workspaceRoot = config.workspaceRoot || process.cwd();
@@ -91,6 +94,9 @@ export class CodingAgent {
     this.symbolIndex = new SymbolIndex(this.workspaceRoot);
     this.editEngine = new StructuredEditEngine(this.workspaceRoot);
     this.nativeVerification = new VerificationOrchestrator(this.workspaceRoot);
+    this.repositoryGateway = new ApprovedRepositoryGateway(this.workspaceRoot);
+    this.lexicalRetriever = new GatewayLexicalRetrievalProvider(this.repositoryGateway);
+    this.hybridRetriever = new HybridRepositoryRetriever(this.lexicalRetriever);
   }
 
   classifyIntent(message: string): CodingIntent {
@@ -173,7 +179,34 @@ export class CodingAgent {
   async retrieveEvidence(request: { query: string; files?: string[]; symbols?: string[]; diagnostics?: Array<{ file?: string; message: string }>; maxItems?: number }): Promise<ContextEvidence[]> {
     const snapshot = this.getRepositorySnapshot();
     this.symbolIndex.indexFiles(snapshot.files.filter(file => !file.binary).map(file => file.path));
-    return new StructuralRetriever(this.workspaceRoot, snapshot, this.symbolIndex).retrieve(request);
+    const structural = new StructuralRetriever(this.workspaceRoot, snapshot, this.symbolIndex).retrieve(request);
+    await this.lexicalRetriever.update({ repositoryVersion: snapshot.version });
+    const hybrid = await this.hybridRetriever.search({
+      query: request.query,
+      repositoryVersion: snapshot.version,
+      symbols: request.symbols,
+      diagnostics: request.diagnostics?.flatMap(value => [value.file || '', value.message]),
+      maxResults: request.maxItems,
+      structural: structural.filter(value => value.path).map(value => ({
+        path: value.path!, lineStart: value.line, lineEnd: value.line, score: value.confidence, reason: value.reason
+      }))
+    });
+    const seen = new Set<string>();
+    return hybrid.results.filter(value => {
+      const key = `${value.path}\\0${value.lineStart}\\0${value.lineEnd}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).map(value => ({
+      kind: 'source' as const,
+      label: value.path,
+      content: value.excerpt,
+      path: value.path,
+      line: value.lineStart,
+      authority: 'repository' as const,
+      reason: value.reasons.join('; '),
+      confidence: Math.min(1, value.scores.final / 5)
+    }));
   }
 
   createStructuredPatch(operations: EditOperation[]): StructuredPatch {
@@ -256,8 +289,7 @@ export class CodingAgent {
     const structuralEvidence = await this.retrieveEvidence({ query: message, maxItems: 24 });
     const structurallySelected = structuralEvidence
       .map(item => item.path)
-      .filter((file): file is string => Boolean(file))
-      .filter(file => !isSensitiveWorkspacePath(file));
+      .filter((file): file is string => Boolean(file));
     const files = this.listFiles('.', 1000);
     const scored = files
       .filter(file => /\.(ts|tsx|js|jsx|json|md)$/.test(file))
@@ -402,24 +434,6 @@ export class CodingAgent {
   }
 
   private listFiles(dir: string, maxFiles: number): string[] {
-    const root = path.resolve(this.workspaceRoot, dir);
-    const results: string[] = [];
-    const ignored = new Set(['node_modules', '.git', 'dist', 'coverage', 'build']);
-    const walk = (current: string) => {
-      if (results.length >= maxFiles) return;
-      for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
-        if (results.length >= maxFiles || ignored.has(entry.name)) continue;
-        const absolute = path.join(current, entry.name);
-        const relative = path.relative(this.workspaceRoot, absolute).replace(/\\/g, '/');
-        if (isSensitiveWorkspacePath(relative)) continue;
-        if (entry.isDirectory()) {
-          walk(absolute);
-        } else {
-          results.push(path.relative(this.workspaceRoot, absolute).replace(/\\/g, '/'));
-        }
-      }
-    };
-    walk(root);
-    return results;
+    return this.repositoryGateway.listFiles(dir, maxFiles);
   }
 }

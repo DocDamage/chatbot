@@ -1,5 +1,4 @@
-import * as fs from 'fs';
-import * as path from 'path';
+import { ApprovedRepositoryGateway } from '../security/ApprovedRepositoryGateway';
 import { ContextEvidence } from '../types';
 import { RepositorySnapshot } from '../repository/RepositoryIntelligence';
 import { SymbolIndex } from '../index/SymbolIndex';
@@ -7,7 +6,12 @@ import { SymbolIndex } from '../index/SymbolIndex';
 export interface RetrievalRequest { query: string; files?: string[]; symbols?: string[]; diagnostics?: Array<{ file?: string; message: string }>; maxItems?: number; }
 
 export class StructuralRetriever {
-  constructor(private readonly workspaceRoot: string, private readonly snapshot: RepositorySnapshot, private readonly index: SymbolIndex) {}
+  constructor(
+    workspaceRoot: string,
+    private readonly snapshot: RepositorySnapshot,
+    private readonly index: SymbolIndex,
+    private readonly gateway = new ApprovedRepositoryGateway(workspaceRoot)
+  ) {}
 
   retrieve(request: RetrievalRequest): ContextEvidence[] {
     const maxItems = request.maxItems || 24;
@@ -21,7 +25,7 @@ export class StructuralRetriever {
       try {
         const record = this.snapshot.files.find(item => item.path === file);
         if (!record || record.binary) return;
-        const content = fs.readFileSync(path.resolve(this.workspaceRoot, file), 'utf8').slice(0, 24000);
+        const content = this.gateway.readTextFile(file, 24000).content;
         results.push({ kind, label: file, content, path: file, authority: 'repository', reason, confidence });
       } catch { /* files can disappear between snapshot and retrieval */ }
     };
@@ -54,7 +58,7 @@ export class StructuralRetriever {
       let contentScore = 0;
       if (!file.binary && file.size <= 200000 && this.isSearchable(file.path) && pathScore === 0) {
         try {
-          const content = fs.readFileSync(path.resolve(this.workspaceRoot, file.path), 'utf8').slice(0, 24000).toLowerCase();
+          const content = this.gateway.readTextFile(file.path, 24000).content.toLowerCase();
           contentScore = terms.filter(term => content.includes(term)).length;
         } catch { /* stale files are ignored */ }
       }

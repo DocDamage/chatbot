@@ -269,6 +269,8 @@
     "src/core/coding/repository/RepositoryIntelligence.ts",
     "src/core/coding/repository/WorkspaceInstructionResolver.ts",
     "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
+    "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.ts",
+    "src/core/coding/retrieval/HybridRepositoryRetriever.ts",
     "src/core/coding/retrieval/StructuralRetriever.ts",
     "src/core/coding/review/ReviewPipeline.ts",
     "src/core/coding/security/ApprovedRepositoryGateway.ts",
@@ -887,6 +889,8 @@
     "src/core/coding/repository/RepositoryIntelligence.ts",
     "src/core/coding/repository/WorkspaceInstructionResolver.ts",
     "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
+    "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.ts",
+    "src/core/coding/retrieval/HybridRepositoryRetriever.ts",
     "src/core/coding/retrieval/StructuralRetriever.ts",
     "src/core/coding/review/ReviewPipeline.ts",
     "src/core/coding/security/ApprovedRepositoryGateway.ts",
@@ -1416,6 +1420,7 @@
     "src/core/coding/knowledge/ProvenancePolicy.ts",
     "src/core/coding/model/CodingModelRouter.ts",
     "src/core/coding/retrieval/DocumentationRetriever.ts",
+    "src/core/coding/retrieval/RetrievalBenchmark.ts",
     "src/core/coding/testing/TestStrategy.ts",
     "src/core/config/APIKeyManager.ts",
     "src/core/config/ProfileManager.ts",
@@ -2166,8 +2171,10 @@
       "src/core/coding/index/SymbolIndex.ts",
       "src/core/coding/repository/RepositoryIntelligence.ts",
       "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
+      "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.ts",
+      "src/core/coding/retrieval/HybridRepositoryRetriever.ts",
       "src/core/coding/retrieval/StructuralRetriever.ts",
-      "src/core/coding/security/WorkspacePathPolicy.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
       "src/core/coding/types.ts",
       "src/core/coding/verification/RepairController.ts",
       "src/core/coding/verification/VerificationOrchestrator.ts",
@@ -3190,9 +3197,29 @@
     "src/core/coding/retrieval/DocumentationRetriever.ts": [
       "src/core/coding/types.ts"
     ],
+    "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.test.ts": [
+      "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts"
+    ],
+    "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.ts": [
+      "src/core/coding/security/ApprovedRepositoryGateway.ts"
+    ],
+    "src/core/coding/retrieval/HybridRepositoryRetriever.test.ts": [
+      "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.ts",
+      "src/core/coding/retrieval/HybridRepositoryRetriever.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts"
+    ],
+    "src/core/coding/retrieval/HybridRepositoryRetriever.ts": [
+      "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.ts"
+    ],
+    "src/core/coding/retrieval/RetrievalBenchmark.test.ts": [
+      "src/core/coding/retrieval/RetrievalBenchmark.ts"
+    ],
+    "src/core/coding/retrieval/RetrievalBenchmark.ts": [],
     "src/core/coding/retrieval/StructuralRetriever.ts": [
       "src/core/coding/index/SymbolIndex.ts",
       "src/core/coding/repository/RepositoryIntelligence.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
       "src/core/coding/types.ts"
     ],
     "src/core/coding/review/ReviewPipeline.ts": [
@@ -5494,5 +5521,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1068
+  "sourceRecordCount": 1074
 }

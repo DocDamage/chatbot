@@ -6,10 +6,10 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1068 |
-| Production source files | 796 |
-| Reachable production files | 616 |
-| Unreachable production files | 180 |
+| Source files | 1074 |
+| Production source files | 799 |
+| Reachable production files | 618 |
+| Unreachable production files | 181 |
 | Discovered route calls | 355 |
 | Environment variables | 193 |
 | Feature flags | 18 |
@@ -617,7 +617,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `scripts/import-books.ts` | 317 |
 | `scripts/import-wikipedia-general-corpus.ts` | 337 |
 | `src/core/agents/AgentTeam.ts` | 547 |
-| `src/core/agents/CodingAgent.ts` | 426 |
+| `src/core/agents/CodingAgent.ts` | 440 |
 | `src/core/agents/MultiAgentOrchestrator.ts` | 1269 |
 | `src/core/agents/ReasoningController.ts` | 368 |
 | `src/core/analytics/AnalyticsService.ts` | 448 |

@@ -86,3 +86,8 @@ Queries are bounded by the snapshot limits and return node/edge identifiers, tru
 ## Compatibility policy
 
 Additive fields may be introduced within schema `1.x` only when old readers can safely ignore them. Renaming or changing the meaning of node kinds, edge kinds, identity inputs, or required fields requires a schema version change and migration tests.
+
+
+## Scoped symbol resolution and ambiguity
+
+A symbol relationship is identified from the normalized repository path, project/module scope, language, symbol kind, and source location—not from its display name alone. A same-name symbol in a different file, language, module, or lexical scope is a valid distinct definition. Resolution may select a target only when scoped evidence yields one deterministic target. When candidates remain genuinely ambiguous, the graph emits an `AMBIGUOUS_SYMBOL_REFERENCE` warning and does not create a relationship edge to an arbitrary definition.

@@ -14,6 +14,7 @@ export interface ArchitectureRelationshipCandidate {
   confidence: number;
   detail: string;
   unresolvedLocal?: string;
+  ambiguousSymbol?: string;
 }
 
 interface ImportReference { module: string; line: number; system?: boolean; }
@@ -75,29 +76,33 @@ export function detectArchitectureRelationships(files: ScannedArchitectureFile[]
 
       const implementation = line.match(/\b(implements|extends)\s+([A-Za-z_$][\w$]*)/i);
       if (implementation) {
-        const target = uniqueOtherDefinition(definitionsByName.get(implementation[2]) || [], file.path);
-        if (target) candidates.push({
+        const resolution = resolveDefinition(definitionsByName.get(implementation[2]) || [], file.path);
+        if (resolution.target) candidates.push({
           kind: implementation[1].toLowerCase() === 'extends' ? 'extends' : 'implements',
           sourceFile: file.path,
           sourceSymbol: nearestSymbol(localSymbols, lineNumber),
-          targetSymbol: target,
+          targetSymbol: resolution.target,
           line: lineNumber,
           confidence: 0.9,
           detail: `${implementation[1]} ${implementation[2]}`
         });
+        else if (resolution.ambiguous) candidates.push(ambiguousCandidate(file.path, lineNumber, implementation[2], resolution.ambiguous));
       }
 
       const identifiers = new Set(line.match(/[A-Za-z_$][\w$]*/g) || []);
       for (const identifier of identifiers) {
         if (identifier.length < 3) continue;
-        const target = uniqueOtherDefinition(definitionsByName.get(identifier) || [], file.path);
-        if (!target) continue;
+        const resolution = resolveDefinition(definitionsByName.get(identifier) || [], file.path);
+        if (!resolution.target) {
+          if (resolution.ambiguous) candidates.push(ambiguousCandidate(file.path, lineNumber, identifier, resolution.ambiguous));
+          continue;
+        }
         const calling = new RegExp(`\\b${escapeRegExp(identifier)}\\s*\\(`).test(line);
         candidates.push({
           kind: calling ? 'calls' : 'references',
           sourceFile: file.path,
           sourceSymbol: nearestSymbol(localSymbols, lineNumber),
-          targetSymbol: target,
+          targetSymbol: resolution.target,
           line: lineNumber,
           confidence: calling ? 0.86 : 0.72,
           detail: `${calling ? 'call' : 'reference'} ${identifier}`
@@ -237,9 +242,18 @@ function groupDefinitions(values: IndexedSymbol[]): Map<string, IndexedSymbol[]>
   return result;
 }
 
-function uniqueOtherDefinition(values: IndexedSymbol[], sourceFile: string): IndexedSymbol | undefined {
-  const others = values.filter(value => value.file !== sourceFile);
-  return others.length === 1 ? others[0] : undefined;
+function resolveDefinition(values: IndexedSymbol[], sourceFile: string): { target?: IndexedSymbol; ambiguous?: string } {
+  const others = values.filter(value => value.file !== sourceFile)
+    .sort((left, right) => left.file.localeCompare(right.file) || left.line - right.line || left.kind.localeCompare(right.kind));
+  if (others.length === 1) return { target: others[0] };
+  return others.length > 1 ? { ambiguous: `multiple scoped definitions: ${others.map(value => `${value.file}:${value.line}:${value.kind}`).join(', ')}` } : {};
+}
+
+function ambiguousCandidate(sourceFile: string, line: number, name: string, detail: string): ArchitectureRelationshipCandidate {
+  return {
+    kind: 'references', sourceFile, line, confidence: 0.35,
+    detail: `ambiguous symbol ${name}: ${detail}`, ambiguousSymbol: name
+  };
 }
 
 function nearestSymbol(values: IndexedSymbol[], line: number): IndexedSymbol | undefined {
