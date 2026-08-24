@@ -70,22 +70,24 @@ jobs:
           )
 
           tools = 'src/core/tools/ArchitectureRepoTools.ts'
-          replace_once(
-              tools,
-              """      return {
-                success: false,
-                error: error instanceof Error ? error.message : 'Repository architecture operation failed.'
-              };""",
-              """      const candidate = error as { code?: unknown; message?: unknown } | null;
-              const missingRepository = candidate?.code === 'ENOENT'
-                || /ENOENT|no such file|not found/i.test(String(candidate?.message || ''));
-              return {
-                success: false,
-                error: missingRepository
-                  ? 'Approved repository root was not found.'
-                  : 'Repository architecture operation failed.'
-              };"""
+          old_tools = (
+              "      return {\n"
+              "        success: false,\n"
+              "        error: error instanceof Error ? error.message : 'Repository architecture operation failed.'\n"
+              "      };"
           )
+          new_tools = (
+              "      const candidate = error as { code?: unknown; message?: unknown } | null;\n"
+              "      const missingRepository = candidate?.code === 'ENOENT'\n"
+              "        || /ENOENT|no such file|not found/i.test(String(candidate?.message || ''));\n"
+              "      return {\n"
+              "        success: false,\n"
+              "        error: missingRepository\n"
+              "          ? 'Approved repository root was not found.'\n"
+              "          : 'Repository architecture operation failed.'\n"
+              "      };"
+          )
+          replace_once(tools, old_tools, new_tools)
           PY
 
       - name: Remove one-shot workflow from final tree
