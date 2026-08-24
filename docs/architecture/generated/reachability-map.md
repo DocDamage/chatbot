@@ -10,7 +10,7 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 ## Counts
 
 - Reachable production files: 618
-- Unreachable production files: 181
+- Unreachable production files: 185
 - Unresolved relative imports: 41
 
 ## Unreachable production modules
@@ -101,6 +101,10 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/chrono/ClaimVerifier.ts`
 - `src/core/coding/CodingController.ts`
 - `src/core/coding/CodingRequestRouter.ts`
+- `src/core/coding/findings/CycloneDxSbom.ts`
+- `src/core/coding/findings/RepositoryFindings.ts`
+- `src/core/coding/findings/RepositoryOverlayData.ts`
+- `src/core/coding/findings/SarifAdapter.ts`
 - `src/core/coding/index.ts`
 - `src/core/coding/knowledge/CodingKnowledgeAuthority.ts`
 - `src/core/coding/knowledge/ProvenancePolicy.ts`
@@ -202,3 +206,4 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - Computed module paths cannot be resolved statically.
 - Framework or runtime registration outside literal imports requires explicit boundary metadata.
 - Reachability proves registration possibility, not production support or runtime verification.
+
