@@ -34,6 +34,12 @@ Focused server/test type checks, findings tests, SBOM generation, and server lin
 
 CF-04 — local model and resource adapter layer. Do not begin it until this PR is merged and `main` is post-merge verified.
 
+## NEW THREAD START PROMPT
+
+\`\`\`text
+Review the merged Capability Fusion Milestone B evidence and decide whether to authorize CF-04. Do not expand CF-03 without new evidence.
+\`\`\`
+
 ## Thread closure
 
 Milestone B is ready for review only after the exact final PR head completes the required CI matrix. PR #169 must not be merged automatically.
