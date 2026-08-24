@@ -1,9 +1,13 @@
 name: CF-01 one-shot CI repair
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/cf01-repodna-architecture-graph
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
   workflow_dispatch:
 
 permissions:
