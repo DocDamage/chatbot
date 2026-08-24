@@ -42,9 +42,14 @@ export function createArchitectureRepoTools(
       if (error instanceof RepositoryAccessError) {
         return { success: false, error: `${error.code}: ${error.message}` };
       }
+      const candidate = error as { code?: unknown; message?: unknown } | null;
+      const missingRepository = candidate?.code === 'ENOENT'
+        || /ENOENT|no such file|not found/i.test(String(candidate?.message || ''));
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Repository architecture operation failed.'
+        error: missingRepository
+          ? 'Approved repository root was not found.'
+          : 'Repository architecture operation failed.'
       };
     }
   };

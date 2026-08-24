@@ -2879,6 +2879,16 @@
       "src/core/coding/retrieval/AdaptiveContextAllocator.ts"
     ],
     "src/core/coding/architecture/__tests__/ArchitectureFixture.ts": [],
+    "src/core/coding/architecture/ArchitectureBranchCoverage.test.ts": [
+      "src/core/coding/architecture/ArchitectureDetectors.ts",
+      "src/core/coding/architecture/ArchitectureIdentity.ts",
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/architecture/RepositoryArchitectureBuilder.ts",
+      "src/core/coding/architecture/RepositoryArchitectureCache.ts",
+      "src/core/coding/architecture/RepositoryArchitectureQuery.ts",
+      "src/core/coding/architecture/RepositoryArchitectureSchema.ts",
+      "src/core/coding/architecture/__tests__/ArchitectureFixture.ts"
+    ],
     "src/core/coding/architecture/ArchitectureDetectors.ts": [
       "src/core/coding/architecture/ArchitectureIdentity.ts",
       "src/core/coding/architecture/ArchitectureTypes.ts",
@@ -2960,6 +2970,13 @@
     "src/core/coding/architecture/RepositoryArchitectureSchema.ts": [
       "src/core/coding/architecture/ArchitectureIdentity.ts",
       "src/core/coding/architecture/ArchitectureTypes.ts"
+    ],
+    "src/core/coding/architecture/RepositorySourceScanner.test.ts": [
+      "src/core/coding/architecture/ArchitectureTypes.ts",
+      "src/core/coding/architecture/RepositoryArchitectureCache.ts",
+      "src/core/coding/architecture/RepositorySourceScanner.ts",
+      "src/core/coding/languages/LanguageCapabilityRegistry.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts"
     ],
     "src/core/coding/architecture/RepositorySourceScanner.ts": [
       "src/core/coding/architecture/ArchitectureDetectors.ts",
@@ -5442,5 +5459,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1064
+  "sourceRecordCount": 1066
 }

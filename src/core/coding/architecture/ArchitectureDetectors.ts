@@ -64,7 +64,7 @@ export function detectRoutes(file: ScannedArchitectureFile): DetectedRoute[] {
     if (axum) candidates.push({ method: axum[2].toUpperCase(), routePath: axum[1], handler: axum[3], line: index + 1, framework: 'axum-like', confidence: 0.88 });
     candidates.filter((value): value is DetectedRoute => Boolean(value)).forEach(value => results.push(value));
   });
-  return dedupe(results, value => `${value.method}\0${value.routePath}\0${value.line}`);
+  return dedupe(results, value => `${value.method}\0${value.routePath}\0${value.handler}\0${value.framework}`);
 }
 
 export function detectTables(file: ScannedArchitectureFile): DetectedTable[] {
@@ -96,7 +96,7 @@ export function detectManifestFacts(file: ScannedArchitectureFile): ManifestFact
         for (const scope of ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']) {
           const record = data[scope];
           if (record && typeof record === 'object' && !Array.isArray(record)) {
-            Object.keys(record as Record<string, unknown>).sort().forEach(dependency => dependencies.push({ name: dependency, scope, line: 1 }));
+            Object.keys(record as Record<string, unknown>).forEach(dependency => dependencies.push({ name: dependency, scope, line: 1 }));
           }
         }
         const scripts = data.scripts;
@@ -123,12 +123,12 @@ export function detectManifestFacts(file: ScannedArchitectureFile): ManifestFact
     });
   } else if (name === 'pyproject.toml') {
     file.content.split(/\r?\n/).forEach((line, index) => {
-      for (const match of line.matchAll(/['"]([A-Za-z0-9_.-]+)(?:[<>=!~].*)?['"]/g)) dependencies.push({ name: match[1], scope: 'python', line: index + 1 });
+      for (const match of line.matchAll(/['"]([A-Za-z0-9_.-]+)(?:[<>=!~][^'"]*)?['"]/g)) dependencies.push({ name: match[1], scope: 'python', line: index + 1 });
     });
   }
   return {
     manifest: { path: file.path, kind: name, ...(data ? { data } : {}), ...(parseError ? { parseError } : {}) },
-    dependencies: dedupe(dependencies, value => `${value.scope}\0${value.name}`),
+    dependencies: dedupe(dependencies, value => value.name),
     buildTargets: dedupe(buildTargets, value => value.name)
   };
 }
