@@ -18,7 +18,7 @@
 
 ## Verification
 
-CI run #394 passed the complete matrix and Required CI gate on `faafd9e8602e8c573a3d845849654e2862e11400`, including coverage, security, browser E2E, accessibility, Docker/package smoke, documentation policy, and release evidence validation.
+CI run #395 passed the complete matrix and Required CI gate on `d591afb48bfd6986ca9704568eb9a67c870f4f0a`, including coverage, security, browser E2E, accessibility, Docker/package smoke, documentation policy, and release-evidence validation.
 
 ## Evidence
 
