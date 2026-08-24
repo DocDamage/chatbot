@@ -55,4 +55,17 @@ describe('HybridRepositoryRetriever', () => {
     }
   });
 
+  it('adds a deterministic path boost for exact filename queries', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'hybrid-retrieval-'));
+    try {
+      fs.writeFileSync(path.join(root, 'target.ts'), 'export const target = true;');
+      const provider = new GatewayLexicalRetrievalProvider(new ApprovedRepositoryGateway(root));
+      await provider.build({ repositoryVersion: 'fixture-v1' });
+      const result = await new HybridRepositoryRetriever(provider).search({ query: 'target.ts', repositoryVersion: 'fixture-v1' });
+      expect(result.results[0].scores.path).toBe(1);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
 });
