@@ -1,0 +1,1 @@
+{"strategies":["literal","structural","bm25","phrase-proximity","hybrid"],"fixtures":"src/core/coding/retrieval/RetrievalBenchmark.ts","status":"deterministic-contract-covered"}
