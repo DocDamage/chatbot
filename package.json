@@ -84,7 +84,11 @@
     "check:env": "node scripts/release/check-environment-contract.mjs",
     "check:docs": "node scripts/release/check-docs.mjs",
     "test:release-tools": "node --test scripts/release/__tests__/phase2-scanners.test.mjs scripts/release/__tests__/server-coverage-policy.test.mjs",
-    "check:phase2": "npm run test:release-tools && npm run check:inventory && npm run check:reachability && npm run check:file-size && npm run check:env && npm run check:docs"
+    "check:phase2": "npm run test:release-tools && npm run check:inventory && npm run check:reachability && npm run check:file-size && npm run check:env && npm run check:docs",
+    "verify:fast": "npm run type-check:server && npm run type-check:tests && npm run lint:server && npx jest src/core/coding/architecture/ArchitectureRelationshipsCoverage.test.ts src/core/coding/retrieval/GatewayLexicalRetrievalProvider.test.ts --runInBand",
+    "verify:capability-fusion": "npm run verify:fast && npx jest src/core/coding/security/ApprovedRepositoryGateway.test.ts src/core/coding/architecture src/core/coding/retrieval src/core/agents/CodingAgent.test.ts --runInBand",
+    "verify:milestone": "npm run verify:capability-fusion && npm run type-check:client && npm run lint:client && npm run test:release && npm run test:coverage -- --runInBand && npm run inventory:generate && git diff --exit-code -- docs/architecture/generated/",
+    "verify:release": "npm run release:check && npm run check:phase2"
   },
   "keywords": [
     "ai",
