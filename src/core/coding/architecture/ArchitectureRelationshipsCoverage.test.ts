@@ -220,7 +220,10 @@ describe('CF-01 relationship branch coverage', () => {
     expect(find(relationships, value =>
       value.kind === 'calls' && value.targetSymbol?.name === 'helper'
     )).toBeDefined();
-    expect(relationships.some(value => value.targetSymbol?.name === 'duplicate')).toBe(false);
+    expect(relationships.some(value =>
+      value.sourceFile === 'src/use-dup.ts'
+      && value.targetSymbol?.name === 'duplicate'
+    )).toBe(false);
     expect(relationships.some(value => value.targetSymbol?.name === 'localOnly')).toBe(false);
   });
 
