@@ -18,7 +18,7 @@
 
 ## Verification
 
-Focused server/test type checks, findings tests, SBOM generation, and server lint passed locally. Final completion remains contingent on the complete CI matrix and Required CI gate for this exact final PR head.
+CI run #394 passed the complete matrix and Required CI gate on `faafd9e8602e8c573a3d845849654e2862e11400`, including coverage, security, browser E2E, accessibility, Docker/package smoke, documentation policy, and release evidence validation.
 
 ## Evidence
 
