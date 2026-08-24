@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 32277)
-Total output lines: 5200
-
 {
   "schemaVersion": 1,
   "summary": {
@@ -2514,7 +2511,348 @@ Total output lines: 5200
     "client/src/components/KnowledgeOnlinePanel.tsx",
     "client/src/components/LocalRunApprovalPanel.tsx",
     "client/src/components/LocalToolsWorkspace.tsx",
-    "client/src/compone…2277 tokens truncated…dapter.ts"
+    "client/src/components/MockApiWorkspacePanel.tsx",
+    "client/src/components/ProjectIntelligencePanel.tsx",
+    "client/src/components/SettingsMenu.tsx",
+    "client/src/components/SpriteLabPanel.tsx",
+    "client/src/components/UtilityWorkbenchPanel.tsx",
+    "client/src/components/WebsiteWorkspacePanel.tsx",
+    "client/src/features/gis/GISMapPanel.tsx"
+  ],
+  "services": [
+    {
+      "name": "MultiAgentOrchestrator",
+      "file": "src/core/agents/MultiAgentOrchestrator.ts"
+    },
+    {
+      "name": "ReasoningController",
+      "file": "src/core/agents/ReasoningController.ts"
+    },
+    {
+      "name": "GamingPlaybookService",
+      "file": "src/core/agents/gaming/GamingPlaybookService.ts"
+    },
+    {
+      "name": "FLStudioMixController",
+      "file": "src/core/agents/music/mix/FLStudioMixController.ts"
+    },
+    {
+      "name": "AnalyticsService",
+      "file": "src/core/analytics/AnalyticsService.ts"
+    },
+    {
+      "name": "AudioLibraryService",
+      "file": "src/core/audio/AudioLibraryService.ts"
+    },
+    {
+      "name": "AudioMetadataService",
+      "file": "src/core/audio/AudioMetadataService.ts"
+    },
+    {
+      "name": "ApiKeyService",
+      "file": "src/core/auth/ApiKeyService.ts"
+    },
+    {
+      "name": "AuthService",
+      "file": "src/core/auth/AuthService.ts"
+    },
+    {
+      "name": "UserService",
+      "file": "src/core/auth/UserService.ts"
+    },
+    {
+      "name": "CodingController",
+      "file": "src/core/coding/CodingController.ts"
+    },
+    {
+      "name": "LanguageCapabilityRegistry",
+      "file": "src/core/coding/languages/LanguageCapabilityRegistry.ts"
+    },
+    {
+      "name": "RepairController",
+      "file": "src/core/coding/verification/RepairController.ts"
+    },
+    {
+      "name": "VerificationOrchestrator",
+      "file": "src/core/coding/verification/VerificationOrchestrator.ts"
+    },
+    {
+      "name": "APIKeyManager",
+      "file": "src/core/config/APIKeyManager.ts"
+    },
+    {
+      "name": "ProfileManager",
+      "file": "src/core/config/ProfileManager.ts"
+    },
+    {
+      "name": "ContractRegistry",
+      "file": "src/core/contracts/UniversalContract.ts"
+    },
+    {
+      "name": "ConversationManager",
+      "file": "src/core/conversation/ConversationManager.ts"
+    },
+    {
+      "name": "CreativePrivacyManager",
+      "file": "src/core/creative/CreativePrivacyManager.ts"
+    },
+    {
+      "name": "DocumentMetadataManager",
+      "file": "src/core/documents/DocumentMetadata.ts"
+    },
+    {
+      "name": "DocumentReviewService",
+      "file": "src/core/documents/DocumentReviewService.ts"
+    },
+    {
+      "name": "EducationService",
+      "file": "src/core/education/EducationService.ts"
+    },
+    {
+      "name": "EmbeddingService",
+      "file": "src/core/embeddings/EmbeddingService.ts"
+    },
+    {
+      "name": "EntityLinkingService",
+      "file": "src/core/entity/EntityLinkingService.ts"
+    },
+    {
+      "name": "FeedbackService",
+      "file": "src/core/feedback/FeedbackService.ts"
+    },
+    {
+      "name": "FileExplorerService",
+      "file": "src/core/files/FileExplorerService.ts"
+    },
+    {
+      "name": "GISProviderRegistry",
+      "file": "src/core/gis/GISProviderRegistry.ts"
+    },
+    {
+      "name": "GISService",
+      "file": "src/core/gis/GISService.ts"
+    },
+    {
+      "name": "LayerImportService",
+      "file": "src/core/gis/LayerImportService.ts"
+    },
+    {
+      "name": "MapSessionService",
+      "file": "src/core/gis/MapSessionService.ts"
+    },
+    {
+      "name": "SpatialAnalysisService",
+      "file": "src/core/gis/SpatialAnalysisService.ts"
+    },
+    {
+      "name": "GovernanceEvidenceService",
+      "file": "src/core/governance/GovernanceEvidenceService.ts"
+    },
+    {
+      "name": "KnowledgeOnlineFlowService",
+      "file": "src/core/knowledge/KnowledgeOnlineFlowService.ts"
+    },
+    {
+      "name": "OnlineKnowledgeIngestionService",
+      "file": "src/core/knowledge/OnlineKnowledgeIngestionService.ts"
+    },
+    {
+      "name": "SpacedRepetitionService",
+      "file": "src/core/learning/SpacedRepetitionService.ts"
+    },
+    {
+      "name": "McpClientService",
+      "file": "src/core/mcp/McpClientService.ts"
+    },
+    {
+      "name": "McpToolRegistry",
+      "file": "src/core/mcp/McpToolRegistry.ts"
+    },
+    {
+      "name": "MemoryService",
+      "file": "src/core/memory/MemoryService.ts"
+    },
+    {
+      "name": "ImageProcessor",
+      "file": "src/core/multimodal/ImageProcessor.ts"
+    },
+    {
+      "name": "VideoProcessor",
+      "file": "src/core/multimodal/VideoProcessor.ts"
+    },
+    {
+      "name": "EnhancedOrchestrator",
+      "file": "src/core/orchestrator/EnhancedOrchestrator.ts"
+    },
+    {
+      "name": "Orchestrator",
+      "file": "src/core/orchestrator/Orchestrator.ts"
+    },
+    {
+      "name": "PlanDocumentService",
+      "file": "src/core/planning/PlanDocumentService.ts"
+    },
+    {
+      "name": "ProjectIntelligenceService",
+      "file": "src/core/project/ProjectIntelligenceService.ts"
+    },
+    {
+      "name": "ProjectMemoryService",
+      "file": "src/core/project/ProjectMemoryService.ts"
+    },
+    {
+      "name": "FreeModelRegistry",
+      "file": "src/core/providers/FreeModelRegistry.ts"
+    },
+    {
+      "name": "DocumentManager",
+      "file": "src/core/rag/DocumentManager.ts"
+    },
+    {
+      "name": "RAGService",
+      "file": "src/core/rag/RAGService.ts"
+    },
+    {
+      "name": "PyScrappyService",
+      "file": "src/core/research/PyScrappyService.ts"
+    },
+    {
+      "name": "SandboxController",
+      "file": "src/core/safety/SandboxController.ts"
+    },
+    {
+      "name": "SECService",
+      "file": "src/core/sec/SECService.ts"
+    },
+    {
+      "name": "SECStorageService",
+      "file": "src/core/sec/SECStorageService.ts"
+    },
+    {
+      "name": "ConversationSharingService",
+      "file": "src/core/sharing/ConversationSharing.ts"
+    },
+    {
+      "name": "SpriteLabPlanService",
+      "file": "src/core/sprite-lab/SpriteLabPlanService.ts"
+    },
+    {
+      "name": "QuickRepliesService",
+      "file": "src/core/suggestions/QuickReplies.ts"
+    },
+    {
+      "name": "ToolRegistry",
+      "file": "src/core/tools/ToolRegistry.ts"
+    },
+    {
+      "name": "ToolCatalogService",
+      "file": "src/core/tools/catalog/ToolCatalogService.ts"
+    },
+    {
+      "name": "FileProcessor",
+      "file": "src/core/upload/FileProcessor.ts"
+    },
+    {
+      "name": "CustomInstructionsService",
+      "file": "src/core/user/CustomInstructions.ts"
+    },
+    {
+      "name": "WebhookService",
+      "file": "src/core/webhooks/WebhookService.ts"
+    },
+    {
+      "name": "WebsiteWorkspaceService",
+      "file": "src/core/website/WebsiteWorkspaceService.ts"
+    },
+    {
+      "name": "TracingService",
+      "file": "src/observability/tracing.ts"
+    },
+    {
+      "name": "ServiceRegistry",
+      "file": "src/services/ServiceRegistry.ts"
+    },
+    {
+      "name": "CacheManager",
+      "file": "src/utils/cache.ts"
+    }
+  ],
+  "providers": [
+    {
+      "name": "FallbackParserProvider",
+      "file": "src/core/coding/index/FallbackParserProvider.ts"
+    },
+    {
+      "name": "TreeSitterParserProvider",
+      "file": "src/core/coding/index/TreeSitterParserProvider.ts"
+    },
+    {
+      "name": "TypeScriptParserProvider",
+      "file": "src/core/coding/index/TypeScriptParserProvider.ts"
+    },
+    {
+      "name": "GatewayLexicalRetrievalProvider",
+      "file": "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.ts"
+    },
+    {
+      "name": "ArcGISFeatureServiceProvider",
+      "file": "src/core/gis/providers/ArcGISFeatureServiceProvider.ts"
+    },
+    {
+      "name": "CensusGeocoder",
+      "file": "src/core/gis/providers/CensusGeocoder.ts"
+    },
+    {
+      "name": "DevelopmentGeocodingProvider",
+      "file": "src/core/gis/providers/MockGISProviders.ts"
+    },
+    {
+      "name": "DevelopmentRoutingProvider",
+      "file": "src/core/gis/providers/MockGISProviders.ts"
+    },
+    {
+      "name": "DevelopmentPlacesProvider",
+      "file": "src/core/gis/providers/MockGISProviders.ts"
+    },
+    {
+      "name": "DevelopmentParcelProvider",
+      "file": "src/core/gis/providers/MockGISProviders.ts"
+    },
+    {
+      "name": "OSRMRoutingProvider",
+      "file": "src/core/gis/providers/OSRMRoutingProvider.ts"
+    },
+    {
+      "name": "FLStudioMcpClient",
+      "file": "src/core/integrations/flstudio/FLStudioMcpClient.ts"
+    },
+    {
+      "name": "TwilioAdapter",
+      "file": "src/core/notifications/TwilioAdapter.ts"
+    },
+    {
+      "name": "StyleAdapter",
+      "file": "src/core/personalization/StyleAdapter.ts"
+    },
+    {
+      "name": "DeviceAdapter",
+      "file": "src/core/providers/DeviceAdapter.ts"
+    },
+    {
+      "name": "EnsembleAdapter",
+      "file": "src/core/providers/EnsembleAdapter.ts"
+    },
+    {
+      "name": "FreeModelRegistry",
+      "file": "src/core/providers/FreeModelRegistry.ts"
+    },
+    {
+      "name": "HuggingFaceAdapter",
+      "file": "src/core/providers/HuggingFaceAdapter.ts"
+    },
+    {
+      "name": "OpenAIAdapter",
+      "file": "src/core/providers/LLMAdapter.ts"
     },
     {
       "name": "TemplateAdapter",
@@ -4859,3 +5197,4 @@ Total output lines: 5200
     }
   ]
 }
+
