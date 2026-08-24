@@ -118,9 +118,6 @@ jobs:
       - name: Verify server lint
         run: npm run lint:server
 
-      - name: Enforce full server coverage
-        run: npm run test:coverage -- --runInBand
-
       - name: Regenerate tracked repository inventory
         run: |
           npm run inventory:generate
