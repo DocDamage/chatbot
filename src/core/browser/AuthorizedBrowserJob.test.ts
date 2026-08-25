@@ -411,5 +411,132 @@ describe('CF-06 Transparent Browser Jobs', () => {
       await execPromise.catch(() => {});
       expect(job.status === 'cancelled' || job.status === 'completed').toBe(true);
     });
+
+    it('rejects tampered and expired jobs before allocating a browser sandbox', async () => {
+      const tampered = createAuthorizedBrowserJob({
+        purpose: 'Integrity execution test',
+        requesterId: 'tester-1',
+        originAllowlist: ['https://example.com']
+      });
+      (tampered as any).purpose = 'Changed after signing';
+
+      await expect(new BrowserJobRunner().executeJob(tampered, new MockBrowserDriver()))
+        .rejects.toThrow(/digest mismatch/);
+      expect(tampered.status).toBe('failed');
+
+      const expired = createAuthorizedBrowserJob({
+        purpose: 'Expired execution test',
+        requesterId: 'tester-1',
+        originAllowlist: ['https://example.com'],
+        ttlMs: -1
+      });
+      await expect(new BrowserJobRunner().executeJob(expired, new MockBrowserDriver()))
+        .rejects.toThrow(/expired/);
+      expect(expired.status).toBe('failed');
+    });
+
+    it('executes every supported browser action through the driver contract', async () => {
+      const job = createAuthorizedBrowserJob({
+        purpose: 'Complete action dispatch test',
+        requesterId: 'tester-1',
+        originAllowlist: ['https://example.com'],
+        actions: [
+          { id: 'navigate', type: 'navigate', target: 'https://example.com' },
+          { id: 'click', type: 'click', target: '#button', timeoutMs: 25 },
+          { id: 'type', type: 'type', target: '#input' },
+          { id: 'scroll', type: 'scroll' },
+          { id: 'wait', type: 'wait', value: '1' },
+          { id: 'screenshot', type: 'screenshot', value: 'full' },
+          { id: 'dom', type: 'extract_dom', target: 'main' },
+          { id: 'text', type: 'extract_text' },
+          { id: 'submit', type: 'submit_form', target: '#form' },
+          { id: 'upload', type: 'upload_file', target: '#file' },
+          { id: 'account', type: 'account_mutation' },
+          { id: 'eval', type: 'custom_eval', value: 'document.title' }
+        ]
+      });
+      const driver = new MockBrowserDriver();
+      const spies = {
+        click: jest.spyOn(driver, 'click'),
+        type: jest.spyOn(driver, 'type'),
+        scroll: jest.spyOn(driver, 'scroll'),
+        wait: jest.spyOn(driver, 'wait'),
+        screenshot: jest.spyOn(driver, 'screenshot'),
+        extractDom: jest.spyOn(driver, 'extractDom'),
+        extractText: jest.spyOn(driver, 'extractText'),
+        submitForm: jest.spyOn(driver, 'submitForm'),
+        uploadFile: jest.spyOn(driver, 'uploadFile'),
+        evaluate: jest.spyOn(driver, 'evaluate')
+      };
+      const runner = new BrowserJobRunner();
+      for (const actionId of ['submit', 'upload', 'account', 'eval']) {
+        runner.approveAction(job, actionId, 'operator-lead');
+      }
+
+      const result = await runner.executeJob(job, driver);
+
+      expect(result.status).toBe('completed');
+      expect(spies.click).toHaveBeenCalledWith('#button', 25);
+      expect(spies.type).toHaveBeenCalledWith('#input', '', undefined);
+      expect(spies.scroll).toHaveBeenCalledWith(undefined);
+      expect(spies.wait).toHaveBeenCalledWith(1);
+      expect(spies.screenshot).toHaveBeenCalledWith(expect.any(String), true);
+      expect(spies.extractDom).toHaveBeenCalledWith('main');
+      expect(spies.extractText).toHaveBeenCalledWith(undefined);
+      expect(spies.submitForm).toHaveBeenCalledWith('#form');
+      expect(spies.uploadFile).toHaveBeenCalledWith('#file', []);
+      expect(spies.evaluate).toHaveBeenNthCalledWith(1, '');
+      expect(spies.evaluate).toHaveBeenNthCalledWith(2, 'document.title');
+      expect(result.evidence?.networkLogs.some(log => log.method === 'POST')).toBe(true);
+    });
+
+    it('enforces redirect, action-count, duration, and unsupported-action budgets', async () => {
+      const redirected = createAuthorizedBrowserJob({
+        purpose: 'Redirect budget test',
+        requesterId: 'tester-1',
+        originAllowlist: ['https://example.com'],
+        budget: { maxRedirects: 0 },
+        actions: [{ id: 'navigate', type: 'navigate', target: 'https://example.com' }]
+      });
+      const redirectDriver = new MockBrowserDriver();
+      redirectDriver.navigate = async () => ({
+        url: 'https://example.com/final', title: 'final', redirectCount: 1, responseSizeBytes: 0
+      });
+      await expect(new BrowserJobRunner().executeJob(redirected, redirectDriver))
+        .rejects.toThrow(/maxRedirects/);
+
+      const actionLimited = createAuthorizedBrowserJob({
+        purpose: 'Action budget test', requesterId: 'tester-1', originAllowlist: ['https://example.com'],
+        budget: { maxActions: 1 },
+        actions: [{ id: 'first', type: 'click', target: '#one' }, { id: 'second', type: 'click', target: '#two' }]
+      });
+      await expect(new BrowserJobRunner().executeJob(actionLimited, new MockBrowserDriver()))
+        .rejects.toThrow(/maxActions/);
+
+      const durationLimited = createAuthorizedBrowserJob({
+        purpose: 'Duration budget test', requesterId: 'tester-1', originAllowlist: ['https://example.com'],
+        budget: { maxDurationMs: 1 },
+        actions: [{ id: 'pause', type: 'wait', timeoutMs: 10 }, { id: 'after', type: 'click', target: '#late' }]
+      });
+      await expect(new BrowserJobRunner().executeJob(durationLimited, new MockBrowserDriver()))
+        .rejects.toThrow(/maxDurationMs/);
+
+      const unsupported = createAuthorizedBrowserJob({
+        purpose: 'Unsupported action test', requesterId: 'tester-1', originAllowlist: ['https://example.com'],
+        actions: [{ id: 'unknown', type: 'unsupported' } as any]
+      });
+      await expect(new BrowserJobRunner().executeJob(unsupported, new MockBrowserDriver()))
+        .rejects.toThrow(/Unsupported action type/);
+    });
+
+    it('reports missing jobs and action approvals without mutating state', async () => {
+      const runner = new BrowserJobRunner();
+      expect(await runner.cancelJob('missing-job')).toBe(false);
+
+      const job = createAuthorizedBrowserJob({
+        purpose: 'Missing action test', requesterId: 'tester-1', originAllowlist: ['https://example.com']
+      });
+      expect(() => runner.approveAction(job, 'missing-action', 'operator')).toThrow(/not found/);
+    });
   });
 });

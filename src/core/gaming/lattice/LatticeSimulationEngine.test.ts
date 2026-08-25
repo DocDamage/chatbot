@@ -154,6 +154,19 @@ describe('CF-08 Lattice Game-Development Capability', () => {
       const seqB = Array.from({ length: 10 }, () => rngB.next());
 
       expect(seqA).toEqual(seqB);
+      expect(rngA.getState()).toBe(rngB.getState());
+    });
+
+    it('rejects a tampered scenario and supports deferred scenario loading', () => {
+      const scenario = createLatticeScenario({
+        title: 'Load scenario', description: 'Digest verification', world: sampleWorld
+      });
+      expect(() => new LatticeSimulationEngine({ ...scenario, title: 'tampered' })).toThrow(/digest verification/);
+
+      const engine = new LatticeSimulationEngine();
+      engine.loadScenario(scenario);
+      expect(engine.getCurrentTick()).toBe(0);
+      expect(engine.getResult().snapshots).toHaveLength(1);
     });
 
     it('replaying an action sequence produces exact deterministic snapshots', () => {
@@ -251,6 +264,128 @@ describe('CF-08 Lattice Game-Development Capability', () => {
       const result = engine.getResult();
       expect(result.won).toBe(true);
       expect(result.completed).toBe(true);
+    });
+
+    it('dispatches edge-case movement, collection, wait, attack, and unknown actions safely', () => {
+      const world: LatticeWorldSchema = {
+        ...sampleWorld,
+        tiles: sampleWorld.tiles.filter(tile => !(tile.x === 2 && tile.y === 2)),
+        entities: [
+          { ...sampleWorld.entities[0], inventory: undefined },
+          sampleWorld.entities[1],
+          {
+            id: 'item-1', archetype: 'item', name: 'Key', position: { x: 2, y: 2, z: 0 },
+            stats: { hp: 1, maxHp: 1, speed: 0 }, state: 'idle'
+          },
+          {
+            id: 'static-1', archetype: 'npc', name: 'Statue', position: { x: 2, y: 3, z: 0 },
+            stats: { hp: 1, maxHp: 1, speed: 0 }, state: 'idle', behavior: 'static'
+          },
+          {
+            id: 'defeated-1', archetype: 'enemy', name: 'Defeated', position: { x: 1, y: 3, z: 0 },
+            stats: { hp: 0, maxHp: 1, speed: 0 }, state: 'defeated', behavior: 'wander'
+          }
+        ]
+      };
+      const scenario = createLatticeScenario({ title: 'Action edges', description: 'Action dispatch', world });
+      const engine = new LatticeSimulationEngine(scenario);
+      const actions = [
+        { tick: 1, entityId: 'missing', type: 'wait' as const },
+        { tick: 1, entityId: 'defeated-1', type: 'wait' as const },
+        { tick: 1, entityId: 'player-1', type: 'move' as const },
+        { tick: 1, entityId: 'player-1', type: 'move' as const, targetPosition: { x: -1, y: 1, z: 0 } },
+        { tick: 1, entityId: 'player-1', type: 'move' as const, targetPosition: { x: 5, y: 1, z: 0 } },
+        { tick: 1, entityId: 'player-1', type: 'move' as const, targetPosition: { x: 1, y: -1, z: 0 } },
+        { tick: 1, entityId: 'player-1', type: 'move' as const, targetPosition: { x: 1, y: 5, z: 0 } },
+        { tick: 1, entityId: 'player-1', type: 'move' as const, targetPosition: { x: 3, y: 3, z: 0 } },
+        { tick: 1, entityId: 'player-1', type: 'move' as const, targetPosition: { x: 2, y: 2, z: 0 } },
+        { tick: 1, entityId: 'player-1', type: 'collect' as const },
+        { tick: 1, entityId: 'player-1', type: 'attack' as const },
+        { tick: 1, entityId: 'player-1', type: 'attack' as const, targetEntityId: 'missing' },
+        { tick: 1, entityId: 'player-1', type: 'wait' as const },
+        { tick: 1, entityId: 'player-1', type: 'unknown' as any }
+      ];
+      actions.forEach(action => engine.queueAction(action));
+      engine.step();
+
+      const player = engine.getCurrentWorld().entities.find(entity => entity.id === 'player-1')!;
+      expect(player.position).toEqual({ x: 2, y: 2, z: 0 });
+      expect(player.inventory).toEqual(['item-1']);
+      expect(engine.getCurrentWorld().entities.find(entity => entity.id === 'item-1')?.state).toBe('defeated');
+      expect(player.state).toBe('idle');
+    });
+
+    it('uses default combat stats and ignores already-defeated targets', () => {
+      const world: LatticeWorldSchema = {
+        ...sampleWorld,
+        entities: [
+          { ...sampleWorld.entities[0], stats: { hp: 10, maxHp: 10, speed: 1 } },
+          { ...sampleWorld.entities[1], stats: { hp: 5, maxHp: 5, speed: 1 }, state: 'idle' },
+          {
+            id: 'already-defeated', archetype: 'enemy', name: 'Done', position: { x: 2, y: 2, z: 0 },
+            stats: { hp: 0, maxHp: 5, speed: 1 }, state: 'defeated'
+          }
+        ]
+      };
+      const engine = new LatticeSimulationEngine(createLatticeScenario({
+        title: 'Default combat', description: 'Default attack and defense', world
+      }));
+      engine.queueAction({ tick: 1, entityId: 'player-1', type: 'attack', targetEntityId: 'enemy-1' });
+      engine.queueAction({ tick: 1, entityId: 'player-1', type: 'attack', targetEntityId: 'already-defeated' });
+      engine.step();
+      expect(engine.getCurrentWorld().entities.find(entity => entity.id === 'enemy-1')?.stats.hp).toBe(0);
+    });
+
+    it('stops when paused, finished, out of ticks, or over the wall-clock budget', () => {
+      const scenario = createLatticeScenario({
+        title: 'Simulation budgets', description: 'Termination gates', world: sampleWorld,
+        budget: { maxTicks: 1, timeoutMs: 1000 }
+      });
+      const paused = new LatticeSimulationEngine(scenario);
+      (paused as any).isPaused = true;
+      expect(paused.step()).toBe(false);
+      (paused as any).isPaused = false;
+      (paused as any).isFinished = true;
+      expect(paused.step()).toBe(false);
+
+      const tickLimited = new LatticeSimulationEngine(scenario);
+      expect(tickLimited.step()).toBe(true);
+      expect(tickLimited.step()).toBe(false);
+      expect(tickLimited.getResult().completed).toBe(true);
+
+      const timedOut = new LatticeSimulationEngine(scenario);
+      (timedOut as any).runStartedAt = Date.now() - 2000;
+      expect(timedOut.step()).toBe(false);
+      expect(timedOut.getResult().completed).toBe(true);
+    });
+
+    it('supports reach-tile and survive-ticks wins plus player-defeat loss', () => {
+      const reached = new LatticeSimulationEngine(createLatticeScenario({
+        title: 'Reach tile', description: 'Reach condition', world: sampleWorld,
+        winCondition: { type: 'reach_tile', targetTile: { x: 1, y: 1, z: 0 } }
+      }));
+      reached.step();
+      expect(reached.getResult()).toMatchObject({ completed: true, won: true });
+
+      const survived = new LatticeSimulationEngine(createLatticeScenario({
+        title: 'Survive', description: 'Survive condition', world: sampleWorld,
+        winCondition: { type: 'survive_ticks', ticksRequired: 1 }
+      }));
+      survived.step();
+      expect(survived.getResult()).toMatchObject({ completed: true, won: true });
+
+      const defeatedWorld: LatticeWorldSchema = {
+        ...sampleWorld,
+        entities: sampleWorld.entities.map(entity => entity.archetype === 'player'
+          ? { ...entity, state: 'defeated' as const, stats: { ...entity.stats, hp: 0 } }
+          : entity)
+      };
+      const lost = new LatticeSimulationEngine(createLatticeScenario({
+        title: 'Player loss', description: 'Loss condition', world: defeatedWorld,
+        winCondition: { type: 'survive_ticks', ticksRequired: 5 }
+      }));
+      lost.step();
+      expect(lost.getResult()).toMatchObject({ completed: true, won: false });
     });
   });
 
