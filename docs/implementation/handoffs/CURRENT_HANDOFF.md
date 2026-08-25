@@ -47,9 +47,13 @@ External gates retained:
 - Human media-rights, localization-quality, manual keyboard, and screen-reader review.
 - Hosted infrastructure, backup/restore, load/failure, security, and release-owner approvals.
 
-## Next task
+## Next authorized task
 
 Push the evidence-bearing head, require GitHub Required CI to pass on that exact SHA, resolve any CI-only failures without weakening policy, then leave draft PR `#171` ready for independent review.
+
+## Thread closure
+
+End this task only after the exact pushed head passes GitHub Required CI and draft PR `#171` is ready for independent human review, or after a remaining gate genuinely requires human authority. Do not merge or begin hosted-production promotion in this task.
 
 ## NEW THREAD START PROMPT
 
