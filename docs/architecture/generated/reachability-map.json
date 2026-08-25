@@ -103,11 +103,14 @@
     "client/src/clipboard.ts",
     "client/src/components/AssistantChat.tsx",
     "client/src/components/AudioPreviewBrowser.tsx",
+    "client/src/components/CapabilityHubPanel.tsx",
+    "client/src/components/CapabilityPromotionView.tsx",
     "client/src/components/CodeWorkflowPanel.tsx",
     "client/src/components/ConversationToolsPanel.tsx",
     "client/src/components/CreativeComposerPanel.tsx",
     "client/src/components/DesktopCompanionPanel.tsx",
     "client/src/components/DocumentWorkspacePanel.tsx",
+    "client/src/components/ExactScopeConfirmModal.tsx",
     "client/src/components/FLStudioControlPanel.tsx",
     "client/src/components/FileExplorerPanel.tsx",
     "client/src/components/FilePreviewPane.tsx",
@@ -122,6 +125,7 @@
     "client/src/components/ModeSelector.tsx",
     "client/src/components/PlanActionBar.tsx",
     "client/src/components/ProjectIntelligencePanel.tsx",
+    "client/src/components/RepositoryFindingsView.tsx",
     "client/src/components/SettingsMenu.tsx",
     "client/src/components/SpriteLabPanel.tsx",
     "client/src/components/StaticDemo.tsx",
@@ -230,6 +234,14 @@
     "src/core/audio/AudioLibraryService.ts",
     "src/core/auth/AuthService.ts",
     "src/core/auth/UserService.ts",
+    "src/core/browser/AuthorizedBrowserJob.ts",
+    "src/core/capabilities/CapabilityJobManager.ts",
+    "src/core/capabilities/CapabilityRegistry.ts",
+    "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+    "src/core/capabilities/observability/AlertNotificationDispatcher.ts",
+    "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+    "src/core/capabilities/persistence/CapabilityPersistenceStore.ts",
+    "src/core/capabilities/promotion/CapabilityPromotionEngine.ts",
     "src/core/chrono/ChronoDate.ts",
     "src/core/chrono/ChronoKnowledgeEngine.ts",
     "src/core/chrono/EntityGraphStore.ts",
@@ -255,6 +267,7 @@
     "src/core/coding/editing/PatchConflictDetector.ts",
     "src/core/coding/editing/StructuredEditEngine.ts",
     "src/core/coding/editing/WorkspaceWriteGate.ts",
+    "src/core/coding/findings/RepositoryFindings.ts",
     "src/core/coding/index/FallbackParserProvider.ts",
     "src/core/coding/index/ParserProvider.ts",
     "src/core/coding/index/RelationshipStore.ts",
@@ -271,10 +284,13 @@
     "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
     "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.ts",
     "src/core/coding/retrieval/HybridRepositoryRetriever.ts",
+    "src/core/coding/retrieval/RetrievalBenchmark.ts",
     "src/core/coding/retrieval/StructuralRetriever.ts",
     "src/core/coding/review/ReviewPipeline.ts",
     "src/core/coding/security/ApprovedRepositoryGateway.ts",
     "src/core/coding/security/WorkspacePathPolicy.ts",
+    "src/core/coding/teams/AgentTeamRoles.ts",
+    "src/core/coding/teams/TaskEnvelope.ts",
     "src/core/coding/types.ts",
     "src/core/coding/verification/CommandCapabilityRunner.ts",
     "src/core/coding/verification/DiagnosticParser.ts",
@@ -302,6 +318,10 @@
     "src/core/entity/EntityLinkingService.ts",
     "src/core/feedback/FeedbackService.ts",
     "src/core/files/FileExplorerService.ts",
+    "src/core/gaming/lattice/LatticeGameAdapter.ts",
+    "src/core/gaming/lattice/LatticeSimulationEngine.ts",
+    "src/core/gaming/lattice/LatticeVisualizer.ts",
+    "src/core/gaming/lattice/LatticeWorldSchema.ts",
     "src/core/gis/GISCache.ts",
     "src/core/gis/GISPrivacy.ts",
     "src/core/gis/GISProviderRegistry.ts",
@@ -390,6 +410,8 @@
     "src/core/memory/ProjectContext.ts",
     "src/core/modes/ExecutionModePolicy.ts",
     "src/core/modes/ModePolicy.ts",
+    "src/core/multimodal/localization/MediaConsentRecord.ts",
+    "src/core/multimodal/localization/VideoLocalizationJob.ts",
     "src/core/nlu/ClarifyingQuestionBuilder.ts",
     "src/core/nlu/DomainPhrasebook.ts",
     "src/core/nlu/HumanLanguageRouter.ts",
@@ -431,6 +453,10 @@
     "src/core/providers/OllamaAdapter.ts",
     "src/core/providers/StableDiffusionAdapter.ts",
     "src/core/providers/VisionAdapter.ts",
+    "src/core/providers/local/LocalEndpointPolicy.ts",
+    "src/core/providers/local/LocalModelDiscovery.ts",
+    "src/core/providers/local/LocalModelRoutingPolicy.ts",
+    "src/core/providers/local/LocalResourceManager.ts",
     "src/core/rag/CitationTracker.ts",
     "src/core/rag/ContextCompressor.ts",
     "src/core/rag/DocumentIngester.ts",
@@ -646,6 +672,7 @@
     "src/server/routes/admin.ts",
     "src/server/routes/audio.ts",
     "src/server/routes/business.ts",
+    "src/server/routes/capabilities.ts",
     "src/server/routes/chat-stream.ts",
     "src/server/routes/chrono.ts",
     "src/server/routes/code.ts",
@@ -723,11 +750,14 @@
     "client/src/clipboard.ts",
     "client/src/components/AssistantChat.tsx",
     "client/src/components/AudioPreviewBrowser.tsx",
+    "client/src/components/CapabilityHubPanel.tsx",
+    "client/src/components/CapabilityPromotionView.tsx",
     "client/src/components/CodeWorkflowPanel.tsx",
     "client/src/components/ConversationToolsPanel.tsx",
     "client/src/components/CreativeComposerPanel.tsx",
     "client/src/components/DesktopCompanionPanel.tsx",
     "client/src/components/DocumentWorkspacePanel.tsx",
+    "client/src/components/ExactScopeConfirmModal.tsx",
     "client/src/components/FLStudioControlPanel.tsx",
     "client/src/components/FileExplorerPanel.tsx",
     "client/src/components/FilePreviewPane.tsx",
@@ -742,6 +772,7 @@
     "client/src/components/ModeSelector.tsx",
     "client/src/components/PlanActionBar.tsx",
     "client/src/components/ProjectIntelligencePanel.tsx",
+    "client/src/components/RepositoryFindingsView.tsx",
     "client/src/components/SettingsMenu.tsx",
     "client/src/components/SpriteLabPanel.tsx",
     "client/src/components/StaticDemo.tsx",
@@ -850,6 +881,14 @@
     "src/core/audio/AudioLibraryService.ts",
     "src/core/auth/AuthService.ts",
     "src/core/auth/UserService.ts",
+    "src/core/browser/AuthorizedBrowserJob.ts",
+    "src/core/capabilities/CapabilityJobManager.ts",
+    "src/core/capabilities/CapabilityRegistry.ts",
+    "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+    "src/core/capabilities/observability/AlertNotificationDispatcher.ts",
+    "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+    "src/core/capabilities/persistence/CapabilityPersistenceStore.ts",
+    "src/core/capabilities/promotion/CapabilityPromotionEngine.ts",
     "src/core/chrono/ChronoDate.ts",
     "src/core/chrono/ChronoKnowledgeEngine.ts",
     "src/core/chrono/EntityGraphStore.ts",
@@ -875,6 +914,7 @@
     "src/core/coding/editing/PatchConflictDetector.ts",
     "src/core/coding/editing/StructuredEditEngine.ts",
     "src/core/coding/editing/WorkspaceWriteGate.ts",
+    "src/core/coding/findings/RepositoryFindings.ts",
     "src/core/coding/index/FallbackParserProvider.ts",
     "src/core/coding/index/ParserProvider.ts",
     "src/core/coding/index/RelationshipStore.ts",
@@ -891,10 +931,13 @@
     "src/core/coding/retrieval/AdaptiveContextAllocator.ts",
     "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.ts",
     "src/core/coding/retrieval/HybridRepositoryRetriever.ts",
+    "src/core/coding/retrieval/RetrievalBenchmark.ts",
     "src/core/coding/retrieval/StructuralRetriever.ts",
     "src/core/coding/review/ReviewPipeline.ts",
     "src/core/coding/security/ApprovedRepositoryGateway.ts",
     "src/core/coding/security/WorkspacePathPolicy.ts",
+    "src/core/coding/teams/AgentTeamRoles.ts",
+    "src/core/coding/teams/TaskEnvelope.ts",
     "src/core/coding/types.ts",
     "src/core/coding/verification/CommandCapabilityRunner.ts",
     "src/core/coding/verification/DiagnosticParser.ts",
@@ -922,6 +965,10 @@
     "src/core/entity/EntityLinkingService.ts",
     "src/core/feedback/FeedbackService.ts",
     "src/core/files/FileExplorerService.ts",
+    "src/core/gaming/lattice/LatticeGameAdapter.ts",
+    "src/core/gaming/lattice/LatticeSimulationEngine.ts",
+    "src/core/gaming/lattice/LatticeVisualizer.ts",
+    "src/core/gaming/lattice/LatticeWorldSchema.ts",
     "src/core/gis/GISCache.ts",
     "src/core/gis/GISPrivacy.ts",
     "src/core/gis/GISProviderRegistry.ts",
@@ -1010,6 +1057,8 @@
     "src/core/memory/ProjectContext.ts",
     "src/core/modes/ExecutionModePolicy.ts",
     "src/core/modes/ModePolicy.ts",
+    "src/core/multimodal/localization/MediaConsentRecord.ts",
+    "src/core/multimodal/localization/VideoLocalizationJob.ts",
     "src/core/nlu/ClarifyingQuestionBuilder.ts",
     "src/core/nlu/DomainPhrasebook.ts",
     "src/core/nlu/HumanLanguageRouter.ts",
@@ -1051,6 +1100,10 @@
     "src/core/providers/OllamaAdapter.ts",
     "src/core/providers/StableDiffusionAdapter.ts",
     "src/core/providers/VisionAdapter.ts",
+    "src/core/providers/local/LocalEndpointPolicy.ts",
+    "src/core/providers/local/LocalModelDiscovery.ts",
+    "src/core/providers/local/LocalModelRoutingPolicy.ts",
+    "src/core/providers/local/LocalResourceManager.ts",
     "src/core/rag/CitationTracker.ts",
     "src/core/rag/ContextCompressor.ts",
     "src/core/rag/DocumentIngester.ts",
@@ -1266,6 +1319,7 @@
     "src/server/routes/admin.ts",
     "src/server/routes/audio.ts",
     "src/server/routes/business.ts",
+    "src/server/routes/capabilities.ts",
     "src/server/routes/chat-stream.ts",
     "src/server/routes/chrono.ts",
     "src/server/routes/code.ts",
@@ -1412,11 +1466,18 @@
     "src/core/auth/ApiKeyService.ts",
     "src/core/automation/AutoDrive.ts",
     "src/core/browser/BrowserAgent.ts",
+    "src/core/browser/BrowserEvidenceCollector.ts",
+    "src/core/browser/BrowserJobRunner.ts",
+    "src/core/browser/BrowserJobSandbox.ts",
+    "src/core/browser/PlaywrightBrowserDriver.ts",
+    "src/core/browser/PydollAdapter.ts",
+    "src/core/browser/index.ts",
+    "src/core/capabilities/evaluation/CanaryCertificationSuite.ts",
+    "src/core/capabilities/index.ts",
     "src/core/chrono/ClaimVerifier.ts",
     "src/core/coding/CodingController.ts",
     "src/core/coding/CodingRequestRouter.ts",
     "src/core/coding/findings/CycloneDxSbom.ts",
-    "src/core/coding/findings/RepositoryFindings.ts",
     "src/core/coding/findings/RepositoryOverlayData.ts",
     "src/core/coding/findings/SarifAdapter.ts",
     "src/core/coding/index.ts",
@@ -1424,7 +1485,11 @@
     "src/core/coding/knowledge/ProvenancePolicy.ts",
     "src/core/coding/model/CodingModelRouter.ts",
     "src/core/coding/retrieval/DocumentationRetriever.ts",
-    "src/core/coding/retrieval/RetrievalBenchmark.ts",
+    "src/core/coding/teams/AgentTeamCoordinator.ts",
+    "src/core/coding/teams/ProcessTreeSupervisor.ts",
+    "src/core/coding/teams/ReviewerBundle.ts",
+    "src/core/coding/teams/WorktreeLifecycleService.ts",
+    "src/core/coding/teams/index.ts",
     "src/core/coding/testing/TestStrategy.ts",
     "src/core/config/APIKeyManager.ts",
     "src/core/config/ProfileManager.ts",
@@ -1437,6 +1502,7 @@
     "src/core/evaluation/CodingBenchmarkRunner.ts",
     "src/core/evaluation/CodingEvalHarness.ts",
     "src/core/evaluation/EvalHarness.ts",
+    "src/core/gaming/lattice/index.ts",
     "src/core/index.ts",
     "src/core/knowledge/SmartKnowledgeSource.ts",
     "src/core/knowledge/SmartSourceFactory.ts",
@@ -1454,6 +1520,10 @@
     "src/core/multimodal/ImageProcessor.ts",
     "src/core/multimodal/VideoProcessor.ts",
     "src/core/multimodal/VisualSearch.ts",
+    "src/core/multimodal/localization/MediaLocalizationSandbox.ts",
+    "src/core/multimodal/localization/ProductionMediaEngineAdapter.ts",
+    "src/core/multimodal/localization/VideoLocalizationPipeline.ts",
+    "src/core/multimodal/localization/index.ts",
     "src/core/notifications/TwilioAdapter.ts",
     "src/core/notifications/index.ts",
     "src/core/optimization/ToonSerializer.ts",
@@ -1464,6 +1534,9 @@
     "src/core/personalization/UserProfiler.ts",
     "src/core/providers/DeviceAdapter.ts",
     "src/core/providers/UniversalLLM.ts",
+    "src/core/providers/local/ExternalLocalModelAdapter.ts",
+    "src/core/providers/local/LocalHardwareCanary.ts",
+    "src/core/providers/local/index.ts",
     "src/core/quality/AutoReview.ts",
     "src/core/rag/AudioRAG.ts",
     "src/core/rag/CorrectiveRetriever.ts",
@@ -1527,6 +1600,10 @@
     {
       "importer": "client/src/components/AudioPreviewBrowser.tsx",
       "specifier": "./AudioPreviewBrowser.css"
+    },
+    {
+      "importer": "client/src/components/CapabilityHubPanel.tsx",
+      "specifier": "./CapabilityHubPanel.css"
     },
     {
       "importer": "client/src/components/CodeWorkflowPanel.tsx",
@@ -1793,6 +1870,18 @@
       "client/src/api/audio.ts",
       "client/src/api/runtime.ts"
     ],
+    "client/src/components/CapabilityHubPanel.test.tsx": [
+      "client/src/components/CapabilityHubPanel.tsx"
+    ],
+    "client/src/components/CapabilityHubPanel.tsx": [
+      "client/src/api/runtime.ts",
+      "client/src/components/CapabilityPromotionView.tsx",
+      "client/src/components/ExactScopeConfirmModal.tsx",
+      "client/src/components/RepositoryFindingsView.tsx"
+    ],
+    "client/src/components/CapabilityPromotionView.tsx": [
+      "client/src/api/runtime.ts"
+    ],
     "client/src/components/CodeWorkflowPanel.test.tsx": [
       "client/src/components/CodeWorkflowPanel.tsx"
     ],
@@ -1814,6 +1903,7 @@
     "client/src/components/DocumentWorkspacePanel.tsx": [
       "client/src/api/runtime.ts"
     ],
+    "client/src/components/ExactScopeConfirmModal.tsx": [],
     "client/src/components/FileExplorerPanel.test.tsx": [
       "client/src/components/FileExplorerPanel.tsx"
     ],
@@ -1862,6 +1952,7 @@
     ],
     "client/src/components/LocalToolsWorkspace.tsx": [
       "client/src/api/runtime.ts",
+      "client/src/components/CapabilityHubPanel.tsx",
       "client/src/components/DesktopCompanionPanel.tsx",
       "client/src/components/DocumentWorkspacePanel.tsx",
       "client/src/components/LocalRunApprovalPanel.tsx",
@@ -1883,6 +1974,7 @@
     "client/src/components/ProjectIntelligencePanel.tsx": [
       "client/src/api/runtime.ts"
     ],
+    "client/src/components/RepositoryFindingsView.tsx": [],
     "client/src/components/SettingsMenu.test.tsx": [
       "client/src/components/SettingsMenu.tsx"
     ],
@@ -2869,8 +2961,138 @@
       "src/core/agents/ReasoningController.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/browser/AuthorizedBrowserJob.test.ts": [
+      "src/core/browser/AuthorizedBrowserJob.ts",
+      "src/core/browser/BrowserEvidenceCollector.ts",
+      "src/core/browser/BrowserJobRunner.ts",
+      "src/core/browser/BrowserJobSandbox.ts",
+      "src/core/browser/PydollAdapter.ts"
+    ],
+    "src/core/browser/AuthorizedBrowserJob.ts": [],
     "src/core/browser/BrowserAgent.ts": [
       "src/core/observability/logger.ts"
+    ],
+    "src/core/browser/BrowserEvidenceCollector.ts": [
+      "src/core/browser/AuthorizedBrowserJob.ts"
+    ],
+    "src/core/browser/BrowserJobRunner.ts": [
+      "src/core/browser/AuthorizedBrowserJob.ts",
+      "src/core/browser/BrowserEvidenceCollector.ts",
+      "src/core/browser/BrowserJobSandbox.ts",
+      "src/core/browser/PlaywrightBrowserDriver.ts"
+    ],
+    "src/core/browser/BrowserJobSandbox.ts": [
+      "src/core/browser/AuthorizedBrowserJob.ts"
+    ],
+    "src/core/browser/index.ts": [
+      "src/core/browser/AuthorizedBrowserJob.ts",
+      "src/core/browser/BrowserAgent.ts",
+      "src/core/browser/BrowserEvidenceCollector.ts",
+      "src/core/browser/BrowserJobRunner.ts",
+      "src/core/browser/BrowserJobSandbox.ts",
+      "src/core/browser/PlaywrightBrowserDriver.ts",
+      "src/core/browser/PydollAdapter.ts"
+    ],
+    "src/core/browser/PlaywrightBrowserDriver.ts": [
+      "src/core/browser/BrowserJobRunner.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/browser/PydollAdapter.ts": [
+      "src/core/browser/AuthorizedBrowserJob.ts"
+    ],
+    "src/core/capabilities/CapabilityJobManager.ts": [],
+    "src/core/capabilities/CapabilityRegistry.test.ts": [
+      "src/core/capabilities/CapabilityJobManager.ts",
+      "src/core/capabilities/CapabilityRegistry.ts"
+    ],
+    "src/core/capabilities/CapabilityRegistry.ts": [
+      "src/core/browser/AuthorizedBrowserJob.ts",
+      "src/core/capabilities/CapabilityJobManager.ts",
+      "src/core/coding/teams/TaskEnvelope.ts",
+      "src/core/config/EnvironmentDefinitions.ts",
+      "src/core/gaming/lattice/LatticeGameAdapter.ts",
+      "src/core/gaming/lattice/LatticeSimulationEngine.ts",
+      "src/core/multimodal/localization/MediaConsentRecord.ts",
+      "src/core/multimodal/localization/VideoLocalizationJob.ts",
+      "src/core/providers/local/LocalModelDiscovery.ts"
+    ],
+    "src/core/capabilities/evaluation/CanaryCertificationSuite.test.ts": [
+      "src/core/capabilities/evaluation/CanaryCertificationSuite.ts",
+      "src/core/capabilities/observability/AlertNotificationDispatcher.ts",
+      "src/core/capabilities/persistence/CapabilityPersistenceStore.ts",
+      "src/core/coding/teams/ProcessTreeSupervisor.ts",
+      "src/core/multimodal/localization/ProductionMediaEngineAdapter.ts",
+      "src/core/providers/local/LocalHardwareCanary.ts"
+    ],
+    "src/core/capabilities/evaluation/CanaryCertificationSuite.ts": [
+      "src/core/browser/AuthorizedBrowserJob.ts",
+      "src/core/browser/BrowserJobRunner.ts",
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/capabilities/observability/AlertNotificationDispatcher.ts",
+      "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+      "src/core/capabilities/persistence/CapabilityPersistenceStore.ts",
+      "src/core/coding/teams/ProcessTreeSupervisor.ts",
+      "src/core/coding/teams/TaskEnvelope.ts",
+      "src/core/coding/teams/WorktreeLifecycleService.ts",
+      "src/core/gaming/lattice/LatticeGameAdapter.ts",
+      "src/core/multimodal/localization/ProductionMediaEngineAdapter.ts",
+      "src/core/providers/local/LocalHardwareCanary.ts"
+    ],
+    "src/core/capabilities/evaluation/CapabilityEvaluationSuite.test.ts": [
+      "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts"
+    ],
+    "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts": [
+      "src/core/browser/AuthorizedBrowserJob.ts",
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/coding/retrieval/RetrievalBenchmark.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
+      "src/core/coding/security/WorkspacePathPolicy.ts",
+      "src/core/coding/teams/TaskEnvelope.ts",
+      "src/core/config/EnvironmentDefinitions.ts",
+      "src/core/gaming/lattice/LatticeGameAdapter.ts",
+      "src/core/gaming/lattice/LatticeSimulationEngine.ts",
+      "src/core/multimodal/localization/MediaConsentRecord.ts",
+      "src/core/multimodal/localization/VideoLocalizationJob.ts",
+      "src/core/providers/local/LocalModelRoutingPolicy.ts",
+      "src/core/providers/local/LocalResourceManager.ts"
+    ],
+    "src/core/capabilities/index.ts": [
+      "src/core/capabilities/CapabilityJobManager.ts",
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+      "src/core/capabilities/observability/AlertNotificationDispatcher.ts",
+      "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+      "src/core/capabilities/persistence/CapabilityPersistenceStore.ts",
+      "src/core/capabilities/promotion/CapabilityPromotionEngine.ts"
+    ],
+    "src/core/capabilities/observability/AlertNotificationDispatcher.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/capabilities/observability/CapabilityObservabilityService.test.ts": [
+      "src/core/capabilities/observability/CapabilityObservabilityService.ts"
+    ],
+    "src/core/capabilities/observability/CapabilityObservabilityService.ts": [
+      "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+      "src/core/capabilities/observability/AlertNotificationDispatcher.ts",
+      "src/core/capabilities/persistence/CapabilityPersistenceStore.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/capabilities/persistence/CapabilityPersistenceStore.ts": [
+      "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+      "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+      "src/core/capabilities/promotion/CapabilityPromotionEngine.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/capabilities/promotion/CapabilityPromotionEngine.test.ts": [
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+      "src/core/capabilities/promotion/CapabilityPromotionEngine.ts"
+    ],
+    "src/core/capabilities/promotion/CapabilityPromotionEngine.ts": [
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+      "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+      "src/core/capabilities/persistence/CapabilityPersistenceStore.ts"
     ],
     "src/core/chrono/ChronoDate.ts": [],
     "src/core/chrono/ChronoKnowledgeEngine.test.ts": [
@@ -3129,12 +3351,14 @@
       "src/core/coding/review/ReviewPipeline.ts",
       "src/core/coding/security/ApprovedRepositoryGateway.ts",
       "src/core/coding/security/WorkspacePathPolicy.ts",
+      "src/core/coding/teams/index.ts",
       "src/core/coding/testing/TestStrategy.ts",
       "src/core/coding/types.ts",
       "src/core/coding/verification/CommandCapabilityRunner.ts",
       "src/core/coding/verification/DiagnosticParser.ts",
       "src/core/coding/verification/RepairController.ts",
-      "src/core/coding/verification/VerificationOrchestrator.ts"
+      "src/core/coding/verification/VerificationOrchestrator.ts",
+      "src/core/providers/local/index.ts"
     ],
     "src/core/coding/index/FallbackParserProvider.ts": [
       "src/core/coding/index/ParserProvider.ts"
@@ -3186,7 +3410,8 @@
       "src/core/coding/languages/LanguageCapability.ts"
     ],
     "src/core/coding/model/CodingModelRouter.ts": [
-      "src/core/providers/LLMAdapter.ts"
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/providers/local/LocalModelRoutingPolicy.ts"
     ],
     "src/core/coding/RemainingCodingCoverage.test.ts": [
       "src/core/coding/CodingController.ts",
@@ -3278,6 +3503,38 @@
     "src/core/coding/security/WorkspacePathPolicy.ts": [],
     "src/core/coding/StructuredEditEngine.test.ts": [
       "src/core/coding/editing/StructuredEditEngine.ts"
+    ],
+    "src/core/coding/teams/AgentTeamCoordinator.test.ts": [
+      "src/core/coding/teams/index.ts"
+    ],
+    "src/core/coding/teams/AgentTeamCoordinator.ts": [
+      "src/core/coding/teams/AgentTeamRoles.ts",
+      "src/core/coding/teams/ReviewerBundle.ts",
+      "src/core/coding/teams/TaskEnvelope.ts",
+      "src/core/coding/teams/WorktreeLifecycleService.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/coding/teams/AgentTeamRoles.ts": [],
+    "src/core/coding/teams/index.ts": [
+      "src/core/coding/teams/AgentTeamCoordinator.ts",
+      "src/core/coding/teams/AgentTeamRoles.ts",
+      "src/core/coding/teams/ProcessTreeSupervisor.ts",
+      "src/core/coding/teams/ReviewerBundle.ts",
+      "src/core/coding/teams/TaskEnvelope.ts",
+      "src/core/coding/teams/WorktreeLifecycleService.ts"
+    ],
+    "src/core/coding/teams/ProcessTreeSupervisor.ts": [
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/coding/teams/ReviewerBundle.ts": [
+      "src/core/coding/teams/TaskEnvelope.ts"
+    ],
+    "src/core/coding/teams/TaskEnvelope.ts": [
+      "src/core/coding/teams/AgentTeamRoles.ts"
+    ],
+    "src/core/coding/teams/WorktreeLifecycleService.ts": [
+      "src/core/coding/teams/TaskEnvelope.ts",
+      "src/core/observability/logger.ts"
     ],
     "src/core/coding/testing/TestStrategy.test.ts": [
       "src/core/coding/testing/TestStrategy.ts"
@@ -3472,6 +3729,30 @@
       "src/core/files/FileExplorerService.ts"
     ],
     "src/core/files/FileExplorerService.ts": [],
+    "src/core/gaming/lattice/index.ts": [
+      "src/core/gaming/lattice/LatticeGameAdapter.ts",
+      "src/core/gaming/lattice/LatticeSimulationEngine.ts",
+      "src/core/gaming/lattice/LatticeVisualizer.ts",
+      "src/core/gaming/lattice/LatticeWorldSchema.ts"
+    ],
+    "src/core/gaming/lattice/LatticeGameAdapter.ts": [
+      "src/core/gaming/lattice/LatticeSimulationEngine.ts",
+      "src/core/gaming/lattice/LatticeVisualizer.ts",
+      "src/core/gaming/lattice/LatticeWorldSchema.ts"
+    ],
+    "src/core/gaming/lattice/LatticeSimulationEngine.test.ts": [
+      "src/core/gaming/lattice/LatticeGameAdapter.ts",
+      "src/core/gaming/lattice/LatticeSimulationEngine.ts",
+      "src/core/gaming/lattice/LatticeVisualizer.ts",
+      "src/core/gaming/lattice/LatticeWorldSchema.ts"
+    ],
+    "src/core/gaming/lattice/LatticeSimulationEngine.ts": [
+      "src/core/gaming/lattice/LatticeWorldSchema.ts"
+    ],
+    "src/core/gaming/lattice/LatticeVisualizer.ts": [
+      "src/core/gaming/lattice/LatticeWorldSchema.ts"
+    ],
+    "src/core/gaming/lattice/LatticeWorldSchema.ts": [],
     "src/core/gis/__tests__/GISPrivacy.test.ts": [
       "src/core/gis/GISPrivacy.ts"
     ],
@@ -3560,10 +3841,29 @@
       "src/core/agents/ReasoningController.ts",
       "src/core/analytics/AnalyticsService.ts",
       "src/core/automation/AutoDrive.ts",
+      "src/core/browser/AuthorizedBrowserJob.ts",
       "src/core/browser/BrowserAgent.ts",
+      "src/core/browser/BrowserEvidenceCollector.ts",
+      "src/core/browser/BrowserJobRunner.ts",
+      "src/core/browser/BrowserJobSandbox.ts",
+      "src/core/browser/PlaywrightBrowserDriver.ts",
+      "src/core/browser/PydollAdapter.ts",
+      "src/core/capabilities/CapabilityJobManager.ts",
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/capabilities/evaluation/CanaryCertificationSuite.ts",
+      "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+      "src/core/capabilities/observability/AlertNotificationDispatcher.ts",
+      "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+      "src/core/capabilities/persistence/CapabilityPersistenceStore.ts",
+      "src/core/capabilities/promotion/CapabilityPromotionEngine.ts",
+      "src/core/coding/teams/ProcessTreeSupervisor.ts",
       "src/core/config/APIKeyManager.ts",
       "src/core/config/ProfileManager.ts",
       "src/core/contracts/UniversalContract.ts",
+      "src/core/gaming/lattice/LatticeGameAdapter.ts",
+      "src/core/gaming/lattice/LatticeSimulationEngine.ts",
+      "src/core/gaming/lattice/LatticeVisualizer.ts",
+      "src/core/gaming/lattice/LatticeWorldSchema.ts",
       "src/core/knowledge/BaseKnowledgeSource.ts",
       "src/core/knowledge/CodingKnowledgeBase.ts",
       "src/core/knowledge/KnowledgeExtractor.ts",
@@ -3575,12 +3875,17 @@
       "src/core/memory/ProjectContext.ts",
       "src/core/multimodal/ImageProcessor.ts",
       "src/core/multimodal/VideoProcessor.ts",
+      "src/core/multimodal/localization/MediaConsentRecord.ts",
+      "src/core/multimodal/localization/MediaLocalizationSandbox.ts",
+      "src/core/multimodal/localization/VideoLocalizationJob.ts",
+      "src/core/multimodal/localization/index.ts",
       "src/core/notifications/TwilioAdapter.ts",
       "src/core/observability/logger.ts",
       "src/core/optimization/ToonSerializer.ts",
       "src/core/personalization/UserProfiler.ts",
       "src/core/providers/DeviceAdapter.ts",
       "src/core/providers/UniversalLLM.ts",
+      "src/core/providers/local/LocalHardwareCanary.ts",
       "src/core/quality/AutoReview.ts",
       "src/core/rag/AudioRAG.ts",
       "src/core/rag/CorrectiveRetriever.ts",
@@ -4085,6 +4390,33 @@
     "src/core/multimodal/ImageProcessor.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/multimodal/localization/index.ts": [
+      "src/core/multimodal/localization/MediaConsentRecord.ts",
+      "src/core/multimodal/localization/MediaLocalizationSandbox.ts",
+      "src/core/multimodal/localization/ProductionMediaEngineAdapter.ts",
+      "src/core/multimodal/localization/VideoLocalizationJob.ts",
+      "src/core/multimodal/localization/VideoLocalizationPipeline.ts"
+    ],
+    "src/core/multimodal/localization/MediaConsentRecord.ts": [],
+    "src/core/multimodal/localization/MediaLocalizationSandbox.ts": [],
+    "src/core/multimodal/localization/ProductionMediaEngineAdapter.ts": [
+      "src/core/multimodal/localization/VideoLocalizationPipeline.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/multimodal/localization/VideoLocalizationJob.test.ts": [
+      "src/core/multimodal/localization/MediaConsentRecord.ts",
+      "src/core/multimodal/localization/MediaLocalizationSandbox.ts",
+      "src/core/multimodal/localization/VideoLocalizationJob.ts",
+      "src/core/multimodal/localization/VideoLocalizationPipeline.ts"
+    ],
+    "src/core/multimodal/localization/VideoLocalizationJob.ts": [
+      "src/core/multimodal/localization/MediaConsentRecord.ts"
+    ],
+    "src/core/multimodal/localization/VideoLocalizationPipeline.ts": [
+      "src/core/multimodal/localization/MediaConsentRecord.ts",
+      "src/core/multimodal/localization/MediaLocalizationSandbox.ts",
+      "src/core/multimodal/localization/VideoLocalizationJob.ts"
+    ],
     "src/core/multimodal/VideoProcessor.test.ts": [
       "src/core/multimodal/VideoProcessor.ts"
     ],
@@ -4303,6 +4635,48 @@
     "src/core/providers/LLMAdapter.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/providers/local/ExternalLocalModelAdapter.ts": [
+      "src/core/config/EnvironmentDefinitions.ts",
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/providers/local/LocalEndpointPolicy.ts",
+      "src/core/providers/local/LocalModelDiscovery.ts",
+      "src/core/providers/local/LocalResourceManager.ts"
+    ],
+    "src/core/providers/local/index.ts": [
+      "src/core/providers/local/ExternalLocalModelAdapter.ts",
+      "src/core/providers/local/LocalEndpointPolicy.ts",
+      "src/core/providers/local/LocalHardwareCanary.ts",
+      "src/core/providers/local/LocalModelDiscovery.ts",
+      "src/core/providers/local/LocalModelRoutingPolicy.ts",
+      "src/core/providers/local/LocalResourceManager.ts"
+    ],
+    "src/core/providers/local/LocalEndpointPolicy.ts": [
+      "src/core/config/EnvironmentDefinitions.ts"
+    ],
+    "src/core/providers/local/LocalHardwareCanary.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/local/ExternalLocalModelAdapter.ts",
+      "src/core/providers/local/LocalEndpointPolicy.ts",
+      "src/core/providers/local/LocalModelDiscovery.ts",
+      "src/core/providers/local/LocalResourceManager.ts"
+    ],
+    "src/core/providers/local/LocalModelAdapter.test.ts": [
+      "src/core/coding/model/CodingModelRouter.ts",
+      "src/core/providers/local/index.ts"
+    ],
+    "src/core/providers/local/LocalModelDiscovery.ts": [
+      "src/core/config/EnvironmentDefinitions.ts",
+      "src/core/observability/logger.ts",
+      "src/core/providers/local/LocalEndpointPolicy.ts"
+    ],
+    "src/core/providers/local/LocalModelRoutingPolicy.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/providers/local/LocalResourceManager.ts": [
+      "src/core/observability/logger.ts"
+    ],
     "src/core/providers/ModelRouter.ts": [
       "src/core/observability/logger.ts",
       "src/core/providers/HuggingFaceAdapter.ts",
@@ -4320,7 +4694,8 @@
       "src/core/observability/logger.ts",
       "src/core/providers/HuggingFaceAdapter.ts",
       "src/core/providers/LLMAdapter.ts",
-      "src/core/providers/OllamaAdapter.ts"
+      "src/core/providers/OllamaAdapter.ts",
+      "src/core/providers/local/ExternalLocalModelAdapter.ts"
     ],
     "src/core/providers/VisionAdapter.ts": [
       "src/core/observability/logger.ts",
@@ -5153,6 +5528,7 @@
       "src/server/routes/admin.ts",
       "src/server/routes/audio.ts",
       "src/server/routes/business.ts",
+      "src/server/routes/capabilities.ts",
       "src/server/routes/chrono.ts",
       "src/server/routes/code.ts",
       "src/server/routes/creative.ts",
@@ -5192,6 +5568,11 @@
       "src/server/routes/story.ts",
       "src/server/routes/toolCatalog.ts",
       "src/server/routes/website-workspace.ts"
+    ],
+    "src/server/routes/__tests__/capability-evaluations-routes.test.ts": [
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+      "src/server/routes/capabilities.ts"
     ],
     "src/server/routes/__tests__/chrono-routes.test.ts": [
       "src/server/routes/chrono.ts",
@@ -5297,6 +5678,17 @@
     "src/server/routes/business.ts": [
       "src/core/agents/business/BusinessGeniusAgent.ts",
       "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/capabilities.ts": [
+      "src/core/capabilities/CapabilityJobManager.ts",
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+      "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+      "src/core/capabilities/promotion/CapabilityPromotionEngine.ts",
+      "src/core/coding/findings/RepositoryFindings.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
+      "src/core/config/EnvironmentDefinitions.ts",
+      "src/core/observability/logger.ts"
     ],
     "src/server/routes/chat-stream.ts": [
       "src/core/observability/logger.ts",
@@ -5556,5 +5948,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1081
+  "sourceRecordCount": 1139
 }

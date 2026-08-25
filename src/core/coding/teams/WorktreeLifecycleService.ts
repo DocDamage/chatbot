@@ -102,7 +102,9 @@ export class WorktreeLifecycleService {
           const content = fs.readFileSync(fullPath, 'utf8');
           const hash = crypto.createHash('sha256').update(content).digest('hex');
           initialBaseline.set(file, { content, hash });
-        } catch {}
+        } catch {
+          // Ignore files that cannot be represented in the text mutation baseline.
+        }
       }
     }
     this.baselines.set(envelope.taskId, initialBaseline);

@@ -9,9 +9,9 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 
 ## Counts
 
-- Reachable production files: 618
-- Unreachable production files: 185
-- Unresolved relative imports: 41
+- Reachable production files: 645
+- Unreachable production files: 204
+- Unresolved relative imports: 42
 
 ## Unreachable production modules
 
@@ -98,11 +98,18 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/auth/ApiKeyService.ts`
 - `src/core/automation/AutoDrive.ts`
 - `src/core/browser/BrowserAgent.ts`
+- `src/core/browser/BrowserEvidenceCollector.ts`
+- `src/core/browser/BrowserJobRunner.ts`
+- `src/core/browser/BrowserJobSandbox.ts`
+- `src/core/browser/PlaywrightBrowserDriver.ts`
+- `src/core/browser/PydollAdapter.ts`
+- `src/core/browser/index.ts`
+- `src/core/capabilities/evaluation/CanaryCertificationSuite.ts`
+- `src/core/capabilities/index.ts`
 - `src/core/chrono/ClaimVerifier.ts`
 - `src/core/coding/CodingController.ts`
 - `src/core/coding/CodingRequestRouter.ts`
 - `src/core/coding/findings/CycloneDxSbom.ts`
-- `src/core/coding/findings/RepositoryFindings.ts`
 - `src/core/coding/findings/RepositoryOverlayData.ts`
 - `src/core/coding/findings/SarifAdapter.ts`
 - `src/core/coding/index.ts`
@@ -110,7 +117,11 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/coding/knowledge/ProvenancePolicy.ts`
 - `src/core/coding/model/CodingModelRouter.ts`
 - `src/core/coding/retrieval/DocumentationRetriever.ts`
-- `src/core/coding/retrieval/RetrievalBenchmark.ts`
+- `src/core/coding/teams/AgentTeamCoordinator.ts`
+- `src/core/coding/teams/ProcessTreeSupervisor.ts`
+- `src/core/coding/teams/ReviewerBundle.ts`
+- `src/core/coding/teams/WorktreeLifecycleService.ts`
+- `src/core/coding/teams/index.ts`
 - `src/core/coding/testing/TestStrategy.ts`
 - `src/core/config/APIKeyManager.ts`
 - `src/core/config/ProfileManager.ts`
@@ -123,6 +134,7 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/evaluation/CodingBenchmarkRunner.ts`
 - `src/core/evaluation/CodingEvalHarness.ts`
 - `src/core/evaluation/EvalHarness.ts`
+- `src/core/gaming/lattice/index.ts`
 - `src/core/index.ts`
 - `src/core/knowledge/SmartKnowledgeSource.ts`
 - `src/core/knowledge/SmartSourceFactory.ts`
@@ -140,6 +152,10 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/multimodal/ImageProcessor.ts`
 - `src/core/multimodal/VideoProcessor.ts`
 - `src/core/multimodal/VisualSearch.ts`
+- `src/core/multimodal/localization/MediaLocalizationSandbox.ts`
+- `src/core/multimodal/localization/ProductionMediaEngineAdapter.ts`
+- `src/core/multimodal/localization/VideoLocalizationPipeline.ts`
+- `src/core/multimodal/localization/index.ts`
 - `src/core/notifications/TwilioAdapter.ts`
 - `src/core/notifications/index.ts`
 - `src/core/optimization/ToonSerializer.ts`
@@ -150,6 +166,9 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/personalization/UserProfiler.ts`
 - `src/core/providers/DeviceAdapter.ts`
 - `src/core/providers/UniversalLLM.ts`
+- `src/core/providers/local/ExternalLocalModelAdapter.ts`
+- `src/core/providers/local/LocalHardwareCanary.ts`
+- `src/core/providers/local/index.ts`
 - `src/core/quality/AutoReview.ts`
 - `src/core/rag/AudioRAG.ts`
 - `src/core/rag/CorrectiveRetriever.ts`

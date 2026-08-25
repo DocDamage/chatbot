@@ -137,7 +137,11 @@ export class CanaryCertificationSuite {
     } finally {
       service.cleanupAll();
       if (fs.existsSync(tempBase)) {
-        try { fs.rmSync(tempBase, { recursive: true, force: true }); } catch {}
+        try {
+          fs.rmSync(tempBase, { recursive: true, force: true });
+        } catch {
+          // Best-effort cleanup; the canary result already captures the primary failure.
+        }
       }
     }
 
