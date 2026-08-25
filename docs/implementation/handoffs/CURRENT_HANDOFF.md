@@ -6,7 +6,7 @@
 - Verified base: `main` at `266068db0c1ce4c8723e3e6fe1f851f07c37fe0f`
 - Integration branch: `codex/cf04-cf10-integration`
 - Local-release checkpoint: `aec8871623870623204bc93e90ebeb52dd51aea0`
-- Status: `IMPLEMENTED_NOT_VERIFIED` (local release verified; exact-head CI and human review pending)
+- Status: `IMPLEMENTED_NOT_VERIFIED` (local release and Required CI verified; human review pending)
 - Maturity: `LOCAL_ONLY_EXPERIMENTAL`
 - Pull request: draft PR `#171`
 
@@ -29,6 +29,7 @@
 - Accessibility browser E2E: 5 passed.
 - Security, routes, services, application E2E, production build, and packaging smoke: passed.
 - Inventory, production reachability, file-size, environment contract, and documentation validation: passed.
+- GitHub Required CI: run `32877962271` passed on evidence-bearing head `cff8c72db7d3eb815cefcc40ef76f6dca31a397f`, including the final Required CI gate.
 
 ## Evidence
 
@@ -38,7 +39,7 @@
 
 ## Human boundary
 
-The remaining merge gate is exact-final-head GitHub Required CI followed by independent human review. Do not merge, mark production supported, set `CF_ACCESSIBILITY_CERTIFIED`/`CF_RELEASE_CERTIFIED`, or close external-canary work based only on local verification.
+The remaining merge gate is independent human review. Do not merge, mark production supported, set `CF_ACCESSIBILITY_CERTIFIED`/`CF_RELEASE_CERTIFIED`, or close external-canary work based only on automated verification.
 
 External gates retained:
 
@@ -49,14 +50,14 @@ External gates retained:
 
 ## Next authorized task
 
-Push the evidence-bearing head, require GitHub Required CI to pass on that exact SHA, resolve any CI-only failures without weakening policy, then leave draft PR `#171` ready for independent review.
+Hand PR `#171` to an independent human reviewer, resolve every review conversation, and preserve the local-only maturity and external-canary boundaries.
 
 ## Thread closure
 
-End this task only after the exact pushed head passes GitHub Required CI and draft PR `#171` is ready for independent human review, or after a remaining gate genuinely requires human authority. Do not merge or begin hosted-production promotion in this task.
+End this task with PR `#171` ready for independent human review. Do not merge or begin hosted-production promotion in this task.
 
 ## NEW THREAD START PROMPT
 
 ```text
-Continue CF-04 through CF-10 integration at the exact evidence-bearing head on codex/cf04-cf10-integration. Confirm GitHub Required CI is green on the exact PR head, fix only genuine CI failures without weakening policy, and leave draft PR #171 ready for independent human review. Keep maturity LOCAL_ONLY_EXPERIMENTAL and preserve all external canary gates.
+Review CF-04 through CF-10 integration PR #171 independently. Automated local release and Required CI gates are green. Resolve every review conversation before merge, keep maturity LOCAL_ONLY_EXPERIMENTAL, and preserve all external canary gates.
 ```

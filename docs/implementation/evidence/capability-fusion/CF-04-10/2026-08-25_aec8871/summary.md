@@ -1,6 +1,6 @@
 # CF-04 through CF-10 local release verification
 
-Status: `LOCAL_RELEASE_VERIFIED_PENDING_EXACT_HEAD_CI_AND_HUMAN_REVIEW`.
+Status: `AUTOMATED_RELEASE_VERIFIED_PENDING_HUMAN_REVIEW_AND_EXTERNAL_CANARIES`.
 
 Implementation checkpoint: `aec8871623870623204bc93e90ebeb52dd51aea0`.
 
@@ -19,4 +19,4 @@ The complete local release sequence passed when evaluated as `release:check` fol
 - Client lines: `1335/2144` covered; `809 <= 848` uncovered.
 - Client functions: `426/794` covered; `368 <= 414` uncovered.
 
-Thresholds, source mappings, exclusions, maturity, and hosted-mode boundaries were not weakened. The branch remains a draft integration until the exact pushed head passes GitHub Required CI and receives the required independent human review. Real hardware, native cross-platform, media-rights/quality, manual accessibility, and hosted-production canaries remain external gates.
+Thresholds, source mappings, exclusions, maturity, and hosted-mode boundaries were not weakened. GitHub Required CI run `32877962271` passed on evidence-bearing head `cff8c72db7d3eb815cefcc40ef76f6dca31a397f`, including the final Required CI gate. Independent human review is now the remaining merge gate. Real hardware, native cross-platform, media-rights/quality, manual accessibility, and hosted-production canaries remain external gates.

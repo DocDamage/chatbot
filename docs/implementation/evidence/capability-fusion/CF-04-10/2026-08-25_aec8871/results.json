@@ -1,5 +1,5 @@
 {
-  "status": "local_release_verified_pending_exact_head_ci_and_human_review",
+  "status": "automated_release_verified_pending_human_review_and_external_canaries",
   "implementationCheckpoint": "aec8871623870623204bc93e90ebeb52dd51aea0",
   "baseMain": "266068db0c1ce4c8723e3e6fe1f851f07c37fe0f",
   "server": {
@@ -29,7 +29,11 @@
   "accessibilityE2e": { "testsPassed": 5 },
   "packageSmoke": "passed",
   "phase2": "passed",
-  "githubCi": "pending_on_exact_final_head",
+  "githubCi": {
+    "status": "passed",
+    "runId": 32877962271,
+    "head": "cff8c72db7d3eb815cefcc40ef76f6dca31a397f"
+  },
   "maturity": "LOCAL_ONLY_EXPERIMENTAL",
   "policyChanged": false,
   "evidenceGeneratedAt": "2026-08-25T13:21:35-04:00"

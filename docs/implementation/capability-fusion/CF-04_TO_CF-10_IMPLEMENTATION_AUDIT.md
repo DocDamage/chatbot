@@ -3,10 +3,10 @@
 - Original audit date: 2026-08-24
 - Reconciliation date: 2026-08-25
 - Current scope: local-release checkpoint `aec8871623870623204bc93e90ebeb52dd51aea0` on `codex/cf04-cf10-integration`
-- Overall result: **LOCAL RELEASE VERIFIED; EXACT-HEAD CI AND HUMAN REVIEW PENDING**
+- Overall result: **AUTOMATED RELEASE VERIFIED; HUMAN REVIEW PENDING**
 - Maturity: `LOCAL_ONLY_EXPERIMENTAL`
 
-> Status correction: the original audit overclaimed production completion. The current-main integration now passes the unchanged local release and coverage gates, but exact-final-head GitHub CI, independent review, and required human/external canaries remain open. In the domain sections below, “Verified” means that the named behavior has local automated evidence; each “Still required” list remains open unless superseded by exact-head evidence.
+> Status correction: the original audit overclaimed production completion. The current-main integration now passes the unchanged local release, coverage, and GitHub Required CI gates, but independent review and required human/external canaries remain open. In the domain sections below, “Verified” means that the named behavior has automated evidence; each “Still required” list remains open unless superseded by reviewed evidence.
 
 ## Executive assessment
 
@@ -36,7 +36,7 @@ The integration candidate contains implementations for all seven domain areas:
 | Accessibility browser E2E | Pass — 5 Playwright/Axe tests |
 | Persistent production telemetry/alerting validation | Pass (`CapabilityPersistenceStore` + `AlertNotificationDispatcher`) |
 | Server/client uncovered-count policies | **Pass** without threshold, mapping, or exclusion changes |
-| Exact-head GitHub CI | Draft PR `#171` open; exact-final-head run pending |
+| GitHub Required CI | Pass — run `32877962271` on evidence-bearing head `cff8c72db7d3eb815cefcc40ef76f6dca31a397f` |
 | Production Build & Packaging Smoke | Pass |
 | Repository policy/inventory/environment/docs | Pass |
 

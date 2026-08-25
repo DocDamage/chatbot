@@ -4,13 +4,13 @@ Updated: 2026-08-25
 
 ## Executive status
 
-The canonical `main` branch is verified for the merged Capability Fusion scope through CF-03. CF-04 through CF-10 are locally release-verified on `codex/cf04-cf10-integration`; exact-final-head GitHub Required CI and independent human review remain required before merge. Maturity remains `LOCAL_ONLY_EXPERIMENTAL`.
+The canonical `main` branch is verified for the merged Capability Fusion scope through CF-03. CF-04 through CF-10 pass the complete local release and GitHub Required CI gates on `codex/cf04-cf10-integration`; independent human review remains required before merge. Maturity remains `LOCAL_ONLY_EXPERIMENTAL`.
 
 Current classification:
 
 - Local development on `main`: supported.
 - Capability Fusion CF-01 through CF-03: merged and locally experimental.
-- Capability Fusion CF-04 through CF-10: locally release-verified integration candidate; CI and review pending.
+- Capability Fusion CF-04 through CF-10: automated-release-verified integration candidate; human review pending.
 - Hosted production: not certified.
 - Public commercial launch: not ready.
 
@@ -31,17 +31,16 @@ Current classification:
 - Server coverage policy: passed at 55.54% lines and 47.53% branches; all uncovered-count caps pass unchanged.
 - Client coverage policy: passed at 62.26% lines and 54.96% branches; all uncovered-count caps pass unchanged.
 - Repository inventory, production reachability, file-size, environment, and documentation validation: passed after governed inventory regeneration.
-- GitHub PR: draft PR `#171` is open for the integration branch and is intentionally not merge-ready.
-- GitHub CI: exact-final-head Required CI is pending.
+- GitHub PR: PR `#171` is ready for independent review but must not merge before that review is complete.
+- GitHub CI: Required CI run `32877962271` passed on evidence-bearing head `cff8c72db7d3eb815cefcc40ef76f6dca31a397f`, including the final Required CI gate.
 
-Local verification does not replace CI or human review. CF-04 through CF-10 must not be merged or maturity-promoted until the exact final PR head passes Required CI and receives the required review.
+Automated verification does not replace human review. CF-04 through CF-10 must not be merged or maturity-promoted until the required independent review is complete.
 
 ## Immediate work
 
-1. Push the exact evidence-bearing head and require the complete GitHub Required CI matrix to pass.
-2. Obtain independent human review and resolve every review conversation before merge.
-3. Keep capability routes local-only and maturity at `LOCAL_ONLY_EXPERIMENTAL`.
-4. Complete the real hardware, cross-platform, consent/media-quality, manual accessibility, staging, backup/restore, performance, security, and release-owner gates described by the final completion plan before any hosted-production promotion.
+1. Obtain independent human review and resolve every review conversation before merge.
+2. Keep capability routes local-only and maturity at `LOCAL_ONLY_EXPERIMENTAL`.
+3. Complete the real hardware, cross-platform, consent/media-quality, manual accessibility, staging, backup/restore, performance, security, and release-owner gates described by the final completion plan before any hosted-production promotion.
 
 ## Source of truth
 
