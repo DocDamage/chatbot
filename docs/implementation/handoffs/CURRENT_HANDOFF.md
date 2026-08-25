@@ -39,6 +39,16 @@ Add meaningful tests for uncovered CF-04 through CF-10 behavior, beginning with 
 
 Do not open a merge-ready PR, promote maturity, close production tasks, or claim CF-04 through CF-10 verification until the exact final head passes the complete local and GitHub gates.
 
+## NEW THREAD START PROMPT
+
+```text
+Continue CF-04 through CF-10 integration coverage closure on codex/cf04-cf10-integration. Preserve the unchanged coverage policy and local-only boundary. Add meaningful tests for the highest uncovered capability branches, rerun focused coverage, and update the checkpoint evidence honestly. Do not promote maturity or mark the draft PR merge-ready unless the exact head passes the complete release gate.
+```
+
+## Thread closure
+
+End the task after one bounded coverage increment is committed with updated evidence, or after the exact final integration head passes all required local and GitHub gates. Do not begin hosted promotion or later production phases in the same task.
+
 ## External gates retained
 
 - Repository-admin branch protection.
