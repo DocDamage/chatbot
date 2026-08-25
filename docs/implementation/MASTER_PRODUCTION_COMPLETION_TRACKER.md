@@ -8,7 +8,7 @@
 - Baseline branch: `main`
 - Original plan baseline commit: `8b963232d72a69c6616667aaf34daadba6056aba`
 - Last verified deployment commit: `342b657c6510fc086d11ad19a1c7b62fad9cd725`
-- Current task branch: `main`
+- Current task branch: `codex/cf04-cf10-integration`
 - Current P03-T04 implementation commit: `bb9d55ea662ed4a22b921ea1e2e08747e196a2a4`
 - Current P03-T04 verification CI: `31074967710`
 - Current integrated Phase 2 implementation commit: `6e1a019f8eccf5154c6a579d02abb188c6911a9e`
@@ -18,8 +18,9 @@
 - Plan date: `2026-08-04`
 - Tracker created: `2026-08-04`
 - Tracker last updated: `2026-08-11`
-- Current repository head: `535b5b4` (merge commit containing the completed polyglot coding upgrade and documentation refresh)
-- Current user-facing status: local implementation complete for the current scope; hosted production and public-market certification remain open.
+- Last verified `main` head: `266068db0c1ce4c8723e3e6fe1f851f07c37fe0f` (Required CI run `32742006979` passed).
+- Current integration checkpoint: `315e5db457195f24b0a0d228d4ee5a684d2dfd1f` (`IMPLEMENTED_NOT_VERIFIED`; release coverage gate failed).
+- Current user-facing status: CF-04 through CF-10 are an unverified local integration candidate; hosted production and public-market certification remain open.
 - Status vocabulary: `NOT_STARTED`, `IN_PROGRESS`, `IMPLEMENTED_NOT_VERIFIED`, `BLOCKED`, `WAIVED`, `VERIFIED`, `RELEASED`
 
 ## Governance rules
@@ -51,6 +52,10 @@
 | PHASE 13 | 5 | 0 | 0 | 0 | 0 | 0 | 5 |
 | PHASE 14 | 5 | 0 | 0 | 0 | 0 | 0 | 5 |
 | **Total** | **124** | **22** | **0** | **0** | **0** | **1** | **101** |
+
+## Capability Fusion integration status
+
+CF-04 through CF-10 are tracked by the Capability Fusion roadmap and final completion plan outside the 124 production-task rows above. The integration candidate at `315e5db457195f24b0a0d228d4ee5a684d2dfd1f` is `IMPLEMENTED_NOT_VERIFIED`: type checks, lint, focused capability tests, browser E2E, and the full server test execution passed, but the unchanged uncovered-count policy failed. No production-task count or feature maturity is changed by that candidate.
 
 ## Verified task records
 

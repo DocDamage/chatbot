@@ -11,7 +11,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | Reachable production files | 645 |
 | Unreachable production files | 204 |
 | Discovered route calls | 369 |
-| Environment variables | 205 |
+| Environment variables | 204 |
 | Feature flags | 18 |
 | Files above 300 lines | 83 |
 
@@ -531,7 +531,6 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `LOCAL_MODEL_API_KEY`
 - `LOCAL_MODEL_BASE_URL`
 - `LOCAL_MODEL_ENABLED`
-- `LOCAL_MODEL_ENDPOINT`
 - `LOCAL_MODEL_NAME`
 - `LOCAL_MODEL_PROVIDER_NAME`
 - `LOCAL_MODEL_TIMEOUT_MS`

@@ -40,7 +40,7 @@ export class LocalHardwareCanary {
   private resourceManager: LocalResourceManager;
 
   constructor(options?: { endpoint?: string; model?: string }) {
-    this.endpoint = options?.endpoint || process.env.LOCAL_MODEL_ENDPOINT || 'http://127.0.0.1:11434/v1';
+    this.endpoint = options?.endpoint || process.env.LOCAL_MODEL_BASE_URL || 'http://127.0.0.1:11434/v1';
     this.model = options?.model || process.env.LOCAL_MODEL_NAME || 'llama3:8b';
     this.discovery = new LocalModelDiscovery();
     this.resourceManager = new LocalResourceManager({ maxVramMb: 16384, maxConcurrency: 4 });

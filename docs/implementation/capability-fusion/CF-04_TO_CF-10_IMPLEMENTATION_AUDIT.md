@@ -1,13 +1,16 @@
 # CF-04 through CF-10 implementation audit
 
-- Audit date: 2026-08-24
-- Scope: local working tree on `codex/cf03-findings`
-- Overall result: **100% complete across all 7 Capability Fusion domain areas (CF-04 through CF-10) and certified via CanaryCertificationSuite**
-- Verification state: TypeScript and lint clean; all 182 server suites (696 tests) and 31 client suites (96 tests) pass cleanly. Production build and smoke tests passed.
+- Original audit date: 2026-08-24
+- Reconciliation date: 2026-08-25
+- Current scope: integration checkpoint `315e5db457195f24b0a0d228d4ee5a684d2dfd1f` on `codex/cf04-cf10-integration`
+- Overall result: **IMPLEMENTED_NOT_VERIFIED**
+- Maturity: `LOCAL_ONLY_EXPERIMENTAL`
+
+> Status correction: the original audit overclaimed completion. The implementation and focused canaries exist, but the current-main integration fails the unchanged release coverage gate and has not completed exact-head GitHub CI or required human/external canaries. In the domain sections below, “Verified” means only that the named focused behavior has local automated coverage; each “Still required” list remains open unless superseded by exact-head evidence.
 
 ## Executive assessment
 
-All outstanding gaps from the initial CF-04 through CF-10 audit punch list have been completely implemented and certified:
+The integration candidate contains implementations for all seven domain areas:
 1. **CF-04**: Local model adapter registered in `UniversalLLM`, with live hardware probing (`LocalHardwareCanary`) and VRAM leasing.
 2. **CF-05**: Native `git worktree` isolation with baseline mutation tracking and bounded child-process tree supervisor (`ProcessTreeSupervisor`) with recursive tree termination.
 3. **CF-06**: Playwright browser automation driver (`PlaywrightBrowserDriver`) with persistent context profiling, automatic trace `.zip` archives, video capture, and HAR logs.
@@ -30,10 +33,12 @@ All outstanding gaps from the initial CF-04 through CF-10 audit punch list have 
 | Real Playwright browser canary | Pass (`PlaywrightBrowserDriver` with trace `.zip` recording) |
 | Real media localization/dubbing canary | Pass (`ProductionMediaEngineAdapter` with FFmpeg probe) |
 | Project-wide server test suite | Pass — 182 suites / 696 tests passed, 0 failures |
-| Project-wide client test suite | Pass — 31 files / 96 tests passed |
-| Project-wide automated accessibility gate | Pass — 16 unit checks and 5 Chromium/axe journeys; accessible dialogs |
+| Project-wide client test suite | Not rerun after the current coverage-blocked server gate; focused client tests passed — 2 files / 9 tests |
+| Built-server browser E2E | Pass — 7 Playwright tests during `npm run verify:release` |
 | Persistent production telemetry/alerting validation | Pass (`CapabilityPersistenceStore` + `AlertNotificationDispatcher`) |
-| Production Build & Packaging Smoke | Pass (`npm run build`, `npm run smoke:package`) |
+| Server uncovered-count policy | **Fail** — statements +277, branches +636, lines +93, functions +92 over budget |
+| Exact-head GitHub CI | Not run |
+| Production Build & Packaging Smoke | Build passed during browser E2E; package smoke was not reached after the coverage failure |
 
 ## Corrections applied during the audit
 

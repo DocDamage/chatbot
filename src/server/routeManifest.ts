@@ -83,7 +83,7 @@ export const routeManifest: RouteManifestEntry[] = [
   localOnly({ name: 'website-workspace', mount: '/api/website-workspace', readiness: true, privilege: 'developer', auditAction: 'website-workspace' }),
   localOnly({ name: 'desktop-companion', mount: '/api/desktop-companion', readiness: true, privilege: 'developer', auditAction: 'desktop-companion' }),
   preview({ name: 'tool-catalog', mount: '/api/tool-catalog', readiness: true, privilege: 'developer', auditAction: 'tool-catalog' }),
-  preview({ name: 'capabilities', mount: '/api/capabilities', readiness: true, privilege: 'developer', auditAction: 'capabilities' }),
+  localOnly({ name: 'capabilities', mount: '/api/capabilities', readiness: true, privilege: 'developer', auditAction: 'capabilities' }),
   preview({ name: 'sec', mount: '/api/sec', readiness: true, privilege: 'developer', auditAction: 'sec' }),
   preview({ name: 'education', mount: '/api/education', readiness: true, privilege: 'developer', auditAction: 'education' }),
   localOnly({ name: 'sprite-lab', mount: '/api/sprite-lab', readiness: true, privilege: 'developer', auditAction: 'sprite-lab' }),

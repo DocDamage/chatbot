@@ -84,13 +84,14 @@ export class UniversalLLM {
             logger.debug('HuggingFace not available');
         }
 
-        // 3. Try Local Model Adapter (CF-04) if enabled or configured
+        // 3. Try Local Model Adapter (CF-04) only when explicitly enabled
         try {
-            const localEnabled = process.env.LOCAL_MODEL_ENABLED === 'true' || Boolean(process.env.LOCAL_MODEL_ENDPOINT);
+            const localEnabled = process.env.LOCAL_MODEL_ENABLED === 'true';
             if (localEnabled) {
                 const { ExternalLocalModelAdapter } = await import('./local/ExternalLocalModelAdapter');
                 const localAdapter = new ExternalLocalModelAdapter({
-                    baseUrl: process.env.LOCAL_MODEL_ENDPOINT || 'http://127.0.0.1:11434/v1',
+                    providerName: process.env.LOCAL_MODEL_PROVIDER_NAME || 'local-openai',
+                    baseUrl: process.env.LOCAL_MODEL_BASE_URL || 'http://127.0.0.1:11434/v1',
                     model: process.env.LOCAL_MODEL_NAME || 'llama3:8b'
                 });
                 this.adapters.set('local_cf04', localAdapter);
