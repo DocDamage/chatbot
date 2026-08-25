@@ -3003,7 +3003,8 @@
     "src/core/capabilities/CapabilityJobManager.ts": [],
     "src/core/capabilities/CapabilityRegistry.test.ts": [
       "src/core/capabilities/CapabilityJobManager.ts",
-      "src/core/capabilities/CapabilityRegistry.ts"
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/providers/local/LocalModelDiscovery.ts"
     ],
     "src/core/capabilities/CapabilityRegistry.ts": [
       "src/core/browser/AuthorizedBrowserJob.ts",

@@ -6,6 +6,7 @@
 - Verified base: `main` at `266068db0c1ce4c8723e3e6fe1f851f07c37fe0f`
 - Integration branch: `codex/cf04-cf10-integration`
 - Implementation checkpoint: `315e5db457195f24b0a0d228d4ee5a684d2dfd1f`
+- Coverage checkpoint: `2007291a9b63d821326e95d0618f8df10e9ced6b`
 - Status: `IMPLEMENTED_NOT_VERIFIED`
 - Maturity: `LOCAL_ONLY_EXPERIMENTAL`
 - Pull request: draft PR `#171` (open; intentionally not merge-ready)
@@ -21,17 +22,18 @@
 
 - Type checks passed.
 - Server and client lint passed.
-- Focused server capability tests passed: 11 suites / 130 tests.
+- Focused server capability tests passed: 11 suites / 154 tests.
 - Focused client tests passed: 2 files / 9 tests.
 - Built-server browser E2E passed: 7 tests.
-- The full server run passed 182 suites / 696 tests with 2 skipped.
-- `npm run verify:release` failed at coverage enforcement: uncovered statements `14520 > 14243`, branches `8853 > 8217`, lines `13132 > 13039`, and functions `2997 > 2905`.
+- The latest full server coverage run passed 182 suites / 720 tests with 2 skipped.
+- Coverage enforcement still fails: uncovered statements `14390 > 14243`, branches `8728 > 8217`, and functions `2979 > 2905`. Uncovered lines now pass at `13019 <= 13039`.
 
 The coverage failure is release-blocking. Thresholds, exclusions, and failure behavior must not be weakened.
 
 ## Evidence
 
-`docs/implementation/evidence/capability-fusion/CF-04-10/2026-08-25_315e5db/`
+- Initial integration: `docs/implementation/evidence/capability-fusion/CF-04-10/2026-08-25_315e5db/`
+- Coverage increment 1: `docs/implementation/evidence/capability-fusion/CF-04-10/2026-08-25_2007291/`
 
 ## Next authorized task
 

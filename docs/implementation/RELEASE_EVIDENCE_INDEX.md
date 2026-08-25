@@ -40,5 +40,6 @@ This index links verified production-completion tasks to evidence collected agai
 |---|---|---|---|---|
 | `POLY-CODE-T25` | `NOT PRODUCTION VERIFIED` | `54623a7` | `docs/implementation/evidence/coding-upgrade/` | Polyglot coding implementation and local evidence bundle; explicit Gemini and DeepSeek runs are recorded, while hosted-production promotion, provider quota, unsupported toolchains, and release coverage remain open. |
 | `CF-04-10-INTEGRATION` | `IMPLEMENTED_NOT_VERIFIED` | `315e5db457195f24b0a0d228d4ee5a684d2dfd1f` | `docs/implementation/evidence/capability-fusion/CF-04-10/2026-08-25_315e5db/` | Ported onto current `main`; type checks, lint, focused tests, browser E2E, and full server test execution passed, but the unchanged uncovered-count policy failed and exact-head GitHub CI was not run. |
+| `CF-04-10-COVERAGE-01` | `IMPLEMENTED_NOT_VERIFIED` | `2007291a9b63d821326e95d0618f8df10e9ced6b` | `docs/implementation/evidence/capability-fusion/CF-04-10/2026-08-25_2007291/` | Added behavior-focused browser, registry/job lifecycle, evaluation, and Lattice tests. All 182 executed suites pass; lines now satisfy policy, while statements, branches, and functions remain over budget. |
 
 Future tasks must append one row only after their evidence bundle and tracker status are complete.

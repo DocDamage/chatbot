@@ -25,13 +25,14 @@ Current classification:
 
 - Branch: `codex/cf04-cf10-integration`.
 - Implementation checkpoint: `315e5db457195f24b0a0d228d4ee5a684d2dfd1f`.
+- Coverage checkpoint: `2007291a9b63d821326e95d0618f8df10e9ced6b`.
 - Type checks: passed.
 - Server and client lint: passed after integration cleanup.
-- Focused capability tests: 11 server suites / 130 tests passed.
+- Focused capability tests: 11 server suites / 154 tests passed.
 - Focused Capability Hub client tests: 2 files / 9 tests passed.
 - Built-server browser E2E: 7 tests passed during `npm run verify:release`.
-- Full server suite under coverage: 182 suites / 696 tests passed, 2 tests skipped.
-- Release result: failed at the unchanged uncovered-count policy. Statements were 277 over budget, branches 636 over, lines 93 over, and functions 92 over.
+- Full server suite under coverage: 182 suites / 720 tests passed, 2 tests skipped.
+- Release result: failed at the unchanged uncovered-count policy. The first coverage increment reduced uncovered statements by 130, branches by 125, lines by 113, and functions by 18. Lines now pass; statements remain 147 over budget, branches 511 over, and functions 74 over.
 - GitHub PR: draft PR `#171` is open for the integration branch and is intentionally not merge-ready.
 - GitHub CI: the initial draft-PR run exposed a handoff-schema defect that was corrected; the unchanged release coverage gate remains the known code blocker on the current integration line.
 

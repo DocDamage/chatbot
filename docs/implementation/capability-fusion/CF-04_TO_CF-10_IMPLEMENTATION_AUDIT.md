@@ -2,7 +2,7 @@
 
 - Original audit date: 2026-08-24
 - Reconciliation date: 2026-08-25
-- Current scope: integration checkpoint `315e5db457195f24b0a0d228d4ee5a684d2dfd1f` on `codex/cf04-cf10-integration`
+- Current scope: coverage checkpoint `2007291a9b63d821326e95d0618f8df10e9ced6b` on `codex/cf04-cf10-integration`
 - Overall result: **IMPLEMENTED_NOT_VERIFIED**
 - Maturity: `LOCAL_ONLY_EXPERIMENTAL`
 
@@ -26,17 +26,17 @@ The integration candidate contains implementations for all seven domain areas:
 | --- | --- |
 | Server, test, and client TypeScript | Pass (`tsc --noEmit` 0 errors) |
 | Server and client ESLint | Pass |
-| Focused CF-04–CF-10 and canary suites | Pass — 11 suites / 130 tests |
+| Focused CF-04–CF-10 and canary suites | Pass — 11 suites / 154 tests |
 | Focused Capability Hub client suites | Pass — 2 files / 9 tests |
 | Local-model adapter canary | Automated pass; real supported-hardware matrix remains required |
 | Git worktree / process-tree canary | Automated pass; native Windows/Linux/macOS validation remains required |
 | Playwright browser canary | Automated pass; complete clean-machine validation remains required |
 | Media localization/dubbing canary | Automated pass; human rights, consent, and output-quality review remains required |
-| Project-wide server test suite | Pass — 182 suites / 696 tests passed, 0 failures |
+| Project-wide server test suite | Pass — 182 suites / 720 tests passed, 0 failures |
 | Project-wide client test suite | Not rerun after the current coverage-blocked server gate; focused client tests passed — 2 files / 9 tests |
 | Built-server browser E2E | Pass — 7 Playwright tests during `npm run verify:release` |
 | Persistent production telemetry/alerting validation | Pass (`CapabilityPersistenceStore` + `AlertNotificationDispatcher`) |
-| Server uncovered-count policy | **Fail** — statements +277, branches +636, lines +93, functions +92 over budget |
+| Server uncovered-count policy | **Fail** — statements +147, branches +511, functions +74 over budget; lines pass with 20 lines of headroom |
 | Exact-head GitHub CI | Draft PR `#171` opened; no passing exact-head release run yet |
 | Production Build & Packaging Smoke | Build passed during browser E2E; package smoke was not reached after the coverage failure |
 
