@@ -2,11 +2,11 @@
 
 - Original audit date: 2026-08-24
 - Reconciliation date: 2026-08-25
-- Current scope: coverage checkpoint `2007291a9b63d821326e95d0618f8df10e9ced6b` on `codex/cf04-cf10-integration`
-- Overall result: **IMPLEMENTED_NOT_VERIFIED**
+- Current scope: local-release checkpoint `aec8871623870623204bc93e90ebeb52dd51aea0` on `codex/cf04-cf10-integration`
+- Overall result: **LOCAL RELEASE VERIFIED; EXACT-HEAD CI AND HUMAN REVIEW PENDING**
 - Maturity: `LOCAL_ONLY_EXPERIMENTAL`
 
-> Status correction: the original audit overclaimed completion. The implementation and focused automated canaries exist, but the current-main integration fails the unchanged release coverage gate and has not completed passing exact-head GitHub CI or required human/external canaries. In the domain sections below, “Verified” means only that the named focused behavior has local automated coverage; each “Still required” list remains open unless superseded by exact-head evidence.
+> Status correction: the original audit overclaimed production completion. The current-main integration now passes the unchanged local release and coverage gates, but exact-final-head GitHub CI, independent review, and required human/external canaries remain open. In the domain sections below, “Verified” means that the named behavior has local automated evidence; each “Still required” list remains open unless superseded by exact-head evidence.
 
 ## Executive assessment
 
@@ -26,19 +26,19 @@ The integration candidate contains implementations for all seven domain areas:
 | --- | --- |
 | Server, test, and client TypeScript | Pass (`tsc --noEmit` 0 errors) |
 | Server and client ESLint | Pass |
-| Focused CF-04–CF-10 and canary suites | Pass — 11 suites / 154 tests |
-| Focused Capability Hub client suites | Pass — 2 files / 9 tests |
+| Full server suite and coverage policy | Pass — 186 suites / 841 tests, 2 skipped; unchanged uncovered-count policy passes |
+| Full client suite and coverage policy | Pass — 33 files / 105 tests; unchanged uncovered-count policy passes |
 | Local-model adapter canary | Automated pass; real supported-hardware matrix remains required |
 | Git worktree / process-tree canary | Automated pass; native Windows/Linux/macOS validation remains required |
 | Playwright browser canary | Automated pass; complete clean-machine validation remains required |
 | Media localization/dubbing canary | Automated pass; human rights, consent, and output-quality review remains required |
-| Project-wide server test suite | Pass — 182 suites / 720 tests passed, 0 failures |
-| Project-wide client test suite | Not rerun after the current coverage-blocked server gate; focused client tests passed — 2 files / 9 tests |
 | Built-server browser E2E | Pass — 7 Playwright tests during `npm run verify:release` |
+| Accessibility browser E2E | Pass — 5 Playwright/Axe tests |
 | Persistent production telemetry/alerting validation | Pass (`CapabilityPersistenceStore` + `AlertNotificationDispatcher`) |
-| Server uncovered-count policy | **Fail** — statements +147, branches +511, functions +74 over budget; lines pass with 20 lines of headroom |
-| Exact-head GitHub CI | Draft PR `#171` opened; no passing exact-head release run yet |
-| Production Build & Packaging Smoke | Build passed during browser E2E; package smoke was not reached after the coverage failure |
+| Server/client uncovered-count policies | **Pass** without threshold, mapping, or exclusion changes |
+| Exact-head GitHub CI | Draft PR `#171` open; exact-final-head run pending |
+| Production Build & Packaging Smoke | Pass |
+| Repository policy/inventory/environment/docs | Pass |
 
 ## Corrections applied during the audit
 

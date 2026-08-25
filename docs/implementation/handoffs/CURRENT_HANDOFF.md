@@ -5,57 +5,54 @@
 - Repository: `DocDamage/chatbot`
 - Verified base: `main` at `266068db0c1ce4c8723e3e6fe1f851f07c37fe0f`
 - Integration branch: `codex/cf04-cf10-integration`
-- Implementation checkpoint: `315e5db457195f24b0a0d228d4ee5a684d2dfd1f`
-- Coverage checkpoint: `2007291a9b63d821326e95d0618f8df10e9ced6b`
-- Status: `IMPLEMENTED_NOT_VERIFIED`
+- Local-release checkpoint: `aec8871623870623204bc93e90ebeb52dd51aea0`
+- Status: `IMPLEMENTED_NOT_VERIFIED` (local release verified; exact-head CI and human review pending)
 - Maturity: `LOCAL_ONLY_EXPERIMENTAL`
-- Pull request: draft PR `#171` (open; intentionally not merge-ready)
+- Pull request: draft PR `#171`
 
-## Delivered at the checkpoint
+## Delivered
 
-- Ported the existing CF-04 through CF-10 commits onto current `main` without replacing the newer merged CF-03 implementation.
-- Integrated local-model routing, typed agent teams/worktrees, authorized browser jobs, consent-aware media localization, Lattice simulation, the Capability Hub UI, and evaluation/observability/promotion components.
-- Regenerated repository inventory, reachability, and CycloneDX SBOM artifacts from the integrated tree.
-- Preserved local `.capabilities/` telemetry as ignored operator data.
+- Ported CF-04 through CF-10 onto current `main` without replacing the newer merged CF-03 implementation.
+- Integrated local-model routing, typed agent teams/worktrees, authorized browser jobs, consent-aware media localization, Lattice simulation, Capability Hub UI, and evaluation/observability/promotion components.
+- Added behavior coverage for browser drivers, capability routes/jobs, provider routing/streaming, agent orchestration, team and media cancellation, promotion/rollback, observability, image optional-dependency behavior, critical configuration validation, Knowledge OS workflows, and curated utilities.
+- Fixed repeated capability-job cancellation so an already-cancelled job cannot report another successful cancellation.
+- Regenerated governed repository inventory and reachability artifacts.
 
-## Verification result
+## Local verification
 
-- Type checks passed.
-- Server and client lint passed.
-- Focused server capability tests passed: 11 suites / 154 tests.
-- Focused client tests passed: 2 files / 9 tests.
-- Built-server browser E2E passed: 7 tests.
-- The latest full server coverage run passed 182 suites / 720 tests with 2 skipped.
-- Coverage enforcement still fails: uncovered statements `14390 > 14243`, branches `8728 > 8217`, and functions `2979 > 2905`. Uncovered lines now pass at `13019 <= 13039`.
-
-The coverage failure is release-blocking. Thresholds, exclusions, and failure behavior must not be weakened.
+- Server/test/client type checks and server/client lint: passed.
+- Server coverage execution: 186 suites / 841 tests passed, 2 skipped.
+- Server coverage policy: passed unchanged — statements `13482 <= 14243`, branches `8168 <= 8217`, lines `12172 <= 13039`, functions `2810 <= 2905` uncovered.
+- Client coverage execution: 33 files / 105 tests passed.
+- Client coverage policy: passed unchanged — statements `1003 <= 1047`, branches `830 <= 830`, lines `809 <= 848`, functions `368 <= 414` uncovered.
+- Built-server browser E2E: 7 passed.
+- Accessibility browser E2E: 5 passed.
+- Security, routes, services, application E2E, production build, and packaging smoke: passed.
+- Inventory, production reachability, file-size, environment contract, and documentation validation: passed.
 
 ## Evidence
 
-- Initial integration: `docs/implementation/evidence/capability-fusion/CF-04-10/2026-08-25_315e5db/`
+- Final local release: `docs/implementation/evidence/capability-fusion/CF-04-10/2026-08-25_aec8871/`
 - Coverage increment 1: `docs/implementation/evidence/capability-fusion/CF-04-10/2026-08-25_2007291/`
+- Initial integration: `docs/implementation/evidence/capability-fusion/CF-04-10/2026-08-25_315e5db/`
 
-## Next authorized task
+## Human boundary
 
-Add meaningful tests for uncovered CF-04 through CF-10 behavior, beginning with browser execution, capability routes/registry, evaluation branches, Lattice simulation, team coordination, provider discovery/routing, and media pipeline failure paths. Rerun `npm run verify:release` after each bounded coverage increment.
+The remaining merge gate is exact-final-head GitHub Required CI followed by independent human review. Do not merge, mark production supported, set `CF_ACCESSIBILITY_CERTIFIED`/`CF_RELEASE_CERTIFIED`, or close external-canary work based only on local verification.
 
-Do not open a merge-ready PR, promote maturity, close production tasks, or claim CF-04 through CF-10 verification until the exact final head passes the complete local and GitHub gates.
+External gates retained:
+
+- Real local-model hardware canary.
+- Native Windows/Linux/macOS process-tree and clean-machine testing.
+- Human media-rights, localization-quality, manual keyboard, and screen-reader review.
+- Hosted infrastructure, backup/restore, load/failure, security, and release-owner approvals.
+
+## Next task
+
+Push the evidence-bearing head, require GitHub Required CI to pass on that exact SHA, resolve any CI-only failures without weakening policy, then leave draft PR `#171` ready for independent review.
 
 ## NEW THREAD START PROMPT
 
 ```text
-Continue CF-04 through CF-10 integration coverage closure on codex/cf04-cf10-integration. Preserve the unchanged coverage policy and local-only boundary. Add meaningful tests for the highest uncovered capability branches, rerun focused coverage, and update the checkpoint evidence honestly. Do not promote maturity or mark the draft PR merge-ready unless the exact head passes the complete release gate.
+Continue CF-04 through CF-10 integration at the exact evidence-bearing head on codex/cf04-cf10-integration. Confirm GitHub Required CI is green on the exact PR head, fix only genuine CI failures without weakening policy, and leave draft PR #171 ready for independent human review. Keep maturity LOCAL_ONLY_EXPERIMENTAL and preserve all external canary gates.
 ```
-
-## Thread closure
-
-End the task after one bounded coverage increment is committed with updated evidence, or after the exact final integration head passes all required local and GitHub gates. Do not begin hosted promotion or later production phases in the same task.
-
-## External gates retained
-
-- Real local-model hardware canary.
-- Native Windows/Linux/macOS process-tree and clean-machine testing.
-- Human media-rights/quality and accessibility review.
-- Hosted infrastructure, backup/restore, load/failure, security, and release approvals.
-
-Repository-admin branch protection is no longer an external blocker; it was enabled and read back on 2026-08-25.

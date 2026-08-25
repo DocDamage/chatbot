@@ -19,8 +19,8 @@
 - Tracker created: `2026-08-04`
 - Tracker last updated: `2026-08-11`
 - Last verified `main` head: `266068db0c1ce4c8723e3e6fe1f851f07c37fe0f` (Required CI run `32742006979` passed).
-- Current integration checkpoint: `315e5db457195f24b0a0d228d4ee5a684d2dfd1f` (`IMPLEMENTED_NOT_VERIFIED`; release coverage gate failed).
-- Current user-facing status: CF-04 through CF-10 are an unverified local integration candidate; hosted production and public-market certification remain open.
+- Current integration checkpoint: `aec8871623870623204bc93e90ebeb52dd51aea0` (`IMPLEMENTED_NOT_VERIFIED`; local release gates pass, exact-head CI and review pending).
+- Current user-facing status: CF-04 through CF-10 are a locally release-verified integration candidate with exact-head CI and independent review pending; hosted production and public-market certification remain open.
 - Status vocabulary: `NOT_STARTED`, `IN_PROGRESS`, `IMPLEMENTED_NOT_VERIFIED`, `BLOCKED`, `WAIVED`, `VERIFIED`, `RELEASED`
 
 ## Governance rules
@@ -55,7 +55,7 @@
 
 ## Capability Fusion integration status
 
-CF-04 through CF-10 are tracked by the Capability Fusion roadmap and final completion plan outside the 124 production-task rows above. The integration candidate at `315e5db457195f24b0a0d228d4ee5a684d2dfd1f` is `IMPLEMENTED_NOT_VERIFIED`: type checks, lint, focused capability tests, browser E2E, and the full server test execution passed, but the unchanged uncovered-count policy failed. No production-task count or feature maturity is changed by that candidate.
+CF-04 through CF-10 are tracked by the Capability Fusion roadmap and final completion plan outside the 124 production-task rows above. The integration candidate at `aec8871623870623204bc93e90ebeb52dd51aea0` passes the complete local release, unchanged server/client coverage, browser, accessibility, packaging, inventory, reachability, environment, and documentation gates. Exact-final-head GitHub Required CI and independent review remain open. No production-task count or feature maturity is changed by this local verification; maturity remains `LOCAL_ONLY_EXPERIMENTAL`.
 
 ## Verified task records
 

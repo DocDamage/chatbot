@@ -1,0 +1,36 @@
+{
+  "status": "local_release_verified_pending_exact_head_ci_and_human_review",
+  "implementationCheckpoint": "aec8871623870623204bc93e90ebeb52dd51aea0",
+  "baseMain": "266068db0c1ce4c8723e3e6fe1f851f07c37fe0f",
+  "server": {
+    "suitesPassed": 186,
+    "testsPassed": 841,
+    "testsSkipped": 2,
+    "coveragePolicy": "passed",
+    "coverage": {
+      "statements": { "covered": 16447, "total": 29929, "uncovered": 13482, "maximumUncovered": 14243 },
+      "branches": { "covered": 7400, "total": 15568, "uncovered": 8168, "maximumUncovered": 8217 },
+      "lines": { "covered": 15208, "total": 27380, "uncovered": 12172, "maximumUncovered": 13039 },
+      "functions": { "covered": 3316, "total": 6126, "uncovered": 2810, "maximumUncovered": 2905 }
+    }
+  },
+  "client": {
+    "filesPassed": 33,
+    "testsPassed": 105,
+    "coveragePolicy": "passed",
+    "coverage": {
+      "statements": { "covered": 1437, "total": 2440, "uncovered": 1003, "maximumUncovered": 1047 },
+      "branches": { "covered": 1013, "total": 1843, "uncovered": 830, "maximumUncovered": 830 },
+      "lines": { "covered": 1335, "total": 2144, "uncovered": 809, "maximumUncovered": 848 },
+      "functions": { "covered": 426, "total": 794, "uncovered": 368, "maximumUncovered": 414 }
+    }
+  },
+  "browserE2e": { "testsPassed": 7 },
+  "accessibilityE2e": { "testsPassed": 5 },
+  "packageSmoke": "passed",
+  "phase2": "passed",
+  "githubCi": "pending_on_exact_final_head",
+  "maturity": "LOCAL_ONLY_EXPERIMENTAL",
+  "policyChanged": false,
+  "evidenceGeneratedAt": "2026-08-25T13:21:35-04:00"
+}
