@@ -77,4 +77,75 @@ describe('CapabilityObservabilityService', () => {
     expect(jsonStr).not.toContain('sk-live-1234567890');
     expect(jsonStr).not.toContain('operator@example.com');
   });
+
+  it('sanitizes every metadata value category and applies zero-cost defaults', () => {
+    const event = service.recordTelemetry({
+      capabilityId: 'local_model_adapter',
+      operation: 'metadata-test',
+      durationMs: 0,
+      success: true,
+      privacyMode: 'strict_local',
+      auditCorrelationId: 'metadata-test',
+      sanitizedMetadata: {
+        text: 'operator@example.com',
+        count: 2,
+        enabled: false,
+        nested: { secret: true }
+      } as any
+    });
+
+    expect(event.sanitizedMetadata).toMatchObject({
+      count: 2,
+      enabled: false,
+      nested: '[COMPLEX_OBJECT]'
+    });
+    expect(event.sanitizedMetadata?.text).not.toContain('operator@example.com');
+    expect(service.getDashboardSummary().totalEstimatedCostUsd).toBe(0);
+  });
+
+  it('reports critical rollback triggers and warning error-budget alerts', () => {
+    for (let i = 0; i < 41; i++) {
+      service.recordTelemetry({
+        capabilityId: 'browser_jobs',
+        operation: 'slow-success',
+        durationMs: 900,
+        success: true,
+        privacyMode: 'strict_local',
+        auditCorrelationId: `slow-${i}`
+      });
+    }
+    let summary = service.getDashboardSummary();
+    expect(summary.recentAlerts).toEqual(expect.arrayContaining([
+      expect.objectContaining({ severity: 'warning', owner: expect.any(String) })
+    ]));
+
+    service.recordTelemetry({
+      capabilityId: 'browser_jobs',
+      operation: 'failure',
+      durationMs: 10,
+      success: false,
+      privacyMode: 'strict_local',
+      auditCorrelationId: 'failure-with-default-code'
+    });
+    summary = service.getDashboardSummary();
+    expect(summary.activeRollbackTriggers).toEqual(expect.arrayContaining([
+      expect.objectContaining({ capabilityId: 'availability', severity: 'critical' })
+    ]));
+  });
+
+  it('caps retained telemetry and records deployment mode in support bundles', () => {
+    (service as any).MAX_EVENTS = 2;
+    process.env.DEPLOYMENT_MODE = 'TEST_PROFILE';
+    for (let i = 0; i < 3; i++) {
+      service.recordTelemetry({
+        capabilityId: 'repo_architecture', operation: `event-${i}`, durationMs: i,
+        success: true, privacyMode: 'strict_local', auditCorrelationId: `cap-${i}`
+      });
+    }
+
+    expect(service.getDashboardSummary().totalInvocations).toBe(2);
+    expect(service.generateSupportBundle().systemEnvironment.deploymentMode).toBe('TEST_PROFILE');
+    delete process.env.DEPLOYMENT_MODE;
+    (service as any).MAX_EVENTS = 5000;
+  });
 });

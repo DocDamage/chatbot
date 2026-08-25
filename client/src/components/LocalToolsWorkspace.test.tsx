@@ -30,6 +30,10 @@ describe('LocalToolsWorkspace', () => {
     expect(screen.getByText('Website workspace panel')).toBeTruthy();
     expect(screen.queryByText('Project intelligence panel')).toBeNull();
 
+    await user.click(screen.getByRole('button', { name: 'Capability Hub' }));
+    expect(screen.getByText('Capability hub panel')).toBeTruthy();
+    expect(screen.queryByText('Utility workbench panel')).toBeNull();
+
     await user.click(screen.getByRole('button', { name: 'Automation' }));
     expect(screen.getByText('Local run panel')).toBeTruthy();
     expect(screen.getByText('Sprite lab panel')).toBeTruthy();

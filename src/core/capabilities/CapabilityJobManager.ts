@@ -134,7 +134,7 @@ export class CapabilityJobManager {
 
   public cancelJob(jobId: string, reason = 'Cancelled by operator'): boolean {
     const job = this.jobs.get(jobId);
-    if (!job || job.status === 'completed' || job.status === 'failed') return false;
+    if (!job || job.status === 'completed' || job.status === 'failed' || job.status === 'cancelled') return false;
 
     job.status = 'cancelled';
     job.completedAt = new Date().toISOString();

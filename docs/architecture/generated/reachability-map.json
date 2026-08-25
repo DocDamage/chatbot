@@ -1932,6 +1932,9 @@
     "client/src/components/KnowledgeOnlinePanel.tsx": [
       "client/src/api/knowledge.ts"
     ],
+    "client/src/components/KnowledgeOSPanel.test.tsx": [
+      "client/src/components/KnowledgeOSPanel.tsx"
+    ],
     "client/src/components/KnowledgeOSPanel.tsx": [
       "client/src/api/runtime.ts"
     ],
@@ -1997,6 +2000,9 @@
       "client/src/components/StatusBar.tsx"
     ],
     "client/src/components/StatusBar.tsx": [],
+    "client/src/components/UtilityWorkbenchPanel.test.tsx": [
+      "client/src/components/UtilityWorkbenchPanel.tsx"
+    ],
     "client/src/components/UtilityWorkbenchPanel.tsx": [],
     "client/src/components/WebsiteWorkspacePanel.tsx": [],
     "client/src/features/gis/gisApi.ts": [
@@ -2551,6 +2557,9 @@
     "src/core/agents/math/MathVerifier.ts": [
       "src/core/tools/math/SymPyTool.ts"
     ],
+    "src/core/agents/MultiAgentOrchestrator.test.ts": [
+      "src/core/agents/MultiAgentOrchestrator.ts"
+    ],
     "src/core/agents/MultiAgentOrchestrator.ts": [
       "src/core/observability/logger.ts"
     ],
@@ -2969,6 +2978,9 @@
       "src/core/browser/PydollAdapter.ts"
     ],
     "src/core/browser/AuthorizedBrowserJob.ts": [],
+    "src/core/browser/BrowserAgent.test.ts": [
+      "src/core/browser/BrowserAgent.ts"
+    ],
     "src/core/browser/BrowserAgent.ts": [
       "src/core/observability/logger.ts"
     ],
@@ -2992,6 +3004,9 @@
       "src/core/browser/BrowserJobSandbox.ts",
       "src/core/browser/PlaywrightBrowserDriver.ts",
       "src/core/browser/PydollAdapter.ts"
+    ],
+    "src/core/browser/PlaywrightBrowserDriver.test.ts": [
+      "src/core/browser/PlaywrightBrowserDriver.ts"
     ],
     "src/core/browser/PlaywrightBrowserDriver.ts": [
       "src/core/browser/BrowserJobRunner.ts",
@@ -3578,7 +3593,8 @@
       "src/core/observability/logger.ts"
     ],
     "src/core/config/ConfigValidator.test.ts": [
-      "src/core/config/ConfigValidator.ts"
+      "src/core/config/ConfigValidator.ts",
+      "src/core/observability/logger.ts"
     ],
     "src/core/config/ConfigValidator.ts": [
       "src/core/config/EnvironmentDefinitions.ts",
@@ -4384,6 +4400,9 @@
     ],
     "src/core/modes/ModePolicy.ts": [
       "src/types/modes.ts"
+    ],
+    "src/core/multimodal/ImageProcessor.optional-dependencies.test.ts": [
+      "src/core/multimodal/ImageProcessor.ts"
     ],
     "src/core/multimodal/ImageProcessor.test.ts": [
       "src/core/multimodal/ImageProcessor.ts"
@@ -5571,8 +5590,11 @@
       "src/server/routes/website-workspace.ts"
     ],
     "src/server/routes/__tests__/capability-evaluations-routes.test.ts": [
+      "src/core/capabilities/CapabilityJobManager.ts",
       "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
       "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+      "src/core/capabilities/promotion/CapabilityPromotionEngine.ts",
       "src/server/routes/capabilities.ts"
     ],
     "src/server/routes/__tests__/chrono-routes.test.ts": [
@@ -5949,5 +5971,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1139
+  "sourceRecordCount": 1145
 }

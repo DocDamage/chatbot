@@ -3,6 +3,8 @@ import * as path from 'path';
 import * as os from 'os';
 import {
   AgentTeamCoordinator,
+  TeamCoordinationError,
+  DependencyFailedError,
   AgentTeamRole,
   assertRoleAuthority,
   AgentRoleAuthorityError,
@@ -156,6 +158,157 @@ describe('CF-05 Typed Agent Teams & Isolated Worktrees', () => {
   });
 
   describe('AgentTeamCoordinator & DAG Scheduler', () => {
+    it('exposes typed coordination and dependency errors', () => {
+      expect(new TeamCoordinationError('fixture')).toMatchObject({ name: 'TeamCoordinationError', message: 'fixture' });
+      expect(new DependencyFailedError('dependency-1')).toMatchObject({
+        name: 'DependencyFailedError', failedDependencyId: 'dependency-1',
+        message: "Prerequisite dependency 'dependency-1' failed"
+      });
+    });
+
+    it('rejects invalid team budgets, malformed envelopes, missing dependencies, and cycles', async () => {
+      const coordinator = new AgentTeamCoordinator({ worktreeService });
+      await expect(coordinator.executePlan({ tasks: [], maxConcurrency: 0 })).rejects.toThrow(/maxConcurrency/);
+      await expect(coordinator.executePlan({ tasks: [], maxConcurrency: 1.5 })).rejects.toThrow(/maxConcurrency/);
+      await expect(coordinator.executePlan({ tasks: [], totalTokenBudget: 0 })).rejects.toThrow(/budgets must be positive/);
+      await expect(coordinator.executePlan({ tasks: [], totalTimeBudgetMs: 0 })).rejects.toThrow(/budgets must be positive/);
+
+      const tampered = createTaskEnvelope({ taskId: 'tampered', role: 'reviewer', title: 'Original', description: 'd' });
+      (tampered as any).title = 'Changed';
+      await expect(coordinator.executePlan({ tasks: [tampered] })).rejects.toThrow(/integrity verification/);
+
+      const missing = createTaskEnvelope({
+        taskId: 'missing-dep', role: 'reviewer', title: 'Missing', description: 'd', dependencies: ['absent']
+      });
+      await expect(coordinator.executePlan({ tasks: [missing] })).rejects.toThrow(/non-existent dependency/);
+
+      const cycleA = createTaskEnvelope({
+        taskId: 'cycle-a', role: 'reviewer', title: 'A', description: 'd', dependencies: ['cycle-b']
+      });
+      const cycleB = createTaskEnvelope({
+        taskId: 'cycle-b', role: 'reviewer', title: 'B', description: 'd', dependencies: ['cycle-a']
+      });
+      await expect(coordinator.executePlan({ tasks: [cycleA, cycleB] })).rejects.toThrow(/Cyclic dependency/);
+    });
+
+    it('enforces per-task token, time, and command budgets', async () => {
+      const coordinator = new AgentTeamCoordinator({ worktreeService });
+      coordinator.registerWorker('reviewer', async envelope => ({
+        taskId: envelope.taskId, workerId: 'over-budget', success: true, outputs: {},
+        tokensUsed: 11, timeTakenMs: 12, commandsRun: 3, completedAt: new Date().toISOString()
+      }));
+      const task = createTaskEnvelope({
+        taskId: 'budget-task', role: 'reviewer', title: 'Budget', description: 'd',
+        budget: { maxTokens: 10, maxTimeMs: 10, maxCommands: 2 }
+      });
+      const report = await coordinator.executePlan({ tasks: [task] });
+      expect(report.status).toBe('failed');
+      expect(report.tasks[0].error).toContain('token budget exceeded');
+      expect(report.tasks[0].error).toContain('time budget exceeded');
+      expect(report.tasks[0].error).toContain('command budget exceeded');
+    });
+
+    it('uses worker failure fallbacks and produces a partial report', async () => {
+      const coordinator = new AgentTeamCoordinator({ worktreeService });
+      coordinator.registerWorker('reviewer', async envelope => ({
+        taskId: envelope.taskId, workerId: 'fixture', success: envelope.taskId === 'success', outputs: {},
+        tokensUsed: 1, timeTakenMs: 1, commandsRun: 0, completedAt: new Date().toISOString()
+      }));
+      const success = createTaskEnvelope({ taskId: 'success', role: 'reviewer', title: 'Success', description: 'd' });
+      const failure = createTaskEnvelope({ taskId: 'failure', role: 'reviewer', title: 'Failure', description: 'd' });
+      const report = await coordinator.executePlan({ tasks: [success, failure], maxConcurrency: 2 });
+      expect(report.status).toBe('partial');
+      expect(report.completedTaskIds).toContain('success');
+      expect(report.failedTaskIds).toContain('failure');
+      expect(failure.error).toBe('Worker returned failure');
+    });
+
+    it('handles thrown worker errors and explicitly cancelled tasks', async () => {
+      const coordinator = new AgentTeamCoordinator({ worktreeService });
+      coordinator.registerWorker('reviewer', async () => { throw new Error('worker fixture'); });
+      const thrown = createTaskEnvelope({ taskId: 'throws', role: 'reviewer', title: 'Throws', description: 'd' });
+      const failed = await coordinator.executePlan({ tasks: [thrown] });
+      expect(failed.status).toBe('failed');
+      expect(thrown.error).toBe('worker fixture');
+
+      const cancelling = new AgentTeamCoordinator({ worktreeService });
+      cancelling.registerWorker('reviewer', async (_envelope, _worktree, signal) => new Promise((_resolve, reject) => {
+        signal.addEventListener('abort', () => reject(new Error('task cancelled by fixture')), { once: true });
+      }));
+      const task = createTaskEnvelope({ taskId: 'cancel-me', role: 'reviewer', title: 'Cancel', description: 'd' });
+      const pending = cancelling.executePlan({ tasks: [task] });
+      await new Promise(resolve => setTimeout(resolve, 10));
+      cancelling.cancelTask('missing-task');
+      cancelling.cancelTask('cancel-me');
+      const cancelledAsFailure = await pending;
+      expect(cancelledAsFailure.status).toBe('failed');
+      expect(task.error).toContain('cancelled or exceeded');
+    });
+
+    it('cancels pending tasks during stop-all and when the total token budget is exceeded', async () => {
+      const coordinator = new AgentTeamCoordinator({ worktreeService });
+      coordinator.registerWorker('reviewer', async (envelope, _worktree, signal) => {
+        if (envelope.taskId === 'slow') {
+          return new Promise((_resolve, reject) => signal.addEventListener('abort', () => reject(new Error('stopped')), { once: true }));
+        }
+        return {
+          taskId: envelope.taskId, workerId: 'fixture', success: true, outputs: {},
+          tokensUsed: 10, timeTakenMs: 1, commandsRun: 0, completedAt: new Date().toISOString()
+        };
+      });
+      const slow = createTaskEnvelope({ taskId: 'slow', role: 'reviewer', title: 'Slow', description: 'd' });
+      const queued = createTaskEnvelope({ taskId: 'queued', role: 'reviewer', title: 'Queued', description: 'd' });
+      const execution = coordinator.executePlan({ tasks: [slow, queued], maxConcurrency: 1 });
+      await new Promise(resolve => setTimeout(resolve, 10));
+      coordinator.stopAll();
+      const cancelled = await execution;
+      expect(cancelled.status).toBe('cancelled');
+      expect(cancelled.cancelledTaskIds).toEqual(expect.arrayContaining(['slow', 'queued']));
+      expect(queued.error).toBe('Execution cancelled by stop-all');
+
+      const tokenCoordinator = new AgentTeamCoordinator({ worktreeService });
+      tokenCoordinator.registerWorker('reviewer', async envelope => ({
+        taskId: envelope.taskId, workerId: 'token-fixture', success: true, outputs: {},
+        tokensUsed: 2, timeTakenMs: 1, commandsRun: 0, completedAt: new Date().toISOString()
+      }));
+      const first = createTaskEnvelope({ taskId: 'token-first', role: 'reviewer', title: 'First', description: 'd' });
+      const second = createTaskEnvelope({ taskId: 'token-second', role: 'reviewer', title: 'Second', description: 'd' });
+      const tokenReport = await tokenCoordinator.executePlan({
+        tasks: [first, second], maxConcurrency: 1, totalTokenBudget: 1
+      });
+      expect(tokenReport.tokensUsed).toBe(2);
+      expect(tokenReport.status).toBe('cancelled');
+    });
+
+    it('marks prestarted unresolved tasks as blocked and exercises the default worker', async () => {
+      const coordinator = new AgentTeamCoordinator({ worktreeService });
+      const prestarted = createTaskEnvelope({ taskId: 'prestarted', role: 'reviewer', title: 'Prestarted', description: 'd' });
+      prestarted.status = 'in_progress';
+      const blocked = createTaskEnvelope({
+        taskId: 'blocked', role: 'reviewer', title: 'Blocked', description: 'd', dependencies: ['prestarted']
+      });
+      const blockedReport = await coordinator.executePlan({ tasks: [prestarted, blocked] });
+      expect(blockedReport.status).toBe('failed');
+      expect(blocked.error).toBe('Blocked by failed or unresolved dependencies');
+
+      const defaultTask = createTaskEnvelope({
+        taskId: 'default-worker', role: 'repository_analyst', title: 'Default worker', description: 'd',
+        allowedActions: []
+      });
+      const defaultReport = await coordinator.executePlan({ tasks: [defaultTask] });
+      expect(defaultReport.status).toBe('completed');
+      expect(defaultReport.partialResults['default-worker'].workerId).toBe('default-repository_analyst');
+    });
+
+    it('rejects a task whose signal is already aborted before worker execution', async () => {
+      const coordinator = new AgentTeamCoordinator({ worktreeService });
+      const task = createTaskEnvelope({ taskId: 'already-aborted', role: 'reviewer', title: 'Abort', description: 'd' });
+      const controller = new AbortController();
+      controller.abort();
+      await expect((coordinator as any).runTask(task, controller.signal)).rejects.toMatchObject({
+        name: 'AbortError', message: 'Task aborted before worker execution'
+      });
+    });
     it('executes task DAG in topological dependency order', async () => {
       const coordinator = new AgentTeamCoordinator({ worktreeService });
 

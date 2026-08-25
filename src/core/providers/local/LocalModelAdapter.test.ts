@@ -143,6 +143,95 @@ describe('CF-04 Local Model and Resource Adapter Layer', () => {
       const res4 = await discovery.probeEndpoint('http://127.0.0.1:8080/v1', { cacheTtlMs: 0 });
       expect(res4.health).toBe('version_mismatch');
     });
+
+    it('enforces endpoint policy, sends API keys, caches results, and supports targeted or full invalidation', async () => {
+      const discovery = new LocalModelDiscovery({ defaultTtlMs: 60000 });
+      const denied = await discovery.probeEndpoint('http://127.0.0.1:8080/v1', { profile: 'hosted' });
+      expect(denied.health).toBe('incompatible');
+      expect(denied.error).toContain('Policy violation');
+
+      const mockGet = jest.fn().mockResolvedValue({ data: [], headers: {} });
+      mockedAxios.create.mockReturnValue({ get: mockGet } as any);
+      const url = 'http://127.0.0.1:8080/v1';
+      const first = await discovery.probeEndpoint(url, { apiKey: 'fixture-key', timeoutMs: 123 });
+      const cached = await discovery.probeEndpoint(url, { apiKey: 'fixture-key', timeoutMs: 123 });
+      expect(cached).toBe(first);
+      expect(mockGet).toHaveBeenCalledTimes(1);
+      expect(mockedAxios.create).toHaveBeenCalledWith(expect.objectContaining({
+        timeout: 123,
+        headers: { Accept: 'application/json', Authorization: 'Bearer fixture-key' }
+      }));
+
+      discovery.invalidate(url);
+      await discovery.probeEndpoint(url);
+      expect(mockGet).toHaveBeenCalledTimes(2);
+      discovery.invalidate();
+      await discovery.probeEndpoint(url);
+      expect(mockGet).toHaveBeenCalledTimes(3);
+    });
+
+    it('falls back to /v1/models after a 404 and accepts server headers and missing model IDs', async () => {
+      const mockGet = jest.fn()
+        .mockRejectedValueOnce({ response: { status: 404 } })
+        .mockResolvedValueOnce({
+          data: { data: [{ name: 'named-model' }, {}] },
+          headers: { server: 'fixture-server' }
+        });
+      mockedAxios.create.mockReturnValue({ get: mockGet } as any);
+      const result = await new LocalModelDiscovery().probeEndpoint('http://127.0.0.1:8080');
+      expect(mockGet).toHaveBeenNthCalledWith(1, '/models');
+      expect(mockGet).toHaveBeenNthCalledWith(2, '/v1/models');
+      expect(result.version).toBe('fixture-server');
+      expect(result.models.map(model => model.id)).toEqual(['named-model', 'local-model']);
+    });
+
+    it('accepts raw model arrays and covers model capability inference tiers', async () => {
+      const ids = [
+        'model-128k-70b', 'model-64k-32b', 'model-32k-13b', 'model-16k-7b', 'model-8k-3b',
+        'llama3-8b-chat', 'qwen2.5-72b', 'vision-instruct', 'vl-chat', 'llava-tool', 'pixtral-hermes',
+        'embed-model', 'bge-model', 'nomic-model', 'gte-model', 'plain-instruct', 'plain-chat',
+        'plain-tool', 'plain-hermes', 'mistral-7b', 'starcoder-34b'
+      ];
+      mockedAxios.create.mockReturnValue({
+        get: jest.fn().mockResolvedValue({ data: ids.map(id => ({ id })), headers: {} })
+      } as any);
+      const result = await new LocalModelDiscovery().probeEndpoint('http://127.0.0.1:8080');
+      const byId = new Map(result.models.map(model => [model.id, model]));
+      expect(byId.get('model-128k-70b')).toMatchObject({ contextLength: 131072, estimatedVramMb: 40000 });
+      expect(byId.get('model-64k-32b')).toMatchObject({ contextLength: 65536, estimatedVramMb: 20000 });
+      expect(byId.get('model-32k-13b')).toMatchObject({ contextLength: 32768, estimatedVramMb: 10000 });
+      expect(byId.get('model-16k-7b')).toMatchObject({ contextLength: 16384, estimatedVramMb: 6000 });
+      expect(byId.get('model-8k-3b')).toMatchObject({ contextLength: 8192, estimatedVramMb: 2500 });
+      expect(byId.get('qwen2.5-72b')?.codeQuality).toBe(0.94);
+      expect(byId.get('mistral-7b')?.codeQuality).toBe(0.82);
+      expect(byId.get('starcoder-34b')?.codeQuality).toBe(0.92);
+      for (const id of ['vision-instruct', 'vl-chat', 'llava-tool', 'pixtral-hermes']) {
+        expect(byId.get(id)?.supportsVision).toBe(true);
+      }
+      for (const id of ['embed-model', 'bge-model', 'nomic-model', 'gte-model']) {
+        expect(byId.get(id)).toMatchObject({
+          supportsEmbeddings: true, supportsStreaming: false, supportsTools: false
+        });
+      }
+      for (const id of ['plain-instruct', 'plain-chat', 'plain-tool', 'plain-hermes', 'llama3-8b-chat']) {
+        expect(byId.get(id)?.supportsTools).toBe(true);
+      }
+    });
+
+    it('covers alternate network and HTTP degradation codes plus the unreachable fallback', async () => {
+      const cases = [
+        [{ code: 'ENOTFOUND', message: 'dns' }, 'startup_unavailable'],
+        [{ response: { status: 429 }, message: 'rate limited' }, 'overloaded'],
+        [{ response: { status: 403 }, message: 'forbidden' }, 'incompatible'],
+        [{ response: { status: 405 }, message: 'method' }, 'version_mismatch'],
+        [{ message: 'socket reset' }, 'unreachable']
+      ] as const;
+      for (const [failure, expected] of cases) {
+        mockedAxios.create.mockReturnValue({ get: jest.fn().mockRejectedValue(failure) } as any);
+        const result = await new LocalModelDiscovery().probeEndpoint('http://127.0.0.1:8080', { cacheTtlMs: 0 });
+        expect(result.health).toBe(expected);
+      }
+    });
   });
 
   describe('LocalResourceManager (Concurrency, Queue & Cancellation)', () => {
@@ -240,6 +329,76 @@ describe('CF-04 Local Model and Resource Adapter Layer', () => {
       expect(adapter.getResourceMetrics().activeRequests).toBe(0);
     });
 
+    it('exposes normalized configuration, probe status, auth, and request options', async () => {
+      const mockPost = jest.fn().mockResolvedValue({
+        data: { choices: [{ text: 'plain completion' }] }
+      });
+      mockedAxios.create.mockReturnValue({ post: mockPost } as any);
+      const adapter = new ExternalLocalModelAdapter({
+        baseUrl: 'http://127.0.0.1:8080/', model: 'default', providerName: 'custom',
+        apiKey: 'local-key', timeoutMs: 9000, maxRetries: 0
+      });
+      jest.spyOn((adapter as any).discovery, 'probeEndpoint').mockResolvedValue({ healthy: true });
+
+      expect(adapter.getModelName()).toBe('custom:default');
+      expect(adapter.getProviderName()).toBe('custom');
+      expect(adapter.getBaseUrl()).toBe('http://127.0.0.1:8080');
+      expect(adapter.estimateCost({ prompt: 'x' })).toBe(0);
+      await expect(adapter.probe()).resolves.toEqual({ healthy: true });
+      const response = await adapter.generate({
+        prompt: 'hello', systemPrompt: 'system', model: 'override', temperature: 0, maxTokens: 0
+      }, { requestId: 'fixed-request' });
+      expect(response).toMatchObject({ content: 'plain completion', model: 'custom:override' });
+      expect(mockedAxios.create).toHaveBeenCalledWith(expect.objectContaining({
+        timeout: 9000,
+        headers: expect.objectContaining({ Authorization: 'Bearer local-key' })
+      }));
+      expect(mockPost).toHaveBeenCalledWith('/chat/completions', expect.objectContaining({
+        temperature: 0, max_tokens: 0,
+        messages: [{ role: 'system', content: 'system' }, { role: 'user', content: 'hello' }]
+      }), expect.any(Object));
+    });
+
+    it('falls back to the prefixed chat endpoint after an unprefixed 404', async () => {
+      const missing = Object.assign(new Error('missing'), { response: { status: 404 } });
+      const mockPost = jest.fn()
+        .mockRejectedValueOnce(missing)
+        .mockResolvedValueOnce({ data: { choices: [{ message: { content: '' } }], usage: { total_tokens: 0 } } });
+      mockedAxios.create.mockReturnValue({ post: mockPost } as any);
+      const adapter = new ExternalLocalModelAdapter({ baseUrl: 'http://localhost:8080', model: 'model', maxRetries: 0 });
+
+      await expect(adapter.generate({ prompt: 'fallback' })).resolves.toMatchObject({ content: '' });
+      expect(mockPost.mock.calls.map(call => call[0])).toEqual(['/chat/completions', '/v1/chat/completions']);
+    });
+
+    it('does not retry client errors or aborted requests and always releases leases', async () => {
+      const clientError = Object.assign(new Error('bad request'), { response: { status: 400 } });
+      const mockPost = jest.fn().mockRejectedValue(clientError);
+      mockedAxios.create.mockReturnValue({ post: mockPost } as any);
+      const adapter = new ExternalLocalModelAdapter({ baseUrl: 'http://localhost:8080/v1', model: 'model', maxRetries: 2 });
+      await expect(adapter.generate({ prompt: 'bad' })).rejects.toBe(clientError);
+      expect(mockPost).toHaveBeenCalledTimes(1);
+      expect(adapter.getResourceMetrics().activeRequests).toBe(0);
+
+      const controller = new AbortController();
+      controller.abort();
+      await expect(adapter.generate({ prompt: 'abort' }, { signal: controller.signal })).rejects.toMatchObject({ name: 'AbortError' });
+    });
+
+    it('retries server failures and surfaces the final error', async () => {
+      jest.useFakeTimers();
+      const serverError = Object.assign(new Error('server down'), { response: { status: 500 } });
+      const mockPost = jest.fn().mockRejectedValue(serverError);
+      mockedAxios.create.mockReturnValue({ post: mockPost } as any);
+      const adapter = new ExternalLocalModelAdapter({ baseUrl: 'http://localhost:8080/v1', model: 'model', maxRetries: 1 });
+      const pending = adapter.generate({ prompt: 'retry' });
+      const rejection = expect(pending).rejects.toBe(serverError);
+      await jest.advanceTimersByTimeAsync(200);
+      await rejection;
+      expect(mockPost).toHaveBeenCalledTimes(2);
+      jest.useRealTimers();
+    });
+
     it('streams chat completion chunks', async () => {
       const streamEmitter = new EventEmitter();
       const mockPost = jest.fn().mockResolvedValue({
@@ -271,6 +430,41 @@ describe('CF-04 Local Model and Resource Adapter Layer', () => {
       expect(chunks).toEqual(['Hello ', 'World!']);
     });
 
+    it('handles split, blank, and trailing stream frames', async () => {
+      const streamEmitter = new EventEmitter();
+      mockedAxios.create.mockReturnValue({ post: jest.fn().mockResolvedValue({ data: streamEmitter }) } as any);
+      const adapter = new ExternalLocalModelAdapter({ baseUrl: 'http://localhost:8080/v1', model: 'stream' });
+      const chunks: string[] = [];
+      const pending = adapter.generateStream({ prompt: 'x', systemPrompt: 's', temperature: 0, maxTokens: 0 }, chunk => chunks.push(chunk));
+      setTimeout(() => {
+        streamEmitter.emit('data', Buffer.from('event: message\ndata: \n\ndata: {"choices":[{"delta":{}}]}\n'));
+        streamEmitter.emit('data', Buffer.from('data: {"choices":[{"delta":{"content":"tail"}}]}'));
+        streamEmitter.emit('end');
+      }, 0);
+      await expect(pending).resolves.toMatchObject({ content: 'tail', model: 'local-openai:stream' });
+      expect(chunks).toEqual(['tail']);
+    });
+
+    it('rejects invalid stream JSON and transport errors', async () => {
+      const invalidStream = new EventEmitter() as EventEmitter & { destroy: jest.Mock };
+      invalidStream.destroy = jest.fn();
+      const errorStream = new EventEmitter();
+      const mockPost = jest.fn()
+        .mockResolvedValueOnce({ data: invalidStream })
+        .mockResolvedValueOnce({ data: errorStream });
+      mockedAxios.create.mockReturnValue({ post: mockPost } as any);
+      const adapter = new ExternalLocalModelAdapter({ baseUrl: 'http://localhost:8080/v1', model: 'stream' });
+
+      const invalid = adapter.generateStream({ prompt: 'x' }, jest.fn());
+      setTimeout(() => invalidStream.emit('data', Buffer.from('data: {invalid}\n')), 0);
+      await expect(invalid).rejects.toThrow('Invalid SSE payload');
+      expect(invalidStream.destroy).toHaveBeenCalled();
+
+      const transport = adapter.generateStream({ prompt: 'x' }, jest.fn());
+      setTimeout(() => errorStream.emit('error', new Error('stream closed')), 0);
+      await expect(transport).rejects.toThrow('stream closed');
+    });
+
     it('fetches embeddings', async () => {
       const mockPost = jest.fn().mockResolvedValue({
         data: {
@@ -288,6 +482,14 @@ describe('CF-04 Local Model and Resource Adapter Layer', () => {
       const res = await adapter.getEmbeddings('sample query');
       expect(res.embeddings).toEqual([[0.1, 0.2, 0.3]]);
       expect(res.tokensUsed).toBe(8);
+    });
+
+    it('uses embedding defaults when the endpoint omits data and usage', async () => {
+      mockedAxios.create.mockReturnValue({ post: jest.fn().mockResolvedValue({ data: {} }) } as any);
+      const adapter = new ExternalLocalModelAdapter({ baseUrl: 'http://localhost:8080/v1', model: 'chat' });
+      await expect(adapter.getEmbeddings(['one', 'two'], { model: 'embed-2' })).resolves.toEqual({
+        embeddings: [], model: 'embed-2', tokensUsed: 0
+      });
     });
   });
 
@@ -373,6 +575,59 @@ describe('CF-04 Local Model and Resource Adapter Layer', () => {
 
       expect(decision.isLocal).toBe(false);
       expect(decision.providerId).toBe('openai');
+    });
+
+    it('selects a supported strict-local candidate', () => {
+      const policy = new LocalModelRoutingPolicy();
+      policy.registerCandidate({ ...localCoder, adapter: {} as any });
+      const decision = policy.route({ prompt: 'private', privacyMode: 'strict_local' });
+      expect(decision).toMatchObject({ providerId: 'local-warpdrv', supported: true, confidence: 0.95 });
+    });
+
+    it.each([
+      ['context', { minContextTokens: 200000 }],
+      ['structured output', { requiresStructuredOutput: true }],
+      ['tools', { requiresTools: true }],
+      ['vision', { requiresVision: true }],
+      ['embeddings', { requiresEmbeddings: true }],
+      ['latency', { maxLatencyMs: 50 }],
+      ['cost', { maxCost: 0.0001 }]
+    ])('falls back when the only candidate violates the %s constraint', (_name, constraint) => {
+      const policy = new LocalModelRoutingPolicy({ defaultPrivacyMode: 'cloud_allowed' });
+      policy.registerCandidate({
+        ...cloudGpt4,
+        structuredOutput: false,
+        toolCalling: false,
+        vision: false,
+        embeddings: false
+      });
+      expect(policy.route({ prompt: 'x', ...constraint }).providerId).toBe('template');
+    });
+
+    it('replaces and unregisters candidates while returning defensive list copies', () => {
+      const policy = new LocalModelRoutingPolicy();
+      policy.registerCandidate(localCoder);
+      policy.registerCandidate({ ...localCoder, qualityScore: 0.5 });
+      const listed = policy.listCandidates();
+      expect(listed).toHaveLength(1);
+      expect(listed[0].qualityScore).toBe(0.5);
+      listed.length = 0;
+      expect(policy.listCandidates()).toHaveLength(1);
+      policy.unregisterProvider('local-warpdrv');
+      expect(policy.listCandidates()).toEqual([]);
+    });
+
+    it('sorts deterministically by quality, latency, cost, then provider name', () => {
+      const select = (candidates: RoutingCandidate[]) => {
+        const policy = new LocalModelRoutingPolicy({ defaultPrivacyMode: 'cloud_allowed' });
+        candidates.forEach(candidate => policy.registerCandidate(candidate));
+        return policy.route({ prompt: 'x' }).providerId;
+      };
+      const base = { ...cloudGpt4, qualityScore: 0.9, latencyMs: 100, costPer1kTokens: 0.001 };
+      expect(select([{ ...base, provider: 'low' }, { ...base, provider: 'high', qualityScore: 0.96 }])).toBe('high');
+      expect(select([{ ...base, provider: 'slow', latencyMs: 200 }, { ...base, provider: 'fast' }])).toBe('fast');
+      expect(select([{ ...base, provider: 'costly', costPer1kTokens: 0.002 }, { ...base, provider: 'cheap' }])).toBe('cheap');
+      expect(select([{ ...base, provider: 'zeta' }, { ...base, provider: 'alpha' }])).toBe('alpha');
     });
   });
 

@@ -278,6 +278,30 @@ describe('CF-07 Consent-Aware Video Localization & Dubbing', () => {
       operatorApproval: 'operator-qa'
     });
 
+    const createPipelineJob = (overrides: Record<string, unknown> = {}) => createVideoLocalizationJob({
+      jobId: 'pipeline-job-1',
+      title: 'Pipeline Fixture',
+      sourceFilePath: 'demo.mp4',
+      sourceFileHash: TEST_SOURCE_HASH,
+      sourceLanguage: 'en',
+      targetLanguage: 'es',
+      consentRecord: validConsent,
+      ...overrides
+    } as any);
+
+    it('requires a concrete engine and rejects tampered job contracts before sandbox work', async () => {
+      const pipeline = new VideoLocalizationPipeline({ exportBaseDir });
+      const noEngine = createPipelineJob();
+      await expect(pipeline.executePipeline(noEngine)).rejects.toThrow(/concrete LocalizationEngineAdapter/);
+
+      const tampered = createPipelineJob();
+      (tampered as any).title = 'Tampered after signing';
+      await expect(pipeline.executePipeline(tampered, new MockLocalizationEngineAdapter()))
+        .rejects.toThrow(/digest mismatch/);
+      expect(tampered.status).toBe('failed');
+      await expect(pipeline.cancelJob('missing-job')).resolves.toBe(false);
+    });
+
     it('executes full 12-stage localization pipeline with disclosure metadata', async () => {
       const job = createVideoLocalizationJob({
         jobId: 'pipeline-job-1',
@@ -341,6 +365,87 @@ describe('CF-07 Consent-Aware Video Localization & Dubbing', () => {
       const pipeline = new VideoLocalizationPipeline({ exportBaseDir });
       await expect(pipeline.executePipeline(job, engine)).rejects.toThrow(/exceeds budget cap/);
       expect(job.status).toBe('failed');
+    });
+
+    it.each([
+      ['file size', { duration: 1, resolution: '1080p', sizeBytes: 101 }, { maxFileSizeBytes: 100 }, /file size/],
+      ['resolution rank', { duration: 1, resolution: '4k', sizeBytes: 1 }, { maxResolution: '1080p' }, /resolution/],
+      ['unknown resolution', { duration: 1, resolution: '8k', sizeBytes: 1 }, { maxResolution: '4k' }, /resolution/]
+    ])('fails closed for invalid %s media metadata', async (_label, metadata, budget, expected) => {
+      const job = createPipelineJob({ budget });
+      const engine = new MockLocalizationEngineAdapter();
+      engine.validateMedia = async () => metadata as any;
+      await expect(new VideoLocalizationPipeline({ exportBaseDir }).executePipeline(job, engine))
+        .rejects.toThrow(expected as RegExp);
+      expect(job.stageResults.validate_media?.success).toBe(false);
+    });
+
+    it('records empty transcripts and non-Error adapter failures honestly', async () => {
+      const emptyJob = createPipelineJob();
+      const emptyEngine = new MockLocalizationEngineAdapter();
+      emptyEngine.transcribe = async () => ({ text: '   ', segments: [] });
+      await expect(new VideoLocalizationPipeline({ exportBaseDir }).executePipeline(emptyJob, emptyEngine))
+        .rejects.toThrow(/empty output/);
+      expect(emptyJob.stageResults.review_transcript?.success).toBe(false);
+
+      const stringFailureJob = createPipelineJob();
+      const stringFailureEngine = new MockLocalizationEngineAdapter();
+      stringFailureEngine.validateMedia = async () => { throw 'string adapter failure'; };
+      await expect(new VideoLocalizationPipeline({ exportBaseDir }).executePipeline(stringFailureJob, stringFailureEngine))
+        .rejects.toBe('string adapter failure');
+      expect(stringFailureJob.error).toBe('string adapter failure');
+      expect(stringFailureJob.stageResults.validate_media?.error).toBe('string adapter failure');
+    });
+
+    it('enforces the whole-pipeline deadline while a stage is running', async () => {
+      const job = createPipelineJob({ budget: { timeoutMs: 1 } });
+      const engine = new MockLocalizationEngineAdapter();
+      engine.validateMedia = async () => {
+        await new Promise(resolve => setTimeout(resolve, 10));
+        return { duration: 1, resolution: '720p', sizeBytes: 1 };
+      };
+      await expect(new VideoLocalizationPipeline({ exportBaseDir }).executePipeline(job, engine))
+        .rejects.toThrow(/exceeded timeout budget/);
+    });
+
+    it('runs without optional vocal separation or lip sync and retains remote-provider provenance', async () => {
+      const job = createPipelineJob({
+        lipSyncEnabled: false,
+        translationSettings: { provider: 'google_translate', dataEgressWarningAcknowledged: true },
+        voiceSettings: { useVoiceCloning: false }
+      });
+      const engine = new MockLocalizationEngineAdapter();
+      (engine as any).separateVocals = undefined;
+      (engine as any).applyLipSync = undefined;
+      engine.transcribe = async () => ({
+        text: 'Timed fixture', segments: [{ start: 3661.125, end: 3662.5, text: 'Timed fixture' }]
+      });
+      const completed = await new VideoLocalizationPipeline({ exportBaseDir }).executePipeline(job, engine);
+      expect(completed.status).toBe('completed');
+      expect(completed.stageResults.separate_vocals?.artifacts?.note).toContain('skipped');
+      expect(completed.stageResults.lip_sync).toBeUndefined();
+      expect(completed.provenance?.providers).toMatchObject({
+        translation: 'google_translate', translationIsLocal: false, lipSyncOptional: undefined
+      });
+      expect(completed.provenance?.disclosure.modelsUsed.tts).toBe('tts-standard');
+    });
+
+    it.each([
+      'preflight', 'validate_media', 'extract_audio', 'separate_vocals', 'transcribe_align',
+      'review_transcript', 'translate', 'synthesize_voice', 'fit_timing', 'reconstruct_mix', 'lip_sync'
+    ])('honors cancellation immediately after the %s boundary', async targetStage => {
+      const job = createPipelineJob({ lipSyncEnabled: true });
+      const pipeline = new VideoLocalizationPipeline({ exportBaseDir });
+      const originalRunStage = (pipeline as any).runStage.bind(pipeline);
+      (pipeline as any).runStage = async (stageJob: any, stage: string, fn: () => Promise<Record<string, any>>) => {
+        await originalRunStage(stageJob, stage, fn);
+        if (stage === targetStage) {
+          (pipeline as any).activeJobs.get(stageJob.jobId).cancelled = true;
+        }
+      };
+      const cancelled = await pipeline.executePipeline(job, new MockLocalizationEngineAdapter());
+      expect(cancelled.status).toBe('cancelled');
+      expect(cancelled.error).toBe('Job was cancelled by operator.');
     });
 
     it('supports cancellation during pipeline execution', async () => {
