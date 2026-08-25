@@ -15,6 +15,7 @@ This index links verified production-completion tasks to evidence collected agai
 | `P01-T04` | `VERIFIED` | `7995961b0b6c2f2fc847da8ade16d2df594aee27` | `docs/implementation/evidence/PHASE-01/P01-T04/2026-08-05_7995961b` | `2026-08-05` | Malformed gitlinks removed and clean-clone integrity verified. |
 | `P01-T05` | `VERIFIED` | `fe2782e7e7eb778de8bd25cabaeadb2243a6dfd6` | `docs/implementation/evidence/PHASE-01/P01-T05/2026-08-05_fe2782e7` | `2026-08-05` | Pages retained as a backend-disabled static interface demo and live smoke passed. |
 | `P01-T06` | `VERIFIED` | `7e95e339aa7e5d661bbe67ccad98418cbfbd2960` | `docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339` | `2026-08-05` | Independent jobs and unconditional required gate verified. |
+| `P01-T07` | `VERIFIED` | `9ec527f3d635fa1bf02d1a8ffbaeeb46048eaeb1` | `docs/implementation/evidence/PHASE-01/P01-T07/2026-08-25_9ec527f3` | `2026-08-25` | Owner waiver superseded; live GitHub read-back verifies strict Required CI, PR enforcement, administrator enforcement, conversation resolution, and force-push/deletion denial on `main`. |
 | `P02-T01` | `VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T01/2026-08-05_a0d159dd` | `2026-08-05` | Reproducible repository/route inventory and currentness gate verified. |
 | `P02-T02` | `VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T02/2026-08-05_a0d159dd` | `2026-08-05` | Entrypoint reachability and production-boundary map verified. |
 | `P02-T03` | `VERIFIED` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T03/2026-08-05_a0d159dd` | `2026-08-05` | Legacy, compatibility, test-only, and local-only isolation verified; retained features are not thereby production-certified. |
@@ -37,7 +38,6 @@ This index links verified production-completion tasks to evidence collected agai
 
 | Record | Status | Commit/reference | Evidence | Notes |
 |---|---|---|---|---|
-| `P01-T07` | `WAIVED` | Issue `#35` | `docs/implementation/BRANCH_PROTECTION_POLICY.md` | Repository owner declined branch-protection enforcement; this does not count as verification. |
 | `POLY-CODE-T25` | `NOT PRODUCTION VERIFIED` | `54623a7` | `docs/implementation/evidence/coding-upgrade/` | Polyglot coding implementation and local evidence bundle; explicit Gemini and DeepSeek runs are recorded, while hosted-production promotion, provider quota, unsupported toolchains, and release coverage remain open. |
 | `CF-04-10-INTEGRATION` | `IMPLEMENTED_NOT_VERIFIED` | `315e5db457195f24b0a0d228d4ee5a684d2dfd1f` | `docs/implementation/evidence/capability-fusion/CF-04-10/2026-08-25_315e5db/` | Ported onto current `main`; type checks, lint, focused tests, browser E2E, and full server test execution passed, but the unchanged uncovered-count policy failed and exact-head GitHub CI was not run. |
 

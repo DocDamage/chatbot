@@ -19,6 +19,7 @@ Current classification:
 - `main` commit `266068db0c1ce4c8723e3e6fe1f851f07c37fe0f` passed the complete GitHub Required CI gate in run `32742006979`.
 - That run passed type checks, lint, server/client tests, coverage, security, browser E2E, accessibility, migration checks, package/container smoke, repository policy, and release-evidence validation.
 - CF-03 remains `LOCAL_ONLY_EXPERIMENTAL`; findings are evidence-backed signals rather than vulnerability proof.
+- `main` branch protection is enabled with strict Required CI, pull-request enforcement, administrator enforcement, conversation resolution, and force-push/deletion denial.
 
 ## Current integration checkpoint
 
@@ -31,7 +32,8 @@ Current classification:
 - Built-server browser E2E: 7 tests passed during `npm run verify:release`.
 - Full server suite under coverage: 182 suites / 696 tests passed, 2 tests skipped.
 - Release result: failed at the unchanged uncovered-count policy. Statements were 277 over budget, branches 636 over, lines 93 over, and functions 92 over.
-- GitHub PR/CI: not yet created for the integration branch.
+- GitHub PR: draft PR `#171` is open for the integration branch and is intentionally not merge-ready.
+- GitHub CI: the initial draft-PR run exposed a handoff-schema defect that was corrected; the unchanged release coverage gate remains the known code blocker on the current integration line.
 
 Passing tests do not override the coverage failure. CF-04 through CF-10 remain `IMPLEMENTED_NOT_VERIFIED` until the exact final PR head passes all gates and receives required review.
 
@@ -39,10 +41,9 @@ Passing tests do not override the coverage failure. CF-04 through CF-10 remain `
 
 1. Add meaningful branch coverage for the new capability modules without lowering thresholds or broadening exclusions.
 2. Keep the capability routes local-only until individual production-promotion gates are satisfied.
-3. Run `npm run verify:release` on the corrected integration head, then run the complete GitHub CI matrix on the exact PR head.
+3. Run `npm run verify:release` on the corrected integration head, then require the complete GitHub CI matrix to pass on the exact PR head.
 4. Reconcile the production feature manifest, tracker, release evidence index, rolling records, and GitHub issues after verification.
-5. Obtain repository-admin branch-protection read-back for `main`.
-6. Complete the real hardware, cross-platform, consent/media-quality, manual accessibility, staging, backup/restore, performance, security, and release-owner gates described by the final completion plan.
+5. Complete the real hardware, cross-platform, consent/media-quality, manual accessibility, staging, backup/restore, performance, security, and release-owner gates described by the final completion plan.
 
 ## Source of truth
 

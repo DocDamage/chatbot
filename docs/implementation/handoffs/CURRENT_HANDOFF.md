@@ -8,7 +8,7 @@
 - Implementation checkpoint: `315e5db457195f24b0a0d228d4ee5a684d2dfd1f`
 - Status: `IMPLEMENTED_NOT_VERIFIED`
 - Maturity: `LOCAL_ONLY_EXPERIMENTAL`
-- Pull request: not yet opened
+- Pull request: draft PR `#171` (open; intentionally not merge-ready)
 
 ## Delivered at the checkpoint
 
@@ -51,8 +51,9 @@ End the task after one bounded coverage increment is committed with updated evid
 
 ## External gates retained
 
-- Repository-admin branch protection.
 - Real local-model hardware canary.
 - Native Windows/Linux/macOS process-tree and clean-machine testing.
 - Human media-rights/quality and accessibility review.
 - Hosted infrastructure, backup/restore, load/failure, security, and release approvals.
+
+Repository-admin branch protection is no longer an external blocker; it was enabled and read back on 2026-08-25.

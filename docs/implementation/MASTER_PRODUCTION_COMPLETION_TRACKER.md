@@ -37,7 +37,7 @@
 | Phase | Total | Verified | Implemented, not verified | In progress | Blocked | Waived | Not started |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | PHASE 0 | 5 | 5 | 0 | 0 | 0 | 0 | 0 |
-| PHASE 1 | 7 | 6 | 0 | 0 | 0 | 1 | 0 |
+| PHASE 1 | 7 | 7 | 0 | 0 | 0 | 0 | 0 |
 | PHASE 2 | 7 | 7 | 0 | 0 | 0 | 0 | 0 |
 | PHASE 3 | 8 | 4 | 0 | 0 | 0 | 0 | 4 |
 | PHASE 4 | 12 | 0 | 0 | 0 | 0 | 0 | 12 |
@@ -51,7 +51,7 @@
 | PHASE 12 | 8 | 0 | 0 | 0 | 0 | 0 | 8 |
 | PHASE 13 | 5 | 0 | 0 | 0 | 0 | 0 | 5 |
 | PHASE 14 | 5 | 0 | 0 | 0 | 0 | 0 | 5 |
-| **Total** | **124** | **22** | **0** | **0** | **0** | **1** | **101** |
+| **Total** | **124** | **23** | **0** | **0** | **0** | **0** | **101** |
 
 ## Capability Fusion integration status
 
@@ -72,6 +72,7 @@ CF-04 through CF-10 are tracked by the Capability Fusion roadmap and final compl
 | `P01-T04` | Repair stale gitlink/submodule state | Codex/GitHub | `VERIFIED` | `agent/p01-t04-repair-gitlink-integrity` | `7995961b0b6c2f2fc847da8ade16d2df594aee27` | `docs/implementation/evidence/PHASE-01/P01-T04/2026-08-05_7995961b` | None | `2026-08-05` | `REQUIRED` |
 | `P01-T05` | Decide and repair GitHub Pages | Codex/GitHub | `VERIFIED` | `agent/p01-t05-decide-repair-github-pages` | `fe2782e7e7eb778de8bd25cabaeadb2243a6dfd6` | `docs/implementation/evidence/PHASE-01/P01-T05/2026-08-05_fe2782e7` | None | `2026-08-05` | `REQUIRED` |
 | `P01-T06` | Make all current CI stages execute | Codex/GitHub | `VERIFIED` | `agent/p01-t06-make-all-ci-stages-execute` | `7e95e339aa7e5d661bbe67ccad98418cbfbd2960` | `docs/implementation/evidence/PHASE-01/P01-T06/2026-08-05_7e95e339` | None | `2026-08-05` | `REQUIRED` |
+| `P01-T07` | Add branch protection | Repository owner/Codex | `VERIFIED` | `agent/p01-t07-add-branch-protection` | `9ec527f3d635fa1bf02d1a8ffbaeeb46048eaeb1` | `docs/implementation/evidence/PHASE-01/P01-T07/2026-08-25_9ec527f3` | None | `2026-08-25` | `REQUIRED` |
 | `P02-T01` | Create a complete code and route inventory | Codex/GitHub | `VERIFIED` | `agent/complete-through-phase-02` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T01/2026-08-05_a0d159dd` | None | `2026-08-05` | `REQUIRED` |
 | `P02-T02` | Build a reachability map | Codex/GitHub | `VERIFIED` | `agent/complete-through-phase-02` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T02/2026-08-05_a0d159dd` | None | `2026-08-05` | `REQUIRED` |
 | `P02-T03` | Remove or isolate legacy and duplicate implementations | Codex/GitHub | `VERIFIED` | `agent/complete-through-phase-02` | `a0d159dd0eff1991a9a7400664e2eef0286e77a2` | `docs/implementation/evidence/PHASE-02/P02-T03/2026-08-05_a0d159dd` | None | `2026-08-05` | `REQUIRED` |
@@ -86,9 +87,7 @@ CF-04 through CF-10 are tracked by the Capability Fusion roadmap and final compl
 
 ## Waived task records
 
-| Task ID | Task | Owner | Status | Decision evidence | Date | Release applicability |
-|---|---|---|---|---|---|---|
-| `P01-T07` | Add branch protection | Repository owner | `WAIVED` | Issue `#35`; live `main` intentionally remains unprotected | `2026-08-05` | `OWNER-WAIVED` |
+None. The former P01-T07 waiver was superseded by the repository owner on 2026-08-25; live protection is verified above.
 
 ## Implemented-not-verified task records
 
@@ -113,7 +112,7 @@ No pending tasks.
 
 ### PHASE 1 — Restore Repository Integrity and a Fully Green `main`
 
-No remaining unwaived tasks. `P01-T07` is owner-waived.
+No pending tasks. `P01-T01` through `P01-T07` are verified.
 
 ### PHASE 2 — Repository Hygiene, Architecture Boundaries, and Maintainability
 

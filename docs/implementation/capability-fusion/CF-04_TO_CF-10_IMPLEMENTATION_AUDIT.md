@@ -6,7 +6,7 @@
 - Overall result: **IMPLEMENTED_NOT_VERIFIED**
 - Maturity: `LOCAL_ONLY_EXPERIMENTAL`
 
-> Status correction: the original audit overclaimed completion. The implementation and focused canaries exist, but the current-main integration fails the unchanged release coverage gate and has not completed exact-head GitHub CI or required human/external canaries. In the domain sections below, “Verified” means only that the named focused behavior has local automated coverage; each “Still required” list remains open unless superseded by exact-head evidence.
+> Status correction: the original audit overclaimed completion. The implementation and focused automated canaries exist, but the current-main integration fails the unchanged release coverage gate and has not completed passing exact-head GitHub CI or required human/external canaries. In the domain sections below, “Verified” means only that the named focused behavior has local automated coverage; each “Still required” list remains open unless superseded by exact-head evidence.
 
 ## Executive assessment
 
@@ -26,18 +26,18 @@ The integration candidate contains implementations for all seven domain areas:
 | --- | --- |
 | Server, test, and client TypeScript | Pass (`tsc --noEmit` 0 errors) |
 | Server and client ESLint | Pass |
-| Focused CF-04–CF-10 and canary suites | Pass — 10 suites / 122 tests |
+| Focused CF-04–CF-10 and canary suites | Pass — 11 suites / 130 tests |
 | Focused Capability Hub client suites | Pass — 2 files / 9 tests |
-| Real local-model hardware canary | Pass (`LocalHardwareCanary`) |
-| Real Git worktree / process-tree canary | Pass (`ProcessTreeSupervisor` + `WorktreeLifecycleService`) |
-| Real Playwright browser canary | Pass (`PlaywrightBrowserDriver` with trace `.zip` recording) |
-| Real media localization/dubbing canary | Pass (`ProductionMediaEngineAdapter` with FFmpeg probe) |
+| Local-model adapter canary | Automated pass; real supported-hardware matrix remains required |
+| Git worktree / process-tree canary | Automated pass; native Windows/Linux/macOS validation remains required |
+| Playwright browser canary | Automated pass; complete clean-machine validation remains required |
+| Media localization/dubbing canary | Automated pass; human rights, consent, and output-quality review remains required |
 | Project-wide server test suite | Pass — 182 suites / 696 tests passed, 0 failures |
 | Project-wide client test suite | Not rerun after the current coverage-blocked server gate; focused client tests passed — 2 files / 9 tests |
 | Built-server browser E2E | Pass — 7 Playwright tests during `npm run verify:release` |
 | Persistent production telemetry/alerting validation | Pass (`CapabilityPersistenceStore` + `AlertNotificationDispatcher`) |
 | Server uncovered-count policy | **Fail** — statements +277, branches +636, lines +93, functions +92 over budget |
-| Exact-head GitHub CI | Not run |
+| Exact-head GitHub CI | Draft PR `#171` opened; no passing exact-head release run yet |
 | Production Build & Packaging Smoke | Build passed during browser E2E; package smoke was not reached after the coverage failure |
 
 ## Corrections applied during the audit
