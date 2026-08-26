@@ -4,8 +4,11 @@ import { ServiceInitializer } from '../../core/initialization/ServiceInitializer
 describe('Server Index Suite', () => {
   let app: any;
   let server: any;
+  const originalJwtSecret = process.env.JWT_SECRET;
 
   beforeAll(async () => {
+    process.env.JWT_SECRET = 'server-index-test-secret-with-at-least-32-characters';
+
     // Mock ServiceInitializer before importing index
     const mockServices = {
       database: { query: jest.fn().mockResolvedValue({ rows: [], rowCount: 0 }) },
@@ -32,6 +35,14 @@ describe('Server Index Suite', () => {
     app = indexModule.app;
     server = indexModule.server;
     await indexModule.waitForReady(5000);
+  });
+
+  afterAll(() => {
+    if (originalJwtSecret === undefined) {
+      delete process.env.JWT_SECRET;
+    } else {
+      process.env.JWT_SECRET = originalJwtSecret;
+    }
   });
 
   it('serves health endpoint and returns 200', async () => {
