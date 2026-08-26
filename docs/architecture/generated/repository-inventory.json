@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1561,
+    "sourceFiles": 1563,
     "productionSourceFiles": 1107,
     "reachableProductionFiles": 816,
     "unreachableProductionFiles": 291,
@@ -6921,7 +6921,7 @@
     },
     {
       "file": "src/core/scheduler/TaskScheduler.ts",
-      "lines": 447
+      "lines": 464
     },
     {
       "file": "src/core/sec/SECService.ts",

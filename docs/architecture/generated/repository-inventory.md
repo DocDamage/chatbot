@@ -6,7 +6,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1561 |
+| Source files | 1563 |
 | Production source files | 1107 |
 | Reachable production files | 816 |
 | Unreachable production files | 291 |
@@ -847,7 +847,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts` | 616 |
 | `src/core/safety/ApprovalPolicy.ts` | 338 |
 | `src/core/safety/SandboxController.ts` | 449 |
-| `src/core/scheduler/TaskScheduler.ts` | 447 |
+| `src/core/scheduler/TaskScheduler.ts` | 464 |
 | `src/core/sec/SECService.ts` | 406 |
 | `src/core/sprite-lab/SpriteExternalToolAdapter.ts` | 348 |
 | `src/core/sprite-lab/pipeline/SpritePaletteEngine.ts` | 301 |

@@ -6082,6 +6082,10 @@
       "src/core/providers/LLMAdapter.ts",
       "src/core/providers/ModelRouter.ts"
     ],
+    "src/core/providers/__tests__/ModelRouter.test.ts": [
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/providers/ModelRouter.ts"
+    ],
     "src/core/providers/__tests__/UniversalLLM.test.ts": [
       "src/core/providers/LLMAdapter.ts",
       "src/core/providers/UniversalLLM.ts"
@@ -7421,6 +7425,11 @@
     "src/server/__tests__/security-middleware.test.ts": [
       "src/middleware/security.ts"
     ],
+    "src/server/__tests__/server.index.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/core/initialization/ServiceInitializer.ts",
+      "src/server/index.ts"
+    ],
     "src/server/__tests__/upload-parser-abuse.test.ts": [
       "src/middleware/errorHandler.ts"
     ],
@@ -8128,5 +8137,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1561
+  "sourceRecordCount": 1563
 }

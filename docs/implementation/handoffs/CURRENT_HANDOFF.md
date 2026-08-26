@@ -5,9 +5,10 @@
 - Repository: `DocDamage/chatbot`
 - Worktree base: `55dbcd0a2af1bd4c26f1f28aae7b3e3d6823f7f2`
 - Integration branch: `codex/cf04-cf10-integration`
+- Exact implementation checkpoint: `09e31a0b36e9f43c8e0f3388f0a4796638e8a43b`
 - Implemented worktree spans the governance/platform, intelligence, local-model, game/media/studio, integrated UI, security, reliability, evaluation, and release-control phases `PX-00` through `PX-22`.
 - Status: `IMPLEMENTED_NOT_VERIFIED`
-- Audit correction: the implementation is currently uncommitted, so the cited base/HEAD cannot be exact implementation evidence. Automated checks below are local development results only.
+- Audit correction resolved: the implementation is committed at the exact checkpoint above. Automated checks below are local development results only until Required CI runs against that commit.
 - Capability Maturity: All new game engine adapters remain `LOCAL_ONLY_EXPERIMENTAL` and default-deny in hosted mode, subject to cryptographic approval digests and boundary confinement.
 
 ## Delivered
@@ -49,11 +50,14 @@
 - Local native smokes passed for Faster Whisper, Windows SAPI, screen capture, OCR, Ollama transforms, Demucs, Godot, Unreal 5.8, dubbing/narration, and AssetCooker. Unity is installed but license-blocked; Unity/Unreal assertion and profiler instrumentation remain open. See `docs/implementation/evidence/profile-expansion/NATIVE_RUNTIME_VALIDATION_2026-08-25.md`.
 - `npm run check:phase2` passed after regenerating inventory and the large-file register: source integrity, inventory, production reachability, file size, environment contract, and release-document checks are current.
 - CycloneDX SBOM and `THIRD_PARTY_NOTICES.md` were regenerated locally.
+- 2026-08-26 lifecycle follow-up: `npm run test:coverage -- --runInBand` completed without `--forceExit` after repairing scheduler and timeout cleanup. It passed 325 suites (1 skipped), 1,690 tests (2 skipped), and the enforced Stage 3 server policy at 78.3438% lines, 63.6939% branches, 74.4757% functions, and 77.1015% statements.
+- The same follow-up confirmed all 19 Tier A files meet the documented 90% line/85% branch targets. The final global branch target remains open at 63.6939% versus 65%.
+- Post-repair `npm run type-check`, `npm run lint`, targeted scheduler/sandbox tests, and `git diff --check` passed. No Jest or coverage process remained after the coverage command exited.
 
 ## Open verification gates
 
-- Commit the implementation and run exact-head Required CI.
-- Advance Stage 2 coverage to the Stage 3/final and critical-file targets before production promotion; the current no-regression gates pass.
+- Run Required CI against exact implementation checkpoint `09e31a0b36e9f43c8e0f3388f0a4796638e8a43b`.
+- Advance server global branch coverage from 63.6939% to the final 65% target before production promotion; Stage 3 and the Tier A 90% line/85% branch targets now pass locally.
 - Replace branch/date source observations with immutable upstream revisions and attach actual license review evidence; generated SBOM/notices exist but are not a legal sign-off.
 - Run real Godot/Unity/Unreal, media, local-model, browser, and hardware canaries where applicable.
 - Complete clean-machine/device certification and signed manual WCAG/screen-reader testing.
@@ -61,14 +65,14 @@
 
 ## Next authorized task
 
-Create an exact implementation commit, rerun the green local gates in Required CI, and close the external/manual certification gates above before promoting any PX task to `VERIFIED`.
+Run Required CI against `09e31a0b36e9f43c8e0f3388f0a4796638e8a43b`, reach the final server global branch target, and close the external/manual certification gates above before promoting any PX task to `VERIFIED`.
 
 ## NEW THREAD START PROMPT
 
 ```text
-Continue the profile-expansion certification from the audited worktree. Do not promote PX tasks until exact-commit CI and all applicable runtime/manual evidence gates pass.
+Continue the profile-expansion certification from exact implementation checkpoint 09e31a0b36e9f43c8e0f3388f0a4796638e8a43b. Do not promote PX tasks until exact-commit CI, the final server global branch target, and all applicable runtime/manual evidence gates pass.
 ```
 
 ## Thread closure
 
-The local implementation audit is complete. Continue only from an exact implementation commit, preserve `IMPLEMENTED_NOT_VERIFIED` until the applicable promotion gates pass, and attach immutable evidence for every status change.
+The local implementation audit is checkpointed at `09e31a0b36e9f43c8e0f3388f0a4796638e8a43b`. Preserve `IMPLEMENTED_NOT_VERIFIED` until the applicable promotion gates pass, and attach immutable evidence for every status change.
