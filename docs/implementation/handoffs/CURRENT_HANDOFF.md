@@ -5,10 +5,11 @@
 - Repository: `DocDamage/chatbot`
 - Worktree base: `55dbcd0a2af1bd4c26f1f28aae7b3e3d6823f7f2`
 - Integration branch: `codex/cf04-cf10-integration`
-- Exact implementation checkpoint: `ab7bd45d414dab94a0f5709e69aa3ca9687c2cd5`
+- Coverage implementation commit: `f07784ceea878256ec9cb4b7c1aef5fe78ecbc9f`
+- Exact Required CI certification checkpoint: `9b99435892fe1848e8e03f6c7ce07323d110cf74`
 - Implemented worktree spans the governance/platform, intelligence, local-model, game/media/studio, integrated UI, security, reliability, evaluation, and release-control phases `PX-00` through `PX-22`.
 - Status: `IMPLEMENTED_NOT_VERIFIED`
-- Audit correction resolved: the implementation is committed at the exact checkpoint above. Automated checks below are local development results only until Required CI runs against that commit.
+- Audit correction resolved: the implementation is committed, pushed, and certified by Required CI run [33023989410](https://github.com/DocDamage/chatbot/actions/runs/33023989410) on the exact checkpoint above. Independent external/manual release gates remain open.
 - Capability Maturity: All new game engine adapters remain `LOCAL_ONLY_EXPERIMENTAL` and default-deny in hosted mode, subject to cryptographic approval digests and boundary confinement.
 
 ## Delivered
@@ -53,13 +54,13 @@
 - 2026-08-26 lifecycle follow-up: `npm run test:coverage -- --runInBand` completed without `--forceExit` after repairing scheduler and timeout cleanup. It passed 325 suites (1 skipped), 1,690 tests (2 skipped), and the enforced Stage 3 server policy at 78.3438% lines, 63.6939% branches, 74.4757% functions, and 77.1015% statements.
 - The same follow-up confirmed all 19 Tier A files meet the documented 90% line/85% branch targets. The final global branch target remains open at 63.6939% versus 65%.
 - Post-repair `npm run type-check`, `npm run lint`, targeted scheduler/sandbox tests, and `git diff --check` passed. No Jest or coverage process remained after the coverage command exited.
-- Branch-coverage implementation checkpoint `ab7bd45d414dab94a0f5709e69aa3ca9687c2cd5`: the exact-commit `npm run test:coverage -- --runInBand` completed normally without `--forceExit`, passing 406 active suites and 2,202 active tests (one suite/two tests skipped). Server coverage reached 88.4256% lines (33,103/37,436) and 75.1644% branches (15,432/20,531).
-- The new `branch-75` policy stage is active and passed locally, including continued enforcement of all 19 Tier A files. The exact result is 33 covered branch arms above the 75% minimum; the aspirational 76% buffer remains 172 arms away.
+- Final local branch-coverage run for implementation commit `f07784ceea878256ec9cb4b7c1aef5fe78ecbc9f`: `npm run test:coverage -- --runInBand` completed normally without `--forceExit`, passing 406 active suites and 2,225 active tests (one suite/two tests skipped). Server coverage reached 88.5137% lines (33,136/37,436) and 75.4810% branches (15,497/20,531).
+- Required CI run [33023989410](https://github.com/DocDamage/chatbot/actions/runs/33023989410) passed every required job and the aggregate gate on exact checkpoint `9b99435892fe1848e8e03f6c7ce07323d110cf74`. Linux server coverage was 88.3374% lines (33,070/37,436) and 75.3008% branches (15,460/20,531); client coverage was 82.4569% lines and 77.2350% branches.
+- The `branch-75` policy stage is active and certified in CI with continued enforcement of all 19 Tier A files. The CI result is 61 covered branch arms above the 75% minimum; the aspirational 76% buffer remains 144 arms away in CI (107 in the final local report).
 - The complete local `npm run release:check` candidate sequence passed: server and client coverage policy, 7 browser E2E tests, accessibility unit and Chromium/Axe workflows, both production builds, and packaging smoke. Post-implementation `npm run type-check`, `npm run lint`, and `npm run check:phase2` also passed.
 
 ## Open verification gates
 
-- Run Required CI against exact implementation checkpoint `ab7bd45d414dab94a0f5709e69aa3ca9687c2cd5` and reproduce the active 75% server branch gate. The local target is met, but local evidence alone is not release certification.
 - Replace branch/date source observations with immutable upstream revisions and attach actual license review evidence; generated SBOM/notices exist but are not a legal sign-off.
 - Run real Godot/Unity/Unreal, media, local-model, browser, and hardware canaries where applicable.
 - Complete clean-machine/device certification and signed manual WCAG/screen-reader testing.
@@ -67,14 +68,14 @@
 
 ## Next authorized task
 
-Run Required CI against `ab7bd45d414dab94a0f5709e69aa3ca9687c2cd5`, reproduce the active `branch-75` gate, and close the external/manual certification gates above before promoting any PX task to `VERIFIED`.
+Close the external/manual certification gates above—beginning with immutable upstream/license evidence and real native canaries—before promoting any PX task to `VERIFIED`. Required CI and the active `branch-75` gate are already certified on `9b99435892fe1848e8e03f6c7ce07323d110cf74`.
 
 ## NEW THREAD START PROMPT
 
 ```text
-Continue the profile-expansion certification from exact implementation checkpoint ab7bd45d414dab94a0f5709e69aa3ca9687c2cd5. Local full coverage passes at 75.1644% branches under the active branch-75 policy. Do not promote PX tasks until Required CI reproduces that exact-commit result and all applicable runtime/manual evidence gates pass.
+Continue the profile-expansion certification from exact Required CI checkpoint 9b99435892fe1848e8e03f6c7ce07323d110cf74. Required CI run 33023989410 passed the active branch-75 policy at 75.3008% server branches. Do not promote PX tasks until all applicable runtime, legal, accessibility, load, recovery, release-artifact, and post-deploy evidence gates pass.
 ```
 
 ## Thread closure
 
-The local implementation audit is checkpointed at `ab7bd45d414dab94a0f5709e69aa3ca9687c2cd5`. Preserve `IMPLEMENTED_NOT_VERIFIED` until Required CI and the applicable external promotion gates pass, and attach immutable evidence for every status change.
+The implementation is checkpointed and Required CI-certified at `9b99435892fe1848e8e03f6c7ce07323d110cf74`. Preserve `IMPLEMENTED_NOT_VERIFIED` until the applicable external promotion gates pass, and attach immutable evidence for every status change.

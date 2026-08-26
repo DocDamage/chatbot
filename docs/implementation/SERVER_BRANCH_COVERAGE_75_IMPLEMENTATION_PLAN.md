@@ -5,25 +5,29 @@
 - Plan status: `IMPLEMENTED_NOT_VERIFIED`
 - Planning date: `2026-08-26`
 - Integration branch: `codex/cf04-cf10-integration`
-- Measured implementation checkpoint: `ab7bd45d414dab94a0f5709e69aa3ca9687c2cd5`
-- Coverage report generated: `2026-08-26T22:02:16.993Z`
+- Coverage implementation commit: `f07784ceea878256ec9cb4b7c1aef5fe78ecbc9f`
+- Exact Required CI certification checkpoint: `9b99435892fe1848e8e03f6c7ce07323d110cf74`
+- Coverage report generated: `2026-08-26T23:42:37.084Z`
+- Required CI evidence: [run 33023989410](https://github.com/DocDamage/chatbot/actions/runs/33023989410)
 - Scope: server TypeScript under `src/**/*.ts`, using the existing repository coverage policy and exclusions.
 - Objective: raise measured global server branch coverage to at least 75% without weakening coverage scope, deleting legitimate branches, or using ignore directives to manipulate the result.
 
-This document now records both the implementation plan and its local execution result. No task becomes `VERIFIED` until Required CI passes on the exact commit and the remaining runtime/manual certification evidence is retained.
+This document records the implementation plan, local execution result, and exact-checkpoint Required CI certification. The branch-coverage gate is complete; the repository-wide status remains `IMPLEMENTED_NOT_VERIFIED` until the independent runtime, legal, accessibility, load, recovery, release-artifact, and post-deploy evidence gates are retained.
 
 ## Implementation checkpoint and result
 
-The branch-coverage implementation is committed at `ab7bd45d414dab94a0f5709e69aa3ca9687c2cd5`. A complete exact-commit run of `npm run test:coverage -- --runInBand` exited normally without `--forceExit` and produced:
+The final branch-coverage test content is committed at `f07784ceea878256ec9cb4b7c1aef5fe78ecbc9f`; the empty traceability commit `9b99435892fe1848e8e03f6c7ce07323d110cf74` is the exact checkpoint certified by Required CI. A complete local run of `npm run test:coverage -- --runInBand` exited normally without `--forceExit` and produced:
 
-| Metric | Starting point | Exact-commit result | Change |
+| Metric | Starting point | Final local result | Change |
 |---|---:|---:|---:|
-| Branches | 13,077/20,531 (63.6939%) | 15,432/20,531 (75.1644%) | +2,355 covered arms; denominator unchanged |
-| Lines | 29,328/37,435 (78.3438%) | 33,103/37,436 (88.4256%) | +3,775 covered lines; +1 total line |
-| Functions | 5,789/7,773 (74.4757%) | 6,640/7,773 (85.4240%) | +851 covered functions; denominator unchanged |
-| Statements | 31,442/40,780 (77.1015%) | 35,566/40,783 (87.2084%) | +4,124 covered statements; +3 total statements |
+| Branches | 13,077/20,531 (63.6939%) | 15,497/20,531 (75.4810%) | +2,420 covered arms; denominator unchanged |
+| Lines | 29,328/37,435 (78.3438%) | 33,136/37,436 (88.5137%) | +3,808 covered lines; +1 total line |
+| Functions | 5,789/7,773 (74.4757%) | 6,649/7,773 (85.5397%) | +860 covered functions; denominator unchanged |
+| Statements | 31,442/40,780 (77.1015%) | 35,612/40,783 (87.3197%) | +4,170 covered statements; +3 total statements |
 
-The run passed 406 active suites and 2,202 active tests, with one suite and two tests intentionally skipped. The final denominator requires 15,399 covered branch arms for 75%; this checkpoint clears it by 33 arms. The `branch-75` policy stage is active, all 19 Tier A files remain enforced, and the policy passed.
+The local run passed 406 active suites and 2,225 active tests, with one suite and two tests intentionally skipped. It cleared the 15,399-arm requirement by 98 arms and left 107 arms to the aspirational 76% target.
+
+Required CI run [33023989410](https://github.com/DocDamage/chatbot/actions/runs/33023989410) independently passed all required jobs on exact checkpoint `9b99435892fe1848e8e03f6c7ce07323d110cf74`. Its authoritative Linux coverage result was 33,070/37,436 lines (88.3374%) and 15,460/20,531 branches (75.3008%), a 61-arm margin over 75% and 144 arms short of 76%. CI passed 406 active server suites and 2,225 active server tests, enforced all 19 Tier A files, passed the client coverage policy at 82.4569% lines and 77.2350% branches, and passed the aggregate Required CI gate.
 
 ### Implemented package ledger
 
@@ -36,12 +40,12 @@ The run passed 406 active suites and 2,202 active tests, with one suite and two 
 | `B75-04` | Added RAG store, router, retriever, reranker, extractor, trust, audio, and video branch suites, including temporary SQLite and filesystem isolation. |
 | `B75-05` | Added tool execution/composition, provider, GIS, safety, SEC, browser, orchestration, capability, and supporting service matrices. |
 | `B75-06` | Added website, study, gaming, sprite, media, accessibility, audio, creative, document, and engine-adapter matrices. |
-| `B75-07` | Added deterministic long-tail coverage across remaining production-reachable services. The contractual 75% target passed, but the aspirational 76% operating buffer was not reached; the exact report needs 172 more covered arms for 76% at the current denominator. |
-| `B75-08` | Added and activated the `branch-75` policy milestone only after the candidate passed it; policy tests cover below-threshold failure, exact-threshold success, and continued Tier A enforcement. |
+| `B75-07` | Added deterministic long-tail coverage across remaining production-reachable services. The contractual 75% target passed. The aspirational 76% buffer remains open by 107 arms locally and 144 arms in authoritative CI. |
+| `B75-08` | Added and activated the `branch-75` policy milestone only after the candidate passed it; policy tests cover below-threshold failure, exact-threshold success, and continued Tier A enforcement. Required CI run 33023989410 passed on the exact certification checkpoint. |
 
 Local verification also passed `npm run type-check`, `npm run lint`, the complete `npm run release:check` candidate sequence, and `npm run check:phase2`. Release check included server/client coverage enforcement, 7 browser E2E tests, accessibility unit and Chromium/Axe workflows, both production builds, and package smoke. The implementation arrived as one large inherited, quota-exhausted work batch rather than the preferred package-sized commits; it was audited, repaired, verified locally, and checkpointed without rewriting that history.
 
-Required CI has not yet reproduced the result on the exact checkpoint, and the external/native/manual gates in the current handoff remain open. The correct overall status is therefore `IMPLEMENTED_NOT_VERIFIED`.
+Required CI reproduced and passed the active branch-75 gate on the exact certification checkpoint. External/native/manual gates in the current handoff remain open, so the correct repository-wide status is still `IMPLEMENTED_NOT_VERIFIED`.
 
 ## Measured starting point
 
@@ -425,7 +429,7 @@ Required CI must run the same effective gates against the exact commit. Local su
 - Tests, type-check, lint, release tooling, client/release gates, packaging, and Phase 2 checks pass.
 - Jest exits normally with no live coverage child process.
 - The policy is ratcheted to 75% branches only after the measured candidate passes it.
-- Exact-commit Required CI and immutable evidence are attached before any `VERIFIED` promotion.
+- Exact-commit Required CI and immutable evidence are attached for this branch-coverage gate; independent release evidence is still required before any repository-wide `VERIFIED` promotion.
 
 ## Review checkpoints
 
@@ -443,4 +447,4 @@ At the end of every package, reviewers must answer:
 
 The work should be delivered as small, reviewable commits by package or coherent sub-package. Each commit should contain the relevant tests, any narrowly required testability refactor, and evidence updates. Avoid one final multi-thousand-line test commit: branch-coverage regressions and weak assertions are substantially harder to review when unrelated domains are combined.
 
-The project remains `IMPLEMENTED_NOT_VERIFIED` throughout this plan until B75-08 completes against an exact commit in Required CI and the independent runtime/manual certification gates in the current handoff are also satisfied.
+The branch-coverage plan completed B75-08 against an exact commit in Required CI. The project remains `IMPLEMENTED_NOT_VERIFIED` until the independent runtime/manual certification gates in the current handoff are also satisfied.

@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-26T22:02:16.993Z",
+  "generatedAt": "2026-08-26T23:42:37.084Z",
   "global": {
     "total": 20531,
-    "covered": 15432,
-    "uncovered": 5099,
-    "pct": 75.1644
+    "covered": 15497,
+    "uncovered": 5034,
+    "pct": 75.481
   },
   "targets": {
     "65%": {
@@ -26,17 +26,17 @@
     "76%": {
       "targetPct": 76,
       "requiredCovered": 15604,
-      "additionalNeeded": 172
+      "additionalNeeded": 107
     }
   },
   "areas": [
     {
       "area": "server/routes",
       "total": 2142,
-      "covered": 1563,
-      "uncovered": 579,
+      "covered": 1564,
+      "uncovered": 578,
       "filesCount": 64,
-      "pct": 72.9692
+      "pct": 73.0159
     },
     {
       "area": "core/knowledge",
@@ -97,10 +97,10 @@
     {
       "area": "core/providers",
       "total": 675,
-      "covered": 559,
-      "uncovered": 116,
+      "covered": 556,
+      "uncovered": 119,
       "filesCount": 19,
-      "pct": 82.8148
+      "pct": 82.3704
     },
     {
       "area": "core/website",
@@ -143,22 +143,6 @@
       "pct": 72.5373
     },
     {
-      "area": "core/sec",
-      "total": 263,
-      "covered": 175,
-      "uncovered": 88,
-      "filesCount": 5,
-      "pct": 66.5399
-    },
-    {
-      "area": "core/multimodal",
-      "total": 321,
-      "covered": 236,
-      "uncovered": 85,
-      "filesCount": 9,
-      "pct": 73.5202
-    },
-    {
       "area": "core/audio",
       "total": 227,
       "covered": 157,
@@ -175,6 +159,14 @@
       "pct": 67.6056
     },
     {
+      "area": "core/multimodal",
+      "total": 321,
+      "covered": 254,
+      "uncovered": 67,
+      "filesCount": 9,
+      "pct": 79.1277
+    },
+    {
       "area": "core/repository-intelligence",
       "total": 250,
       "covered": 185,
@@ -189,6 +181,14 @@
       "uncovered": 63,
       "filesCount": 8,
       "pct": 77.8947
+    },
+    {
+      "area": "core/sec",
+      "total": 263,
+      "covered": 201,
+      "uncovered": 62,
+      "filesCount": 5,
+      "pct": 76.4259
     },
     {
       "area": "core/creative",
@@ -327,14 +327,6 @@
       "pct": 65.6716
     },
     {
-      "area": "core/research",
-      "total": 52,
-      "covered": 29,
-      "uncovered": 23,
-      "filesCount": 1,
-      "pct": 55.7692
-    },
-    {
       "area": "core/native-runtime",
       "total": 257,
       "covered": 235,
@@ -415,20 +407,20 @@
       "pct": 72.8814
     },
     {
-      "area": "core/observability",
-      "total": 35,
-      "covered": 20,
-      "uncovered": 15,
-      "filesCount": 2,
-      "pct": 57.1429
-    },
-    {
       "area": "core/graph",
       "total": 46,
       "covered": 33,
       "uncovered": 13,
       "filesCount": 1,
       "pct": 71.7391
+    },
+    {
+      "area": "core/observability",
+      "total": 35,
+      "covered": 22,
+      "uncovered": 13,
+      "filesCount": 2,
+      "pct": 62.8571
     },
     {
       "area": "core/auth",
@@ -543,6 +535,14 @@
       "pct": 78.125
     },
     {
+      "area": "core/ui",
+      "total": 42,
+      "covered": 36,
+      "uncovered": 6,
+      "filesCount": 1,
+      "pct": 85.7143
+    },
+    {
       "area": "core/wiki",
       "total": 15,
       "covered": 9,
@@ -557,14 +557,6 @@
       "uncovered": 6,
       "filesCount": 1,
       "pct": 25
-    },
-    {
-      "area": "core/ui",
-      "total": 42,
-      "covered": 37,
-      "uncovered": 5,
-      "filesCount": 1,
-      "pct": 88.0952
     },
     {
       "area": "utils/retry.ts",
@@ -717,6 +709,14 @@
       "uncovered": 1,
       "filesCount": 1,
       "pct": 98
+    },
+    {
+      "area": "core/research",
+      "total": 52,
+      "covered": 51,
+      "uncovered": 1,
+      "filesCount": 1,
+      "pct": 98.0769
     },
     {
       "area": "core/upload",
@@ -1053,86 +1053,6 @@
         "154": 2,
         "156": 2,
         "190": 1
-      }
-    },
-    {
-      "path": "src/core/sec/SECStorageService.ts",
-      "area": "core/sec",
-      "total": 102,
-      "covered": 69,
-      "uncovered": 33,
-      "pct": 67.6471,
-      "uncoveredLines": {
-        "17": 2,
-        "18": 2,
-        "44": 2,
-        "45": 1,
-        "47": 1,
-        "48": 1,
-        "50": 1,
-        "67": 1,
-        "68": 1,
-        "70": 1,
-        "79": 1,
-        "110": 1,
-        "111": 1,
-        "112": 1,
-        "117": 1,
-        "138": 1,
-        "152": 1,
-        "155": 1,
-        "157": 1,
-        "158": 1,
-        "162": 1,
-        "163": 1,
-        "164": 1,
-        "167": 1,
-        "202": 1,
-        "203": 1,
-        "204": 1,
-        "242": 1,
-        "279": 1,
-        "291": 1
-      }
-    },
-    {
-      "path": "src/core/multimodal/VideoProcessor.ts",
-      "area": "core/multimodal",
-      "total": 71,
-      "covered": 38,
-      "uncovered": 33,
-      "pct": 53.5211,
-      "uncoveredLines": {
-        "120": 1,
-        "141": 1,
-        "167": 1,
-        "171": 1,
-        "237": 1,
-        "275": 1,
-        "277": 1,
-        "310": 1,
-        "316": 1,
-        "349": 1,
-        "355": 1,
-        "356": 1,
-        "357": 1,
-        "358": 1,
-        "359": 1,
-        "363": 1,
-        "389": 1,
-        "400": 1,
-        "402": 2,
-        "419": 1,
-        "436": 1,
-        "437": 1,
-        "450": 1,
-        "483": 1,
-        "497": 2,
-        "508": 1,
-        "512": 1,
-        "515": 2,
-        "551": 1,
-        "564": 1
       }
     },
     {
@@ -1530,41 +1450,6 @@
       }
     },
     {
-      "path": "src/server/routes/game-studio/gameStudioRoutes.ts",
-      "area": "server/routes",
-      "total": 82,
-      "covered": 56,
-      "uncovered": 26,
-      "pct": 68.2927,
-      "uncoveredLines": {
-        "35": 1,
-        "67": 1,
-        "68": 1,
-        "81": 1,
-        "88": 1,
-        "94": 1,
-        "95": 1,
-        "101": 1,
-        "102": 1,
-        "109": 1,
-        "112": 1,
-        "113": 1,
-        "116": 1,
-        "123": 1,
-        "131": 1,
-        "132": 2,
-        "142": 1,
-        "150": 1,
-        "157": 1,
-        "164": 1,
-        "170": 1,
-        "172": 1,
-        "193": 1,
-        "194": 1,
-        "203": 1
-      }
-    },
-    {
       "path": "src/server/routes/local-tools.ts",
       "area": "server/routes",
       "total": 81,
@@ -1630,6 +1515,40 @@
       }
     },
     {
+      "path": "src/server/routes/game-studio/gameStudioRoutes.ts",
+      "area": "server/routes",
+      "total": 82,
+      "covered": 57,
+      "uncovered": 25,
+      "pct": 69.5122,
+      "uncoveredLines": {
+        "67": 1,
+        "68": 1,
+        "81": 1,
+        "88": 1,
+        "94": 1,
+        "95": 1,
+        "101": 1,
+        "102": 1,
+        "109": 1,
+        "112": 1,
+        "113": 1,
+        "116": 1,
+        "123": 1,
+        "131": 1,
+        "132": 2,
+        "142": 1,
+        "150": 1,
+        "157": 1,
+        "164": 1,
+        "170": 1,
+        "172": 1,
+        "193": 1,
+        "194": 1,
+        "203": 1
+      }
+    },
+    {
       "path": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts",
       "area": "server/routes",
       "total": 90,
@@ -1654,30 +1573,6 @@
         "250": 2,
         "265": 1,
         "268": 1
-      }
-    },
-    {
-      "path": "src/core/research/PyScrappyService.ts",
-      "area": "core/research",
-      "total": 52,
-      "covered": 29,
-      "uncovered": 23,
-      "pct": 55.7692,
-      "uncoveredLines": {
-        "62": 2,
-        "93": 3,
-        "94": 1,
-        "100": 3,
-        "126": 1,
-        "131": 1,
-        "140": 1,
-        "146": 2,
-        "168": 1,
-        "169": 1,
-        "170": 1,
-        "171": 3,
-        "178": 2,
-        "179": 1
       }
     },
     {
@@ -1795,6 +1690,30 @@
         "93": 1,
         "102": 1,
         "103": 1
+      }
+    },
+    {
+      "path": "src/core/providers/UniversalLLM.ts",
+      "area": "core/providers",
+      "total": 49,
+      "covered": 27,
+      "uncovered": 22,
+      "pct": 55.102,
+      "uncoveredLines": {
+        "92": 1,
+        "95": 2,
+        "96": 2,
+        "97": 2,
+        "102": 3,
+        "112": 1,
+        "116": 2,
+        "121": 3,
+        "139": 1,
+        "151": 1,
+        "155": 1,
+        "164": 1,
+        "194": 1,
+        "266": 1
       }
     },
     {
@@ -2229,27 +2148,6 @@
         "198": 1,
         "206": 1,
         "208": 2
-      }
-    },
-    {
-      "path": "src/core/providers/UniversalLLM.ts",
-      "area": "core/providers",
-      "total": 49,
-      "covered": 30,
-      "uncovered": 19,
-      "pct": 61.2245,
-      "uncoveredLines": {
-        "92": 1,
-        "95": 2,
-        "96": 2,
-        "97": 2,
-        "102": 3,
-        "112": 1,
-        "116": 2,
-        "121": 3,
-        "151": 1,
-        "155": 1,
-        "194": 1
       }
     },
     {
@@ -3073,6 +2971,30 @@
         "527": 1,
         "534": 1,
         "577": 1
+      }
+    },
+    {
+      "path": "src/core/multimodal/VideoProcessor.ts",
+      "area": "core/multimodal",
+      "total": 71,
+      "covered": 56,
+      "uncovered": 15,
+      "pct": 78.8732,
+      "uncoveredLines": {
+        "120": 1,
+        "141": 1,
+        "167": 1,
+        "171": 1,
+        "237": 1,
+        "275": 1,
+        "277": 1,
+        "310": 1,
+        "316": 1,
+        "450": 1,
+        "508": 1,
+        "512": 1,
+        "515": 2,
+        "551": 1
       }
     },
     {
@@ -4242,6 +4164,23 @@
       }
     },
     {
+      "path": "src/core/gaming/godot/GodotAssetPipeline.ts",
+      "area": "core/gaming",
+      "total": 15,
+      "covered": 4,
+      "uncovered": 11,
+      "pct": 26.6667,
+      "uncoveredLines": {
+        "33": 3,
+        "36": 2,
+        "38": 1,
+        "40": 1,
+        "43": 2,
+        "53": 1,
+        "79": 1
+      }
+    },
+    {
       "path": "src/core/multimodal/ImageProcessor.ts",
       "area": "core/multimodal",
       "total": 96,
@@ -4680,22 +4619,6 @@
         "119": 1,
         "120": 1,
         "121": 1
-      }
-    },
-    {
-      "path": "src/core/gaming/godot/GodotAssetPipeline.ts",
-      "area": "core/gaming",
-      "total": 15,
-      "covered": 5,
-      "uncovered": 10,
-      "pct": 33.3333,
-      "uncoveredLines": {
-        "33": 3,
-        "36": 2,
-        "38": 1,
-        "40": 1,
-        "43": 2,
-        "53": 1
       }
     },
     {
@@ -6254,6 +6177,23 @@
       }
     },
     {
+      "path": "src/core/sec/SECStorageService.ts",
+      "area": "core/sec",
+      "total": 102,
+      "covered": 95,
+      "uncovered": 7,
+      "pct": 93.1373,
+      "uncoveredLines": {
+        "17": 1,
+        "18": 1,
+        "202": 1,
+        "203": 1,
+        "204": 1,
+        "242": 1,
+        "291": 1
+      }
+    },
+    {
       "path": "src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts",
       "area": "core/repository-intelligence",
       "total": 97,
@@ -6888,6 +6828,22 @@
         "88": 1,
         "103": 1,
         "106": 1
+      }
+    },
+    {
+      "path": "src/core/ui/ThinkingUI.ts",
+      "area": "core/ui",
+      "total": 42,
+      "covered": 36,
+      "uncovered": 6,
+      "pct": 85.7143,
+      "uncoveredLines": {
+        "96": 1,
+        "134": 1,
+        "138": 1,
+        "172": 1,
+        "281": 1,
+        "348": 1
       }
     },
     {
@@ -7625,21 +7581,6 @@
         "225": 1,
         "226": 1,
         "241": 1
-      }
-    },
-    {
-      "path": "src/core/ui/ThinkingUI.ts",
-      "area": "core/ui",
-      "total": 42,
-      "covered": 37,
-      "uncovered": 5,
-      "pct": 88.0952,
-      "uncoveredLines": {
-        "96": 1,
-        "134": 1,
-        "138": 1,
-        "172": 1,
-        "348": 1
       }
     },
     {
@@ -8806,20 +8747,6 @@
       }
     },
     {
-      "path": "src/core/gaming/godot/GodotMcpXAdapter.ts",
-      "area": "core/gaming",
-      "total": 15,
-      "covered": 11,
-      "uncovered": 4,
-      "pct": 73.3333,
-      "uncoveredLines": {
-        "89": 1,
-        "96": 1,
-        "182": 1,
-        "193": 1
-      }
-    },
-    {
       "path": "src/core/safety/BiasMitigator.ts",
       "area": "core/safety",
       "total": 15,
@@ -9570,16 +9497,16 @@
       }
     },
     {
-      "path": "src/core/observability/metrics.ts",
-      "area": "core/observability",
-      "total": 17,
-      "covered": 14,
+      "path": "src/core/gaming/godot/GodotMcpXAdapter.ts",
+      "area": "core/gaming",
+      "total": 15,
+      "covered": 12,
       "uncovered": 3,
-      "pct": 82.3529,
+      "pct": 80,
       "uncoveredLines": {
-        "70": 1,
-        "79": 1,
-        "80": 1
+        "89": 1,
+        "96": 1,
+        "182": 1
       }
     },
     {
@@ -11494,6 +11421,17 @@
       }
     },
     {
+      "path": "src/core/research/PyScrappyService.ts",
+      "area": "core/research",
+      "total": 52,
+      "covered": 51,
+      "uncovered": 1,
+      "pct": 98.0769,
+      "uncoveredLines": {
+        "62": 1
+      }
+    },
+    {
       "path": "src/core/knowledge-os/KnowledgeOsChatAgent.ts",
       "area": "core/knowledge-os",
       "total": 50,
@@ -11656,6 +11594,17 @@
       "pct": 94.4444,
       "uncoveredLines": {
         "106": 1
+      }
+    },
+    {
+      "path": "src/core/observability/metrics.ts",
+      "area": "core/observability",
+      "total": 17,
+      "covered": 16,
+      "uncovered": 1,
+      "pct": 94.1176,
+      "uncoveredLines": {
+        "70": 1
       }
     },
     {
