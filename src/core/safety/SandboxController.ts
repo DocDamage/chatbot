@@ -113,7 +113,8 @@ export class SandboxController {
 
         // Check blocked paths
         for (const blocked of this.config.blockedPaths) {
-            if (absolutePath.toLowerCase().startsWith(blocked.toLowerCase())) {
+            if (absolutePath.toLowerCase().startsWith(path.resolve(blocked).toLowerCase()) ||
+                absolutePath.toLowerCase().startsWith(blocked.toLowerCase())) {
                 result.reason = `Path is in blocked list: ${blocked}`;
                 this.logOperation(result);
                 return result;

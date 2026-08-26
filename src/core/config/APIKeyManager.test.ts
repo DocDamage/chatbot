@@ -1,9 +1,13 @@
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { APIKeyManager } from './APIKeyManager';
+import { APIKeyManager, LLM_PROVIDERS } from './APIKeyManager';
+import axios from 'axios';
 
-describe('APIKeyManager', () => {
+jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+describe('RT-PLAT-004 / RT-CONF-003: APIKeyManager Lifecycle and Encryption Suite', () => {
   const originalSecret = process.env.API_KEY_ENCRYPTION_SECRET;
   let tempDir: string;
 
@@ -38,6 +42,12 @@ describe('APIKeyManager', () => {
     expect(stored).not.toContain('sk-test-secret');
     expect(stored).toContain('v2:');
     expect(manager.getKey('openai')).toBe('sk-test-secret');
+    expect(manager.hasKey('openai')).toBe(true);
+
+    // List and remove
+    expect(manager.getConfiguredProviders()).toContain('openai');
+    manager.removeKey('openai');
+    expect(manager.hasKey('openai')).toBe(false);
   });
 
   it('does not export plaintext environment files', () => {
@@ -45,5 +55,24 @@ describe('APIKeyManager', () => {
     const manager = new APIKeyManager(path.join(tempDir, 'keys.json'));
 
     expect(() => manager.exportToEnv()).toThrow('Plaintext API key export is disabled');
+  });
+
+  it('provides provider catalog and free provider list', () => {
+    process.env.API_KEY_ENCRYPTION_SECRET = 'c'.repeat(32);
+    const manager = new APIKeyManager(path.join(tempDir, 'keys.json'));
+
+    expect(manager.getAllProviders().length).toBe(LLM_PROVIDERS.length);
+    const free = manager.getFreeProviders();
+    expect(free.length).toBeGreaterThan(0);
+  });
+
+  it('validates provider key format heuristics and endpoints', async () => {
+    (mockedAxios.get as any).mockResolvedValue({ data: { models: [] } });
+
+    process.env.API_KEY_ENCRYPTION_SECRET = 'd'.repeat(32);
+    const manager = new APIKeyManager(path.join(tempDir, 'keys.json'));
+
+    const groqValid = await manager.validateKey('groq', 'gsk_test123456789012345678901234567890123456789012345678');
+    expect(groqValid.valid).toBe(true);
   });
 });

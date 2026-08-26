@@ -1,6 +1,7 @@
+import { describe, expect, it } from '@jest/globals';
 import { BusinessGeniusAgent } from './BusinessGeniusAgent';
 
-describe('BusinessGeniusAgent', () => {
+describe('RT-AGENT-BIZ-001: BusinessGeniusAgent Suite', () => {
   it('builds startup plan canvases', async () => {
     const agent = new BusinessGeniusAgent();
 
@@ -49,5 +50,11 @@ describe('BusinessGeniusAgent', () => {
     expect(result.response).toContain('KpiDashboardTool');
     expect(result.response).toContain('activation');
     expect(result.response).toContain('retention');
+
+    const scaleResult = await agent.ask('What metrics for scale stage?');
+    expect(scaleResult.response).toContain('KpiDashboardTool');
+
+    const fallback = await agent.ask('Why do companies value organizational culture?');
+    expect(fallback).toBeDefined();
   });
 });

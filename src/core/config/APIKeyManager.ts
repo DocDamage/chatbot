@@ -361,6 +361,10 @@ export class APIKeyManager {
     async removeKey(providerId: string): Promise<boolean> {
         const deleted = this.keys.delete(providerId);
         if (deleted) {
+            const provider = this.getProviderInfo(providerId);
+            if (provider && process.env[provider.envVar]) {
+                delete process.env[provider.envVar];
+            }
             await this.save();
             logger.info('API key removed', { provider: providerId });
         }

@@ -47,7 +47,8 @@ export class WorkerProcessIsolationGuard {
   ];
 
   public static validateExecution(spec: ProcessExecutionSpec): ProcessIsolationResult {
-    const binaryBaseName = path.basename(spec.binaryPath).toLowerCase();
+    const cleanBinaryPath = spec.binaryPath.replace(/\\/g, '/');
+    const binaryBaseName = path.posix.basename(cleanBinaryPath).toLowerCase();
 
     // 1. Check binary name allowlist
     if (!this.ALLOWLISTED_BINARY_NAMES.includes(binaryBaseName)) {
@@ -59,10 +60,12 @@ export class WorkerProcessIsolationGuard {
       };
     }
 
-    // 2. Check working directory confinement
+    // 2. Check working directory confinement (platform-safe boundary check)
     const normalizedWorkDir = path.resolve(spec.workingDirectory);
     const normalizedRoot = path.resolve(spec.allowedWorkingDirectoryRoot);
-    if (!normalizedWorkDir.startsWith(normalizedRoot)) {
+    const relative = path.relative(normalizedRoot, normalizedWorkDir);
+    const isEscaping = relative.startsWith('..') || path.isAbsolute(relative);
+    if (isEscaping) {
       return {
         isAllowed: false,
         sanitizedArgs: [],

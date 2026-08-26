@@ -5,9 +5,9 @@
  */
 
 import { logger } from '../observability/logger';
-import { LLMAdapter, LLMGenerateOptions, LLMResponse } from '../providers/LLMAdapter';
-import { OllamaAdapter } from '../providers/OllamaAdapter';
-import { HuggingFaceAdapter } from '../providers/HuggingFaceAdapter';
+import { LLMAdapter, LLMGenerateOptions, LLMResponse, TemplateAdapter, OpenAIAdapter } from './LLMAdapter';
+import { OllamaAdapter } from './OllamaAdapter';
+import { HuggingFaceAdapter } from './HuggingFaceAdapter';
 
 export interface UniversalLLMConfig {
     preferFree: boolean;
@@ -70,18 +70,20 @@ export class UniversalLLM {
         }
 
         // 2. Try HuggingFace (free with rate limits)
-        try {
-            const hfKey = process.env.HUGGINGFACE_API_KEY;
-            const hfModel = process.env.HUGGINGFACE_MODEL || 'mistralai/Mistral-7B-Instruct-v0.2';
-            const huggingface = new HuggingFaceAdapter(hfKey, hfModel);
-            this.adapters.set('huggingface', huggingface);
-            available.push(`huggingface:${hfModel}`);
+        if (process.env.HUGGINGFACE_API_KEY) {
+            try {
+                const hfKey = process.env.HUGGINGFACE_API_KEY;
+                const hfModel = process.env.HUGGINGFACE_MODEL || 'mistralai/Mistral-7B-Instruct-v0.2';
+                const huggingface = new HuggingFaceAdapter(hfKey, hfModel);
+                this.adapters.set('huggingface', huggingface);
+                available.push(`huggingface:${hfModel}`);
 
-            if (this.config.preferFree && !this.primaryAdapter) {
-                this.primaryAdapter = huggingface;
+                if (this.config.preferFree && !this.primaryAdapter) {
+                    this.primaryAdapter = huggingface;
+                }
+            } catch (error) {
+                logger.debug('HuggingFace not available');
             }
-        } catch (error) {
-            logger.debug('HuggingFace not available');
         }
 
         // 3. Try Local Model Adapter (CF-04) only when explicitly enabled
@@ -109,7 +111,6 @@ export class UniversalLLM {
         // 4. Try OpenAI (paid)
         if (process.env.OPENAI_API_KEY) {
             try {
-                const { OpenAIAdapter } = await import('../providers/LLMAdapter');
                 const openai = new OpenAIAdapter(
                     process.env.OPENAI_API_KEY,
                     process.env.OPENAI_MODEL || 'gpt-3.5-turbo'
@@ -127,7 +128,6 @@ export class UniversalLLM {
 
         // 5. Fallback to template if nothing else available
         if (!this.primaryAdapter && this.config.fallbackToTemplate) {
-            const { TemplateAdapter } = await import('../providers/LLMAdapter');
             const template = new TemplateAdapter();
             this.adapters.set('template', template);
             this.primaryAdapter = template;
@@ -136,7 +136,9 @@ export class UniversalLLM {
         }
 
         this.initialized = true;
-        const primary = this.primaryAdapter?.getModelName() || 'none';
+        const primary = typeof this.primaryAdapter?.getModelName === 'function'
+            ? this.primaryAdapter.getModelName()
+            : 'none';
 
         logger.info('UniversalLLM initialized', { available, primary });
         return { available, primary };
@@ -159,7 +161,9 @@ export class UniversalLLM {
         const tried = new Set<string>();
 
         for (const adapter of adaptersToTry) {
-            const modelName = adapter.getModelName();
+            const modelName = typeof adapter?.getModelName === 'function'
+                ? adapter.getModelName()
+                : 'default';
             if (tried.has(modelName)) continue;
             tried.add(modelName);
 

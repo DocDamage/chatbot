@@ -316,6 +316,59 @@ describe('Agent Operations & Workspace Coordination (PX-06)', () => {
         }, 70);
       });
     });
+
+    it('detects worktree path and branch collisions and handles explicit release', () => {
+      const claimService = new WorkspaceClaimService();
+
+      const claim1 = claimService.acquireClaim({
+        agentId: 'worker-1',
+        sessionId: 'sess-1',
+        projectId: 'project-1',
+        worktreePath: '/tmp/worktree-fixed',
+        branch: 'feat/security',
+        taskId: 'task-1',
+        exclusive: true
+      });
+
+      expect(claimService.heartbeat(claim1.claimId, 'worker-1')).toBe(true);
+      expect(claimService.heartbeat(claim1.claimId, 'wrong-worker')).toBe(false);
+      expect(claimService.heartbeat('non-existent-claim', 'worker-1')).toBe(false);
+
+      // Worktree collision
+      expect(() => {
+        claimService.acquireClaim({
+          agentId: 'worker-2',
+          sessionId: 'sess-2',
+          projectId: 'project-1',
+          worktreePath: '/tmp/worktree-fixed',
+          taskId: 'task-2'
+        });
+      }).toThrow(WorkspaceClaimConflictError);
+
+      // Branch collision
+      expect(() => {
+        claimService.acquireClaim({
+          agentId: 'worker-3',
+          sessionId: 'sess-3',
+          projectId: 'project-1',
+          branch: 'feat/security',
+          taskId: 'task-3',
+          exclusive: true
+        });
+      }).toThrow(WorkspaceClaimConflictError);
+
+      expect(claimService.releaseClaim(claim1.claimId, 'wrong-worker')).toBe(false);
+      expect(claimService.releaseClaim('non-existent-claim', 'worker-1')).toBe(false);
+      expect(claimService.releaseClaim(claim1.claimId, 'worker-1')).toBe(true);
+
+      const claim2 = claimService.acquireClaim({
+        agentId: 'worker-4',
+        sessionId: 'sess-4',
+        projectId: 'project-1',
+        taskId: 'task-4'
+      });
+      expect(claimService.releaseAllForSession('sess-4')).toBe(1);
+    });
   });
 
   describe('PX06-T06 & PX06-T07: Console Service & Budget Stop Controls', () => {

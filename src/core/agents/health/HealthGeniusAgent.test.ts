@@ -1,6 +1,7 @@
+import { describe, expect, it } from '@jest/globals';
 import { HealthGeniusAgent } from './HealthGeniusAgent';
 
-describe('HealthGeniusAgent', () => {
+describe('RT-AGENT-HLTH-001: HealthGeniusAgent Suite', () => {
   it('routes emergency red flags before normal coaching', async () => {
     const agent = new HealthGeniusAgent();
 
@@ -50,5 +51,18 @@ describe('HealthGeniusAgent', () => {
     expect(result.response).toContain('MedicationInteractionWarningTool');
     expect(result.response).toContain('bleeding risk');
     expect(result.response).toContain('Do not start, stop, combine, or change medication dose');
+  });
+
+  it('evaluates red flags, general symptoms, and fallback requests', async () => {
+    const agent = new HealthGeniusAgent();
+
+    const flags = await agent.redFlags('Urgent safety boundary check');
+    expect(flags.response).toContain('Triage boundary check completed');
+
+    const symptoms = await agent.ask('I have a mild fever and cough');
+    expect(symptoms.response).toContain('General symptom safety boundary check');
+
+    const fallback = await agent.ask('What is the history of cellular biology?');
+    expect(fallback).toBeDefined();
   });
 });

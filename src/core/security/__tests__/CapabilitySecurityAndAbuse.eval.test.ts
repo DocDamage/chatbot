@@ -1,4 +1,5 @@
 import * as crypto from 'crypto';
+import * as path from 'path';
 import { CapabilityThreatModel } from '../threat-model/CapabilityThreatModel';
 import { CapabilityCompositionDefense } from '../composition/CapabilityCompositionDefense';
 import { PackSupplyChainGuard } from '../supply-chain/PackSupplyChainGuard';
@@ -102,13 +103,15 @@ describe('PHASE PX-19: Integrated Security, Privacy, Safety & Abuse Resistance',
 
   describe('PX19-T04: Worker Process Confinement', () => {
     it('enforces binary allowlist, root directory confinement, and secret environment scrubbing', () => {
+      const allowedRoot = path.resolve('/workspace');
+      const projectDir = path.join(allowedRoot, 'project');
       const validSpec = {
-        binaryPath: 'C:\\tools\\ffmpeg.exe',
+        binaryPath: process.platform === 'win32' ? 'C:\\tools\\ffmpeg.exe' : '/usr/bin/ffmpeg',
         args: ['-i', 'input.wav', '-vn', 'output.mp3'],
-        workingDirectory: 'C:\\workspace\\project',
-        allowedWorkingDirectoryRoot: 'C:\\workspace',
+        workingDirectory: projectDir,
+        allowedWorkingDirectoryRoot: allowedRoot,
         environmentVariables: {
-          PATH: 'C:\\tools',
+          PATH: process.platform === 'win32' ? 'C:\\tools' : '/usr/bin',
           OPENAI_API_KEY: 'sk-secret123',
           SAFE_FLAG: '1'
         },
@@ -120,6 +123,12 @@ describe('PHASE PX-19: Integrated Security, Privacy, Safety & Abuse Resistance',
       expect(res.isAllowed).toBe(true);
       expect(res.sanitizedEnv.OPENAI_API_KEY).toBeUndefined();
       expect(res.sanitizedEnv.SAFE_FLAG).toBe('1');
+
+      // Sibling prefix evasion (e.g. /workspace-evil must not match /workspace)
+      const siblingEscape = { ...validSpec, workingDirectory: path.resolve('/workspace-evil') };
+      const siblingRes = WorkerProcessIsolationGuard.validateExecution(siblingEscape);
+      expect(siblingRes.isAllowed).toBe(false);
+      expect(siblingRes.rejectionReason).toContain('escapes allowed root');
 
       // Disallowed binary
       const badBinary = { ...validSpec, binaryPath: 'powershell.exe' };

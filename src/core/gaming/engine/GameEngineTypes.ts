@@ -114,6 +114,13 @@ export interface EngineMutationProposal {
   actions: EngineMutationAction[];
   inputDigest: string;
   approvalDigest?: string;
+  requesterId?: string;
+  approverId?: string;
+  tenantId?: string;
+  environment?: string;
+  capabilityVersion?: string;
+  expectedOutputs?: string[];
+  inputFileHashes?: Record<string, string | null>;
   createdAt: string;
   expiresAt: string;
   status: 'proposed' | 'approved' | 'applied' | 'rejected' | 'rolled_back';
@@ -121,8 +128,13 @@ export interface EngineMutationProposal {
 
 export type EngineProposalDraft = Omit<
   EngineMutationProposal,
-  'id' | 'createdAt' | 'status' | 'inputDigest' | 'expiresAt' | 'approvalDigest'
->;
+  'id' | 'createdAt' | 'status' | 'inputDigest' | 'expiresAt' | 'approvalDigest' | 'approverId' | 'inputFileHashes'
+> & {
+  requesterId?: string;
+  tenantId?: string;
+  environment?: string;
+  capabilityVersion?: string;
+};
 
 export interface EngineTransaction {
   id: string;

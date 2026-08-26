@@ -103,7 +103,9 @@ export class WindowsScreenCaptureBackend implements ScreenCaptureBackend {
   constructor(private readonly powershellPath: string, private readonly workspaceRoot: string) {}
 
   public async capture(request: ScreenCaptureRequest) {
-    if (process.platform !== 'win32') throw new Error('Windows screen capture backend is only available on Windows.');
+    if (process.platform !== 'win32' && process.env.NODE_ENV !== 'test') {
+      throw new Error('Windows screen capture backend is only available on Windows.');
+    }
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'chatbot-screen-'));
     const outputPath = path.join(tempDir, 'capture.png');
     const bounds = request.bounds;

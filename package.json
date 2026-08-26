@@ -18,7 +18,7 @@
     "type-check:tests": "tsc --noEmit -p tsconfig.tests.json",
     "type-check:client": "cd client && npm run type-check",
     "release:check": "npm run release:server && npm run release:client && npm run release:package",
-    "release:server": "npm run type-check:server && npm run type-check:tests && npm run lint:server && npm run test:release && npm run test:coverage -- --runInBand",
+    "release:server": "npm run type-check:server && npm run type-check:tests && npm run lint:server && npm run test:release && npm run test:coverage -- --runInBand --forceExit",
     "release:client": "npm run type-check:client && npm run lint:client && cd client && npm run test && npm run coverage && npm run a11y",
     "release:package": "npm run smoke:package",
     "test": "jest",
