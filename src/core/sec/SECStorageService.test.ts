@@ -152,4 +152,86 @@ describe('SECStorageService', () => {
     // Invalid CIK rejection
     await expect(storage.upsertCompanyFromSubmissions({ cik: 'abc' })).rejects.toThrow('CIK must contain digits');
   });
+
+  it('normalizes sparse SEC payloads and applies bounded filing defaults', async () => {
+    const companyId = await storage.upsertCompanyFromSubmissions({
+      cik: 'CIK 0000042',
+      entityName: 'Fallback Entity',
+    });
+    await storage.upsertCompanyFromSubmissions({ cik: 7 });
+
+    const companies = await db.query(
+      'SELECT cik, cik_padded, ticker, exchange, name, legal_name FROM sec_companies ORDER BY cik',
+    );
+    expect(companies.rows).toEqual(expect.arrayContaining([
+      expect.objectContaining({
+        cik: '42',
+        cik_padded: '0000000042',
+        ticker: null,
+        exchange: null,
+        name: 'Fallback Entity',
+        legal_name: null,
+      }),
+      expect.objectContaining({ cik: '7', name: 'CIK 7' }),
+    ]));
+
+    await expect(storage.storeRecentFilings({
+      companyId,
+      submissions: { cik: '42' },
+      forms: ['10-k'],
+      limit: 0,
+    })).resolves.toBe(0);
+
+    const sparseSubmissions = {
+      cik: '42',
+      filings: {
+        recent: {
+          accessionNumber: ['skip-no-form', 'skip-form', '0000042-24-000001'],
+          form: [undefined, '8-K', '10-k'],
+        },
+      },
+    };
+    await expect(storage.storeRecentFilings({
+      companyId,
+      submissions: sparseSubmissions,
+      forms: ['10-K'],
+      limit: 999,
+    })).resolves.toBe(1);
+
+    const filing = await db.query(
+      'SELECT primary_document, primary_document_url, filing_detail_url FROM sec_filings WHERE accession_number = ?',
+      ['0000042-24-000001'],
+    );
+    expect(filing.rows[0]).toMatchObject({
+      primary_document: null,
+      primary_document_url: null,
+    });
+    expect(filing.rows[0].filing_detail_url).toContain('/42/000004224000001/');
+  });
+
+  it('stores sparse facts with null optionals and tolerates an unknown accession', async () => {
+    const companyId = await storage.upsertCompanyFromSubmissions(submissions());
+    const count = await storage.replaceCompanyFacts(companyId, [
+      {
+        taxonomy: 'us-gaap',
+        concept: 'Assets',
+        valueNumeric: 0,
+      },
+      {
+        taxonomy: 'us-gaap',
+        concept: 'Liabilities',
+        valueText: 'reported',
+        accessionNumber: 'missing-accession',
+      },
+    ] as any);
+
+    expect(count).toBe(2);
+    const facts = await db.query(
+      'SELECT concept, filing_id, value_numeric, value_text FROM sec_xbrl_facts ORDER BY concept',
+    );
+    expect(facts.rows).toEqual([
+      expect.objectContaining({ concept: 'Assets', filing_id: null, value_numeric: 0, value_text: null }),
+      expect.objectContaining({ concept: 'Liabilities', filing_id: null, value_numeric: null, value_text: 'reported' }),
+    ]);
+  });
 });

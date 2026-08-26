@@ -90,6 +90,7 @@ describe('RT-VID-001: VideoProcessor Multimodal Pipeline & Governance Suite', ()
   });
 
   afterEach(() => {
+    jest.restoreAllMocks();
     try {
       fs.rmSync(tempDir, { recursive: true, force: true });
     } catch {
@@ -165,5 +166,136 @@ describe('RT-VID-001: VideoProcessor Multimodal Pipeline & Governance Suite', ()
     const badBase64 = 'not-valid-base64-content!@#$%^&*()';
     const res = await processor.validateVideo(badBase64);
     expect(res.data?.size).toBeDefined();
+  });
+
+  it('normalizes sparse metadata, decimal frame rates, and absent streams', async () => {
+    mockFfprobe.mockImplementationOnce((_filePath, callback) => callback(null, {
+      format: { duration: '', size: '', format_name: '', bit_rate: '' },
+      streams: [{ codec_type: 'video', r_frame_rate: '29.97' }],
+    }));
+    const sparse = await processor.getMetadata(dummyVideoBase64);
+    expect(sparse).toMatchObject({
+      duration: 0,
+      width: 0,
+      height: 0,
+      format: 'unknown',
+      size: 0,
+      frameRate: 29.97,
+      hasAudio: false,
+      bitrate: undefined,
+    });
+
+    mockFfprobe.mockImplementationOnce((_filePath, callback) => callback(null, {
+      format: {},
+      streams: [],
+    }));
+    await expect(processor.getMetadata(dummyVideoBase64)).resolves.toMatchObject({
+      width: 0,
+      height: 0,
+      frameRate: 0,
+      hasAudio: false,
+    });
+  });
+
+  it('classifies ffprobe failures and duration-policy rejection', async () => {
+    mockFfprobe.mockImplementationOnce((_filePath, callback) => callback(new Error('probe failed')));
+    await expect(processor.getMetadata(dummyVideoBase64)).rejects.toThrow(
+      'Failed to extract video metadata: probe failed',
+    );
+
+    mockFfprobe.mockImplementationOnce((_filePath, callback) => callback(null, {
+      format: { duration: '301', size: '1', format_name: 'mp4' },
+      streams: [{ codec_type: 'video', width: 1, height: 1, r_frame_rate: '1/1' }],
+    }));
+    await expect(processor.getMetadata(dummyVideoBase64)).rejects.toThrow('exceeds maximum duration');
+  });
+
+  it('selects deterministic vision-frame fallbacks for positive and zero durations', async () => {
+    const metadata = {
+      duration: 20,
+      width: 1,
+      height: 1,
+      format: 'mp4',
+      size: 1,
+      frameRate: 1,
+      hasAudio: false,
+    };
+    jest.spyOn(processor, 'getMetadata').mockResolvedValue(metadata);
+    jest.spyOn(processor, 'extractKeyFrames').mockResolvedValue([]);
+    const extractFrames = jest.spyOn(processor, 'extractFrames').mockResolvedValue(['a', 'b', 'c']);
+
+    await expect(processor.processForVision(dummyVideoBase64, 2)).resolves.toMatchObject({ frames: ['a', 'b'] });
+    expect(extractFrames).toHaveBeenLastCalledWith(dummyVideoBase64, 10);
+
+    (processor.getMetadata as jest.Mock).mockResolvedValue({ ...metadata, duration: 0 });
+    await processor.processForVision(dummyVideoBase64, 40);
+    expect(extractFrames).toHaveBeenLastCalledWith(dummyVideoBase64, 2);
+
+    (processor.extractKeyFrames as jest.Mock).mockResolvedValue(['key-frame']);
+    extractFrames.mockClear();
+    await expect(processor.processForVision(dummyVideoBase64)).resolves.toMatchObject({ frames: ['key-frame'] });
+    expect(extractFrames).not.toHaveBeenCalled();
+  });
+
+  it('covers safe vision and audio result classifications', async () => {
+    jest.spyOn(processor, 'validateVideo').mockResolvedValue({
+      status: 'rejected',
+      error: 'too large',
+    });
+    await expect(processor.processForVisionSafe(dummyVideoBase64)).resolves.toMatchObject({
+      status: 'rejected',
+      error: 'too large',
+    });
+    await expect(processor.extractAudioSafe(dummyVideoBase64)).resolves.toMatchObject({
+      status: 'rejected',
+      error: 'too large',
+    });
+
+    (processor.validateVideo as jest.Mock).mockResolvedValue({ status: 'ok' });
+    jest.spyOn(processor, 'processForVision')
+      .mockRejectedValueOnce(new Error('exceeds maximum duration'))
+      .mockRejectedValueOnce({});
+    await expect(processor.processForVisionSafe(dummyVideoBase64, 100)).resolves.toMatchObject({
+      status: 'rejected',
+    });
+    await expect(processor.processForVisionSafe(dummyVideoBase64)).resolves.toEqual({
+      status: 'error',
+      error: 'Video processing failed',
+    });
+
+    jest.spyOn(processor, 'extractAudio')
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce('data:audio/mpeg;base64,YQ==')
+      .mockRejectedValueOnce({});
+    await expect(processor.extractAudioSafe(dummyVideoBase64)).resolves.toMatchObject({
+      status: 'error',
+      error: 'Audio extraction produced no output.',
+    });
+    await expect(processor.extractAudioSafe(dummyVideoBase64)).resolves.toMatchObject({
+      status: 'ok',
+      data: 'data:audio/mpeg;base64,YQ==',
+    });
+    await expect(processor.extractAudioSafe(dummyVideoBase64)).resolves.toEqual({
+      status: 'error',
+      error: 'Audio extraction failed',
+    });
+  });
+
+  it('tolerates cleanup races and cleanup filesystem failures', async () => {
+    const missing = path.join(tempDir, 'already-gone.tmp');
+    await expect((processor as any).cleanupTempFile(missing)).resolves.toBeUndefined();
+
+    const existing = path.join(tempDir, 'cannot-delete.tmp');
+    fs.writeFileSync(existing, 'content');
+    jest.spyOn(fs.promises, 'unlink').mockRejectedValueOnce(new Error('locked'));
+    await expect((processor as any).cleanupTempFile(existing)).resolves.toBeUndefined();
+
+    fs.rmSync(tempDir, { recursive: true, force: true });
+    await expect((processor as any).cleanupOrphanedTempFiles()).resolves.toBeUndefined();
+
+    fs.mkdirSync(tempDir, { recursive: true });
+    fs.writeFileSync(path.join(tempDir, 'stat-race.tmp'), 'content');
+    jest.spyOn(fs.promises, 'stat').mockRejectedValueOnce(new Error('stat failed'));
+    await expect((processor as any).cleanupOrphanedTempFiles()).resolves.toBeUndefined();
   });
 });
