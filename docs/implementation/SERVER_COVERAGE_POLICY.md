@@ -32,25 +32,27 @@ A new exclusion must be added to both `collectCoverageFrom` and `allowedExclusio
 
 ## Active stage
 
-The active stage is `stage-1-baseline`.
+The active stage is `stage-2`.
 
-The baseline was measured on commit `42ef5cbeb832114cf2e393a6b21bc4840117c55e` in GitHub Actions run `31065400189` after expanding the source scope.
+The Stage 2 candidate baseline was measured locally on the profile-expansion working tree based on commit `55dbcd0a2af1bd4c26f1f28aae7b3e3d6823f7f2`. The policy records that the tree contained the reviewed expansion changes; the `commit` field must be replaced with the final candidate SHA when those changes are committed.
 
 | Metric | Covered | Total | Baseline |
 |---|---:|---:|---:|
-| Lines | 7,879 | 20,918 | 37.6661% |
-| Branches | 3,109 | 11,326 | 27.4501% |
-| Functions | 1,719 | 4,624 | 37.1756% |
-| Statements | 8,319 | 22,562 | 36.8717% |
+| Lines | 22,406 | 36,775 | 60.9273% |
+| Branches | 9,731 | 19,953 | 48.7696% |
+| Functions | 4,366 | 7,634 | 57.1915% |
+| Statements | 24,035 | 40,017 | 60.0620% |
 
 The active gate enforces no regression against all four global metrics and against every listed Tier A file. A change that increases uncovered production source without sufficient tests fails the coverage job.
+
+The final audited worktree improves on that locked baseline: 23,085/37,301 lines (61.8884%), 10,197/20,403 branches (49.9779%), 4,532/7,766 functions (58.3569%), and 24,798/40,642 statements (61.0157%). The locked baseline remains unchanged so the added implementation cannot consume the prior uncovered-code budget.
 
 ## Global progression
 
 | Stage | Minimum lines | Minimum branches | Enforcement |
 |---|---:|---:|---|
-| Stage 1 | Locked baseline | Locked baseline | Active |
-| Stage 2 | 55% | 45% | Future ratchet |
+| Stage 1 | Locked historical baseline | Locked historical baseline | Passed |
+| Stage 2 | 55% | 45% | Active |
 | Stage 3 | 65% | 55% | Future ratchet |
 | Final | 75% | 65% | Release target |
 

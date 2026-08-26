@@ -34,7 +34,7 @@ function tableRows(markdown) {
 function collectVerifiedTrackerRecords(markdown) {
   const records = new Map();
   for (const columns of tableRows(markdown)) {
-    if (!/^P\d{2}-T\d{2}$/.test(columns[0] ?? "")) continue;
+    if (!/^P(?:X)?\d{2}-T\d{2}$/.test(columns[0] ?? "")) continue;
     if (columns[3] !== "VERIFIED") continue;
     records.set(columns[0], {
       commit: columns[5],
@@ -47,7 +47,7 @@ function collectVerifiedTrackerRecords(markdown) {
 function collectVerifiedIndexRecords(markdown) {
   const records = new Map();
   for (const columns of tableRows(markdown)) {
-    if (!/^P\d{2}-T\d{2}$/.test(columns[0] ?? "")) continue;
+    if (!/^P(?:X)?\d{2}-T\d{2}$/.test(columns[0] ?? "")) continue;
     if (columns[1] !== "VERIFIED") continue;
     records.set(columns[0], {
       commit: columns[2],

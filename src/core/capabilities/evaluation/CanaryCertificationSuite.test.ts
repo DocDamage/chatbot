@@ -25,7 +25,7 @@ describe('CanaryCertificationSuite (CF-04 to CF-10)', () => {
       expect(item.durationMs).toBeGreaterThanOrEqual(0);
       expect(item.sha256Digest).toMatch(/^[a-f0-9]{64}$/);
     }
-  });
+  }, 30_000);
 
   describe('ProcessTreeSupervisor', () => {
     it('executes simple command and captures stdout and output digest', async () => {

@@ -8,6 +8,7 @@ import { createFilesRouter } from '../files';
 import { createGamingRouter } from '../gaming';
 import { createKnowledgeOnlineRouter } from '../knowledge-online';
 import { createPlansRouter } from '../plans';
+import { createGameStudioRouter } from '../game-studio';
 
 jest.mock('../../../core/tools/WebSearcher', () => ({
   WebSearcher: {
@@ -165,5 +166,82 @@ describe('feature expansion routes', () => {
       .expect(200);
     expect(added[0].metadata.approvedBy).toBe('reviewer-a');
     expect(ingested.body.ingestionId).toBeTruthy();
+  });
+
+  it('serves Game Studio discovery and an explicit proposal approval/apply/rollback workflow', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'game-studio-route-'));
+    fs.writeFileSync(path.join(root, 'project.godot'), '[application]\nconfig/name="Route Test"\nrun/main_scene="res://Main.tscn"\n');
+    fs.writeFileSync(path.join(root, 'Main.tscn'), '[gd_scene format=3]\n\n[node name="Main" type="Node"]\n');
+    fs.writeFileSync(path.join(root, 'Player.gd'), 'extends Node\n\nfunc ready_for_test():\n\tpass\n');
+    const app = express();
+    app.use(express.json());
+    app.use(createGameStudioRouter(root));
+
+    const summaryRes = await request(app).get('/api/game-studio/summary').expect(200);
+    expect(summaryRes.body.supportedTools).toContain('mast_analyze_occupancy');
+    expect(summaryRes.body.supportedTools).toContain('sprite_slice_detect');
+
+    const profilesRes = await request(app).get('/api/game-studio/profiles').expect(200);
+    expect(profilesRes.body.profiles.some((p: any) => p.engine === 'godot')).toBe(true);
+
+    const mastRes = await request(app).post('/api/game-studio/mast/layout').send({ width: 4, depth: 4 }).expect(200);
+    expect(mastRes.body.placements.length).toBeGreaterThan(0);
+
+    const sliceRes = await request(app).post('/api/game-studio/slicing/profile').send({ width: 64, height: 64, mode: '9-slice' }).expect(200);
+    expect(sliceRes.body.sliceMode).toBe('9-slice');
+    expect(sliceRes.body.margins.top).toBe(16);
+
+    await request(app).post('/api/game-studio/connect').send({ engine: 'godot', projectRoot: root }).expect(200);
+    await request(app).get('/api/game-studio/project?engine=godot').expect(200).expect(response => {
+      expect(response.body.engine).toBe('godot');
+      expect(response.body.scenes).toContain('Main.tscn');
+    });
+    await request(app).get('/api/game-studio/scene?engine=godot&path=Main.tscn').expect(200).expect(response => {
+      expect(response.body.rootNode.name).toBe('Main');
+    });
+    await request(app).get('/api/game-studio/script?engine=godot&path=Player.gd').expect(200).expect(response => {
+      expect(response.body.language).toBe('gdscript');
+    });
+
+    const proposed = await request(app).post('/api/game-studio/proposals').send({
+      engine: 'godot',
+      projectId: 'route-test',
+      title: 'Create reviewed helper',
+      risk: 'low',
+      actions: [{
+        type: 'create_script',
+        targetPath: 'Generated.gd',
+        params: { content: 'extends Node\n\nfunc generated():\n\tpass\n' }
+      }]
+    }).expect(200);
+    expect(proposed.body.status).toBe('proposed');
+    expect(proposed.body.approvalDigest).toBeUndefined();
+
+    await request(app)
+      .post(`/api/game-studio/proposals/${proposed.body.id}/apply`)
+      .send({ engine: 'godot', approvalDigest: proposed.body.inputDigest })
+      .expect(500);
+
+    const approved = await request(app)
+      .post(`/api/game-studio/proposals/${proposed.body.id}/approve`)
+      .send({ engine: 'godot', approverId: 'route-reviewer' })
+      .expect(200);
+    expect(approved.body.status).toBe('approved');
+    expect(approved.body.approvalDigest).toMatch(/^[a-f0-9]{64}$/);
+    expect(approved.body.approvalDigest).not.toBe(proposed.body.inputDigest);
+
+    const applied = await request(app)
+      .post(`/api/game-studio/proposals/${proposed.body.id}/apply`)
+      .send({ engine: 'godot', approvalDigest: approved.body.approvalDigest })
+      .expect(200);
+    expect(fs.existsSync(path.join(root, 'Generated.gd'))).toBe(true);
+
+    await request(app)
+      .post(`/api/game-studio/transactions/${applied.body.id}/rollback`)
+      .send({ engine: 'godot' })
+      .expect(200)
+      .expect(response => expect(response.body.success).toBe(true));
+    expect(fs.existsSync(path.join(root, 'Generated.gd'))).toBe(false);
+    await request(app).post('/api/game-studio/disconnect').send({ engine: 'godot' }).expect(200);
   });
 });

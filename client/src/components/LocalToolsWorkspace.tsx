@@ -9,10 +9,25 @@ import MockApiWorkspacePanel from './MockApiWorkspacePanel';
 import WebsiteWorkspacePanel from './WebsiteWorkspacePanel';
 import DesktopCompanionPanel from './DesktopCompanionPanel';
 import CapabilityHubPanel from './CapabilityHubPanel';
+import ExpansionStudiosPanel from './ExpansionStudiosPanel';
 import './LocalToolsWorkspace.css';
 
 export default function LocalToolsWorkspace() {
   const [activeGroup, setActiveGroup] = useState('overview');
+  const [selectedCapability, setSelectedCapability] = useState<string>();
+
+  const openCapabilityWorkspace = (capabilityId: string) => {
+    if (capabilityId === 'project_memory') {
+      setActiveGroup('overview');
+      return;
+    }
+    if (capabilityId === 'desktop_voice_companion' || capabilityId === 'web_studio' || capabilityId === 'developer_utility_pack') {
+      setActiveGroup('build');
+      return;
+    }
+    setSelectedCapability(capabilityId);
+    setActiveGroup('studios');
+  };
 
   if (isStaticPagesBuild) return null;
 
@@ -29,6 +44,7 @@ export default function LocalToolsWorkspace() {
       <nav className="advanced-workspace-nav" aria-label="Advanced workspace areas">
         <button type="button" className={activeGroup === 'overview' ? 'active' : ''} aria-pressed={activeGroup === 'overview'} onClick={() => setActiveGroup('overview')} title="Project context, memory, and documents">Workspace</button>
         <button type="button" className={activeGroup === 'hub' ? 'active' : ''} aria-pressed={activeGroup === 'hub'} onClick={() => setActiveGroup('hub')} title="Unified Capability Hub, job lifecycle, and policy">Capability Hub</button>
+        <button type="button" className={activeGroup === 'studios' ? 'active' : ''} aria-pressed={activeGroup === 'studios'} onClick={() => setActiveGroup('studios')} title="Context, agents, game, media, writing, and study studios">Expansion Studios</button>
         <button type="button" className={activeGroup === 'build' ? 'active' : ''} aria-pressed={activeGroup === 'build'} onClick={() => setActiveGroup('build')} title="Utilities, mock APIs, and website tools">Build &amp; connect</button>
         <button type="button" className={activeGroup === 'automation' ? 'active' : ''} aria-pressed={activeGroup === 'automation'} onClick={() => setActiveGroup('automation')} title="Local runs, approvals, and sprite generation">Automation</button>
       </nav>
@@ -37,7 +53,8 @@ export default function LocalToolsWorkspace() {
           <ProjectIntelligencePanel />
           <DocumentWorkspacePanel />
         </>}
-        {activeGroup === 'hub' && <CapabilityHubPanel />}
+        {activeGroup === 'hub' && <CapabilityHubPanel onOpenCapability={openCapabilityWorkspace} />}
+        {activeGroup === 'studios' && <ExpansionStudiosPanel initialCapabilityId={selectedCapability} />}
         {activeGroup === 'build' && <>
           <UtilityWorkbenchPanel />
           <MockApiWorkspacePanel />

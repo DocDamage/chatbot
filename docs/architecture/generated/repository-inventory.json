@@ -1,16 +1,30 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1145,
-    "productionSourceFiles": 849,
-    "reachableProductionFiles": 645,
-    "unreachableProductionFiles": 204,
-    "routes": 369,
-    "environmentVariables": 204,
+    "sourceFiles": 1445,
+    "productionSourceFiles": 1106,
+    "reachableProductionFiles": 816,
+    "unreachableProductionFiles": 290,
+    "routes": 501,
+    "environmentVariables": 212,
     "featureFlags": 18,
-    "oversizedProductionFiles": 83
+    "oversizedProductionFiles": 94
   },
   "routes": [
+    {
+      "receiver": "app",
+      "method": "USE",
+      "path": "/api/capabilities",
+      "line": 118,
+      "file": "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts"
+    },
+    {
+      "receiver": "app",
+      "method": "USE",
+      "path": "/auth",
+      "line": 121,
+      "file": "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts"
+    },
     {
       "receiver": "app",
       "method": "GET",
@@ -574,6 +588,48 @@
     {
       "receiver": "router",
       "method": "GET",
+      "path": "/api/agent-operations/summary",
+      "line": 17,
+      "file": "src/server/routes/agent-operations.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/agent-operations/sessions/:sessionId",
+      "line": 22,
+      "file": "src/server/routes/agent-operations.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/agent-operations/sessions",
+      "line": 29,
+      "file": "src/server/routes/agent-operations.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/agent-operations/sessions/:sessionId/pause",
+      "line": 62,
+      "file": "src/server/routes/agent-operations.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/agent-operations/sessions/:sessionId/resume",
+      "line": 69,
+      "file": "src/server/routes/agent-operations.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/agent-operations/stop-all",
+      "line": 76,
+      "file": "src/server/routes/agent-operations.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
       "path": "/api/audio/files",
       "line": 9,
       "file": "src/server/routes/audio.ts"
@@ -652,98 +708,147 @@
       "receiver": "router",
       "method": "GET",
       "path": "/",
-      "line": 44,
+      "line": 49,
       "file": "src/server/routes/capabilities.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/jobs/list",
-      "line": 62,
+      "line": 67,
       "file": "src/server/routes/capabilities.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/evaluations/run",
-      "line": 80,
+      "line": 85,
       "file": "src/server/routes/capabilities.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/metrics/dashboard",
-      "line": 99,
+      "line": 104,
       "file": "src/server/routes/capabilities.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/support-bundle",
-      "line": 110,
+      "line": 115,
       "file": "src/server/routes/capabilities.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/repository-findings",
-      "line": 121,
+      "line": 126,
       "file": "src/server/routes/capabilities.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/promotions/evaluate",
-      "line": 134,
+      "line": 139,
       "file": "src/server/routes/capabilities.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/promotions/decisions",
-      "line": 152,
-      "file": "src/server/routes/capabilities.ts"
-    },
-    {
-      "receiver": "router",
-      "method": "POST",
-      "path": "/promotions/promote",
       "line": 157,
       "file": "src/server/routes/capabilities.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
+      "path": "/promotions/promote",
+      "line": 162,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
       "path": "/promotions/rollback",
-      "line": 194,
+      "line": 199,
       "file": "src/server/routes/capabilities.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/:id",
-      "line": 227,
+      "line": 232,
       "file": "src/server/routes/capabilities.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/:id/action",
-      "line": 243,
+      "line": 248,
       "file": "src/server/routes/capabilities.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/jobs/:id/cancel",
-      "line": 280,
+      "line": 285,
       "file": "src/server/routes/capabilities.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/jobs/:id/confirm",
-      "line": 295,
+      "line": 303,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/artifacts/:id",
+      "line": 329,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/jobs/:id",
+      "line": 348,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/jobs/:id/approve",
+      "line": 363,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/:id/preflight",
+      "line": 387,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/:id/test",
+      "line": 398,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/:id/enable",
+      "line": 413,
+      "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/:id/disable",
+      "line": 430,
       "file": "src/server/routes/capabilities.ts"
     },
     {
@@ -847,6 +952,41 @@
     {
       "receiver": "router",
       "method": "POST",
+      "path": "/compress",
+      "line": 22,
+      "file": "src/server/routes/context-economy/contextInspectorRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/retrieve/:key",
+      "line": 48,
+      "file": "src/server/routes/context-economy/contextInspectorRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/benchmark",
+      "line": 71,
+      "file": "src/server/routes/context-economy/contextInspectorRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/proposals",
+      "line": 82,
+      "file": "src/server/routes/context-economy/contextInspectorRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/proposals/:id/review",
+      "line": 93,
+      "file": "src/server/routes/context-economy/contextInspectorRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
       "path": "/api/creative/draft-scene",
       "line": 28,
       "file": "src/server/routes/creative.ts"
@@ -911,14 +1051,84 @@
       "receiver": "router",
       "method": "GET",
       "path": "/api/desktop-companion/capabilities",
-      "line": 10,
+      "line": 66,
+      "file": "src/server/routes/desktop-companion.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/desktop-companion/stt-models",
+      "line": 98,
+      "file": "src/server/routes/desktop-companion.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/desktop-companion/tts-voices",
+      "line": 103,
+      "file": "src/server/routes/desktop-companion.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/desktop-companion/synthesize",
+      "line": 107,
+      "file": "src/server/routes/desktop-companion.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/desktop-companion/dictate",
+      "line": 129,
+      "file": "src/server/routes/desktop-companion.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/desktop-companion/screen-capture",
+      "line": 159,
+      "file": "src/server/routes/desktop-companion.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/desktop-companion/clipboard-action",
+      "line": 187,
+      "file": "src/server/routes/desktop-companion.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/desktop-companion/briefing",
+      "line": 214,
+      "file": "src/server/routes/desktop-companion.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/desktop-companion/validate-os-action",
+      "line": 220,
+      "file": "src/server/routes/desktop-companion.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/desktop-companion/privacy",
+      "line": 227,
+      "file": "src/server/routes/desktop-companion.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/desktop-companion/privacy",
+      "line": 231,
       "file": "src/server/routes/desktop-companion.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/desktop-companion/context",
-      "line": 17,
+      "line": 237,
       "file": "src/server/routes/desktop-companion.ts"
     },
     {
@@ -1158,6 +1368,125 @@
       "path": "/api/flstudio/transport",
       "line": 122,
       "file": "src/server/routes/flstudio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/summary",
+      "line": 47,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/profiles",
+      "line": 59,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/connect",
+      "line": 66,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/disconnect",
+      "line": 80,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/project",
+      "line": 87,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/scene",
+      "line": 93,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/script",
+      "line": 100,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/proposals",
+      "line": 108,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/proposals/:id/approve",
+      "line": 121,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/proposals/:id/apply",
+      "line": 128,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/transactions/:id/rollback",
+      "line": 137,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/runtime/scenario",
+      "line": 145,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/profiler",
+      "line": 159,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/export",
+      "line": 165,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/mast/layout",
+      "line": 178,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/slicing/profile",
+      "line": 188,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/asset-cook",
+      "line": 197,
+      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
     },
     {
       "receiver": "router",
@@ -1855,23 +2184,282 @@
     {
       "receiver": "router",
       "method": "GET",
+      "path": "/api/media-accessibility/status",
+      "line": 82,
+      "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/media-accessibility/projects",
+      "line": 109,
+      "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/media-accessibility/projects/:projectId",
+      "line": 130,
+      "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/media-accessibility/ocr",
+      "line": 137,
+      "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/media-accessibility/export-subtitles",
+      "line": 158,
+      "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/media-accessibility/align-transcript",
+      "line": 183,
+      "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/media-accessibility/translation-variant",
+      "line": 197,
+      "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/media-accessibility/dubbing",
+      "line": 218,
+      "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/media-accessibility/document-narration",
+      "line": 238,
+      "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/media-accessibility/read-along",
+      "line": 256,
+      "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/media-accessibility/ingest/preflight",
+      "line": 274,
+      "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/media-accessibility/storage/cleanup",
+      "line": 285,
+      "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
       "path": "/api/mock-api/status",
-      "line": 9,
+      "line": 13,
       "file": "src/server/routes/mock-api.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/api/mock-api/collections",
-      "line": 10,
+      "line": 22,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/mock-api/collections",
+      "line": 26,
       "file": "src/server/routes/mock-api.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/mock-api/import",
-      "line": 11,
+      "line": 31,
       "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/mock-api/reset",
+      "line": 40,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/mock-api/collections/:name",
+      "line": 46,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/mock-api/collections/:name/:id",
+      "line": 63,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/mock-api/collections/:name",
+      "line": 72,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "PATCH",
+      "path": "/api/mock-api/collections/:name/:id",
+      "line": 77,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "DELETE",
+      "path": "/api/mock-api/collections/:name/:id",
+      "line": 82,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/mock-api/chaos/config",
+      "line": 88,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/mock-api/chaos/config",
+      "line": 92,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/mock-api/chaos/preset",
+      "line": 97,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/mock-api/openapi/import",
+      "line": 103,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/mock-api/skill/export",
+      "line": 109,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/mock-api/packs/scaffold",
+      "line": 115,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/mock-api/doctor",
+      "line": 121,
+      "file": "src/server/routes/mock-api.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/music-studio/hardware-probe",
+      "line": 39,
+      "file": "src/server/routes/music-studio/musicStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music-studio/preflight",
+      "line": 45,
+      "file": "src/server/routes/music-studio/musicStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music-studio/separate",
+      "line": 64,
+      "file": "src/server/routes/music-studio/musicStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/music-studio/jobs/:id",
+      "line": 137,
+      "file": "src/server/routes/music-studio/musicStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music-studio/jobs/:id/cancel",
+      "line": 143,
+      "file": "src/server/routes/music-studio/musicStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/music-studio/waveform",
+      "line": 155,
+      "file": "src/server/routes/music-studio/musicStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music-studio/mixer/init",
+      "line": 167,
+      "file": "src/server/routes/music-studio/musicStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music-studio/mixer/calculate-gains",
+      "line": 176,
+      "file": "src/server/routes/music-studio/musicStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music-studio/analyze",
+      "line": 186,
+      "file": "src/server/routes/music-studio/musicStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music-studio/export",
+      "line": 196,
+      "file": "src/server/routes/music-studio/musicStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/music-studio/daw-handoff",
+      "line": 221,
+      "file": "src/server/routes/music-studio/musicStudioRoutes.ts"
     },
     {
       "receiver": "router",
@@ -2498,6 +3086,76 @@
     },
     {
       "receiver": "router",
+      "method": "GET",
+      "path": "/api/sprite-studio/presets",
+      "line": 42,
+      "file": "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sprite-studio/presets",
+      "line": 46,
+      "file": "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/sprite-studio/palettes",
+      "line": 56,
+      "file": "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sprite-studio/pipeline/process",
+      "line": 61,
+      "file": "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sprite-studio/grid/detect",
+      "line": 90,
+      "file": "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sprite-studio/background/remove",
+      "line": 103,
+      "file": "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sprite-studio/batch/create",
+      "line": 128,
+      "file": "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/sprite-studio/batch/:id",
+      "line": 141,
+      "file": "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sprite-studio/batch/:id/cancel",
+      "line": 147,
+      "file": "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/sprite-studio/engine-handoff",
+      "line": 153,
+      "file": "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
       "method": "POST",
       "path": "/api/story/ask",
       "line": 7,
@@ -2541,6 +3199,83 @@
     {
       "receiver": "router",
       "method": "GET",
+      "path": "/api/study-studio/state",
+      "line": 33,
+      "file": "src/server/routes/study-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/study-studio/collections",
+      "line": 37,
+      "file": "src/server/routes/study-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/study-studio/sources",
+      "line": 56,
+      "file": "src/server/routes/study-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/study-studio/notes",
+      "line": 74,
+      "file": "src/server/routes/study-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/study-studio/flashcards/generate",
+      "line": 85,
+      "file": "src/server/routes/study-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/study-studio/quizzes/generate",
+      "line": 89,
+      "file": "src/server/routes/study-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/study-studio/quizzes/submit",
+      "line": 93,
+      "file": "src/server/routes/study-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/study-studio/plan",
+      "line": 100,
+      "file": "src/server/routes/study-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/study-studio/socratic",
+      "line": 105,
+      "file": "src/server/routes/study-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/study-studio/socratic/:sessionId/turns",
+      "line": 117,
+      "file": "src/server/routes/study-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/study-studio/audio-lessons",
+      "line": 123,
+      "file": "src/server/routes/study-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
       "path": "/api/tool-catalog",
       "line": 11,
       "file": "src/server/routes/toolCatalog.ts"
@@ -2577,22 +3312,211 @@
       "receiver": "router",
       "method": "GET",
       "path": "/api/website-workspace/project",
-      "line": 9,
+      "line": 14,
       "file": "src/server/routes/website-workspace.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/website-workspace/project",
-      "line": 10,
+      "line": 18,
       "file": "src/server/routes/website-workspace.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/website-workspace/preview",
-      "line": 11,
+      "line": 23,
       "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/website-workspace/templates",
+      "line": 33,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/blocks",
+      "line": 37,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "PATCH",
+      "path": "/api/website-workspace/blocks/:blockId",
+      "line": 43,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "DELETE",
+      "path": "/api/website-workspace/blocks/:blockId",
+      "line": 49,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/blocks/:blockId/duplicate",
+      "line": 55,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/blocks/:blockId/reorder",
+      "line": 61,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/undo",
+      "line": 67,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/redo",
+      "line": 72,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/website-workspace/assets",
+      "line": 78,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/assets",
+      "line": 82,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/website-workspace/inspect",
+      "line": 88,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/source-link",
+      "line": 95,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/proposals",
+      "line": 101,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/proposals/:id/approve",
+      "line": 106,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/proposals/:id/apply",
+      "line": 111,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/transactions/:id/rollback",
+      "line": 116,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/website-workspace/import-html",
+      "line": 122,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/website-workspace/export",
+      "line": 127,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/website-workspace/audit",
+      "line": 133,
+      "file": "src/server/routes/website-workspace.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/writing-studio/state",
+      "line": 43,
+      "file": "src/server/routes/writing-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/writing-studio/documents/open",
+      "line": 47,
+      "file": "src/server/routes/writing-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "PATCH",
+      "path": "/api/writing-studio/document",
+      "line": 56,
+      "file": "src/server/routes/writing-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/writing-studio/proofread",
+      "line": 62,
+      "file": "src/server/routes/writing-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/writing-studio/save",
+      "line": 67,
+      "file": "src/server/routes/writing-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/writing-studio/proposals",
+      "line": 73,
+      "file": "src/server/routes/writing-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/writing-studio/proposals/:proposalId/accept",
+      "line": 100,
+      "file": "src/server/routes/writing-studio.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/writing-studio/proposals/:proposalId/reject",
+      "line": 105,
+      "file": "src/server/routes/writing-studio.ts"
     }
   ],
   "clientPanels": [
@@ -2603,6 +3527,7 @@
     "client/src/components/CreativeComposerPanel.tsx",
     "client/src/components/DesktopCompanionPanel.tsx",
     "client/src/components/DocumentWorkspacePanel.tsx",
+    "client/src/components/ExpansionStudiosPanel.tsx",
     "client/src/components/FLStudioControlPanel.tsx",
     "client/src/components/FileExplorerPanel.tsx",
     "client/src/components/GamingPlaybookPanel.tsx",
@@ -2610,6 +3535,7 @@
     "client/src/components/KnowledgeOnlinePanel.tsx",
     "client/src/components/LocalRunApprovalPanel.tsx",
     "client/src/components/LocalToolsWorkspace.tsx",
+    "client/src/components/MemoryCenterPanel.tsx",
     "client/src/components/MockApiWorkspacePanel.tsx",
     "client/src/components/ProjectIntelligencePanel.tsx",
     "client/src/components/SettingsMenu.tsx",
@@ -2619,6 +3545,18 @@
     "client/src/features/gis/GISMapPanel.tsx"
   ],
   "services": [
+    {
+      "name": "WorkspaceClaimService",
+      "file": "src/core/agent-operations/claims/WorkspaceClaimService.ts"
+    },
+    {
+      "name": "AgentOperationsConsoleService",
+      "file": "src/core/agent-operations/console/AgentOperationsConsoleService.ts"
+    },
+    {
+      "name": "AgentEvidenceBundleService",
+      "file": "src/core/agent-operations/evidence/AgentEvidenceBundleService.ts"
+    },
     {
       "name": "MultiAgentOrchestrator",
       "file": "src/core/agents/MultiAgentOrchestrator.ts"
@@ -2648,6 +3586,10 @@
       "file": "src/core/audio/AudioMetadataService.ts"
     },
     {
+      "name": "AudioExportMixdownService",
+      "file": "src/core/audio/stemdeck/AudioExportMixdownService.ts"
+    },
+    {
       "name": "ApiKeyService",
       "file": "src/core/auth/ApiKeyService.ts"
     },
@@ -2668,8 +3610,80 @@
       "file": "src/core/capabilities/CapabilityRegistry.ts"
     },
     {
+      "name": "CapabilityApprovalService",
+      "file": "src/core/capabilities/approvals/CapabilityApprovalService.ts"
+    },
+    {
+      "name": "ArtifactLineageService",
+      "file": "src/core/capabilities/artifacts/ArtifactLineageService.ts"
+    },
+    {
+      "name": "CapabilityConfigManager",
+      "file": "src/core/capabilities/config/CapabilityConfigManager.ts"
+    },
+    {
+      "name": "SupportBundleService",
+      "file": "src/core/capabilities/diagnostics/SupportBundleService.ts"
+    },
+    {
+      "name": "CapabilityEvaluationRegistry",
+      "file": "src/core/capabilities/evaluation/CapabilityEvaluationRegistry.ts"
+    },
+    {
+      "name": "CapabilityJobService",
+      "file": "src/core/capabilities/jobs/CapabilityJobService.ts"
+    },
+    {
+      "name": "UnifiedJobConsoleService",
+      "file": "src/core/capabilities/jobs/UnifiedJobConsoleService.ts"
+    },
+    {
+      "name": "CapabilityDeprecationManager",
+      "file": "src/core/capabilities/maintenance/CapabilityDeprecationManager.ts"
+    },
+    {
+      "name": "EvaluationMaintenanceService",
+      "file": "src/core/capabilities/maintenance/EvaluationMaintenanceService.ts"
+    },
+    {
+      "name": "OperationalDrillsCoordinator",
+      "file": "src/core/capabilities/maintenance/OperationalDrillsCoordinator.ts"
+    },
+    {
+      "name": "CapabilityDashboardService",
+      "file": "src/core/capabilities/observability/CapabilityDashboardService.ts"
+    },
+    {
       "name": "CapabilityObservabilityService",
       "file": "src/core/capabilities/observability/CapabilityObservabilityService.ts"
+    },
+    {
+      "name": "DistributedTracingService",
+      "file": "src/core/capabilities/observability/DistributedTracingService.ts"
+    },
+    {
+      "name": "CapabilityInstallationManager",
+      "file": "src/core/capabilities/packs/CapabilityInstallationManager.ts"
+    },
+    {
+      "name": "PackManagerService",
+      "file": "src/core/capabilities/packs/PackManagerService.ts"
+    },
+    {
+      "name": "ControlledRolloutManager",
+      "file": "src/core/capabilities/release/ControlledRolloutManager.ts"
+    },
+    {
+      "name": "DurableRestartRecoveryService",
+      "file": "src/core/capabilities/reliability/DurableRestartRecoveryService.ts"
+    },
+    {
+      "name": "ResourceBudgetManager",
+      "file": "src/core/capabilities/resources/ResourceBudgetManager.ts"
+    },
+    {
+      "name": "StorageQuotaManager",
+      "file": "src/core/capabilities/storage/StorageQuotaManager.ts"
     },
     {
       "name": "CodingController",
@@ -2704,6 +3718,18 @@
       "file": "src/core/config/ProfileManager.ts"
     },
     {
+      "name": "ContextCheckpointManager",
+      "file": "src/core/context-economy/checkpoints/ContextCheckpointManager.ts"
+    },
+    {
+      "name": "UserService",
+      "file": "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts"
+    },
+    {
+      "name": "ContextFailureLearningService",
+      "file": "src/core/context-economy/learning/ContextFailureLearningService.ts"
+    },
+    {
       "name": "ContractRegistry",
       "file": "src/core/contracts/UniversalContract.ts"
     },
@@ -2714,6 +3740,14 @@
     {
       "name": "CreativePrivacyManager",
       "file": "src/core/creative/CreativePrivacyManager.ts"
+    },
+    {
+      "name": "DeveloperUtilityPackService",
+      "file": "src/core/developer/DeveloperUtilityPackService.ts"
+    },
+    {
+      "name": "ProjectDoctorService",
+      "file": "src/core/developer/ProjectDoctorService.ts"
     },
     {
       "name": "DocumentMetadataManager",
@@ -2742,6 +3776,22 @@
     {
       "name": "FileExplorerService",
       "file": "src/core/files/FileExplorerService.ts"
+    },
+    {
+      "name": "MultiEngineStudioService",
+      "file": "src/core/gaming/engine/MultiEngineStudioService.ts"
+    },
+    {
+      "name": "GodotTransactionManager",
+      "file": "src/core/gaming/godot/GodotTransactionManager.ts"
+    },
+    {
+      "name": "UnityMastService",
+      "file": "src/core/gaming/unity/UnityMastService.ts"
+    },
+    {
+      "name": "UnrealMutationManager",
+      "file": "src/core/gaming/unreal/UnrealMutationManager.ts"
     },
     {
       "name": "GISProviderRegistry",
@@ -2788,6 +3838,22 @@
       "file": "src/core/mcp/McpToolRegistry.ts"
     },
     {
+      "name": "MediaStorageLifecycleManager",
+      "file": "src/core/media-accessibility/MediaStorageLifecycleManager.ts"
+    },
+    {
+      "name": "SubtitleEditorService",
+      "file": "src/core/media-accessibility/SubtitleEditorService.ts"
+    },
+    {
+      "name": "SynchronizedReadAlongService",
+      "file": "src/core/media-accessibility/SynchronizedReadAlongService.ts"
+    },
+    {
+      "name": "TranslationVariantService",
+      "file": "src/core/media-accessibility/TranslationVariantService.ts"
+    },
+    {
       "name": "MemoryService",
       "file": "src/core/memory/MemoryService.ts"
     },
@@ -2810,6 +3876,14 @@
     {
       "name": "PlanDocumentService",
       "file": "src/core/planning/PlanDocumentService.ts"
+    },
+    {
+      "name": "MemoryCaptureService",
+      "file": "src/core/project-memory/capture/MemoryCaptureService.ts"
+    },
+    {
+      "name": "MemoryManagementService",
+      "file": "src/core/project-memory/capture/MemoryManagementService.ts"
     },
     {
       "name": "ProjectIntelligenceService",
@@ -2836,6 +3910,10 @@
       "file": "src/core/rag/RAGService.ts"
     },
     {
+      "name": "RepositoryIntelligenceService",
+      "file": "src/core/repository-intelligence/RepositoryIntelligenceService.ts"
+    },
+    {
       "name": "PyScrappyService",
       "file": "src/core/research/PyScrappyService.ts"
     },
@@ -2852,12 +3930,24 @@
       "file": "src/core/sec/SECStorageService.ts"
     },
     {
+      "name": "DataRetentionManager",
+      "file": "src/core/security/retention/DataRetentionManager.ts"
+    },
+    {
       "name": "ConversationSharingService",
       "file": "src/core/sharing/ConversationSharing.ts"
     },
     {
       "name": "SpriteLabPlanService",
       "file": "src/core/sprite-lab/SpriteLabPlanService.ts"
+    },
+    {
+      "name": "SpriteBatchPresetService",
+      "file": "src/core/sprite-lab/pipeline/SpriteBatchPresetService.ts"
+    },
+    {
+      "name": "StudyStudioService",
+      "file": "src/core/study/StudyStudioService.ts"
     },
     {
       "name": "QuickRepliesService",
@@ -2880,12 +3970,84 @@
       "file": "src/core/user/CustomInstructions.ts"
     },
     {
+      "name": "ClipboardActionService",
+      "file": "src/core/voice-companion/ClipboardActionService.ts"
+    },
+    {
+      "name": "DesktopCompanionBriefingService",
+      "file": "src/core/voice-companion/DesktopCompanionBriefingService.ts"
+    },
+    {
+      "name": "DesktopPrivacyManager",
+      "file": "src/core/voice-companion/DesktopPrivacyManager.ts"
+    },
+    {
+      "name": "FloatingAssistantService",
+      "file": "src/core/voice-companion/FloatingAssistantService.ts"
+    },
+    {
+      "name": "ScreenContextCaptureService",
+      "file": "src/core/voice-companion/ScreenContextCaptureService.ts"
+    },
+    {
+      "name": "VoiceRecordingService",
+      "file": "src/core/voice-companion/VoiceRecordingService.ts"
+    },
+    {
       "name": "WebhookService",
       "file": "src/core/webhooks/WebhookService.ts"
     },
     {
+      "name": "ElementInspectorService",
+      "file": "src/core/website/ElementInspectorService.ts"
+    },
+    {
+      "name": "SourceLinkInspectionService",
+      "file": "src/core/website/SourceLinkInspectionService.ts"
+    },
+    {
+      "name": "VisualEditProposalService",
+      "file": "src/core/website/VisualEditProposalService.ts"
+    },
+    {
+      "name": "WebStudioService",
+      "file": "src/core/website/WebStudioService.ts"
+    },
+    {
+      "name": "WebsiteAssetManager",
+      "file": "src/core/website/WebsiteAssetManager.ts"
+    },
+    {
+      "name": "WebsiteImportExportService",
+      "file": "src/core/website/WebsiteImportExportService.ts"
+    },
+    {
+      "name": "WebsiteSandboxUndoManager",
+      "file": "src/core/website/WebsiteSandboxUndoManager.ts"
+    },
+    {
       "name": "WebsiteWorkspaceService",
       "file": "src/core/website/WebsiteWorkspaceService.ts"
+    },
+    {
+      "name": "AIProposalService",
+      "file": "src/core/writing/AIProposalService.ts"
+    },
+    {
+      "name": "DocumentImportExportService",
+      "file": "src/core/writing/DocumentImportExportService.ts"
+    },
+    {
+      "name": "DocumentRecoveryManager",
+      "file": "src/core/writing/DocumentRecoveryManager.ts"
+    },
+    {
+      "name": "TrackedChangesManager",
+      "file": "src/core/writing/TrackedChangesManager.ts"
+    },
+    {
+      "name": "WritingStudioService",
+      "file": "src/core/writing/WritingStudioService.ts"
     },
     {
       "name": "TracingService",
@@ -2901,6 +4063,14 @@
     }
   ],
   "providers": [
+    {
+      "name": "SessionDiscoveryAdapter",
+      "file": "src/core/agent-operations/discovery/SessionDiscoveryAdapter.ts"
+    },
+    {
+      "name": "DemucsWorkerAdapter",
+      "file": "src/core/audio/stemdeck/DemucsWorkerAdapter.ts"
+    },
     {
       "name": "PydollAdapter",
       "file": "src/core/browser/PydollAdapter.ts"
@@ -2922,8 +4092,24 @@
       "file": "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.ts"
     },
     {
+      "name": "AssetCookerAdapter",
+      "file": "src/core/gaming/asset-cooker/AssetCookerAdapter.ts"
+    },
+    {
+      "name": "GodotMcpXAdapter",
+      "file": "src/core/gaming/godot/GodotMcpXAdapter.ts"
+    },
+    {
       "name": "LatticeGameAdapter",
       "file": "src/core/gaming/lattice/LatticeGameAdapter.ts"
+    },
+    {
+      "name": "UnityEngineAdapter",
+      "file": "src/core/gaming/unity/UnityEngineAdapter.ts"
+    },
+    {
+      "name": "UnrealEngineAdapter",
+      "file": "src/core/gaming/unreal/UnrealEngineAdapter.ts"
     },
     {
       "name": "ArcGISFeatureServiceProvider",
@@ -2956,6 +4142,10 @@
     {
       "name": "FLStudioMcpClient",
       "file": "src/core/integrations/flstudio/FLStudioMcpClient.ts"
+    },
+    {
+      "name": "AuthorizedMediaIngestAdapter",
+      "file": "src/core/media-accessibility/AuthorizedMediaIngestAdapter.ts"
     },
     {
       "name": "ProductionMediaEngineAdapter",
@@ -3074,6 +4264,26 @@
       "file": "src/core/providers/local/LocalResourceManager.ts"
     },
     {
+      "name": "LocalResourceMonitor",
+      "file": "src/core/providers/local/LocalResourceMonitor.ts"
+    },
+    {
+      "name": "PicchioModelAdapter",
+      "file": "src/core/providers/local/PicchioModelAdapter.ts"
+    },
+    {
+      "name": "SemanticArchitectureCardProvider",
+      "file": "src/core/repository-intelligence/architecture/SemanticArchitectureCardProvider.ts"
+    },
+    {
+      "name": "GitIntelligenceProvider",
+      "file": "src/core/repository-intelligence/git/GitIntelligenceProvider.ts"
+    },
+    {
+      "name": "CodeHealthRiskProvider",
+      "file": "src/core/repository-intelligence/risk/CodeHealthRiskProvider.ts"
+    },
+    {
       "name": "EDGARClient",
       "file": "src/core/sec/EDGARClient.ts"
     },
@@ -3084,6 +4294,14 @@
     {
       "name": "SpriteExternalToolAdapter",
       "file": "src/core/sprite-lab/SpriteExternalToolAdapter.ts"
+    },
+    {
+      "name": "LocalSTTProvider",
+      "file": "src/core/voice-companion/LocalSTTProvider.ts"
+    },
+    {
+      "name": "LocalTTSProvider",
+      "file": "src/core/voice-companion/LocalTTSProvider.ts"
     }
   ],
   "tools": [
@@ -3094,6 +4312,10 @@
     {
       "name": "BaseUniversalTool",
       "file": "src/core/contracts/UniversalContract.ts"
+    },
+    {
+      "name": "SpriteBackgroundTool",
+      "file": "src/core/sprite-lab/pipeline/SpriteBackgroundTool.ts"
     },
     {
       "name": "CodeExecutor",
@@ -4509,6 +5731,46 @@
   "database": {
     "tables": [
       {
+        "name": "capability_approvals",
+        "file": "src/core/capabilities/persistence/CapabilityMigrations.ts"
+      },
+      {
+        "name": "capability_artifacts",
+        "file": "src/core/capabilities/persistence/CapabilityMigrations.ts"
+      },
+      {
+        "name": "capability_health_snapshots",
+        "file": "src/core/capabilities/persistence/CapabilityMigrations.ts"
+      },
+      {
+        "name": "capability_installations",
+        "file": "src/core/capabilities/persistence/CapabilityMigrations.ts"
+      },
+      {
+        "name": "capability_job_events",
+        "file": "src/core/capabilities/persistence/CapabilityMigrations.ts"
+      },
+      {
+        "name": "capability_jobs",
+        "file": "src/core/capabilities/persistence/CapabilityMigrations.ts"
+      },
+      {
+        "name": "capability_pack_versions",
+        "file": "src/core/capabilities/persistence/CapabilityMigrations.ts"
+      },
+      {
+        "name": "capability_packs",
+        "file": "src/core/capabilities/persistence/CapabilityMigrations.ts"
+      },
+      {
+        "name": "capability_permissions",
+        "file": "src/core/capabilities/persistence/CapabilityMigrations.ts"
+      },
+      {
+        "name": "capability_sources",
+        "file": "src/core/capabilities/persistence/CapabilityMigrations.ts"
+      },
+      {
         "name": "chunk_embeddings",
         "file": "src/core/database/Database.ts"
       },
@@ -4716,9 +5978,27 @@
       ]
     },
     {
+      "file": "src/core/agent-operations/communication/AgentCommunicationHub.ts",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
       "file": "src/core/agents/MultiAgentOrchestrator.ts",
       "signals": [
         "timer"
+      ]
+    },
+    {
+      "file": "src/core/audio/stemdeck/AudioJobRightsModel.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/audio/stemdeck/DemucsWorkerAdapter.ts",
+      "signals": [
+        "queue-or-worker"
       ]
     },
     {
@@ -4754,7 +6034,91 @@
       ]
     },
     {
+      "file": "src/core/capabilities/evaluation/CapabilityEvaluationRegistry.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
       "file": "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/evaluation/CleanMachineDeviceCertification.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/evaluation/MediaVoiceCertificationSuite.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/health/CapabilityHealthDiagnostics.ts",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/jobs/CapabilityJobService.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/jobs/UnifiedJobConsoleService.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/observability/CapabilityDashboardService.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/observability/DistributedTracingService.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/release/PostDeployValidationSuite.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/release/ProtocolVersionMatrix.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/reliability/AdapterFailureMatrix.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/reliability/CapabilitySLOEngine.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/reliability/LoadSoakBenchmarkRunner.ts",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "src/core/capabilities/storage/StorageQuotaManager.ts",
       "signals": [
         "queue-or-worker"
       ]
@@ -4797,6 +6161,12 @@
       ]
     },
     {
+      "file": "src/core/media-accessibility/MediaProjectModel.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
       "file": "src/core/memory/GraphMemory.ts",
       "signals": [
         "timer"
@@ -4824,6 +6194,12 @@
       "file": "src/core/multimodal/localization/VideoLocalizationPipeline.ts",
       "signals": [
         "queue-or-worker",
+        "timer"
+      ]
+    },
+    {
+      "file": "src/core/native-runtime/NativeCommandRunner.ts",
+      "signals": [
         "timer"
       ]
     },
@@ -4909,6 +6285,12 @@
       ]
     },
     {
+      "file": "src/core/security/threat-model/CapabilityThreatModel.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
       "file": "src/core/tools/CodeExecutor.ts",
       "signals": [
         "timer"
@@ -4952,9 +6334,27 @@
       ]
     },
     {
+      "file": "src/server/routes/capabilities.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
       "file": "src/server/routes/chat-stream.ts",
       "signals": [
         "timer"
+      ]
+    },
+    {
+      "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/server/routes/music-studio/musicStudioRoutes.ts",
+      "signals": [
+        "queue-or-worker"
       ]
     },
     {
@@ -4992,6 +6392,7 @@
     "CEREBRAS_MODEL",
     "CF_ACCESSIBILITY_CERTIFIED",
     "CF_RELEASE_CERTIFIED",
+    "CHATBOT_NATIVE_PYTHON",
     "CLAUDE_MODEL",
     "CODE_EXECUTOR_SANDBOX",
     "CODE_EXECUTOR_TIMEOUT",
@@ -5009,6 +6410,7 @@
     "DEBUG_MODE",
     "DEEPSEEK_API_KEY",
     "DEEPSEEK_MODEL",
+    "DEMUCS_PATH",
     "DEPLOYMENT_MODE",
     "DISK_CACHE_DIR",
     "EAGER_CODING_KNOWLEDGE_LOAD",
@@ -5032,6 +6434,8 @@
     "ENABLE_WEBSOCKET",
     "EUROPEANA_API_KEY",
     "EVAL_TARGET_URL",
+    "FFMPEG_PATH",
+    "FFPROBE_PATH",
     "FILE_SEARCH_MAX_CONTENT_BYTES",
     "FILE_SEARCH_MAX_FILES",
     "FL_STUDIO_MCP_ARGS",
@@ -5058,6 +6462,7 @@
     "GITHUB_PAGES",
     "GITHUB_REPOSITORY",
     "GITHUB_TOKEN",
+    "GODOT_PATH",
     "GOOGLE_API_KEY",
     "GOOGLE_BOOKS_API_KEY",
     "GOOGLE_CSE_ID",
@@ -5093,6 +6498,7 @@
     "NYTIMES_API_KEY",
     "OCR_QUEUE_LIMIT",
     "OCR_REIMPORT_EMBEDDINGS",
+    "OLLAMA_BASE_URL",
     "OLLAMA_MODEL",
     "OLLAMA_URL",
     "OMDB_API_KEY",
@@ -5159,6 +6565,8 @@
     "TWILIO_ACCOUNT_SID",
     "TWILIO_AUTH_TOKEN",
     "TWILIO_FROM_NUMBER",
+    "UNITY_EDITOR_PATH",
+    "UNREAL_EDITOR_PATH",
     "USERPROFILE",
     "USE_GEMINI_VISION",
     "USE_GPT4V",
@@ -5219,7 +6627,7 @@
     },
     {
       "file": "client/src/components/CapabilityHubPanel.tsx",
-      "lines": 825
+      "lines": 1126
     },
     {
       "file": "client/src/components/CapabilityPromotionView.tsx",
@@ -5307,7 +6715,7 @@
     },
     {
       "file": "src/core/capabilities/CapabilityRegistry.ts",
-      "lines": 782
+      "lines": 1218
     },
     {
       "file": "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
@@ -5354,6 +6762,10 @@
       "lines": 383
     },
     {
+      "file": "src/core/developer/MockApiEngine.ts",
+      "lines": 450
+    },
+    {
       "file": "src/core/gaming/lattice/LatticeSimulationEngine.ts",
       "lines": 387
     },
@@ -5367,7 +6779,7 @@
     },
     {
       "file": "src/core/index.ts",
-      "lines": 388
+      "lines": 409
     },
     {
       "file": "src/core/initialization/ServiceInitializer.ts",
@@ -5455,7 +6867,7 @@
     },
     {
       "file": "src/core/providers/local/ExternalLocalModelAdapter.ts",
-      "lines": 333
+      "lines": 357
     },
     {
       "file": "src/core/quality/AutoReview.ts",
@@ -5490,6 +6902,10 @@
       "lines": 443
     },
     {
+      "file": "src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts",
+      "lines": 616
+    },
+    {
       "file": "src/core/safety/ApprovalPolicy.ts",
       "lines": 338
     },
@@ -5510,6 +6926,14 @@
       "lines": 348
     },
     {
+      "file": "src/core/sprite-lab/pipeline/SpritePaletteEngine.ts",
+      "lines": 301
+    },
+    {
+      "file": "src/core/study/StudyStudioService.ts",
+      "lines": 344
+    },
+    {
       "file": "src/core/tools/WebSearcher.ts",
       "lines": 452
     },
@@ -5526,6 +6950,34 @@
       "lines": 437
     },
     {
+      "file": "src/core/website/BlockEditorEngine.ts",
+      "lines": 324
+    },
+    {
+      "file": "src/core/website/ResponsivePreviewRenderer.ts",
+      "lines": 447
+    },
+    {
+      "file": "src/core/website/WebsiteProjectModel.ts",
+      "lines": 430
+    },
+    {
+      "file": "src/core/writing/CanonicalDocumentModel.ts",
+      "lines": 368
+    },
+    {
+      "file": "src/core/writing/DocumentEditorEngine.ts",
+      "lines": 327
+    },
+    {
+      "file": "src/core/writing/DocumentImportExportService.ts",
+      "lines": 360
+    },
+    {
+      "file": "src/core/writing/WritingStudioService.ts",
+      "lines": 339
+    },
+    {
       "file": "src/server/index.ts",
       "lines": 1169
     },
@@ -5535,7 +6987,7 @@
     },
     {
       "file": "src/server/routes/capabilities.ts",
-      "lines": 316
+      "lines": 452
     },
     {
       "file": "src/server/routes/legacy-chat.ts",

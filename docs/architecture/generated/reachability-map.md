@@ -9,9 +9,9 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 
 ## Counts
 
-- Reachable production files: 645
-- Unreachable production files: 204
-- Unresolved relative imports: 42
+- Reachable production files: 816
+- Unreachable production files: 290
+- Unresolved relative imports: 54
 
 ## Unreachable production modules
 
@@ -94,6 +94,7 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/agents/story/PlotArchitect.ts`
 - `src/core/agents/story/WorldbuildingEngine.ts`
 - `src/core/audio/AudioMetadataService.ts`
+- `src/core/audio/stemdeck/AudioIngestNormalizer.ts`
 - `src/core/audit/AuditLogger.ts`
 - `src/core/auth/ApiKeyService.ts`
 - `src/core/automation/AutoDrive.ts`
@@ -104,8 +105,46 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/browser/PlaywrightBrowserDriver.ts`
 - `src/core/browser/PydollAdapter.ts`
 - `src/core/browser/index.ts`
+- `src/core/capabilities/artifacts/ArtifactLineageService.ts`
+- `src/core/capabilities/backup/ExpandedBackupRecoveryEngine.ts`
+- `src/core/capabilities/diagnostics/SupportBundleService.ts`
 - `src/core/capabilities/evaluation/CanaryCertificationSuite.ts`
+- `src/core/capabilities/evaluation/CapabilityEvaluationRegistry.ts`
+- `src/core/capabilities/evaluation/CleanMachineDeviceCertification.ts`
+- `src/core/capabilities/evaluation/ContextRepositoryCertificationSuite.ts`
+- `src/core/capabilities/evaluation/CrossCapabilityScenarioCertification.ts`
+- `src/core/capabilities/evaluation/GameAssetCertificationSuite.ts`
+- `src/core/capabilities/evaluation/LicenseSbomCertification.ts`
+- `src/core/capabilities/evaluation/LocalModelCertificationSuite.ts`
+- `src/core/capabilities/evaluation/ManualAccessibilityCertification.ts`
+- `src/core/capabilities/evaluation/MediaVoiceCertificationSuite.ts`
+- `src/core/capabilities/evaluation/MemoryAgentCertificationSuite.ts`
+- `src/core/capabilities/evaluation/WritingStudyWebCertificationSuite.ts`
+- `src/core/capabilities/health/CapabilityGuidedDoctor.ts`
 - `src/core/capabilities/index.ts`
+- `src/core/capabilities/jobs/UnifiedJobConsoleService.ts`
+- `src/core/capabilities/maintenance/CapabilityDeprecationManager.ts`
+- `src/core/capabilities/maintenance/CapabilityMaintenanceScanner.ts`
+- `src/core/capabilities/maintenance/EvaluationMaintenanceService.ts`
+- `src/core/capabilities/maintenance/OperationalDrillsCoordinator.ts`
+- `src/core/capabilities/observability/CapabilityDashboardService.ts`
+- `src/core/capabilities/observability/CapabilityMetricsCollector.ts`
+- `src/core/capabilities/observability/DistributedTracingService.ts`
+- `src/core/capabilities/packs/PackManagerService.ts`
+- `src/core/capabilities/persistence/CapabilityMigrations.ts`
+- `src/core/capabilities/persistence/CapabilitySqliteStore.ts`
+- `src/core/capabilities/promotion/CrossCapabilityPromotionLedger.ts`
+- `src/core/capabilities/release/ControlledRolloutManager.ts`
+- `src/core/capabilities/release/PostDeployValidationSuite.ts`
+- `src/core/capabilities/release/ProtocolVersionMatrix.ts`
+- `src/core/capabilities/release/ReleaseArtifactBuilder.ts`
+- `src/core/capabilities/release/ReleaseTrainManifestBuilder.ts`
+- `src/core/capabilities/reliability/AdapterFailureMatrix.ts`
+- `src/core/capabilities/reliability/CapabilitySLOEngine.ts`
+- `src/core/capabilities/reliability/DurableRestartRecoveryService.ts`
+- `src/core/capabilities/reliability/LoadSoakBenchmarkRunner.ts`
+- `src/core/capabilities/reliability/PerformanceRegressionGate.ts`
+- `src/core/capabilities/storage/StorageQuotaManager.ts`
 - `src/core/chrono/ClaimVerifier.ts`
 - `src/core/coding/CodingController.ts`
 - `src/core/coding/CodingRequestRouter.ts`
@@ -118,23 +157,36 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/coding/model/CodingModelRouter.ts`
 - `src/core/coding/retrieval/DocumentationRetriever.ts`
 - `src/core/coding/teams/AgentTeamCoordinator.ts`
-- `src/core/coding/teams/ProcessTreeSupervisor.ts`
 - `src/core/coding/teams/ReviewerBundle.ts`
 - `src/core/coding/teams/WorktreeLifecycleService.ts`
 - `src/core/coding/teams/index.ts`
 - `src/core/coding/testing/TestStrategy.ts`
 - `src/core/config/APIKeyManager.ts`
 - `src/core/config/ProfileManager.ts`
+- `src/core/context-economy/budgets/ContextBudgetPlanner.ts`
+- `src/core/context-economy/checkpoints/ContextCheckpointManager.ts`
+- `src/core/context-economy/index.ts`
 - `src/core/contracts/UniversalContract.ts`
 - `src/core/creative/CreativePrivacyManager.ts`
 - `src/core/creative/CreativeProjectStore.ts`
 - `src/core/creative/PromptPackLibrary.ts`
 - `src/core/creative/RoleplaySessionEngine.ts`
 - `src/core/creative/StoryBibleStore.ts`
+- `src/core/developer/index.ts`
 - `src/core/evaluation/CodingBenchmarkRunner.ts`
 - `src/core/evaluation/CodingEvalHarness.ts`
 - `src/core/evaluation/EvalHarness.ts`
+- `src/core/gaming/asset-cooker/index.ts`
+- `src/core/gaming/engine/index.ts`
+- `src/core/gaming/godot/GodotCanaryMatrix.ts`
+- `src/core/gaming/godot/GodotProfiler.ts`
+- `src/core/gaming/godot/index.ts`
+- `src/core/gaming/index.ts`
 - `src/core/gaming/lattice/index.ts`
+- `src/core/gaming/slicing/index.ts`
+- `src/core/gaming/unity/index.ts`
+- `src/core/gaming/unreal/UnrealMutationManager.ts`
+- `src/core/gaming/unreal/index.ts`
 - `src/core/index.ts`
 - `src/core/knowledge/SmartKnowledgeSource.ts`
 - `src/core/knowledge/SmartSourceFactory.ts`
@@ -164,10 +216,23 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/personalization/PreferenceLearner.ts`
 - `src/core/personalization/StyleAdapter.ts`
 - `src/core/personalization/UserProfiler.ts`
+- `src/core/project-memory/capture/MemoryCaptureService.ts`
+- `src/core/project-memory/capture/MemoryManagementService.ts`
+- `src/core/project-memory/capture/ProjectMemorySchema.ts`
+- `src/core/project-memory/capture/ProjectMemoryStore.ts`
+- `src/core/project-memory/export/MemoryPortableExporter.ts`
+- `src/core/project-memory/freshness/GitSymbolMemoryAnchor.ts`
+- `src/core/project-memory/freshness/MemoryFreshnessEngine.ts`
+- `src/core/project-memory/index.ts`
+- `src/core/project-memory/reconciliation/BranchMemoryReconciler.ts`
+- `src/core/project-memory/retrieval/HybridMemoryRetriever.ts`
 - `src/core/providers/DeviceAdapter.ts`
 - `src/core/providers/UniversalLLM.ts`
+- `src/core/providers/contracts/LocalAudioVoiceContracts.ts`
 - `src/core/providers/local/ExternalLocalModelAdapter.ts`
 - `src/core/providers/local/LocalHardwareCanary.ts`
+- `src/core/providers/local/LocalResourceMonitor.ts`
+- `src/core/providers/local/PicchioModelAdapter.ts`
 - `src/core/providers/local/index.ts`
 - `src/core/quality/AutoReview.ts`
 - `src/core/rag/AudioRAG.ts`
@@ -175,6 +240,15 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/rag/RAGRouter.ts`
 - `src/core/rag/TrustRAG.ts`
 - `src/core/rag/VideoRAG.ts`
+- `src/core/repository-intelligence/RepositoryIntelligenceService.ts`
+- `src/core/repository-intelligence/architecture/SemanticArchitectureCardProvider.ts`
+- `src/core/repository-intelligence/git/GitIntelligenceProvider.ts`
+- `src/core/repository-intelligence/impact/DiffImpactAnalyzer.ts`
+- `src/core/repository-intelligence/index.ts`
+- `src/core/repository-intelligence/indexes/ByteOffsetSymbolIndex.ts`
+- `src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts`
+- `src/core/repository-intelligence/ingestion/SafeRepositoryIngester.ts`
+- `src/core/repository-intelligence/risk/CodeHealthRiskProvider.ts`
 - `src/core/rl/FeedbackCollector.ts`
 - `src/core/rl/PolicyOptimizer.ts`
 - `src/core/rl/RewardModel.ts`
@@ -183,6 +257,16 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/safety/SandboxController.ts`
 - `src/core/scheduler/TaskScheduler.ts`
 - `src/core/scheduler/index.ts`
+- `src/core/security/artifacts/ArtifactHandoffGuard.ts`
+- `src/core/security/composition/CapabilityCompositionDefense.ts`
+- `src/core/security/consent/MediaConsentGuard.ts`
+- `src/core/security/desktop/DesktopPermissionGuard.ts`
+- `src/core/security/injection/MemoryInjectionDefense.ts`
+- `src/core/security/isolation/WorkerProcessIsolationGuard.ts`
+- `src/core/security/retention/DataRetentionManager.ts`
+- `src/core/security/supply-chain/PackSupplyChainGuard.ts`
+- `src/core/security/threat-model/CapabilityThreatModel.ts`
+- `src/core/security/web/WebSecurityBoundaryGuard.ts`
 - `src/core/tools/ToolComposer.ts`
 - `src/core/tools/audio/StemAnalyzerTool.ts`
 - `src/core/tools/culture/AwardLookupTool.ts`
@@ -211,6 +295,8 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/tools/sixsigma/AnalysisApiTool.ts`
 - `src/core/ui/ThinkingUI.ts`
 - `src/core/voice/VoiceAgent.ts`
+- `src/core/website/WebsiteWorkspaceService.ts`
+- `src/core/website/index.ts`
 - `src/mesh/CircuitBreaker.ts`
 - `src/mesh/LoadBalancer.ts`
 - `src/middleware/apiKeyAuth.ts`

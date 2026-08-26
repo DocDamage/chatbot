@@ -41,6 +41,15 @@
   background: #030303;
 }
 
+.project-architecture-workspace {
+  min-height: 420px;
+  max-height: 620px;
+  overflow: auto;
+  border: 1px solid #2c3340;
+  border-radius: 8px;
+  background: #15181d;
+}
+
 .project-intelligence-actions,
 .project-intelligence-recommendations {
   display: flex;

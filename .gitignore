@@ -18,6 +18,7 @@ client/test-results/
 cache/
 knowledge-base/
 *.log
+*.traineddata
 .DS_Store
 *.tsbuildinfo
 .vscode/

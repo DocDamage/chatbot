@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "status": "IMPLEMENTED_NOT_VERIFIED",
+  "sourceState": {
+    "branch": "codex/cf04-cf10-integration",
+    "baseCommit": "55dbcd0a2af1bd4c26f1f28aae7b3e3d6823f7f2",
+    "worktreeCommitted": false
+  },
+  "commands": [
+    { "command": "npm run release:check", "exitCode": 0 },
+    { "command": "npm run check:phase2", "exitCode": 0 },
+    { "command": "npm run generate:sbom", "exitCode": 0 },
+    { "command": "npm run generate:notices", "exitCode": 0 },
+    { "command": "npx jest src/core/repository-intelligence/__tests__/RepositoryIntelligence.eval.test.ts --runInBand", "exitCode": 0 }
+  ],
+  "server": {
+    "testSuitesPassed": 222,
+    "testsPassed": 1173,
+    "testSuitesSkipped": 1,
+    "testsSkipped": 2,
+    "coverage": { "lines": 61.8884, "branches": 49.9779, "functions": 58.3569, "statements": 61.0157 }
+  },
+  "nativeRuntimeQa": {
+    "passed": ["faster-whisper", "windows-sapi", "screen-capture", "ffmpeg-tesseract-ocr", "ollama", "demucs", "godot", "unreal-5.8", "dubbing", "narration", "asset-cooker"],
+    "blocked": ["unity-editor-license", "unity-unreal-project-side-assertion-instrumentation", "unity-unreal-profiler-instrumentation"],
+    "evidence": "docs/implementation/evidence/profile-expansion/NATIVE_RUNTIME_VALIDATION_2026-08-25.md"
+  },
+  "client": {
+    "testFilesPassed": 36,
+    "testsPassed": 115,
+    "browserE2ePassed": 7,
+    "accessibilityUnitPassed": 16,
+    "accessibilityBrowserPassed": 6,
+    "coverage": { "lines": 67.5862, "branches": 60.2345, "functions": 59.0909, "statements": 64.4428 }
+  },
+  "runtimeQaPassed": false,
+  "releasePromotionAllowed": false,
+  "openGates": [
+    "exact implementation commit and exact-head Required CI",
+    "Stage 3/final and critical-file promotion coverage",
+    "immutable upstream and legal review",
+    "remaining Unity license, editor instrumentation, clean-machine, and physical-device canaries",
+    "clean-machine and signed manual accessibility certification",
+    "load/soak, backup/restore, operational drill, signed artifact, rollout, and post-deploy evidence"
+  ]
+}

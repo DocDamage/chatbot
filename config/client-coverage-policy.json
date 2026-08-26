@@ -1,35 +1,36 @@
 {
   "schemaVersion": 1,
   "mode": "enforce",
-  "activeStage": "stage-1-baseline",
+  "activeStage": "stage-2",
   "baseline": {
-    "commit": "25cba266e350e4e5e96b76acc419ee9da51acb94",
-    "ciRun": "31530629319",
-    "recordedAt": "2026-08-11T20:03:00Z",
+    "commit": "55dbcd0a2af1bd4c26f1f28aae7b3e3d6823f7f2",
+    "ciRun": "local-profile-expansion-candidate",
+    "recordedAt": "2026-08-25T22:10:11Z",
+    "sourceState": "Profile-expansion candidate working tree based on the recorded commit; replace with the final candidate commit SHA when committed.",
     "global": {
       "lines": {
-        "total": 1800,
-        "covered": 952,
+        "total": 2257,
+        "covered": 1505,
         "skipped": 0,
-        "pct": 52.8889
+        "pct": 66.6814
       },
       "branches": {
-        "total": 1471,
-        "covered": 641,
+        "total": 1973,
+        "covered": 1159,
         "skipped": 0,
-        "pct": 43.5758
+        "pct": 58.743
       },
       "functions": {
-        "total": 690,
-        "covered": 276,
+        "total": 852,
+        "covered": 492,
         "skipped": 0,
-        "pct": 40
+        "pct": 57.7465
       },
       "statements": {
-        "total": 2058,
-        "covered": 1011,
+        "total": 2562,
+        "covered": 1624,
         "skipped": 0,
-        "pct": 49.1254
+        "pct": 63.388
       }
     }
   },

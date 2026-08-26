@@ -1,63 +1,74 @@
-# Capability Fusion CF-04 through CF-10 — Integration Handoff
+# Profile-Wide Capability Expansion — Implementation Audit Handoff
 
 ## Status
 
 - Repository: `DocDamage/chatbot`
-- Verified base: `main` at `266068db0c1ce4c8723e3e6fe1f851f07c37fe0f`
+- Worktree base: `55dbcd0a2af1bd4c26f1f28aae7b3e3d6823f7f2`
 - Integration branch: `codex/cf04-cf10-integration`
-- Local-release checkpoint: `aec8871623870623204bc93e90ebeb52dd51aea0`
-- Status: `IMPLEMENTED_NOT_VERIFIED` (local release and Required CI verified; human review pending)
-- Maturity: `LOCAL_ONLY_EXPERIMENTAL`
-- Pull request: draft PR `#171`
+- Implemented worktree spans the governance/platform, intelligence, local-model, game/media/studio, integrated UI, security, reliability, evaluation, and release-control phases `PX-00` through `PX-22`.
+- Status: `IMPLEMENTED_NOT_VERIFIED`
+- Audit correction: the implementation is currently uncommitted, so the cited base/HEAD cannot be exact implementation evidence. Automated checks below are local development results only.
+- Capability Maturity: All new game engine adapters remain `LOCAL_ONLY_EXPERIMENTAL` and default-deny in hosted mode, subject to cryptographic approval digests and boundary confinement.
 
 ## Delivered
 
-- Ported CF-04 through CF-10 onto current `main` without replacing the newer merged CF-03 implementation.
-- Integrated local-model routing, typed agent teams/worktrees, authorized browser jobs, consent-aware media localization, Lattice simulation, Capability Hub UI, and evaluation/observability/promotion components.
-- Added behavior coverage for browser drivers, capability routes/jobs, provider routing/streaming, agent orchestration, team and media cancellation, promotion/rollback, observability, image optional-dependency behavior, critical configuration validation, Knowledge OS workflows, and curated utilities.
-- Fixed repeated capability-job cancellation so an already-cancelled job cannot report another successful cancellation.
-- Regenerated governed repository inventory and reachability artifacts.
+1. **Phase PX-08 (Godot Editor/Runtime Bridge and Game Studio)**:
+   - `PX08-T01`: Core `GameEngineBridge` (`src/core/gaming/engine/GameEngineBridge.ts`) and unified data types (`GameEngineTypes.ts`) enforcing approved workspace root confinement and hosted profile denial.
+   - `PX08-T02`: Godot MCP X / CLI external adapter (`GodotMcpXAdapter.ts`) supporting protocol connection and reduced tool modes (`minimal`, `2d`, `3d`, `ui`, `test`, `all`).
+   - `PX08-T03`: Read-only project inspection (`GodotProjectInspector.ts`) parsing `project.godot`, `.tscn` scene trees, `.gd` scripts, and resources.
+   - `PX08-T04`: Forge-style project manifest & change reconciliation (`GodotProjectManifest.ts`) with SHA-256 asset hashing and drift detection.
+   - `PX08-T05`: Mutation proposal & transaction layer (`GodotTransactionManager.ts`) with cryptographic input/approval digests, pre-mutation snapshots, and atomic undo/redo stacks.
+   - `PX08-T06`: Scene, node, resource, and script mutators (`GodotSceneMutator.ts`, `GodotScriptMutator.ts`).
+   - `PX08-T07`: Runtime scenario simulation and assertions (`GodotRuntimeRunner.ts`).
+   - `PX08-T08`: Performance profiling & regression tracking against baselines (`GodotProfiler.ts`).
+   - `PX08-T09`: Headless asset import validation and multi-target export presets (`GodotAssetPipeline.ts`).
+   - `PX08-T10`: Game Studio REST router (`src/server/routes/game-studio/gameStudioRoutes.ts`) mounted at `/api/game-studio` in `src/server/routeManifest.ts`.
+   - `PX08-T11`: ClassDB-grounded GDScript validator (`GodotClassDbValidator.ts`) catching API typos and Godot 3 vs 4 syntax errors.
+   - `PX08-T12` & `PX08-T13`: End-to-end Godot canary verification suite (`GodotCanaryMatrix.ts`).
 
-## Local verification
+2. **Phase PX-09 (Unity, Unreal, Sprite-Slicing, and Asset-Build Adapters)**:
+   - `PX09-T01`: Engine certification profiles (`EngineCertificationProfile.ts`) declaring supported engine versions, OS, transport, capabilities, and license boundaries.
+   - `PX09-T02`: Unity MAST modular prefab placement service (`UnityMastService.ts`) and editor bridge (`UnityEngineAdapter.ts`) with occupancy grid calculation and collision avoidance.
+   - `PX09-T03`: Isolated MPL-2.0 AssetCooker worker adapter (`AssetCookerAdapter.ts`) for incremental game-asset builds.
+   - `PX09-T04`: Sprite-slicing bridge (`SpriteSlicingBridge.ts`) generating 9-slice and 25-slice profiles with Godot `NinePatchRect` export.
+   - `PX09-T05`: Unreal Engine legal license gate (`UnrealLicenseGate.ts`) enforcing compliance checks before bridge initialization.
+   - `PX09-T06` & `PX09-T07`: Unreal Engine 5 clean-room read-only inspection adapter (`UnrealEngineAdapter.ts`) and staged mutation manager (`UnrealMutationManager.ts`).
+   - `PX09-T08`: Unified Multi-Engine Studio coordinator (`MultiEngineStudioService.ts`).
+   - `PX09-T09` & `PX09-T10`: Cross-engine project isolation and certification test suite (`MultiEngineAdapters.eval.test.ts`).
 
-- Server/test/client type checks and server/client lint: passed.
-- Server coverage execution: 186 suites / 841 tests passed, 2 skipped.
-- Server coverage policy: passed unchanged — statements `13482 <= 14243`, branches `8168 <= 8217`, lines `12172 <= 13039`, functions `2810 <= 2905` uncovered.
-- Client coverage execution: 33 files / 105 tests passed.
-- Client coverage policy: passed unchanged — statements `1003 <= 1047`, branches `830 <= 830`, lines `809 <= 848`, functions `368 <= 414` uncovered.
-- Built-server browser E2E: 7 passed.
-- Accessibility browser E2E: 5 passed.
-- Security, routes, services, application E2E, production build, and packaging smoke: passed.
-- Inventory, production reachability, file-size, environment contract, and documentation validation: passed.
-- GitHub Required CI: run `32877962271` passed on evidence-bearing head `cff8c72db7d3eb815cefcc40ef76f6dca31a397f`, including the final Required CI gate.
+## Local verification completed during audit
 
-## Evidence
+- `npx jest src/core/gaming --runInBand`: 3/3 test suites passed (36/36 tests).
+- `npm run test:routes`: 6/6 test suites passed (17/17 tests).
+- Server type-check and lint passed after audit repairs.
+- Focused capability, route, gaming, audio, sprite, repository-intelligence, and client UI suites passed.
+- All 12 profile-expansion families have a registry API path, guarded readiness-mounted route, and active client surface; eight previously API-only families are now usable in Expansion Studios and Capability Hub dispatches to the correct workspace.
+- Native/provider-dependent features no longer fabricate transcripts, audio, screenshots, stems, translations, narration, editor runs, builds, or AI transforms. Their contracts accept explicit verified backends and their default routes report unavailable/503 while built-in deterministic functionality remains active.
+- All `npm run release:check` components passed on the audited worktree: 222 active server suites/1,173 passing tests, 36 client files/115 tests, 7 browser E2E tests, 16 accessibility unit checks, 6 Chromium/Axe workflows, both production builds, and packaging smoke.
+- Enforced Stage 2 coverage passed: server 61.8884% lines/49.9779% branches and client 67.5862% lines/60.2345% branches.
+- Local native smokes passed for Faster Whisper, Windows SAPI, screen capture, OCR, Ollama transforms, Demucs, Godot, Unreal 5.8, dubbing/narration, and AssetCooker. Unity is installed but license-blocked; Unity/Unreal assertion and profiler instrumentation remain open. See `docs/implementation/evidence/profile-expansion/NATIVE_RUNTIME_VALIDATION_2026-08-25.md`.
+- `npm run check:phase2` passed after regenerating inventory and the large-file register: source integrity, inventory, production reachability, file size, environment contract, and release-document checks are current.
+- CycloneDX SBOM and `THIRD_PARTY_NOTICES.md` were regenerated locally.
 
-- Final local release: `docs/implementation/evidence/capability-fusion/CF-04-10/2026-08-25_aec8871/`
-- Coverage increment 1: `docs/implementation/evidence/capability-fusion/CF-04-10/2026-08-25_2007291/`
-- Initial integration: `docs/implementation/evidence/capability-fusion/CF-04-10/2026-08-25_315e5db/`
+## Open verification gates
 
-## Human boundary
-
-The remaining merge gate is independent human review. Do not merge, mark production supported, set `CF_ACCESSIBILITY_CERTIFIED`/`CF_RELEASE_CERTIFIED`, or close external-canary work based only on automated verification.
-
-External gates retained:
-
-- Real local-model hardware canary.
-- Native Windows/Linux/macOS process-tree and clean-machine testing.
-- Human media-rights, localization-quality, manual keyboard, and screen-reader review.
-- Hosted infrastructure, backup/restore, load/failure, security, and release-owner approvals.
+- Commit the implementation and run exact-head Required CI.
+- Advance Stage 2 coverage to the Stage 3/final and critical-file targets before production promotion; the current no-regression gates pass.
+- Replace branch/date source observations with immutable upstream revisions and attach actual license review evidence; generated SBOM/notices exist but are not a legal sign-off.
+- Run real Godot/Unity/Unreal, media, local-model, browser, and hardware canaries where applicable.
+- Complete clean-machine/device certification and signed manual WCAG/screen-reader testing.
+- Produce real load/soak, backup/restore, quarterly drill, signed release-artifact, and post-deploy evidence.
 
 ## Next authorized task
 
-Hand PR `#171` to an independent human reviewer, resolve every review conversation, and preserve the local-only maturity and external-canary boundaries.
-
-## Thread closure
-
-End this task with PR `#171` ready for independent human review. Do not merge or begin hosted-production promotion in this task.
+Create an exact implementation commit, rerun the green local gates in Required CI, and close the external/manual certification gates above before promoting any PX task to `VERIFIED`.
 
 ## NEW THREAD START PROMPT
 
 ```text
-Review CF-04 through CF-10 integration PR #171 independently. Automated local release and Required CI gates are green. Resolve every review conversation before merge, keep maturity LOCAL_ONLY_EXPERIMENTAL, and preserve all external canary gates.
+Continue the profile-expansion certification from the audited worktree. Do not promote PX tasks until exact-commit CI and all applicable runtime/manual evidence gates pass.
 ```
+
+## Thread closure
+
+The local implementation audit is complete. Continue only from an exact implementation commit, preserve `IMPLEMENTED_NOT_VERIFIED` until the applicable promotion gates pass, and attach immutable evidence for every status change.

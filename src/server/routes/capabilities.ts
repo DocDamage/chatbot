@@ -14,6 +14,7 @@ import { resolveDeploymentMode } from '../../core/config/EnvironmentDefinitions'
 import { logger } from '../../core/observability/logger';
 import { ApprovedRepositoryGateway } from '../../core/coding/security/ApprovedRepositoryGateway';
 import { RepositoryFindingsAnalyzer } from '../../core/coding/findings/RepositoryFindings';
+import { CapabilitySDK } from '../../core/capabilities/sdk/CapabilitySDK';
 
 export function createCapabilityRouter(workspaceRoot: string = process.cwd()): Router {
   const router = Router();
@@ -30,6 +31,10 @@ export function createCapabilityRouter(workspaceRoot: string = process.cwd()): R
     if (roles.includes('admin')) return 'admin';
     if (roles.includes('developer')) return 'developer';
     return 'user';
+  }
+
+  function canAccessJob(req: Request, requester: string): boolean {
+    return resolveUserRole(req) === 'admin' || requester === (req.user?.userId || 'anonymous');
   }
 
   const validMaturities = new Set<CapabilityMaturity>([
@@ -66,7 +71,7 @@ export function createCapabilityRouter(workspaceRoot: string = process.cwd()): R
         capabilityId: typeof capabilityId === 'string' ? capabilityId : undefined,
         category: typeof category === 'string' ? category as JobCapabilityCategory : undefined,
         status: typeof status === 'string' ? status as JobStatus : undefined
-      });
+      }).filter(job => canAccessJob(req, job.requester));
       res.json({ jobs });
     } catch (error: any) {
       logger.error('Failed to list capability jobs', { error: error.message });
@@ -243,7 +248,7 @@ export function createCapabilityRouter(workspaceRoot: string = process.cwd()): R
   router.post('/:id/action', async (req: Request, res: Response) => {
     const startedAt = Date.now();
     try {
-      const { actionId, confirmedScope, requester } = req.body || {};
+      const { actionId, confirmedScope } = req.body || {};
       if (!actionId) {
         return res.status(400).json({ error: 'actionId is required' });
       }
@@ -251,7 +256,7 @@ export function createCapabilityRouter(workspaceRoot: string = process.cwd()): R
       const role = resolveUserRole(req);
       const result = await registry.executeAction(req.params.id, actionId, {
         confirmedScope,
-        requester: requester || req.user?.userId || 'CapabilityHub Operator',
+        requester: req.user?.userId || 'anonymous',
         userRole: role
       });
       obsService.recordTelemetry({
@@ -280,6 +285,9 @@ export function createCapabilityRouter(workspaceRoot: string = process.cwd()): R
   router.post('/jobs/:id/cancel', (req: Request, res: Response) => {
     try {
       const { reason } = req.body || {};
+      const job = jobManager.getJob(req.params.id);
+      if (!job) return res.status(404).json({ error: `Job '${req.params.id}' not found.` });
+      if (!canAccessJob(req, job.requester)) return res.status(403).json({ error: 'Job access denied.' });
       const success = jobManager.cancelJob(req.params.id, reason);
       if (!success) {
         return res.status(400).json({ error: `Could not cancel job '${req.params.id}' (not found or already finished).` });
@@ -298,6 +306,9 @@ export function createCapabilityRouter(workspaceRoot: string = process.cwd()): R
       if (!confirmedScope) {
         return res.status(400).json({ error: 'confirmedScope is required' });
       }
+      const job = jobManager.getJob(req.params.id);
+      if (!job) return res.status(404).json({ error: `Job '${req.params.id}' not found.` });
+      if (!canAccessJob(req, job.requester)) return res.status(403).json({ error: 'Job access denied.' });
 
       const success = jobManager.confirmExactScope(req.params.id, confirmedScope);
       if (!success) {
@@ -308,6 +319,131 @@ export function createCapabilityRouter(workspaceRoot: string = process.cwd()): R
     } catch (error: any) {
       logger.error('Failed to confirm job scope', { id: req.params.id, error: error.message });
       res.status(500).json({ error: 'Failed to confirm job scope' });
+    }
+  });
+
+  // --- PX-02 Operator API Endpoints (PX02-T13) ---
+  const sdk = CapabilitySDK.getInstance();
+
+  // GET /api/capabilities/artifacts/:id - Retrieve artifact metadata
+  router.get('/artifacts/:id', (req: Request, res: Response) => {
+    try {
+      const role = resolveUserRole(req);
+      const requester = {
+        userId: req.user?.userId || 'anonymous',
+        isAdmin: role === 'admin'
+      };
+      const artifact = sdk.artifacts.getArtifactMetadata(req.params.id, requester);
+      if (!artifact) {
+        return res.status(404).json({ error: `Artifact '${req.params.id}' not found or access denied` });
+      }
+      res.json({ artifact });
+    } catch (error: any) {
+      logger.error('Failed to get artifact metadata', { id: req.params.id, error: error.message });
+      res.status(500).json({ error: 'Failed to get artifact metadata' });
+    }
+  });
+
+  // GET /api/capabilities/jobs/:id - Get specific job details
+  router.get('/jobs/:id', (req: Request, res: Response) => {
+    try {
+      const job = jobManager.getJob(req.params.id);
+      if (!job) {
+        return res.status(404).json({ error: `Job '${req.params.id}' not found` });
+      }
+      if (!canAccessJob(req, job.requester)) return res.status(403).json({ error: 'Job access denied.' });
+      res.json({ job });
+    } catch (error: any) {
+      logger.error('Failed to get job', { id: req.params.id, error: error.message });
+      res.status(500).json({ error: 'Failed to get job' });
+    }
+  });
+
+  // POST /api/capabilities/jobs/:id/approve - Approve pending job with digest
+  router.post('/jobs/:id/approve', (req: Request, res: Response) => {
+    try {
+      const { approvalDigest } = req.body || {};
+      const job = jobManager.getJob(req.params.id);
+      if (!job) {
+        return res.status(404).json({ error: `Job '${req.params.id}' not found` });
+      }
+      if (!canAccessJob(req, job.requester)) return res.status(403).json({ error: 'Job access denied.' });
+      const role = resolveUserRole(req);
+      if (role !== 'admin' && role !== 'developer') {
+        return res.status(403).json({ error: 'Only developers or admins can approve capability jobs' });
+      }
+      if (typeof approvalDigest !== 'string' || !approvalDigest) {
+        return res.status(400).json({ error: 'approvalDigest is required' });
+      }
+      const success = jobManager.confirmExactScope(req.params.id, approvalDigest);
+      res.json({ success, job: jobManager.getJob(req.params.id) });
+    } catch (error: any) {
+      logger.error('Failed to approve job', { id: req.params.id, error: error.message });
+      res.status(500).json({ error: 'Failed to approve job' });
+    }
+  });
+
+  // POST /api/capabilities/:id/preflight - Run preflight check
+  router.post('/:id/preflight', async (req: Request, res: Response) => {
+    try {
+      const snapshot = await sdk.health.runDiagnostics(req.params.id);
+      res.json({ preflight: snapshot });
+    } catch (error: any) {
+      logger.error('Failed preflight check', { id: req.params.id, error: error.message });
+      res.status(500).json({ error: 'Failed preflight check' });
+    }
+  });
+
+  // POST /api/capabilities/:id/test - Run capability test/canary
+  router.post('/:id/test', async (req: Request, res: Response) => {
+    try {
+      const role = resolveUserRole(req);
+      const result = await registry.executeAction(req.params.id, 'test_run', {
+        requester: req.user?.userId || 'Operator',
+        userRole: role
+      });
+      res.json(result);
+    } catch (error: any) {
+      logger.error('Failed to test capability', { id: req.params.id, error: error.message });
+      res.status(500).json({ error: 'Failed to test capability' });
+    }
+  });
+
+  // POST /api/capabilities/:id/enable - Enable capability
+  router.post('/:id/enable', (req: Request, res: Response) => {
+    try {
+      const role = resolveUserRole(req);
+      if (role !== 'admin') {
+        return res.status(403).json({ error: 'Admin role required to enable capabilities' });
+      }
+      if (!registry.restoreCapabilityPolicy(req.params.id)) {
+        return res.status(404).json({ error: `Capability '${req.params.id}' not found` });
+      }
+      res.json({ success: true, message: `Capability '${req.params.id}' enabled.` });
+    } catch (error: any) {
+      logger.error('Failed to enable capability', { id: req.params.id, error: error.message });
+      res.status(500).json({ error: 'Failed to enable capability' });
+    }
+  });
+
+  // POST /api/capabilities/:id/disable - Disable capability
+  router.post('/:id/disable', (req: Request, res: Response) => {
+    try {
+      const role = resolveUserRole(req);
+      if (role !== 'admin') {
+        return res.status(403).json({ error: 'Admin role required to disable capabilities' });
+      }
+      const requiredScope = `DISABLE_CAPABILITY:${req.params.id}`;
+      if (req.body?.confirmedScope !== requiredScope) {
+        return res.status(400).json({ error: `Exact-scope confirmation must match '${requiredScope}'` });
+      }
+      if (!registry.disableCapability(req.params.id)) {
+        return res.status(404).json({ error: `Capability '${req.params.id}' not found` });
+      }
+      res.json({ success: true, message: `Capability '${req.params.id}' disabled.` });
+    } catch (error: any) {
+      logger.error('Failed to disable capability', { id: req.params.id, error: error.message });
+      res.status(500).json({ error: 'Failed to disable capability' });
     }
   });
 

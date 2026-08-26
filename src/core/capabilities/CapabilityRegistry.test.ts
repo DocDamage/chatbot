@@ -41,6 +41,20 @@ describe('CF-09 Unified Capability Hub', () => {
       expect(ids).toContain('browser_jobs');
       expect(ids).toContain('video_localization');
       expect(ids).toContain('lattice_gamedev');
+      expect(ids).toEqual(expect.arrayContaining([
+        'context_economy',
+        'project_memory',
+        'agent_operations',
+        'game_engine_bridge',
+        'sprite_studio',
+        'stem_mix_lab',
+        'desktop_voice_companion',
+        'media_accessibility',
+        'writing_studio',
+        'study_studio',
+        'web_studio',
+        'developer_utility_pack'
+      ]));
     });
 
     it('classifies capabilities into valid sections', () => {
@@ -176,6 +190,23 @@ describe('CF-09 Unified Capability Hub', () => {
       expect(result.success).toBe(false);
       expect(result.message).toContain('does not yet have a verified diagnostic handler');
       expect(result.job).toMatchObject({ status: 'failed', category: 'findings_analysis' });
+    });
+
+    it('verifies exposure contracts for every newly surfaced expansion family', async () => {
+      const capabilityIds = [
+        'context_economy', 'project_memory', 'agent_operations', 'game_engine_bridge',
+        'desktop_voice_companion', 'media_accessibility', 'writing_studio',
+        'study_studio', 'web_studio', 'developer_utility_pack'
+      ];
+
+      for (const capabilityId of capabilityIds) {
+        const result = await registry.executeAction(capabilityId, 'test_run', { requester: 'ExpansionContractTest' });
+        expect(result.success).toBe(true);
+        expect(result.job?.evidence[0]).toMatchObject({
+          type: 'capability_exposure_contract',
+          dataPreview: { capabilityId, liveExternalCanary: false }
+        });
+      }
     });
 
     it('reports local-model setup failures without claiming a successful canary', async () => {

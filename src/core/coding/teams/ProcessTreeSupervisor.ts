@@ -33,6 +33,19 @@ export interface ProcessExecutionResult {
 }
 
 export class ProcessTreeSupervisor {
+  private static activePids: Set<number> = new Set();
+
+  /**
+   * Terminate all currently active process trees managed by the supervisor.
+   */
+  public static async terminateAll(): Promise<void> {
+    const pids = Array.from(this.activePids);
+    for (const pid of pids) {
+      await this.killProcessTree(pid);
+      this.activePids.delete(pid);
+    }
+  }
+
   /**
    * Execute a command with bounded execution time, memory tracking, and process tree cleanup.
    */
@@ -57,6 +70,10 @@ export class ProcessTreeSupervisor {
         shell: false,
         windowsHide: true
       });
+
+      if (child.pid) {
+        ProcessTreeSupervisor.activePids.add(child.pid);
+      }
 
       let timeoutTimer: NodeJS.Timeout | null = null;
 
@@ -94,6 +111,7 @@ export class ProcessTreeSupervisor {
       });
 
       child.on('close', (code, signal) => {
+        if (child.pid) ProcessTreeSupervisor.activePids.delete(child.pid);
         if (timeoutTimer) clearTimeout(timeoutTimer);
         const durationMs = Date.now() - startTime;
         const combinedOutput = stdoutAcc + stderrAcc;
@@ -112,6 +130,7 @@ export class ProcessTreeSupervisor {
       });
 
       child.on('error', async (err) => {
+        if (child.pid) ProcessTreeSupervisor.activePids.delete(child.pid);
         if (timeoutTimer) clearTimeout(timeoutTimer);
         logger.error('ProcessTreeSupervisor child spawn error', { error: err.message });
         const durationMs = Date.now() - startTime;

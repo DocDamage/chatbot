@@ -35,7 +35,8 @@ const mockCapabilities = [
     actions: [
       { id: 'test_run', label: 'Run Graph Diagnostic', description: 'Validate symbol resolution' }
     ],
-    localOnly: true
+    localOnly: true,
+    apiBasePath: '/api/project-intelligence'
   },
   {
     id: 'typed_agent_teams',
@@ -246,6 +247,17 @@ describe('CapabilityHubPanel', () => {
 
     await user.click(screen.getByRole('button', { name: 'Close' }));
     expect(screen.queryByText('Diagnostics & Actionable Remediation')).toBeNull();
+  });
+
+  it('hands an exposed capability to its active workspace', async () => {
+    const user = userEvent.setup();
+    const onOpenCapability = vi.fn();
+    render(<CapabilityHubPanel onOpenCapability={onOpenCapability} />);
+    await waitFor(() => expect(screen.getByText('Architecture Graph (CF-01)')).toBeTruthy());
+    await user.click(screen.getAllByRole('button', { name: /Inspect full specifications/i })[0]);
+    await user.click(screen.getByRole('button', { name: 'Open workspace' }));
+    expect(onOpenCapability).toHaveBeenCalledWith('repo_architecture');
+    expect(screen.queryByText('Description & Operation')).toBeNull();
   });
 
   it('requires exact-scope confirmation for dangerous actions', async () => {

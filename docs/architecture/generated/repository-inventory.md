@@ -6,19 +6,21 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1145 |
-| Production source files | 849 |
-| Reachable production files | 645 |
-| Unreachable production files | 204 |
-| Discovered route calls | 369 |
-| Environment variables | 204 |
+| Source files | 1445 |
+| Production source files | 1106 |
+| Reachable production files | 816 |
+| Unreachable production files | 290 |
+| Discovered route calls | 501 |
+| Environment variables | 212 |
 | Feature flags | 18 |
-| Files above 300 lines | 83 |
+| Files above 300 lines | 94 |
 
 ## Server route calls
 
 | Method | Path | Source |
 |---|---|---|
+| USE | `/api/capabilities` | `src/core/context-economy/evaluation/ContextBenchmarkSuite.ts:118` |
+| USE | `/auth` | `src/core/context-economy/evaluation/ContextBenchmarkSuite.ts:121` |
 | GET | `/health` | `src/server/healthRoutes.ts:13` |
 | GET | `/health/ready` | `src/server/healthRoutes.ts:74` |
 | GET | `/health/live` | `src/server/healthRoutes.ts:96` |
@@ -99,6 +101,12 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | GET | `/users` | `src/server/routes/admin.ts:222` |
 | GET | `/analytics` | `src/server/routes/admin.ts:247` |
 | GET | `/logs` | `src/server/routes/admin.ts:267` |
+| GET | `/api/agent-operations/summary` | `src/server/routes/agent-operations.ts:17` |
+| GET | `/api/agent-operations/sessions/:sessionId` | `src/server/routes/agent-operations.ts:22` |
+| POST | `/api/agent-operations/sessions` | `src/server/routes/agent-operations.ts:29` |
+| POST | `/api/agent-operations/sessions/:sessionId/pause` | `src/server/routes/agent-operations.ts:62` |
+| POST | `/api/agent-operations/sessions/:sessionId/resume` | `src/server/routes/agent-operations.ts:69` |
+| POST | `/api/agent-operations/stop-all` | `src/server/routes/agent-operations.ts:76` |
 | GET | `/api/audio/files` | `src/server/routes/audio.ts:9` |
 | GET | `/api/audio/metadata` | `src/server/routes/audio.ts:17` |
 | GET | `/api/audio/preview` | `src/server/routes/audio.ts:23` |
@@ -110,20 +118,27 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/business/pricing` | `src/server/routes/business.ts:15` |
 | POST | `/api/business/market` | `src/server/routes/business.ts:19` |
 | POST | `/api/business/unit-economics` | `src/server/routes/business.ts:23` |
-| GET | `/` | `src/server/routes/capabilities.ts:44` |
-| GET | `/jobs/list` | `src/server/routes/capabilities.ts:62` |
-| POST | `/evaluations/run` | `src/server/routes/capabilities.ts:80` |
-| GET | `/metrics/dashboard` | `src/server/routes/capabilities.ts:99` |
-| GET | `/support-bundle` | `src/server/routes/capabilities.ts:110` |
-| GET | `/repository-findings` | `src/server/routes/capabilities.ts:121` |
-| POST | `/promotions/evaluate` | `src/server/routes/capabilities.ts:134` |
-| GET | `/promotions/decisions` | `src/server/routes/capabilities.ts:152` |
-| POST | `/promotions/promote` | `src/server/routes/capabilities.ts:157` |
-| POST | `/promotions/rollback` | `src/server/routes/capabilities.ts:194` |
-| GET | `/:id` | `src/server/routes/capabilities.ts:227` |
-| POST | `/:id/action` | `src/server/routes/capabilities.ts:243` |
-| POST | `/jobs/:id/cancel` | `src/server/routes/capabilities.ts:280` |
-| POST | `/jobs/:id/confirm` | `src/server/routes/capabilities.ts:295` |
+| GET | `/` | `src/server/routes/capabilities.ts:49` |
+| GET | `/jobs/list` | `src/server/routes/capabilities.ts:67` |
+| POST | `/evaluations/run` | `src/server/routes/capabilities.ts:85` |
+| GET | `/metrics/dashboard` | `src/server/routes/capabilities.ts:104` |
+| GET | `/support-bundle` | `src/server/routes/capabilities.ts:115` |
+| GET | `/repository-findings` | `src/server/routes/capabilities.ts:126` |
+| POST | `/promotions/evaluate` | `src/server/routes/capabilities.ts:139` |
+| GET | `/promotions/decisions` | `src/server/routes/capabilities.ts:157` |
+| POST | `/promotions/promote` | `src/server/routes/capabilities.ts:162` |
+| POST | `/promotions/rollback` | `src/server/routes/capabilities.ts:199` |
+| GET | `/:id` | `src/server/routes/capabilities.ts:232` |
+| POST | `/:id/action` | `src/server/routes/capabilities.ts:248` |
+| POST | `/jobs/:id/cancel` | `src/server/routes/capabilities.ts:285` |
+| POST | `/jobs/:id/confirm` | `src/server/routes/capabilities.ts:303` |
+| GET | `/artifacts/:id` | `src/server/routes/capabilities.ts:329` |
+| GET | `/jobs/:id` | `src/server/routes/capabilities.ts:348` |
+| POST | `/jobs/:id/approve` | `src/server/routes/capabilities.ts:363` |
+| POST | `/:id/preflight` | `src/server/routes/capabilities.ts:387` |
+| POST | `/:id/test` | `src/server/routes/capabilities.ts:398` |
+| POST | `/:id/enable` | `src/server/routes/capabilities.ts:413` |
+| POST | `/:id/disable` | `src/server/routes/capabilities.ts:430` |
 | POST | `/api/chrono/ask` | `src/server/routes/chrono.ts:6` |
 | POST | `/api/code/ask` | `src/server/routes/code.ts:31` |
 | POST | `/api/code/plan` | `src/server/routes/code.ts:46` |
@@ -138,6 +153,11 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/code/repair` | `src/server/routes/code.ts:160` |
 | GET | `/api/code/files/search` | `src/server/routes/code.ts:179` |
 | GET | `/api/code/symbols` | `src/server/routes/code.ts:187` |
+| POST | `/compress` | `src/server/routes/context-economy/contextInspectorRoutes.ts:22` |
+| GET | `/retrieve/:key` | `src/server/routes/context-economy/contextInspectorRoutes.ts:48` |
+| POST | `/benchmark` | `src/server/routes/context-economy/contextInspectorRoutes.ts:71` |
+| GET | `/proposals` | `src/server/routes/context-economy/contextInspectorRoutes.ts:82` |
+| POST | `/proposals/:id/review` | `src/server/routes/context-economy/contextInspectorRoutes.ts:93` |
 | POST | `/api/creative/draft-scene` | `src/server/routes/creative.ts:28` |
 | POST | `/api/creative/continue-scene` | `src/server/routes/creative.ts:33` |
 | POST | `/api/creative/revise` | `src/server/routes/creative.ts:38` |
@@ -147,8 +167,18 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/creative/roleplay-turn` | `src/server/routes/creative.ts:58` |
 | POST | `/api/creative/continuity-summary` | `src/server/routes/creative.ts:63` |
 | POST | `/api/creative/export` | `src/server/routes/creative.ts:68` |
-| GET | `/api/desktop-companion/capabilities` | `src/server/routes/desktop-companion.ts:10` |
-| POST | `/api/desktop-companion/context` | `src/server/routes/desktop-companion.ts:17` |
+| GET | `/api/desktop-companion/capabilities` | `src/server/routes/desktop-companion.ts:66` |
+| GET | `/api/desktop-companion/stt-models` | `src/server/routes/desktop-companion.ts:98` |
+| GET | `/api/desktop-companion/tts-voices` | `src/server/routes/desktop-companion.ts:103` |
+| POST | `/api/desktop-companion/synthesize` | `src/server/routes/desktop-companion.ts:107` |
+| POST | `/api/desktop-companion/dictate` | `src/server/routes/desktop-companion.ts:129` |
+| POST | `/api/desktop-companion/screen-capture` | `src/server/routes/desktop-companion.ts:159` |
+| POST | `/api/desktop-companion/clipboard-action` | `src/server/routes/desktop-companion.ts:187` |
+| GET | `/api/desktop-companion/briefing` | `src/server/routes/desktop-companion.ts:214` |
+| POST | `/api/desktop-companion/validate-os-action` | `src/server/routes/desktop-companion.ts:220` |
+| GET | `/api/desktop-companion/privacy` | `src/server/routes/desktop-companion.ts:227` |
+| POST | `/api/desktop-companion/privacy` | `src/server/routes/desktop-companion.ts:231` |
+| POST | `/api/desktop-companion/context` | `src/server/routes/desktop-companion.ts:237` |
 | POST | `/api/document-workspace/review` | `src/server/routes/document-workspace.ts:14` |
 | POST | `/api/document-workspace/transform` | `src/server/routes/document-workspace.ts:20` |
 | POST | `/api/document-workspace/save` | `src/server/routes/document-workspace.ts:24` |
@@ -183,6 +213,23 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/flstudio/channel/step-sequence` | `src/server/routes/flstudio.ts:74` |
 | POST | `/api/flstudio/mixer/set` | `src/server/routes/flstudio.ts:88` |
 | POST | `/api/flstudio/transport` | `src/server/routes/flstudio.ts:122` |
+| GET | `/api/game-studio/summary` | `src/server/routes/game-studio/gameStudioRoutes.ts:47` |
+| GET | `/api/game-studio/profiles` | `src/server/routes/game-studio/gameStudioRoutes.ts:59` |
+| POST | `/api/game-studio/connect` | `src/server/routes/game-studio/gameStudioRoutes.ts:66` |
+| POST | `/api/game-studio/disconnect` | `src/server/routes/game-studio/gameStudioRoutes.ts:80` |
+| GET | `/api/game-studio/project` | `src/server/routes/game-studio/gameStudioRoutes.ts:87` |
+| GET | `/api/game-studio/scene` | `src/server/routes/game-studio/gameStudioRoutes.ts:93` |
+| GET | `/api/game-studio/script` | `src/server/routes/game-studio/gameStudioRoutes.ts:100` |
+| POST | `/api/game-studio/proposals` | `src/server/routes/game-studio/gameStudioRoutes.ts:108` |
+| POST | `/api/game-studio/proposals/:id/approve` | `src/server/routes/game-studio/gameStudioRoutes.ts:121` |
+| POST | `/api/game-studio/proposals/:id/apply` | `src/server/routes/game-studio/gameStudioRoutes.ts:128` |
+| POST | `/api/game-studio/transactions/:id/rollback` | `src/server/routes/game-studio/gameStudioRoutes.ts:137` |
+| POST | `/api/game-studio/runtime/scenario` | `src/server/routes/game-studio/gameStudioRoutes.ts:145` |
+| GET | `/api/game-studio/profiler` | `src/server/routes/game-studio/gameStudioRoutes.ts:159` |
+| POST | `/api/game-studio/export` | `src/server/routes/game-studio/gameStudioRoutes.ts:165` |
+| POST | `/api/game-studio/mast/layout` | `src/server/routes/game-studio/gameStudioRoutes.ts:178` |
+| POST | `/api/game-studio/slicing/profile` | `src/server/routes/game-studio/gameStudioRoutes.ts:188` |
+| POST | `/api/game-studio/asset-cook` | `src/server/routes/game-studio/gameStudioRoutes.ts:197` |
 | POST | `/api/gamedev/design` | `src/server/routes/gamedev.ts:7` |
 | POST | `/api/gamedev/prototype` | `src/server/routes/gamedev.ts:11` |
 | POST | `/api/gamedev/balance` | `src/server/routes/gamedev.ts:15` |
@@ -282,9 +329,46 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/math/ask` | `src/server/routes/math.ts:7` |
 | POST | `/api/math/solve` | `src/server/routes/math.ts:11` |
 | POST | `/api/math/verify` | `src/server/routes/math.ts:15` |
-| GET | `/api/mock-api/status` | `src/server/routes/mock-api.ts:9` |
-| GET | `/api/mock-api/collections` | `src/server/routes/mock-api.ts:10` |
-| POST | `/api/mock-api/import` | `src/server/routes/mock-api.ts:11` |
+| GET | `/api/media-accessibility/status` | `src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts:82` |
+| POST | `/api/media-accessibility/projects` | `src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts:109` |
+| GET | `/api/media-accessibility/projects/:projectId` | `src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts:130` |
+| POST | `/api/media-accessibility/ocr` | `src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts:137` |
+| POST | `/api/media-accessibility/export-subtitles` | `src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts:158` |
+| POST | `/api/media-accessibility/align-transcript` | `src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts:183` |
+| POST | `/api/media-accessibility/translation-variant` | `src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts:197` |
+| POST | `/api/media-accessibility/dubbing` | `src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts:218` |
+| POST | `/api/media-accessibility/document-narration` | `src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts:238` |
+| POST | `/api/media-accessibility/read-along` | `src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts:256` |
+| POST | `/api/media-accessibility/ingest/preflight` | `src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts:274` |
+| POST | `/api/media-accessibility/storage/cleanup` | `src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts:285` |
+| GET | `/api/mock-api/status` | `src/server/routes/mock-api.ts:13` |
+| GET | `/api/mock-api/collections` | `src/server/routes/mock-api.ts:22` |
+| POST | `/api/mock-api/collections` | `src/server/routes/mock-api.ts:26` |
+| POST | `/api/mock-api/import` | `src/server/routes/mock-api.ts:31` |
+| POST | `/api/mock-api/reset` | `src/server/routes/mock-api.ts:40` |
+| GET | `/api/mock-api/collections/:name` | `src/server/routes/mock-api.ts:46` |
+| GET | `/api/mock-api/collections/:name/:id` | `src/server/routes/mock-api.ts:63` |
+| POST | `/api/mock-api/collections/:name` | `src/server/routes/mock-api.ts:72` |
+| PATCH | `/api/mock-api/collections/:name/:id` | `src/server/routes/mock-api.ts:77` |
+| DELETE | `/api/mock-api/collections/:name/:id` | `src/server/routes/mock-api.ts:82` |
+| GET | `/api/mock-api/chaos/config` | `src/server/routes/mock-api.ts:88` |
+| POST | `/api/mock-api/chaos/config` | `src/server/routes/mock-api.ts:92` |
+| POST | `/api/mock-api/chaos/preset` | `src/server/routes/mock-api.ts:97` |
+| POST | `/api/mock-api/openapi/import` | `src/server/routes/mock-api.ts:103` |
+| POST | `/api/mock-api/skill/export` | `src/server/routes/mock-api.ts:109` |
+| POST | `/api/mock-api/packs/scaffold` | `src/server/routes/mock-api.ts:115` |
+| GET | `/api/mock-api/doctor` | `src/server/routes/mock-api.ts:121` |
+| GET | `/api/music-studio/hardware-probe` | `src/server/routes/music-studio/musicStudioRoutes.ts:39` |
+| POST | `/api/music-studio/preflight` | `src/server/routes/music-studio/musicStudioRoutes.ts:45` |
+| POST | `/api/music-studio/separate` | `src/server/routes/music-studio/musicStudioRoutes.ts:64` |
+| GET | `/api/music-studio/jobs/:id` | `src/server/routes/music-studio/musicStudioRoutes.ts:137` |
+| POST | `/api/music-studio/jobs/:id/cancel` | `src/server/routes/music-studio/musicStudioRoutes.ts:143` |
+| GET | `/api/music-studio/waveform` | `src/server/routes/music-studio/musicStudioRoutes.ts:155` |
+| POST | `/api/music-studio/mixer/init` | `src/server/routes/music-studio/musicStudioRoutes.ts:167` |
+| POST | `/api/music-studio/mixer/calculate-gains` | `src/server/routes/music-studio/musicStudioRoutes.ts:176` |
+| POST | `/api/music-studio/analyze` | `src/server/routes/music-studio/musicStudioRoutes.ts:186` |
+| POST | `/api/music-studio/export` | `src/server/routes/music-studio/musicStudioRoutes.ts:196` |
+| POST | `/api/music-studio/daw-handoff` | `src/server/routes/music-studio/musicStudioRoutes.ts:221` |
 | POST | `/api/music/mix/analyze` | `src/server/routes/music.ts:17` |
 | POST | `/api/music/mix/plan` | `src/server/routes/music.ts:21` |
 | POST | `/api/music/mix/apply` | `src/server/routes/music.ts:25` |
@@ -374,20 +458,68 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/sprite-lab/internal/slice-grid` | `src/server/routes/sprite-lab.ts:76` |
 | POST | `/api/sprite-lab/internal/palette` | `src/server/routes/sprite-lab.ts:87` |
 | POST | `/api/sprite-lab/internal/manifest` | `src/server/routes/sprite-lab.ts:100` |
+| GET | `/api/sprite-studio/presets` | `src/server/routes/sprite-studio/spriteStudioRoutes.ts:42` |
+| POST | `/api/sprite-studio/presets` | `src/server/routes/sprite-studio/spriteStudioRoutes.ts:46` |
+| GET | `/api/sprite-studio/palettes` | `src/server/routes/sprite-studio/spriteStudioRoutes.ts:56` |
+| POST | `/api/sprite-studio/pipeline/process` | `src/server/routes/sprite-studio/spriteStudioRoutes.ts:61` |
+| POST | `/api/sprite-studio/grid/detect` | `src/server/routes/sprite-studio/spriteStudioRoutes.ts:90` |
+| POST | `/api/sprite-studio/background/remove` | `src/server/routes/sprite-studio/spriteStudioRoutes.ts:103` |
+| POST | `/api/sprite-studio/batch/create` | `src/server/routes/sprite-studio/spriteStudioRoutes.ts:128` |
+| GET | `/api/sprite-studio/batch/:id` | `src/server/routes/sprite-studio/spriteStudioRoutes.ts:141` |
+| POST | `/api/sprite-studio/batch/:id/cancel` | `src/server/routes/sprite-studio/spriteStudioRoutes.ts:147` |
+| POST | `/api/sprite-studio/engine-handoff` | `src/server/routes/sprite-studio/spriteStudioRoutes.ts:153` |
 | POST | `/api/story/ask` | `src/server/routes/story.ts:7` |
 | POST | `/api/story/plot` | `src/server/routes/story.ts:11` |
 | POST | `/api/story/character` | `src/server/routes/story.ts:15` |
 | POST | `/api/story/worldbuild` | `src/server/routes/story.ts:19` |
 | POST | `/api/story/dialogue` | `src/server/routes/story.ts:23` |
 | POST | `/api/story/continuity` | `src/server/routes/story.ts:27` |
+| GET | `/api/study-studio/state` | `src/server/routes/study-studio.ts:33` |
+| POST | `/api/study-studio/collections` | `src/server/routes/study-studio.ts:37` |
+| POST | `/api/study-studio/sources` | `src/server/routes/study-studio.ts:56` |
+| POST | `/api/study-studio/notes` | `src/server/routes/study-studio.ts:74` |
+| POST | `/api/study-studio/flashcards/generate` | `src/server/routes/study-studio.ts:85` |
+| POST | `/api/study-studio/quizzes/generate` | `src/server/routes/study-studio.ts:89` |
+| POST | `/api/study-studio/quizzes/submit` | `src/server/routes/study-studio.ts:93` |
+| POST | `/api/study-studio/plan` | `src/server/routes/study-studio.ts:100` |
+| POST | `/api/study-studio/socratic` | `src/server/routes/study-studio.ts:105` |
+| POST | `/api/study-studio/socratic/:sessionId/turns` | `src/server/routes/study-studio.ts:117` |
+| POST | `/api/study-studio/audio-lessons` | `src/server/routes/study-studio.ts:123` |
 | GET | `/api/tool-catalog` | `src/server/routes/toolCatalog.ts:11` |
 | GET | `/api/tool-catalog/stats` | `src/server/routes/toolCatalog.ts:19` |
 | POST | `/chat` | `src/server/routes/v1/chat.ts:14` |
 | POST | `/chat` | `src/server/routes/v2/chat.ts:16` |
 | POST | `/chat/stream` | `src/server/routes/v2/chat.ts:36` |
-| GET | `/api/website-workspace/project` | `src/server/routes/website-workspace.ts:9` |
-| POST | `/api/website-workspace/project` | `src/server/routes/website-workspace.ts:10` |
-| POST | `/api/website-workspace/preview` | `src/server/routes/website-workspace.ts:11` |
+| GET | `/api/website-workspace/project` | `src/server/routes/website-workspace.ts:14` |
+| POST | `/api/website-workspace/project` | `src/server/routes/website-workspace.ts:18` |
+| POST | `/api/website-workspace/preview` | `src/server/routes/website-workspace.ts:23` |
+| GET | `/api/website-workspace/templates` | `src/server/routes/website-workspace.ts:33` |
+| POST | `/api/website-workspace/blocks` | `src/server/routes/website-workspace.ts:37` |
+| PATCH | `/api/website-workspace/blocks/:blockId` | `src/server/routes/website-workspace.ts:43` |
+| DELETE | `/api/website-workspace/blocks/:blockId` | `src/server/routes/website-workspace.ts:49` |
+| POST | `/api/website-workspace/blocks/:blockId/duplicate` | `src/server/routes/website-workspace.ts:55` |
+| POST | `/api/website-workspace/blocks/:blockId/reorder` | `src/server/routes/website-workspace.ts:61` |
+| POST | `/api/website-workspace/undo` | `src/server/routes/website-workspace.ts:67` |
+| POST | `/api/website-workspace/redo` | `src/server/routes/website-workspace.ts:72` |
+| GET | `/api/website-workspace/assets` | `src/server/routes/website-workspace.ts:78` |
+| POST | `/api/website-workspace/assets` | `src/server/routes/website-workspace.ts:82` |
+| GET | `/api/website-workspace/inspect` | `src/server/routes/website-workspace.ts:88` |
+| POST | `/api/website-workspace/source-link` | `src/server/routes/website-workspace.ts:95` |
+| POST | `/api/website-workspace/proposals` | `src/server/routes/website-workspace.ts:101` |
+| POST | `/api/website-workspace/proposals/:id/approve` | `src/server/routes/website-workspace.ts:106` |
+| POST | `/api/website-workspace/proposals/:id/apply` | `src/server/routes/website-workspace.ts:111` |
+| POST | `/api/website-workspace/transactions/:id/rollback` | `src/server/routes/website-workspace.ts:116` |
+| POST | `/api/website-workspace/import-html` | `src/server/routes/website-workspace.ts:122` |
+| GET | `/api/website-workspace/export` | `src/server/routes/website-workspace.ts:127` |
+| GET | `/api/website-workspace/audit` | `src/server/routes/website-workspace.ts:133` |
+| GET | `/api/writing-studio/state` | `src/server/routes/writing-studio.ts:43` |
+| POST | `/api/writing-studio/documents/open` | `src/server/routes/writing-studio.ts:47` |
+| PATCH | `/api/writing-studio/document` | `src/server/routes/writing-studio.ts:56` |
+| POST | `/api/writing-studio/proofread` | `src/server/routes/writing-studio.ts:62` |
+| POST | `/api/writing-studio/save` | `src/server/routes/writing-studio.ts:67` |
+| POST | `/api/writing-studio/proposals` | `src/server/routes/writing-studio.ts:73` |
+| POST | `/api/writing-studio/proposals/:proposalId/accept` | `src/server/routes/writing-studio.ts:100` |
+| POST | `/api/writing-studio/proposals/:proposalId/reject` | `src/server/routes/writing-studio.ts:105` |
 
 ## Client panels and workspaces
 
@@ -398,6 +530,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `client/src/components/CreativeComposerPanel.tsx`
 - `client/src/components/DesktopCompanionPanel.tsx`
 - `client/src/components/DocumentWorkspacePanel.tsx`
+- `client/src/components/ExpansionStudiosPanel.tsx`
 - `client/src/components/FLStudioControlPanel.tsx`
 - `client/src/components/FileExplorerPanel.tsx`
 - `client/src/components/GamingPlaybookPanel.tsx`
@@ -405,6 +538,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `client/src/components/KnowledgeOnlinePanel.tsx`
 - `client/src/components/LocalRunApprovalPanel.tsx`
 - `client/src/components/LocalToolsWorkspace.tsx`
+- `client/src/components/MemoryCenterPanel.tsx`
 - `client/src/components/MockApiWorkspacePanel.tsx`
 - `client/src/components/ProjectIntelligencePanel.tsx`
 - `client/src/components/SettingsMenu.tsx`
@@ -442,6 +576,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `CEREBRAS_MODEL`
 - `CF_ACCESSIBILITY_CERTIFIED`
 - `CF_RELEASE_CERTIFIED`
+- `CHATBOT_NATIVE_PYTHON`
 - `CLAUDE_MODEL`
 - `CODE_EXECUTOR_SANDBOX`
 - `CODE_EXECUTOR_TIMEOUT`
@@ -459,6 +594,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `DEBUG_MODE`
 - `DEEPSEEK_API_KEY`
 - `DEEPSEEK_MODEL`
+- `DEMUCS_PATH`
 - `DEPLOYMENT_MODE`
 - `DISK_CACHE_DIR`
 - `EAGER_CODING_KNOWLEDGE_LOAD`
@@ -482,6 +618,8 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `ENABLE_WEBSOCKET`
 - `EUROPEANA_API_KEY`
 - `EVAL_TARGET_URL`
+- `FFMPEG_PATH`
+- `FFPROBE_PATH`
 - `FILE_SEARCH_MAX_CONTENT_BYTES`
 - `FILE_SEARCH_MAX_FILES`
 - `FL_STUDIO_MCP_ARGS`
@@ -508,6 +646,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `GITHUB_PAGES`
 - `GITHUB_REPOSITORY`
 - `GITHUB_TOKEN`
+- `GODOT_PATH`
 - `GOOGLE_API_KEY`
 - `GOOGLE_BOOKS_API_KEY`
 - `GOOGLE_CSE_ID`
@@ -543,6 +682,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `NYTIMES_API_KEY`
 - `OCR_QUEUE_LIMIT`
 - `OCR_REIMPORT_EMBEDDINGS`
+- `OLLAMA_BASE_URL`
 - `OLLAMA_MODEL`
 - `OLLAMA_URL`
 - `OMDB_API_KEY`
@@ -609,6 +749,8 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `TWILIO_ACCOUNT_SID`
 - `TWILIO_AUTH_TOKEN`
 - `TWILIO_FROM_NUMBER`
+- `UNITY_EDITOR_PATH`
+- `UNREAL_EDITOR_PATH`
 - `USERPROFILE`
 - `USE_GEMINI_VISION`
 - `USE_GPT4V`
@@ -633,7 +775,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | File | Lines |
 |---|---|
 | `client/src/components/AssistantChat.tsx` | 791 |
-| `client/src/components/CapabilityHubPanel.tsx` | 825 |
+| `client/src/components/CapabilityHubPanel.tsx` | 1126 |
 | `client/src/components/CapabilityPromotionView.tsx` | 423 |
 | `client/src/components/CreativeComposerPanel.tsx` | 456 |
 | `client/src/components/FLStudioControlPanel.tsx` | 622 |
@@ -655,7 +797,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/browser/AuthorizedBrowserJob.ts` | 419 |
 | `src/core/browser/BrowserAgent.ts` | 388 |
 | `src/core/browser/BrowserJobRunner.ts` | 447 |
-| `src/core/capabilities/CapabilityRegistry.ts` | 782 |
+| `src/core/capabilities/CapabilityRegistry.ts` | 1218 |
 | `src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts` | 534 |
 | `src/core/capabilities/observability/CapabilityObservabilityService.ts` | 341 |
 | `src/core/capabilities/promotion/CapabilityPromotionEngine.ts` | 360 |
@@ -667,10 +809,11 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/creative/CreativeWritingAgent.ts` | 345 |
 | `src/core/database/Database.ts` | 550 |
 | `src/core/database/ExpansionMigrations.ts` | 383 |
+| `src/core/developer/MockApiEngine.ts` | 450 |
 | `src/core/gaming/lattice/LatticeSimulationEngine.ts` | 387 |
 | `src/core/gis/GISService.ts` | 581 |
 | `src/core/graph/KnowledgeGraphIndexer.ts` | 319 |
-| `src/core/index.ts` | 388 |
+| `src/core/index.ts` | 409 |
 | `src/core/initialization/ServiceInitializer.ts` | 852 |
 | `src/core/knowledge/GitHubSource.ts` | 323 |
 | `src/core/knowledge/LocalKnowledgeAnswerer.ts` | 606 |
@@ -692,7 +835,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/providers/LLMAdapter.ts` | 316 |
 | `src/core/providers/ModelRouter.ts` | 358 |
 | `src/core/providers/VisionAdapter.ts` | 375 |
-| `src/core/providers/local/ExternalLocalModelAdapter.ts` | 333 |
+| `src/core/providers/local/ExternalLocalModelAdapter.ts` | 357 |
 | `src/core/quality/AutoReview.ts` | 398 |
 | `src/core/rag/AudioRAG.ts` | 422 |
 | `src/core/rag/CorrectiveRetriever.ts` | 460 |
@@ -701,17 +844,27 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/rag/RAGRouter.ts` | 368 |
 | `src/core/rag/TrustRAG.ts` | 368 |
 | `src/core/rag/VideoRAG.ts` | 443 |
+| `src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts` | 616 |
 | `src/core/safety/ApprovalPolicy.ts` | 338 |
 | `src/core/safety/SandboxController.ts` | 438 |
 | `src/core/scheduler/TaskScheduler.ts` | 447 |
 | `src/core/sec/SECService.ts` | 406 |
 | `src/core/sprite-lab/SpriteExternalToolAdapter.ts` | 348 |
+| `src/core/sprite-lab/pipeline/SpritePaletteEngine.ts` | 301 |
+| `src/core/study/StudyStudioService.ts` | 344 |
 | `src/core/tools/WebSearcher.ts` | 452 |
 | `src/core/tools/catalog/ToolCatalogService.ts` | 419 |
 | `src/core/ui/ThinkingUI.ts` | 394 |
 | `src/core/voice/VoiceAgent.ts` | 437 |
+| `src/core/website/BlockEditorEngine.ts` | 324 |
+| `src/core/website/ResponsivePreviewRenderer.ts` | 447 |
+| `src/core/website/WebsiteProjectModel.ts` | 430 |
+| `src/core/writing/CanonicalDocumentModel.ts` | 368 |
+| `src/core/writing/DocumentEditorEngine.ts` | 327 |
+| `src/core/writing/DocumentImportExportService.ts` | 360 |
+| `src/core/writing/WritingStudioService.ts` | 339 |
 | `src/server/index.ts` | 1169 |
 | `src/server/routes/admin.ts` | 317 |
-| `src/server/routes/capabilities.ts` | 316 |
+| `src/server/routes/capabilities.ts` | 452 |
 | `src/server/routes/legacy-chat.ts` | 367 |
 | `src/server/routes/setup.ts` | 437 |

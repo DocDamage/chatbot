@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "invalid-schema",
+  "id": "INVALID_UPPERCASE_ID",
+  "displayName": "",
+  "version": "not-semver",
+  "source": {
+    "license": "",
+    "integration": "unknown_integration"
+  },
+  "profiles": [],
+  "capabilities": []
+}

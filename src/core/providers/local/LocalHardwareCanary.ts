@@ -57,6 +57,7 @@ export class LocalHardwareCanary {
     let provider: string | undefined;
     let modelCount: number | undefined;
     let latencyMs = 0;
+    let inferenceModel = this.model;
 
     // 1. Validate endpoint safety
     const validation = LocalEndpointPolicy.validate(this.endpoint);
@@ -79,6 +80,11 @@ export class LocalHardwareCanary {
       online = probe.health === 'healthy';
       provider = probe.provider;
       modelCount = probe.models?.length;
+      if (!probe.models.some(model => model.id === inferenceModel)) {
+        inferenceModel = probe.models.find(model => !model.supportsEmbeddings || model.supportsVision)?.id
+          || probe.models[0]?.id
+          || inferenceModel;
+      }
       latencyMs = Date.now() - probeStart;
     } catch {
       latencyMs = Date.now() - probeStart;
@@ -111,7 +117,7 @@ export class LocalHardwareCanary {
       try {
         const adapter = new ExternalLocalModelAdapter({
           baseUrl: this.endpoint,
-          model: this.model
+          model: inferenceModel
         });
         const res = await adapter.generate({
           prompt: 'Echo test: reply with OK',

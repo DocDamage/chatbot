@@ -55,7 +55,7 @@ describe('Capability Evaluation, Promotion and Metrics API Routes (CF-10)', () =
     const manager = CapabilityJobManager.getInstance();
     manager.registerJob({
       id: 'route-job', capabilityId: 'browser_jobs', category: 'browser',
-      title: 'Route job fixture', requester: 'route-test'
+      title: 'Route job fixture', requester: 'capability-route-test'
     });
     const jobs = await request(app)
       .get('/api/capabilities/jobs/list')
@@ -217,6 +217,7 @@ describe('Capability Evaluation, Promotion and Metrics API Routes (CF-10)', () =
       .send({ actionId: 'test_run', requester: 'route-fixture' });
     expect(success.status).toBe(200);
     expect(success.body.success).toBe(true);
+    expect(success.body.job.requester).toBe('capability-route-test');
 
     const failed = await request(app)
       .post('/api/capabilities/repository_findings/action')
@@ -230,7 +231,7 @@ describe('Capability Evaluation, Promotion and Metrics API Routes (CF-10)', () =
     const manager = CapabilityJobManager.getInstance();
     manager.registerJob({
       id: 'cancel-route-job', capabilityId: 'browser_jobs', category: 'browser',
-      title: 'Cancel route fixture', requester: 'route-test'
+      title: 'Cancel route fixture', requester: 'capability-route-test'
     });
     let res = await request(app).post('/api/capabilities/jobs/cancel-route-job/cancel').send({ reason: 'fixture cancel' });
     expect(res.status).toBe(200);
@@ -240,7 +241,7 @@ describe('Capability Evaluation, Promotion and Metrics API Routes (CF-10)', () =
 
     manager.registerJob({
       id: 'confirm-route-job', capabilityId: 'typed_agent_teams', category: 'agent_teams',
-      title: 'Confirm route fixture', requester: 'route-test', requiresExactScopeConfirmation: true,
+      title: 'Confirm route fixture', requester: 'capability-route-test', requiresExactScopeConfirmation: true,
       confirmationScope: 'ROUTE_SCOPE'
     });
     res = await request(app).post('/api/capabilities/jobs/confirm-route-job/confirm').send({});
@@ -250,6 +251,40 @@ describe('Capability Evaluation, Promotion and Metrics API Routes (CF-10)', () =
     res = await request(app).post('/api/capabilities/jobs/confirm-route-job/confirm').send({ confirmedScope: 'ROUTE_SCOPE' });
     expect(res.status).toBe(200);
     expect(res.body.job.status).toBe('running');
+  });
+
+  it('isolates jobs by requester and requires an explicit approval value', async () => {
+    const manager = CapabilityJobManager.getInstance();
+    manager.registerJob({
+      id: 'private-route-job', capabilityId: 'typed_agent_teams', category: 'agent_teams',
+      title: 'Private route fixture', requester: 'another-user', requiresExactScopeConfirmation: true,
+      confirmationScope: 'PRIVATE_SCOPE'
+    });
+
+    expect((await request(app).get('/api/capabilities/jobs/private-route-job')).status).toBe(403);
+    expect((await request(app).post('/api/capabilities/jobs/private-route-job/cancel')).status).toBe(403);
+    expect((await request(app).post('/api/capabilities/jobs/private-route-job/confirm').send({ confirmedScope: 'PRIVATE_SCOPE' })).status).toBe(403);
+    expect((await request(app).post('/api/capabilities/jobs/private-route-job/approve').set('x-test-role', 'admin').send({})).status).toBe(400);
+    expect((await request(app).post('/api/capabilities/jobs/private-route-job/approve').set('x-test-role', 'admin').send({ approvalDigest: 'PRIVATE_SCOPE' })).status).toBe(200);
+  });
+
+  it('disables only the requested capability and validates exact scope', async () => {
+    const badScope = await request(app)
+      .post('/api/capabilities/browser_jobs/disable')
+      .set('x-test-role', 'admin')
+      .send({ confirmedScope: 'WRONG' });
+    expect(badScope.status).toBe(400);
+
+    const disabled = await request(app)
+      .post('/api/capabilities/browser_jobs/disable')
+      .set('x-test-role', 'admin')
+      .send({ confirmedScope: 'DISABLE_CAPABILITY:browser_jobs' });
+    expect(disabled.status).toBe(200);
+    expect(CapabilityRegistry.getInstance().getCapabilityById('browser_jobs')?.healthState).toBe('disabled');
+    expect(CapabilityRegistry.getInstance().getCapabilityById('typed_agent_teams')?.healthState).not.toBe('disabled');
+
+    expect((await request(app).post('/api/capabilities/browser_jobs/enable').set('x-test-role', 'admin')).status).toBe(200);
+    expect((await request(app).post('/api/capabilities/not-real/enable').set('x-test-role', 'admin')).status).toBe(404);
   });
 
   it('does not accept a caller-controlled x-user-role header as promotion authority', async () => {
@@ -333,9 +368,20 @@ describe('Capability Evaluation, Promotion and Metrics API Routes (CF-10)', () =
     jest.spyOn(registry, 'executeAction').mockRejectedValueOnce(new Error('action fixture'));
     expect((await request(app).post('/api/capabilities/browser_jobs/action').send({ actionId: 'test_run' })).status).toBe(500);
 
-    jest.spyOn(CapabilityJobManager.getInstance(), 'cancelJob').mockImplementationOnce(() => { throw new Error('cancel fixture'); });
+    const manager = CapabilityJobManager.getInstance();
+    manager.registerJob({
+      id: 'job', capabilityId: 'browser_jobs', category: 'browser',
+      title: 'Error path fixture', requester: 'capability-route-test'
+    });
+    jest.spyOn(manager, 'cancelJob').mockImplementationOnce(() => { throw new Error('cancel fixture'); });
     expect((await request(app).post('/api/capabilities/jobs/job/cancel').send({})).status).toBe(500);
-    jest.spyOn(CapabilityJobManager.getInstance(), 'confirmExactScope').mockImplementationOnce(() => { throw new Error('confirm fixture'); });
+    manager.clear();
+    manager.registerJob({
+      id: 'job', capabilityId: 'typed_agent_teams', category: 'agent_teams',
+      title: 'Error confirm fixture', requester: 'capability-route-test',
+      requiresExactScopeConfirmation: true, confirmationScope: 'scope'
+    });
+    jest.spyOn(manager, 'confirmExactScope').mockImplementationOnce(() => { throw new Error('confirm fixture'); });
     expect((await request(app).post('/api/capabilities/jobs/job/confirm').send({ confirmedScope: 'scope' })).status).toBe(500);
   });
 });

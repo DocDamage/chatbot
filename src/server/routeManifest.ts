@@ -43,6 +43,14 @@ import { createStoryGeniusRouter } from './routes/story';
 import { createToolCatalogRouter } from './routes/toolCatalog';
 import { createWebsiteWorkspaceRouter } from './routes/website-workspace';
 import { createCapabilityRouter } from './routes/capabilities';
+import { createContextEconomyRouter } from './routes/context-economy/contextInspectorRoutes';
+import { createGameStudioRouter } from './routes/game-studio';
+import { createSpriteStudioRouter } from './routes/sprite-studio';
+import { createMusicStudioRouter } from './routes/music-studio';
+import { createMediaAccessibilityRouter } from './routes/media-accessibility';
+import { createAgentOperationsRouter } from './routes/agent-operations';
+import { createWritingStudioRouter } from './routes/writing-studio';
+import { createStudyStudioRouter } from './routes/study-studio';
 
 export type RouteAvailability = 'hosted-and-local' | 'local-only';
 export type FeatureStatus = 'PRODUCTION_PREVIEW' | 'LOCAL_ONLY_EXPERIMENTAL';
@@ -84,9 +92,17 @@ export const routeManifest: RouteManifestEntry[] = [
   localOnly({ name: 'desktop-companion', mount: '/api/desktop-companion', readiness: true, privilege: 'developer', auditAction: 'desktop-companion' }),
   preview({ name: 'tool-catalog', mount: '/api/tool-catalog', readiness: true, privilege: 'developer', auditAction: 'tool-catalog' }),
   localOnly({ name: 'capabilities', mount: '/api/capabilities', readiness: true, privilege: 'developer', auditAction: 'capabilities' }),
+  preview({ name: 'context-economy', mount: '/api/context-economy', readiness: true, privilege: 'developer', auditAction: 'context-economy' }),
+  localOnly({ name: 'agent-operations', mount: '/api/agent-operations', readiness: true, privilege: 'developer', auditAction: 'agent-operations' }),
+  localOnly({ name: 'writing-studio', mount: '/api/writing-studio', readiness: true, privilege: 'developer', auditAction: 'writing-studio' }),
+  localOnly({ name: 'study-studio', mount: '/api/study-studio', readiness: true, privilege: 'developer', auditAction: 'study-studio' }),
   preview({ name: 'sec', mount: '/api/sec', readiness: true, privilege: 'developer', auditAction: 'sec' }),
   preview({ name: 'education', mount: '/api/education', readiness: true, privilege: 'developer', auditAction: 'education' }),
   localOnly({ name: 'sprite-lab', mount: '/api/sprite-lab', readiness: true, privilege: 'developer', auditAction: 'sprite-lab' }),
+  localOnly({ name: 'sprite-studio', mount: '/api/sprite-studio', readiness: true, privilege: 'developer', auditAction: 'sprite-studio' }),
+  localOnly({ name: 'game-studio', mount: '/api/game-studio', readiness: true, privilege: 'developer', auditAction: 'game-studio' }),
+  localOnly({ name: 'music-studio', mount: '/api/music-studio', readiness: true, privilege: 'developer', auditAction: 'music-studio' }),
+  localOnly({ name: 'media-accessibility', mount: '/api/media-accessibility', readiness: true, privilege: 'developer', auditAction: 'media-accessibility' }),
   preview({ name: 'math', readiness: true }),
   preview({ name: 'market', readiness: true }),
   preview({ name: 'gamedev', readiness: true }),
@@ -129,7 +145,7 @@ interface RegisterRouteDeps {
 }
 
 export function registerManifestRoutes(deps: RegisterRouteDeps): void {
-  const relativeRouterNames = new Set(['capabilities', 'admin', 'export']);
+  const relativeRouterNames = new Set(['capabilities', 'context-economy', 'admin', 'export']);
   const routerFactories: Record<string, () => RequestHandler> = {
     'rag-query': () => createRagQueryRouter(deps.getServices()),
     research: () => createResearchRouter(deps.getServices()),
@@ -146,9 +162,17 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
     'desktop-companion': () => createDesktopCompanionRouter(deps.workspaceRoot),
     'tool-catalog': () => createToolCatalogRouter(deps.getServices()),
     capabilities: () => createCapabilityRouter(deps.workspaceRoot),
+    'context-economy': () => createContextEconomyRouter(),
+    'agent-operations': () => createAgentOperationsRouter(),
+    'writing-studio': () => createWritingStudioRouter(),
+    'study-studio': () => createStudyStudioRouter(),
     sec: () => createSECRouter(deps.getServices()),
     education: () => createEducationRouter(deps.getServices()),
     'sprite-lab': () => createSpriteLabRouter(deps.getServices(), deps.workspaceRoot),
+    'sprite-studio': () => createSpriteStudioRouter(deps.workspaceRoot),
+    'game-studio': () => createGameStudioRouter(deps.workspaceRoot),
+    'music-studio': () => createMusicStudioRouter(deps.workspaceRoot),
+    'media-accessibility': () => createMediaAccessibilityRouter(deps.workspaceRoot),
     math: () => createMathRouter(deps.getServices()),
     market: () => createMarketRouter(deps.getServices()),
     gamedev: () => createGameDevRouter(deps.getServices()),

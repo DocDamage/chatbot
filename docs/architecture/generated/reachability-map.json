@@ -111,6 +111,7 @@
     "client/src/components/DesktopCompanionPanel.tsx",
     "client/src/components/DocumentWorkspacePanel.tsx",
     "client/src/components/ExactScopeConfirmModal.tsx",
+    "client/src/components/ExpansionStudiosPanel.tsx",
     "client/src/components/FLStudioControlPanel.tsx",
     "client/src/components/FileExplorerPanel.tsx",
     "client/src/components/FilePreviewPane.tsx",
@@ -121,10 +122,12 @@
     "client/src/components/LoadedFilesBar.tsx",
     "client/src/components/LocalRunApprovalPanel.tsx",
     "client/src/components/LocalToolsWorkspace.tsx",
+    "client/src/components/MemoryCenterPanel.tsx",
     "client/src/components/MockApiWorkspacePanel.tsx",
     "client/src/components/ModeSelector.tsx",
     "client/src/components/PlanActionBar.tsx",
     "client/src/components/ProjectIntelligencePanel.tsx",
+    "client/src/components/RepositoryArchitectureView.tsx",
     "client/src/components/RepositoryFindingsView.tsx",
     "client/src/components/SettingsMenu.tsx",
     "client/src/components/SpriteLabPanel.tsx",
@@ -137,6 +140,14 @@
     "client/src/features/gis/gisApi.ts",
     "client/src/features/gis/gisTypes.ts",
     "client/src/main.tsx",
+    "src/core/agent-operations/claims/WorkspaceClaimService.ts",
+    "src/core/agent-operations/communication/AgentCommunicationHub.ts",
+    "src/core/agent-operations/console/AgentOperationsConsoleService.ts",
+    "src/core/agent-operations/contracts/AgentOperationsSchema.ts",
+    "src/core/agent-operations/discovery/SessionDiscoveryAdapter.ts",
+    "src/core/agent-operations/evidence/AgentEvidenceBundleService.ts",
+    "src/core/agent-operations/index.ts",
+    "src/core/agent-operations/privacy/AgentPrivacyRedactor.ts",
     "src/core/agents/CodeContextBudgeter.ts",
     "src/core/agents/CodeIndexer.ts",
     "src/core/agents/CodePlanner.ts",
@@ -232,16 +243,34 @@
     "src/core/agents/story/StoryGeniusAgent.ts",
     "src/core/analytics/AnalyticsService.ts",
     "src/core/audio/AudioLibraryService.ts",
+    "src/core/audio/stemdeck/AudioExportMixdownService.ts",
+    "src/core/audio/stemdeck/AudioJobRightsModel.ts",
+    "src/core/audio/stemdeck/AudioTrackAnalyzer.ts",
+    "src/core/audio/stemdeck/DAWIntegrationHandoff.ts",
+    "src/core/audio/stemdeck/DemucsWorkerAdapter.ts",
+    "src/core/audio/stemdeck/StemSeparationEngine.ts",
+    "src/core/audio/stemdeck/StemdeckTypes.ts",
+    "src/core/audio/stemdeck/WaveformMixerEngine.ts",
     "src/core/auth/AuthService.ts",
     "src/core/auth/UserService.ts",
     "src/core/browser/AuthorizedBrowserJob.ts",
     "src/core/capabilities/CapabilityJobManager.ts",
     "src/core/capabilities/CapabilityRegistry.ts",
+    "src/core/capabilities/approvals/CapabilityApprovalService.ts",
+    "src/core/capabilities/artifacts/CapabilityArtifactStore.ts",
+    "src/core/capabilities/config/CapabilityConfigManager.ts",
     "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+    "src/core/capabilities/health/CapabilityHealthDiagnostics.ts",
+    "src/core/capabilities/jobs/CapabilityJobService.ts",
     "src/core/capabilities/observability/AlertNotificationDispatcher.ts",
     "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+    "src/core/capabilities/packs/CapabilityInstallationManager.ts",
+    "src/core/capabilities/packs/CapabilityPackManifest.ts",
+    "src/core/capabilities/permissions/CapabilityPermissionEngine.ts",
     "src/core/capabilities/persistence/CapabilityPersistenceStore.ts",
     "src/core/capabilities/promotion/CapabilityPromotionEngine.ts",
+    "src/core/capabilities/resources/ResourceBudgetManager.ts",
+    "src/core/capabilities/sdk/CapabilitySDK.ts",
     "src/core/chrono/ChronoDate.ts",
     "src/core/chrono/ChronoKnowledgeEngine.ts",
     "src/core/chrono/EntityGraphStore.ts",
@@ -290,6 +319,7 @@
     "src/core/coding/security/ApprovedRepositoryGateway.ts",
     "src/core/coding/security/WorkspacePathPolicy.ts",
     "src/core/coding/teams/AgentTeamRoles.ts",
+    "src/core/coding/teams/ProcessTreeSupervisor.ts",
     "src/core/coding/teams/TaskEnvelope.ts",
     "src/core/coding/types.ts",
     "src/core/coding/verification/CommandCapabilityRunner.ts",
@@ -298,6 +328,21 @@
     "src/core/coding/verification/VerificationOrchestrator.ts",
     "src/core/config/ConfigValidator.ts",
     "src/core/config/EnvironmentDefinitions.ts",
+    "src/core/context-economy/compressors/CodeOutlineCompressor.ts",
+    "src/core/context-economy/compressors/ConversationTurnSelector.ts",
+    "src/core/context-economy/compressors/ExactEvidenceSelector.ts",
+    "src/core/context-economy/compressors/JsonShapeCompressor.ts",
+    "src/core/context-economy/compressors/LogEventCompressor.ts",
+    "src/core/context-economy/compressors/ModelAssistedCompressor.ts",
+    "src/core/context-economy/compressors/RepoTreeCompressor.ts",
+    "src/core/context-economy/compressors/StackTraceDeduplicator.ts",
+    "src/core/context-economy/compressors/TableSampleCompressor.ts",
+    "src/core/context-economy/compressors/UnifiedDiffCompressor.ts",
+    "src/core/context-economy/compressors/index.ts",
+    "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
+    "src/core/context-economy/learning/ContextFailureLearningService.ts",
+    "src/core/context-economy/reversible-store/ReversibleContextStore.ts",
+    "src/core/context-economy/router/ContextContentRouter.ts",
     "src/core/contracts/ContractGate.ts",
     "src/core/conversation/ConversationManager.ts",
     "src/core/creative/CreativeCapabilityDetector.ts",
@@ -311,6 +356,14 @@
     "src/core/database/ExpansionMigrations.ts",
     "src/core/database/SafeDatabaseQuestionAgent.ts",
     "src/core/debug/DebugMode.ts",
+    "src/core/developer/CapabilityPackScaffolder.ts",
+    "src/core/developer/DeveloperTypes.ts",
+    "src/core/developer/DeveloperUtilityPackService.ts",
+    "src/core/developer/MockApiEngine.ts",
+    "src/core/developer/MockChaosSimulator.ts",
+    "src/core/developer/OpenApiSchemaImporter.ts",
+    "src/core/developer/ProjectDoctorService.ts",
+    "src/core/developer/SourcePreservingSkillExporter.ts",
     "src/core/documents/DocumentMetadata.ts",
     "src/core/documents/DocumentReviewService.ts",
     "src/core/education/EducationService.ts",
@@ -318,10 +371,34 @@
     "src/core/entity/EntityLinkingService.ts",
     "src/core/feedback/FeedbackService.ts",
     "src/core/files/FileExplorerService.ts",
+    "src/core/gaming/asset-cooker/AssetCookerAdapter.ts",
+    "src/core/gaming/asset-cooker/LocalAssetCookerExecutor.ts",
+    "src/core/gaming/engine/EngineCertificationProfile.ts",
+    "src/core/gaming/engine/GameEngineBridge.ts",
+    "src/core/gaming/engine/GameEngineTypes.ts",
+    "src/core/gaming/engine/MultiEngineStudioService.ts",
+    "src/core/gaming/engine/NativeEditorBackend.ts",
+    "src/core/gaming/engine/ProjectMutationStore.ts",
+    "src/core/gaming/engine/ProjectPathGuard.ts",
+    "src/core/gaming/godot/GodotAssetPipeline.ts",
+    "src/core/gaming/godot/GodotClassDbValidator.ts",
+    "src/core/gaming/godot/GodotCliBackend.ts",
+    "src/core/gaming/godot/GodotMcpXAdapter.ts",
+    "src/core/gaming/godot/GodotProjectInspector.ts",
+    "src/core/gaming/godot/GodotProjectManifest.ts",
+    "src/core/gaming/godot/GodotRuntimeRunner.ts",
+    "src/core/gaming/godot/GodotSceneMutator.ts",
+    "src/core/gaming/godot/GodotScriptMutator.ts",
+    "src/core/gaming/godot/GodotTransactionManager.ts",
     "src/core/gaming/lattice/LatticeGameAdapter.ts",
     "src/core/gaming/lattice/LatticeSimulationEngine.ts",
     "src/core/gaming/lattice/LatticeVisualizer.ts",
     "src/core/gaming/lattice/LatticeWorldSchema.ts",
+    "src/core/gaming/slicing/SpriteSlicingBridge.ts",
+    "src/core/gaming/unity/UnityEngineAdapter.ts",
+    "src/core/gaming/unity/UnityMastService.ts",
+    "src/core/gaming/unreal/UnrealEngineAdapter.ts",
+    "src/core/gaming/unreal/UnrealLicenseGate.ts",
     "src/core/gis/GISCache.ts",
     "src/core/gis/GISPrivacy.ts",
     "src/core/gis/GISProviderRegistry.ts",
@@ -405,6 +482,19 @@
     "src/core/mcp/McpClientService.ts",
     "src/core/mcp/McpPermissionGate.ts",
     "src/core/mcp/McpToolRegistry.ts",
+    "src/core/media-accessibility/AudioTimingFitReconstructor.ts",
+    "src/core/media-accessibility/AuthorizedMediaIngestAdapter.ts",
+    "src/core/media-accessibility/DocumentNarrationEngine.ts",
+    "src/core/media-accessibility/MediaAccessibilityTypes.ts",
+    "src/core/media-accessibility/MediaProjectModel.ts",
+    "src/core/media-accessibility/MediaStorageLifecycleManager.ts",
+    "src/core/media-accessibility/MediaTranscriptionAligner.ts",
+    "src/core/media-accessibility/SubtitleEditorService.ts",
+    "src/core/media-accessibility/SubtitleOcrEngine.ts",
+    "src/core/media-accessibility/SynchronizedReadAlongService.ts",
+    "src/core/media-accessibility/TranslationVariantService.ts",
+    "src/core/media-accessibility/VoiceDubbingConsentGate.ts",
+    "src/core/media-accessibility/index.ts",
     "src/core/memory/MemoryService.ts",
     "src/core/memory/PrivateMemoryStore.ts",
     "src/core/memory/ProjectContext.ts",
@@ -412,6 +502,14 @@
     "src/core/modes/ModePolicy.ts",
     "src/core/multimodal/localization/MediaConsentRecord.ts",
     "src/core/multimodal/localization/VideoLocalizationJob.ts",
+    "src/core/native-runtime/LocalAIBackends.ts",
+    "src/core/native-runtime/NativeAudioBackends.ts",
+    "src/core/native-runtime/NativeCommandRunner.ts",
+    "src/core/native-runtime/NativeGameEditorBackends.ts",
+    "src/core/native-runtime/NativeMediaBackends.ts",
+    "src/core/native-runtime/NativeVoiceBackends.ts",
+    "src/core/native-runtime/RuntimeDiscovery.ts",
+    "src/core/native-runtime/index.ts",
     "src/core/nlu/ClarifyingQuestionBuilder.ts",
     "src/core/nlu/DomainPhrasebook.ts",
     "src/core/nlu/HumanLanguageRouter.ts",
@@ -497,6 +595,30 @@
     "src/core/sprite-lab/InternalSpriteImageAdapter.ts",
     "src/core/sprite-lab/SpriteExternalToolAdapter.ts",
     "src/core/sprite-lab/SpriteLabPlanService.ts",
+    "src/core/sprite-lab/pipeline/ImageIngestValidator.ts",
+    "src/core/sprite-lab/pipeline/ImageProcessingPipeline.ts",
+    "src/core/sprite-lab/pipeline/PixelGridRefiner.ts",
+    "src/core/sprite-lab/pipeline/SpriteBackgroundTool.ts",
+    "src/core/sprite-lab/pipeline/SpriteBatchPresetService.ts",
+    "src/core/sprite-lab/pipeline/SpriteEngineHandoff.ts",
+    "src/core/sprite-lab/pipeline/SpriteOutlineFinisher.ts",
+    "src/core/sprite-lab/pipeline/SpritePaletteEngine.ts",
+    "src/core/sprite-lab/pipeline/SpriteQualityEvaluator.ts",
+    "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts",
+    "src/core/study/EducatorReviewControls.ts",
+    "src/core/study/ExamSimulationEngine.ts",
+    "src/core/study/FlashcardEngine.ts",
+    "src/core/study/MasteryModelEngine.ts",
+    "src/core/study/QuizEngine.ts",
+    "src/core/study/SocraticDebateEngine.ts",
+    "src/core/study/StructuredNotesEngine.ts",
+    "src/core/study/StudyAssessmentIntegrator.ts",
+    "src/core/study/StudyAudioLessonEngine.ts",
+    "src/core/study/StudyCollectionModel.ts",
+    "src/core/study/StudySourceIngestEngine.ts",
+    "src/core/study/StudyStudioService.ts",
+    "src/core/study/StudyTypes.ts",
+    "src/core/study/index.ts",
     "src/core/suggestions/QuickReplies.ts",
     "src/core/tools/ArchitectureRepoTools.ts",
     "src/core/tools/CodeExecutor.ts",
@@ -655,9 +777,45 @@
     "src/core/upload/FileProcessor.ts",
     "src/core/user/CustomInstructions.ts",
     "src/core/validator/Validators.ts",
+    "src/core/voice-companion/ClipboardActionService.ts",
+    "src/core/voice-companion/DesktopCompanionBriefingService.ts",
+    "src/core/voice-companion/DesktopOSActionPolicy.ts",
+    "src/core/voice-companion/DesktopPackagingManifest.ts",
+    "src/core/voice-companion/DesktopPrivacyManager.ts",
+    "src/core/voice-companion/FloatingAssistantService.ts",
+    "src/core/voice-companion/LocalSTTProvider.ts",
+    "src/core/voice-companion/LocalTTSProvider.ts",
+    "src/core/voice-companion/ScreenContextCaptureService.ts",
+    "src/core/voice-companion/VoiceCompanionTypes.ts",
+    "src/core/voice-companion/VoiceDictationEngine.ts",
+    "src/core/voice-companion/VoiceRecordingService.ts",
+    "src/core/voice-companion/index.ts",
     "src/core/webhooks/WebhookService.ts",
-    "src/core/website/WebsiteWorkspaceService.ts",
+    "src/core/website/BlockEditorEngine.ts",
+    "src/core/website/ElementInspectorService.ts",
+    "src/core/website/ResponsivePreviewRenderer.ts",
+    "src/core/website/SourceLinkInspectionService.ts",
+    "src/core/website/VisualEditProposalService.ts",
+    "src/core/website/WebAccessibilityAuditor.ts",
+    "src/core/website/WebStudioService.ts",
+    "src/core/website/WebsiteAssetManager.ts",
+    "src/core/website/WebsiteImportExportService.ts",
+    "src/core/website/WebsiteProjectModel.ts",
+    "src/core/website/WebsiteSandboxUndoManager.ts",
+    "src/core/website/WebsiteTypes.ts",
     "src/core/wiki/LocalKnowledgeWiki.ts",
+    "src/core/writing/AIProposalService.ts",
+    "src/core/writing/CanonicalDocumentModel.ts",
+    "src/core/writing/DocumentEditorEngine.ts",
+    "src/core/writing/DocumentImportExportService.ts",
+    "src/core/writing/DocumentRecoveryManager.ts",
+    "src/core/writing/ProofreadingEngine.ts",
+    "src/core/writing/TrackedChangesManager.ts",
+    "src/core/writing/WritingAIProviderRouter.ts",
+    "src/core/writing/WritingQualityEvaluator.ts",
+    "src/core/writing/WritingStudioService.ts",
+    "src/core/writing/WritingTypes.ts",
+    "src/core/writing/index.ts",
     "src/middleware/apiErrorSchema.ts",
     "src/middleware/auth.ts",
     "src/middleware/errorHandler.ts",
@@ -670,12 +828,14 @@
     "src/server/index.ts",
     "src/server/routeManifest.ts",
     "src/server/routes/admin.ts",
+    "src/server/routes/agent-operations.ts",
     "src/server/routes/audio.ts",
     "src/server/routes/business.ts",
     "src/server/routes/capabilities.ts",
     "src/server/routes/chat-stream.ts",
     "src/server/routes/chrono.ts",
     "src/server/routes/code.ts",
+    "src/server/routes/context-economy/contextInspectorRoutes.ts",
     "src/server/routes/creative.ts",
     "src/server/routes/desktop-companion.ts",
     "src/server/routes/document-workspace.ts",
@@ -684,6 +844,8 @@
     "src/server/routes/export.ts",
     "src/server/routes/files.ts",
     "src/server/routes/flstudio.ts",
+    "src/server/routes/game-studio/gameStudioRoutes.ts",
+    "src/server/routes/game-studio/index.ts",
     "src/server/routes/gamedev.ts",
     "src/server/routes/gaming.ts",
     "src/server/routes/geography.ts",
@@ -697,9 +859,14 @@
     "src/server/routes/legacy-chat.ts",
     "src/server/routes/legal.ts",
     "src/server/routes/local-tools.ts",
+    "src/server/routes/localPathGuard.ts",
     "src/server/routes/market.ts",
     "src/server/routes/math.ts",
+    "src/server/routes/media-accessibility/index.ts",
+    "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts",
     "src/server/routes/mock-api.ts",
+    "src/server/routes/music-studio/index.ts",
+    "src/server/routes/music-studio/musicStudioRoutes.ts",
     "src/server/routes/music.ts",
     "src/server/routes/philosophy.ts",
     "src/server/routes/plans.ts",
@@ -714,11 +881,15 @@
     "src/server/routes/settings.ts",
     "src/server/routes/sixsigma.ts",
     "src/server/routes/sprite-lab.ts",
+    "src/server/routes/sprite-studio/index.ts",
+    "src/server/routes/sprite-studio/spriteStudioRoutes.ts",
     "src/server/routes/story.ts",
+    "src/server/routes/study-studio.ts",
     "src/server/routes/toolCatalog.ts",
     "src/server/routes/v1/chat.ts",
     "src/server/routes/v2/chat.ts",
     "src/server/routes/website-workspace.ts",
+    "src/server/routes/writing-studio.ts",
     "src/server/security/webhookUrl.ts",
     "src/types/chat.ts",
     "src/types/contract.ts",
@@ -758,6 +929,7 @@
     "client/src/components/DesktopCompanionPanel.tsx",
     "client/src/components/DocumentWorkspacePanel.tsx",
     "client/src/components/ExactScopeConfirmModal.tsx",
+    "client/src/components/ExpansionStudiosPanel.tsx",
     "client/src/components/FLStudioControlPanel.tsx",
     "client/src/components/FileExplorerPanel.tsx",
     "client/src/components/FilePreviewPane.tsx",
@@ -768,10 +940,12 @@
     "client/src/components/LoadedFilesBar.tsx",
     "client/src/components/LocalRunApprovalPanel.tsx",
     "client/src/components/LocalToolsWorkspace.tsx",
+    "client/src/components/MemoryCenterPanel.tsx",
     "client/src/components/MockApiWorkspacePanel.tsx",
     "client/src/components/ModeSelector.tsx",
     "client/src/components/PlanActionBar.tsx",
     "client/src/components/ProjectIntelligencePanel.tsx",
+    "client/src/components/RepositoryArchitectureView.tsx",
     "client/src/components/RepositoryFindingsView.tsx",
     "client/src/components/SettingsMenu.tsx",
     "client/src/components/SpriteLabPanel.tsx",
@@ -784,6 +958,14 @@
     "client/src/features/gis/gisApi.ts",
     "client/src/features/gis/gisTypes.ts",
     "client/src/main.tsx",
+    "src/core/agent-operations/claims/WorkspaceClaimService.ts",
+    "src/core/agent-operations/communication/AgentCommunicationHub.ts",
+    "src/core/agent-operations/console/AgentOperationsConsoleService.ts",
+    "src/core/agent-operations/contracts/AgentOperationsSchema.ts",
+    "src/core/agent-operations/discovery/SessionDiscoveryAdapter.ts",
+    "src/core/agent-operations/evidence/AgentEvidenceBundleService.ts",
+    "src/core/agent-operations/index.ts",
+    "src/core/agent-operations/privacy/AgentPrivacyRedactor.ts",
     "src/core/agents/CodeContextBudgeter.ts",
     "src/core/agents/CodeIndexer.ts",
     "src/core/agents/CodePlanner.ts",
@@ -879,16 +1061,34 @@
     "src/core/agents/story/StoryGeniusAgent.ts",
     "src/core/analytics/AnalyticsService.ts",
     "src/core/audio/AudioLibraryService.ts",
+    "src/core/audio/stemdeck/AudioExportMixdownService.ts",
+    "src/core/audio/stemdeck/AudioJobRightsModel.ts",
+    "src/core/audio/stemdeck/AudioTrackAnalyzer.ts",
+    "src/core/audio/stemdeck/DAWIntegrationHandoff.ts",
+    "src/core/audio/stemdeck/DemucsWorkerAdapter.ts",
+    "src/core/audio/stemdeck/StemSeparationEngine.ts",
+    "src/core/audio/stemdeck/StemdeckTypes.ts",
+    "src/core/audio/stemdeck/WaveformMixerEngine.ts",
     "src/core/auth/AuthService.ts",
     "src/core/auth/UserService.ts",
     "src/core/browser/AuthorizedBrowserJob.ts",
     "src/core/capabilities/CapabilityJobManager.ts",
     "src/core/capabilities/CapabilityRegistry.ts",
+    "src/core/capabilities/approvals/CapabilityApprovalService.ts",
+    "src/core/capabilities/artifacts/CapabilityArtifactStore.ts",
+    "src/core/capabilities/config/CapabilityConfigManager.ts",
     "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+    "src/core/capabilities/health/CapabilityHealthDiagnostics.ts",
+    "src/core/capabilities/jobs/CapabilityJobService.ts",
     "src/core/capabilities/observability/AlertNotificationDispatcher.ts",
     "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+    "src/core/capabilities/packs/CapabilityInstallationManager.ts",
+    "src/core/capabilities/packs/CapabilityPackManifest.ts",
+    "src/core/capabilities/permissions/CapabilityPermissionEngine.ts",
     "src/core/capabilities/persistence/CapabilityPersistenceStore.ts",
     "src/core/capabilities/promotion/CapabilityPromotionEngine.ts",
+    "src/core/capabilities/resources/ResourceBudgetManager.ts",
+    "src/core/capabilities/sdk/CapabilitySDK.ts",
     "src/core/chrono/ChronoDate.ts",
     "src/core/chrono/ChronoKnowledgeEngine.ts",
     "src/core/chrono/EntityGraphStore.ts",
@@ -937,6 +1137,7 @@
     "src/core/coding/security/ApprovedRepositoryGateway.ts",
     "src/core/coding/security/WorkspacePathPolicy.ts",
     "src/core/coding/teams/AgentTeamRoles.ts",
+    "src/core/coding/teams/ProcessTreeSupervisor.ts",
     "src/core/coding/teams/TaskEnvelope.ts",
     "src/core/coding/types.ts",
     "src/core/coding/verification/CommandCapabilityRunner.ts",
@@ -945,6 +1146,21 @@
     "src/core/coding/verification/VerificationOrchestrator.ts",
     "src/core/config/ConfigValidator.ts",
     "src/core/config/EnvironmentDefinitions.ts",
+    "src/core/context-economy/compressors/CodeOutlineCompressor.ts",
+    "src/core/context-economy/compressors/ConversationTurnSelector.ts",
+    "src/core/context-economy/compressors/ExactEvidenceSelector.ts",
+    "src/core/context-economy/compressors/JsonShapeCompressor.ts",
+    "src/core/context-economy/compressors/LogEventCompressor.ts",
+    "src/core/context-economy/compressors/ModelAssistedCompressor.ts",
+    "src/core/context-economy/compressors/RepoTreeCompressor.ts",
+    "src/core/context-economy/compressors/StackTraceDeduplicator.ts",
+    "src/core/context-economy/compressors/TableSampleCompressor.ts",
+    "src/core/context-economy/compressors/UnifiedDiffCompressor.ts",
+    "src/core/context-economy/compressors/index.ts",
+    "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
+    "src/core/context-economy/learning/ContextFailureLearningService.ts",
+    "src/core/context-economy/reversible-store/ReversibleContextStore.ts",
+    "src/core/context-economy/router/ContextContentRouter.ts",
     "src/core/contracts/ContractGate.ts",
     "src/core/conversation/ConversationManager.ts",
     "src/core/creative/CreativeCapabilityDetector.ts",
@@ -958,6 +1174,14 @@
     "src/core/database/ExpansionMigrations.ts",
     "src/core/database/SafeDatabaseQuestionAgent.ts",
     "src/core/debug/DebugMode.ts",
+    "src/core/developer/CapabilityPackScaffolder.ts",
+    "src/core/developer/DeveloperTypes.ts",
+    "src/core/developer/DeveloperUtilityPackService.ts",
+    "src/core/developer/MockApiEngine.ts",
+    "src/core/developer/MockChaosSimulator.ts",
+    "src/core/developer/OpenApiSchemaImporter.ts",
+    "src/core/developer/ProjectDoctorService.ts",
+    "src/core/developer/SourcePreservingSkillExporter.ts",
     "src/core/documents/DocumentMetadata.ts",
     "src/core/documents/DocumentReviewService.ts",
     "src/core/education/EducationService.ts",
@@ -965,10 +1189,34 @@
     "src/core/entity/EntityLinkingService.ts",
     "src/core/feedback/FeedbackService.ts",
     "src/core/files/FileExplorerService.ts",
+    "src/core/gaming/asset-cooker/AssetCookerAdapter.ts",
+    "src/core/gaming/asset-cooker/LocalAssetCookerExecutor.ts",
+    "src/core/gaming/engine/EngineCertificationProfile.ts",
+    "src/core/gaming/engine/GameEngineBridge.ts",
+    "src/core/gaming/engine/GameEngineTypes.ts",
+    "src/core/gaming/engine/MultiEngineStudioService.ts",
+    "src/core/gaming/engine/NativeEditorBackend.ts",
+    "src/core/gaming/engine/ProjectMutationStore.ts",
+    "src/core/gaming/engine/ProjectPathGuard.ts",
+    "src/core/gaming/godot/GodotAssetPipeline.ts",
+    "src/core/gaming/godot/GodotClassDbValidator.ts",
+    "src/core/gaming/godot/GodotCliBackend.ts",
+    "src/core/gaming/godot/GodotMcpXAdapter.ts",
+    "src/core/gaming/godot/GodotProjectInspector.ts",
+    "src/core/gaming/godot/GodotProjectManifest.ts",
+    "src/core/gaming/godot/GodotRuntimeRunner.ts",
+    "src/core/gaming/godot/GodotSceneMutator.ts",
+    "src/core/gaming/godot/GodotScriptMutator.ts",
+    "src/core/gaming/godot/GodotTransactionManager.ts",
     "src/core/gaming/lattice/LatticeGameAdapter.ts",
     "src/core/gaming/lattice/LatticeSimulationEngine.ts",
     "src/core/gaming/lattice/LatticeVisualizer.ts",
     "src/core/gaming/lattice/LatticeWorldSchema.ts",
+    "src/core/gaming/slicing/SpriteSlicingBridge.ts",
+    "src/core/gaming/unity/UnityEngineAdapter.ts",
+    "src/core/gaming/unity/UnityMastService.ts",
+    "src/core/gaming/unreal/UnrealEngineAdapter.ts",
+    "src/core/gaming/unreal/UnrealLicenseGate.ts",
     "src/core/gis/GISCache.ts",
     "src/core/gis/GISPrivacy.ts",
     "src/core/gis/GISProviderRegistry.ts",
@@ -1052,6 +1300,19 @@
     "src/core/mcp/McpClientService.ts",
     "src/core/mcp/McpPermissionGate.ts",
     "src/core/mcp/McpToolRegistry.ts",
+    "src/core/media-accessibility/AudioTimingFitReconstructor.ts",
+    "src/core/media-accessibility/AuthorizedMediaIngestAdapter.ts",
+    "src/core/media-accessibility/DocumentNarrationEngine.ts",
+    "src/core/media-accessibility/MediaAccessibilityTypes.ts",
+    "src/core/media-accessibility/MediaProjectModel.ts",
+    "src/core/media-accessibility/MediaStorageLifecycleManager.ts",
+    "src/core/media-accessibility/MediaTranscriptionAligner.ts",
+    "src/core/media-accessibility/SubtitleEditorService.ts",
+    "src/core/media-accessibility/SubtitleOcrEngine.ts",
+    "src/core/media-accessibility/SynchronizedReadAlongService.ts",
+    "src/core/media-accessibility/TranslationVariantService.ts",
+    "src/core/media-accessibility/VoiceDubbingConsentGate.ts",
+    "src/core/media-accessibility/index.ts",
     "src/core/memory/MemoryService.ts",
     "src/core/memory/PrivateMemoryStore.ts",
     "src/core/memory/ProjectContext.ts",
@@ -1059,6 +1320,14 @@
     "src/core/modes/ModePolicy.ts",
     "src/core/multimodal/localization/MediaConsentRecord.ts",
     "src/core/multimodal/localization/VideoLocalizationJob.ts",
+    "src/core/native-runtime/LocalAIBackends.ts",
+    "src/core/native-runtime/NativeAudioBackends.ts",
+    "src/core/native-runtime/NativeCommandRunner.ts",
+    "src/core/native-runtime/NativeGameEditorBackends.ts",
+    "src/core/native-runtime/NativeMediaBackends.ts",
+    "src/core/native-runtime/NativeVoiceBackends.ts",
+    "src/core/native-runtime/RuntimeDiscovery.ts",
+    "src/core/native-runtime/index.ts",
     "src/core/nlu/ClarifyingQuestionBuilder.ts",
     "src/core/nlu/DomainPhrasebook.ts",
     "src/core/nlu/HumanLanguageRouter.ts",
@@ -1144,6 +1413,30 @@
     "src/core/sprite-lab/InternalSpriteImageAdapter.ts",
     "src/core/sprite-lab/SpriteExternalToolAdapter.ts",
     "src/core/sprite-lab/SpriteLabPlanService.ts",
+    "src/core/sprite-lab/pipeline/ImageIngestValidator.ts",
+    "src/core/sprite-lab/pipeline/ImageProcessingPipeline.ts",
+    "src/core/sprite-lab/pipeline/PixelGridRefiner.ts",
+    "src/core/sprite-lab/pipeline/SpriteBackgroundTool.ts",
+    "src/core/sprite-lab/pipeline/SpriteBatchPresetService.ts",
+    "src/core/sprite-lab/pipeline/SpriteEngineHandoff.ts",
+    "src/core/sprite-lab/pipeline/SpriteOutlineFinisher.ts",
+    "src/core/sprite-lab/pipeline/SpritePaletteEngine.ts",
+    "src/core/sprite-lab/pipeline/SpriteQualityEvaluator.ts",
+    "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts",
+    "src/core/study/EducatorReviewControls.ts",
+    "src/core/study/ExamSimulationEngine.ts",
+    "src/core/study/FlashcardEngine.ts",
+    "src/core/study/MasteryModelEngine.ts",
+    "src/core/study/QuizEngine.ts",
+    "src/core/study/SocraticDebateEngine.ts",
+    "src/core/study/StructuredNotesEngine.ts",
+    "src/core/study/StudyAssessmentIntegrator.ts",
+    "src/core/study/StudyAudioLessonEngine.ts",
+    "src/core/study/StudyCollectionModel.ts",
+    "src/core/study/StudySourceIngestEngine.ts",
+    "src/core/study/StudyStudioService.ts",
+    "src/core/study/StudyTypes.ts",
+    "src/core/study/index.ts",
     "src/core/suggestions/QuickReplies.ts",
     "src/core/tools/ArchitectureRepoTools.ts",
     "src/core/tools/CodeExecutor.ts",
@@ -1302,9 +1595,45 @@
     "src/core/upload/FileProcessor.ts",
     "src/core/user/CustomInstructions.ts",
     "src/core/validator/Validators.ts",
+    "src/core/voice-companion/ClipboardActionService.ts",
+    "src/core/voice-companion/DesktopCompanionBriefingService.ts",
+    "src/core/voice-companion/DesktopOSActionPolicy.ts",
+    "src/core/voice-companion/DesktopPackagingManifest.ts",
+    "src/core/voice-companion/DesktopPrivacyManager.ts",
+    "src/core/voice-companion/FloatingAssistantService.ts",
+    "src/core/voice-companion/LocalSTTProvider.ts",
+    "src/core/voice-companion/LocalTTSProvider.ts",
+    "src/core/voice-companion/ScreenContextCaptureService.ts",
+    "src/core/voice-companion/VoiceCompanionTypes.ts",
+    "src/core/voice-companion/VoiceDictationEngine.ts",
+    "src/core/voice-companion/VoiceRecordingService.ts",
+    "src/core/voice-companion/index.ts",
     "src/core/webhooks/WebhookService.ts",
-    "src/core/website/WebsiteWorkspaceService.ts",
+    "src/core/website/BlockEditorEngine.ts",
+    "src/core/website/ElementInspectorService.ts",
+    "src/core/website/ResponsivePreviewRenderer.ts",
+    "src/core/website/SourceLinkInspectionService.ts",
+    "src/core/website/VisualEditProposalService.ts",
+    "src/core/website/WebAccessibilityAuditor.ts",
+    "src/core/website/WebStudioService.ts",
+    "src/core/website/WebsiteAssetManager.ts",
+    "src/core/website/WebsiteImportExportService.ts",
+    "src/core/website/WebsiteProjectModel.ts",
+    "src/core/website/WebsiteSandboxUndoManager.ts",
+    "src/core/website/WebsiteTypes.ts",
     "src/core/wiki/LocalKnowledgeWiki.ts",
+    "src/core/writing/AIProposalService.ts",
+    "src/core/writing/CanonicalDocumentModel.ts",
+    "src/core/writing/DocumentEditorEngine.ts",
+    "src/core/writing/DocumentImportExportService.ts",
+    "src/core/writing/DocumentRecoveryManager.ts",
+    "src/core/writing/ProofreadingEngine.ts",
+    "src/core/writing/TrackedChangesManager.ts",
+    "src/core/writing/WritingAIProviderRouter.ts",
+    "src/core/writing/WritingQualityEvaluator.ts",
+    "src/core/writing/WritingStudioService.ts",
+    "src/core/writing/WritingTypes.ts",
+    "src/core/writing/index.ts",
     "src/middleware/apiErrorSchema.ts",
     "src/middleware/auth.ts",
     "src/middleware/errorHandler.ts",
@@ -1317,12 +1646,14 @@
     "src/server/index.ts",
     "src/server/routeManifest.ts",
     "src/server/routes/admin.ts",
+    "src/server/routes/agent-operations.ts",
     "src/server/routes/audio.ts",
     "src/server/routes/business.ts",
     "src/server/routes/capabilities.ts",
     "src/server/routes/chat-stream.ts",
     "src/server/routes/chrono.ts",
     "src/server/routes/code.ts",
+    "src/server/routes/context-economy/contextInspectorRoutes.ts",
     "src/server/routes/creative.ts",
     "src/server/routes/desktop-companion.ts",
     "src/server/routes/document-workspace.ts",
@@ -1331,6 +1662,8 @@
     "src/server/routes/export.ts",
     "src/server/routes/files.ts",
     "src/server/routes/flstudio.ts",
+    "src/server/routes/game-studio/gameStudioRoutes.ts",
+    "src/server/routes/game-studio/index.ts",
     "src/server/routes/gamedev.ts",
     "src/server/routes/gaming.ts",
     "src/server/routes/geography.ts",
@@ -1344,9 +1677,14 @@
     "src/server/routes/legacy-chat.ts",
     "src/server/routes/legal.ts",
     "src/server/routes/local-tools.ts",
+    "src/server/routes/localPathGuard.ts",
     "src/server/routes/market.ts",
     "src/server/routes/math.ts",
+    "src/server/routes/media-accessibility/index.ts",
+    "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts",
     "src/server/routes/mock-api.ts",
+    "src/server/routes/music-studio/index.ts",
+    "src/server/routes/music-studio/musicStudioRoutes.ts",
     "src/server/routes/music.ts",
     "src/server/routes/philosophy.ts",
     "src/server/routes/plans.ts",
@@ -1361,11 +1699,15 @@
     "src/server/routes/settings.ts",
     "src/server/routes/sixsigma.ts",
     "src/server/routes/sprite-lab.ts",
+    "src/server/routes/sprite-studio/index.ts",
+    "src/server/routes/sprite-studio/spriteStudioRoutes.ts",
     "src/server/routes/story.ts",
+    "src/server/routes/study-studio.ts",
     "src/server/routes/toolCatalog.ts",
     "src/server/routes/v1/chat.ts",
     "src/server/routes/v2/chat.ts",
     "src/server/routes/website-workspace.ts",
+    "src/server/routes/writing-studio.ts",
     "src/server/security/webhookUrl.ts",
     "src/types/chat.ts",
     "src/types/contract.ts",
@@ -1462,6 +1804,7 @@
     "src/core/agents/story/PlotArchitect.ts",
     "src/core/agents/story/WorldbuildingEngine.ts",
     "src/core/audio/AudioMetadataService.ts",
+    "src/core/audio/stemdeck/AudioIngestNormalizer.ts",
     "src/core/audit/AuditLogger.ts",
     "src/core/auth/ApiKeyService.ts",
     "src/core/automation/AutoDrive.ts",
@@ -1472,8 +1815,46 @@
     "src/core/browser/PlaywrightBrowserDriver.ts",
     "src/core/browser/PydollAdapter.ts",
     "src/core/browser/index.ts",
+    "src/core/capabilities/artifacts/ArtifactLineageService.ts",
+    "src/core/capabilities/backup/ExpandedBackupRecoveryEngine.ts",
+    "src/core/capabilities/diagnostics/SupportBundleService.ts",
     "src/core/capabilities/evaluation/CanaryCertificationSuite.ts",
+    "src/core/capabilities/evaluation/CapabilityEvaluationRegistry.ts",
+    "src/core/capabilities/evaluation/CleanMachineDeviceCertification.ts",
+    "src/core/capabilities/evaluation/ContextRepositoryCertificationSuite.ts",
+    "src/core/capabilities/evaluation/CrossCapabilityScenarioCertification.ts",
+    "src/core/capabilities/evaluation/GameAssetCertificationSuite.ts",
+    "src/core/capabilities/evaluation/LicenseSbomCertification.ts",
+    "src/core/capabilities/evaluation/LocalModelCertificationSuite.ts",
+    "src/core/capabilities/evaluation/ManualAccessibilityCertification.ts",
+    "src/core/capabilities/evaluation/MediaVoiceCertificationSuite.ts",
+    "src/core/capabilities/evaluation/MemoryAgentCertificationSuite.ts",
+    "src/core/capabilities/evaluation/WritingStudyWebCertificationSuite.ts",
+    "src/core/capabilities/health/CapabilityGuidedDoctor.ts",
     "src/core/capabilities/index.ts",
+    "src/core/capabilities/jobs/UnifiedJobConsoleService.ts",
+    "src/core/capabilities/maintenance/CapabilityDeprecationManager.ts",
+    "src/core/capabilities/maintenance/CapabilityMaintenanceScanner.ts",
+    "src/core/capabilities/maintenance/EvaluationMaintenanceService.ts",
+    "src/core/capabilities/maintenance/OperationalDrillsCoordinator.ts",
+    "src/core/capabilities/observability/CapabilityDashboardService.ts",
+    "src/core/capabilities/observability/CapabilityMetricsCollector.ts",
+    "src/core/capabilities/observability/DistributedTracingService.ts",
+    "src/core/capabilities/packs/PackManagerService.ts",
+    "src/core/capabilities/persistence/CapabilityMigrations.ts",
+    "src/core/capabilities/persistence/CapabilitySqliteStore.ts",
+    "src/core/capabilities/promotion/CrossCapabilityPromotionLedger.ts",
+    "src/core/capabilities/release/ControlledRolloutManager.ts",
+    "src/core/capabilities/release/PostDeployValidationSuite.ts",
+    "src/core/capabilities/release/ProtocolVersionMatrix.ts",
+    "src/core/capabilities/release/ReleaseArtifactBuilder.ts",
+    "src/core/capabilities/release/ReleaseTrainManifestBuilder.ts",
+    "src/core/capabilities/reliability/AdapterFailureMatrix.ts",
+    "src/core/capabilities/reliability/CapabilitySLOEngine.ts",
+    "src/core/capabilities/reliability/DurableRestartRecoveryService.ts",
+    "src/core/capabilities/reliability/LoadSoakBenchmarkRunner.ts",
+    "src/core/capabilities/reliability/PerformanceRegressionGate.ts",
+    "src/core/capabilities/storage/StorageQuotaManager.ts",
     "src/core/chrono/ClaimVerifier.ts",
     "src/core/coding/CodingController.ts",
     "src/core/coding/CodingRequestRouter.ts",
@@ -1486,23 +1867,36 @@
     "src/core/coding/model/CodingModelRouter.ts",
     "src/core/coding/retrieval/DocumentationRetriever.ts",
     "src/core/coding/teams/AgentTeamCoordinator.ts",
-    "src/core/coding/teams/ProcessTreeSupervisor.ts",
     "src/core/coding/teams/ReviewerBundle.ts",
     "src/core/coding/teams/WorktreeLifecycleService.ts",
     "src/core/coding/teams/index.ts",
     "src/core/coding/testing/TestStrategy.ts",
     "src/core/config/APIKeyManager.ts",
     "src/core/config/ProfileManager.ts",
+    "src/core/context-economy/budgets/ContextBudgetPlanner.ts",
+    "src/core/context-economy/checkpoints/ContextCheckpointManager.ts",
+    "src/core/context-economy/index.ts",
     "src/core/contracts/UniversalContract.ts",
     "src/core/creative/CreativePrivacyManager.ts",
     "src/core/creative/CreativeProjectStore.ts",
     "src/core/creative/PromptPackLibrary.ts",
     "src/core/creative/RoleplaySessionEngine.ts",
     "src/core/creative/StoryBibleStore.ts",
+    "src/core/developer/index.ts",
     "src/core/evaluation/CodingBenchmarkRunner.ts",
     "src/core/evaluation/CodingEvalHarness.ts",
     "src/core/evaluation/EvalHarness.ts",
+    "src/core/gaming/asset-cooker/index.ts",
+    "src/core/gaming/engine/index.ts",
+    "src/core/gaming/godot/GodotCanaryMatrix.ts",
+    "src/core/gaming/godot/GodotProfiler.ts",
+    "src/core/gaming/godot/index.ts",
+    "src/core/gaming/index.ts",
     "src/core/gaming/lattice/index.ts",
+    "src/core/gaming/slicing/index.ts",
+    "src/core/gaming/unity/index.ts",
+    "src/core/gaming/unreal/UnrealMutationManager.ts",
+    "src/core/gaming/unreal/index.ts",
     "src/core/index.ts",
     "src/core/knowledge/SmartKnowledgeSource.ts",
     "src/core/knowledge/SmartSourceFactory.ts",
@@ -1532,10 +1926,23 @@
     "src/core/personalization/PreferenceLearner.ts",
     "src/core/personalization/StyleAdapter.ts",
     "src/core/personalization/UserProfiler.ts",
+    "src/core/project-memory/capture/MemoryCaptureService.ts",
+    "src/core/project-memory/capture/MemoryManagementService.ts",
+    "src/core/project-memory/capture/ProjectMemorySchema.ts",
+    "src/core/project-memory/capture/ProjectMemoryStore.ts",
+    "src/core/project-memory/export/MemoryPortableExporter.ts",
+    "src/core/project-memory/freshness/GitSymbolMemoryAnchor.ts",
+    "src/core/project-memory/freshness/MemoryFreshnessEngine.ts",
+    "src/core/project-memory/index.ts",
+    "src/core/project-memory/reconciliation/BranchMemoryReconciler.ts",
+    "src/core/project-memory/retrieval/HybridMemoryRetriever.ts",
     "src/core/providers/DeviceAdapter.ts",
     "src/core/providers/UniversalLLM.ts",
+    "src/core/providers/contracts/LocalAudioVoiceContracts.ts",
     "src/core/providers/local/ExternalLocalModelAdapter.ts",
     "src/core/providers/local/LocalHardwareCanary.ts",
+    "src/core/providers/local/LocalResourceMonitor.ts",
+    "src/core/providers/local/PicchioModelAdapter.ts",
     "src/core/providers/local/index.ts",
     "src/core/quality/AutoReview.ts",
     "src/core/rag/AudioRAG.ts",
@@ -1543,6 +1950,15 @@
     "src/core/rag/RAGRouter.ts",
     "src/core/rag/TrustRAG.ts",
     "src/core/rag/VideoRAG.ts",
+    "src/core/repository-intelligence/RepositoryIntelligenceService.ts",
+    "src/core/repository-intelligence/architecture/SemanticArchitectureCardProvider.ts",
+    "src/core/repository-intelligence/git/GitIntelligenceProvider.ts",
+    "src/core/repository-intelligence/impact/DiffImpactAnalyzer.ts",
+    "src/core/repository-intelligence/index.ts",
+    "src/core/repository-intelligence/indexes/ByteOffsetSymbolIndex.ts",
+    "src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts",
+    "src/core/repository-intelligence/ingestion/SafeRepositoryIngester.ts",
+    "src/core/repository-intelligence/risk/CodeHealthRiskProvider.ts",
     "src/core/rl/FeedbackCollector.ts",
     "src/core/rl/PolicyOptimizer.ts",
     "src/core/rl/RewardModel.ts",
@@ -1551,6 +1967,16 @@
     "src/core/safety/SandboxController.ts",
     "src/core/scheduler/TaskScheduler.ts",
     "src/core/scheduler/index.ts",
+    "src/core/security/artifacts/ArtifactHandoffGuard.ts",
+    "src/core/security/composition/CapabilityCompositionDefense.ts",
+    "src/core/security/consent/MediaConsentGuard.ts",
+    "src/core/security/desktop/DesktopPermissionGuard.ts",
+    "src/core/security/injection/MemoryInjectionDefense.ts",
+    "src/core/security/isolation/WorkerProcessIsolationGuard.ts",
+    "src/core/security/retention/DataRetentionManager.ts",
+    "src/core/security/supply-chain/PackSupplyChainGuard.ts",
+    "src/core/security/threat-model/CapabilityThreatModel.ts",
+    "src/core/security/web/WebSecurityBoundaryGuard.ts",
     "src/core/tools/ToolComposer.ts",
     "src/core/tools/audio/StemAnalyzerTool.ts",
     "src/core/tools/culture/AwardLookupTool.ts",
@@ -1579,6 +2005,8 @@
     "src/core/tools/sixsigma/AnalysisApiTool.ts",
     "src/core/ui/ThinkingUI.ts",
     "src/core/voice/VoiceAgent.ts",
+    "src/core/website/WebsiteWorkspaceService.ts",
+    "src/core/website/index.ts",
     "src/mesh/CircuitBreaker.ts",
     "src/mesh/LoadBalancer.ts",
     "src/middleware/apiKeyAuth.ts",
@@ -1614,6 +2042,10 @@
       "specifier": "./ConversationToolsPanel.css"
     },
     {
+      "importer": "client/src/components/ExpansionStudiosPanel.tsx",
+      "specifier": "./ExpansionStudiosPanel.css"
+    },
+    {
       "importer": "client/src/components/FileExplorerPanel.tsx",
       "specifier": "./FileExplorerPanel.css"
     },
@@ -1636,6 +2068,10 @@
     {
       "importer": "client/src/components/LocalToolsWorkspace.tsx",
       "specifier": "./LocalToolsWorkspace.css"
+    },
+    {
+      "importer": "client/src/components/MemoryCenterPanel.tsx",
+      "specifier": "./MemoryCenterPanel.css"
     },
     {
       "importer": "client/src/components/ModeSelector.tsx",
@@ -1690,6 +2126,18 @@
       "specifier": "../core/cache/MultiLevelCache"
     },
     {
+      "importer": "src/core/capabilities/__tests__/CapabilityPlatformContract.test.ts",
+      "specifier": "../packs/__fixtures__/valid-manifest.json"
+    },
+    {
+      "importer": "src/core/capabilities/packs/CapabilityPackSchema.test.ts",
+      "specifier": "./__fixtures__/invalid-manifest.json"
+    },
+    {
+      "importer": "src/core/capabilities/packs/CapabilityPackSchema.test.ts",
+      "specifier": "./__fixtures__/valid-manifest.json"
+    },
+    {
       "importer": "src/core/coding/architecture/__tests__/ArchitectureFixture.ts",
       "specifier": "./routes"
     },
@@ -1716,6 +2164,38 @@
     {
       "importer": "src/core/coding/index/RelationshipStore.test.ts",
       "specifier": "./b"
+    },
+    {
+      "importer": "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
+      "specifier": "./auth"
+    },
+    {
+      "importer": "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
+      "specifier": "./config"
+    },
+    {
+      "importer": "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
+      "specifier": "./database"
+    },
+    {
+      "importer": "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
+      "specifier": "./events"
+    },
+    {
+      "importer": "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
+      "specifier": "./logger"
+    },
+    {
+      "importer": "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
+      "specifier": "./metrics"
+    },
+    {
+      "importer": "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
+      "specifier": "./routes/capabilities"
+    },
+    {
+      "importer": "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
+      "specifier": "./services"
     },
     {
       "importer": "src/core/initialization/ServiceInitializer.ts",
@@ -1752,10 +2232,6 @@
     {
       "importer": "src/server/routes/local-tools.ts",
       "specifier": "../../core/local-tools/LocalToolService"
-    },
-    {
-      "importer": "src/server/routes/mock-api.ts",
-      "specifier": "../../core/local-tools/MockApiWorkspaceService"
     }
   ],
   "importGraph": {
@@ -1904,6 +2380,17 @@
       "client/src/api/runtime.ts"
     ],
     "client/src/components/ExactScopeConfirmModal.tsx": [],
+    "client/src/components/ExpansionStudiosPanel.test.tsx": [
+      "client/src/components/ExpansionStudiosPanel.tsx"
+    ],
+    "client/src/components/ExpansionStudiosPanel.tsx": [],
+    "client/src/components/ExpansionWorkspacePanels.test.tsx": [
+      "client/src/components/DesktopCompanionPanel.tsx",
+      "client/src/components/DocumentWorkspacePanel.tsx",
+      "client/src/components/MemoryCenterPanel.tsx",
+      "client/src/components/RepositoryArchitectureView.tsx",
+      "client/src/components/WebsiteWorkspacePanel.tsx"
+    ],
     "client/src/components/FileExplorerPanel.test.tsx": [
       "client/src/components/FileExplorerPanel.tsx"
     ],
@@ -1958,6 +2445,7 @@
       "client/src/components/CapabilityHubPanel.tsx",
       "client/src/components/DesktopCompanionPanel.tsx",
       "client/src/components/DocumentWorkspacePanel.tsx",
+      "client/src/components/ExpansionStudiosPanel.tsx",
       "client/src/components/LocalRunApprovalPanel.tsx",
       "client/src/components/MockApiWorkspacePanel.tsx",
       "client/src/components/ProjectIntelligencePanel.tsx",
@@ -1965,6 +2453,7 @@
       "client/src/components/UtilityWorkbenchPanel.tsx",
       "client/src/components/WebsiteWorkspacePanel.tsx"
     ],
+    "client/src/components/MemoryCenterPanel.tsx": [],
     "client/src/components/MockApiWorkspacePanel.tsx": [],
     "client/src/components/ModeSelector.test.tsx": [
       "client/src/components/ModeSelector.tsx"
@@ -1974,9 +2463,15 @@
       "client/src/components/PlanActionBar.tsx"
     ],
     "client/src/components/PlanActionBar.tsx": [],
-    "client/src/components/ProjectIntelligencePanel.tsx": [
-      "client/src/api/runtime.ts"
+    "client/src/components/ProjectIntelligencePanel.test.tsx": [
+      "client/src/components/ProjectIntelligencePanel.tsx"
     ],
+    "client/src/components/ProjectIntelligencePanel.tsx": [
+      "client/src/api/runtime.ts",
+      "client/src/components/MemoryCenterPanel.tsx",
+      "client/src/components/RepositoryArchitectureView.tsx"
+    ],
+    "client/src/components/RepositoryArchitectureView.tsx": [],
     "client/src/components/RepositoryFindingsView.tsx": [],
     "client/src/components/SettingsMenu.test.tsx": [
       "client/src/components/SettingsMenu.tsx"
@@ -2108,6 +2603,7 @@
     "scripts/import-wikidata-chrono.ts": [],
     "scripts/import-wikimedia-history.ts": [],
     "scripts/import-wikipedia-general-corpus.ts": [],
+    "scripts/native/setup-local-runtime.mjs": [],
     "scripts/ocr-queue.ts": [
       "src/core/database/Database.ts",
       "src/core/embeddings/EmbeddingService.ts",
@@ -2120,6 +2616,7 @@
       "scripts/release/lib/client-coverage-policy.mjs"
     ],
     "scripts/release/__tests__/phase2-scanners.test.mjs": [
+      "scripts/release/check-source-integrity.mjs",
       "scripts/release/lib/reachability.mjs",
       "scripts/release/lib/source-analysis.mjs"
     ],
@@ -2148,17 +2645,20 @@
     "scripts/release/check-server-coverage.mjs": [
       "scripts/release/lib/server-coverage-policy.mjs"
     ],
+    "scripts/release/check-source-integrity.mjs": [],
     "scripts/release/configure-main-branch-protection.mjs": [],
     "scripts/release/generate-cyclonedx-sbom.ts": [
       "src/core/coding/findings/CycloneDxSbom.ts",
       "src/core/coding/security/ApprovedRepositoryGateway.ts"
     ],
+    "scripts/release/generate-px-evidence.mjs": [],
     "scripts/release/generate-repository-inventory.mjs": [
       "scripts/release/lib/files.mjs",
       "scripts/release/lib/reachability.mjs",
       "scripts/release/lib/render.mjs",
       "scripts/release/lib/source-analysis.mjs"
     ],
+    "scripts/release/generate-third-party-notices.mjs": [],
     "scripts/release/lib/client-coverage-policy.mjs": [],
     "scripts/release/lib/files.mjs": [],
     "scripts/release/lib/reachability.mjs": [
@@ -2219,6 +2719,43 @@
       "src/core/providers/LLMAdapter.ts",
       "src/types/rag.ts"
     ],
+    "src/core/agent-operations/__tests__/AgentOperations.eval.test.ts": [
+      "src/core/agent-operations/index.ts",
+      "src/core/coding/teams/TaskEnvelope.ts"
+    ],
+    "src/core/agent-operations/claims/WorkspaceClaimService.ts": [],
+    "src/core/agent-operations/communication/AgentCommunicationHub.ts": [
+      "src/core/agent-operations/privacy/AgentPrivacyRedactor.ts"
+    ],
+    "src/core/agent-operations/console/AgentOperationsConsoleService.ts": [
+      "src/core/agent-operations/claims/WorkspaceClaimService.ts",
+      "src/core/agent-operations/communication/AgentCommunicationHub.ts",
+      "src/core/agent-operations/contracts/AgentOperationsSchema.ts",
+      "src/core/coding/teams/ProcessTreeSupervisor.ts"
+    ],
+    "src/core/agent-operations/contracts/AgentOperationsSchema.ts": [
+      "src/core/agent-operations/privacy/AgentPrivacyRedactor.ts",
+      "src/core/coding/teams/AgentTeamRoles.ts",
+      "src/core/coding/teams/TaskEnvelope.ts"
+    ],
+    "src/core/agent-operations/discovery/SessionDiscoveryAdapter.ts": [
+      "src/core/agent-operations/contracts/AgentOperationsSchema.ts",
+      "src/core/agent-operations/privacy/AgentPrivacyRedactor.ts"
+    ],
+    "src/core/agent-operations/evidence/AgentEvidenceBundleService.ts": [
+      "src/core/agent-operations/privacy/AgentPrivacyRedactor.ts",
+      "src/core/coding/teams/TaskEnvelope.ts"
+    ],
+    "src/core/agent-operations/index.ts": [
+      "src/core/agent-operations/claims/WorkspaceClaimService.ts",
+      "src/core/agent-operations/communication/AgentCommunicationHub.ts",
+      "src/core/agent-operations/console/AgentOperationsConsoleService.ts",
+      "src/core/agent-operations/contracts/AgentOperationsSchema.ts",
+      "src/core/agent-operations/discovery/SessionDiscoveryAdapter.ts",
+      "src/core/agent-operations/evidence/AgentEvidenceBundleService.ts",
+      "src/core/agent-operations/privacy/AgentPrivacyRedactor.ts"
+    ],
+    "src/core/agent-operations/privacy/AgentPrivacyRedactor.ts": [],
     "src/core/agents/AgentTeam.ts": [
       "src/core/observability/logger.ts"
     ],
@@ -2951,6 +3488,42 @@
     "src/core/audio/AudioMetadataService.ts": [
       "src/core/audio/AudioLibraryService.ts"
     ],
+    "src/core/audio/stemdeck/__tests__/MusicStudio.eval.test.ts": [
+      "src/core/audio/stemdeck/AudioExportMixdownService.ts",
+      "src/core/audio/stemdeck/AudioIngestNormalizer.ts",
+      "src/core/audio/stemdeck/AudioJobRightsModel.ts",
+      "src/core/audio/stemdeck/AudioTrackAnalyzer.ts",
+      "src/core/audio/stemdeck/DAWIntegrationHandoff.ts",
+      "src/core/audio/stemdeck/DemucsWorkerAdapter.ts",
+      "src/core/audio/stemdeck/StemSeparationEngine.ts",
+      "src/core/audio/stemdeck/StemdeckTypes.ts",
+      "src/core/audio/stemdeck/WaveformMixerEngine.ts"
+    ],
+    "src/core/audio/stemdeck/AudioExportMixdownService.ts": [
+      "src/core/audio/stemdeck/StemdeckTypes.ts",
+      "src/core/audio/stemdeck/WaveformMixerEngine.ts"
+    ],
+    "src/core/audio/stemdeck/AudioIngestNormalizer.ts": [],
+    "src/core/audio/stemdeck/AudioJobRightsModel.ts": [
+      "src/core/audio/stemdeck/StemdeckTypes.ts"
+    ],
+    "src/core/audio/stemdeck/AudioTrackAnalyzer.ts": [
+      "src/core/audio/stemdeck/StemdeckTypes.ts"
+    ],
+    "src/core/audio/stemdeck/DAWIntegrationHandoff.ts": [
+      "src/core/audio/stemdeck/StemdeckTypes.ts"
+    ],
+    "src/core/audio/stemdeck/DemucsWorkerAdapter.ts": [
+      "src/core/audio/stemdeck/StemdeckTypes.ts"
+    ],
+    "src/core/audio/stemdeck/StemdeckTypes.ts": [],
+    "src/core/audio/stemdeck/StemSeparationEngine.ts": [
+      "src/core/audio/stemdeck/DemucsWorkerAdapter.ts",
+      "src/core/audio/stemdeck/StemdeckTypes.ts"
+    ],
+    "src/core/audio/stemdeck/WaveformMixerEngine.ts": [
+      "src/core/audio/stemdeck/StemdeckTypes.ts"
+    ],
     "src/core/audit/AuditLogger.ts": [
       "src/core/database/Database.ts",
       "src/core/observability/logger.ts"
@@ -3015,6 +3588,58 @@
     "src/core/browser/PydollAdapter.ts": [
       "src/core/browser/AuthorizedBrowserJob.ts"
     ],
+    "src/core/capabilities/__tests__/CapabilityHubOperations.eval.test.ts": [
+      "src/core/capabilities/artifacts/ArtifactLineageService.ts",
+      "src/core/capabilities/diagnostics/SupportBundleService.ts",
+      "src/core/capabilities/health/CapabilityGuidedDoctor.ts",
+      "src/core/capabilities/jobs/UnifiedJobConsoleService.ts",
+      "src/core/capabilities/packs/PackManagerService.ts"
+    ],
+    "src/core/capabilities/__tests__/CapabilityPlatformContract.test.ts": [
+      "src/core/capabilities/persistence/CapabilitySqliteStore.ts",
+      "src/core/capabilities/sdk/CapabilitySDK.ts"
+    ],
+    "src/core/capabilities/__tests__/CapabilityReliabilityAndObservability.test.ts": [
+      "src/core/capabilities/backup/ExpandedBackupRecoveryEngine.ts",
+      "src/core/capabilities/observability/CapabilityDashboardService.ts",
+      "src/core/capabilities/observability/CapabilityMetricsCollector.ts",
+      "src/core/capabilities/observability/DistributedTracingService.ts",
+      "src/core/capabilities/reliability/AdapterFailureMatrix.ts",
+      "src/core/capabilities/reliability/CapabilitySLOEngine.ts",
+      "src/core/capabilities/reliability/DurableRestartRecoveryService.ts",
+      "src/core/capabilities/reliability/LoadSoakBenchmarkRunner.ts",
+      "src/core/capabilities/reliability/PerformanceRegressionGate.ts",
+      "src/core/capabilities/storage/StorageQuotaManager.ts"
+    ],
+    "src/core/capabilities/__tests__/CrossCapabilityEvaluationAndPromotion.test.ts": [
+      "src/core/capabilities/evaluation/CapabilityEvaluationRegistry.ts",
+      "src/core/capabilities/evaluation/CleanMachineDeviceCertification.ts",
+      "src/core/capabilities/evaluation/ContextRepositoryCertificationSuite.ts",
+      "src/core/capabilities/evaluation/CrossCapabilityScenarioCertification.ts",
+      "src/core/capabilities/evaluation/GameAssetCertificationSuite.ts",
+      "src/core/capabilities/evaluation/LicenseSbomCertification.ts",
+      "src/core/capabilities/evaluation/LocalModelCertificationSuite.ts",
+      "src/core/capabilities/evaluation/ManualAccessibilityCertification.ts",
+      "src/core/capabilities/evaluation/MediaVoiceCertificationSuite.ts",
+      "src/core/capabilities/evaluation/MemoryAgentCertificationSuite.ts",
+      "src/core/capabilities/evaluation/WritingStudyWebCertificationSuite.ts",
+      "src/core/capabilities/promotion/CrossCapabilityPromotionLedger.ts"
+    ],
+    "src/core/capabilities/__tests__/ReleaseTrainsAndRolloutMaintenance.test.ts": [
+      "src/core/capabilities/maintenance/CapabilityDeprecationManager.ts",
+      "src/core/capabilities/maintenance/CapabilityMaintenanceScanner.ts",
+      "src/core/capabilities/maintenance/EvaluationMaintenanceService.ts",
+      "src/core/capabilities/maintenance/OperationalDrillsCoordinator.ts",
+      "src/core/capabilities/release/ControlledRolloutManager.ts",
+      "src/core/capabilities/release/PostDeployValidationSuite.ts",
+      "src/core/capabilities/release/ProtocolVersionMatrix.ts",
+      "src/core/capabilities/release/ReleaseArtifactBuilder.ts",
+      "src/core/capabilities/release/ReleaseTrainManifestBuilder.ts"
+    ],
+    "src/core/capabilities/approvals/CapabilityApprovalService.ts": [],
+    "src/core/capabilities/artifacts/ArtifactLineageService.ts": [],
+    "src/core/capabilities/artifacts/CapabilityArtifactStore.ts": [],
+    "src/core/capabilities/backup/ExpandedBackupRecoveryEngine.ts": [],
     "src/core/capabilities/CapabilityJobManager.ts": [],
     "src/core/capabilities/CapabilityRegistry.test.ts": [
       "src/core/capabilities/CapabilityJobManager.ts",
@@ -3024,6 +3649,9 @@
     "src/core/capabilities/CapabilityRegistry.ts": [
       "src/core/browser/AuthorizedBrowserJob.ts",
       "src/core/capabilities/CapabilityJobManager.ts",
+      "src/core/capabilities/health/CapabilityHealthDiagnostics.ts",
+      "src/core/capabilities/packs/CapabilityInstallationManager.ts",
+      "src/core/capabilities/packs/CapabilityPackManifest.ts",
       "src/core/coding/teams/TaskEnvelope.ts",
       "src/core/config/EnvironmentDefinitions.ts",
       "src/core/gaming/lattice/LatticeGameAdapter.ts",
@@ -3032,6 +3660,8 @@
       "src/core/multimodal/localization/VideoLocalizationJob.ts",
       "src/core/providers/local/LocalModelDiscovery.ts"
     ],
+    "src/core/capabilities/config/CapabilityConfigManager.ts": [],
+    "src/core/capabilities/diagnostics/SupportBundleService.ts": [],
     "src/core/capabilities/evaluation/CanaryCertificationSuite.test.ts": [
       "src/core/capabilities/evaluation/CanaryCertificationSuite.ts",
       "src/core/capabilities/observability/AlertNotificationDispatcher.ts",
@@ -3054,6 +3684,7 @@
       "src/core/multimodal/localization/ProductionMediaEngineAdapter.ts",
       "src/core/providers/local/LocalHardwareCanary.ts"
     ],
+    "src/core/capabilities/evaluation/CapabilityEvaluationRegistry.ts": [],
     "src/core/capabilities/evaluation/CapabilityEvaluationSuite.test.ts": [
       "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts"
     ],
@@ -3072,18 +3703,85 @@
       "src/core/providers/local/LocalModelRoutingPolicy.ts",
       "src/core/providers/local/LocalResourceManager.ts"
     ],
+    "src/core/capabilities/evaluation/CleanMachineDeviceCertification.ts": [],
+    "src/core/capabilities/evaluation/ContextRepositoryCertificationSuite.ts": [],
+    "src/core/capabilities/evaluation/CrossCapabilityScenarioCertification.ts": [],
+    "src/core/capabilities/evaluation/GameAssetCertificationSuite.ts": [],
+    "src/core/capabilities/evaluation/LicenseSbomCertification.ts": [],
+    "src/core/capabilities/evaluation/LocalModelCertificationSuite.ts": [],
+    "src/core/capabilities/evaluation/ManualAccessibilityCertification.ts": [],
+    "src/core/capabilities/evaluation/MediaVoiceCertificationSuite.ts": [],
+    "src/core/capabilities/evaluation/MemoryAgentCertificationSuite.ts": [],
+    "src/core/capabilities/evaluation/WritingStudyWebCertificationSuite.ts": [],
+    "src/core/capabilities/health/CapabilityGuidedDoctor.ts": [],
+    "src/core/capabilities/health/CapabilityHealthDiagnostics.ts": [],
     "src/core/capabilities/index.ts": [
       "src/core/capabilities/CapabilityJobManager.ts",
       "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/capabilities/approvals/CapabilityApprovalService.ts",
+      "src/core/capabilities/artifacts/CapabilityArtifactStore.ts",
+      "src/core/capabilities/backup/ExpandedBackupRecoveryEngine.ts",
+      "src/core/capabilities/config/CapabilityConfigManager.ts",
+      "src/core/capabilities/evaluation/CanaryCertificationSuite.ts",
+      "src/core/capabilities/evaluation/CapabilityEvaluationRegistry.ts",
       "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+      "src/core/capabilities/evaluation/CleanMachineDeviceCertification.ts",
+      "src/core/capabilities/evaluation/ContextRepositoryCertificationSuite.ts",
+      "src/core/capabilities/evaluation/CrossCapabilityScenarioCertification.ts",
+      "src/core/capabilities/evaluation/GameAssetCertificationSuite.ts",
+      "src/core/capabilities/evaluation/LicenseSbomCertification.ts",
+      "src/core/capabilities/evaluation/LocalModelCertificationSuite.ts",
+      "src/core/capabilities/evaluation/ManualAccessibilityCertification.ts",
+      "src/core/capabilities/evaluation/MediaVoiceCertificationSuite.ts",
+      "src/core/capabilities/evaluation/MemoryAgentCertificationSuite.ts",
+      "src/core/capabilities/evaluation/WritingStudyWebCertificationSuite.ts",
+      "src/core/capabilities/health/CapabilityHealthDiagnostics.ts",
+      "src/core/capabilities/jobs/CapabilityJobService.ts",
+      "src/core/capabilities/maintenance/CapabilityDeprecationManager.ts",
+      "src/core/capabilities/maintenance/CapabilityMaintenanceScanner.ts",
+      "src/core/capabilities/maintenance/EvaluationMaintenanceService.ts",
+      "src/core/capabilities/maintenance/OperationalDrillsCoordinator.ts",
       "src/core/capabilities/observability/AlertNotificationDispatcher.ts",
+      "src/core/capabilities/observability/CapabilityDashboardService.ts",
+      "src/core/capabilities/observability/CapabilityMetricsCollector.ts",
       "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+      "src/core/capabilities/observability/DistributedTracingService.ts",
+      "src/core/capabilities/packs/CapabilityInstallationManager.ts",
+      "src/core/capabilities/packs/CapabilityPackManifest.ts",
+      "src/core/capabilities/permissions/CapabilityPermissionEngine.ts",
+      "src/core/capabilities/persistence/CapabilityMigrations.ts",
       "src/core/capabilities/persistence/CapabilityPersistenceStore.ts",
-      "src/core/capabilities/promotion/CapabilityPromotionEngine.ts"
+      "src/core/capabilities/persistence/CapabilitySqliteStore.ts",
+      "src/core/capabilities/promotion/CapabilityPromotionEngine.ts",
+      "src/core/capabilities/promotion/CrossCapabilityPromotionLedger.ts",
+      "src/core/capabilities/release/ControlledRolloutManager.ts",
+      "src/core/capabilities/release/PostDeployValidationSuite.ts",
+      "src/core/capabilities/release/ProtocolVersionMatrix.ts",
+      "src/core/capabilities/release/ReleaseArtifactBuilder.ts",
+      "src/core/capabilities/release/ReleaseTrainManifestBuilder.ts",
+      "src/core/capabilities/reliability/AdapterFailureMatrix.ts",
+      "src/core/capabilities/reliability/CapabilitySLOEngine.ts",
+      "src/core/capabilities/reliability/DurableRestartRecoveryService.ts",
+      "src/core/capabilities/reliability/LoadSoakBenchmarkRunner.ts",
+      "src/core/capabilities/reliability/PerformanceRegressionGate.ts",
+      "src/core/capabilities/resources/ResourceBudgetManager.ts",
+      "src/core/capabilities/sdk/CapabilitySDK.ts",
+      "src/core/capabilities/storage/StorageQuotaManager.ts"
     ],
+    "src/core/capabilities/jobs/CapabilityJobService.ts": [
+      "src/core/capabilities/artifacts/CapabilityArtifactStore.ts",
+      "src/core/capabilities/resources/ResourceBudgetManager.ts"
+    ],
+    "src/core/capabilities/jobs/UnifiedJobConsoleService.ts": [],
+    "src/core/capabilities/maintenance/CapabilityDeprecationManager.ts": [],
+    "src/core/capabilities/maintenance/CapabilityMaintenanceScanner.ts": [],
+    "src/core/capabilities/maintenance/EvaluationMaintenanceService.ts": [],
+    "src/core/capabilities/maintenance/OperationalDrillsCoordinator.ts": [],
     "src/core/capabilities/observability/AlertNotificationDispatcher.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/capabilities/observability/CapabilityDashboardService.ts": [],
+    "src/core/capabilities/observability/CapabilityMetricsCollector.ts": [],
     "src/core/capabilities/observability/CapabilityObservabilityService.test.ts": [
       "src/core/capabilities/observability/CapabilityObservabilityService.ts"
     ],
@@ -3093,11 +3791,31 @@
       "src/core/capabilities/persistence/CapabilityPersistenceStore.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/capabilities/observability/DistributedTracingService.ts": [],
+    "src/core/capabilities/packs/CapabilityInstallationManager.ts": [
+      "src/core/capabilities/config/CapabilityConfigManager.ts",
+      "src/core/capabilities/health/CapabilityHealthDiagnostics.ts",
+      "src/core/capabilities/packs/CapabilityPackManifest.ts"
+    ],
+    "src/core/capabilities/packs/CapabilityPackManifest.ts": [],
+    "src/core/capabilities/packs/CapabilityPackSchema.test.ts": [
+      "src/core/capabilities/packs/CapabilityPackManifest.ts"
+    ],
+    "src/core/capabilities/packs/PackManagerService.ts": [],
+    "src/core/capabilities/permissions/CapabilityPermissionEngine.ts": [
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/capabilities/approvals/CapabilityApprovalService.ts",
+      "src/core/config/EnvironmentDefinitions.ts"
+    ],
+    "src/core/capabilities/persistence/CapabilityMigrations.ts": [],
     "src/core/capabilities/persistence/CapabilityPersistenceStore.ts": [
       "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
       "src/core/capabilities/observability/CapabilityObservabilityService.ts",
       "src/core/capabilities/promotion/CapabilityPromotionEngine.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/capabilities/persistence/CapabilitySqliteStore.ts": [
+      "src/core/capabilities/persistence/CapabilityMigrations.ts"
     ],
     "src/core/capabilities/promotion/CapabilityPromotionEngine.test.ts": [
       "src/core/capabilities/CapabilityRegistry.ts",
@@ -3110,6 +3828,35 @@
       "src/core/capabilities/observability/CapabilityObservabilityService.ts",
       "src/core/capabilities/persistence/CapabilityPersistenceStore.ts"
     ],
+    "src/core/capabilities/promotion/CrossCapabilityPromotionLedger.ts": [
+      "src/core/capabilities/CapabilityRegistry.ts"
+    ],
+    "src/core/capabilities/release/ControlledRolloutManager.ts": [],
+    "src/core/capabilities/release/PostDeployValidationSuite.ts": [],
+    "src/core/capabilities/release/ProtocolVersionMatrix.ts": [],
+    "src/core/capabilities/release/ReleaseArtifactBuilder.ts": [],
+    "src/core/capabilities/release/ReleaseTrainManifestBuilder.ts": [
+      "src/core/capabilities/CapabilityRegistry.ts"
+    ],
+    "src/core/capabilities/reliability/AdapterFailureMatrix.ts": [],
+    "src/core/capabilities/reliability/CapabilitySLOEngine.ts": [],
+    "src/core/capabilities/reliability/DurableRestartRecoveryService.ts": [],
+    "src/core/capabilities/reliability/LoadSoakBenchmarkRunner.ts": [],
+    "src/core/capabilities/reliability/PerformanceRegressionGate.ts": [],
+    "src/core/capabilities/resources/ResourceBudgetManager.ts": [],
+    "src/core/capabilities/sdk/CapabilitySDK.ts": [
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/capabilities/approvals/CapabilityApprovalService.ts",
+      "src/core/capabilities/artifacts/CapabilityArtifactStore.ts",
+      "src/core/capabilities/config/CapabilityConfigManager.ts",
+      "src/core/capabilities/health/CapabilityHealthDiagnostics.ts",
+      "src/core/capabilities/jobs/CapabilityJobService.ts",
+      "src/core/capabilities/packs/CapabilityInstallationManager.ts",
+      "src/core/capabilities/packs/CapabilityPackManifest.ts",
+      "src/core/capabilities/permissions/CapabilityPermissionEngine.ts",
+      "src/core/capabilities/resources/ResourceBudgetManager.ts"
+    ],
+    "src/core/capabilities/storage/StorageQuotaManager.ts": [],
     "src/core/chrono/ChronoDate.ts": [],
     "src/core/chrono/ChronoKnowledgeEngine.test.ts": [
       "src/core/chrono/ChronoKnowledgeEngine.ts"
@@ -3604,6 +4351,62 @@
     "src/core/config/ProfileManager.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/context-economy/__tests__/ContextEconomySecurity.test.ts": [
+      "src/core/context-economy/budgets/ContextBudgetPlanner.ts",
+      "src/core/context-economy/checkpoints/ContextCheckpointManager.ts",
+      "src/core/context-economy/compressors/ModelAssistedCompressor.ts",
+      "src/core/context-economy/reversible-store/ReversibleContextStore.ts",
+      "src/core/context-economy/router/ContextContentRouter.ts"
+    ],
+    "src/core/context-economy/budgets/ContextBudgetPlanner.ts": [],
+    "src/core/context-economy/checkpoints/ContextCheckpointManager.ts": [],
+    "src/core/context-economy/compressors/CodeOutlineCompressor.ts": [],
+    "src/core/context-economy/compressors/ConversationTurnSelector.ts": [],
+    "src/core/context-economy/compressors/ExactEvidenceSelector.ts": [],
+    "src/core/context-economy/compressors/index.ts": [
+      "src/core/context-economy/compressors/CodeOutlineCompressor.ts",
+      "src/core/context-economy/compressors/ConversationTurnSelector.ts",
+      "src/core/context-economy/compressors/ExactEvidenceSelector.ts",
+      "src/core/context-economy/compressors/JsonShapeCompressor.ts",
+      "src/core/context-economy/compressors/LogEventCompressor.ts",
+      "src/core/context-economy/compressors/ModelAssistedCompressor.ts",
+      "src/core/context-economy/compressors/RepoTreeCompressor.ts",
+      "src/core/context-economy/compressors/StackTraceDeduplicator.ts",
+      "src/core/context-economy/compressors/TableSampleCompressor.ts",
+      "src/core/context-economy/compressors/UnifiedDiffCompressor.ts"
+    ],
+    "src/core/context-economy/compressors/JsonShapeCompressor.ts": [],
+    "src/core/context-economy/compressors/LogEventCompressor.ts": [],
+    "src/core/context-economy/compressors/ModelAssistedCompressor.ts": [
+      "src/core/context-economy/compressors/CodeOutlineCompressor.ts"
+    ],
+    "src/core/context-economy/compressors/RepoTreeCompressor.ts": [],
+    "src/core/context-economy/compressors/StackTraceDeduplicator.ts": [],
+    "src/core/context-economy/compressors/TableSampleCompressor.ts": [],
+    "src/core/context-economy/compressors/UnifiedDiffCompressor.ts": [],
+    "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts": [
+      "src/core/context-economy/router/ContextContentRouter.ts"
+    ],
+    "src/core/context-economy/evaluation/ContextEconomyEvaluation.test.ts": [
+      "src/core/context-economy/budgets/ContextBudgetPlanner.ts",
+      "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
+      "src/core/context-economy/router/ContextContentRouter.ts"
+    ],
+    "src/core/context-economy/index.ts": [
+      "src/core/context-economy/budgets/ContextBudgetPlanner.ts",
+      "src/core/context-economy/checkpoints/ContextCheckpointManager.ts",
+      "src/core/context-economy/compressors/index.ts",
+      "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
+      "src/core/context-economy/learning/ContextFailureLearningService.ts",
+      "src/core/context-economy/reversible-store/ReversibleContextStore.ts",
+      "src/core/context-economy/router/ContextContentRouter.ts"
+    ],
+    "src/core/context-economy/learning/ContextFailureLearningService.ts": [],
+    "src/core/context-economy/reversible-store/ReversibleContextStore.ts": [],
+    "src/core/context-economy/router/ContextContentRouter.ts": [
+      "src/core/context-economy/compressors/index.ts",
+      "src/core/context-economy/reversible-store/ReversibleContextStore.ts"
+    ],
     "src/core/contracts/ContractGate.ts": [
       "src/core/observability/logger.ts",
       "src/types/contract.ts"
@@ -3617,6 +4420,10 @@
     "src/core/conversation/ConversationManager.ts": [
       "src/core/database/Database.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/CoreExports.test.ts": [
+      "src/core/capabilities/index.ts",
+      "src/core/index.ts"
     ],
     "src/core/creative/CreativeCapabilityDetector.ts": [],
     "src/core/creative/CreativeCommandRouter.test.ts": [
@@ -3698,6 +4505,47 @@
     "src/core/debug/DebugMode.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/developer/__tests__/DeveloperUtilityPack.eval.test.ts": [
+      "src/core/developer/index.ts"
+    ],
+    "src/core/developer/CapabilityPackScaffolder.ts": [
+      "src/core/developer/DeveloperTypes.ts"
+    ],
+    "src/core/developer/DeveloperTypes.ts": [],
+    "src/core/developer/DeveloperUtilityPackService.ts": [
+      "src/core/developer/CapabilityPackScaffolder.ts",
+      "src/core/developer/DeveloperTypes.ts",
+      "src/core/developer/MockApiEngine.ts",
+      "src/core/developer/MockChaosSimulator.ts",
+      "src/core/developer/OpenApiSchemaImporter.ts",
+      "src/core/developer/ProjectDoctorService.ts",
+      "src/core/developer/SourcePreservingSkillExporter.ts"
+    ],
+    "src/core/developer/index.ts": [
+      "src/core/developer/CapabilityPackScaffolder.ts",
+      "src/core/developer/DeveloperTypes.ts",
+      "src/core/developer/DeveloperUtilityPackService.ts",
+      "src/core/developer/MockApiEngine.ts",
+      "src/core/developer/MockChaosSimulator.ts",
+      "src/core/developer/OpenApiSchemaImporter.ts",
+      "src/core/developer/ProjectDoctorService.ts",
+      "src/core/developer/SourcePreservingSkillExporter.ts"
+    ],
+    "src/core/developer/MockApiEngine.ts": [
+      "src/core/developer/DeveloperTypes.ts"
+    ],
+    "src/core/developer/MockChaosSimulator.ts": [
+      "src/core/developer/DeveloperTypes.ts"
+    ],
+    "src/core/developer/OpenApiSchemaImporter.ts": [
+      "src/core/developer/DeveloperTypes.ts"
+    ],
+    "src/core/developer/ProjectDoctorService.ts": [
+      "src/core/developer/DeveloperTypes.ts"
+    ],
+    "src/core/developer/SourcePreservingSkillExporter.ts": [
+      "src/core/developer/DeveloperTypes.ts"
+    ],
     "src/core/documents/DocumentMetadata.ts": [
       "src/core/database/Database.ts",
       "src/core/observability/logger.ts"
@@ -3746,6 +4594,151 @@
       "src/core/files/FileExplorerService.ts"
     ],
     "src/core/files/FileExplorerService.ts": [],
+    "src/core/gaming/__tests__/GodotBridge.eval.test.ts": [
+      "src/core/gaming/engine/GameEngineBridge.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/godot/GodotAssetPipeline.ts",
+      "src/core/gaming/godot/GodotCanaryMatrix.ts",
+      "src/core/gaming/godot/GodotClassDbValidator.ts",
+      "src/core/gaming/godot/GodotMcpXAdapter.ts",
+      "src/core/gaming/godot/GodotProfiler.ts",
+      "src/core/gaming/godot/GodotProjectInspector.ts",
+      "src/core/gaming/godot/GodotProjectManifest.ts",
+      "src/core/gaming/godot/GodotTransactionManager.ts"
+    ],
+    "src/core/gaming/__tests__/MultiEngineAdapters.eval.test.ts": [
+      "src/core/gaming/asset-cooker/AssetCookerAdapter.ts",
+      "src/core/gaming/engine/EngineCertificationProfile.ts",
+      "src/core/gaming/engine/GameEngineBridge.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/MultiEngineStudioService.ts",
+      "src/core/gaming/slicing/SpriteSlicingBridge.ts",
+      "src/core/gaming/unity/UnityEngineAdapter.ts",
+      "src/core/gaming/unity/UnityMastService.ts",
+      "src/core/gaming/unreal/UnrealEngineAdapter.ts",
+      "src/core/gaming/unreal/UnrealLicenseGate.ts"
+    ],
+    "src/core/gaming/asset-cooker/AssetCookerAdapter.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
+    "src/core/gaming/asset-cooker/index.ts": [
+      "src/core/gaming/asset-cooker/AssetCookerAdapter.ts",
+      "src/core/gaming/asset-cooker/LocalAssetCookerExecutor.ts"
+    ],
+    "src/core/gaming/asset-cooker/LocalAssetCookerExecutor.ts": [
+      "src/core/gaming/asset-cooker/AssetCookerAdapter.ts"
+    ],
+    "src/core/gaming/engine/EngineCertificationProfile.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
+    "src/core/gaming/engine/GameEngineBridge.ts": [
+      "src/core/config/EnvironmentDefinitions.ts",
+      "src/core/gaming/engine/EngineCertificationProfile.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
+    "src/core/gaming/engine/GameEngineTypes.ts": [],
+    "src/core/gaming/engine/index.ts": [
+      "src/core/gaming/engine/EngineCertificationProfile.ts",
+      "src/core/gaming/engine/GameEngineBridge.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/MultiEngineStudioService.ts",
+      "src/core/gaming/engine/NativeEditorBackend.ts",
+      "src/core/gaming/engine/ProjectMutationStore.ts"
+    ],
+    "src/core/gaming/engine/MultiEngineStudioService.ts": [
+      "src/core/gaming/engine/EngineCertificationProfile.ts",
+      "src/core/gaming/engine/GameEngineBridge.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
+    "src/core/gaming/engine/NativeEditorBackend.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
+    "src/core/gaming/engine/ProjectMutationStore.test.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/ProjectMutationStore.ts"
+    ],
+    "src/core/gaming/engine/ProjectMutationStore.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/ProjectPathGuard.ts"
+    ],
+    "src/core/gaming/engine/ProjectPathGuard.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
+    "src/core/gaming/godot/GodotAssetPipeline.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
+    "src/core/gaming/godot/GodotCanaryMatrix.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/godot/GodotMcpXAdapter.ts",
+      "src/core/gaming/godot/GodotProjectManifest.ts"
+    ],
+    "src/core/gaming/godot/GodotClassDbValidator.ts": [],
+    "src/core/gaming/godot/GodotCliBackend.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/godot/GodotAssetPipeline.ts",
+      "src/core/gaming/godot/GodotRuntimeRunner.ts",
+      "src/core/native-runtime/NativeCommandRunner.ts"
+    ],
+    "src/core/gaming/godot/GodotMcpXAdapter.ts": [
+      "src/core/gaming/engine/GameEngineBridge.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/godot/GodotAssetPipeline.ts",
+      "src/core/gaming/godot/GodotProjectInspector.ts",
+      "src/core/gaming/godot/GodotProjectManifest.ts",
+      "src/core/gaming/godot/GodotRuntimeRunner.ts",
+      "src/core/gaming/godot/GodotSceneMutator.ts",
+      "src/core/gaming/godot/GodotScriptMutator.ts",
+      "src/core/gaming/godot/GodotTransactionManager.ts"
+    ],
+    "src/core/gaming/godot/GodotProfiler.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
+    "src/core/gaming/godot/GodotProjectInspector.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/ProjectPathGuard.ts"
+    ],
+    "src/core/gaming/godot/GodotProjectManifest.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
+    "src/core/gaming/godot/GodotRuntimeRunner.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
+    "src/core/gaming/godot/GodotSceneMutator.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/ProjectPathGuard.ts"
+    ],
+    "src/core/gaming/godot/GodotScriptMutator.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/ProjectPathGuard.ts",
+      "src/core/gaming/godot/GodotClassDbValidator.ts"
+    ],
+    "src/core/gaming/godot/GodotTransactionManager.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/ProjectPathGuard.ts"
+    ],
+    "src/core/gaming/godot/index.ts": [
+      "src/core/gaming/godot/GodotAssetPipeline.ts",
+      "src/core/gaming/godot/GodotCanaryMatrix.ts",
+      "src/core/gaming/godot/GodotClassDbValidator.ts",
+      "src/core/gaming/godot/GodotCliBackend.ts",
+      "src/core/gaming/godot/GodotMcpXAdapter.ts",
+      "src/core/gaming/godot/GodotProfiler.ts",
+      "src/core/gaming/godot/GodotProjectInspector.ts",
+      "src/core/gaming/godot/GodotProjectManifest.ts",
+      "src/core/gaming/godot/GodotRuntimeRunner.ts",
+      "src/core/gaming/godot/GodotSceneMutator.ts",
+      "src/core/gaming/godot/GodotScriptMutator.ts",
+      "src/core/gaming/godot/GodotTransactionManager.ts"
+    ],
+    "src/core/gaming/index.ts": [
+      "src/core/gaming/asset-cooker/index.ts",
+      "src/core/gaming/engine/index.ts",
+      "src/core/gaming/godot/index.ts",
+      "src/core/gaming/lattice/index.ts",
+      "src/core/gaming/slicing/index.ts",
+      "src/core/gaming/unity/index.ts",
+      "src/core/gaming/unreal/index.ts"
+    ],
     "src/core/gaming/lattice/index.ts": [
       "src/core/gaming/lattice/LatticeGameAdapter.ts",
       "src/core/gaming/lattice/LatticeSimulationEngine.ts",
@@ -3770,6 +4763,43 @@
       "src/core/gaming/lattice/LatticeWorldSchema.ts"
     ],
     "src/core/gaming/lattice/LatticeWorldSchema.ts": [],
+    "src/core/gaming/slicing/index.ts": [
+      "src/core/gaming/slicing/SpriteSlicingBridge.ts"
+    ],
+    "src/core/gaming/slicing/SpriteSlicingBridge.ts": [],
+    "src/core/gaming/unity/index.ts": [
+      "src/core/gaming/unity/UnityEngineAdapter.ts",
+      "src/core/gaming/unity/UnityMastService.ts"
+    ],
+    "src/core/gaming/unity/UnityEngineAdapter.ts": [
+      "src/core/gaming/engine/GameEngineBridge.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/NativeEditorBackend.ts",
+      "src/core/gaming/engine/ProjectMutationStore.ts",
+      "src/core/gaming/engine/ProjectPathGuard.ts",
+      "src/core/gaming/unity/UnityMastService.ts"
+    ],
+    "src/core/gaming/unity/UnityMastService.ts": [],
+    "src/core/gaming/unreal/index.ts": [
+      "src/core/gaming/unreal/UnrealEngineAdapter.ts",
+      "src/core/gaming/unreal/UnrealLicenseGate.ts",
+      "src/core/gaming/unreal/UnrealMutationManager.ts"
+    ],
+    "src/core/gaming/unreal/UnrealEngineAdapter.ts": [
+      "src/core/gaming/engine/GameEngineBridge.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/NativeEditorBackend.ts",
+      "src/core/gaming/engine/ProjectMutationStore.ts",
+      "src/core/gaming/engine/ProjectPathGuard.ts",
+      "src/core/gaming/unreal/UnrealLicenseGate.ts"
+    ],
+    "src/core/gaming/unreal/UnrealLicenseGate.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
+    "src/core/gaming/unreal/UnrealMutationManager.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/unreal/UnrealLicenseGate.ts"
+    ],
     "src/core/gis/__tests__/GISPrivacy.test.ts": [
       "src/core/gis/GISPrivacy.ts"
     ],
@@ -3876,7 +4906,9 @@
       "src/core/coding/teams/ProcessTreeSupervisor.ts",
       "src/core/config/APIKeyManager.ts",
       "src/core/config/ProfileManager.ts",
+      "src/core/context-economy/index.ts",
       "src/core/contracts/UniversalContract.ts",
+      "src/core/developer/index.ts",
       "src/core/gaming/lattice/LatticeGameAdapter.ts",
       "src/core/gaming/lattice/LatticeSimulationEngine.ts",
       "src/core/gaming/lattice/LatticeVisualizer.ts",
@@ -3900,6 +4932,7 @@
       "src/core/observability/logger.ts",
       "src/core/optimization/ToonSerializer.ts",
       "src/core/personalization/UserProfiler.ts",
+      "src/core/project-memory/index.ts",
       "src/core/providers/DeviceAdapter.ts",
       "src/core/providers/UniversalLLM.ts",
       "src/core/providers/local/LocalHardwareCanary.ts",
@@ -3909,13 +4942,17 @@
       "src/core/rag/RAGRouter.ts",
       "src/core/rag/TrustRAG.ts",
       "src/core/rag/VideoRAG.ts",
+      "src/core/repository-intelligence/index.ts",
       "src/core/safety/ApprovalPolicy.ts",
       "src/core/safety/SandboxController.ts",
       "src/core/scheduler/TaskScheduler.ts",
+      "src/core/study/index.ts",
       "src/core/tools/CodingKnowledgeTool.ts",
       "src/core/tools/WebSearcher.ts",
       "src/core/ui/ThinkingUI.ts",
-      "src/core/voice/VoiceAgent.ts"
+      "src/core/voice/VoiceAgent.ts",
+      "src/core/website/index.ts",
+      "src/core/writing/index.ts"
     ],
     "src/core/initialization/ServiceInitializer.test.ts": [
       "src/core/initialization/ServiceInitializer.ts"
@@ -4350,6 +5387,56 @@
     ],
     "src/core/mcp/McpPermissionGate.ts": [],
     "src/core/mcp/McpToolRegistry.ts": [],
+    "src/core/media-accessibility/__tests__/MediaAccessibility.eval.test.ts": [
+      "src/core/media-accessibility/index.ts"
+    ],
+    "src/core/media-accessibility/AudioTimingFitReconstructor.ts": [
+      "src/core/media-accessibility/MediaAccessibilityTypes.ts",
+      "src/core/media-accessibility/VoiceDubbingConsentGate.ts"
+    ],
+    "src/core/media-accessibility/AuthorizedMediaIngestAdapter.ts": [
+      "src/core/media-accessibility/MediaAccessibilityTypes.ts"
+    ],
+    "src/core/media-accessibility/DocumentNarrationEngine.ts": [
+      "src/core/media-accessibility/MediaAccessibilityTypes.ts"
+    ],
+    "src/core/media-accessibility/index.ts": [
+      "src/core/media-accessibility/AudioTimingFitReconstructor.ts",
+      "src/core/media-accessibility/AuthorizedMediaIngestAdapter.ts",
+      "src/core/media-accessibility/DocumentNarrationEngine.ts",
+      "src/core/media-accessibility/MediaAccessibilityTypes.ts",
+      "src/core/media-accessibility/MediaProjectModel.ts",
+      "src/core/media-accessibility/MediaStorageLifecycleManager.ts",
+      "src/core/media-accessibility/MediaTranscriptionAligner.ts",
+      "src/core/media-accessibility/SubtitleEditorService.ts",
+      "src/core/media-accessibility/SubtitleOcrEngine.ts",
+      "src/core/media-accessibility/SynchronizedReadAlongService.ts",
+      "src/core/media-accessibility/TranslationVariantService.ts",
+      "src/core/media-accessibility/VoiceDubbingConsentGate.ts"
+    ],
+    "src/core/media-accessibility/MediaAccessibilityTypes.ts": [],
+    "src/core/media-accessibility/MediaProjectModel.ts": [
+      "src/core/media-accessibility/MediaAccessibilityTypes.ts"
+    ],
+    "src/core/media-accessibility/MediaStorageLifecycleManager.ts": [],
+    "src/core/media-accessibility/MediaTranscriptionAligner.ts": [
+      "src/core/media-accessibility/MediaAccessibilityTypes.ts"
+    ],
+    "src/core/media-accessibility/SubtitleEditorService.ts": [
+      "src/core/media-accessibility/MediaAccessibilityTypes.ts"
+    ],
+    "src/core/media-accessibility/SubtitleOcrEngine.ts": [
+      "src/core/media-accessibility/MediaAccessibilityTypes.ts"
+    ],
+    "src/core/media-accessibility/SynchronizedReadAlongService.ts": [
+      "src/core/media-accessibility/MediaAccessibilityTypes.ts"
+    ],
+    "src/core/media-accessibility/TranslationVariantService.ts": [
+      "src/core/media-accessibility/MediaAccessibilityTypes.ts"
+    ],
+    "src/core/media-accessibility/VoiceDubbingConsentGate.ts": [
+      "src/core/media-accessibility/MediaAccessibilityTypes.ts"
+    ],
     "src/core/memory/ForgettingMechanism.ts": [
       "src/core/observability/logger.ts",
       "src/types/memory.ts"
@@ -4446,6 +5533,65 @@
     "src/core/multimodal/VisualSearch.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/native-runtime/__tests__/NativeBackends.test.ts": [
+      "src/core/gaming/godot/GodotCliBackend.ts",
+      "src/core/native-runtime/LocalAIBackends.ts",
+      "src/core/native-runtime/NativeAudioBackends.ts",
+      "src/core/native-runtime/NativeMediaBackends.ts",
+      "src/core/native-runtime/NativeVoiceBackends.ts"
+    ],
+    "src/core/native-runtime/__tests__/NativeCommandRunner.test.ts": [
+      "src/core/native-runtime/NativeCommandRunner.ts"
+    ],
+    "src/core/native-runtime/__tests__/NativeGameEditorBackends.test.ts": [
+      "src/core/native-runtime/NativeCommandRunner.ts",
+      "src/core/native-runtime/NativeGameEditorBackends.ts"
+    ],
+    "src/core/native-runtime/__tests__/RuntimeDiscovery.test.ts": [
+      "src/core/native-runtime/RuntimeDiscovery.ts"
+    ],
+    "src/core/native-runtime/index.ts": [
+      "src/core/native-runtime/LocalAIBackends.ts",
+      "src/core/native-runtime/NativeAudioBackends.ts",
+      "src/core/native-runtime/NativeCommandRunner.ts",
+      "src/core/native-runtime/NativeGameEditorBackends.ts",
+      "src/core/native-runtime/NativeMediaBackends.ts",
+      "src/core/native-runtime/NativeVoiceBackends.ts",
+      "src/core/native-runtime/RuntimeDiscovery.ts"
+    ],
+    "src/core/native-runtime/LocalAIBackends.ts": [
+      "src/core/providers/OllamaAdapter.ts",
+      "src/core/voice-companion/VoiceCompanionTypes.ts",
+      "src/core/writing/WritingTypes.ts"
+    ],
+    "src/core/native-runtime/NativeAudioBackends.ts": [
+      "src/core/audio/stemdeck/DemucsWorkerAdapter.ts",
+      "src/core/audio/stemdeck/StemdeckTypes.ts",
+      "src/core/native-runtime/NativeCommandRunner.ts"
+    ],
+    "src/core/native-runtime/NativeCommandRunner.ts": [],
+    "src/core/native-runtime/NativeGameEditorBackends.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/NativeEditorBackend.ts",
+      "src/core/native-runtime/NativeCommandRunner.ts",
+      "src/core/native-runtime/RuntimeDiscovery.ts"
+    ],
+    "src/core/native-runtime/NativeMediaBackends.ts": [
+      "src/core/media-accessibility/AudioTimingFitReconstructor.ts",
+      "src/core/media-accessibility/DocumentNarrationEngine.ts",
+      "src/core/media-accessibility/MediaAccessibilityTypes.ts",
+      "src/core/media-accessibility/SubtitleOcrEngine.ts",
+      "src/core/native-runtime/NativeCommandRunner.ts",
+      "src/core/voice-companion/LocalTTSProvider.ts"
+    ],
+    "src/core/native-runtime/NativeVoiceBackends.ts": [
+      "src/core/native-runtime/NativeCommandRunner.ts",
+      "src/core/voice-companion/LocalSTTProvider.ts",
+      "src/core/voice-companion/LocalTTSProvider.ts",
+      "src/core/voice-companion/ScreenContextCaptureService.ts",
+      "src/core/voice-companion/VoiceCompanionTypes.ts"
+    ],
+    "src/core/native-runtime/RuntimeDiscovery.ts": [],
     "src/core/nlu/__tests__/CrossDomainAmbiguity.test.ts": [
       "src/core/nlu/HumanLanguageRouter.ts"
     ],
@@ -4628,6 +5774,61 @@
       "src/core/planning/PlanDocumentService.ts"
     ],
     "src/core/planning/PlanDocumentService.ts": [],
+    "src/core/project-memory/__tests__/ProjectMemory.eval.test.ts": [
+      "src/core/project-memory/capture/MemoryCaptureService.ts",
+      "src/core/project-memory/capture/MemoryManagementService.ts",
+      "src/core/project-memory/capture/ProjectMemoryStore.ts",
+      "src/core/project-memory/export/MemoryPortableExporter.ts",
+      "src/core/project-memory/freshness/GitSymbolMemoryAnchor.ts",
+      "src/core/project-memory/freshness/MemoryFreshnessEngine.ts",
+      "src/core/project-memory/reconciliation/BranchMemoryReconciler.ts",
+      "src/core/project-memory/retrieval/HybridMemoryRetriever.ts",
+      "src/core/repository-intelligence/indexes/ByteOffsetSymbolIndex.ts"
+    ],
+    "src/core/project-memory/capture/MemoryCaptureService.ts": [
+      "src/core/project-memory/capture/ProjectMemorySchema.ts",
+      "src/core/project-memory/capture/ProjectMemoryStore.ts"
+    ],
+    "src/core/project-memory/capture/MemoryManagementService.ts": [
+      "src/core/project-memory/capture/ProjectMemorySchema.ts",
+      "src/core/project-memory/capture/ProjectMemoryStore.ts"
+    ],
+    "src/core/project-memory/capture/ProjectMemorySchema.ts": [],
+    "src/core/project-memory/capture/ProjectMemoryStore.ts": [
+      "src/core/project-memory/capture/ProjectMemorySchema.ts"
+    ],
+    "src/core/project-memory/export/MemoryPortableExporter.ts": [
+      "src/core/project-memory/capture/ProjectMemorySchema.ts",
+      "src/core/project-memory/capture/ProjectMemoryStore.ts"
+    ],
+    "src/core/project-memory/freshness/GitSymbolMemoryAnchor.ts": [
+      "src/core/project-memory/capture/ProjectMemorySchema.ts",
+      "src/core/repository-intelligence/indexes/ByteOffsetSymbolIndex.ts"
+    ],
+    "src/core/project-memory/freshness/MemoryFreshnessEngine.ts": [
+      "src/core/project-memory/capture/ProjectMemorySchema.ts",
+      "src/core/project-memory/capture/ProjectMemoryStore.ts",
+      "src/core/project-memory/freshness/GitSymbolMemoryAnchor.ts"
+    ],
+    "src/core/project-memory/index.ts": [
+      "src/core/project-memory/capture/MemoryCaptureService.ts",
+      "src/core/project-memory/capture/MemoryManagementService.ts",
+      "src/core/project-memory/capture/ProjectMemorySchema.ts",
+      "src/core/project-memory/capture/ProjectMemoryStore.ts",
+      "src/core/project-memory/export/MemoryPortableExporter.ts",
+      "src/core/project-memory/freshness/GitSymbolMemoryAnchor.ts",
+      "src/core/project-memory/freshness/MemoryFreshnessEngine.ts",
+      "src/core/project-memory/reconciliation/BranchMemoryReconciler.ts",
+      "src/core/project-memory/retrieval/HybridMemoryRetriever.ts"
+    ],
+    "src/core/project-memory/reconciliation/BranchMemoryReconciler.ts": [
+      "src/core/project-memory/capture/ProjectMemorySchema.ts",
+      "src/core/project-memory/capture/ProjectMemoryStore.ts"
+    ],
+    "src/core/project-memory/retrieval/HybridMemoryRetriever.ts": [
+      "src/core/project-memory/capture/ProjectMemorySchema.ts",
+      "src/core/project-memory/capture/ProjectMemoryStore.ts"
+    ],
     "src/core/project/ProjectIntelligenceService.ts": [
       "src/core/agents/CodeIndexer.ts",
       "src/core/memory/ProjectContext.ts"
@@ -4638,6 +5839,7 @@
       "src/types/contract.ts",
       "src/types/provenance.ts"
     ],
+    "src/core/providers/contracts/LocalAudioVoiceContracts.ts": [],
     "src/core/providers/DeviceAdapter.ts": [
       "src/core/observability/logger.ts"
     ],
@@ -4655,6 +5857,9 @@
     "src/core/providers/LLMAdapter.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/providers/local/__tests__/LocalModelLayer.eval.test.ts": [
+      "src/core/providers/local/index.ts"
+    ],
     "src/core/providers/local/ExternalLocalModelAdapter.ts": [
       "src/core/config/EnvironmentDefinitions.ts",
       "src/core/observability/logger.ts",
@@ -4664,12 +5869,15 @@
       "src/core/providers/local/LocalResourceManager.ts"
     ],
     "src/core/providers/local/index.ts": [
+      "src/core/providers/contracts/LocalAudioVoiceContracts.ts",
       "src/core/providers/local/ExternalLocalModelAdapter.ts",
       "src/core/providers/local/LocalEndpointPolicy.ts",
       "src/core/providers/local/LocalHardwareCanary.ts",
       "src/core/providers/local/LocalModelDiscovery.ts",
       "src/core/providers/local/LocalModelRoutingPolicy.ts",
-      "src/core/providers/local/LocalResourceManager.ts"
+      "src/core/providers/local/LocalResourceManager.ts",
+      "src/core/providers/local/LocalResourceMonitor.ts",
+      "src/core/providers/local/PicchioModelAdapter.ts"
     ],
     "src/core/providers/local/LocalEndpointPolicy.ts": [
       "src/core/config/EnvironmentDefinitions.ts"
@@ -4696,6 +5904,12 @@
     ],
     "src/core/providers/local/LocalResourceManager.ts": [
       "src/core/observability/logger.ts"
+    ],
+    "src/core/providers/local/LocalResourceMonitor.ts": [],
+    "src/core/providers/local/PicchioModelAdapter.ts": [
+      "src/core/observability/logger.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/providers/local/ExternalLocalModelAdapter.ts"
     ],
     "src/core/providers/ModelRouter.ts": [
       "src/core/observability/logger.ts",
@@ -4884,6 +6098,45 @@
     "src/core/realtime/WebSocketServer.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/repository-intelligence/__tests__/RepositoryIntelligence.eval.test.ts": [
+      "src/core/repository-intelligence/architecture/SemanticArchitectureCardProvider.ts",
+      "src/core/repository-intelligence/git/GitIntelligenceProvider.ts",
+      "src/core/repository-intelligence/impact/DiffImpactAnalyzer.ts",
+      "src/core/repository-intelligence/indexes/ByteOffsetSymbolIndex.ts",
+      "src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts",
+      "src/core/repository-intelligence/ingestion/SafeRepositoryIngester.ts",
+      "src/core/repository-intelligence/risk/CodeHealthRiskProvider.ts"
+    ],
+    "src/core/repository-intelligence/architecture/SemanticArchitectureCardProvider.ts": [],
+    "src/core/repository-intelligence/git/GitIntelligenceProvider.ts": [],
+    "src/core/repository-intelligence/impact/DiffImpactAnalyzer.ts": [
+      "src/core/repository-intelligence/indexes/ByteOffsetSymbolIndex.ts"
+    ],
+    "src/core/repository-intelligence/index.ts": [
+      "src/core/repository-intelligence/RepositoryIntelligenceService.ts",
+      "src/core/repository-intelligence/architecture/SemanticArchitectureCardProvider.ts",
+      "src/core/repository-intelligence/git/GitIntelligenceProvider.ts",
+      "src/core/repository-intelligence/impact/DiffImpactAnalyzer.ts",
+      "src/core/repository-intelligence/indexes/ByteOffsetSymbolIndex.ts",
+      "src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts",
+      "src/core/repository-intelligence/ingestion/SafeRepositoryIngester.ts",
+      "src/core/repository-intelligence/risk/CodeHealthRiskProvider.ts"
+    ],
+    "src/core/repository-intelligence/indexes/ByteOffsetSymbolIndex.ts": [],
+    "src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts": [
+      "src/core/repository-intelligence/indexes/ByteOffsetSymbolIndex.ts"
+    ],
+    "src/core/repository-intelligence/ingestion/SafeRepositoryIngester.ts": [],
+    "src/core/repository-intelligence/RepositoryIntelligenceService.ts": [
+      "src/core/repository-intelligence/architecture/SemanticArchitectureCardProvider.ts",
+      "src/core/repository-intelligence/git/GitIntelligenceProvider.ts",
+      "src/core/repository-intelligence/impact/DiffImpactAnalyzer.ts",
+      "src/core/repository-intelligence/indexes/ByteOffsetSymbolIndex.ts",
+      "src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts",
+      "src/core/repository-intelligence/ingestion/SafeRepositoryIngester.ts",
+      "src/core/repository-intelligence/risk/CodeHealthRiskProvider.ts"
+    ],
+    "src/core/repository-intelligence/risk/CodeHealthRiskProvider.ts": [],
     "src/core/research/PyScrappyService.test.ts": [
       "src/core/research/PyScrappyService.ts"
     ],
@@ -4988,11 +6241,79 @@
       "src/core/database/ExpansionDatabase.ts",
       "src/core/sec/SECFilingParser.ts"
     ],
+    "src/core/security/__tests__/CapabilitySecurityAndAbuse.eval.test.ts": [
+      "src/core/security/artifacts/ArtifactHandoffGuard.ts",
+      "src/core/security/composition/CapabilityCompositionDefense.ts",
+      "src/core/security/consent/MediaConsentGuard.ts",
+      "src/core/security/desktop/DesktopPermissionGuard.ts",
+      "src/core/security/injection/MemoryInjectionDefense.ts",
+      "src/core/security/isolation/WorkerProcessIsolationGuard.ts",
+      "src/core/security/retention/DataRetentionManager.ts",
+      "src/core/security/supply-chain/PackSupplyChainGuard.ts",
+      "src/core/security/threat-model/CapabilityThreatModel.ts",
+      "src/core/security/web/WebSecurityBoundaryGuard.ts"
+    ],
+    "src/core/security/artifacts/ArtifactHandoffGuard.ts": [],
+    "src/core/security/composition/CapabilityCompositionDefense.ts": [],
+    "src/core/security/consent/MediaConsentGuard.ts": [],
+    "src/core/security/desktop/DesktopPermissionGuard.ts": [],
+    "src/core/security/injection/MemoryInjectionDefense.ts": [],
+    "src/core/security/isolation/WorkerProcessIsolationGuard.ts": [],
+    "src/core/security/retention/DataRetentionManager.ts": [],
+    "src/core/security/supply-chain/PackSupplyChainGuard.ts": [],
+    "src/core/security/threat-model/CapabilityThreatModel.ts": [],
+    "src/core/security/web/WebSecurityBoundaryGuard.ts": [],
     "src/core/sharing/ConversationSharing.ts": [
       "src/core/database/Database.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/sprite-lab/__tests__/SpriteStudio.eval.test.ts": [
+      "src/core/sprite-lab/pipeline/ImageIngestValidator.ts",
+      "src/core/sprite-lab/pipeline/ImageProcessingPipeline.ts",
+      "src/core/sprite-lab/pipeline/PixelGridRefiner.ts",
+      "src/core/sprite-lab/pipeline/SpriteBackgroundTool.ts",
+      "src/core/sprite-lab/pipeline/SpriteBatchPresetService.ts",
+      "src/core/sprite-lab/pipeline/SpriteEngineHandoff.ts",
+      "src/core/sprite-lab/pipeline/SpriteOutlineFinisher.ts",
+      "src/core/sprite-lab/pipeline/SpritePaletteEngine.ts",
+      "src/core/sprite-lab/pipeline/SpriteQualityEvaluator.ts",
+      "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts"
+    ],
     "src/core/sprite-lab/InternalSpriteImageAdapter.ts": [],
+    "src/core/sprite-lab/pipeline/ImageIngestValidator.ts": [
+      "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts"
+    ],
+    "src/core/sprite-lab/pipeline/ImageProcessingPipeline.ts": [
+      "src/core/sprite-lab/pipeline/ImageIngestValidator.ts",
+      "src/core/sprite-lab/pipeline/PixelGridRefiner.ts",
+      "src/core/sprite-lab/pipeline/SpriteBackgroundTool.ts",
+      "src/core/sprite-lab/pipeline/SpriteOutlineFinisher.ts",
+      "src/core/sprite-lab/pipeline/SpritePaletteEngine.ts",
+      "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts"
+    ],
+    "src/core/sprite-lab/pipeline/PixelGridRefiner.ts": [
+      "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts"
+    ],
+    "src/core/sprite-lab/pipeline/SpriteBackgroundTool.ts": [
+      "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts"
+    ],
+    "src/core/sprite-lab/pipeline/SpriteBatchPresetService.ts": [
+      "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts"
+    ],
+    "src/core/sprite-lab/pipeline/SpriteEngineHandoff.ts": [
+      "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts"
+    ],
+    "src/core/sprite-lab/pipeline/SpriteOutlineFinisher.ts": [
+      "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts"
+    ],
+    "src/core/sprite-lab/pipeline/SpritePaletteEngine.ts": [
+      "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts"
+    ],
+    "src/core/sprite-lab/pipeline/SpriteQualityEvaluator.ts": [
+      "src/core/sprite-lab/pipeline/SpritePaletteEngine.ts",
+      "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts"
+    ],
+    "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts": [],
     "src/core/sprite-lab/SpriteExternalToolAdapter.test.ts": [
       "src/core/sprite-lab/SpriteExternalToolAdapter.ts"
     ],
@@ -5002,6 +6323,77 @@
     "src/core/sprite-lab/SpriteLabPlanService.ts": [
       "src/core/database/Database.ts"
     ],
+    "src/core/study/__tests__/StudyStudio.eval.test.ts": [
+      "src/core/study/index.ts"
+    ],
+    "src/core/study/EducatorReviewControls.ts": [
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/ExamSimulationEngine.ts": [
+      "src/core/study/QuizEngine.ts",
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/FlashcardEngine.ts": [
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/index.ts": [
+      "src/core/study/EducatorReviewControls.ts",
+      "src/core/study/ExamSimulationEngine.ts",
+      "src/core/study/FlashcardEngine.ts",
+      "src/core/study/MasteryModelEngine.ts",
+      "src/core/study/QuizEngine.ts",
+      "src/core/study/SocraticDebateEngine.ts",
+      "src/core/study/StructuredNotesEngine.ts",
+      "src/core/study/StudyAssessmentIntegrator.ts",
+      "src/core/study/StudyAudioLessonEngine.ts",
+      "src/core/study/StudyCollectionModel.ts",
+      "src/core/study/StudySourceIngestEngine.ts",
+      "src/core/study/StudyStudioService.ts",
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/MasteryModelEngine.ts": [
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/QuizEngine.ts": [
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/SocraticDebateEngine.ts": [
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/StructuredNotesEngine.ts": [
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/StudyAssessmentIntegrator.ts": [
+      "src/core/study/FlashcardEngine.ts",
+      "src/core/study/QuizEngine.ts",
+      "src/core/study/StructuredNotesEngine.ts",
+      "src/core/study/StudyCollectionModel.ts",
+      "src/core/study/StudySourceIngestEngine.ts",
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/StudyAudioLessonEngine.ts": [
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/StudyCollectionModel.ts": [
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/StudySourceIngestEngine.ts": [
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/StudyStudioService.ts": [
+      "src/core/study/EducatorReviewControls.ts",
+      "src/core/study/ExamSimulationEngine.ts",
+      "src/core/study/FlashcardEngine.ts",
+      "src/core/study/MasteryModelEngine.ts",
+      "src/core/study/QuizEngine.ts",
+      "src/core/study/SocraticDebateEngine.ts",
+      "src/core/study/StructuredNotesEngine.ts",
+      "src/core/study/StudyAudioLessonEngine.ts",
+      "src/core/study/StudyCollectionModel.ts",
+      "src/core/study/StudySourceIngestEngine.ts",
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/StudyTypes.ts": [],
     "src/core/suggestions/QuickReplies.ts": [
       "src/core/observability/logger.ts",
       "src/core/providers/LLMAdapter.ts"
@@ -5352,6 +6744,57 @@
     "src/core/validator/Validators.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/voice-companion/__tests__/VoiceCompanion.eval.test.ts": [
+      "src/core/voice-companion/index.ts"
+    ],
+    "src/core/voice-companion/ClipboardActionService.ts": [
+      "src/core/voice-companion/VoiceCompanionTypes.ts"
+    ],
+    "src/core/voice-companion/DesktopCompanionBriefingService.ts": [
+      "src/core/voice-companion/VoiceCompanionTypes.ts"
+    ],
+    "src/core/voice-companion/DesktopOSActionPolicy.ts": [
+      "src/core/voice-companion/VoiceCompanionTypes.ts"
+    ],
+    "src/core/voice-companion/DesktopPackagingManifest.ts": [],
+    "src/core/voice-companion/DesktopPrivacyManager.ts": [
+      "src/core/voice-companion/VoiceCompanionTypes.ts"
+    ],
+    "src/core/voice-companion/FloatingAssistantService.ts": [
+      "src/core/voice-companion/LocalSTTProvider.ts",
+      "src/core/voice-companion/LocalTTSProvider.ts"
+    ],
+    "src/core/voice-companion/index.ts": [
+      "src/core/voice-companion/ClipboardActionService.ts",
+      "src/core/voice-companion/DesktopCompanionBriefingService.ts",
+      "src/core/voice-companion/DesktopOSActionPolicy.ts",
+      "src/core/voice-companion/DesktopPackagingManifest.ts",
+      "src/core/voice-companion/DesktopPrivacyManager.ts",
+      "src/core/voice-companion/FloatingAssistantService.ts",
+      "src/core/voice-companion/LocalSTTProvider.ts",
+      "src/core/voice-companion/LocalTTSProvider.ts",
+      "src/core/voice-companion/ScreenContextCaptureService.ts",
+      "src/core/voice-companion/VoiceCompanionTypes.ts",
+      "src/core/voice-companion/VoiceDictationEngine.ts",
+      "src/core/voice-companion/VoiceRecordingService.ts"
+    ],
+    "src/core/voice-companion/LocalSTTProvider.ts": [
+      "src/core/voice-companion/VoiceCompanionTypes.ts"
+    ],
+    "src/core/voice-companion/LocalTTSProvider.ts": [
+      "src/core/voice-companion/VoiceCompanionTypes.ts"
+    ],
+    "src/core/voice-companion/ScreenContextCaptureService.ts": [
+      "src/core/voice-companion/VoiceCompanionTypes.ts"
+    ],
+    "src/core/voice-companion/VoiceCompanionTypes.ts": [],
+    "src/core/voice-companion/VoiceDictationEngine.ts": [
+      "src/core/voice-companion/LocalSTTProvider.ts",
+      "src/core/voice-companion/VoiceCompanionTypes.ts"
+    ],
+    "src/core/voice-companion/VoiceRecordingService.ts": [
+      "src/core/voice-companion/VoiceCompanionTypes.ts"
+    ],
     "src/core/voice/VoiceAgent.ts": [
       "src/core/observability/logger.ts"
     ],
@@ -5359,11 +6802,145 @@
       "src/core/observability/logger.ts",
       "src/utils/retry.ts"
     ],
+    "src/core/website/__tests__/WebStudio.eval.test.ts": [
+      "src/core/website/index.ts"
+    ],
+    "src/core/website/BlockEditorEngine.ts": [
+      "src/core/website/WebsiteProjectModel.ts",
+      "src/core/website/WebsiteTypes.ts"
+    ],
+    "src/core/website/ElementInspectorService.ts": [
+      "src/core/website/WebsiteTypes.ts"
+    ],
+    "src/core/website/index.ts": [
+      "src/core/website/BlockEditorEngine.ts",
+      "src/core/website/ElementInspectorService.ts",
+      "src/core/website/ResponsivePreviewRenderer.ts",
+      "src/core/website/SourceLinkInspectionService.ts",
+      "src/core/website/VisualEditProposalService.ts",
+      "src/core/website/WebAccessibilityAuditor.ts",
+      "src/core/website/WebStudioService.ts",
+      "src/core/website/WebsiteAssetManager.ts",
+      "src/core/website/WebsiteImportExportService.ts",
+      "src/core/website/WebsiteProjectModel.ts",
+      "src/core/website/WebsiteSandboxUndoManager.ts",
+      "src/core/website/WebsiteTypes.ts",
+      "src/core/website/WebsiteWorkspaceService.ts"
+    ],
+    "src/core/website/ResponsivePreviewRenderer.ts": [
+      "src/core/website/WebsiteTypes.ts"
+    ],
+    "src/core/website/SourceLinkInspectionService.ts": [
+      "src/core/website/WebsiteTypes.ts"
+    ],
+    "src/core/website/VisualEditProposalService.ts": [
+      "src/core/website/WebsiteTypes.ts"
+    ],
+    "src/core/website/WebAccessibilityAuditor.ts": [
+      "src/core/website/ElementInspectorService.ts",
+      "src/core/website/WebsiteTypes.ts"
+    ],
+    "src/core/website/WebsiteAssetManager.ts": [
+      "src/core/website/WebsiteTypes.ts"
+    ],
+    "src/core/website/WebsiteImportExportService.ts": [
+      "src/core/website/ResponsivePreviewRenderer.ts",
+      "src/core/website/WebsiteProjectModel.ts",
+      "src/core/website/WebsiteTypes.ts"
+    ],
+    "src/core/website/WebsiteProjectModel.ts": [
+      "src/core/website/WebsiteTypes.ts"
+    ],
+    "src/core/website/WebsiteSandboxUndoManager.ts": [
+      "src/core/website/WebsiteTypes.ts"
+    ],
+    "src/core/website/WebsiteTypes.ts": [],
     "src/core/website/WebsiteWorkspaceService.test.ts": [
       "src/core/website/WebsiteWorkspaceService.ts"
     ],
-    "src/core/website/WebsiteWorkspaceService.ts": [],
+    "src/core/website/WebsiteWorkspaceService.ts": [
+      "src/core/website/ResponsivePreviewRenderer.ts",
+      "src/core/website/WebStudioService.ts",
+      "src/core/website/WebsiteProjectModel.ts"
+    ],
+    "src/core/website/WebStudioService.ts": [
+      "src/core/website/BlockEditorEngine.ts",
+      "src/core/website/ElementInspectorService.ts",
+      "src/core/website/ResponsivePreviewRenderer.ts",
+      "src/core/website/SourceLinkInspectionService.ts",
+      "src/core/website/VisualEditProposalService.ts",
+      "src/core/website/WebAccessibilityAuditor.ts",
+      "src/core/website/WebsiteAssetManager.ts",
+      "src/core/website/WebsiteImportExportService.ts",
+      "src/core/website/WebsiteProjectModel.ts",
+      "src/core/website/WebsiteSandboxUndoManager.ts",
+      "src/core/website/WebsiteTypes.ts"
+    ],
     "src/core/wiki/LocalKnowledgeWiki.ts": [],
+    "src/core/writing/__tests__/WritingStudio.eval.test.ts": [
+      "src/core/writing/index.ts"
+    ],
+    "src/core/writing/AIProposalService.ts": [
+      "src/core/writing/CanonicalDocumentModel.ts",
+      "src/core/writing/WritingTypes.ts"
+    ],
+    "src/core/writing/CanonicalDocumentModel.ts": [
+      "src/core/writing/WritingTypes.ts"
+    ],
+    "src/core/writing/DocumentEditorEngine.ts": [
+      "src/core/writing/CanonicalDocumentModel.ts",
+      "src/core/writing/WritingTypes.ts"
+    ],
+    "src/core/writing/DocumentImportExportService.ts": [
+      "src/core/writing/CanonicalDocumentModel.ts",
+      "src/core/writing/WritingTypes.ts"
+    ],
+    "src/core/writing/DocumentRecoveryManager.ts": [
+      "src/core/writing/CanonicalDocumentModel.ts",
+      "src/core/writing/WritingTypes.ts"
+    ],
+    "src/core/writing/index.ts": [
+      "src/core/writing/AIProposalService.ts",
+      "src/core/writing/CanonicalDocumentModel.ts",
+      "src/core/writing/DocumentEditorEngine.ts",
+      "src/core/writing/DocumentImportExportService.ts",
+      "src/core/writing/DocumentRecoveryManager.ts",
+      "src/core/writing/ProofreadingEngine.ts",
+      "src/core/writing/TrackedChangesManager.ts",
+      "src/core/writing/WritingAIProviderRouter.ts",
+      "src/core/writing/WritingQualityEvaluator.ts",
+      "src/core/writing/WritingStudioService.ts",
+      "src/core/writing/WritingTypes.ts"
+    ],
+    "src/core/writing/ProofreadingEngine.ts": [
+      "src/core/writing/CanonicalDocumentModel.ts",
+      "src/core/writing/WritingTypes.ts"
+    ],
+    "src/core/writing/TrackedChangesManager.ts": [
+      "src/core/writing/CanonicalDocumentModel.ts",
+      "src/core/writing/WritingTypes.ts"
+    ],
+    "src/core/writing/WritingAIProviderRouter.ts": [
+      "src/core/writing/WritingTypes.ts"
+    ],
+    "src/core/writing/WritingQualityEvaluator.ts": [
+      "src/core/writing/AIProposalService.ts",
+      "src/core/writing/CanonicalDocumentModel.ts",
+      "src/core/writing/ProofreadingEngine.ts",
+      "src/core/writing/WritingAIProviderRouter.ts"
+    ],
+    "src/core/writing/WritingStudioService.ts": [
+      "src/core/writing/AIProposalService.ts",
+      "src/core/writing/CanonicalDocumentModel.ts",
+      "src/core/writing/DocumentEditorEngine.ts",
+      "src/core/writing/DocumentImportExportService.ts",
+      "src/core/writing/DocumentRecoveryManager.ts",
+      "src/core/writing/ProofreadingEngine.ts",
+      "src/core/writing/TrackedChangesManager.ts",
+      "src/core/writing/WritingAIProviderRouter.ts",
+      "src/core/writing/WritingTypes.ts"
+    ],
+    "src/core/writing/WritingTypes.ts": [],
     "src/evals/run-domain-evals.test.ts": [],
     "src/mesh/CircuitBreaker.ts": [
       "src/core/observability/logger.ts"
@@ -5447,6 +7024,10 @@
       "src/server/routes/knowledge-os.ts",
       "src/server/routes/plans.ts",
       "src/server/security/webhookUrl.ts"
+    ],
+    "src/server/capabilityExposureContract.test.ts": [
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/server/routeManifest.ts"
     ],
     "src/server/chatRequest.test.ts": [
       "src/core/planning/PlanDocumentService.ts",
@@ -5546,11 +7127,13 @@
       "src/core/config/EnvironmentDefinitions.ts",
       "src/middleware/auth.ts",
       "src/server/routes/admin.ts",
+      "src/server/routes/agent-operations.ts",
       "src/server/routes/audio.ts",
       "src/server/routes/business.ts",
       "src/server/routes/capabilities.ts",
       "src/server/routes/chrono.ts",
       "src/server/routes/code.ts",
+      "src/server/routes/context-economy/contextInspectorRoutes.ts",
       "src/server/routes/creative.ts",
       "src/server/routes/desktop-companion.ts",
       "src/server/routes/document-workspace.ts",
@@ -5559,6 +7142,7 @@
       "src/server/routes/export.ts",
       "src/server/routes/files.ts",
       "src/server/routes/flstudio.ts",
+      "src/server/routes/game-studio/index.ts",
       "src/server/routes/gamedev.ts",
       "src/server/routes/gaming.ts",
       "src/server/routes/geography.ts",
@@ -5571,7 +7155,9 @@
       "src/server/routes/local-tools.ts",
       "src/server/routes/market.ts",
       "src/server/routes/math.ts",
+      "src/server/routes/media-accessibility/index.ts",
       "src/server/routes/mock-api.ts",
+      "src/server/routes/music-studio/index.ts",
       "src/server/routes/music.ts",
       "src/server/routes/philosophy.ts",
       "src/server/routes/plans.ts",
@@ -5585,9 +7171,15 @@
       "src/server/routes/security.ts",
       "src/server/routes/sixsigma.ts",
       "src/server/routes/sprite-lab.ts",
+      "src/server/routes/sprite-studio/index.ts",
       "src/server/routes/story.ts",
+      "src/server/routes/study-studio.ts",
       "src/server/routes/toolCatalog.ts",
-      "src/server/routes/website-workspace.ts"
+      "src/server/routes/website-workspace.ts",
+      "src/server/routes/writing-studio.ts"
+    ],
+    "src/server/routes/__tests__/agent-operations-routes.test.ts": [
+      "src/server/routes/agent-operations.ts"
     ],
     "src/server/routes/__tests__/capability-evaluations-routes.test.ts": [
       "src/core/capabilities/CapabilityJobManager.ts",
@@ -5613,6 +7205,7 @@
     "src/server/routes/__tests__/feature-expansion-routes.test.ts": [
       "src/server/routes/audio.ts",
       "src/server/routes/files.ts",
+      "src/server/routes/game-studio/index.ts",
       "src/server/routes/gaming.ts",
       "src/server/routes/knowledge-online.ts",
       "src/server/routes/plans.ts"
@@ -5645,8 +7238,18 @@
       "src/middleware/errorHandler.ts",
       "src/server/routes/local-tools.ts"
     ],
+    "src/server/routes/__tests__/media-accessibility-status-routes.test.ts": [
+      "src/server/routes/media-accessibility/index.ts"
+    ],
     "src/server/routes/__tests__/music-routes.test.ts": [
       "src/server/routes/music.ts"
+    ],
+    "src/server/routes/__tests__/native-adapter-fail-closed-routes.test.ts": [
+      "src/server/routes/desktop-companion.ts",
+      "src/server/routes/game-studio/gameStudioRoutes.ts",
+      "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts",
+      "src/server/routes/music-studio/musicStudioRoutes.ts",
+      "src/server/routes/writing-studio.ts"
     ],
     "src/server/routes/__tests__/rag-query.test.ts": [
       "src/server/routes/rag-query.ts"
@@ -5680,6 +7283,15 @@
       "src/core/sprite-lab/SpriteLabPlanService.ts",
       "src/server/routes/sprite-lab.ts"
     ],
+    "src/server/routes/__tests__/web-studio-and-developer-utility.test.ts": [
+      "src/server/routes/mock-api.ts",
+      "src/server/routes/website-workspace.ts"
+    ],
+    "src/server/routes/__tests__/writing-study-studio-routes.test.ts": [
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/study-studio.ts",
+      "src/server/routes/writing-studio.ts"
+    ],
     "src/server/routes/admin.test.ts": [
       "src/core/auth/AuthService.ts",
       "src/middleware/apiErrorSchema.ts",
@@ -5693,6 +7305,12 @@
       "src/middleware/auth.ts",
       "src/middleware/errorHandler.ts",
       "src/utils/errors.ts"
+    ],
+    "src/server/routes/agent-operations.ts": [
+      "src/core/agent-operations/index.ts",
+      "src/core/coding/teams/AgentTeamRoles.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts"
     ],
     "src/server/routes/audio.ts": [
       "src/core/audio/AudioLibraryService.ts",
@@ -5708,6 +7326,7 @@
       "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
       "src/core/capabilities/observability/CapabilityObservabilityService.ts",
       "src/core/capabilities/promotion/CapabilityPromotionEngine.ts",
+      "src/core/capabilities/sdk/CapabilitySDK.ts",
       "src/core/coding/findings/RepositoryFindings.ts",
       "src/core/coding/security/ApprovedRepositoryGateway.ts",
       "src/core/config/EnvironmentDefinitions.ts",
@@ -5727,6 +7346,13 @@
       "src/middleware/errorHandler.ts",
       "src/middleware/validator.ts"
     ],
+    "src/server/routes/context-economy/contextInspectorRoutes.ts": [
+      "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
+      "src/core/context-economy/learning/ContextFailureLearningService.ts",
+      "src/core/context-economy/reversible-store/ReversibleContextStore.ts",
+      "src/core/context-economy/router/ContextContentRouter.ts",
+      "src/core/observability/logger.ts"
+    ],
     "src/server/routes/creative.ts": [
       "src/core/creative/CreativeTypes.ts",
       "src/core/creative/CreativeWritingAgent.ts",
@@ -5734,6 +7360,9 @@
       "src/utils/errors.ts"
     ],
     "src/server/routes/desktop-companion.ts": [
+      "src/core/native-runtime/RuntimeDiscovery.ts",
+      "src/core/native-runtime/index.ts",
+      "src/core/voice-companion/index.ts",
       "src/middleware/errorHandler.ts"
     ],
     "src/server/routes/document-workspace.ts": [
@@ -5762,6 +7391,25 @@
     "src/server/routes/flstudio.ts": [
       "src/core/integrations/flstudio/FLStudioControlAgent.ts",
       "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/game-studio/gameStudioRoutes.ts": [
+      "src/core/gaming/asset-cooker/AssetCookerAdapter.ts",
+      "src/core/gaming/asset-cooker/LocalAssetCookerExecutor.ts",
+      "src/core/gaming/engine/GameEngineBridge.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/MultiEngineStudioService.ts",
+      "src/core/gaming/godot/GodotCliBackend.ts",
+      "src/core/gaming/godot/GodotMcpXAdapter.ts",
+      "src/core/gaming/slicing/SpriteSlicingBridge.ts",
+      "src/core/gaming/unity/UnityEngineAdapter.ts",
+      "src/core/gaming/unity/UnityMastService.ts",
+      "src/core/gaming/unreal/UnrealEngineAdapter.ts",
+      "src/core/native-runtime/index.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/localPathGuard.ts"
+    ],
+    "src/server/routes/game-studio/index.ts": [
+      "src/server/routes/game-studio/gameStudioRoutes.ts"
     ],
     "src/server/routes/gamedev.ts": [
       "src/middleware/errorHandler.ts"
@@ -5836,14 +7484,49 @@
       "src/middleware/errorHandler.ts",
       "src/middleware/validator.ts"
     ],
+    "src/server/routes/localPathGuard.test.ts": [
+      "src/server/routes/localPathGuard.ts"
+    ],
+    "src/server/routes/localPathGuard.ts": [
+      "src/utils/errors.ts"
+    ],
     "src/server/routes/market.ts": [
       "src/middleware/errorHandler.ts"
     ],
     "src/server/routes/math.ts": [
       "src/middleware/errorHandler.ts"
     ],
+    "src/server/routes/media-accessibility/index.ts": [
+      "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    ],
+    "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts": [
+      "src/core/media-accessibility/index.ts",
+      "src/core/native-runtime/RuntimeDiscovery.ts",
+      "src/core/native-runtime/index.ts",
+      "src/core/voice-companion/index.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/localPathGuard.ts"
+    ],
     "src/server/routes/mock-api.ts": [
+      "src/core/developer/DeveloperUtilityPackService.ts",
       "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/music-studio/index.ts": [
+      "src/server/routes/music-studio/musicStudioRoutes.ts"
+    ],
+    "src/server/routes/music-studio/musicStudioRoutes.ts": [
+      "src/core/audio/stemdeck/AudioExportMixdownService.ts",
+      "src/core/audio/stemdeck/AudioJobRightsModel.ts",
+      "src/core/audio/stemdeck/AudioTrackAnalyzer.ts",
+      "src/core/audio/stemdeck/DAWIntegrationHandoff.ts",
+      "src/core/audio/stemdeck/DemucsWorkerAdapter.ts",
+      "src/core/audio/stemdeck/StemSeparationEngine.ts",
+      "src/core/audio/stemdeck/StemdeckTypes.ts",
+      "src/core/audio/stemdeck/WaveformMixerEngine.ts",
+      "src/core/native-runtime/RuntimeDiscovery.ts",
+      "src/core/native-runtime/index.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/localPathGuard.ts"
     ],
     "src/server/routes/music.ts": [
       "src/core/agents/music/MusicProductionGeniusAgent.ts",
@@ -5915,9 +7598,32 @@
       "src/middleware/errorHandler.ts",
       "src/middleware/validator.ts"
     ],
+    "src/server/routes/sprite-studio/index.ts": [
+      "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
+    ],
+    "src/server/routes/sprite-studio/spriteStudioRoutes.ts": [
+      "src/core/sprite-lab/pipeline/ImageProcessingPipeline.ts",
+      "src/core/sprite-lab/pipeline/PixelGridRefiner.ts",
+      "src/core/sprite-lab/pipeline/SpriteBackgroundTool.ts",
+      "src/core/sprite-lab/pipeline/SpriteBatchPresetService.ts",
+      "src/core/sprite-lab/pipeline/SpriteEngineHandoff.ts",
+      "src/core/sprite-lab/pipeline/SpriteOutlineFinisher.ts",
+      "src/core/sprite-lab/pipeline/SpritePaletteEngine.ts",
+      "src/core/sprite-lab/pipeline/SpriteQualityEvaluator.ts",
+      "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/localPathGuard.ts",
+      "src/utils/errors.ts"
+    ],
     "src/server/routes/story.ts": [
       "src/core/agents/story/StoryGeniusAgent.ts",
       "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/study-studio.ts": [
+      "src/core/study/index.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts",
+      "src/utils/errors.ts"
     ],
     "src/server/routes/toolCatalog.ts": [
       "src/core/tools/catalog/ToolCatalogService.ts",
@@ -5938,8 +7644,16 @@
       "src/server/routes/chat-stream.ts"
     ],
     "src/server/routes/website-workspace.ts": [
-      "src/core/website/WebsiteWorkspaceService.ts",
+      "src/core/website/WebStudioService.ts",
       "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/writing-studio.ts": [
+      "src/core/native-runtime/index.ts",
+      "src/core/writing/WritingAIProviderRouter.ts",
+      "src/core/writing/index.ts",
+      "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts",
+      "src/utils/errors.ts"
     ],
     "src/server/security/webhookUrl.ts": [
       "src/utils/errors.ts"
@@ -5971,5 +7685,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1145
+  "sourceRecordCount": 1445
 }

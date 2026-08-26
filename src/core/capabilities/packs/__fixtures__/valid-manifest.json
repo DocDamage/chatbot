@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "pack-context-economy",
+  "displayName": "Context Economy & Reversible Compression Pack",
+  "version": "1.0.0",
+  "description": "Content-aware compression and reversible retrieval for logs, code, JSON, and conversations.",
+  "source": {
+    "repository": "DocDamage/chatbot",
+    "revision": "266068db0c1ce4c8723e3e6fe1f851f07c37fe0f",
+    "license": "MIT",
+    "integration": "native",
+    "notices": ["Native implementation with reversible context store"]
+  },
+  "maturity": "experimental",
+  "profiles": ["HOSTED", "LOCAL_TRUSTED"],
+  "capabilities": [
+    {
+      "id": "context-economy",
+      "name": "Context Economy",
+      "description": "Reversible compression engine",
+      "category": "core",
+      "maturity": "experimental",
+      "processingLocation": "hybrid",
+      "requiredPermissions": ["repository.read"]
+    }
+  ],
+  "tools": [
+    {
+      "id": "retrieve_original_context",
+      "name": "Retrieve Original Context",
+      "description": "Retrieves uncompressed verbatim content using a context key",
+      "parametersSchema": {
+        "type": "object",
+        "properties": {
+          "contextKey": { "type": "string" }
+        },
+        "required": ["contextKey"]
+      }
+    }
+  ],
+  "permissions": [
+    {
+      "permission": "repository.read",
+      "description": "Read access to workspace files for indexing and compression",
+      "scope": "project",
+      "requiresApproval": false
+    }
+  ],
+  "healthChecks": [
+    {
+      "id": "store-integrity-check",
+      "name": "Store Integrity Check",
+      "checkType": "custom"
+    }
+  ],
+  "tests": [
+    {
+      "id": "reversible-store-contract",
+      "name": "Reversible Store Contract Test",
+      "testType": "contract"
+    }
+  ],
+  "evaluations": [
+    {
+      "id": "eval-compression-ratio",
+      "domain": "compression",
+      "minScore": 0.3
+    }
+  ],
+  "rollback": {
+    "canRollback": true,
+    "dataRetentionStrategy": "retain_audit",
+    "remediationSteps": ["Disable pack", "Flush ephemeral compression cache"]
+  }
+}

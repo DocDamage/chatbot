@@ -111,13 +111,13 @@ export class LocalModelDiscovery {
       try {
         const modelsRes = await client.get('/models');
         modelsData = Array.isArray(modelsRes.data?.data) ? modelsRes.data.data : Array.isArray(modelsRes.data) ? modelsRes.data : [];
-        version = modelsRes.headers['x-server-version'] || modelsRes.headers['server'] || undefined;
+        version = modelsRes.headers?.['x-server-version'] || modelsRes.headers?.['server'] || undefined;
       } catch (err: any) {
         if (err.response?.status === 404) {
           // Try /v1/models if base URL did not already include /v1
           const v1ModelsRes = await client.get('/v1/models');
           modelsData = Array.isArray(v1ModelsRes.data?.data) ? v1ModelsRes.data.data : [];
-          version = v1ModelsRes.headers['x-server-version'] || v1ModelsRes.headers['server'] || undefined;
+          version = v1ModelsRes.headers?.['x-server-version'] || v1ModelsRes.headers?.['server'] || undefined;
         } else {
           throw err;
         }

@@ -13,6 +13,9 @@ import { createMediaConsentRecord } from '../multimodal/localization/MediaConsen
 import { createVideoLocalizationJob, verifyVideoLocalizationJobIntegrity } from '../multimodal/localization/VideoLocalizationJob';
 import { LatticeGameAdapter } from '../gaming/lattice/LatticeGameAdapter';
 import { LatticeSimulationEngine } from '../gaming/lattice/LatticeSimulationEngine';
+import { CapabilityInstallationManager } from './packs/CapabilityInstallationManager';
+import { CapabilityPackManifest } from './packs/CapabilityPackManifest';
+import { CapabilityHealthDiagnostics } from './health/CapabilityHealthDiagnostics';
 
 export type CapabilitySection =
   | 'available_now'
@@ -78,6 +81,7 @@ export interface CapabilityItem {
   actions: ActionDefinition[];
   requiredRole?: UserRole;
   localOnly: boolean;
+  apiBasePath?: string;
 }
 
 export class CapabilityRegistry {
@@ -131,11 +135,141 @@ export class CapabilityRegistry {
       evaluatedList.push(item);
     }
 
+    // Merge capabilities from installed packs (PX-02)
+    const installManager = CapabilityInstallationManager.getInstance();
+    const installedPacks = installManager.listInstalledPacks();
+
+    for (const packRecord of installedPacks) {
+      if (!packRecord.enabled) continue;
+      const manifest = packRecord.manifest;
+      for (const cap of manifest.capabilities) {
+        if (evaluatedList.some(e => e.id === cap.id)) continue; // Avoid duplicate IDs
+        const profileAllowed = profile === 'hosted'
+          ? manifest.profiles.includes('HOSTED')
+          : manifest.profiles.includes('LOCAL_TRUSTED');
+        const roleAllowed = userRole === 'admin'
+          || cap.requiredRole === undefined
+          || cap.requiredRole === userRole
+          || (userRole === 'developer' && cap.requiredRole === 'user');
+        const declaredPermissions = new Map(
+          manifest.permissions.map(permission => [permission.permission, permission])
+        );
+        const approvalRequired = cap.requiredPermissions.some(
+          permission => declaredPermissions.get(permission)?.requiresApproval === true
+        );
+        const localOnly = cap.localOnly === true || cap.processingLocation === 'local';
+        const healthSnapshot = CapabilityHealthDiagnostics.getInstance().getLatestSnapshot(cap.id);
+
+        const maturityMap: Record<string, CapabilityMaturity> = {
+          supported: 'PRODUCTION_SUPPORTED',
+          preview: 'PRODUCTION_PREVIEW',
+          experimental: 'LOCAL_ONLY_EXPERIMENTAL',
+          disabled: 'DEPRECATED'
+        };
+
+        const item: CapabilityItem = {
+          id: cap.id,
+          name: cap.name,
+          shortDescription: cap.description,
+          detailedDescription: cap.description,
+          category: (cap.category === 'voice' || cap.category === 'writing' || cap.category === 'study' || cap.category === 'web' || cap.category === 'audio') ? 'multimodal' : cap.category,
+          section: cap.maturity === 'disabled' ? 'disabled_by_policy' : 'available_now',
+          maturity: maturityMap[cap.maturity] || 'LOCAL_ONLY_EXPERIMENTAL',
+          processingLocation: cap.processingLocation,
+          provider: manifest.displayName,
+          requiredSoftware: [],
+          authorityAndEgress: {
+            filesystemAuthority: 'Pack scoped authority',
+            networkEgress: manifest.source.integration === 'external_service' ? 'External service communication' : 'Zero egress',
+            processAuthority: 'Pack declared tools only',
+            approvalGateRequired: approvalRequired
+          },
+          healthState: cap.maturity === 'disabled'
+            ? 'disabled'
+            : healthSnapshot?.status || 'not_configured',
+          healthReason: cap.maturity === 'disabled'
+            ? 'Capability is disabled by its pack manifest.'
+            : healthSnapshot
+              ? healthSnapshot.degradedReasons.join('; ') || 'Live health diagnostics passed.'
+              : 'Pack capability has not completed a live health diagnostic.',
+          version: manifest.version,
+          estimatedCostAndResources: {
+            computeImpact: 'Low (CPU only)',
+            estimatedLatency: '< 100ms',
+            costProfile: 'Free / Local Compute'
+          },
+          dataRetentionPolicy: 'Governed by pack configuration and capability artifact store.',
+          supportStatusAndLimitations: [
+            `Installed capability pack: ${manifest.id}@${manifest.version}`,
+            `Source integration: ${manifest.source.integration}`
+          ],
+          actions: (manifest.tools || []).map(t => ({
+            id: t.id,
+            label: t.name,
+            description: t.description,
+            isDangerous: t.isDangerous,
+            requiredConfirmationScope: t.requiredConfirmationScope
+          })),
+          requiredRole: cap.requiredRole,
+          localOnly
+        };
+
+        if (!profileAllowed || (profile === 'hosted' && item.localOnly)) {
+          item.section = 'disabled_by_policy';
+          item.healthState = 'disabled';
+          item.healthReason = !profileAllowed
+            ? `Capability pack does not support the ${profile} deployment profile.`
+            : 'Local-only capabilities are strictly disabled in hosted deployment profile.';
+          item.actions = [];
+        } else if (!roleAllowed || cap.maturity === 'disabled') {
+          item.section = 'disabled_by_policy';
+          item.healthState = 'disabled';
+          item.healthReason = !roleAllowed
+            ? `Capability requires the ${cap.requiredRole} role.`
+            : item.healthReason;
+          item.actions = [];
+        }
+
+        evaluatedList.push(item);
+      }
+    }
+
     return evaluatedList;
+  }
+
+  public registerPackManifest(manifest: unknown, userId: string = 'system'): { success: boolean; errors?: string[] } {
+    const installManager = CapabilityInstallationManager.getInstance();
+    const installResult = installManager.installPack(manifest, userId);
+    if (!installResult.success) {
+      return { success: false, errors: installResult.errors };
+    }
+    return { success: true };
+  }
+
+  public getInstalledPacks() {
+    return CapabilityInstallationManager.getInstance().listInstalledPacks();
   }
 
   public clearOverrides(): void {
     this.capabilityOverrides.clear();
+  }
+
+  public disableCapability(id: string): boolean {
+    if (!this.getCapabilityById(id, 'local', 'admin')) return false;
+    const existing = this.capabilityOverrides.get(id) || {};
+    this.capabilityOverrides.set(id, {
+      ...existing,
+      section: 'disabled_by_policy',
+      healthState: 'disabled',
+      healthReason: 'Explicitly disabled by operator.'
+    });
+    return true;
+  }
+
+  public restoreCapabilityPolicy(id: string): boolean {
+    if (!this.getCapabilityById(id, 'local', 'admin')) return false;
+    this.capabilityOverrides.delete(id);
+    return true;
   }
 
   public updateCapabilityMaturity(id: string, maturity: CapabilityMaturity): void {
@@ -201,16 +335,12 @@ export class CapabilityRegistry {
       }
 
       case 'disable_capability': {
-        this.capabilityOverrides.set(capabilityId, {
-          section: 'disabled_by_policy',
-          healthState: 'disabled',
-          healthReason: 'Explicitly disabled by operator.'
-        });
+        this.disableCapability(capabilityId);
         return { success: true, message: `Capability '${capability.name}' has been disabled.` };
       }
 
       case 'enable_capability': {
-        this.capabilityOverrides.delete(capabilityId);
+        this.restoreCapabilityPolicy(capabilityId);
         return { success: true, message: `Capability '${capability.name}' default policy restored.` };
       }
 
@@ -326,6 +456,72 @@ export class CapabilityRegistry {
       };
     }
 
+    const exposureContracts: Record<string, { featureFamily: string; route: string; implementation: string }> = {
+      context_economy: {
+        featureFamily: 'PX-03',
+        route: '/api/context-economy',
+        implementation: 'ContextContentRouter and ReversibleContextStore'
+      },
+      project_memory: {
+        featureFamily: 'PX-05',
+        route: '/api/project-memory',
+        implementation: 'ProjectMemoryService and Memory Center'
+      },
+      agent_operations: {
+        featureFamily: 'PX-06',
+        route: '/api/agent-operations',
+        implementation: 'AgentOperationsConsoleService and WorkspaceClaimService'
+      },
+      game_engine_bridge: {
+        featureFamily: 'PX-08/PX-09',
+        route: '/api/game-studio',
+        implementation: 'GameEngineBridge and MultiEngineStudioService'
+      },
+      desktop_voice_companion: {
+        featureFamily: 'PX-12',
+        route: '/api/desktop-companion',
+        implementation: 'DesktopCompanionBriefingService and privacy-gated screen context'
+      },
+      media_accessibility: {
+        featureFamily: 'PX-13',
+        route: '/api/media-accessibility',
+        implementation: 'SubtitleEditorService, dubbing consent gate, and narration services'
+      },
+      writing_studio: {
+        featureFamily: 'PX-14',
+        route: '/api/writing-studio',
+        implementation: 'WritingStudioService and lossless document workspace'
+      },
+      study_studio: {
+        featureFamily: 'PX-15',
+        route: '/api/study-studio',
+        implementation: 'StudyStudioService and source-grounded education tools'
+      },
+      web_studio: {
+        featureFamily: 'PX-16',
+        route: '/api/website-workspace',
+        implementation: 'WebStudioService and sandboxed website preview workspace'
+      },
+      developer_utility_pack: {
+        featureFamily: 'PX-17',
+        route: '/api/mock-api',
+        implementation: 'MockApiService, utility workbench, and source-preserving exporters'
+      }
+    };
+    const exposureContract = exposureContracts[capabilityId];
+    if (exposureContract) {
+      return {
+        type: 'capability_exposure_contract',
+        description: `${exposureContract.featureFamily} registry, implementation, and API exposure contract is present. This is not a live external-provider canary.`,
+        dataPreview: {
+          capabilityId,
+          route: exposureContract.route,
+          implementation: exposureContract.implementation,
+          liveExternalCanary: false
+        }
+      };
+    }
+
     throw new Error(`Capability '${capabilityId}' does not yet have a verified diagnostic handler.`);
   }
 
@@ -342,7 +538,89 @@ export class CapabilityRegistry {
   private buildBaseCapabilities(): CapabilityItem[] {
     const isLocal = resolveDeploymentMode() !== 'hosted';
 
+    const expansionCapability = (definition: {
+      id: string;
+      name: string;
+      family: string;
+      description: string;
+      category: CapabilityItem['category'];
+      provider: string;
+      route: string;
+      filesystemAuthority?: string;
+      processAuthority?: string;
+      approvalGateRequired?: boolean;
+      limitations: string[];
+    }): CapabilityItem => ({
+      id: definition.id,
+      name: `${definition.name} (${definition.family})`,
+      shortDescription: definition.description,
+      detailedDescription: `${definition.description} The Capability Hub exposes the implemented surface at ${definition.route} and keeps it local-only until the remaining release-certification evidence is complete.`,
+      category: definition.category,
+      section: 'local_only',
+      maturity: 'LOCAL_ONLY_EXPERIMENTAL',
+      processingLocation: 'local',
+      provider: definition.provider,
+      requiredSoftware: ['Node.js runtime'],
+      authorityAndEgress: {
+        filesystemAuthority: definition.filesystemAuthority || 'No filesystem authority',
+        networkEgress: 'Zero network egress unless a separately approved provider is configured',
+        processAuthority: definition.processAuthority || 'None',
+        approvalGateRequired: definition.approvalGateRequired ?? false
+      },
+      healthState: 'degraded',
+      healthReason: 'Implementation and route contracts are available; clean-machine and release-certification canaries remain outstanding.',
+      version: `1.0.0-${definition.family.toLowerCase()}`,
+      estimatedCostAndResources: {
+        computeImpact: 'Low (CPU only)',
+        estimatedLatency: 'Depends on the selected operation and input size',
+        costProfile: 'Free / Local Compute'
+      },
+      dataRetentionPolicy: 'Local artifacts remain within the approved workspace and follow the capability-specific lifecycle policy.',
+      supportStatusAndLimitations: definition.limitations,
+      actions: [{
+        id: 'test_run',
+        label: 'Verify Exposure Contract',
+        description: `Verify that ${definition.family} is registered with its implemented API and service surface without invoking an external provider.`
+      }],
+      localOnly: true,
+      apiBasePath: definition.route
+    });
+
     return [
+      expansionCapability({
+        id: 'context_economy',
+        name: 'Context Economy & Reversible Compression',
+        family: 'PX-03',
+        description: 'Content-aware compression, exact-evidence preservation, budget planning, and owner-bound reversible retrieval.',
+        category: 'core',
+        provider: 'ContextContentRouter & ReversibleContextStore',
+        route: '/api/context-economy',
+        limitations: ['Original context retrieval is owner-bound', 'Lossy paths retain exact-evidence references', 'Benchmark certification is reported separately']
+      }),
+      expansionCapability({
+        id: 'project_memory',
+        name: 'Project Memory & Provenance',
+        family: 'PX-05',
+        description: 'Persistent project decisions, gotchas, branch context, freshness state, and portable memory exports.',
+        category: 'data',
+        provider: 'ProjectMemoryService & Memory Center',
+        route: '/api/project-memory',
+        filesystemAuthority: 'Approved workspace memory files only',
+        limitations: ['Memory writes are confined to the active workspace', 'Stale records remain visible instead of being silently rewritten', 'User approval is required for protected-memory changes']
+      }),
+      expansionCapability({
+        id: 'agent_operations',
+        name: 'Agent Operations Console',
+        family: 'PX-06',
+        description: 'Normalized agent sessions, resource budgets, workspace claims, scoped communication, and emergency stop controls.',
+        category: 'agents',
+        provider: 'AgentOperationsConsoleService',
+        route: '/api/agent-operations',
+        filesystemAuthority: 'Explicit workspace claims only',
+        processAuthority: 'Tracked child processes subject to stop-all supervision',
+        approvalGateRequired: true,
+        limitations: ['Mutating tools require explicit authority', 'Session events are privacy-redacted', 'External agent discovery requires separately configured roots']
+      }),
       {
         id: 'repo_architecture',
         name: 'Architecture Graph & Code Topology (CF-01)',
@@ -640,6 +918,19 @@ export class CapabilityRegistry {
         ],
         localOnly: true
       },
+      expansionCapability({
+        id: 'game_engine_bridge',
+        name: 'Game Engine Bridge & Transaction Journal',
+        family: 'PX-08/PX-09',
+        description: 'Godot, Unity, and Unreal inspection with digest-bound mutation proposals, runtime scenarios, and rollback journals.',
+        category: 'gaming',
+        provider: 'GameEngineBridge & MultiEngineStudioService',
+        route: '/api/game-studio',
+        filesystemAuthority: 'Approved game project roots only',
+        processAuthority: 'Allowlisted local engine adapters only',
+        approvalGateRequired: true,
+        limitations: ['Engine software is installed and managed separately', 'Every mutation requires a matching proposal digest', 'Support varies by engine adapter and version']
+      }),
       {
         id: 'knowledge_online',
         name: 'Knowledge Online & External Search Flow',
@@ -775,7 +1066,152 @@ export class CapabilityRegistry {
           { id: 'test_run', label: 'Generate Test Sprite Frame', description: 'Test SVG pixel rasterizer.' }
         ],
         localOnly: true
-      }
+      },
+      {
+        id: 'sprite_studio',
+        name: 'Sprite & Image Asset Studio (PX-10)',
+        shortDescription: 'Local pixel art cleanup, Oklab palette quantization, Bayer dithering, outlines, and Godot/Unity engine handoffs.',
+        detailedDescription: '12-stage versioned image-processing pipeline for pixel refinement, background removal with hole preservation, retro palette quantization, Floyd-Steinberg and Bayer dithering, outlines, collision masks, and approved engine handoffs.',
+        category: 'gaming',
+        section: 'local_only',
+        maturity: 'LOCAL_ONLY_EXPERIMENTAL',
+        processingLocation: 'local',
+        provider: 'ImageProcessingPipeline & SpriteEngineHandoff',
+        requiredSoftware: ['Node.js runtime'],
+        authorityAndEgress: {
+          filesystemAuthority: 'Local output and approved engine project directories',
+          networkEgress: 'Zero network egress',
+          processAuthority: 'None',
+          approvalGateRequired: true
+        },
+        healthState: 'healthy',
+        version: '1.0.0-px10',
+        estimatedCostAndResources: {
+          computeImpact: 'Low (CPU only)',
+          estimatedLatency: '50ms - 300ms per sprite',
+          costProfile: 'Free / Local Compute'
+        },
+        dataRetentionPolicy: 'Processed sprite artifacts stored locally with SHA-256 manifests.',
+        supportStatusAndLimitations: [
+          'Decompression-bomb limit protects memory bounds',
+          'Exact-scope approval required prior to engine project handoff',
+          'Deterministic palette quantization and dithering'
+        ],
+        actions: [
+          { id: 'test_run', label: 'Run Sprite Pipeline Diagnostic', description: 'Test 12-stage sprite pipeline on calibration fixture.' }
+        ],
+        localOnly: true,
+        apiBasePath: '/api/sprite-studio'
+      },
+      {
+        id: 'stem_mix_lab',
+        name: 'Local Stem Separation, Mixer & Audio Analysis Lab (PX-11)',
+        shortDescription: 'Local 4/6 stem separation, multitrack mixer, BPM/Key/LUFS analysis, and FL Studio DAW handoffs.',
+        detailedDescription: 'Local-first music production capability using Demucs-style worker isolation to extract vocals, drums, bass, guitar, piano, and backing tracks. Computes waveform summaries, ITU-R BS.1770 LUFS loudness, true peak dBFS, and FL Studio channel routing.',
+        category: 'multimodal',
+        section: 'local_only',
+        maturity: 'LOCAL_ONLY_EXPERIMENTAL',
+        processingLocation: 'local',
+        provider: 'StemSeparationEngine & WaveformMixerEngine',
+        requiredSoftware: ['Node.js runtime', 'Demucs neural worker (optional local Python / CPU / GPU)'],
+        authorityAndEgress: {
+          filesystemAuthority: 'Local audio workspace and export directories only',
+          networkEgress: 'Zero network audio egress',
+          processAuthority: 'Isolated local worker child process with auto-cleanup',
+          approvalGateRequired: true
+        },
+        healthState: 'degraded',
+        healthReason: 'Waveform analysis and mixing are available locally; stem separation remains unavailable until a Demucs worker backend is configured.',
+        version: '1.0.0-px11',
+        estimatedCostAndResources: {
+          computeImpact: 'Medium (~4GB VRAM/RAM)',
+          estimatedLatency: '2s - 15s depending on duration and GPU/CPU',
+          costProfile: 'Free / Local Compute'
+        },
+        dataRetentionPolicy: 'Extracted stems saved to user-designated local export directory.',
+        supportStatusAndLimitations: [
+          'Mandatory rights declaration required before processing',
+          'Machine-separated confidence disclaimer attached to all outputs',
+          'FL Studio / DAW handoffs operate in dry-run mode by default'
+        ],
+        actions: [
+          { id: 'test_run', label: 'Run Audio Analysis Diagnostic', description: 'Test waveform extraction and LUFS analysis on test audio.' }
+        ],
+        localOnly: true,
+        apiBasePath: '/api/music-studio'
+      },
+      expansionCapability({
+        id: 'desktop_voice_companion',
+        name: 'Desktop Voice Companion',
+        family: 'PX-12',
+        description: 'Local dictation, TTS, privacy-gated screen context, clipboard proposals, and desktop briefings.',
+        category: 'multimodal',
+        provider: 'DesktopCompanionBriefingService & local STT/TTS adapters',
+        route: '/api/desktop-companion',
+        filesystemAuthority: 'User-selected local session artifacts only',
+        processAuthority: 'Optional separately installed local STT/TTS providers',
+        approvalGateRequired: true,
+        limitations: ['Screen capture is explicit and privacy-gated', 'Clipboard and OS actions are proposals, not silent mutations', 'Local speech providers may require separate installation']
+      }),
+      expansionCapability({
+        id: 'media_accessibility',
+        name: 'Media Accessibility & Localization',
+        family: 'PX-13',
+        description: 'Subtitle OCR and editing, transcript alignment, translation variants, consent-gated dubbing, and document narration.',
+        category: 'multimodal',
+        provider: 'Media Accessibility service family',
+        route: '/api/media-accessibility',
+        filesystemAuthority: 'Approved media workspace paths only',
+        processAuthority: 'Bounded local media workers when configured',
+        approvalGateRequired: true,
+        limitations: ['Rights confirmation is required for media ingest', 'Voice dubbing requires a valid consent record', 'OCR and synthesis quality depends on configured local providers']
+      }),
+      expansionCapability({
+        id: 'writing_studio',
+        name: 'Lossless Writing & Review Studio',
+        family: 'PX-14',
+        description: 'Byte-preserving document editing, proofreading, tracked changes, AI proposals, and crash recovery.',
+        category: 'multimodal',
+        provider: 'WritingStudioService & DocumentWorkspace',
+        route: '/api/writing-studio',
+        filesystemAuthority: 'User-selected documents within approved roots',
+        approvalGateRequired: true,
+        limitations: ['AI changes remain proposals until accepted', 'Provider routing respects document sensitivity', 'Format conversions disclose any loss of fidelity']
+      }),
+      expansionCapability({
+        id: 'study_studio',
+        name: 'Source-Grounded Study Studio',
+        family: 'PX-15',
+        description: 'Cited notes, flashcards, quizzes, exams, mastery tracking, Socratic practice, and audio lessons.',
+        category: 'data',
+        provider: 'StudyStudioService & education tools',
+        route: '/api/study-studio',
+        limitations: ['Generated material retains source anchors', 'Educator answer keys remain access-controlled', 'Automated mastery estimates are transparent heuristics']
+      }),
+      expansionCapability({
+        id: 'web_studio',
+        name: 'Visual Web Studio',
+        family: 'PX-16',
+        description: 'Project-aware visual website editing, responsive previews, click-to-code inspection, and reversible multi-file changes.',
+        category: 'coding',
+        provider: 'WebStudioService & WebsiteWorkspace',
+        route: '/api/website-workspace',
+        filesystemAuthority: 'Approved web project root only',
+        processAuthority: 'Sandboxed preview server when explicitly started',
+        approvalGateRequired: true,
+        limitations: ['Preview content is sandboxed from parent secrets', 'File changes are confined to the selected project', 'Production deployment is outside this capability']
+      }),
+      expansionCapability({
+        id: 'developer_utility_pack',
+        name: 'Developer Utility Pack',
+        family: 'PX-17',
+        description: 'Deterministic mock APIs, data transforms, checksums, schema utilities, and source-preserving exports.',
+        category: 'coding',
+        provider: 'MockApiService & UtilityWorkbench',
+        route: '/api/mock-api',
+        filesystemAuthority: 'Approved workspace exports only',
+        limitations: ['Mock APIs are not production backends', 'Generated datasets are bounded', 'Exports preserve source and license metadata']
+      })
     ];
   }
 }

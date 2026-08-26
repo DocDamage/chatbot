@@ -121,19 +121,37 @@ export class ExternalLocalModelAdapter implements LLMAdapter {
         signal: extraOptions.signal
       });
 
-      const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [];
+      const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: any }> = [];
       if (options.systemPrompt) {
         messages.push({ role: 'system', content: options.systemPrompt });
       }
-      messages.push({ role: 'user', content: options.prompt });
 
-      const requestBody = {
+      // Support multimodal image inputs if provided
+      const extraAny = options as any;
+      if (extraAny.images && Array.isArray(extraAny.images) && extraAny.images.length > 0) {
+        const contentParts: any[] = [{ type: 'text', text: options.prompt }];
+        for (const img of extraAny.images) {
+          contentParts.push({
+            type: 'image_url',
+            image_url: { url: typeof img === 'string' && img.startsWith('data:') ? img : `data:image/jpeg;base64,${img}` }
+          });
+        }
+        messages.push({ role: 'user', content: contentParts });
+      } else {
+        messages.push({ role: 'user', content: options.prompt });
+      }
+
+      const requestBody: Record<string, any> = {
         model,
         messages,
         temperature: options.temperature ?? 0.7,
         max_tokens: options.maxTokens ?? 2048,
         stream: false
       };
+
+      if (extraAny.tools) requestBody.tools = extraAny.tools;
+      if (extraAny.tool_choice) requestBody.tool_choice = extraAny.tool_choice;
+      if (extraAny.response_format) requestBody.response_format = extraAny.response_format;
 
       let lastError: any = null;
       for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
@@ -163,6 +181,8 @@ export class ExternalLocalModelAdapter implements LLMAdapter {
           const latency = Date.now() - startTime;
           const choice = response.data?.choices?.[0];
           const content = choice?.message?.content || choice?.text || '';
+          const reasoning = choice?.message?.reasoning_content || choice?.message?.reasoning;
+          const toolCalls = choice?.message?.tool_calls;
           const tokensUsed = response.data?.usage?.total_tokens || Math.ceil((options.prompt.length + content.length) / 4);
 
           logger.info('Local model generation succeeded', {
@@ -172,13 +192,17 @@ export class ExternalLocalModelAdapter implements LLMAdapter {
             tokensUsed
           });
 
-          return {
+          const result: LLMResponse & { reasoning?: string; toolCalls?: any[] } = {
             content,
             model: `${this.providerName}:${model}`,
             tokensUsed,
             cost: 0,
             latency
           };
+          if (reasoning) result.reasoning = reasoning;
+          if (toolCalls) result.toolCalls = toolCalls;
+
+          return result;
         } catch (err: any) {
           lastError = err;
           // Do not retry on client error (4xx) or AbortError

@@ -444,7 +444,7 @@ export class ServiceInitializer {
     // Ollama (free, local) - default
     if (process.env.USE_OLLAMA !== 'false') {
       const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
-      const ollamaModel = process.env.OLLAMA_MODEL || 'llama2';
+      const ollamaModel = process.env.OLLAMA_MODEL || 'qwen3:8b';
       const ollamaAdapter = new OllamaAdapter(ollamaUrl, ollamaModel);
 
       // Check availability

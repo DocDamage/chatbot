@@ -12,6 +12,7 @@
     "build:client": "cd client && npm run build",
     "start": "node dist/server/index.js",
     "start:prod": "npm run build && npm start",
+    "setup:native-runtime": "node scripts/native/setup-local-runtime.mjs",
     "type-check": "npm run type-check:server && npm run type-check:tests && npm run type-check:client",
     "type-check:server": "tsc --noEmit",
     "type-check:tests": "tsc --noEmit -p tsconfig.tests.json",
@@ -29,7 +30,7 @@
     "test:security": "jest --runTestsByPath src/server/__tests__/release-security.test.ts",
     "test:routes": "jest --runTestsByPath src/server/routeManifest.test.ts src/server/chatRequest.test.ts src/types/chat.test.ts src/middleware/apiErrorSchema.test.ts src/server/routes/setup.test.ts src/server/routes/__tests__/feature-expansion-routes.test.ts",
     "test:services": "jest --runTestsByPath src/core/agents/PatchGenerator.test.ts src/core/config/APIKeyManager.test.ts src/core/conversation/ConversationManager.test.ts src/core/files/FileExplorerService.test.ts src/core/initialization/ServiceInitializer.test.ts src/core/knowledge/OnlineKnowledgeIngestionService.test.ts",
-    "test:release": "npm run test:security -- --runInBand && npm run test:routes -- --runInBand && npm run test:services -- --runInBand && npm run test:e2e -- --runInBand",
+    "test:release": "npm run test:security -- --runInBand && npm run test:routes -- --runInBand && npm run test:services -- --runInBand && npm run test:e2e",
     "test:e2e:services": "jest --testPathPattern=e2e",
     "test:browser:prepare": "node scripts/browser/prepare-browser-e2e.mjs --confirm-browser-e2e-reset",
     "test:browser": "npm run test:browser:prepare && npm run build && npm --prefix client run test:browser",
@@ -78,6 +79,8 @@
     "format:check": "prettier --check \"src/**/*.ts\"",
     "release:inventory": "node scripts/release/generate-repository-inventory.mjs",
     "generate:sbom": "tsx scripts/release/generate-cyclonedx-sbom.ts",
+    "generate:notices": "node scripts/release/generate-third-party-notices.mjs",
+    "check:source-integrity": "node scripts/release/check-source-integrity.mjs",
     "inventory:generate": "node scripts/release/generate-repository-inventory.mjs",
     "check:inventory": "node scripts/release/check-repository-inventory.mjs",
     "check:reachability": "node scripts/release/check-production-boundary.mjs",
@@ -85,7 +88,7 @@
     "check:env": "node scripts/release/check-environment-contract.mjs",
     "check:docs": "node scripts/release/check-docs.mjs",
     "test:release-tools": "node --test scripts/release/__tests__/phase2-scanners.test.mjs scripts/release/__tests__/server-coverage-policy.test.mjs",
-    "check:phase2": "npm run test:release-tools && npm run check:inventory && npm run check:reachability && npm run check:file-size && npm run check:env && npm run check:docs",
+    "check:phase2": "npm run test:release-tools && npm run check:source-integrity && npm run check:inventory && npm run check:reachability && npm run check:file-size && npm run check:env && npm run check:docs",
     "verify:fast": "npm run type-check:server && npm run type-check:tests && npm run lint:server && npx jest src/core/coding/architecture/ArchitectureRelationshipsCoverage.test.ts src/core/coding/retrieval/GatewayLexicalRetrievalProvider.test.ts --runInBand",
     "verify:capability-fusion": "npm run verify:fast && npx jest src/core/coding/security/ApprovedRepositoryGateway.test.ts src/core/coding/architecture src/core/coding/retrieval src/core/agents/CodingAgent.test.ts --runInBand",
     "verify:milestone": "npm run verify:capability-fusion && npm run type-check:client && npm run lint:client && npm run test:release && npm run test:coverage -- --runInBand && npm run inventory:generate && git diff --exit-code -- docs/architecture/generated/",
@@ -177,4 +180,3 @@
     "tsx": "^4.7.0"
   }
 }
-

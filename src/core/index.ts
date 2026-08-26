@@ -385,3 +385,24 @@ export type { HardwareCanaryResult } from './providers/local/LocalHardwareCanary
 export { ProcessTreeSupervisor } from './coding/teams/ProcessTreeSupervisor';
 export type { ProcessExecutionOptions, ProcessExecutionResult } from './coding/teams/ProcessTreeSupervisor';
 
+// Context Economy & Reversible Compression (PX-03)
+export * from './context-economy';
+
+// Repository Intelligence & Code Health (PX-04)
+export * from './repository-intelligence';
+
+// Project Memory & Git Knowledge (PX-05)
+export * from './project-memory';
+
+// Lossless Writing, Proofreading, and Review Studio (PX-14)
+export * from './writing';
+
+// Source-Grounded Study Studio (PX-15)
+export * from './study';
+
+// Visual Website and Click-to-Code Studio (PX-16)
+export * from './website';
+
+// Developer Utility Pack: Mock APIs, Skill Export, and Project Tooling (PX-17)
+export * from './developer';
+
