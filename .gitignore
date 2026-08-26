@@ -15,7 +15,7 @@ client/test-results/
 .env
 .env.local
 .env.*.local
-cache/
+/cache/
 knowledge-base/
 *.log
 *.traineddata
