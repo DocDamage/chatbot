@@ -121,12 +121,47 @@ describe('Writing and Study Studio routes (PX-14/PX-15)', () => {
     const plan = await request(app).post('/api/study-studio/plan').send({ dailyMinutes: 30 });
     expect(plan.status).toBe(201);
     expect(plan.body.plan.dailyMinutesBudget).toBe(30);
+
+    // Quizzes generate and submit
+    const quiz = await request(app).post('/api/study-studio/quizzes/generate').send({});
+    expect(quiz.status).toBe(201);
+    expect(Array.isArray(quiz.body.questions)).toBe(true);
+
+    const quizAttempt = await request(app).post('/api/study-studio/quizzes/submit').send({
+      answers: { [quiz.body.questions[0]?.id || 'q1']: 'Sample Answer' }
+    });
+    expect(quizAttempt.status).toBe(200);
+
+    // Socratic session and turn
+    const socratic = await request(app).post('/api/study-studio/socratic').send({
+      mode: 'socratic_questioning',
+      topic: 'Route Architecture'
+    });
+    expect(socratic.status).toBe(201);
+
+    const turn = await request(app)
+      .post(`/api/study-studio/socratic/${socratic.body.session.sessionId}/turns`)
+      .send({ text: 'I think routes enforce separation of concerns.' });
+    expect(turn.status).toBe(200);
+
+    // Audio lesson
+    const audioLesson = await request(app).post('/api/study-studio/audio-lessons').send({
+      format: 'two_host_dialogue'
+    });
+    expect(audioLesson.status).toBe(201);
   });
 
   it('rejects malformed study requests and isolates collections by user', async () => {
     expect((await request(app).post('/api/study-studio/collections').send({ title: '', subject: '' })).status).toBe(400);
     expect((await request(app).post('/api/study-studio/collections').send({ title: 'X', subject: 'Y', targetLevel: 'impossible' })).status).toBe(400);
     expect((await request(app).post('/api/study-studio/sources').send({ content: '' })).status).toBe(400);
+    expect((await request(app).post('/api/study-studio/sources').send({ content: 'valid', format: 'unsupported_fmt' })).status).toBe(400);
+    expect((await request(app).post('/api/study-studio/notes').send({ noteType: 'unsupported_note' })).status).toBe(400);
+    expect((await request(app).post('/api/study-studio/quizzes/submit').send({ answers: 'not an object' })).status).toBe(400);
+    expect((await request(app).post('/api/study-studio/socratic').send({ mode: 'unsupported_mode', topic: 'T' })).status).toBe(400);
+    expect((await request(app).post('/api/study-studio/socratic').send({ mode: 'socratic_questioning', topic: '' })).status).toBe(400);
+    expect((await request(app).post('/api/study-studio/socratic/s1/turns').send({ text: '' })).status).toBe(400);
+    expect((await request(app).post('/api/study-studio/audio-lessons').send({ format: 'invalid_audio' })).status).toBe(400);
 
     const otherState = await request(app).get('/api/study-studio/state').set('x-test-user', 'different-user');
     expect(otherState.status).toBe(200);

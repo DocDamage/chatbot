@@ -34,3 +34,5 @@ knowledge-base/
 .capabilities/
 .worktrees/
 config/profiles.json
+config/api_keys.json
+/plans/

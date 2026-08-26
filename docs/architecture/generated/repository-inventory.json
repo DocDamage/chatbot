@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1563,
+    "sourceFiles": 1646,
     "productionSourceFiles": 1107,
     "reachableProductionFiles": 816,
     "unreachableProductionFiles": 291,
@@ -6913,7 +6913,7 @@
     },
     {
       "file": "src/core/safety/ApprovalPolicy.ts",
-      "lines": 338
+      "lines": 339
     },
     {
       "file": "src/core/safety/SandboxController.ts",

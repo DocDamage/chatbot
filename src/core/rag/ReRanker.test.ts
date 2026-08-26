@@ -47,4 +47,54 @@ describe('ReRanker', () => {
     expect(reranked[0].chunk.id).toBe('b');
     expect(reranked[0].chunk.metadata.rerankReason).toBe('Directly defines persistence behavior');
   });
+
+  it('handles empty results and LLM failure fallback to heuristic', async () => {
+    const reranker = new ReRanker();
+    expect(await reranker.rerank('empty test', [], 5)).toEqual([]);
+
+    const failingAdapter = new MockLLMAdapter({
+      'Rank these chunks': 'INVALID_NON_JSON_RESPONSE'
+    });
+    const fallbackReranker = new ReRanker({ mode: 'llm', llmAdapter: failingAdapter });
+    const fallbackResults = await fallbackReranker.rerank('persistence', results, 2);
+    expect(fallbackResults.length).toBe(2);
+  });
+
+  it('evaluates heuristic cross encoder score across length, position, and metadata variations', async () => {
+    const reranker = new ReRanker({ mode: 'heuristic' });
+
+    const variedResults: RetrievalResult[] = [
+      {
+        chunk: {
+          id: 'short',
+          content: 'Short',
+          metadata: { title: 'Query Exact Title Match', section: 'query term section' }
+        },
+        score: 0.1,
+        retrievalMethod: 'keyword'
+      },
+      {
+        chunk: {
+          id: 'optimal',
+          content: 'Query term starts immediately. '.repeat(15), // ~300 chars optimal
+          metadata: {}
+        },
+        score: 0.5,
+        retrievalMethod: 'keyword'
+      },
+      {
+        chunk: {
+          id: 'long',
+          content: 'Unrelated long padding text. '.repeat(100), // >2000 chars
+          metadata: {}
+        },
+        score: 0.2,
+        retrievalMethod: 'keyword'
+      }
+    ];
+
+    const ranked = await reranker.rerank('Query term', variedResults, 3);
+    expect(ranked.length).toBe(3);
+    expect(ranked[0].score).toBeGreaterThan(0);
+  });
 });

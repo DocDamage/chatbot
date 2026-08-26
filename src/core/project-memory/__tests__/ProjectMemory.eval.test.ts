@@ -135,6 +135,43 @@ describe('Project Memory (PX-05)', () => {
       expect(oldRecord.freshnessState).toBe('superseded');
       expect(oldRecord.supersededBy).toBe(newMem.id);
       expect(newRecord.supersedes).toContain(oldRecord.id);
+
+      // Quarantined and protected memories
+      store.save({
+        ...mem,
+        id: 'mem_quarantined',
+        freshnessState: 'quarantined'
+      });
+      store.save({
+        ...mem,
+        id: 'mem_protected',
+        isProtected: true,
+        freshnessState: 'current'
+      });
+      // Contradiction duplicate
+      store.save({
+        ...mem,
+        id: 'mem_conflict_1',
+        title: 'Conflicting Decision',
+        kind: 'decision',
+        evidence: [],
+        isProtected: true,
+        freshnessState: 'current'
+      });
+      store.save({
+        ...mem,
+        id: 'mem_conflict_2',
+        title: 'Conflicting Decision',
+        kind: 'decision',
+        evidence: [],
+        isProtected: true,
+        freshnessState: 'current'
+      });
+
+      const pass2 = freshnessEngine.evaluateFreshness(currentDigests);
+      expect(pass2.quarantinedCount).toBe(1);
+      expect(pass2.supersededCount).toBe(1);
+      expect(pass2.detectedContradictions.length).toBeGreaterThan(0);
     });
   });
 

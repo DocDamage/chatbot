@@ -1165,8 +1165,8 @@ const startServer = async () => {
   }
 };
 
-export { app, server, startServer, waitForReady, reinitializeServices };
+export { app, server, startServer, waitForReady, reinitializeServices, getApiVersion, getConversationManager };
 
-if (process.env.NODE_ENV !== 'test') {
+if (require.main === module) {
   startServer();
 }

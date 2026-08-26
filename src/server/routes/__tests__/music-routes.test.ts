@@ -121,5 +121,20 @@ describe('music specialist routes', () => {
     await request(app).post('/api/music/mix/analyze').send({ tracks: ['kick', 'snare'] }).expect(200);
     await request(app).post('/api/music/mix/revise').send({ feedback: 'less reverb' }).expect(200);
     await request(app).post('/api/music/mix/master').send({ targetLufs: -14 }).expect(200);
+
+    // Empty body fallbacks
+    await request(app).post('/api/music/ask').send({}).expect(200);
+    await request(app).post('/api/music/suno').send({}).expect(200);
+    await request(app).post('/api/music/fl-studio').send({}).expect(200);
+    await request(app).post('/api/music/pro-tools').send({}).expect(200);
+    await request(app).post('/api/music/logic').send({}).expect(200);
+    await request(app).post('/api/music/beat').send({}).expect(200);
+    await request(app).post('/api/music/mix').send({}).expect(200);
+    await request(app).post('/api/music/master').send({}).expect(200);
+    await request(app).post('/api/music/arrangement').send({}).expect(200);
+    await request(app).post('/api/music/daw-translate').send({}).expect(200);
+    await request(app).post('/api/music/theory').send({}).expect(200);
+    await request(app).post('/api/music/genre-timeline').send({}).expect(200);
+    await request(app).post('/api/music/arrangement-review').send({}).expect(200);
   });
 });

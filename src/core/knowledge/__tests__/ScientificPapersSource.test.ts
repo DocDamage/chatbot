@@ -102,5 +102,65 @@ describe('RT-KNOW-002: ScientificPapersSource ArXiv, PubMed, and BioRxiv Suite',
     const results = await source.search('Protein folding', { limit: 5 });
     expect(results.length).toBeGreaterThan(0);
     expect(results[0].title).toBe('Novel Protein Folding Algorithms');
+
+    // getById for BioRxiv
+    const bioById = await source.getById('biorxiv_10.1101/2024.01.01.123456');
+    expect(bioById).toBeDefined();
+
+    // Unknown prefix
+    const unknownById = await source.getById('unknown_123');
+    expect(unknownById).toBeNull();
+  });
+
+  it('searches all sources combined and handles network failures gracefully', async () => {
+    (mockedAxios.get as any).mockImplementation(((async (url: string) => {
+      if (url.includes('arxiv.org')) {
+        return {
+          data: `<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <entry>
+    <id>http://arxiv.org/abs/2401.15884</id>
+    <title>ArXiv Title</title>
+    <summary>ArXiv Summary</summary>
+    <author><name>ArXiv Author</name></author>
+    <published>2024-01-28T00:00:00Z</published>
+  </entry>
+</feed>`
+        };
+      }
+      if (url.includes('esearch.fcgi')) {
+        return { data: { esearchresult: { idlist: ['99999'] } } };
+      }
+      if (url.includes('esummary.fcgi')) {
+        return { data: { result: { '99999': { title: 'PubMed Title', authors: [], abstract: 'Ab', source: 'J', pubdate: '2024' } } } };
+      }
+      if (url.includes('biorxiv.org')) {
+        return {
+          data: `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <item>
+      <title>BioRxiv Title</title>
+      <description>BioRxiv Description</description>
+      <link>https://www.biorxiv.org/content/10.1101/demo</link>
+      <dc:identifier>doi:10.1101/demo</dc:identifier>
+      <dc:creator>Bio Author</dc:creator>
+    </item>
+  </channel>
+</rss>`
+        };
+      }
+      return { data: {} };
+    }) as any));
+
+    const sourceAll = new ScientificPapersSource('all');
+    const allRes = await sourceAll.search('Biology & AI', { limit: 10 });
+    expect(allRes.length).toBe(3);
+
+    // Network failures
+    (mockedAxios.get as any).mockRejectedValue(new Error('Network offline'));
+    expect(await sourceAll.isAvailable()).toBe(false);
+    expect(await sourceAll.search('offline test')).toEqual([]);
+    expect(await sourceAll.getById('arxiv_12345')).toBeNull();
   });
 });

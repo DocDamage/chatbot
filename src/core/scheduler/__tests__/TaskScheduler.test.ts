@@ -57,4 +57,82 @@ describe('RT-SCHED-001: TaskScheduler Cron Automation Suite', () => {
     expect(removed).toBe(true);
     expect(scheduler.getTasks()).toHaveLength(0);
   });
+
+  it('rejects invalid cron expressions and handles missing or disabled task execution', async () => {
+    await expect(scheduler.addTask({
+      name: 'Invalid cron task',
+      cron: 'invalid cron string',
+      action: async () => {}
+    })).rejects.toThrow('Invalid cron expression');
+
+    // Missing task execution
+    const missingRes = await scheduler.executeTask('non-existent-task-id');
+    expect(missingRes.success).toBe(false);
+    expect(missingRes.error).toBe('Task not found');
+
+    // Disabled task execution
+    const taskId = await scheduler.addTask({
+      name: 'Disabled task',
+      cron: '0 * * * *',
+      action: async () => {}
+    });
+    scheduler.disableTask(taskId);
+    const disabledRes = await scheduler.executeTask(taskId);
+    expect(disabledRes.success).toBe(false);
+    expect(disabledRes.error).toBe('Task is disabled');
+  });
+
+  it('evaluates task conditions and executes retries on failure', async () => {
+    // Failing condition
+    const condTaskId = await scheduler.addTask({
+      name: 'Condition task',
+      cron: '0 * * * *',
+      action: async () => {},
+      conditions: [{ type: 'custom', check: () => false }]
+    });
+
+    const condRes = await scheduler.executeTask(condTaskId);
+    expect(condRes.success).toBe(false);
+    expect(condRes.error).toBe('Conditions not met');
+
+    // Failing action with retries
+    let attemptCount = 0;
+    const retryTaskId = await scheduler.addTask({
+      name: 'Retry task',
+      cron: '0 * * * *',
+      retries: 2,
+      action: async () => {
+        attemptCount++;
+        if (attemptCount < 2) {
+          throw new Error('Transient error');
+        }
+      }
+    });
+
+    const retryRes = await scheduler.executeTask(retryTaskId);
+    expect(retryRes.success).toBe(true);
+    expect(attemptCount).toBe(2);
+
+    // Completely failing task
+    const failTaskId = await scheduler.addTask({
+      name: 'Fail task',
+      cron: '0 * * * *',
+      retries: 1,
+      action: async () => {
+        throw new Error('Persistent fatal failure');
+      }
+    });
+
+    const failRes = await scheduler.executeTask(failTaskId);
+    expect(failRes.success).toBe(false);
+    expect(failRes.error).toBe('Persistent fatal failure');
+
+    // History and helper conditions
+    const history = scheduler.getHistory(10);
+    expect(history.length).toBeGreaterThanOrEqual(2);
+
+    // Lifecycle start and stop
+    scheduler.start();
+    scheduler.stop();
+  });
 });

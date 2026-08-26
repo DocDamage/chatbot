@@ -2127,6 +2127,10 @@
       "specifier": "../core/cache/MultiLevelCache"
     },
     {
+      "importer": "src/core/__tests__/branch-coverage-tail-services.test.ts",
+      "specifier": "../cache/PredictiveCache"
+    },
+    {
       "importer": "src/core/capabilities/__tests__/CapabilityPlatformContract.test.ts",
       "specifier": "../packs/__fixtures__/valid-manifest.json"
     },
@@ -2199,6 +2203,10 @@
       "specifier": "./services"
     },
     {
+      "importer": "src/core/graph/__tests__/knowledge-graph-indexer-matrix.test.ts",
+      "specifier": "./helper"
+    },
+    {
       "importer": "src/core/initialization/ServiceInitializer.ts",
       "specifier": "../cache/MultiLevelCache"
     },
@@ -2215,12 +2223,28 @@
       "specifier": "../cache/SemanticCache"
     },
     {
+      "importer": "src/core/personalization/__tests__/personalization-and-repo-tools-matrix.test.ts",
+      "specifier": "./helper"
+    },
+    {
+      "importer": "src/core/quality/__tests__/quality-cache-and-performance-matrix.test.ts",
+      "specifier": "../../cache/RedisCache"
+    },
+    {
+      "importer": "src/core/quality/__tests__/quality-cache-and-performance-matrix.test.ts",
+      "specifier": "../../cache/SemanticCache"
+    },
+    {
       "importer": "src/core/sprite-lab/SpriteExternalToolAdapter.ts",
       "specifier": "../local-tools/LocalToolService"
     },
     {
       "importer": "src/core/sprite-lab/SpriteLabPlanService.ts",
       "specifier": "../local-tools/LocalToolService"
+    },
+    {
+      "importer": "src/server/routes/__tests__/web-studio-and-developer-utility.test.ts",
+      "specifier": "../../../core/local-tools/MockApiWorkspaceService"
     },
     {
       "importer": "src/server/routes/local-tools.ts",
@@ -2680,6 +2704,9 @@
       "scripts/release/lib/reachability.mjs",
       "scripts/release/lib/source-analysis.mjs"
     ],
+    "scripts/release/__tests__/server-branch-report.test.mjs": [
+      "scripts/release/lib/server-branch-report.mjs"
+    ],
     "scripts/release/__tests__/server-coverage-policy.test.mjs": [
       "scripts/release/lib/server-coverage-policy.mjs"
     ],
@@ -2727,9 +2754,13 @@
       "scripts/release/lib/source-analysis.mjs"
     ],
     "scripts/release/lib/render.mjs": [],
+    "scripts/release/lib/server-branch-report.mjs": [],
     "scripts/release/lib/server-coverage-policy.mjs": [],
     "scripts/release/lib/source-analysis.mjs": [
       "scripts/release/lib/files.mjs"
+    ],
+    "scripts/release/report-server-branch-gaps.mjs": [
+      "scripts/release/lib/server-branch-report.mjs"
     ],
     "scripts/release/run-server-coverage.mjs": [],
     "scripts/release/smoke-pages-artifact.mjs": [],
@@ -2780,6 +2811,22 @@
       "src/core/providers/LLMAdapter.ts",
       "src/types/rag.ts"
     ],
+    "src/core/__tests__/branch-coverage-tail-services.test.ts": [
+      "src/core/debug/DebugMode.ts",
+      "src/core/provenance/ProvenanceLedger.ts",
+      "src/core/suggestions/QuickReplies.ts",
+      "src/core/user/CustomInstructions.ts",
+      "src/core/validator/Validators.ts",
+      "src/observability/alerts.ts",
+      "src/observability/tracing.ts"
+    ],
+    "src/core/agent-operations/__tests__/agent-communication-and-coordination-matrix.test.ts": [
+      "src/core/agent-operations/communication/AgentCommunicationHub.ts",
+      "src/core/scheduler/TaskScheduler.ts"
+    ],
+    "src/core/agent-operations/__tests__/agent-operations-console-matrix.test.ts": [
+      "src/core/agent-operations/console/AgentOperationsConsoleService.ts"
+    ],
     "src/core/agent-operations/__tests__/AgentOperations.eval.test.ts": [
       "src/core/agent-operations/index.ts",
       "src/core/coding/teams/TaskEnvelope.ts"
@@ -2823,6 +2870,9 @@
     ],
     "src/core/agents/__tests__/AgentTeam.test.ts": [
       "src/core/agents/AgentTeam.ts"
+    ],
+    "src/core/agents/__tests__/CodingAgent.test.ts": [
+      "src/core/agents/CodingAgent.ts"
     ],
     "src/core/agents/__tests__/ReasoningController.test.ts": [
       "src/core/agents/ReasoningController.ts"
@@ -3564,6 +3614,10 @@
     "src/core/agents/VerificationRunner.ts": [
       "src/core/tools/CommandRunner.ts"
     ],
+    "src/core/analytics/__tests__/analytics-and-benchmarks-deep.test.ts": [
+      "src/core/analytics/AnalyticsService.ts",
+      "src/core/evaluation/CodingBenchmarkRunner.ts"
+    ],
     "src/core/analytics/__tests__/AnalyticsService.test.ts": [
       "src/core/analytics/AnalyticsService.ts"
     ],
@@ -3572,6 +3626,9 @@
     ],
     "src/core/artifacts/__tests__/ArtifactStoreLineage.test.ts": [
       "src/core/capabilities/artifacts/CapabilityArtifactStore.ts"
+    ],
+    "src/core/audio/__tests__/audio-library-service-matrix.test.ts": [
+      "src/core/audio/AudioLibraryService.ts"
     ],
     "src/core/audio/__tests__/DemucsAudioMatrix.test.ts": [
       "src/core/audio/stemdeck/AudioExportMixdownService.ts",
@@ -3655,6 +3712,10 @@
       "src/core/agents/ReasoningController.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/browser/__tests__/browser-job-runner-matrix.test.ts": [
+      "src/core/browser/AuthorizedBrowserJob.ts",
+      "src/core/browser/BrowserJobRunner.ts"
+    ],
     "src/core/browser/AuthorizedBrowserJob.test.ts": [
       "src/core/browser/AuthorizedBrowserJob.ts",
       "src/core/browser/BrowserEvidenceCollector.ts",
@@ -3699,6 +3760,27 @@
     ],
     "src/core/browser/PydollAdapter.ts": [
       "src/core/browser/AuthorizedBrowserJob.ts"
+    ],
+    "src/core/capabilities/__tests__/capability-evaluation-suite-matrix.test.ts": [
+      "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts"
+    ],
+    "src/core/capabilities/__tests__/capability-infrastructure-and-blackbelt-matrix.test.ts": [
+      "src/core/agents/sixsigma/SixSigmaBlackBeltAgent.ts",
+      "src/core/capabilities/approvals/CapabilityApprovalService.ts",
+      "src/core/capabilities/jobs/UnifiedJobConsoleService.ts",
+      "src/core/capabilities/permissions/CapabilityPermissionEngine.ts",
+      "src/core/capabilities/resources/ResourceBudgetManager.ts"
+    ],
+    "src/core/capabilities/__tests__/capability-packs-slo-and-review-matrix.test.ts": [
+      "src/core/capabilities/jobs/CapabilityJobService.ts",
+      "src/core/capabilities/observability/DistributedTracingService.ts",
+      "src/core/capabilities/packs/CapabilityInstallationManager.ts",
+      "src/core/capabilities/packs/CapabilityPackManifest.ts",
+      "src/core/capabilities/reliability/CapabilitySLOEngine.ts",
+      "src/core/coding/review/ReviewPipeline.ts"
+    ],
+    "src/core/capabilities/__tests__/capability-registry-deep-matrix.test.ts": [
+      "src/core/capabilities/CapabilityRegistry.ts"
     ],
     "src/core/capabilities/__tests__/CapabilityHubOperations.eval.test.ts": [
       "src/core/capabilities/artifacts/ArtifactLineageService.ts",
@@ -3774,6 +3856,13 @@
     ],
     "src/core/capabilities/config/CapabilityConfigManager.ts": [],
     "src/core/capabilities/diagnostics/SupportBundleService.ts": [],
+    "src/core/capabilities/evaluation/__tests__/capability-evaluation-matrix.test.ts": [
+      "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts",
+      "src/core/evaluation/CodingBenchmarkRunner.ts"
+    ],
+    "src/core/capabilities/evaluation/__tests__/capability-evaluation-suite-deep-matrix.test.ts": [
+      "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts"
+    ],
     "src/core/capabilities/evaluation/CanaryCertificationSuite.test.ts": [
       "src/core/capabilities/evaluation/CanaryCertificationSuite.ts",
       "src/core/capabilities/observability/AlertNotificationDispatcher.ts",
@@ -4002,6 +4091,10 @@
     ],
     "src/core/chrono/TimeRangeParser.ts": [
       "src/core/chrono/ChronoDate.ts"
+    ],
+    "src/core/coding/__tests__/structured-edit-and-architecture-matrix.test.ts": [
+      "src/core/coding/editing/StructuredEditEngine.ts",
+      "src/core/coding/model/CodingModelRouter.ts"
     ],
     "src/core/coding/AdaptiveContextAllocator.test.ts": [
       "src/core/coding/retrieval/AdaptiveContextAllocator.ts"
@@ -4538,6 +4631,18 @@
       "src/core/context-economy/compressors/index.ts",
       "src/core/context-economy/reversible-store/ReversibleContextStore.ts"
     ],
+    "src/core/contracts/__tests__/universal-contract-and-gate-matrix.test.ts": [
+      "src/core/agents/science/ScienceIntentClassifier.ts",
+      "src/core/agents/sixsigma/SixSigmaComplianceAdvisor.ts",
+      "src/core/agents/sixsigma/SixSigmaIndustryAdvisor.ts",
+      "src/core/contracts/ContractGate.ts",
+      "src/core/contracts/UniversalContract.ts",
+      "src/core/learning/SpacedRepetitionService.ts",
+      "src/core/moderation/ContentModerator.ts",
+      "src/core/rl/PolicyOptimizer.ts",
+      "src/core/tools/sixsigma/ControlChartBuilderTool.ts",
+      "src/types/contract.ts"
+    ],
     "src/core/contracts/ContractGate.ts": [
       "src/core/observability/logger.ts",
       "src/types/contract.ts"
@@ -4555,6 +4660,13 @@
     "src/core/CoreExports.test.ts": [
       "src/core/capabilities/index.ts",
       "src/core/index.ts"
+    ],
+    "src/core/creative/__tests__/creative-writing-and-editor-matrix.test.ts": [
+      "src/core/creative/CreativeWritingAgent.ts",
+      "src/core/writing/DocumentEditorEngine.ts"
+    ],
+    "src/core/creative/__tests__/roleplay-session-engine-matrix.test.ts": [
+      "src/core/creative/RoleplaySessionEngine.ts"
     ],
     "src/core/creative/CreativeCapabilityDetector.ts": [],
     "src/core/creative/CreativeCommandRouter.test.ts": [
@@ -4647,6 +4759,10 @@
     "src/core/developer/__tests__/DeveloperUtilityPack.eval.test.ts": [
       "src/core/developer/index.ts"
     ],
+    "src/core/developer/__tests__/mock-api-and-openapi-matrix.test.ts": [
+      "src/core/developer/MockApiEngine.ts",
+      "src/core/developer/OpenApiSchemaImporter.ts"
+    ],
     "src/core/developer/__tests__/MockApiEngine.coverage.test.ts": [
       "src/core/developer/DeveloperTypes.ts",
       "src/core/developer/MockApiEngine.ts"
@@ -4689,6 +4805,10 @@
     "src/core/developer/SourcePreservingSkillExporter.ts": [
       "src/core/developer/DeveloperTypes.ts"
     ],
+    "src/core/documents/__tests__/document-metadata-and-feedback-matrix.test.ts": [
+      "src/core/documents/DocumentMetadata.ts",
+      "src/core/feedback/FeedbackService.ts"
+    ],
     "src/core/documents/DocumentMetadata.ts": [
       "src/core/database/Database.ts",
       "src/core/observability/logger.ts"
@@ -4701,6 +4821,9 @@
       "src/core/database/Database.ts",
       "src/core/database/ExpansionDatabase.ts"
     ],
+    "src/core/embeddings/__tests__/EmbeddingService.branches.test.ts": [
+      "src/core/embeddings/EmbeddingService.ts"
+    ],
     "src/core/embeddings/EmbeddingService.ts": [
       "src/core/observability/logger.ts"
     ],
@@ -4710,6 +4833,9 @@
     ],
     "src/core/entity/EntityLinkingService.ts": [
       "src/core/database/Database.ts"
+    ],
+    "src/core/evaluation/__tests__/coding-benchmark-runner-matrix.test.ts": [
+      "src/core/evaluation/CodingBenchmarkRunner.ts"
     ],
     "src/core/evaluation/CodingBenchmarkRunner.test.ts": [
       "src/core/evaluation/CodingBenchmarkRunner.ts",
@@ -4745,6 +4871,16 @@
       "src/core/gaming/engine/ProjectMutationStore.ts",
       "src/core/gaming/unreal/UnrealLicenseGate.ts"
     ],
+    "src/core/gaming/__tests__/gaming-engines-and-sprite-matrix.test.ts": [
+      "src/core/gaming/godot/GodotProjectInspector.ts",
+      "src/core/gaming/godot/GodotSceneMutator.ts",
+      "src/core/gaming/lattice/LatticeVisualizer.ts",
+      "src/core/gaming/unity/UnityEngineAdapter.ts",
+      "src/core/gaming/unreal/UnrealEngineAdapter.ts",
+      "src/core/sprite-lab/SpriteLabPlanService.ts",
+      "src/core/sprite-lab/pipeline/SpriteOutlineFinisher.ts",
+      "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts"
+    ],
     "src/core/gaming/__tests__/GodotBridge.eval.test.ts": [
       "src/core/gaming/engine/GameEngineBridge.ts",
       "src/core/gaming/engine/GameEngineTypes.ts",
@@ -4768,6 +4904,14 @@
       "src/core/gaming/unity/UnityMastService.ts",
       "src/core/gaming/unreal/UnrealEngineAdapter.ts",
       "src/core/gaming/unreal/UnrealLicenseGate.ts"
+    ],
+    "src/core/gaming/__tests__/unreal-and-media-integrations-matrix.test.ts": [
+      "src/core/gaming/unreal/UnrealEngineAdapter.ts",
+      "src/core/integrations/flstudio/FLStudioMcpClient.ts",
+      "src/core/knowledge/WebScraperSource.ts",
+      "src/core/memory/MemoryRetrievalNetwork.ts",
+      "src/core/webhooks/WebhookService.ts",
+      "src/types/memory.ts"
     ],
     "src/core/gaming/asset-cooker/AssetCookerAdapter.ts": [
       "src/core/gaming/engine/GameEngineTypes.ts"
@@ -4951,6 +5095,20 @@
       "src/core/gaming/engine/GameEngineTypes.ts",
       "src/core/gaming/unreal/UnrealLicenseGate.ts"
     ],
+    "src/core/gis/__tests__/gis-providers-and-analysis-matrix.test.ts": [
+      "src/core/gis/GISService.ts",
+      "src/core/gis/GeoJSONValidator.ts",
+      "src/core/gis/LayerImportService.ts",
+      "src/core/gis/SpatialAnalysisService.ts",
+      "src/core/gis/providers/ArcGISFeatureServiceProvider.ts",
+      "src/core/gis/providers/CensusGeocoder.ts",
+      "src/core/gis/providers/OSRMRoutingProvider.ts",
+      "src/types/gis.ts"
+    ],
+    "src/core/gis/__tests__/gis-service-deep-branches.test.ts": [
+      "src/core/gis/GISProviderRegistry.ts",
+      "src/core/gis/GISService.ts"
+    ],
     "src/core/gis/__tests__/GISPrivacy.test.ts": [
       "src/core/gis/GISPrivacy.ts"
     ],
@@ -5011,11 +5169,22 @@
     "src/core/gis/SpatialAnalysisService.ts": [
       "src/types/gis.ts"
     ],
+    "src/core/governance/__tests__/governance-evidence-matrix.test.ts": [
+      "src/core/governance/GovernanceEvidenceService.ts",
+      "src/core/personalization/StyleAdapter.ts",
+      "src/core/personalization/UserProfiler.ts",
+      "src/core/suggestions/QuickReplies.ts",
+      "src/core/webhooks/WebhookService.ts",
+      "src/core/wiki/LocalKnowledgeWiki.ts"
+    ],
     "src/core/governance/GovernanceEvidenceService.test.ts": [
       "src/core/governance/GovernanceEvidenceService.ts"
     ],
     "src/core/governance/GovernanceEvidenceService.ts": [
       "src/core/database/Database.ts"
+    ],
+    "src/core/graph/__tests__/knowledge-graph-indexer-matrix.test.ts": [
+      "src/core/graph/KnowledgeGraphIndexer.ts"
     ],
     "src/core/graph/KnowledgeGraphIndexer.test.ts": [
       "src/core/graph/KnowledgeGraphIndexer.ts"
@@ -5226,8 +5395,50 @@
     "src/core/knowledge/__tests__/DatasetLoader.test.ts": [
       "src/core/knowledge/DatasetLoader.ts"
     ],
+    "src/core/knowledge/__tests__/entertainment-source-deep-matrix.test.ts": [
+      "src/core/knowledge/EntertainmentSource.ts"
+    ],
     "src/core/knowledge/__tests__/GitHubSource.test.ts": [
       "src/core/knowledge/GitHubSource.ts"
+    ],
+    "src/core/knowledge/__tests__/knowledge-flow-and-importers-deep.test.ts": [
+      "src/core/importers/GitHubRepoKnowledgeImporter.ts",
+      "src/core/knowledge/KnowledgeOnlineFlowService.ts",
+      "src/core/research/PyScrappyService.ts"
+    ],
+    "src/core/knowledge/__tests__/knowledge-flow-and-local-answerer.test.ts": [
+      "src/core/knowledge/KnowledgeOnlineFlowService.ts",
+      "src/core/knowledge/LocalKnowledgeAnswerer.ts",
+      "src/core/knowledge/OnlineKnowledgeIngestionService.ts"
+    ],
+    "src/core/knowledge/__tests__/knowledge-ranking-reasoning.test.ts": [
+      "src/core/knowledge/KnowledgeFusion.ts",
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/knowledge/ReasoningEngine.ts",
+      "src/core/knowledge/ResultRanker.ts"
+    ],
+    "src/core/knowledge/__tests__/knowledge-sources-decision-matrix.test.ts": [
+      "src/core/knowledge/BaseKnowledgeSource.ts",
+      "src/core/knowledge/BookSource.ts",
+      "src/core/knowledge/DocumentationSource.ts",
+      "src/core/knowledge/EntertainmentSource.ts",
+      "src/core/knowledge/KnowledgeFusion.ts",
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/knowledge/LLMProgrammingSource.ts",
+      "src/core/knowledge/LibraryOfCongressSource.ts",
+      "src/core/knowledge/MediumSource.ts",
+      "src/core/knowledge/ProjectGutenbergSource.ts",
+      "src/core/knowledge/QuoraSource.ts",
+      "src/core/knowledge/RedditSource.ts",
+      "src/core/knowledge/UniversitySource.ts",
+      "src/core/knowledge/WikipediaSource.ts",
+      "src/core/knowledge/YouTubeSource.ts"
+    ],
+    "src/core/knowledge/__tests__/knowledge-sources-deep-flow.test.ts": [
+      "src/core/knowledge/EntertainmentSource.ts",
+      "src/core/knowledge/LocalKnowledgeAnswerer.ts",
+      "src/core/knowledge/OnlineKnowledgeIngestionService.ts",
+      "src/core/knowledge/WikipediaSource.ts"
     ],
     "src/core/knowledge/__tests__/KnowledgeExtractor.test.ts": [
       "src/core/knowledge/KnowledgeExtractor.ts"
@@ -5236,6 +5447,9 @@
       "src/core/knowledge/BookSource.ts",
       "src/core/knowledge/EntertainmentSource.ts",
       "src/core/knowledge/ResultRanker.ts"
+    ],
+    "src/core/knowledge/__tests__/scientific-papers-source-matrix.test.ts": [
+      "src/core/knowledge/ScientificPapersSource.ts"
     ],
     "src/core/knowledge/__tests__/ScientificPapersSource.test.ts": [
       "src/core/knowledge/ScientificPapersSource.ts"
@@ -5249,6 +5463,9 @@
     ],
     "src/core/knowledge/__tests__/StackOverflowSource.test.ts": [
       "src/core/knowledge/StackOverflowSource.ts"
+    ],
+    "src/core/knowledge/__tests__/telegram-source-matrix.test.ts": [
+      "src/core/knowledge/TelegramSource.ts"
     ],
     "src/core/knowledge/__tests__/UniversitySource.test.ts": [
       "src/core/knowledge/UniversitySource.ts"
@@ -5548,6 +5765,11 @@
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/learning/__tests__/feedback-and-rl-matrix.test.ts": [
+      "src/core/learning/FeedbackCollector.ts",
+      "src/core/learning/KnowledgeLearner.ts",
+      "src/core/rl/RewardModel.ts"
+    ],
     "src/core/learning/__tests__/ModelUpdater.test.ts": [
       "src/core/learning/FeedbackCollector.ts",
       "src/core/learning/ModelUpdater.ts"
@@ -5637,8 +5859,20 @@
     "src/core/media-accessibility/VoiceDubbingConsentGate.ts": [
       "src/core/media-accessibility/MediaAccessibilityTypes.ts"
     ],
+    "src/core/memory/__tests__/graph-and-project-memory-matrix.test.ts": [
+      "src/core/memory/GraphMemory.ts",
+      "src/core/project-memory/capture/ProjectMemorySchema.ts",
+      "src/core/project-memory/capture/ProjectMemoryStore.ts"
+    ],
+    "src/core/memory/__tests__/graph-memory-deep-matrix.test.ts": [
+      "src/core/memory/GraphMemory.ts"
+    ],
     "src/core/memory/__tests__/GraphMemory.test.ts": [
       "src/core/memory/GraphMemory.ts"
+    ],
+    "src/core/memory/__tests__/hierarchical-memory-matrix.test.ts": [
+      "src/core/memory/HierarchicalMemory.ts",
+      "src/core/memory/MemoryService.ts"
     ],
     "src/core/memory/ForgettingMechanism.ts": [
       "src/core/observability/logger.ts",
@@ -5690,6 +5924,17 @@
     ],
     "src/core/modes/ModePolicy.ts": [
       "src/types/modes.ts"
+    ],
+    "src/core/multimodal/__tests__/media-and-audio-processing-matrix.test.ts": [
+      "src/core/audio/AudioLibraryService.ts",
+      "src/core/audio/stemdeck/DemucsWorkerAdapter.ts",
+      "src/core/multimodal/VideoProcessor.ts",
+      "src/core/multimodal/localization/ProductionMediaEngineAdapter.ts"
+    ],
+    "src/core/multimodal/__tests__/video-and-media-localization-matrix.test.ts": [
+      "src/core/audio/AudioLibraryService.ts",
+      "src/core/multimodal/VideoProcessor.ts",
+      "src/core/multimodal/localization/ProductionMediaEngineAdapter.ts"
     ],
     "src/core/multimodal/__tests__/VideoProcessor.test.ts": [
       "src/core/multimodal/VideoProcessor.ts"
@@ -5924,6 +6169,11 @@
     "src/core/optimization/ToonSerializer.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/orchestrator/__tests__/enhanced-orchestrator-matrix.test.ts": [
+      "src/core/agents/CodingAgent.ts",
+      "src/core/orchestrator/EnhancedOrchestrator.ts",
+      "src/core/providers/LLMAdapter.ts"
+    ],
     "src/core/orchestrator/__tests__/EnhancedOrchestrator.comprehensive.test.ts": [
       "src/core/orchestrator/EnhancedOrchestrator.ts",
       "src/core/providers/LLMAdapter.ts",
@@ -5977,6 +6227,18 @@
       "src/types/contract.ts",
       "src/types/provenance.ts",
       "src/utils/cache.ts"
+    ],
+    "src/core/personalization/__tests__/collaborative-filter-and-profiler-matrix.test.ts": [
+      "src/core/personalization/CollaborativeFilter.ts",
+      "src/core/personalization/UserProfiler.ts"
+    ],
+    "src/core/personalization/__tests__/personalization-and-repo-tools-matrix.test.ts": [
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
+      "src/core/personalization/PreferenceLearner.ts",
+      "src/core/personalization/StyleAdapter.ts",
+      "src/core/personalization/UserProfiler.ts",
+      "src/core/tools/CommandRunner.ts",
+      "src/core/tools/RepoTools.ts"
     ],
     "src/core/personalization/__tests__/UserProfiler.test.ts": [
       "src/core/personalization/UserProfiler.ts"
@@ -6064,6 +6326,9 @@
     "src/core/project/__tests__/ProjectIntelligenceService.test.ts": [
       "src/core/project/ProjectIntelligenceService.ts"
     ],
+    "src/core/project/__tests__/ProjectMemoryService.branches.test.ts": [
+      "src/core/project/ProjectMemoryService.ts"
+    ],
     "src/core/project/ProjectIntelligenceService.ts": [
       "src/core/agents/CodeIndexer.ts",
       "src/core/memory/ProjectContext.ts"
@@ -6085,6 +6350,15 @@
     "src/core/providers/__tests__/ModelRouter.test.ts": [
       "src/core/providers/LLMAdapter.ts",
       "src/core/providers/ModelRouter.ts"
+    ],
+    "src/core/providers/__tests__/providers-deep-decision-matrix.test.ts": [
+      "src/core/providers/DeviceAdapter.ts",
+      "src/core/providers/HuggingFaceAdapter.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/providers/OllamaAdapter.ts",
+      "src/core/providers/StableDiffusionAdapter.ts",
+      "src/core/providers/UniversalLLM.ts",
+      "src/core/providers/VisionAdapter.ts"
     ],
     "src/core/providers/__tests__/UniversalLLM.test.ts": [
       "src/core/providers/LLMAdapter.ts",
@@ -6189,8 +6463,16 @@
       "src/core/observability/logger.ts",
       "src/types/vision.ts"
     ],
+    "src/core/quality/__tests__/auto-review-matrix.test.ts": [
+      "src/core/quality/AutoReview.ts"
+    ],
     "src/core/quality/__tests__/AutoReview.test.ts": [
       "src/core/quality/AutoReview.ts"
+    ],
+    "src/core/quality/__tests__/quality-cache-and-performance-matrix.test.ts": [
+      "src/core/learning/PerformanceMonitor.ts",
+      "src/core/quality/AutoReview.ts",
+      "src/core/tools/CodeExecutor.ts"
     ],
     "src/core/quality/AutoReview.ts": [
       "src/core/observability/logger.ts"
@@ -6204,6 +6486,18 @@
     "src/core/rag/__tests__/DocumentIngester.test.ts": [
       "src/core/rag/DocumentIngester.ts",
       "src/core/rag/ingestion/FileTypeRouter.ts"
+    ],
+    "src/core/rag/__tests__/HybridRetriever.test.ts": [
+      "src/core/rag/HybridRetriever.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/__tests__/rag-document-store-deep-coverage.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/__tests__/rag-router-deep-decision-matrix.test.ts": [
+      "src/core/rag/RAGRouter.ts"
     ],
     "src/core/rag/__tests__/RAGDocumentStore.branches.test.ts": [
       "src/core/database/Database.ts",
@@ -6283,6 +6577,12 @@
       "src/core/rag/RAGInjectionScanner.ts",
       "src/types/rag.ts"
     ],
+    "src/core/rag/ingestion/__tests__/epub-and-extractors-deep.test.ts": [
+      "src/core/rag/ingestion/EpubExtractor.ts"
+    ],
+    "src/core/rag/ingestion/__tests__/epub-extractor-deep-matrix.test.ts": [
+      "src/core/rag/ingestion/EpubExtractor.ts"
+    ],
     "src/core/rag/ingestion/__tests__/EpubExtractor.test.ts": [
       "src/core/rag/ingestion/EpubExtractor.ts",
       "src/core/rag/ingestion/MobiExtractor.ts"
@@ -6298,6 +6598,13 @@
     ],
     "src/core/rag/ingestion/__tests__/ImageOcrExtractor.test.ts": [
       "src/core/rag/ingestion/ImageOcrExtractor.ts"
+    ],
+    "src/core/rag/ingestion/__tests__/office-and-text-extractors.test.ts": [
+      "src/core/rag/ingestion/HtmlExtractor.ts",
+      "src/core/rag/ingestion/MobiExtractor.ts",
+      "src/core/rag/ingestion/OfficeExtractor.ts",
+      "src/core/rag/ingestion/RtfExtractor.ts",
+      "src/core/rag/ingestion/TextLikeExtractor.ts"
     ],
     "src/core/rag/ingestion/__tests__/PdfExtractor.test.ts": [
       "src/core/rag/ingestion/PdfExtractor.ts"
@@ -6400,6 +6707,9 @@
     "src/core/realtime/WebSocketServer.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/repository-intelligence/__tests__/git-intelligence-provider.test.ts": [
+      "src/core/repository-intelligence/git/GitIntelligenceProvider.ts"
+    ],
     "src/core/repository-intelligence/__tests__/RepositoryIntelligence.eval.test.ts": [
       "src/core/repository-intelligence/architecture/SemanticArchitectureCardProvider.ts",
       "src/core/repository-intelligence/git/GitIntelligenceProvider.ts",
@@ -6446,6 +6756,9 @@
       "src/core/repository-intelligence/risk/CodeHealthRiskProvider.ts"
     ],
     "src/core/repository-intelligence/risk/CodeHealthRiskProvider.ts": [],
+    "src/core/research/__tests__/pyscrappy-service-matrix.test.ts": [
+      "src/core/research/PyScrappyService.ts"
+    ],
     "src/core/research/PyScrappyService.test.ts": [
       "src/core/research/PyScrappyService.ts"
     ],
@@ -6453,6 +6766,12 @@
       "src/core/mcp/McpClientService.ts",
       "src/core/observability/logger.ts",
       "src/types/tools.ts"
+    ],
+    "src/core/rl/__tests__/rl-decision-matrix.test.ts": [
+      "src/core/rl/FeedbackCollector.ts",
+      "src/core/rl/PolicyOptimizer.ts",
+      "src/core/rl/RewardModel.ts",
+      "src/core/rl/SafeRL.ts"
     ],
     "src/core/rl/FeedbackCollector.ts": [
       "src/core/observability/logger.ts",
@@ -6476,6 +6795,12 @@
     ],
     "src/core/safety/__tests__/ApprovalPolicy.test.ts": [
       "src/core/safety/ApprovalPolicy.ts"
+    ],
+    "src/core/safety/__tests__/safety-policies-and-sandboxes-matrix.test.ts": [
+      "src/core/safety/ApprovalPolicy.ts",
+      "src/core/safety/SandboxController.ts",
+      "src/core/safety/SelfCheckSafety.ts",
+      "src/core/safety/UncertaintyQuantifier.ts"
     ],
     "src/core/safety/__tests__/SandboxController.test.ts": [
       "src/core/safety/SandboxController.ts"
@@ -6528,6 +6853,16 @@
     ],
     "src/core/scheduler/TaskScheduler.ts": [
       "src/core/observability/logger.ts"
+    ],
+    "src/core/sec/__tests__/sec-comprehensive-matrix.test.ts": [
+      "src/core/sec/EDGARClient.ts",
+      "src/core/sec/SECFilingParser.ts",
+      "src/core/sec/SECService.ts",
+      "src/core/sec/SECStorageService.ts"
+    ],
+    "src/core/sec/__tests__/sec-services-and-storage-matrix.test.ts": [
+      "src/core/sec/SECService.ts",
+      "src/core/sec/SECStorageService.ts"
     ],
     "src/core/sec/EDGARClient.ts": [
       "src/core/sec/SECRequestPacer.ts"
@@ -6650,6 +6985,23 @@
     "src/core/sprite-lab/SpriteLabPlanService.ts": [
       "src/core/database/Database.ts"
     ],
+    "src/core/study/__tests__/study-studio-deep-coverage.test.ts": [
+      "src/core/study/StudyStudioService.ts"
+    ],
+    "src/core/study/__tests__/study-studio-engines-matrix.test.ts": [
+      "src/core/study/ExamSimulationEngine.ts",
+      "src/core/study/FlashcardEngine.ts",
+      "src/core/study/MasteryModelEngine.ts",
+      "src/core/study/QuizEngine.ts",
+      "src/core/study/SocraticDebateEngine.ts",
+      "src/core/study/StructuredNotesEngine.ts",
+      "src/core/study/StudyStudioService.ts",
+      "src/core/study/StudyTypes.ts"
+    ],
+    "src/core/study/__tests__/study-studio-full-matrix.test.ts": [
+      "src/core/study/StructuredNotesEngine.ts",
+      "src/core/study/StudyStudioService.ts"
+    ],
     "src/core/study/__tests__/StudyStudio.eval.test.ts": [
       "src/core/study/index.ts"
     ],
@@ -6729,6 +7081,24 @@
     "src/core/suggestions/QuickReplies.ts": [
       "src/core/observability/logger.ts",
       "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/tools/__tests__/tools-execution-and-composition-matrix.test.ts": [
+      "src/core/knowledge/index.ts",
+      "src/core/tools/CodeExecutor.ts",
+      "src/core/tools/FunctionCaller.ts",
+      "src/core/tools/PersonalKnowledgeTool.ts",
+      "src/core/tools/RepoTools.ts",
+      "src/core/tools/ToolComposer.ts",
+      "src/core/tools/ToolRegistry.ts",
+      "src/core/tools/business/UnitEconomicsTool.ts",
+      "src/core/tools/health/FitnessPlanTool.ts",
+      "src/core/tools/legal/ContractClauseExplainerTool.ts",
+      "src/core/tools/market/ValuationTool.ts",
+      "src/core/tools/math/SymPyTool.ts",
+      "src/types/tools.ts"
+    ],
+    "src/core/tools/__tests__/web-searcher-matrix.test.ts": [
+      "src/core/tools/WebSearcher.ts"
     ],
     "src/core/tools/__tests__/WebSearcher.test.ts": [
       "src/core/tools/WebSearcher.ts"
@@ -7156,6 +7526,19 @@
       "src/core/website/ResponsivePreviewRenderer.ts",
       "src/core/website/WebsiteTypes.ts"
     ],
+    "src/core/website/__tests__/website-models-and-blocks.test.ts": [
+      "src/core/website/BlockEditorEngine.ts",
+      "src/core/website/WebsiteProjectModel.ts"
+    ],
+    "src/core/website/__tests__/website-workspace-and-block-editor-matrix.test.ts": [
+      "src/core/website/BlockEditorEngine.ts",
+      "src/core/website/ElementInspectorService.ts",
+      "src/core/website/SourceLinkInspectionService.ts",
+      "src/core/website/WebAccessibilityAuditor.ts",
+      "src/core/website/WebsiteImportExportService.ts",
+      "src/core/website/WebsiteProjectModel.ts",
+      "src/core/website/WebsiteWorkspaceService.ts"
+    ],
     "src/core/website/__tests__/WebsiteStudioSandbox.test.ts": [
       "src/core/website/ResponsivePreviewRenderer.ts",
       "src/core/website/WebsiteSandboxUndoManager.ts",
@@ -7236,6 +7619,10 @@
       "src/core/website/WebsiteTypes.ts"
     ],
     "src/core/wiki/LocalKnowledgeWiki.ts": [],
+    "src/core/writing/__tests__/document-import-export-matrix.test.ts": [
+      "src/core/writing/DocumentImportExportService.ts",
+      "src/core/writing/WritingStudioService.ts"
+    ],
     "src/core/writing/__tests__/WritingStudio.eval.test.ts": [
       "src/core/writing/index.ts"
     ],
@@ -7307,6 +7694,10 @@
     ],
     "src/core/writing/WritingTypes.ts": [],
     "src/evals/run-domain-evals.test.ts": [],
+    "src/mesh/__tests__/load-balancer-matrix.test.ts": [
+      "src/mesh/LoadBalancer.ts",
+      "src/services/ServiceRegistry.ts"
+    ],
     "src/mesh/CircuitBreaker.ts": [
       "src/core/observability/logger.ts"
     ],
@@ -7424,6 +7815,26 @@
     ],
     "src/server/__tests__/security-middleware.test.ts": [
       "src/middleware/security.ts"
+    ],
+    "src/server/__tests__/server.entrypoint.failures.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/server/index.ts"
+    ],
+    "src/server/__tests__/server.entrypoint.lifecycle.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/core/config/ConfigValidator.ts",
+      "src/core/debug/DebugMode.ts",
+      "src/core/initialization/ServiceInitializer.ts",
+      "src/core/knowledge/DatasetLoader.ts",
+      "src/core/knowledge/KnowledgeFusion.ts",
+      "src/core/knowledge/KnowledgeGraph.ts",
+      "src/core/knowledge/ReasoningEngine.ts",
+      "src/core/knowledge/TelegramSource.ts",
+      "src/core/sharing/ConversationSharing.ts",
+      "src/core/suggestions/QuickReplies.ts",
+      "src/core/upload/FileProcessor.ts",
+      "src/core/webhooks/WebhookService.ts",
+      "src/server/index.ts"
     ],
     "src/server/__tests__/server.index.test.ts": [
       "src/core/auth/AuthService.ts",
@@ -7593,6 +8004,9 @@
     "src/server/routes/__tests__/agent-operations-routes.test.ts": [
       "src/server/routes/agent-operations.ts"
     ],
+    "src/server/routes/__tests__/capabilities-routes-deep-matrix.test.ts": [
+      "src/server/routes/capabilities.ts"
+    ],
     "src/server/routes/__tests__/capability-evaluations-routes.test.ts": [
       "src/core/capabilities/CapabilityJobManager.ts",
       "src/core/capabilities/CapabilityRegistry.ts",
@@ -7652,6 +8066,12 @@
     "src/server/routes/__tests__/knowledge-os.test.ts": [
       "src/server/routes/knowledge-os.ts"
     ],
+    "src/server/routes/__tests__/local-tools-deep-matrix.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/database/ExpansionDatabase.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/local-tools.ts"
+    ],
     "src/server/routes/__tests__/local-tools-routes.test.ts": [
       "src/core/database/Database.ts",
       "src/core/database/ExpansionDatabase.ts",
@@ -7673,6 +8093,61 @@
     ],
     "src/server/routes/__tests__/rag-query.test.ts": [
       "src/server/routes/rag-query.ts"
+    ],
+    "src/server/routes/__tests__/route-core-services-matrices.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/core/config/APIKeyManager.ts",
+      "src/server/routes/gaming.ts",
+      "src/server/routes/music.ts",
+      "src/server/routes/settings.ts",
+      "src/server/routes/setup.ts"
+    ],
+    "src/server/routes/__tests__/route-files-decision-matrix.test.ts": [
+      "src/server/routes/files.ts"
+    ],
+    "src/server/routes/__tests__/route-knowledge-os-matrix.test.ts": [
+      "src/server/routes/knowledge-os.ts"
+    ],
+    "src/server/routes/__tests__/route-legacy-chat-matrix.test.ts": [
+      "src/core/conversation/ConversationManager.ts",
+      "src/server/routes/legacy-chat.ts"
+    ],
+    "src/server/routes/__tests__/route-specialist-matrices.test.ts": [
+      "src/core/database/Database.ts",
+      "src/server/routes/agent-operations.ts",
+      "src/server/routes/business.ts",
+      "src/server/routes/chrono.ts",
+      "src/server/routes/creative.ts",
+      "src/server/routes/education.ts",
+      "src/server/routes/engineering.ts",
+      "src/server/routes/gamedev.ts",
+      "src/server/routes/geography.ts",
+      "src/server/routes/health.ts",
+      "src/server/routes/history.ts",
+      "src/server/routes/language.ts",
+      "src/server/routes/legal.ts",
+      "src/server/routes/market.ts",
+      "src/server/routes/math.ts",
+      "src/server/routes/philosophy.ts",
+      "src/server/routes/plans.ts",
+      "src/server/routes/pop-culture.ts",
+      "src/server/routes/rag-query.ts",
+      "src/server/routes/research.ts",
+      "src/server/routes/science.ts",
+      "src/server/routes/security.ts",
+      "src/server/routes/sixsigma.ts",
+      "src/server/routes/story.ts",
+      "src/server/routes/toolCatalog.ts"
+    ],
+    "src/server/routes/__tests__/route-workspace-persistence.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/server/routes/chat-stream.ts",
+      "src/server/routes/context-economy/contextInspectorRoutes.ts",
+      "src/server/routes/document-workspace.ts",
+      "src/server/routes/export.ts",
+      "src/server/routes/project-intelligence.ts",
+      "src/server/routes/project-memory.ts",
+      "src/server/routes/website-workspace.ts"
     ],
     "src/server/routes/__tests__/sec-routes.test.ts": [
       "src/core/database/Database.ts",
@@ -7711,6 +8186,11 @@
     ],
     "src/server/routes/__tests__/sprite-studio-routes.test.ts": [
       "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
+    ],
+    "src/server/routes/__tests__/story-audio-and-health-routes-matrix.test.ts": [
+      "src/server/routes/audio.ts",
+      "src/server/routes/health.ts",
+      "src/server/routes/story.ts"
     ],
     "src/server/routes/__tests__/versionedChat.test.ts": [
       "src/server/routes/v1/chat.ts",
@@ -8137,5 +8617,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1563
+  "sourceRecordCount": 1646
 }

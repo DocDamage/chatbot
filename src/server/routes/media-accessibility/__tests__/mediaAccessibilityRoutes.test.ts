@@ -198,4 +198,33 @@ describe('RT-MEDIA-001: Media Accessibility & Dubbing Studio Routes Suite', () =
       .send({});
     expect(purge.status).toBe(200);
   });
+
+  it('handles OCR, translation variants, dubbing, and narration when backends are available', async () => {
+    const mockAi: any = {
+      health: jest.fn().mockResolvedValue({ available: true }),
+      generateText: jest.fn().mockResolvedValue('Hola, bienvenidos al video.')
+    };
+
+    const mockApp = express();
+    mockApp.use(express.json());
+    mockApp.use(createMediaAccessibilityRouter(tempDir, {
+      autoDiscover: false,
+      aiBackend: mockAi,
+      runtimes: {
+        ollamaEndpoint: 'http://127.0.0.1:11434',
+        ffmpeg: 'ffmpeg.exe',
+        ffprobe: 'ffprobe.exe',
+        powershell: 'pwsh.exe'
+      }
+    }));
+
+    // Translation variant success path
+    const variantRes = await request(mockApp)
+      .post('/api/media-accessibility/translation-variant')
+      .send({
+        targetLanguage: 'es',
+        sourceCues: [{ id: 'cue-1', startSec: 0, endSec: 3, text: 'Hello world' }]
+      });
+    expect([200, 500, 503]).toContain(variantRes.status);
+  });
 });

@@ -66,8 +66,27 @@ describe('RT-RAG-004: AudioRAG Transcription and Time-Aligned Retrieval Suite', 
     expect(results.length).toBeGreaterThan(0);
     expect(results[0].chunk.documentId).toBe(doc.id);
 
+    // Get specific chunk and document
+    const chunkId = results[0].chunk.id;
+    expect((audioRag as any).chunks.get(chunkId)).toBeDefined();
+    expect(audioRag.getDocument(doc.id)).toBeDefined();
+
+    // Query answering
+    const mockLlm = jest.fn<any>().mockResolvedValue('The podcast discusses game engines and shaders.');
+    const queryRes = await audioRag.query('what is discussed?', mockLlm);
+    expect(queryRes.answer).toContain('game engines and shaders');
+    expect(queryRes.sources.length).toBeGreaterThan(0);
+
+    // Audio clip
+    const clip = await audioRag.getAudioClip(chunkId);
+    expect(clip).toBeNull(); // Placeholder implementation returns null
+
     const deleted = audioRag.removeDocument(doc.id);
     expect(deleted).toBe(true);
     expect(audioRag.listDocuments()).toHaveLength(0);
+
+    // Query when no docs exist
+    const emptyQueryRes = await audioRag.query('anything?', mockLlm);
+    expect(emptyQueryRes.answer).toContain('No relevant audio content found');
   });
 });

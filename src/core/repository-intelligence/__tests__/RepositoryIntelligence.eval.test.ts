@@ -167,6 +167,44 @@ describe('Repository Intelligence (PX-04)', () => {
       expect(report.affectedTests).toContain('src/services/OrderService.test.ts');
       expect(report.isBreakingContractRisk).toBe(true);
     });
+
+    it('handles new files, deleted files, internal non-exported symbols, and missing test targets', () => {
+      const internalCode = `function internalHelper(): number {\n  return 42;\n}`;
+      indexer.indexFile('src/utils/internal.ts', internalCode);
+
+      const analyzer = new DiffImpactAnalyzer(symbolIndex, []);
+
+      const multiDiff = [
+        'diff --git a/src/utils/internal.ts b/src/utils/internal.ts',
+        '--- a/src/utils/internal.ts',
+        '+++ b/src/utils/internal.ts',
+        '@@ -1,3 +1,3 @@',
+        ' function internalHelper(): number {',
+        '-  return 42;',
+        '+  return 100;',
+        ' }',
+        'diff --git a/src/newfile.ts b/src/newfile.ts',
+        'new file mode 100644',
+        '--- /dev/null',
+        '+++ b/src/newfile.ts',
+        '@@ -0,0 +1,2 @@',
+        '+export const x = 1;',
+        'diff --git a/src/oldfile.ts b/src/oldfile.ts',
+        'deleted file mode 100644',
+        '--- a/src/oldfile.ts',
+        '+++ /dev/null',
+        '@@ -1,2 +0,0 @@',
+        '-export const y = 2;'
+      ].join('\n');
+
+      const report = analyzer.analyzePatchImpact(multiDiff);
+      expect(report.changedFiles).toContain('src/utils/internal.ts');
+      expect(report.changedFiles).toContain('src/newfile.ts');
+      expect(report.changedFiles).toContain('src/oldfile.ts');
+      expect(report.missingTestTargets).toContain('src/utils/internal.ts');
+      expect(report.isBreakingContractRisk).toBe(false);
+      expect(report.riskSummary).toContain('Low/Moderate Risk');
+    });
   });
 
   describe('PX04-T07: Safe Repository Ingester', () => {

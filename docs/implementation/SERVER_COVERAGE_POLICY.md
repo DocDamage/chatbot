@@ -32,29 +32,19 @@ A new exclusion must be added to both `collectCoverageFrom` and `allowedExclusio
 
 ## Active stage
 
-The active stage is `stage-2`.
+The active stage is `branch-75`.
 
-The Stage 2 candidate baseline was measured locally on the profile-expansion working tree based on commit `55dbcd0a2af1bd4c26f1f28aae7b3e3d6823f7f2`. The policy records that the tree contained the reviewed expansion changes; the `commit` field must be replaced with the final candidate SHA when those changes are committed.
-
-| Metric | Covered | Total | Baseline |
-|---|---:|---:|---:|
-| Lines | 22,406 | 36,775 | 60.9273% |
-| Branches | 9,731 | 19,953 | 48.7696% |
-| Functions | 4,366 | 7,634 | 57.1915% |
-| Statements | 24,035 | 40,017 | 60.0620% |
-
-The active gate enforces no regression against all four global metrics and against every listed Tier A file. A change that increases uncovered production source without sufficient tests fails the coverage job.
-
-The final audited worktree improves on that locked baseline: 23,085/37,301 lines (61.8884%), 10,197/20,403 branches (49.9779%), 4,532/7,766 functions (58.3569%), and 24,798/40,642 statements (61.0157%). The locked baseline remains unchanged so the added implementation cannot consume the prior uncovered-code budget.
+The policy records the locked baseline in `config/server-coverage-policy.json`. The active gate enforces no regression against all four global metrics, minimum 75% global line and branch coverage, and every listed Tier A file. A change that increases uncovered production source without sufficient tests fails the coverage job.
 
 ## Global progression
 
 | Stage | Minimum lines | Minimum branches | Enforcement |
 |---|---:|---:|---|
 | Stage 1 | Locked historical baseline | Locked historical baseline | Passed |
-| Stage 2 | 55% | 45% | Active |
-| Stage 3 | 65% | 55% | Future ratchet |
-| Final | 75% | 65% | Release target |
+| Stage 2 | 55% | 45% | Passed |
+| Stage 3 | 65% | 55% | Passed |
+| Final | 75% | 65% | Passed |
+| Branch 75 | 75% | 75% | Active post-final ratchet |
 
 The active stage may move forward only after the candidate commit passes the next threshold. It must not move backward. Lowering a baseline or threshold to make CI pass is prohibited.
 
@@ -116,6 +106,12 @@ Validate an existing coverage report without rerunning Jest:
 
 ```bash
 npm run check:server-coverage
+```
+
+Generate uncovered branch report:
+
+```bash
+npm run report:server-branch-gaps
 ```
 
 Run policy unit tests:

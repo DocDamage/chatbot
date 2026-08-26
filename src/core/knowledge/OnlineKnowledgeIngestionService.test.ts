@@ -153,5 +153,15 @@ describe('OnlineKnowledgeIngestionService', () => {
     });
     const deepFallback = await fallbackService.deepResearch('math proof', 'math');
     expect(deepFallback.researchType).toBe('deep-dive');
+
+    // 7. Duplicate content skipping on second ingest
+    const ingestFirst = await webService.ingestApproved(preview, { approved: true, approvedBy: 'user' });
+    const ingestSecond = await webService.ingestApproved(preview, { approved: true, approvedBy: 'user' });
+    expect(ingestSecond.skippedDuplicates).toBeGreaterThanOrEqual(1);
+
+    // 8. Page text extractor
+    const htmlText = (webService as any).extractPageText('<html><script>bad()</script><body><h1>Header</h1><p>Main content.</p></body></html>');
+    expect(htmlText).toContain('Header');
+    expect(htmlText).not.toContain('bad()');
   });
 });

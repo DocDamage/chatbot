@@ -28,7 +28,7 @@ export class MemoryFreshnessEngine {
    * Run full freshness evaluation pass across all active memories.
    */
   public evaluateFreshness(currentFileDigests: Map<string, string>): FreshnessEvaluationReport {
-    const allMemories = this.store.query({}, { userId: 'system', isAdmin: true });
+    const allMemories = this.store.query({ includeQuarantined: true }, { userId: 'system', isAdmin: true });
     let currentCount = 0;
     let staleCount = 0;
     let supersededCount = 0;

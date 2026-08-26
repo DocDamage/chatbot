@@ -151,5 +151,21 @@ describe('GIS routes', () => {
       .expect(response => {
         expect(response.body.sessions.length).toBeGreaterThan(0);
       });
+
+    // Validation errors
+    await request(app)
+      .post('/api/gis/geocode')
+      .send({})
+      .expect(400);
+
+    await request(app)
+      .post('/api/gis/reverse-geocode')
+      .send({ coordinate: { lat: 'invalid', lng: 0 } })
+      .expect(400);
+
+    await request(app)
+      .post('/api/gis/layers/import')
+      .send({ format: 'csv', data: '123' })
+      .expect(400);
   });
 });

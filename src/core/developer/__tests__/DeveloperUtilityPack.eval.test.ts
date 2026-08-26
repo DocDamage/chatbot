@@ -318,20 +318,48 @@ Use extends keyword to bound generic type variables.
 
   // PX17-T07: Project Doctor & Operational Diagnostics
   describe('PX17-T07: Project Doctor Diagnostics & Ranked Actions', () => {
-    it('analyzes workspace health, checks route manifests and contracts, and ranks next actions', () => {
-      const doctor = new ProjectDoctorService(tempDir);
+    it('analyzes workspace health across various failure and warning states', () => {
+      // 1. Missing package.json
+      const emptyDoctor = new ProjectDoctorService(tempDir);
+      const rep1 = emptyDoctor.runDiagnostics();
+      expect(rep1.status).toBe('ACTION_REQUIRED');
+      expect(rep1.diagnostics.some(d => d.id === 'diag-pkg-1')).toBe(true);
 
-      // Create valid package.json and .env.example in tempDir
+      // 2. Corrupted package.json
+      fs.writeFileSync(path.join(tempDir, 'package.json'), '{ corrupt json');
+      const rep2 = emptyDoctor.runDiagnostics();
+      expect(rep2.diagnostics.some(d => d.id === 'diag-pkg-3')).toBe(true);
+
+      // 3. Incomplete test script in package.json
+      fs.writeFileSync(path.join(tempDir, 'package.json'), JSON.stringify({ version: '1.0.0', scripts: {} }));
+      const rep3 = emptyDoctor.runDiagnostics();
+      expect(rep3.diagnostics.some(d => d.id === 'diag-pkg-2')).toBe(true);
+
+      // 4. Fully valid workspace with route manifest, src/core, .env.example, and high tmp files
       fs.writeFileSync(
         path.join(tempDir, 'package.json'),
         JSON.stringify({ version: '1.0.0', scripts: { test: 'jest' } })
       );
-      fs.writeFileSync(path.join(tempDir, '.env.example'), 'PORT=3000\nNODE_ENV=production\n');
+      fs.writeFileSync(path.join(tempDir, '.env.example'), 'PORT=3000\n');
+      const serverDir = path.join(tempDir, 'src', 'server');
+      fs.mkdirSync(serverDir, { recursive: true });
+      fs.writeFileSync(path.join(serverDir, 'routeManifest.ts'), 'export const manifest = [];');
 
-      const report = doctor.runDiagnostics();
-      expect(report.score).toBeGreaterThan(0);
-      expect(report.diagnostics.length).toBe(5);
-      expect(report.rankedNextActions.length).toBeGreaterThan(0);
+      const coreDir = path.join(tempDir, 'src', 'core');
+      fs.mkdirSync(coreDir, { recursive: true });
+
+      // Create > 50 tmp files
+      const tmpDir = path.join(tempDir, 'tmp');
+      fs.mkdirSync(tmpDir, { recursive: true });
+      for (let i = 0; i < 55; i++) {
+        fs.writeFileSync(path.join(tmpDir, `temp_${i}.tmp`), 'data');
+      }
+
+      const rep4 = emptyDoctor.runDiagnostics();
+      expect(rep4.diagnostics.some(d => d.id === 'diag-artifacts-warn')).toBe(true);
+      expect(rep4.diagnostics.some(d => d.id === 'diag-routes-pass')).toBe(true);
+      expect(rep4.diagnostics.some(d => d.id === 'diag-tests-pass')).toBe(true);
+      expect(rep4.diagnostics.some(d => d.id === 'diag-sec-pass')).toBe(true);
     });
   });
 

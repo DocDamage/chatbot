@@ -78,6 +78,53 @@ describe('Phase PX-09: Unity, Unreal, Sprite-Slicing, and Asset-Build Adapters',
       const scene = await adapter.inspectScene('Assets/Scenes/SampleScene.unity');
       expect(scene.path).toBe('Assets/Scenes/SampleScene.unity');
       expect(scene.rootNode.type).toBe('UnityScene');
+
+      // Script inspection
+      fs.mkdirSync(path.join(tempDir, 'Assets', 'Scripts'), { recursive: true });
+      fs.writeFileSync(path.join(tempDir, 'Assets', 'Scripts', 'PlayerController.cs'), 'public class PlayerController : MonoBehaviour {}');
+      const scriptInfo = await adapter.inspectScript('Assets/Scripts/PlayerController.cs');
+      expect(scriptInfo.path).toBe('Assets/Scripts/PlayerController.cs');
+
+      // Propose, approve, apply, and rollback mutation
+      const proposal = await adapter.proposeMutation({
+        engine: 'unity',
+        projectId: 'test-unity-proj',
+        title: 'Add Player Script',
+        description: 'Create player controller logic',
+        risk: 'low',
+        actions: [{
+          type: 'create_script',
+          targetPath: 'Assets/Scripts/PlayerController.cs',
+          params: { content: 'public class PlayerController : MonoBehaviour { void Update() {} }' }
+        }]
+      });
+      expect(proposal.id).toBeDefined();
+
+      const approved = await adapter.approveMutation(proposal.id, 'admin_user');
+      expect(approved.approvalDigest).toBeDefined();
+
+      const tx = await adapter.applyMutation(proposal.id, approved.approvalDigest!, { callerId: 'admin_user' });
+      expect(tx.id).toBeDefined();
+
+      const rolledBack = await adapter.rollbackTransaction(tx.id);
+      expect(rolledBack).toBe(true);
+
+      // Fail-closed editor backend checks
+      await expect(adapter.exportProject('windows_x86_64' as any)).rejects.toThrow('UNITY_EDITOR_BACKEND_UNAVAILABLE');
+      await expect(adapter.profilePerformance()).rejects.toThrow('UNITY_EDITOR_BACKEND_UNAVAILABLE');
+      await expect(adapter.runRuntimeScenario({} as any)).rejects.toThrow('UNITY_EDITOR_BACKEND_UNAVAILABLE');
+
+      // Disconnect
+      await adapter.disconnect();
+      expect(adapter.getStatus().state).toBe('disconnected');
+
+      // Disconnected error
+      await expect(adapter.inspectProject()).rejects.toThrow('Unity adapter is not connected');
+
+      // Connect error when Assets dir is missing
+      const emptyDir = path.join(tempDir, 'empty-dir');
+      fs.mkdirSync(emptyDir, { recursive: true });
+      await expect(adapter.connect({ engine: 'unity', projectRoot: emptyDir })).rejects.toThrow('Assets directory not found');
     });
   });
 

@@ -175,6 +175,19 @@ describe('Phase PX-11: Local Stem Separation, Mixer, and Audio Analysis Lab', ()
     });
 
     it('rejects corrupt audio and detects DRM encrypted signatures', () => {
+      // Missing file
+      const missing = AudioIngestNormalizer.inspectAndValidate(path.join(tempDir, 'missing.wav'));
+      expect(missing.valid).toBe(false);
+      expect(missing.error).toContain('File not found');
+
+      // Short buffer
+      const shortPath = path.join(tempDir, 'short.wav');
+      fs.writeFileSync(shortPath, Buffer.alloc(10));
+      const shortRes = AudioIngestNormalizer.inspectAndValidate(shortPath);
+      expect(shortRes.valid).toBe(false);
+      expect(shortRes.error).toContain('buffer is too short');
+
+      // DRM
       const drmPath = path.join(tempDir, 'drm_track.m4a');
       const drmBuf = Buffer.alloc(128);
       drmBuf.write('sinf drms protected content', 0);
@@ -184,6 +197,31 @@ describe('Phase PX-11: Local Stem Separation, Mixer, and Audio Analysis Lab', ()
       expect(drmRes.valid).toBe(false);
       expect(drmRes.isDrmProtected).toBe(true);
       expect(drmRes.error).toContain('DRM_ENCRYPTED_AUDIO');
+
+      // FLAC
+      const flacPath = path.join(tempDir, 'sample.flac');
+      const flacBuf = Buffer.alloc(64);
+      flacBuf.write('fLaC', 0);
+      fs.writeFileSync(flacPath, flacBuf);
+      const flacRes = AudioIngestNormalizer.inspectAndValidate(flacPath);
+      expect(flacRes.valid).toBe(true);
+      expect(flacRes.format).toBe('flac');
+
+      // MP3
+      const mp3Path = path.join(tempDir, 'sample.mp3');
+      const mp3Buf = Buffer.alloc(64);
+      mp3Buf.write('ID3', 0);
+      fs.writeFileSync(mp3Path, mp3Buf);
+      const mp3Res = AudioIngestNormalizer.inspectAndValidate(mp3Path);
+      expect(mp3Res.valid).toBe(true);
+      expect(mp3Res.format).toBe('mp3');
+
+      // Generic extension fallback (OGG)
+      const oggPath = path.join(tempDir, 'sample.ogg');
+      fs.writeFileSync(oggPath, Buffer.alloc(64));
+      const oggRes = AudioIngestNormalizer.inspectAndValidate(oggPath);
+      expect(oggRes.valid).toBe(true);
+      expect(oggRes.format).toBe('ogg');
     });
   });
 

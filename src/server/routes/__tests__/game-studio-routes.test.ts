@@ -128,6 +128,49 @@ describe('RT-PLAT-005 / RT-GAME-001: Game Studio Routes and Exact-Scope Approval
       .send({ engine: 'godot', name: 'TestExport' });
     expect([200, 400, 500]).toContain(exportRes.status);
 
+    // Rollback
+    const rollbackRes = await request(app)
+      .post('/api/game-studio/transactions/tx_123/rollback')
+      .send({ engine: 'godot' });
+    expect([200, 400, 404, 500]).toContain(rollbackRes.status);
+
+    // Asset Cook with custom mock executor
+    const mockCookExecutor = {
+      cook: jest.fn().mockImplementation(async (opts: any) => ({
+        success: true,
+        processedAssets: 5,
+        targetPlatform: 'linux',
+        outputArtifactPath: opts.outputDirectory || path.join(tempWorkspace, '.cooked', 'linux')
+      }))
+    };
+    const customCookerApp = express();
+    customCookerApp.use(express.json());
+    customCookerApp.use(createGameStudioRouter(tempWorkspace, { assetCookerExecutor: mockCookExecutor as any }));
+    customCookerApp.use(errorHandler);
+
+    await request(customCookerApp)
+      .post('/api/game-studio/asset-cook')
+      .send({ configRoot: tempWorkspace, targetPlatform: 'linux', dirtyOnly: false })
+      .expect(200);
+
+    // Sprite slicing with custom mode
+    await request(app)
+      .post('/api/game-studio/slicing/profile')
+      .send({ width: 32, height: 32, mode: 'grid' })
+      .expect(200);
+
+    // Unity / Unreal connect & disconnect
+    const unityDir = path.join(tempWorkspace, 'unity_proj');
+    fs.mkdirSync(path.join(unityDir, 'Assets'), { recursive: true });
+    await request(app).post('/api/game-studio/connect').send({ engine: 'unity', projectRoot: unityDir }).expect(200);
+    await request(app).post('/api/game-studio/disconnect').send({ engine: 'unity' }).expect(200);
+
+    const unrealDir = path.join(tempWorkspace, 'unreal_proj');
+    fs.mkdirSync(unrealDir, { recursive: true });
+    fs.writeFileSync(path.join(unrealDir, 'Game.uproject'), '{}', 'utf8');
+    await request(app).post('/api/game-studio/connect').send({ engine: 'unreal', projectRoot: unrealDir }).expect(200);
+    await request(app).post('/api/game-studio/disconnect').send({ engine: 'unreal' }).expect(200);
+
     // Disconnect
     await request(app).post('/api/game-studio/disconnect').send({ engine: 'godot' }).expect(200);
   });

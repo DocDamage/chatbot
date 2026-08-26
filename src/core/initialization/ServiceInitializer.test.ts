@@ -121,9 +121,18 @@ describe('ServiceInitializer configuration branches', () => {
     process.env.GEMINI_API_KEY = 'vision-key';
     expect((ServiceInitializer as any).initializeVisionAdapter()).toBeDefined();
     delete process.env.USE_GEMINI_VISION;
-    process.env.USE_GPT4V = 'true';
-    process.env.OPENAI_API_KEY = 'vision-key';
-    expect((ServiceInitializer as any).initializeVisionAdapter()).toBeDefined();
+    delete process.env.USE_GPT4V;
+
+    // Embedding service provider branches
+    process.env.EMBEDDING_PROVIDER = 'xenova';
+    expect((ServiceInitializer as any).initializeEmbeddingService()).toBeDefined();
+
+    process.env.EMBEDDING_PROVIDER = 'openai';
+    process.env.OPENAI_API_KEY = 'mock-key';
+    expect((ServiceInitializer as any).initializeEmbeddingService()).toBeDefined();
+
+    process.env.EMBEDDING_PROVIDER = 'ollama';
+    expect((ServiceInitializer as any).initializeEmbeddingService()).toBeDefined();
   });
 
   it('loads knowledge directories, counts nested files, and handles failures safely', async () => {

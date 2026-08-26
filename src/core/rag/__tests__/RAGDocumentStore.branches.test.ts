@@ -271,9 +271,117 @@ describe('RAGDocumentStore Deep Branch Coverage Suite', () => {
     const dupList = await store.listSources({ duplicatesOnly: true });
     expect(dupList.sources.length).toBeGreaterThanOrEqual(0);
 
+    // Test search query q and paging
+    const qList = await store.listSources({ q: 'guide', limit: 2, offset: 0, scanLimit: 10 });
+    expect(qList.sources.length).toBeGreaterThanOrEqual(1);
+
     // Test private methods via search and similarity
     expect((store as any).cosineSimilarity([0.1, 0.2], [0.1])).toBe(0);
     expect((store as any).toPgVector([])).toBeNull();
     expect((store as any).keywordScore([], [])).toBe(0);
+  });
+
+  it('covers vector candidate search, vector paging, and all metadata OCR warning branches', async () => {
+    const store = new RAGDocumentStore(db);
+
+    // Vector scan page size = 1 to test multi-page while loop
+    process.env.RAG_SQLITE_VECTOR_SCAN_PAGE_SIZE = '1';
+    process.env.RAG_SQLITE_CANDIDATE_BATCH_SIZE = '1';
+
+    await store.saveChunks([
+      {
+        id: 'vec-p1',
+        content: 'Vector page one',
+        metadata: { source: 'docs/vec1.pdf', title: 'Vector 1', chunkIndex: 0 },
+        embedding: [1, 0]
+      },
+      {
+        id: 'vec-p2',
+        content: 'Vector page two',
+        metadata: { source: 'docs/vec2.pdf', title: 'Vector 2', chunkIndex: 0 },
+        embedding: [0.8, 0.6]
+      },
+      {
+        id: 'ocr-blocked',
+        content: '',
+        metadata: {
+          source: 'docs/blocked.pdf',
+          title: 'Blocked Scan [Retail] (v1.0)',
+          pdfOcrStatus: 'blocked',
+          emptyExtraction: true,
+          extractionWarnings: ['image-only pdf detected', 'ocr disabled by config', 'pdf text extraction produced no text'],
+          authors: ['Author One', 'Author Two'],
+          info: { Author: 'Info Author', CreationDate: '2024-01-01' }
+        }
+      },
+      {
+        id: 'ocr-failed',
+        content: '',
+        metadata: {
+          source: 'docs/failed.pdf',
+          title: 'Failed Scan vol 2',
+          pdfOcrStatus: 'failed',
+          createdBy: 'Scanner Robot',
+          publicationDate: '2023-05-01'
+        }
+      }
+    ]);
+
+    // 1. Vector search with paging
+    const pagedVec = await store.searchSimilar([1, 0], 2);
+    expect(pagedVec.length).toBe(2);
+
+    // 2. Vector search with candidateIds
+    const candidateVec = await (store as any).searchSimilarSqlite([1, 0], 2, {}, ['vec-p1', 'vec-p2']);
+    expect(candidateVec.length).toBe(2);
+
+    // 3. Inspect sources with OCR warnings and metadata
+    const ocrSources = await store.listSources({ needsOcr: true });
+    expect(ocrSources.sources.length).toBeGreaterThanOrEqual(2);
+    const blockedSource = ocrSources.sources.find(s => s.source.includes('blocked.pdf'));
+    expect(blockedSource).toBeDefined();
+    expect(blockedSource?.author).toBeDefined();
+    expect(blockedSource?.publishedDate).toBeDefined();
+    expect(blockedSource?.emptyExtraction).toBe(true);
+
+    // 4. getOcrQueue & hasSource
+    const ocrQueue = await store.getOcrQueue();
+    expect(ocrQueue.sources.length).toBeGreaterThanOrEqual(2);
+    expect(await store.hasSource('docs/vec1.pdf')).toBe(true);
+    expect(await store.hasSource('docs/nonexistent.pdf')).toBe(false);
+
+    // 5. hybridSearch with full vector scan enabled and filters
+    process.env.RAG_SQLITE_FULL_VECTOR_SCAN = 'true';
+    const hybridFull = await store.hybridSearch('Vector', [1, 0], 5, {
+      project: 'test-proj',
+      excludeDeprecated: true,
+      visibility: ['public']
+    });
+    expect(Array.isArray(hybridFull)).toBe(true);
+
+    // 6. clampPositiveInt & tokenize edge cases
+    expect((store as any).clampPositiveInt('invalid', 50, 1, 100)).toBe(50);
+    expect((store as any).clampPositiveInt(-10, 50, 1, 100)).toBe(1);
+    expect((store as any).clampPositiveInt(200, 50, 1, 100)).toBe(100);
+    expect((store as any).tokenize('and the or if')).toEqual([]);
+
+    // 7. loadChunks
+    const loadedChunks = await store.loadChunks();
+    expect(loadedChunks.length).toBeGreaterThan(0);
+
+    // 8. insertIngestionRun and buildIngestionRunQuery across SQLite & Postgres dialects
+    const validSourceId = (store as any).sourceId('docs/vec1.pdf');
+    await (store as any).insertIngestionRun('run-sqlite', validSourceId, 5, {});
+    const querySqlite = (store as any).buildIngestionRunQuery('run-1', validSourceId, 2, { tag: 'sqlite' });
+    expect(querySqlite.sql).toContain('ingestion_runs');
+
+    const pgMockDb = {
+      getType: () => 'postgresql',
+      query: jest.fn().mockResolvedValue({ rows: [] })
+    };
+    const pgStore = new RAGDocumentStore(pgMockDb as any);
+    await (pgStore as any).insertIngestionRun('run-pg', 'src-pg', 5, {});
+    const queryPg = (pgStore as any).buildIngestionRunQuery('run-pg', 'src-pg', 5, { tag: 'pg' });
+    expect(queryPg.sql).toContain('ON CONFLICT (id) DO UPDATE');
   });
 });

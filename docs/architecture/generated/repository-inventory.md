@@ -6,7 +6,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1563 |
+| Source files | 1646 |
 | Production source files | 1107 |
 | Reachable production files | 816 |
 | Unreachable production files | 291 |
@@ -845,7 +845,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/rag/TrustRAG.ts` | 368 |
 | `src/core/rag/VideoRAG.ts` | 443 |
 | `src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts` | 616 |
-| `src/core/safety/ApprovalPolicy.ts` | 338 |
+| `src/core/safety/ApprovalPolicy.ts` | 339 |
 | `src/core/safety/SandboxController.ts` | 449 |
 | `src/core/scheduler/TaskScheduler.ts` | 464 |
 | `src/core/sec/SECService.ts` | 406 |

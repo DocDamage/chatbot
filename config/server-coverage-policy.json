@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "mode": "enforce",
-  "activeStage": "stage-3",
+  "activeStage": "branch-75",
   "baseline": {
     "commit": "55dbcd0a2af1bd4c26f1f28aae7b3e3d6823f7f2",
     "ciRun": "local-profile-expansion-candidate",
@@ -70,6 +70,12 @@
       "stage": "final",
       "lines": 75,
       "branches": 65
+    },
+    {
+      "stage": "branch-75",
+      "description": "Post-final global branch coverage ratchet",
+      "lines": 75,
+      "branches": 75
     }
   ],
   "tiers": {
