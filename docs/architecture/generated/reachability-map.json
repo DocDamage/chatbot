@@ -2207,6 +2207,10 @@
       "specifier": "../cache/SemanticCache"
     },
     {
+      "importer": "src/core/orchestrator/__tests__/EnhancedOrchestrator.comprehensive.test.ts",
+      "specifier": "../../cache/SemanticCache"
+    },
+    {
       "importer": "src/core/orchestrator/EnhancedOrchestrator.ts",
       "specifier": "../cache/SemanticCache"
     },
@@ -2301,6 +2305,9 @@
       "client/src/api/runtime.ts"
     ],
     "client/src/api/runtime.ts": [],
+    "client/src/api/spriteLab.test.ts": [
+      "client/src/api/spriteLab.ts"
+    ],
     "client/src/api/spriteLab.ts": [
       "client/src/api/errors.ts",
       "client/src/api/localRunApprovals.ts"
@@ -2321,7 +2328,9 @@
     ],
     "client/src/clipboard.ts": [],
     "client/src/components/__tests__/AssistantChat.workflow.test.tsx": [
-      "client/src/components/AssistantChat.tsx"
+      "client/src/api/knowledge.ts",
+      "client/src/components/AssistantChat.tsx",
+      "client/src/components/ModeSelector.tsx"
     ],
     "client/src/components/__tests__/AudioPreviewBrowser.workflow.test.tsx": [
       "client/src/api/audio.ts",
@@ -2548,6 +2557,9 @@
     ],
     "client/src/components/UtilityWorkbenchPanel.tsx": [],
     "client/src/components/WebsiteWorkspacePanel.tsx": [],
+    "client/src/features/gis/gisApi.test.ts": [
+      "client/src/features/gis/gisApi.ts"
+    ],
     "client/src/features/gis/gisApi.ts": [
       "client/src/features/gis/gisTypes.ts"
     ],
@@ -4635,6 +4647,10 @@
     "src/core/developer/__tests__/DeveloperUtilityPack.eval.test.ts": [
       "src/core/developer/index.ts"
     ],
+    "src/core/developer/__tests__/MockApiEngine.coverage.test.ts": [
+      "src/core/developer/DeveloperTypes.ts",
+      "src/core/developer/MockApiEngine.ts"
+    ],
     "src/core/developer/CapabilityPackScaffolder.ts": [
       "src/core/developer/DeveloperTypes.ts"
     ],
@@ -5207,8 +5223,14 @@
       "src/core/knowledge-os/KnowledgeOsChatAgent.ts"
     ],
     "src/core/knowledge-os/KnowledgeOsChatAgent.ts": [],
+    "src/core/knowledge/__tests__/DatasetLoader.test.ts": [
+      "src/core/knowledge/DatasetLoader.ts"
+    ],
     "src/core/knowledge/__tests__/GitHubSource.test.ts": [
       "src/core/knowledge/GitHubSource.ts"
+    ],
+    "src/core/knowledge/__tests__/KnowledgeExtractor.test.ts": [
+      "src/core/knowledge/KnowledgeExtractor.ts"
     ],
     "src/core/knowledge/__tests__/KnowledgeSources.test.ts": [
       "src/core/knowledge/BookSource.ts",
@@ -5217,6 +5239,19 @@
     ],
     "src/core/knowledge/__tests__/ScientificPapersSource.test.ts": [
       "src/core/knowledge/ScientificPapersSource.ts"
+    ],
+    "src/core/knowledge/__tests__/SmartKnowledgeSource.test.ts": [
+      "src/core/knowledge/KnowledgeSource.ts",
+      "src/core/knowledge/SmartKnowledgeSource.ts"
+    ],
+    "src/core/knowledge/__tests__/SpecializedTopicSource.test.ts": [
+      "src/core/knowledge/SpecializedTopicSource.ts"
+    ],
+    "src/core/knowledge/__tests__/StackOverflowSource.test.ts": [
+      "src/core/knowledge/StackOverflowSource.ts"
+    ],
+    "src/core/knowledge/__tests__/UniversitySource.test.ts": [
+      "src/core/knowledge/UniversitySource.ts"
     ],
     "src/core/knowledge/AnatomySource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
@@ -5513,6 +5548,10 @@
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/learning/__tests__/ModelUpdater.test.ts": [
+      "src/core/learning/FeedbackCollector.ts",
+      "src/core/learning/ModelUpdater.ts"
+    ],
     "src/core/learning/ABTester.ts": [
       "src/core/observability/logger.ts"
     ],
@@ -5532,6 +5571,9 @@
       "src/core/observability/logger.ts"
     ],
     "src/core/learning/SpacedRepetitionService.ts": [],
+    "src/core/mcp/__tests__/McpClientService.test.ts": [
+      "src/core/mcp/McpClientService.ts"
+    ],
     "src/core/mcp/McpAuditLogger.ts": [],
     "src/core/mcp/McpClientService.ts": [
       "src/core/mcp/McpToolRegistry.ts"
@@ -5648,6 +5690,9 @@
     ],
     "src/core/modes/ModePolicy.ts": [
       "src/types/modes.ts"
+    ],
+    "src/core/multimodal/__tests__/VideoProcessor.test.ts": [
+      "src/core/multimodal/VideoProcessor.ts"
     ],
     "src/core/multimodal/ImageProcessor.optional-dependencies.test.ts": [
       "src/core/multimodal/ImageProcessor.ts"
@@ -5860,6 +5905,9 @@
     ],
     "src/core/nlu/SlangNormalizer.ts": [],
     "src/core/nlu/VibeInterpreter.ts": [],
+    "src/core/notifications/__tests__/TwilioAdapter.test.ts": [
+      "src/core/notifications/TwilioAdapter.ts"
+    ],
     "src/core/notifications/index.ts": [
       "src/core/notifications/TwilioAdapter.ts"
     ],
@@ -5875,6 +5923,15 @@
     ],
     "src/core/optimization/ToonSerializer.ts": [
       "src/core/observability/logger.ts"
+    ],
+    "src/core/orchestrator/__tests__/EnhancedOrchestrator.comprehensive.test.ts": [
+      "src/core/orchestrator/EnhancedOrchestrator.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/providers/ModelRouter.ts",
+      "src/core/rag/RAGService.ts",
+      "src/core/safety/SafetyPipeline.ts",
+      "src/core/tools/FunctionCaller.ts",
+      "src/core/tools/ToolRegistry.ts"
     ],
     "src/core/orchestrator/__tests__/Orchestrator.test.ts": [
       "src/core/orchestrator/Orchestrator.ts"
@@ -6004,6 +6061,9 @@
       "src/core/project-memory/capture/ProjectMemorySchema.ts",
       "src/core/project-memory/capture/ProjectMemoryStore.ts"
     ],
+    "src/core/project/__tests__/ProjectIntelligenceService.test.ts": [
+      "src/core/project/ProjectIntelligenceService.ts"
+    ],
     "src/core/project/ProjectIntelligenceService.ts": [
       "src/core/agents/CodeIndexer.ts",
       "src/core/memory/ProjectContext.ts"
@@ -6014,8 +6074,20 @@
       "src/types/contract.ts",
       "src/types/provenance.ts"
     ],
+    "src/core/providers/__tests__/DeviceAdapter.test.ts": [
+      "src/core/providers/DeviceAdapter.ts"
+    ],
+    "src/core/providers/__tests__/EnsembleAdapter.test.ts": [
+      "src/core/providers/EnsembleAdapter.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/providers/ModelRouter.ts"
+    ],
     "src/core/providers/__tests__/UniversalLLM.test.ts": [
+      "src/core/providers/LLMAdapter.ts",
       "src/core/providers/UniversalLLM.ts"
+    ],
+    "src/core/providers/__tests__/VisionAdapter.test.ts": [
+      "src/core/providers/VisionAdapter.ts"
     ],
     "src/core/providers/contracts/LocalAudioVoiceContracts.ts": [],
     "src/core/providers/DeviceAdapter.ts": [
@@ -6129,6 +6201,11 @@
       "src/core/rag/DocumentIngester.ts",
       "src/core/rag/ingestion/FileTypeRouter.ts"
     ],
+    "src/core/rag/__tests__/RAGDocumentStore.branches.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/types/rag.ts"
+    ],
     "src/core/rag/__tests__/RAGDocumentStore.test.ts": [
       "src/core/database/Database.ts",
       "src/core/rag/RAGDocumentStore.ts",
@@ -6201,6 +6278,25 @@
       "src/core/rag/RAGDocumentStore.ts",
       "src/core/rag/RAGInjectionScanner.ts",
       "src/types/rag.ts"
+    ],
+    "src/core/rag/ingestion/__tests__/EpubExtractor.test.ts": [
+      "src/core/rag/ingestion/EpubExtractor.ts",
+      "src/core/rag/ingestion/MobiExtractor.ts"
+    ],
+    "src/core/rag/ingestion/__tests__/FileTypeRouter.test.ts": [
+      "src/core/rag/ingestion/EpubExtractor.ts",
+      "src/core/rag/ingestion/FileTypeRouter.ts",
+      "src/core/rag/ingestion/HtmlExtractor.ts",
+      "src/core/rag/ingestion/MobiExtractor.ts",
+      "src/core/rag/ingestion/OfficeExtractor.ts",
+      "src/core/rag/ingestion/RtfExtractor.ts",
+      "src/core/rag/ingestion/TextLikeExtractor.ts"
+    ],
+    "src/core/rag/ingestion/__tests__/ImageOcrExtractor.test.ts": [
+      "src/core/rag/ingestion/ImageOcrExtractor.ts"
+    ],
+    "src/core/rag/ingestion/__tests__/PdfExtractor.test.ts": [
+      "src/core/rag/ingestion/PdfExtractor.ts"
     ],
     "src/core/rag/ingestion/EpubExtractor.ts": [
       "src/core/observability/logger.ts",
@@ -6291,6 +6387,12 @@
       "src/core/observability/logger.ts",
       "src/core/voice/VoiceAgent.ts"
     ],
+    "src/core/realtime/__tests__/WebSocketServer.test.ts": [
+      "src/core/realtime/WebSocketServer.ts"
+    ],
+    "src/core/realtime/WebSocketServer.test.ts": [
+      "src/core/realtime/WebSocketServer.ts"
+    ],
     "src/core/realtime/WebSocketServer.ts": [
       "src/core/observability/logger.ts"
     ],
@@ -6320,6 +6422,10 @@
       "src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts",
       "src/core/repository-intelligence/ingestion/SafeRepositoryIngester.ts",
       "src/core/repository-intelligence/risk/CodeHealthRiskProvider.ts"
+    ],
+    "src/core/repository-intelligence/indexes/__tests__/MultiLanguageSymbolIndexer.test.ts": [
+      "src/core/repository-intelligence/indexes/ByteOffsetSymbolIndex.ts",
+      "src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts"
     ],
     "src/core/repository-intelligence/indexes/ByteOffsetSymbolIndex.ts": [],
     "src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts": [
@@ -6471,9 +6577,15 @@
     "src/core/security/supply-chain/PackSupplyChainGuard.ts": [],
     "src/core/security/threat-model/CapabilityThreatModel.ts": [],
     "src/core/security/web/WebSecurityBoundaryGuard.ts": [],
+    "src/core/sharing/__tests__/ConversationSharing.test.ts": [
+      "src/core/sharing/ConversationSharing.ts"
+    ],
     "src/core/sharing/ConversationSharing.ts": [
       "src/core/database/Database.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/sprite-lab/__tests__/InternalSpriteImageAdapter.test.ts": [
+      "src/core/sprite-lab/InternalSpriteImageAdapter.ts"
     ],
     "src/core/sprite-lab/__tests__/SpriteStudio.eval.test.ts": [
       "src/core/sprite-lab/pipeline/ImageIngestValidator.ts",
@@ -6488,6 +6600,9 @@
       "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts"
     ],
     "src/core/sprite-lab/InternalSpriteImageAdapter.ts": [],
+    "src/core/sprite-lab/pipeline/__tests__/ImageIngestValidator.test.ts": [
+      "src/core/sprite-lab/pipeline/ImageIngestValidator.ts"
+    ],
     "src/core/sprite-lab/pipeline/ImageIngestValidator.ts": [
       "src/core/sprite-lab/pipeline/SpriteStudioTypes.ts"
     ],
@@ -7023,12 +7138,19 @@
     "src/core/voice-companion/VoiceRecordingService.ts": [
       "src/core/voice-companion/VoiceCompanionTypes.ts"
     ],
+    "src/core/voice/__tests__/VoiceAgent.test.ts": [
+      "src/core/voice/VoiceAgent.ts"
+    ],
     "src/core/voice/VoiceAgent.ts": [
       "src/core/observability/logger.ts"
     ],
     "src/core/webhooks/WebhookService.ts": [
       "src/core/observability/logger.ts",
       "src/utils/retry.ts"
+    ],
+    "src/core/website/__tests__/ResponsivePreviewRenderer.test.ts": [
+      "src/core/website/ResponsivePreviewRenderer.ts",
+      "src/core/website/WebsiteTypes.ts"
     ],
     "src/core/website/__tests__/WebsiteStudioSandbox.test.ts": [
       "src/core/website/ResponsivePreviewRenderer.ts",
@@ -7252,6 +7374,14 @@
       "src/core/learning/KnowledgeLearner.ts",
       "src/core/tools/CodingKnowledgeTool.ts"
     ],
+    "src/server/__tests__/index.routes.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/server/index.ts"
+    ],
+    "src/server/__tests__/index.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/server/index.ts"
+    ],
     "src/server/__tests__/knowledge-base.test.ts": [
       "src/__tests__/utils/test-helpers.ts",
       "src/core/embeddings/EmbeddingService.ts",
@@ -7283,6 +7413,10 @@
       "src/server/routes/knowledge-os.ts",
       "src/server/routes/plans.ts",
       "src/server/security/webhookUrl.ts"
+    ],
+    "src/server/__tests__/routeManifest.comprehensive.test.ts": [
+      "src/server/healthRoutes.ts",
+      "src/server/routeManifest.ts"
     ],
     "src/server/__tests__/security-middleware.test.ts": [
       "src/middleware/security.ts"
@@ -7471,6 +7605,9 @@
       "src/middleware/errorHandler.ts",
       "src/server/routes/creative.ts"
     ],
+    "src/server/routes/__tests__/desktop-companion.test.ts": [
+      "src/server/routes/desktop-companion.ts"
+    ],
     "src/server/routes/__tests__/feature-expansion-routes.test.ts": [
       "src/server/routes/audio.ts",
       "src/server/routes/files.ts",
@@ -7483,12 +7620,14 @@
       "src/server/routes/flstudio.ts"
     ],
     "src/server/routes/__tests__/game-studio-routes.test.ts": [
+      "src/middleware/errorHandler.ts",
       "src/server/routes/game-studio/gameStudioRoutes.ts"
     ],
     "src/server/routes/__tests__/gaming-playbook-routes.test.ts": [
       "src/server/routes/gaming.ts"
     ],
     "src/server/routes/__tests__/gis-routes.test.ts": [
+      "src/core/agents/gis/GISMappingAgent.ts",
       "src/core/gis/GISProviderRegistry.ts",
       "src/core/gis/GISService.ts",
       "src/middleware/apiErrorSchema.ts",
@@ -7529,6 +7668,7 @@
     "src/server/routes/__tests__/sec-routes.test.ts": [
       "src/core/database/Database.ts",
       "src/core/database/ExpansionDatabase.ts",
+      "src/core/sec/SECService.ts",
       "src/server/routes/sec.ts"
     ],
     "src/server/routes/__tests__/settings-routes.test.ts": [
@@ -7563,9 +7703,17 @@
     "src/server/routes/__tests__/sprite-studio-routes.test.ts": [
       "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
     ],
+    "src/server/routes/__tests__/versionedChat.test.ts": [
+      "src/server/routes/v1/chat.ts",
+      "src/server/routes/v2/chat.ts"
+    ],
     "src/server/routes/__tests__/web-studio-and-developer-utility.test.ts": [
       "src/server/routes/mock-api.ts",
       "src/server/routes/website-workspace.ts"
+    ],
+    "src/server/routes/__tests__/writing-studio.test.ts": [
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/writing-studio.ts"
     ],
     "src/server/routes/__tests__/writing-study-studio-routes.test.ts": [
       "src/middleware/errorHandler.ts",
@@ -7776,6 +7924,9 @@
     "src/server/routes/math.ts": [
       "src/middleware/errorHandler.ts"
     ],
+    "src/server/routes/media-accessibility/__tests__/mediaAccessibilityRoutes.test.ts": [
+      "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
+    ],
     "src/server/routes/media-accessibility/index.ts": [
       "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts"
     ],
@@ -7790,6 +7941,9 @@
     "src/server/routes/mock-api.ts": [
       "src/core/developer/DeveloperUtilityPackService.ts",
       "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/music-studio/__tests__/musicStudioRoutes.test.ts": [
+      "src/server/routes/music-studio/musicStudioRoutes.ts"
     ],
     "src/server/routes/music-studio/index.ts": [
       "src/server/routes/music-studio/musicStudioRoutes.ts"
@@ -7861,6 +8015,7 @@
     ],
     "src/server/routes/setup.test.ts": [
       "src/core/auth/AuthService.ts",
+      "src/core/config/APIKeyManager.ts",
       "src/middleware/errorHandler.ts",
       "src/server/routes/setup.ts"
     ],
@@ -7945,6 +8100,9 @@
       "src/core/capabilities/observability/CapabilityMetricsCollector.ts",
       "src/core/capabilities/reliability/CapabilitySLOEngine.ts"
     ],
+    "src/testing/failure-injection/__tests__/ProcessFailureInjector.test.ts": [
+      "src/testing/failure-injection/ProcessFailureInjector.ts"
+    ],
     "src/testing/failure-injection/ProcessFailureInjector.ts": [],
     "src/types/chat.test.ts": [
       "src/types/chat.ts"
@@ -7970,5 +8128,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1521
+  "sourceRecordCount": 1561
 }

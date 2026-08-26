@@ -146,7 +146,11 @@ export class GodotMcpXAdapter implements IGameEngineAdapter {
   /**
    * Apply an approved mutation
    */
-  public async applyMutation(proposalId: string, approvalDigest: string): Promise<EngineTransaction> {
+  public async applyMutation(
+    proposalId: string,
+    approvalDigest: string,
+    options?: { callerId?: string; tenantId?: string }
+  ): Promise<EngineTransaction> {
     this.ensureConnected();
     return this.transactionManager!.executeTransaction(
       proposalId,
@@ -157,7 +161,8 @@ export class GodotMcpXAdapter implements IGameEngineAdapter {
         } else {
           await GodotSceneMutator.applyAction(action, root);
         }
-      }
+      },
+      options
     );
   }
 

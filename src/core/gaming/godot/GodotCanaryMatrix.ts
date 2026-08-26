@@ -106,7 +106,7 @@ export class GodotCanaryMatrix {
       stepsLog.push(`[Step 5] Proposal approved with digest: ${approved.approvalDigest}`);
 
       // 5. Apply
-      const tx = await adapter.applyMutation(proposal.id, approved.approvalDigest!);
+      const tx = await adapter.applyMutation(proposal.id, approved.approvalDigest!, { callerId: 'canary-tester' });
       stepsLog.push(`[Step 6] Transaction applied with ID: ${tx.id}`);
 
       // Verify scene file changed

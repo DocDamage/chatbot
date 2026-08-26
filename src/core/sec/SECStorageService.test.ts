@@ -129,11 +129,27 @@ describe('SECStorageService', () => {
     const documents = await db.query('SELECT filename, document_type FROM sec_filing_documents');
     const sections = await db.query('SELECT item_code FROM sec_filing_sections ORDER BY section_order');
     const chunks = await db.query('SELECT content FROM sec_filing_chunks');
-    const filing = await db.query('SELECT ingest_status FROM sec_filings WHERE accession_number = ?', ['0000320193-24-000001']);
+    const filing = await db.query('SELECT id, ingest_status FROM sec_filings WHERE accession_number = ?', ['0000320193-24-000001']);
 
     expect(documents.rows[0]).toMatchObject({ filename: 'example-10k.htm', document_type: '10-K' });
     expect(sections.rows.map(row => row.item_code)).toContain('1');
     expect(chunks.rows[0].content).toContain('Business');
     expect(filing.rows[0].ingest_status).toBe('parsed');
+
+    // Finding filing by ID
+    const byIdResult = await storage.parseAndStoreFiling({
+      filingId: filing.rows[0].id,
+      rawContent: '<DOCUMENT><TYPE>10-K</TYPE><FILENAME>test.htm</FILENAME><TEXT>Short text</TEXT></DOCUMENT>'
+    });
+    expect(byIdResult.documents).toBe(1);
+
+    // Missing filing rejection
+    await expect(storage.parseAndStoreFiling({
+      accessionNumber: 'non-existent-accession',
+      rawContent: 'test'
+    })).rejects.toThrow('Stored SEC filing not found');
+
+    // Invalid CIK rejection
+    await expect(storage.upsertCompanyFromSubmissions({ cik: 'abc' })).rejects.toThrow('CIK must contain digits');
   });
 });

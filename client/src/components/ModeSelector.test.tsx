@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import ModeSelector from './ModeSelector';
@@ -26,22 +26,66 @@ describe('ModeSelector', () => {
     expect(onModeChange).toHaveBeenCalledWith('debug');
   });
 
-  it('supports arrow-key navigation in the open listbox', async () => {
+  it('supports keyboard interaction on button and arrow-key navigation in listbox', async () => {
     const user = userEvent.setup();
     const onModeChange = vi.fn();
 
     render(<ModeSelector mode="ask" onModeChange={onModeChange} />);
 
-    await user.click(screen.getByRole('button', { name: /ask/i }));
+    const trigger = screen.getByRole('button', { name: /ask/i });
+
+    // Open via Space on button
+    fireEvent.keyDown(trigger, { key: ' ' });
+    expect(screen.getByRole('listbox', { name: /chat mode/i })).toBeTruthy();
+
+    // Arrow navigation
     await user.keyboard('{ArrowDown}');
     const planOption = () => screen.getAllByRole('option')
       .find(option => option.querySelector('.mode-option-label')?.textContent === 'Plan');
     await waitFor(() => {
       expect(document.activeElement).toBe(planOption());
     });
-    await user.keyboard('{Enter}');
 
-    expect(onModeChange).toHaveBeenCalledWith('plan');
+    // ArrowUp back to Ask
+    await user.keyboard('{ArrowUp}');
+    const askOption = () => screen.getAllByRole('option')
+      .find(option => option.querySelector('.mode-option-label')?.textContent === 'Ask');
+    await waitFor(() => {
+      expect(document.activeElement).toBe(askOption());
+    });
+
+    // Select with Space
+    await user.keyboard(' ');
+    expect(onModeChange).toHaveBeenCalledWith('ask');
+  });
+
+  it('opens on button ArrowDown and closes on Escape and outside click', async () => {
+    const onModeChange = vi.fn();
+    render(
+      <div>
+        <div data-testid="outside">Outside area</div>
+        <ModeSelector mode="ask" onModeChange={onModeChange} />
+      </div>
+    );
+
+    const trigger = screen.getByRole('button', { name: /ask/i });
+
+    // ArrowDown when closed opens dropdown
+    fireEvent.keyDown(trigger, { key: 'ArrowDown' });
+    expect(screen.getByRole('listbox', { name: /chat mode/i })).toBeTruthy();
+
+    // Escape closes dropdown
+    const askOption = screen.getAllByRole('option')[0];
+    fireEvent.keyDown(askOption, { key: 'Escape' });
+    expect(screen.queryByRole('listbox', { name: /chat mode/i })).toBeNull();
+
+    // Open via Enter on trigger
+    fireEvent.keyDown(trigger, { key: 'Enter' });
+    expect(screen.getByRole('listbox', { name: /chat mode/i })).toBeTruthy();
+
+    // Outside click closes dropdown
+    fireEvent.mouseDown(screen.getByTestId('outside'));
+    expect(screen.queryByRole('listbox', { name: /chat mode/i })).toBeNull();
   });
 
   it('supports keyboard mode shortcuts', async () => {

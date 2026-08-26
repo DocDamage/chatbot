@@ -108,4 +108,18 @@ describe('music specialist routes', () => {
 
     expect(apply.body.flResult.dryRun).toBe(true);
   });
+
+  it('covers ask, beat, arrangement, theory, genre-timeline, and mix helper endpoints', async () => {
+    const app = createApp();
+
+    await request(app).post('/api/music/ask').send({ message: 'What is sidechain compression?' }).expect(200);
+    await request(app).post('/api/music/beat').send({ message: 'Boom bap drum pattern ideas' }).expect(200);
+    await request(app).post('/api/music/arrangement').send({ message: 'Pop song arrangement template' }).expect(200);
+    await request(app).post('/api/music/theory').send({ message: 'Secondary dominant chords explanation' }).expect(200);
+    await request(app).post('/api/music/genre-timeline').send({ message: 'Evolution of drill music' }).expect(200);
+    await request(app).post('/api/music/arrangement-review').send({ message: 'Review bridge transition' }).expect(200);
+    await request(app).post('/api/music/mix/analyze').send({ tracks: ['kick', 'snare'] }).expect(200);
+    await request(app).post('/api/music/mix/revise').send({ feedback: 'less reverb' }).expect(200);
+    await request(app).post('/api/music/mix/master').send({ targetLufs: -14 }).expect(200);
+  });
 });

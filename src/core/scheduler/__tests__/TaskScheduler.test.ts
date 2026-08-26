@@ -1,4 +1,4 @@
-import { describe, expect, it, jest, beforeEach } from '@jest/globals';
+import { describe, expect, it, jest, beforeEach, afterEach } from '@jest/globals';
 import { TaskScheduler } from '../TaskScheduler';
 
 describe('RT-SCHED-001: TaskScheduler Cron Automation Suite', () => {
@@ -6,6 +6,10 @@ describe('RT-SCHED-001: TaskScheduler Cron Automation Suite', () => {
 
   beforeEach(() => {
     scheduler = new TaskScheduler();
+  });
+
+  afterEach(() => {
+    scheduler.stop();
   });
 
   it('schedules tasks, runs on-demand, and captures execution metrics', async () => {
@@ -23,6 +27,7 @@ describe('RT-SCHED-001: TaskScheduler Cron Automation Suite', () => {
     const task = scheduler.getTask(taskId);
     expect(task?.name).toBe('Daily cleanup');
     expect(task?.enabled).toBe(true);
+    expect((scheduler as any).cronJobs.get(taskId).getStatus()).toBe('stopped');
 
     const result = await scheduler.executeTask(taskId);
     expect(result.success).toBe(true);

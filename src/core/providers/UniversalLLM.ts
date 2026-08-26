@@ -167,12 +167,15 @@ export class UniversalLLM {
             if (tried.has(modelName)) continue;
             tried.add(modelName);
 
+            let timeoutHandle: NodeJS.Timeout | undefined;
             try {
+                const timeoutPromise = new Promise<never>((_, reject) => {
+                    timeoutHandle = setTimeout(() => reject(new Error('Timeout')), this.config.timeout);
+                    timeoutHandle.unref?.();
+                });
                 const result = await Promise.race([
                     adapter.generate(options),
-                    new Promise<never>((_, reject) =>
-                        setTimeout(() => reject(new Error('Timeout')), this.config.timeout)
-                    )
+                    timeoutPromise
                 ]);
                 return result;
             } catch (error: any) {
@@ -181,6 +184,10 @@ export class UniversalLLM {
                     model: modelName,
                     error: error.message
                 });
+            } finally {
+                if (timeoutHandle) {
+                    clearTimeout(timeoutHandle);
+                }
             }
         }
 
@@ -243,6 +250,7 @@ export class UniversalLLM {
         if (setAsPrimary) {
             this.primaryAdapter = adapter;
         }
+        this.initialized = true;
         logger.info('Custom adapter registered', { name, setAsPrimary });
     }
 
@@ -255,9 +263,12 @@ export class UniversalLLM {
         availableAdapters: string[];
         config: UniversalLLMConfig;
     } {
+        const primary = typeof this.primaryAdapter?.getModelName === 'function'
+            ? this.primaryAdapter.getModelName()
+            : null;
         return {
             initialized: this.initialized,
-            primaryAdapter: this.primaryAdapter?.getModelName() || null,
+            primaryAdapter: primary,
             availableAdapters: Array.from(this.adapters.keys()),
             config: this.config
         };

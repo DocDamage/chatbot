@@ -95,6 +95,14 @@ export class ProjectMutationStore {
     if (proposal.expiresAt < new Date().toISOString()) throw new GameEngineError('APPROVAL_REQUIRED', 'Mutation proposal has expired.');
     if (!approvalDigest) throw new GameEngineError('APPROVAL_REQUIRED', 'Exact proposal digest approval is required.');
     if (approvalDigest !== proposal.approvalDigest) throw new GameEngineError('APPROVAL_DIGEST_MISMATCH', 'Approval digest does not match the exact approved mutation.');
+    if (proposal.approverId) {
+      if (!options?.callerId || !options.callerId.trim()) {
+        throw new GameEngineError('APPROVAL_REQUIRED', 'Caller identity is required to apply an approved mutation.');
+      }
+      if (options.callerId !== proposal.approverId) {
+        throw new GameEngineError('APPROVAL_REQUIRED', `Caller identity '${options.callerId}' does not match approver identity '${proposal.approverId}'.`);
+      }
+    }
     if (options?.tenantId && proposal.tenantId && options.tenantId !== proposal.tenantId) {
       throw new GameEngineError('APPROVAL_REQUIRED', 'Tenant mismatch on mutation application.');
     }

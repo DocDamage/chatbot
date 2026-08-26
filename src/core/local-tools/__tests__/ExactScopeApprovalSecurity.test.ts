@@ -84,7 +84,8 @@ describe('RT-PLAT-005 — Exact-Scope Approval Security Suite', () => {
     store.approve(proposal.id, 'admin-user');
     const fakeDigest = '0'.repeat(64);
 
-    expect(() => store.apply(proposal.id, fakeDigest)).toThrow(GameEngineError);
+    expect(() => store.apply(proposal.id, fakeDigest, { callerId: 'admin-user' })).toThrow(GameEngineError);
+    expect(() => store.apply(proposal.id, store.approve(proposal.id, 'admin-user').approvalDigest!, { callerId: 'intruder' })).toThrow(GameEngineError);
   });
 
   it('successfully applies valid approved proposal and enables atomic rollback', () => {
@@ -104,7 +105,7 @@ describe('RT-PLAT-005 — Exact-Scope Approval Security Suite', () => {
     });
 
     const approved = store.approve(proposal.id, 'admin-user');
-    const tx = store.apply(proposal.id, approved.approvalDigest!);
+    const tx = store.apply(proposal.id, approved.approvalDigest!, { callerId: 'admin-user' });
 
     expect(tx.id).toBeDefined();
     const writtenFile = path.join(tempDir, 'scenes/Level1.tscn');
@@ -134,6 +135,6 @@ describe('RT-PLAT-005 — Exact-Scope Approval Security Suite', () => {
     });
 
     const approved = store.approve(proposal.id, 'admin-user');
-    expect(() => store.apply(proposal.id, approved.approvalDigest!)).toThrow();
+    expect(() => store.apply(proposal.id, approved.approvalDigest!, { callerId: 'admin-user' })).toThrow();
   });
 });

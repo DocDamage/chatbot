@@ -93,6 +93,17 @@ export class SandboxController {
         return this.config.mode;
     }
 
+    private isWithinPath(baseDir: string, targetPath: string): boolean {
+        const resolvedBase = path.resolve(baseDir);
+        const resolvedTarget = path.resolve(targetPath);
+        const isWindows = process.platform === 'win32';
+        const rel = path.relative(
+            isWindows ? resolvedBase.toLowerCase() : resolvedBase,
+            isWindows ? resolvedTarget.toLowerCase() : resolvedTarget
+        );
+        return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel));
+    }
+
     /**
      * Check if file operation is allowed
      */
@@ -113,8 +124,7 @@ export class SandboxController {
 
         // Check blocked paths
         for (const blocked of this.config.blockedPaths) {
-            if (absolutePath.toLowerCase().startsWith(path.resolve(blocked).toLowerCase()) ||
-                absolutePath.toLowerCase().startsWith(blocked.toLowerCase())) {
+            if (this.isWithinPath(blocked, absolutePath)) {
                 result.reason = `Path is in blocked list: ${blocked}`;
                 this.logOperation(result);
                 return result;
@@ -123,7 +133,7 @@ export class SandboxController {
 
         // Workspace-write mode: only allow writes in workspace
         if (this.config.mode === 'workspace-write' && operation !== 'read') {
-            if (!absolutePath.startsWith(this.config.workspaceDir)) {
+            if (!this.isWithinPath(this.config.workspaceDir, absolutePath)) {
                 result.reason = 'Writes only allowed in workspace directory';
                 this.logOperation(result);
                 return result;
@@ -133,7 +143,7 @@ export class SandboxController {
         // Check allowed paths (if specified)
         if (this.config.allowedPaths.length > 0) {
             const isAllowed = this.config.allowedPaths.some(allowed =>
-                absolutePath.startsWith(path.resolve(allowed))
+                this.isWithinPath(allowed, absolutePath)
             );
             if (!isAllowed) {
                 result.reason = 'Path not in allowed list';

@@ -6,7 +6,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1521 |
+| Source files | 1561 |
 | Production source files | 1107 |
 | Reachable production files | 816 |
 | Unreachable production files | 291 |
@@ -96,11 +96,11 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | GET | `/api/webhooks` | `src/server/index.ts:1112` |
 | DELETE | `/api/webhooks/:id` | `src/server/index.ts:1118` |
 | GET | `*` | `src/server/index.ts:1127` |
-| GET | `/stats` | `src/server/routes/admin.ts:127` |
-| POST | `/cache/clear` | `src/server/routes/admin.ts:176` |
-| GET | `/users` | `src/server/routes/admin.ts:222` |
-| GET | `/analytics` | `src/server/routes/admin.ts:247` |
-| GET | `/logs` | `src/server/routes/admin.ts:267` |
+| GET | `/stats` | `src/server/routes/admin.ts:123` |
+| POST | `/cache/clear` | `src/server/routes/admin.ts:172` |
+| GET | `/users` | `src/server/routes/admin.ts:218` |
+| GET | `/analytics` | `src/server/routes/admin.ts:243` |
+| GET | `/logs` | `src/server/routes/admin.ts:263` |
 | GET | `/api/agent-operations/summary` | `src/server/routes/agent-operations.ts:17` |
 | GET | `/api/agent-operations/sessions/:sessionId` | `src/server/routes/agent-operations.ts:22` |
 | POST | `/api/agent-operations/sessions` | `src/server/routes/agent-operations.ts:29` |
@@ -223,13 +223,13 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/game-studio/proposals` | `src/server/routes/game-studio/gameStudioRoutes.ts:108` |
 | POST | `/api/game-studio/proposals/:id/approve` | `src/server/routes/game-studio/gameStudioRoutes.ts:121` |
 | POST | `/api/game-studio/proposals/:id/apply` | `src/server/routes/game-studio/gameStudioRoutes.ts:128` |
-| POST | `/api/game-studio/transactions/:id/rollback` | `src/server/routes/game-studio/gameStudioRoutes.ts:137` |
-| POST | `/api/game-studio/runtime/scenario` | `src/server/routes/game-studio/gameStudioRoutes.ts:145` |
-| GET | `/api/game-studio/profiler` | `src/server/routes/game-studio/gameStudioRoutes.ts:159` |
-| POST | `/api/game-studio/export` | `src/server/routes/game-studio/gameStudioRoutes.ts:165` |
-| POST | `/api/game-studio/mast/layout` | `src/server/routes/game-studio/gameStudioRoutes.ts:178` |
-| POST | `/api/game-studio/slicing/profile` | `src/server/routes/game-studio/gameStudioRoutes.ts:188` |
-| POST | `/api/game-studio/asset-cook` | `src/server/routes/game-studio/gameStudioRoutes.ts:197` |
+| POST | `/api/game-studio/transactions/:id/rollback` | `src/server/routes/game-studio/gameStudioRoutes.ts:141` |
+| POST | `/api/game-studio/runtime/scenario` | `src/server/routes/game-studio/gameStudioRoutes.ts:149` |
+| GET | `/api/game-studio/profiler` | `src/server/routes/game-studio/gameStudioRoutes.ts:163` |
+| POST | `/api/game-studio/export` | `src/server/routes/game-studio/gameStudioRoutes.ts:169` |
+| POST | `/api/game-studio/mast/layout` | `src/server/routes/game-studio/gameStudioRoutes.ts:182` |
+| POST | `/api/game-studio/slicing/profile` | `src/server/routes/game-studio/gameStudioRoutes.ts:192` |
+| POST | `/api/game-studio/asset-cook` | `src/server/routes/game-studio/gameStudioRoutes.ts:201` |
 | POST | `/api/gamedev/design` | `src/server/routes/gamedev.ts:7` |
 | POST | `/api/gamedev/prototype` | `src/server/routes/gamedev.ts:11` |
 | POST | `/api/gamedev/balance` | `src/server/routes/gamedev.ts:15` |
@@ -821,7 +821,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/knowledge/QueryEnhancer.ts` | 440 |
 | `src/core/knowledge/ScientificPapersSource.ts` | 325 |
 | `src/core/learning/ModelUpdater.ts` | 339 |
-| `src/core/memory/GraphMemory.ts` | 580 |
+| `src/core/memory/GraphMemory.ts` | 581 |
 | `src/core/memory/ProjectContext.ts` | 536 |
 | `src/core/multimodal/ImageProcessor.ts` | 607 |
 | `src/core/multimodal/VideoProcessor.ts` | 591 |
@@ -846,7 +846,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/rag/VideoRAG.ts` | 443 |
 | `src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts` | 616 |
 | `src/core/safety/ApprovalPolicy.ts` | 338 |
-| `src/core/safety/SandboxController.ts` | 439 |
+| `src/core/safety/SandboxController.ts` | 449 |
 | `src/core/scheduler/TaskScheduler.ts` | 447 |
 | `src/core/sec/SECService.ts` | 406 |
 | `src/core/sprite-lab/SpriteExternalToolAdapter.ts` | 348 |
@@ -863,8 +863,8 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/writing/DocumentEditorEngine.ts` | 327 |
 | `src/core/writing/DocumentImportExportService.ts` | 360 |
 | `src/core/writing/WritingStudioService.ts` | 339 |
-| `src/server/index.ts` | 1169 |
-| `src/server/routes/admin.ts` | 317 |
+| `src/server/index.ts` | 1173 |
+| `src/server/routes/admin.ts` | 313 |
 | `src/server/routes/capabilities.ts` | 452 |
 | `src/server/routes/legacy-chat.ts` | 367 |
 | `src/server/routes/setup.ts` | 437 |

@@ -148,7 +148,7 @@ const mockJobs = [
   }
 ];
 
-describe('CapabilityHubPanel', () => {
+describe('RT-UI-001: Capability Hub End-to-End Suite', () => {
   beforeEach(() => {
     vi.stubGlobal('fetch', vi.fn((url: string, _init?: RequestInit) => {
       if (url === '/api/capabilities') {

@@ -161,4 +161,47 @@ describe('ServiceInitializer configuration branches', () => {
     expect(initialization.optional.skipped.status).toBe('skipped');
     fs.rmSync(root, { recursive: true, force: true });
   });
+
+  it('runs full ServiceInitializer.initialize() with eager knowledge loading and database', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'svc-init-full-'));
+    const dbPath = path.join(tempDir, 'init_test.db');
+    process.env.DATABASE_URL = `sqlite://${dbPath}`;
+    process.env.RAG_PERSISTENCE = 'true';
+    process.env.EAGER_KNOWLEDGE_LOAD = 'true';
+    process.env.RAG_RETRIEVAL_MODE = 'database';
+    process.env.RAG_RESTORE_PERSISTED_TO_MEMORY = 'true';
+    process.env.USE_OLLAMA = 'false';
+    process.env.USE_HUGGINGFACE = 'false';
+
+    const services = await ServiceInitializer.initialize();
+    expect(services.orchestrator).toBeDefined();
+    expect(services.toolRegistry).toBeDefined();
+    expect(services.codingAgent).toBeDefined();
+    expect(services.mathGeniusAgent).toBeDefined();
+    expect(services.marketGeniusAgent).toBeDefined();
+    expect(services.sixSigmaBlackBeltAgent).toBeDefined();
+    expect(services.sixSigmaBlackBeltAgent).toBeDefined();
+    expect(services.storyGeniusAgent).toBeDefined();
+    expect(services.musicProductionGeniusAgent).toBeDefined();
+    expect(services.cache).toBeDefined();
+    expect(services.initialization?.criticalStartedAt).toBeDefined();
+
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  });
+
+  it('runs full ServiceInitializer.initialize() with background knowledge loading', async () => {
+    process.env.RAG_PERSISTENCE = 'false';
+    process.env.BACKGROUND_KNOWLEDGE_LOAD = 'true';
+    delete process.env.EAGER_KNOWLEDGE_LOAD;
+    delete process.env.LLM_PROVIDER;
+    delete process.env.OPENAI_API_KEY;
+    delete process.env.ANTHROPIC_API_KEY;
+    delete process.env.GEMINI_API_KEY;
+    process.env.USE_OLLAMA = 'false';
+    process.env.USE_HUGGINGFACE = 'false';
+
+    const services = await ServiceInitializer.initialize();
+    expect(services.orchestrator).toBeDefined();
+    expect(services.modelRouter).toBeDefined();
+  });
 });

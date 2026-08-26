@@ -37,7 +37,7 @@ export interface IGameEngineAdapter {
   inspectScript(scriptPath: string): Promise<EngineScriptInfo>;
   proposeMutation(proposal: EngineProposalDraft): Promise<EngineMutationProposal>;
   approveMutation(proposalId: string, approverId: string): Promise<EngineMutationProposal>;
-  applyMutation(proposalId: string, approvalDigest: string): Promise<EngineTransaction>;
+  applyMutation(proposalId: string, approvalDigest: string, options?: { callerId?: string; tenantId?: string }): Promise<EngineTransaction>;
   rollbackTransaction(transactionId: string): Promise<boolean>;
   runRuntimeScenario(options: EngineRuntimeOptions, assertions?: any[]): Promise<EngineAssertionReport>;
   profilePerformance(durationMs?: number): Promise<EngineProfileSnapshot>;
@@ -235,9 +235,10 @@ export class GameEngineBridge {
   public async applyMutation(
     engine: EngineType,
     proposalId: string,
-    approvalDigest: string
+    approvalDigest: string,
+    options?: { callerId?: string; tenantId?: string }
   ): Promise<EngineTransaction> {
-    return this.getAdapter(engine).applyMutation(proposalId, approvalDigest);
+    return this.getAdapter(engine).applyMutation(proposalId, approvalDigest, options);
   }
 
   /**

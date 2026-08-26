@@ -8,7 +8,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe('ExpansionStudiosPanel', () => {
+describe('RT-UI-002: Expansion Studio Vertical Slices Suite', () => {
   it('exposes every added studio and runs writing and study workflows', async () => {
     const calls: string[] = [];
     vi.stubGlobal('fetch', vi.fn(async (input: RequestInfo | URL) => {

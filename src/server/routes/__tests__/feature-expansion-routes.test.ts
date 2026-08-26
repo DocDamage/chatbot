@@ -219,8 +219,8 @@ describe('feature expansion routes', () => {
 
     await request(app)
       .post(`/api/game-studio/proposals/${proposed.body.id}/apply`)
-      .send({ engine: 'godot', approvalDigest: proposed.body.inputDigest })
-      .expect(500);
+      .send({ engine: 'godot', approvalDigest: proposed.body.inputDigest, callerId: 'route-reviewer' })
+      .expect(400);
 
     const approved = await request(app)
       .post(`/api/game-studio/proposals/${proposed.body.id}/approve`)
@@ -232,7 +232,7 @@ describe('feature expansion routes', () => {
 
     const applied = await request(app)
       .post(`/api/game-studio/proposals/${proposed.body.id}/apply`)
-      .send({ engine: 'godot', approvalDigest: approved.body.approvalDigest })
+      .send({ engine: 'godot', approvalDigest: approved.body.approvalDigest, callerId: 'route-reviewer' })
       .expect(200);
     expect(fs.existsSync(path.join(root, 'Generated.gd'))).toBe(true);
 

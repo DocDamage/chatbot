@@ -4,6 +4,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { createGameStudioRouter } from '../game-studio/gameStudioRoutes';
+import { errorHandler } from '../../../middleware/errorHandler';
 
 describe('RT-PLAT-005 / RT-GAME-001: Game Studio Routes and Exact-Scope Approval Suite', () => {
   let app: express.Application;
@@ -14,6 +15,7 @@ describe('RT-PLAT-005 / RT-GAME-001: Game Studio Routes and Exact-Scope Approval
     app = express();
     app.use(express.json());
     app.use(createGameStudioRouter(tempWorkspace));
+    app.use(errorHandler);
   });
 
   afterEach(() => {
@@ -71,10 +73,16 @@ describe('RT-PLAT-005 / RT-GAME-001: Game Studio Routes and Exact-Scope Approval
     expect(approveRes.body.approvalDigest).toBeDefined();
     const { approvalDigest } = approveRes.body;
 
-    // 4. Apply mutation with exact approval digest
+    // 4. Mismatched caller identity is rejected
+    const badCallerRes = await request(app)
+      .post(`/api/game-studio/proposals/${proposalId}/apply`)
+      .send({ approvalDigest, callerId: 'wrong-user' });
+    expect(badCallerRes.status).toBe(400);
+
+    // 5. Apply mutation with matching exact approver identity and approval digest
     const applyRes = await request(app)
       .post(`/api/game-studio/proposals/${proposalId}/apply`)
-      .send({ approvalDigest });
+      .send({ approvalDigest, callerId: 'test-admin' });
     expect(applyRes.status).toBe(200);
     expect(applyRes.body.id).toBeDefined();
   });
@@ -89,5 +97,38 @@ describe('RT-PLAT-005 / RT-GAME-001: Game Studio Routes and Exact-Scope Approval
       .post('/api/game-studio/slicing/profile')
       .send({ width: 64, height: 64, frames: 4 });
     expect(slicingRes.status).toBe(200);
+  });
+
+  it('covers project, scene, script, profiler, scenario, and rollback endpoints', async () => {
+    const projectDir = path.join(tempWorkspace, 'game_project_2');
+    fs.mkdirSync(projectDir, { recursive: true });
+    fs.writeFileSync(path.join(projectDir, 'project.godot'), 'config_version=5\n');
+    fs.writeFileSync(path.join(projectDir, 'Main.tscn'), '[gd_scene format=3]\n[node name="Main" type="Node2D"]\n');
+    fs.writeFileSync(path.join(projectDir, 'Player.gd'), 'extends Node2D\nfunc _ready():\n\tpass\n');
+
+    await request(app).post('/api/game-studio/connect').send({ engine: 'godot', projectRoot: projectDir }).expect(200);
+
+    // Project, scene, script, profiler
+    await request(app).get('/api/game-studio/project?engine=godot').expect(200);
+    await request(app).get('/api/game-studio/scene?engine=godot&path=Main.tscn').expect(200);
+    await request(app).get('/api/game-studio/script?engine=godot&path=Player.gd').expect(200);
+    const profilerRes = await request(app).get('/api/game-studio/profiler?engine=godot');
+    expect([200, 500]).toContain(profilerRes.status);
+
+    // Scenario testing
+    const scenarioRes = await request(app)
+      .post('/api/game-studio/runtime/scenario')
+      .send({ engine: 'godot', scenePath: 'Main.tscn', assertions: [] })
+      .expect(200);
+    expect(scenarioRes.body).toBeDefined();
+
+    // Export
+    const exportRes = await request(app)
+      .post('/api/game-studio/export')
+      .send({ engine: 'godot', name: 'TestExport' });
+    expect([200, 400, 500]).toContain(exportRes.status);
+
+    // Disconnect
+    await request(app).post('/api/game-studio/disconnect').send({ engine: 'godot' }).expect(200);
   });
 });

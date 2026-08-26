@@ -109,4 +109,23 @@ describe('RT-MEM-001: GraphMemory Knowledge Graph and Temporal Decay Suite', () 
     expect(facts[0].name).toBe('TypeScript is statically typed');
     await reloaded.shutdown();
   });
+
+  it('extracts entities from natural language text and tracks statistics', async () => {
+    const text = "I am Charlie. I prefer dark mode in my IDE. Working on project Phoenix with file index.ts.";
+    const extracted = await memory.extractFromText(text, 'chat');
+    expect(extracted.length).toBeGreaterThanOrEqual(3);
+
+    const stats = memory.getStats();
+    expect(stats.entityCount).toBeGreaterThanOrEqual(3);
+    expect(stats.avgDecayScore).toBeGreaterThan(0);
+    expect(stats.typeDistribution.person).toBeGreaterThanOrEqual(1);
+
+    // Test remove entity
+    const charlie = extracted.find(e => e.name === 'Charlie');
+    if (charlie) {
+      expect(memory.removeEntity(charlie.id)).toBe(true);
+      expect(memory.getEntity(charlie.id)).toBeUndefined();
+    }
+    expect(memory.removeEntity('non-existent')).toBe(false);
+  });
 });

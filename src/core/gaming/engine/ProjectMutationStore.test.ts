@@ -27,13 +27,18 @@ describe('ProjectMutationStore', () => {
       { type: 'create_script', targetPath: 'new.txt', params: { content: 'new' } }
     ]);
     expect(pending.approvalDigest).toBeUndefined();
-    expect(() => store.apply(pending.id, pending.inputDigest)).toThrow('APPROVAL_REQUIRED');
+    expect(() => store.apply(pending.id, pending.inputDigest, { callerId: 'reviewer' })).toThrow('APPROVAL_REQUIRED');
     expect(() => store.approve(pending.id, ' ')).toThrow('approver identity');
 
     const approved = store.approve(pending.id, 'reviewer');
     expect(approved.approvalDigest).not.toBe(approved.inputDigest);
-    expect(() => store.apply(pending.id, 'wrong')).toThrow('APPROVAL_DIGEST_MISMATCH');
-    const transaction = store.apply(pending.id, approved.approvalDigest!);
+    expect(() => store.apply(pending.id, 'wrong', { callerId: 'reviewer' })).toThrow('APPROVAL_DIGEST_MISMATCH');
+
+    // Caller identity enforcement
+    expect(() => store.apply(pending.id, approved.approvalDigest!)).toThrow('Caller identity is required');
+    expect(() => store.apply(pending.id, approved.approvalDigest!, { callerId: 'intruder' })).toThrow('does not match approver identity');
+
+    const transaction = store.apply(pending.id, approved.approvalDigest!, { callerId: 'reviewer' });
     expect(fs.readFileSync(path.join(root, 'existing.txt'), 'utf8')).toBe('after');
     expect(fs.readFileSync(path.join(root, 'new.txt'), 'utf8')).toBe('new');
     expect(store.rollback(transaction.id)).toBe(true);
@@ -49,12 +54,12 @@ describe('ProjectMutationStore', () => {
       { type: 'add_node', targetPath: 'second.cpp', params: { content: 'second' } }
     ]);
     const approvedUnsupported = store.approve(unsupported.id, 'reviewer');
-    expect(() => store.apply(unsupported.id, approvedUnsupported.approvalDigest!)).toThrow('does not support action type');
+    expect(() => store.apply(unsupported.id, approvedUnsupported.approvalDigest!, { callerId: 'reviewer' })).toThrow('does not support action type');
     expect(fs.existsSync(path.join(root, 'first.cpp'))).toBe(false);
 
     const missingContent = proposal(store, [{ type: 'create_script', targetPath: 'missing.cpp', params: {} }]);
     const approvedMissing = store.approve(missingContent.id, 'reviewer');
-    expect(() => store.apply(missingContent.id, approvedMissing.approvalDigest!)).toThrow('requires params.content');
+    expect(() => store.apply(missingContent.id, approvedMissing.approvalDigest!, { callerId: 'reviewer' })).toThrow('requires params.content');
     expect(fs.existsSync(path.join(root, 'missing.cpp'))).toBe(false);
   });
 
@@ -67,7 +72,7 @@ describe('ProjectMutationStore', () => {
       { type: 'create_script', targetPath: 'blocked-parent/child.txt', params: { content: 'never written' } }
     ]);
     const approved = store.approve(pending.id, 'reviewer');
-    expect(() => store.apply(pending.id, approved.approvalDigest!)).toThrow('failed and was rolled back');
+    expect(() => store.apply(pending.id, approved.approvalDigest!, { callerId: 'reviewer' })).toThrow('failed and was rolled back');
     expect(fs.readFileSync(path.join(root, 'existing.txt'), 'utf8')).toBe('before');
   });
 
@@ -82,7 +87,7 @@ describe('ProjectMutationStore', () => {
       { type: 'remove_node', targetPath: 'already-absent.txt', params: {} }
     ]);
     const approved = store.approve(pending.id, 'reviewer');
-    const transaction = store.apply(pending.id, approved.approvalDigest!);
+    const transaction = store.apply(pending.id, approved.approvalDigest!, { callerId: 'reviewer' });
     expect(transaction.snapshots).toHaveLength(3);
     expect(fs.readFileSync(path.join(root, 'repeat.txt'), 'utf8')).toBe('second');
     expect(fs.existsSync(path.join(root, 'delete.txt'))).toBe(false);
@@ -94,7 +99,7 @@ describe('ProjectMutationStore', () => {
   it('rejects missing, expired, or already-transitioned proposals', () => {
     const store = new ProjectMutationStore('unity', root);
     expect(() => store.approve('missing', 'reviewer')).toThrow('not found');
-    expect(() => store.apply('missing', 'digest')).toThrow('not found');
+    expect(() => store.apply('missing', 'digest', { callerId: 'reviewer' })).toThrow('not found');
     expect(store.rollback('missing')).toBe(false);
 
     const expired = proposal(store, []);
@@ -104,7 +109,7 @@ describe('ProjectMutationStore', () => {
     const pending = proposal(store, []);
     const approved = store.approve(pending.id, 'reviewer');
     expect(() => store.approve(pending.id, 'another-reviewer')).toThrow('status is approved');
-    store.apply(pending.id, approved.approvalDigest!);
-    expect(() => store.apply(pending.id, approved.approvalDigest!)).toThrow('status is applied');
+    store.apply(pending.id, approved.approvalDigest!, { callerId: 'reviewer' });
+    expect(() => store.apply(pending.id, approved.approvalDigest!, { callerId: 'reviewer' })).toThrow('status is applied');
   });
 });

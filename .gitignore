@@ -33,3 +33,4 @@ knowledge-base/
 **/build/
 .capabilities/
 .worktrees/
+config/profiles.json

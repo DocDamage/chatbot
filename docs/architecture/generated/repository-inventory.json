@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1521,
+    "sourceFiles": 1561,
     "productionSourceFiles": 1107,
     "reachableProductionFiles": 816,
     "unreachableProductionFiles": 291,
@@ -554,35 +554,35 @@
       "receiver": "router",
       "method": "GET",
       "path": "/stats",
-      "line": 127,
+      "line": 123,
       "file": "src/server/routes/admin.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/cache/clear",
-      "line": 176,
+      "line": 172,
       "file": "src/server/routes/admin.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/users",
-      "line": 222,
+      "line": 218,
       "file": "src/server/routes/admin.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/analytics",
-      "line": 247,
+      "line": 243,
       "file": "src/server/routes/admin.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/logs",
-      "line": 267,
+      "line": 263,
       "file": "src/server/routes/admin.ts"
     },
     {
@@ -1443,49 +1443,49 @@
       "receiver": "router",
       "method": "POST",
       "path": "/api/game-studio/transactions/:id/rollback",
-      "line": 137,
+      "line": 141,
       "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/game-studio/runtime/scenario",
-      "line": 145,
+      "line": 149,
       "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/api/game-studio/profiler",
-      "line": 159,
+      "line": 163,
       "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/game-studio/export",
-      "line": 165,
+      "line": 169,
       "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/game-studio/mast/layout",
-      "line": 178,
+      "line": 182,
       "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/game-studio/slicing/profile",
-      "line": 188,
+      "line": 192,
       "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/game-studio/asset-cook",
-      "line": 197,
+      "line": 201,
       "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
     },
     {
@@ -6817,7 +6817,7 @@
     },
     {
       "file": "src/core/memory/GraphMemory.ts",
-      "lines": 580
+      "lines": 581
     },
     {
       "file": "src/core/memory/ProjectContext.ts",
@@ -6917,7 +6917,7 @@
     },
     {
       "file": "src/core/safety/SandboxController.ts",
-      "lines": 439
+      "lines": 449
     },
     {
       "file": "src/core/scheduler/TaskScheduler.ts",
@@ -6985,11 +6985,11 @@
     },
     {
       "file": "src/server/index.ts",
-      "lines": 1169
+      "lines": 1173
     },
     {
       "file": "src/server/routes/admin.ts",
-      "lines": 317
+      "lines": 313
     },
     {
       "file": "src/server/routes/capabilities.ts",

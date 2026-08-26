@@ -5,6 +5,7 @@ import * as path from 'path';
 import request from 'supertest';
 import { Database } from '../../../core/database/Database';
 import { ensureExpansionDatabase } from '../../../core/database/ExpansionDatabase';
+import { SECService } from '../../../core/sec/SECService';
 import { createSECRouter } from '../sec';
 
 describe('RT-SEC-001: SEC Router Suite', () => {
@@ -79,5 +80,65 @@ describe('RT-SEC-001: SEC Router Suite', () => {
       .post('/api/sec/filings/parse')
       .send({ rawContent: 'Some content' });
     expect(missingIdParse.status).toBe(500);
+  });
+
+  it('covers live tickers, company ingest, bulk queue, and process endpoints', async () => {
+    const tickersSpy = jest.spyOn(SECService.prototype, 'getLiveCompanyTickers').mockResolvedValue([{ cik: '0000320193', ticker: 'AAPL', title: 'Apple Inc.' }] as any);
+    const ingestCikSpy = jest.spyOn(SECService.prototype, 'ingestCompanyByCik').mockResolvedValue({ cik: '0000320193', companyId: 'c1', filingsStored: 1, factsStored: 1, warnings: [] });
+    const ingestTickerSpy = jest.spyOn(SECService.prototype, 'ingestCompanyByTicker').mockResolvedValue({ cik: '0000320193', companyId: 'c1', filingsStored: 1, factsStored: 1, warnings: [] });
+    const queueSpy = jest.spyOn(SECService.prototype, 'queueBulkIngestion').mockResolvedValue({ queued: 1, runId: 'run-1', capped: false, forms: ['10-K'] });
+    const processSpy = jest.spyOn(SECService.prototype, 'processQueue').mockResolvedValue({ processed: 1, failed: 0, recovered: 0, results: [] });
+    const submissionsSpy = jest.spyOn(SECService.prototype, 'getLiveCompanySubmissions').mockResolvedValue({ cik: '0000320193', entityType: 'operating' } as any);
+    const factsSpy = jest.spyOn(SECService.prototype, 'getLiveCompanyFacts').mockResolvedValue({ cik: '0000320193', facts: {} } as any);
+
+    // Live tickers
+    const tickersRes = await request(app).get('/api/sec/live/tickers');
+    expect(tickersRes.status).toBe(200);
+
+    // Live submissions and facts
+    const subRes = await request(app).get('/api/sec/live/submissions/0000320193');
+    expect(subRes.status).toBe(200);
+    const factRes = await request(app).get('/api/sec/live/facts/0000320193');
+    expect(factRes.status).toBe(200);
+
+    // Ingest company by CIK
+    const badCik = await request(app).post('/api/sec/ingest/company/cik/%20').send({});
+    expect(badCik.status).toBe(400);
+    const goodCik = await request(app).post('/api/sec/ingest/company/cik/0000320193').send({ includeFacts: true });
+    expect(goodCik.status).toBe(200);
+
+    // Ingest company by Ticker
+    const badTicker = await request(app).post('/api/sec/ingest/company/ticker/%20').send({});
+    expect(badTicker.status).toBe(400);
+    const goodTicker = await request(app).post('/api/sec/ingest/company/ticker/AAPL').send({ includeFacts: true });
+    expect(goodTicker.status).toBe(200);
+
+    // Bulk queue ingestion
+    const queueRes = await request(app).post('/api/sec/ingest/queue').send({
+      ciks: ['0000320193'],
+      tickers: ['AAPL'],
+      forms: ['10-K'],
+      limitPerCompany: 1,
+      includeFacts: true,
+      parsePrimaryDocuments: false
+    });
+    expect(queueRes.status).toBe(200);
+    expect(queueRes.body.queued).toBe(1);
+
+    // Process queue
+    const processRes = await request(app).post('/api/sec/ingest/process').send({
+      runId: 'test-run',
+      limit: 5
+    });
+    expect(processRes.status).toBe(200);
+    expect(processRes.body.processed).toBe(1);
+
+    tickersSpy.mockRestore();
+    ingestCikSpy.mockRestore();
+    ingestTickerSpy.mockRestore();
+    queueSpy.mockRestore();
+    processSpy.mockRestore();
+    submissionsSpy.mockRestore();
+    factsSpy.mockRestore();
   });
 });

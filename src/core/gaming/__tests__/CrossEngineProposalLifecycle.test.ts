@@ -43,7 +43,7 @@ describe('RT-GAME-001..006 — Cross-Engine Proposal, Verification, and AssetCoo
         const approved = store.approve(proposal.id, 'lead-designer');
         expect(approved.status).toBe('approved');
 
-        const tx = store.apply(proposal.id, approved.approvalDigest!);
+        const tx = store.apply(proposal.id, approved.approvalDigest!, { callerId: 'lead-designer' });
         expect(tx.id).toBeDefined();
         expect(fs.existsSync(path.join(tempDir, `content/scene_${engine}.txt`))).toBe(true);
 

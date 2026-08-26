@@ -129,8 +129,12 @@ export function createGameStudioRouter(
     const engine = (req.body.engine || 'godot') as EngineType;
     const proposalId = req.params.id;
     const approvalDigest = req.body.approvalDigest || '';
+    const callerId = req.user?.userId || String(req.body.callerId || req.body.approverId || 'local-operator');
 
-    const tx = await bridge.applyMutation(engine, proposalId, approvalDigest);
+    const tx = await bridge.applyMutation(engine, proposalId, approvalDigest, {
+      callerId,
+      tenantId: req.body.tenantId
+    });
     res.json(tx);
   }));
 

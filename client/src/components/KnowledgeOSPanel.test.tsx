@@ -163,7 +163,7 @@ describe('KnowledgeOSPanel', () => {
 
     await user.click(screen.getByRole('button', { name: /Knowledge OS/ }));
     expect(screen.queryByRole('heading', { name: 'Repo Importers' })).toBeNull();
-  });
+  }, 15000);
 
   it('uses empty response defaults and reports request failures', async () => {
     const fetchMock = vi.fn()

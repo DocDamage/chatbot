@@ -209,7 +209,8 @@ describe('Phase PX-08: Godot Editor/Runtime Bridge and Game Studio', () => {
             path.join(root, action.targetPath),
             `\n[node name="${action.params.nodeName}" type="${action.params.nodeType}" parent="${action.params.parent}"]\n`
           );
-        }
+        },
+        { callerId: 'lead-developer' }
       );
 
       expect(tx.id).toBeDefined();
@@ -233,7 +234,7 @@ describe('Phase PX-08: Godot Editor/Runtime Bridge and Game Studio', () => {
       txManager.approveProposal(proposal.id, 'dev');
 
       await expect(
-        txManager.executeTransaction(proposal.id, 'invalid-fake-digest', async () => {})
+        txManager.executeTransaction(proposal.id, 'invalid-fake-digest', async () => {}, { callerId: 'dev' })
       ).rejects.toThrow(GameEngineError);
     });
 
@@ -246,11 +247,11 @@ describe('Phase PX-08: Godot Editor/Runtime Bridge and Game Studio', () => {
         actions: [{ type: 'create_scene', targetPath: '../escape.tscn', params: {} }]
       });
 
-      await expect(txManager.executeTransaction(proposal.id, 'anything', async () => {}))
+      await expect(txManager.executeTransaction(proposal.id, 'anything', async () => {}, { callerId: 'developer' }))
         .rejects.toThrow(/cannot be applied/i);
 
       const approved = txManager.approveProposal(proposal.id, 'developer');
-      await expect(txManager.executeTransaction(proposal.id, approved.approvalDigest!, async () => {}))
+      await expect(txManager.executeTransaction(proposal.id, approved.approvalDigest!, async () => {}, { callerId: 'developer' }))
         .rejects.toThrow(/outside/i);
     });
   });

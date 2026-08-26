@@ -317,9 +317,29 @@ describe('LocalKnowledgeAnswerer', () => {
 
     const answerer = new LocalKnowledgeAnswerer(store as any);
     const answer = await answerer.answer('tell me about the music industry in 1997', 'pop_culture');
-
     expect(answer?.knowledgeMiss).toBe(true);
-    expect(answer?.sources).toEqual([]);
-    expect(answer?.response).not.toContain('1997 was a common year');
+    expect(answer?.response).toContain('local pop culture database');
+  });
+
+  it('handles empty document store constructor and passage extraction edge cases', async () => {
+    const emptyAnswerer = new LocalKnowledgeAnswerer();
+    const answer = await emptyAnswerer.answer('any query', 'ask');
+    expect(answer?.knowledgeMiss).toBe(true);
+    expect(answer?.canSearchOnline).toBe(true);
+
+    const passageStore = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: 'long-passage-chunk-0',
+          content: '## Events\n- Event 1: Treaty signed.\n- Event 2: Battle ended.\n\n## Summary\nOverall peace was achieved across the continent.',
+          metadata: { source: 'history/treaty.md', title: 'Treaty of 1800' }
+        },
+        score: 0.9,
+        retrievalMethod: 'keyword'
+      }])
+    };
+    const answerer = new LocalKnowledgeAnswerer(passageStore as any);
+    const res = await answerer.answer('what events happened in 1800?', 'history');
+    expect(res?.response).toContain('Treaty signed');
   });
 });

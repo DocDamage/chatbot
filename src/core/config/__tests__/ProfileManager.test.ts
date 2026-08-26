@@ -32,38 +32,64 @@ describe('RT-PLAT-001 / RT-CONF-003: ProfileManager Lifecycle, Presets, and Pers
     expect(p1.id).toBeDefined();
     expect(p1.name).toBe('Code Expert');
 
-    // 2. Set active
+    // 2. Duplicate profile throws when id collides
+    const spy = jest.spyOn(manager as any, 'generateId').mockReturnValue(p1.id);
+    expect(() => {
+      manager.createProfile('Code Expert', 'qwen2.5-coder', 'ollama');
+    }).toThrow('already exists');
+    spy.mockRestore();
+
+    // 3. Set active
     manager.setActiveProfile(p1.id);
     expect(manager.getActiveProfile()?.id).toBe(p1.id);
 
-    // 3. Update Profile
-    const updated = manager.updateProfile(p1.id, { description: 'Updated description', parameters: { topP: 0.95 } });
+    // 4. Update Profile
+    const updated = manager.updateProfile(p1.id, {
+      name: 'Code Expert Updated',
+      description: 'Updated description',
+      model: 'qwen2.5-coder:32b',
+      provider: 'ollama',
+      parameters: { topP: 0.95 }
+    });
+    expect(updated.name).toBe('Code Expert Updated');
     expect(updated.description).toBe('Updated description');
+    expect(updated.model).toBe('qwen2.5-coder:32b');
     expect(updated.parameters.topP).toBe(0.95);
     expect(updated.parameters.temperature).toBe(0.2);
 
-    // 4. Clone Profile
+    // 5. Clone Profile
     const clone = manager.cloneProfile(p1.id, 'Code Expert v2');
     expect(clone.name).toBe('Code Expert v2');
     expect(clone.parameters.temperature).toBe(0.2);
 
-    // 5. Get by name
+    // 6. Get by name
     const found = manager.getProfileByName('code expert v2');
     expect(found?.id).toBe(clone.id);
     expect(manager.getProfileByName('non-existent')).toBeUndefined();
 
-    // 6. Delete active profile
+    // 7. Delete non-active clone profile
+    const deletedClone = manager.deleteProfile(clone.id);
+    expect(deletedClone).toBe(true);
+
+    // 8. Delete active profile
     const deleted = manager.deleteProfile(p1.id);
     expect(deleted).toBe(true);
     expect(manager.getActiveProfile()).toBeNull();
     expect(manager.getProfile(p1.id)).toBeUndefined();
+
+    // 9. Delete non-existent profile
+    expect(manager.deleteProfile('non-existent-id')).toBe(false);
   });
 
   it('manages presets, applies presets, switches profiles, and generates stats', async () => {
     const manager = new ProfileManager(configPath);
     expect(manager.listPresets().length).toBeGreaterThanOrEqual(5);
     expect(manager.getPreset('fast')?.name).toBe('fast');
+    expect(manager.getPreset('FAST')?.name).toBe('fast');
     expect(manager.getPreset('non-existent')).toBeUndefined();
+
+    // 0. Switch profile on empty manager returns null
+    expect(manager.switchProfile()).toBeNull();
 
     // 1. Create from preset
     const creative = manager.createFromPreset('creative', 'llama-3.3-70b', 'groq', 'Writer');
@@ -80,19 +106,24 @@ describe('RT-PLAT-001 / RT-CONF-003: ProfileManager Lifecycle, Presets, and Pers
     expect(() => manager.setActiveProfile('fake-id')).toThrow('not found');
     expect(() => manager.cloneProfile('fake-id', 'new-name')).toThrow('not found');
 
-    // 4. Profile switching
+    // 4. Profile switching when active is null
+    const switchedFirst = manager.switchProfile();
+    expect(switchedFirst?.id).toBe(creative.id);
+
+    // 5. Profile switching between multiple
     const p2 = manager.createProfile('Assistant', 'llama-3.1-8b', 'groq');
     manager.setActiveProfile(creative.id);
     const switched = manager.switchProfile();
     expect(switched?.id).toBe(p2.id);
 
-    // 5. Stats
+    // 6. Stats
     const stats = manager.getStats();
     expect(stats.totalProfiles).toBe(2);
     expect(stats.profilesByProvider['groq']).toBe(2);
+    expect(stats.activeProfile).toBe(p2.id);
   });
 
-  it('exports and imports profiles with overwrite controls', async () => {
+  it('exports and imports profiles with overwrite controls and handles corrupt storage', async () => {
     const manager1 = new ProfileManager(configPath);
     manager1.createProfile('P1', 'm1', 'provider1');
     manager1.createProfile('P2', 'm2', 'provider2');
@@ -114,5 +145,26 @@ describe('RT-PLAT-001 / RT-CONF-003: ProfileManager Lifecycle, Presets, and Pers
     // Re-import with overwrite updates
     const overwritten = manager2.import(exported, true);
     expect(overwritten).toBe(2);
+
+    // Corrupt JSON load recovery
+    const corruptPath = path.join(tempDir, 'corrupt.json');
+    fs.writeFileSync(corruptPath, '{ corrupt json');
+    const corruptManager = new ProfileManager(corruptPath);
+    await corruptManager.initialize();
+    expect(corruptManager.listProfiles()).toEqual([]);
+
+    // Default constructor and createFromPreset default profileName
+    const defaultManager = new ProfileManager();
+    const presetCreated = defaultManager.createFromPreset('fast', 'gpt-4o', 'openai');
+    expect(presetCreated.name).toBe('gpt-4o-fast');
+
+    // getActiveProfile with orphaned activeProfileId
+    (defaultManager as any).activeProfileId = 'orphaned-id';
+    expect(defaultManager.getActiveProfile()).toBeNull();
+
+    // save error handling
+    const failingDirManager = new ProfileManager(path.join(tempDir, 'read-only-file', 'profiles.json'));
+    fs.writeFileSync(path.join(tempDir, 'read-only-file'), 'a-file-not-dir');
+    (failingDirManager as any).save(); // should catch and warn safely
   });
 });

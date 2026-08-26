@@ -123,6 +123,7 @@ export class GodotTransactionManager {
       proposal.expiresAt
     );
 
+    proposal.approverId = approverId;
     proposal.approvalDigest = approvalDigest;
     proposal.status = 'approved';
     return proposal;
@@ -134,7 +135,8 @@ export class GodotTransactionManager {
   public async executeTransaction(
     proposalId: string,
     providedApprovalDigest: string,
-    actionApplier: (action: EngineMutationAction, root: string) => Promise<void>
+    actionApplier: (action: EngineMutationAction, root: string) => Promise<void>,
+    options?: { callerId?: string; tenantId?: string }
   ): Promise<EngineTransaction> {
     const proposal = this.getProposal(proposalId);
 
@@ -150,6 +152,15 @@ export class GodotTransactionManager {
         'APPROVAL_DIGEST_MISMATCH',
         `Approval digest does not match for proposal ${proposalId}`
       );
+    }
+
+    if (proposal.approverId) {
+      if (!options?.callerId || !options.callerId.trim()) {
+        throw new GameEngineError('APPROVAL_REQUIRED', 'Caller identity is required to apply an approved mutation.');
+      }
+      if (options.callerId !== proposal.approverId) {
+        throw new GameEngineError('APPROVAL_REQUIRED', `Caller identity '${options.callerId}' does not match approver identity '${proposal.approverId}'.`);
+      }
     }
 
     // Capture pre-mutation snapshots of all target files

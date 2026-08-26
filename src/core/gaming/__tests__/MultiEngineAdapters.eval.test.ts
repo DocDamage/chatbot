@@ -176,7 +176,7 @@ describe('Phase PX-09: Unity, Unreal, Sprite-Slicing, and Asset-Build Adapters',
       expect(proposal.inputDigest).toMatch(/^[a-f0-9]{64}$/);
       const approved = await adapter.approveMutation(proposal.id, 'reviewer');
       expect(approved.approvalDigest).toMatch(/^[a-f0-9]{64}$/);
-      const transaction = await adapter.applyMutation(proposal.id, approved.approvalDigest!);
+      const transaction = await adapter.applyMutation(proposal.id, approved.approvalDigest!, { callerId: 'reviewer' });
       expect(fs.existsSync(path.join(tempDir, 'Source', 'Test', 'GeneratedHelper.cpp'))).toBe(true);
       expect(await adapter.rollbackTransaction(transaction.id)).toBe(true);
       expect(fs.existsSync(path.join(tempDir, 'Source', 'Test', 'GeneratedHelper.cpp'))).toBe(false);

@@ -105,12 +105,21 @@ export class TaskScheduler {
 
         this.tasks.set(task.id, task);
 
-        // Create cron job
-        const job = cron.schedule(options.cron, async () => {
+        // node-cron v4 starts schedule() immediately and no longer honors the
+        // legacy `scheduled` option. Create a stopped task so TaskScheduler's
+        // explicit start/stop lifecycle remains authoritative.
+        const taskHandler = async () => {
             await this.executeTask(task.id);
-        }, {
-            scheduled: this.isRunning
-        });
+        };
+        const job = typeof cron.createTask === 'function'
+            ? cron.createTask(options.cron, taskHandler)
+            : cron.schedule(options.cron, taskHandler, { scheduled: false });
+
+        if (this.isRunning) {
+            job.start();
+        } else {
+            job.stop();
+        }
 
         this.cronJobs.set(task.id, job);
 
@@ -217,13 +226,17 @@ export class TaskScheduler {
         let lastError: string | undefined;
 
         while (attempts <= task.retries) {
+            let timeoutHandle: NodeJS.Timeout | undefined;
             try {
                 // Execute with timeout
                 await Promise.race([
                     task.action(),
-                    new Promise((_, reject) =>
-                        setTimeout(() => reject(new Error('Task timeout')), task.timeout)
-                    )
+                    new Promise((_, reject) => {
+                        timeoutHandle = setTimeout(
+                            () => reject(new Error('Task timeout')),
+                            task.timeout
+                        );
+                    })
                 ]);
 
                 task.lastRun = new Date();
@@ -256,6 +269,10 @@ export class TaskScheduler {
                         error: error.message
                     });
                     await this.delay(1000 * attempts); // Exponential backoff
+                }
+            } finally {
+                if (timeoutHandle) {
+                    clearTimeout(timeoutHandle);
                 }
             }
         }

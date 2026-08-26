@@ -204,9 +204,13 @@ export class UnityEngineAdapter implements IGameEngineAdapter {
   /**
    * Apply mutation
    */
-  public async applyMutation(proposalId: string, approvalDigest: string): Promise<EngineTransaction> {
+  public async applyMutation(
+    proposalId: string,
+    approvalDigest: string,
+    options?: { callerId?: string; tenantId?: string }
+  ): Promise<EngineTransaction> {
     this.ensureConnected();
-    return this.mutationStore!.apply(proposalId, approvalDigest);
+    return this.mutationStore!.apply(proposalId, approvalDigest, options);
   }
 
   /**

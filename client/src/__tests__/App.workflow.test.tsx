@@ -9,7 +9,7 @@ class MockResizeObserver {
 }
 globalThis.ResizeObserver = MockResizeObserver as any;
 
-describe('RT-COV-003 / RT-CLIENT-005: App Interactive Mode and Workspace Layout Suite', () => {
+describe('RT-UI-003 / RT-COV-003 / RT-CLIENT-005: Critical Client Coverage & Workspace Layout Suite', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     globalThis.fetch = vi.fn().mockImplementation(async (url: string) => {

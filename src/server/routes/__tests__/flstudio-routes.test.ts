@@ -79,4 +79,48 @@ describe('FL Studio control routes', () => {
       .send({ args: {} })
       .expect(400);
   });
+
+  it('covers connect, state, notes, step-sequence, mixer/set, and transport routes', async () => {
+    const app = createApp();
+
+    // 1. connect, state, disconnect
+    const connectRes = await request(app).post('/api/flstudio/connect').send({ command: '', host: '127.0.0.1' }).expect(200);
+    expect(connectRes.body).toBeDefined();
+
+    const stateRes = await request(app).get('/api/flstudio/state').expect(200);
+    expect(stateRes.body.mode).toBe('dry_run');
+
+    await request(app).post('/api/flstudio/disconnect').expect(200);
+
+    // 2. piano-roll/notes
+    const notesRes = await request(app)
+      .post('/api/flstudio/piano-roll/notes')
+      .send({ notes: [{ note: 'C4', time: 0, duration: 1 }] })
+      .expect(200);
+    expect(notesRes.body.actions[0].tool).toBe('fl_send_notes');
+
+    // 3. channel/step-sequence
+    const seqRes = await request(app)
+      .post('/api/flstudio/channel/step-sequence')
+      .send({ channel: 'kick', steps: [0, 4, 8, 12] })
+      .expect(200);
+    expect(seqRes.body.actions[0].tool).toBe('fl_set_step_sequence');
+
+    // 4. mixer/set (volume, pan, mute, solo)
+    const mixerRes = await request(app)
+      .post('/api/flstudio/mixer/set')
+      .send({ track: 2, dbChange: -3, pan: -0.2, mute: true, solo: false })
+      .expect(200);
+    expect(mixerRes.body.actions.length).toBe(4);
+
+    // 5. transport (record, stop, play)
+    const recordRes = await request(app).post('/api/flstudio/transport').send({ action: 'record' }).expect(200);
+    expect(recordRes.body.actions[0].tool).toBe('fl_record');
+
+    const stopRes = await request(app).post('/api/flstudio/transport').send({ action: 'stop' }).expect(200);
+    expect(stopRes.body.actions[0].tool).toBe('fl_stop');
+
+    const playRes = await request(app).post('/api/flstudio/transport').send({ action: 'play' }).expect(200);
+    expect(playRes.body.actions[0].tool).toBe('fl_play');
+  });
 });

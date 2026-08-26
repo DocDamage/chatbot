@@ -171,9 +171,13 @@ export class UnrealEngineAdapter implements IGameEngineAdapter {
     return this.mutationStore!.approve(proposalId, approverId);
   }
 
-  public async applyMutation(proposalId: string, approvalDigest: string): Promise<EngineTransaction> {
+  public async applyMutation(
+    proposalId: string,
+    approvalDigest: string,
+    options?: { callerId?: string; tenantId?: string }
+  ): Promise<EngineTransaction> {
     this.ensureConnected();
-    return this.mutationStore!.apply(proposalId, approvalDigest);
+    return this.mutationStore!.apply(proposalId, approvalDigest, options);
   }
 
   public async rollbackTransaction(transactionId: string): Promise<boolean> {

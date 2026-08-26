@@ -1165,4 +1165,8 @@ const startServer = async () => {
   }
 };
 
-startServer();
+export { app, server, startServer, waitForReady, reinitializeServices };
+
+if (process.env.NODE_ENV !== 'test') {
+  startServer();
+}

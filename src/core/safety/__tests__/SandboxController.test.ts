@@ -33,6 +33,10 @@ describe('RT-PLAT-008 / RT-SEC-005: SandboxController Workspace Isolation Suite'
     const outsidePath = path.resolve(tempDir, '..', 'secret.key');
     expect(sandbox.canAccessPath(outsidePath, 'write').allowed).toBe(false);
 
+    // Sibling directory prefix collision attack test: tempDir + "-evil"
+    const siblingEvilPath = `${tempDir}-evil${path.sep}malicious.txt`;
+    expect(sandbox.canAccessPath(siblingEvilPath, 'write').allowed).toBe(false);
+
     expect(sandbox.canAccessPath('/etc/passwd', 'read').allowed).toBe(false);
   });
 

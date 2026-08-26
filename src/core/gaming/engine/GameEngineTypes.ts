@@ -228,4 +228,21 @@ export class GameEngineError extends Error {
     super(`[${code}] ${message}`);
     this.name = 'GameEngineError';
   }
+
+  get statusCode(): number {
+    switch (this.code) {
+      case 'SCENE_NOT_FOUND':
+      case 'NODE_NOT_FOUND':
+        return 404;
+      case 'APPROVAL_REQUIRED':
+      case 'APPROVAL_DIGEST_MISMATCH':
+      case 'OUT_OF_BOUNDS_PATH':
+      case 'SCRIPT_VALIDATION_FAILED':
+      case 'HOSTED_MODE_DENIED':
+      case 'LICENSE_GATE_BLOCKED':
+        return 400;
+      default:
+        return 500;
+    }
+  }
 }
