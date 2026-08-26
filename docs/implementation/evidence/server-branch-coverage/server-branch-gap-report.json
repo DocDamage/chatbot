@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-26T21:57:21.687Z",
+  "generatedAt": "2026-08-26T22:02:16.993Z",
   "global": {
     "total": 20531,
-    "covered": 15430,
-    "uncovered": 5101,
-    "pct": 75.1546
+    "covered": 15432,
+    "uncovered": 5099,
+    "pct": 75.1644
   },
   "targets": {
     "65%": {
@@ -26,7 +26,7 @@
     "76%": {
       "targetPct": 76,
       "requiredCovered": 15604,
-      "additionalNeeded": 174
+      "additionalNeeded": 172
     }
   },
   "areas": [
@@ -407,20 +407,20 @@
       "pct": 50
     },
     {
-      "area": "core/observability",
-      "total": 35,
-      "covered": 19,
-      "uncovered": 16,
-      "filesCount": 2,
-      "pct": 54.2857
-    },
-    {
       "area": "core/security",
       "total": 59,
       "covered": 43,
       "uncovered": 16,
       "filesCount": 10,
       "pct": 72.8814
+    },
+    {
+      "area": "core/observability",
+      "total": 35,
+      "covered": 20,
+      "uncovered": 15,
+      "filesCount": 2,
+      "pct": 57.1429
     },
     {
       "area": "core/graph",
@@ -543,14 +543,6 @@
       "pct": 78.125
     },
     {
-      "area": "core/ui",
-      "total": 42,
-      "covered": 36,
-      "uncovered": 6,
-      "filesCount": 1,
-      "pct": 85.7143
-    },
-    {
       "area": "core/wiki",
       "total": 15,
       "covered": 9,
@@ -565,6 +557,14 @@
       "uncovered": 6,
       "filesCount": 1,
       "pct": 25
+    },
+    {
+      "area": "core/ui",
+      "total": 42,
+      "covered": 37,
+      "uncovered": 5,
+      "filesCount": 1,
+      "pct": 88.0952
     },
     {
       "area": "utils/retry.ts",
@@ -6891,22 +6891,6 @@
       }
     },
     {
-      "path": "src/core/ui/ThinkingUI.ts",
-      "area": "core/ui",
-      "total": 42,
-      "covered": 36,
-      "uncovered": 6,
-      "pct": 85.7143,
-      "uncoveredLines": {
-        "96": 1,
-        "134": 1,
-        "138": 1,
-        "172": 1,
-        "281": 1,
-        "348": 1
-      }
-    },
-    {
       "path": "src/core/website/BlockEditorEngine.ts",
       "area": "core/website",
       "total": 41,
@@ -7137,7 +7121,7 @@
         "32": 1,
         "55": 1,
         "59": 2,
-        "80": 1
+        "79": 1
       }
     },
     {
@@ -7641,6 +7625,21 @@
         "225": 1,
         "226": 1,
         "241": 1
+      }
+    },
+    {
+      "path": "src/core/ui/ThinkingUI.ts",
+      "area": "core/ui",
+      "total": 42,
+      "covered": 37,
+      "uncovered": 5,
+      "pct": 88.0952,
+      "uncoveredLines": {
+        "96": 1,
+        "134": 1,
+        "138": 1,
+        "172": 1,
+        "348": 1
       }
     },
     {
@@ -8739,20 +8738,6 @@
       }
     },
     {
-      "path": "src/core/observability/metrics.ts",
-      "area": "core/observability",
-      "total": 17,
-      "covered": 13,
-      "uncovered": 4,
-      "pct": 76.4706,
-      "uncoveredLines": {
-        "70": 1,
-        "78": 1,
-        "79": 1,
-        "80": 1
-      }
-    },
-    {
       "path": "src/core/tools/engineering/MotorSizingTool.ts",
       "area": "core/tools",
       "total": 17,
@@ -9582,6 +9567,19 @@
         "27": 1,
         "32": 1,
         "77": 1
+      }
+    },
+    {
+      "path": "src/core/observability/metrics.ts",
+      "area": "core/observability",
+      "total": 17,
+      "covered": 14,
+      "uncovered": 3,
+      "pct": 82.3529,
+      "uncoveredLines": {
+        "70": 1,
+        "79": 1,
+        "80": 1
       }
     },
     {
