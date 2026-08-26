@@ -1,19 +1,36 @@
 import request from 'supertest';
-import { app } from '../index';
 import { AuthService } from '../../core/auth/AuthService';
 
 describe('RT-SRV-001: Server Express App Entrypoint & Route Registration Suite', () => {
+  let app: any;
   let adminToken: string;
+  const originalJwtSecret = process.env.JWT_SECRET;
+  const originalCsrfToken = process.env.CSRF_TOKEN;
 
   beforeAll(() => {
-    process.env.JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key-for-test-32-chars-long';
-    process.env.CSRF_TOKEN = process.env.CSRF_TOKEN || 'expected-csrf-secret-12345';
+    process.env.JWT_SECRET = 'super-secret-jwt-key-for-test-32-chars-long';
+    process.env.CSRF_TOKEN = 'expected-csrf-secret-12345';
+    ({ app } = require('../index') as typeof import('../index'));
     const authService = new AuthService(process.env.JWT_SECRET);
     adminToken = authService.generateToken({
       id: 'admin-1',
       email: 'admin@example.com',
       roles: ['admin', 'developer']
     });
+  });
+
+  afterAll(() => {
+    if (originalJwtSecret === undefined) {
+      delete process.env.JWT_SECRET;
+    } else {
+      process.env.JWT_SECRET = originalJwtSecret;
+    }
+
+    if (originalCsrfToken === undefined) {
+      delete process.env.CSRF_TOKEN;
+    } else {
+      process.env.CSRF_TOKEN = originalCsrfToken;
+    }
   });
 
   it('responds to health checks and Prometheus metrics endpoints', async () => {
