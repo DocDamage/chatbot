@@ -6,6 +6,13 @@ import path from 'path';
 import { createGameStudioRouter } from '../game-studio/gameStudioRoutes';
 import { errorHandler } from '../../../middleware/errorHandler';
 
+jest.mock('../../../core/native-runtime', () => ({
+  ...jest.requireActual('../../../core/native-runtime'),
+  discoverLocalRuntimes: jest.fn(() => ({
+    ollamaEndpoint: 'http://127.0.0.1:11434'
+  }))
+}));
+
 describe('RT-PLAT-005 / RT-GAME-001: Game Studio Routes and Exact-Scope Approval Suite', () => {
   let app: express.Application;
   let tempWorkspace: string;
@@ -119,8 +126,9 @@ describe('RT-PLAT-005 / RT-GAME-001: Game Studio Routes and Exact-Scope Approval
     const scenarioRes = await request(app)
       .post('/api/game-studio/runtime/scenario')
       .send({ engine: 'godot', scenePath: 'Main.tscn', assertions: [] })
-      .expect(200);
+      .expect(500);
     expect(scenarioRes.body).toBeDefined();
+    expect(JSON.stringify(scenarioRes.body)).toContain('GODOT_RUNTIME_BACKEND_UNAVAILABLE');
 
     // Export
     const exportRes = await request(app)

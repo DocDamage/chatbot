@@ -1,8 +1,12 @@
 import request from 'supertest';
-import { app } from '../index';
 import { AuthService } from '../../core/auth/AuthService';
 
 const strongSecret = 'super-strong-secret-key-32-chars-minimum-for-testing';
+const originalSecret = process.env.JWT_SECRET;
+process.env.JWT_SECRET = strongSecret;
+
+// Load the server only after its required import-time configuration is present.
+const { app } = require('../index') as typeof import('../index');
 
 function generateAuthHeader(userId = 'test-user', roles: string[] = ['developer']): string {
   const auth = new AuthService(strongSecret);
@@ -11,12 +15,6 @@ function generateAuthHeader(userId = 'test-user', roles: string[] = ['developer'
 }
 
 describe('Server Index Core Routes Suite', () => {
-  const originalSecret = process.env.JWT_SECRET;
-
-  beforeAll(() => {
-    process.env.JWT_SECRET = strongSecret;
-  });
-
   afterAll(() => {
     if (originalSecret) {
       process.env.JWT_SECRET = originalSecret;

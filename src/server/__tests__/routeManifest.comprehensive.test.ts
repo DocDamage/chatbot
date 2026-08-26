@@ -3,6 +3,13 @@ import request from 'supertest';
 import { registerManifestRoutes, getActiveRouteManifest, routeManifest } from '../routeManifest';
 import { registerHealthRoutes } from '../healthRoutes';
 
+jest.mock('../../core/native-runtime', () => ({
+  ...jest.requireActual('../../core/native-runtime'),
+  discoverLocalRuntimes: jest.fn(() => ({
+    ollamaEndpoint: 'http://127.0.0.1:11434'
+  }))
+}));
+
 describe('RT-ROUTER-001: RouteManifest Comprehensive Mounting & Execution Suite', () => {
   let app: express.Application;
   const mockServices: any = {
