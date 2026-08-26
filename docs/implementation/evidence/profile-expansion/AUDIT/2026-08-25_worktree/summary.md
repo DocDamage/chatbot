@@ -1,7 +1,7 @@
 # Profile Expansion Local Audit Evidence
 
 - **Status:** `IMPLEMENTED_NOT_VERIFIED`
-- **Source state:** uncommitted worktree based on `55dbcd0a2af1bd4c26f1f28aae7b3e3d6823f7f2`
+- **Implementation commit:** `d81d112ba5921f1a9f476ee2b2abba55bc096515` (validation executed on its pre-commit source tree)
 - **Branch:** `codex/cf04-cf10-integration`
 - **Date:** `2026-08-25`
 

@@ -4,7 +4,8 @@
   "sourceState": {
     "branch": "codex/cf04-cf10-integration",
     "baseCommit": "55dbcd0a2af1bd4c26f1f28aae7b3e3d6823f7f2",
-    "worktreeCommitted": false
+    "implementationCommit": "d81d112ba5921f1a9f476ee2b2abba55bc096515",
+    "worktreeCommitted": true
   },
   "commands": [
     { "command": "npm run release:check", "exitCode": 0 },

@@ -3,12 +3,12 @@
 **Audit date:** 2026-08-25
 **Plan:** `docs/AI_CHATBOT_HUB_PROFILE_WIDE_CAPABILITY_EXPANSION_IMPLEMENTATION_PLAN.md`
 **Branch:** `codex/cf04-cf10-integration`
-**Audited state:** uncommitted worktree based on `55dbcd0a2af1bd4c26f1f28aae7b3e3d6823f7f2`
+**Audited implementation commit:** `d81d112ba5921f1a9f476ee2b2abba55bc096515`
 **Canonical status:** `IMPLEMENTED_NOT_VERIFIED`
 
 ## Outcome
 
-The worktree contains broad implementations and tests across the planned capability families, but it does not satisfy the plan's production-verification definition. The implementation was not present in the commit cited by the prior PX evidence, and multiple certification/release helpers initially returned successful results from hard-coded fixtures rather than executed evidence.
+Commit `d81d112ba5921f1a9f476ee2b2abba55bc096515` contains broad implementations and tests across the planned capability families, but it does not satisfy the plan's production-verification definition. The implementation was not present in the commit cited by the prior PX evidence, and multiple certification/release helpers initially returned successful results from hard-coded fixtures rather than executed evidence.
 
 The audit repaired high-impact security, authorization, path-boundary, exact-scope approval, health, input-bounding, audio-export, fail-closed certification, capability exposure, and release-policy issues. It also downgraded every PX tracker/evidence row from `VERIFIED` to `IMPLEMENTED_NOT_VERIFIED`; the work remains a local experimental candidate rather than a production-certified release.
 
@@ -59,8 +59,8 @@ These are development checks, not production certification.
 
 ## Remaining release blockers
 
-1. Commit the audited implementation and run Required CI against that exact commit.
-2. Repeat the complete release suite on the exact implementation commit; current unit, build, browser, automated accessibility, packaging, coverage, and Phase 2 runs are local worktree evidence only.
+1. Run Required CI against exact implementation commit `d81d112ba5921f1a9f476ee2b2abba55bc096515` and retain the result against the pushed head.
+2. Repeat the complete release suite in CI on the exact implementation commit; current unit, build, browser, automated accessibility, packaging, coverage, and Phase 2 runs are local pre-commit-tree evidence only.
 3. Reach the Stage 3/final global and Tier A/Tier B coverage targets before promoting affected capabilities beyond their current `LOCAL_ONLY_EXPERIMENTAL` maturity.
 4. Pin every adopted upstream source to an immutable revision and attach license/file-exception review evidence. Generated notices and an SBOM do not substitute for legal review.
 5. Complete the remaining runtime canaries: activate a legitimate Unity Editor license; add and review Unity/Unreal project-side assertion and profiler instrumentation; and repeat all applicable editor, model, media-worker, and physical-device runs on an exact committed head. The current host already has successful local Faster Whisper, SAPI, screen capture, OCR, Ollama, Demucs, Godot, Unreal 5.8, dubbing/narration, and AssetCooker smoke evidence.
