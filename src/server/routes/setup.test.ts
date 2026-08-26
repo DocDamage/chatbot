@@ -43,7 +43,7 @@ describe('setup routes', () => {
     await request(app)
       .get('/api/setup/providers')
       .set('Authorization', `Bearer ${developerToken}`)
-      .expect(401);
+      .expect(403);
 
     const response = await request(app)
       .get('/api/setup/providers')

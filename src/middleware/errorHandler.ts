@@ -33,13 +33,19 @@ export const errorHandler = (
     return;
   }
 
-  // Handle unknown errors
-  res.status(500).json(formatApiError(
-    process.env.NODE_ENV === 'production'
-      ? 'Internal server error'
-      : error.message,
-    500,
-    'INTERNAL_ERROR'
+  // Handle unknown or framework errors with status/statusCode
+  const statusCode = (error as any).status || (error as any).statusCode || 500;
+  const isEntityTooLarge = (error as any).type === 'entity.too.large' || statusCode === 413;
+  const message = isEntityTooLarge
+    ? 'Payload too large'
+    : (process.env.NODE_ENV === 'production' && statusCode === 500)
+    ? 'Internal server error'
+    : error.message;
+
+  res.status(statusCode).json(formatApiError(
+    message,
+    statusCode,
+    isEntityTooLarge ? 'PAYLOAD_TOO_LARGE' : 'INTERNAL_ERROR'
   ));
 };
 

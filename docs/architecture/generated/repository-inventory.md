@@ -6,10 +6,10 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1445 |
-| Production source files | 1106 |
+| Source files | 1467 |
+| Production source files | 1107 |
 | Reachable production files | 816 |
-| Unreachable production files | 290 |
+| Unreachable production files | 291 |
 | Discovered route calls | 501 |
 | Environment variables | 212 |
 | Feature flags | 18 |

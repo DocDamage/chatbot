@@ -10,7 +10,7 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 ## Counts
 
 - Reachable production files: 816
-- Unreachable production files: 290
+- Unreachable production files: 291
 - Unresolved relative imports: 54
 
 ## Unreachable production modules
@@ -304,6 +304,7 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/observability/tracing.ts`
 - `src/server/routes/setup.ts`
 - `src/services/ServiceRegistry.ts`
+- `src/testing/failure-injection/ProcessFailureInjector.ts`
 - `src/utils/memoize.ts`
 
 ## Static-analysis limitations

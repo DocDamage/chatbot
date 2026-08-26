@@ -62,7 +62,7 @@ describe('admin routes', () => {
     await request(app)
       .post('/api/admin/cache/clear')
       .set('Authorization', `Bearer ${developerToken()}`)
-      .expect(401);
+      .expect(403);
   });
 
   it('clears every available cache service with a clear capability', async () => {

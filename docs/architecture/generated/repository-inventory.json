@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1445,
-    "productionSourceFiles": 1106,
+    "sourceFiles": 1467,
+    "productionSourceFiles": 1107,
     "reachableProductionFiles": 816,
-    "unreachableProductionFiles": 290,
+    "unreachableProductionFiles": 291,
     "routes": 501,
     "environmentVariables": 212,
     "featureFlags": 18,
@@ -6355,6 +6355,12 @@
       "file": "src/server/routes/music-studio/musicStudioRoutes.ts",
       "signals": [
         "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/testing/failure-injection/ProcessFailureInjector.ts",
+      "signals": [
+        "timer"
       ]
     },
     {
