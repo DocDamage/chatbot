@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1467,
+    "sourceFiles": 1521,
     "productionSourceFiles": 1107,
     "reachableProductionFiles": 816,
     "unreachableProductionFiles": 291,
@@ -6745,7 +6745,7 @@
     },
     {
       "file": "src/core/config/APIKeyManager.ts",
-      "lines": 644
+      "lines": 648
     },
     {
       "file": "src/core/config/ProfileManager.ts",
@@ -6917,7 +6917,7 @@
     },
     {
       "file": "src/core/safety/SandboxController.ts",
-      "lines": 438
+      "lines": 439
     },
     {
       "file": "src/core/scheduler/TaskScheduler.ts",

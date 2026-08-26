@@ -6,7 +6,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1467 |
+| Source files | 1521 |
 | Production source files | 1107 |
 | Reachable production files | 816 |
 | Unreachable production files | 291 |
@@ -803,7 +803,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/capabilities/promotion/CapabilityPromotionEngine.ts` | 360 |
 | `src/core/coding/teams/AgentTeamCoordinator.ts` | 394 |
 | `src/core/coding/teams/WorktreeLifecycleService.ts` | 390 |
-| `src/core/config/APIKeyManager.ts` | 644 |
+| `src/core/config/APIKeyManager.ts` | 648 |
 | `src/core/config/ProfileManager.ts` | 434 |
 | `src/core/contracts/UniversalContract.ts` | 321 |
 | `src/core/creative/CreativeWritingAgent.ts` | 345 |
@@ -846,7 +846,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/rag/VideoRAG.ts` | 443 |
 | `src/core/repository-intelligence/indexes/MultiLanguageSymbolIndexer.ts` | 616 |
 | `src/core/safety/ApprovalPolicy.ts` | 338 |
-| `src/core/safety/SandboxController.ts` | 438 |
+| `src/core/safety/SandboxController.ts` | 439 |
 | `src/core/scheduler/TaskScheduler.ts` | 447 |
 | `src/core/sec/SECService.ts` | 406 |
 | `src/core/sprite-lab/SpriteExternalToolAdapter.ts` | 348 |

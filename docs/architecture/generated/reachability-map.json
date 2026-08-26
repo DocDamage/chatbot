@@ -2239,6 +2239,9 @@
     "client/playwright.a11y.config.mjs": [],
     "client/playwright.browser.config.mjs": [],
     "client/scripts/prepare-a11y-tools.mjs": [],
+    "client/src/__tests__/App.workflow.test.tsx": [
+      "client/src/App.tsx"
+    ],
     "client/src/api/audio.test.ts": [
       "client/src/api/audio.ts"
     ],
@@ -2267,6 +2270,9 @@
     "client/src/api/files.ts": [
       "client/src/api/errors.ts"
     ],
+    "client/src/api/gaming.test.ts": [
+      "client/src/api/gaming.ts"
+    ],
     "client/src/api/gaming.ts": [
       "client/src/api/errors.ts"
     ],
@@ -2284,6 +2290,9 @@
     ],
     "client/src/api/localRunApprovals.ts": [
       "client/src/api/errors.ts"
+    ],
+    "client/src/api/localTools.test.ts": [
+      "client/src/api/localTools.ts"
     ],
     "client/src/api/localTools.ts": [
       "client/src/api/errors.ts"
@@ -2311,6 +2320,44 @@
       "client/src/test/browserTestUtils.ts"
     ],
     "client/src/clipboard.ts": [],
+    "client/src/components/__tests__/AssistantChat.workflow.test.tsx": [
+      "client/src/components/AssistantChat.tsx"
+    ],
+    "client/src/components/__tests__/AudioPreviewBrowser.workflow.test.tsx": [
+      "client/src/api/audio.ts",
+      "client/src/components/AudioPreviewBrowser.tsx"
+    ],
+    "client/src/components/__tests__/CapabilityPromotionView.workflow.test.tsx": [
+      "client/src/components/CapabilityPromotionView.tsx"
+    ],
+    "client/src/components/__tests__/FileExplorerPanel.workflow.test.tsx": [
+      "client/src/api/files.ts",
+      "client/src/components/FileExplorerPanel.tsx"
+    ],
+    "client/src/components/__tests__/FilePreviewPane.test.tsx": [
+      "client/src/components/FilePreviewPane.tsx"
+    ],
+    "client/src/components/__tests__/GamingPlaybookPanel.workflow.test.tsx": [
+      "client/src/api/gaming.ts",
+      "client/src/components/GamingPlaybookPanel.tsx"
+    ],
+    "client/src/components/__tests__/LoadedFilesBar.test.tsx": [
+      "client/src/components/LoadedFilesBar.tsx"
+    ],
+    "client/src/components/__tests__/MockApiWorkspacePanel.test.tsx": [
+      "client/src/components/MockApiWorkspacePanel.tsx"
+    ],
+    "client/src/components/__tests__/RepositoryFindingsView.test.tsx": [
+      "client/src/components/RepositoryFindingsView.tsx"
+    ],
+    "client/src/components/__tests__/SpriteLabPanel.workflow.test.tsx": [
+      "client/src/api/files.ts",
+      "client/src/api/spriteLab.ts",
+      "client/src/components/SpriteLabPanel.tsx"
+    ],
+    "client/src/components/__tests__/WebsiteWorkspacePanel.test.tsx": [
+      "client/src/components/WebsiteWorkspacePanel.tsx"
+    ],
     "client/src/components/AssistantChat.test.tsx": [
       "client/src/components/AssistantChat.tsx"
     ],
@@ -2762,6 +2809,12 @@
       "src/core/coding/teams/AgentTeamCoordinator.ts",
       "src/core/coding/teams/ProcessTreeSupervisor.ts"
     ],
+    "src/core/agents/__tests__/AgentTeam.test.ts": [
+      "src/core/agents/AgentTeam.ts"
+    ],
+    "src/core/agents/__tests__/ReasoningController.test.ts": [
+      "src/core/agents/ReasoningController.ts"
+    ],
     "src/core/agents/AgentTeam.ts": [
       "src/core/observability/logger.ts"
     ],
@@ -2841,7 +2894,9 @@
     ],
     "src/core/agents/culture/PopCultureCanonResolver.ts": [],
     "src/core/agents/culture/PopCultureGeniusAgent.test.ts": [
-      "src/core/agents/culture/PopCultureGeniusAgent.ts"
+      "src/core/agents/culture/PopCultureGeniusAgent.ts",
+      "src/core/agents/culture/PopCultureIntentClassifier.ts",
+      "src/core/agents/culture/PopCultureSourceRouter.ts"
     ],
     "src/core/agents/culture/PopCultureGeniusAgent.ts": [
       "src/core/agents/culture/FranchiseKnowledgeGraph.ts",
@@ -2895,7 +2950,8 @@
     ],
     "src/core/agents/gamedev/GameDesignPlanner.ts": [],
     "src/core/agents/gamedev/GameDevGeniusAgent.test.ts": [
-      "src/core/agents/gamedev/GameDevGeniusAgent.ts"
+      "src/core/agents/gamedev/GameDevGeniusAgent.ts",
+      "src/core/agents/gamedev/GameIntentClassifier.ts"
     ],
     "src/core/agents/gamedev/GameDevGeniusAgent.ts": [
       "src/core/agents/gamedev/EngineAdvisor.ts",
@@ -2914,7 +2970,9 @@
     "src/core/agents/gamedev/LevelDesignAdvisor.ts": [],
     "src/core/agents/gamedev/MechanicsDesigner.ts": [],
     "src/core/agents/gaming/GamingGeniusAgent.test.ts": [
-      "src/core/agents/gaming/GamingGeniusAgent.ts"
+      "src/core/agents/gaming/GamingGeniusAgent.ts",
+      "src/core/agents/gaming/GamingIntentClassifier.ts",
+      "src/core/agents/gaming/GamingKnowledgeRouter.ts"
     ],
     "src/core/agents/gaming/GamingGeniusAgent.ts": [
       "src/core/agents/gamedev/GameDevGeniusAgent.ts",
@@ -2954,6 +3012,9 @@
     "src/core/agents/geography/MapContextAdvisor.ts": [
       "src/core/agents/specialists/WorkflowComponent.ts"
     ],
+    "src/core/agents/gis/__tests__/GISMappingAgent.test.ts": [
+      "src/core/agents/gis/GISMappingAgent.ts"
+    ],
     "src/core/agents/gis/GISMappingAgent.ts": [
       "src/core/gis/GISService.ts",
       "src/types/gis.ts"
@@ -2984,6 +3045,10 @@
     ],
     "src/core/agents/health/SymptomTriageGuardrails.ts": [
       "src/core/agents/specialists/WorkflowComponent.ts"
+    ],
+    "src/core/agents/history/__tests__/HistoryGeniusAgent.test.ts": [
+      "src/core/agents/history/HistoryGeniusAgent.ts",
+      "src/core/agents/history/HistoryIntentClassifier.ts"
     ],
     "src/core/agents/history/CivilizationGraph.ts": [],
     "src/core/agents/history/EventCausalityAnalyzer.ts": [],
@@ -3063,7 +3128,8 @@
     "src/core/agents/market/BacktestRunner.ts": [],
     "src/core/agents/market/EquityResearchPlanner.ts": [],
     "src/core/agents/market/MarketGeniusAgent.test.ts": [
-      "src/core/agents/market/MarketGeniusAgent.ts"
+      "src/core/agents/market/MarketGeniusAgent.ts",
+      "src/core/agents/market/MarketIntentClassifier.ts"
     ],
     "src/core/agents/market/MarketGeniusAgent.ts": [
       "src/core/agents/market/BacktestRunner.ts",
@@ -3083,7 +3149,8 @@
     "src/core/agents/market/PortfolioAnalyzer.ts": [],
     "src/core/agents/market/RiskAnalyzer.ts": [],
     "src/core/agents/math/MathGeniusAgent.test.ts": [
-      "src/core/agents/math/MathGeniusAgent.ts"
+      "src/core/agents/math/MathGeniusAgent.ts",
+      "src/core/agents/math/MathProblemClassifier.ts"
     ],
     "src/core/agents/math/MathGeniusAgent.ts": [
       "src/core/agents/math/MathProblemClassifier.ts",
@@ -3218,6 +3285,7 @@
     "src/core/agents/music/MusicCopyrightGuardrails.ts": [],
     "src/core/agents/music/MusicIntentClassifier.ts": [],
     "src/core/agents/music/MusicProductionGeniusAgent.test.ts": [
+      "src/core/agents/music/MusicIntentClassifier.ts",
       "src/core/agents/music/MusicProductionGeniusAgent.ts"
     ],
     "src/core/agents/music/MusicProductionGeniusAgent.ts": [
@@ -3484,6 +3552,9 @@
     "src/core/agents/VerificationRunner.ts": [
       "src/core/tools/CommandRunner.ts"
     ],
+    "src/core/analytics/__tests__/AnalyticsService.test.ts": [
+      "src/core/analytics/AnalyticsService.ts"
+    ],
     "src/core/analytics/AnalyticsService.ts": [
       "src/core/observability/logger.ts"
     ],
@@ -3539,12 +3610,19 @@
     "src/core/audio/stemdeck/WaveformMixerEngine.ts": [
       "src/core/audio/stemdeck/StemdeckTypes.ts"
     ],
+    "src/core/audit/__tests__/AuditLogger.redaction.test.ts": [
+      "src/core/audit/AuditLogger.ts",
+      "src/core/database/Database.ts"
+    ],
     "src/core/audit/__tests__/SecretRedactionAudit.test.ts": [
       "src/core/audit/AuditLogger.ts"
     ],
     "src/core/audit/AuditLogger.ts": [
       "src/core/database/Database.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/auth/__tests__/AuthService.test.ts": [
+      "src/core/auth/AuthService.ts"
     ],
     "src/core/auth/ApiKeyService.ts": [
       "src/core/observability/logger.ts"
@@ -3555,6 +3633,10 @@
     "src/core/auth/UserService.ts": [
       "src/core/auth/AuthService.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/automation/__tests__/AutoDrive.test.ts": [
+      "src/core/agents/ReasoningController.ts",
+      "src/core/automation/AutoDrive.ts"
     ],
     "src/core/automation/AutoDrive.ts": [
       "src/core/agents/MultiAgentOrchestrator.ts",
@@ -4351,6 +4433,18 @@
       "src/core/coding/verification/DiagnosticParser.ts",
       "src/core/coding/verification/RepairController.ts"
     ],
+    "src/core/config/__tests__/APIKeyManager.security.test.ts": [
+      "src/core/config/APIKeyManager.ts"
+    ],
+    "src/core/config/__tests__/ConfigValidator.test.ts": [
+      "src/core/config/ConfigValidator.ts"
+    ],
+    "src/core/config/__tests__/EnvironmentDefinitions.test.ts": [
+      "src/core/config/EnvironmentDefinitions.ts"
+    ],
+    "src/core/config/__tests__/ProfileManager.test.ts": [
+      "src/core/config/ProfileManager.ts"
+    ],
     "src/core/config/APIKeyManager.test.ts": [
       "src/core/config/APIKeyManager.ts"
     ],
@@ -4502,6 +4596,10 @@
     "src/core/creative/StoryBibleStore.ts": [
       "src/core/creative/CreativeTypes.ts"
     ],
+    "src/core/database/__tests__/SafeDatabaseQuestionAgent.guardrails.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/database/SafeDatabaseQuestionAgent.ts"
+    ],
     "src/core/database/Database.test.ts": [
       "src/core/database/Database.ts"
     ],
@@ -4618,6 +4716,9 @@
     "src/core/feedback/FeedbackService.ts": [
       "src/core/database/Database.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/files/__tests__/FileExplorerService.test.ts": [
+      "src/core/files/FileExplorerService.ts"
     ],
     "src/core/files/FileExplorerService.test.ts": [
       "src/core/files/FileExplorerService.ts"
@@ -5106,6 +5207,17 @@
       "src/core/knowledge-os/KnowledgeOsChatAgent.ts"
     ],
     "src/core/knowledge-os/KnowledgeOsChatAgent.ts": [],
+    "src/core/knowledge/__tests__/GitHubSource.test.ts": [
+      "src/core/knowledge/GitHubSource.ts"
+    ],
+    "src/core/knowledge/__tests__/KnowledgeSources.test.ts": [
+      "src/core/knowledge/BookSource.ts",
+      "src/core/knowledge/EntertainmentSource.ts",
+      "src/core/knowledge/ResultRanker.ts"
+    ],
+    "src/core/knowledge/__tests__/ScientificPapersSource.test.ts": [
+      "src/core/knowledge/ScientificPapersSource.ts"
+    ],
     "src/core/knowledge/AnatomySource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
@@ -5483,6 +5595,9 @@
     "src/core/media-accessibility/VoiceDubbingConsentGate.ts": [
       "src/core/media-accessibility/MediaAccessibilityTypes.ts"
     ],
+    "src/core/memory/__tests__/GraphMemory.test.ts": [
+      "src/core/memory/GraphMemory.ts"
+    ],
     "src/core/memory/ForgettingMechanism.ts": [
       "src/core/observability/logger.ts",
       "src/types/memory.ts"
@@ -5761,6 +5876,9 @@
     "src/core/optimization/ToonSerializer.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/orchestrator/__tests__/Orchestrator.test.ts": [
+      "src/core/orchestrator/Orchestrator.ts"
+    ],
     "src/core/orchestrator/EnhancedOrchestrator.coding.test.ts": [
       "src/core/orchestrator/EnhancedOrchestrator.ts",
       "src/core/providers/LLMAdapter.ts"
@@ -5802,6 +5920,9 @@
       "src/types/contract.ts",
       "src/types/provenance.ts",
       "src/utils/cache.ts"
+    ],
+    "src/core/personalization/__tests__/UserProfiler.test.ts": [
+      "src/core/personalization/UserProfiler.ts"
     ],
     "src/core/personalization/CollaborativeFilter.ts": [
       "src/core/observability/logger.ts",
@@ -5892,6 +6013,9 @@
       "src/core/observability/logger.ts",
       "src/types/contract.ts",
       "src/types/provenance.ts"
+    ],
+    "src/core/providers/__tests__/UniversalLLM.test.ts": [
+      "src/core/providers/UniversalLLM.ts"
     ],
     "src/core/providers/contracts/LocalAudioVoiceContracts.ts": [],
     "src/core/providers/DeviceAdapter.ts": [
@@ -5989,8 +6113,17 @@
       "src/core/observability/logger.ts",
       "src/types/vision.ts"
     ],
+    "src/core/quality/__tests__/AutoReview.test.ts": [
+      "src/core/quality/AutoReview.ts"
+    ],
     "src/core/quality/AutoReview.ts": [
       "src/core/observability/logger.ts"
+    ],
+    "src/core/rag/__tests__/AudioRAG.test.ts": [
+      "src/core/rag/AudioRAG.ts"
+    ],
+    "src/core/rag/__tests__/CorrectiveRetriever.test.ts": [
+      "src/core/rag/CorrectiveRetriever.ts"
     ],
     "src/core/rag/__tests__/DocumentIngester.test.ts": [
       "src/core/rag/DocumentIngester.ts",
@@ -6000,6 +6133,15 @@
       "src/core/database/Database.ts",
       "src/core/rag/RAGDocumentStore.ts",
       "src/types/rag.ts"
+    ],
+    "src/core/rag/__tests__/RAGRouter.test.ts": [
+      "src/core/rag/RAGRouter.ts"
+    ],
+    "src/core/rag/__tests__/TrustRAG.test.ts": [
+      "src/core/rag/TrustRAG.ts"
+    ],
+    "src/core/rag/__tests__/VideoRAG.test.ts": [
+      "src/core/rag/VideoRAG.ts"
     ],
     "src/core/rag/AudioRAG.ts": [
       "src/core/observability/logger.ts",
@@ -6222,6 +6364,12 @@
       "src/core/observability/logger.ts",
       "src/types/intent.ts"
     ],
+    "src/core/safety/__tests__/ApprovalPolicy.test.ts": [
+      "src/core/safety/ApprovalPolicy.ts"
+    ],
+    "src/core/safety/__tests__/SandboxController.test.ts": [
+      "src/core/safety/SandboxController.ts"
+    ],
     "src/core/safety/ApprovalPolicy.ts": [
       "src/core/observability/logger.ts"
     ],
@@ -6261,6 +6409,9 @@
     "src/core/safety/UncertaintyQuantifier.ts": [
       "src/core/observability/logger.ts",
       "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/scheduler/__tests__/TaskScheduler.test.ts": [
+      "src/core/scheduler/TaskScheduler.ts"
     ],
     "src/core/scheduler/index.ts": [
       "src/core/scheduler/TaskScheduler.ts"
@@ -6459,6 +6610,9 @@
     "src/core/suggestions/QuickReplies.ts": [
       "src/core/observability/logger.ts",
       "src/core/providers/LLMAdapter.ts"
+    ],
+    "src/core/tools/__tests__/WebSearcher.test.ts": [
+      "src/core/tools/WebSearcher.ts"
     ],
     "src/core/tools/ArchitectureRepoTools.test.ts": [
       "src/core/coding/architecture/__tests__/ArchitectureFixture.ts",
@@ -6792,8 +6946,15 @@
       "src/core/observability/logger.ts",
       "src/types/tools.ts"
     ],
+    "src/core/ui/__tests__/ThinkingUI.test.ts": [
+      "src/core/ui/ThinkingUI.ts"
+    ],
     "src/core/ui/ThinkingUI.ts": [
       "src/core/observability/logger.ts"
+    ],
+    "src/core/upload/__tests__/FileProcessor.security.test.ts": [
+      "src/core/rag/DocumentManager.ts",
+      "src/core/upload/FileProcessor.ts"
     ],
     "src/core/upload/FileProcessor.ts": [
       "src/core/observability/logger.ts",
@@ -7070,6 +7231,12 @@
     "src/server/__tests__/api.test.ts": [
       "src/core/initialization/ServiceInitializer.ts"
     ],
+    "src/server/__tests__/auth-middleware.security.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/middleware/apiKeyAuth.ts",
+      "src/middleware/auth.ts",
+      "src/utils/errors.ts"
+    ],
     "src/server/__tests__/auth-security-tokens.test.ts": [
       "src/middleware/apiKeyAuth.ts",
       "src/middleware/errorHandler.ts",
@@ -7099,6 +7266,10 @@
     "src/server/__tests__/personal-knowledge.test.ts": [
       "src/core/knowledge/index.ts"
     ],
+    "src/server/__tests__/rateLimiter-security.test.ts": [
+      "src/middleware/rateLimiter.ts",
+      "src/utils/errors.ts"
+    ],
     "src/server/__tests__/release-security.test.ts": [
       "src/core/auth/AuthService.ts",
       "src/core/config/ConfigValidator.ts",
@@ -7112,6 +7283,9 @@
       "src/server/routes/knowledge-os.ts",
       "src/server/routes/plans.ts",
       "src/server/security/webhookUrl.ts"
+    ],
+    "src/server/__tests__/security-middleware.test.ts": [
+      "src/middleware/security.ts"
     ],
     "src/server/__tests__/upload-parser-abuse.test.ts": [
       "src/middleware/errorHandler.ts"
@@ -7269,6 +7443,10 @@
       "src/server/routes/website-workspace.ts",
       "src/server/routes/writing-studio.ts"
     ],
+    "src/server/routes/__tests__/admin.security.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/server/routes/admin.ts"
+    ],
     "src/server/routes/__tests__/agent-operations-routes.test.ts": [
       "src/server/routes/agent-operations.ts"
     ],
@@ -7303,6 +7481,9 @@
     ],
     "src/server/routes/__tests__/flstudio-routes.test.ts": [
       "src/server/routes/flstudio.ts"
+    ],
+    "src/server/routes/__tests__/game-studio-routes.test.ts": [
+      "src/server/routes/game-studio/gameStudioRoutes.ts"
     ],
     "src/server/routes/__tests__/gaming-playbook-routes.test.ts": [
       "src/server/routes/gaming.ts"
@@ -7345,6 +7526,11 @@
     "src/server/routes/__tests__/rag-query.test.ts": [
       "src/server/routes/rag-query.ts"
     ],
+    "src/server/routes/__tests__/sec-routes.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/database/ExpansionDatabase.ts",
+      "src/server/routes/sec.ts"
+    ],
     "src/server/routes/__tests__/settings-routes.test.ts": [
       "src/server/routes/settings.ts"
     ],
@@ -7373,6 +7559,9 @@
       "src/core/sprite-lab/SpriteExternalToolAdapter.ts",
       "src/core/sprite-lab/SpriteLabPlanService.ts",
       "src/server/routes/sprite-lab.ts"
+    ],
+    "src/server/routes/__tests__/sprite-studio-routes.test.ts": [
+      "src/server/routes/sprite-studio/spriteStudioRoutes.ts"
     ],
     "src/server/routes/__tests__/web-studio-and-developer-utility.test.ts": [
       "src/server/routes/mock-api.ts",
@@ -7781,5 +7970,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1467
+  "sourceRecordCount": 1521
 }
