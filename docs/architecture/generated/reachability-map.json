@@ -502,6 +502,7 @@
     "src/core/modes/ModePolicy.ts",
     "src/core/multimodal/localization/MediaConsentRecord.ts",
     "src/core/multimodal/localization/VideoLocalizationJob.ts",
+    "src/core/native-runtime/GameEditorInstrumentationSources.ts",
     "src/core/native-runtime/LocalAIBackends.ts",
     "src/core/native-runtime/NativeAudioBackends.ts",
     "src/core/native-runtime/NativeCommandRunner.ts",
@@ -1320,6 +1321,7 @@
     "src/core/modes/ModePolicy.ts",
     "src/core/multimodal/localization/MediaConsentRecord.ts",
     "src/core/multimodal/localization/VideoLocalizationJob.ts",
+    "src/core/native-runtime/GameEditorInstrumentationSources.ts",
     "src/core/native-runtime/LocalAIBackends.ts",
     "src/core/native-runtime/NativeAudioBackends.ts",
     "src/core/native-runtime/NativeCommandRunner.ts",
@@ -2665,6 +2667,8 @@
     "scripts/backup-knowledge-db.ts": [],
     "scripts/browser/local-tool-fixture.mjs": [],
     "scripts/browser/prepare-browser-e2e.mjs": [],
+    "scripts/certification/http-load.mjs": [],
+    "scripts/certification/production-like.mjs": [],
     "scripts/export-skill.ts": [],
     "scripts/extract_encyclopedia.js": [],
     "scripts/extract_encyclopedia.ts": [],
@@ -2687,6 +2691,10 @@
     "scripts/import-wikidata-chrono.ts": [],
     "scripts/import-wikimedia-history.ts": [],
     "scripts/import-wikipedia-general-corpus.ts": [],
+    "scripts/native/certify-game-editors.ts": [
+      "src/core/native-runtime/NativeGameEditorBackends.ts",
+      "src/core/native-runtime/RuntimeDiscovery.ts"
+    ],
     "scripts/native/setup-local-runtime.mjs": [],
     "scripts/ocr-queue.ts": [
       "src/core/database/Database.ts",
@@ -6004,6 +6012,7 @@
     "src/core/native-runtime/__tests__/RuntimeDiscovery.test.ts": [
       "src/core/native-runtime/RuntimeDiscovery.ts"
     ],
+    "src/core/native-runtime/GameEditorInstrumentationSources.ts": [],
     "src/core/native-runtime/index.ts": [
       "src/core/native-runtime/LocalAIBackends.ts",
       "src/core/native-runtime/NativeAudioBackends.ts",
@@ -6027,6 +6036,7 @@
     "src/core/native-runtime/NativeGameEditorBackends.ts": [
       "src/core/gaming/engine/GameEngineTypes.ts",
       "src/core/gaming/engine/NativeEditorBackend.ts",
+      "src/core/native-runtime/GameEditorInstrumentationSources.ts",
       "src/core/native-runtime/NativeCommandRunner.ts",
       "src/core/native-runtime/RuntimeDiscovery.ts"
     ],
@@ -8617,5 +8627,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1646
+  "sourceRecordCount": 1650
 }

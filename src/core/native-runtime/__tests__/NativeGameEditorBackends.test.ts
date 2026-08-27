@@ -8,6 +8,12 @@ jest.mock('../NativeCommandRunner', () => ({ runNativeCommand: jest.fn() }));
 
 const mockedRunNativeCommand = jest.mocked(runNativeCommand);
 
+function emitInstrumentationResult(options: any, payload: unknown): void {
+  const resultPath = options?.env?.CHATBOT_ENGINE_RESULT;
+  if (!resultPath) throw new Error('Instrumentation result path was not supplied to the editor.');
+  fs.writeFileSync(resultPath, JSON.stringify(payload));
+}
+
 describe('InstalledGameEditorBackend', () => {
   let root: string;
 
@@ -38,17 +44,22 @@ describe('InstalledGameEditorBackend', () => {
     );
   });
 
-  it('never substitutes zero-valued metrics when editor instrumentation is absent', async () => {
+  it('returns metrics emitted by the trusted Unity project-side profiler bridge', async () => {
     const unity = path.join(root, 'Unity.exe');
     fs.writeFileSync(unity, 'fixture');
     const backend = new InstalledGameEditorBackend({ unity, ollamaEndpoint: 'http://127.0.0.1:11434' });
+    mockedRunNativeCommand.mockImplementationOnce(async (_editor, _args, options) => {
+      emitInstrumentationResult(options, {
+        mode: 'profile', profile: { timestamp: '2026-08-27T00:00:00.000Z', fps: 60, frameTimeMs: 16.67, drawCalls: 12, nodeCount: 4, memoryMb: 128, vramMb: 32, physicsTickRate: 50 }
+      });
+      return { exitCode: 0, stdout: 'profiled', stderr: '', durationMs: 1 };
+    });
 
-    await expect(backend.profile('unity', root, 1_000)).rejects.toThrow(
-      'UNITY_PROFILER_INSTRUMENTATION_UNAVAILABLE'
-    );
+    await expect(backend.profile('unity', root, 1_000)).resolves.toMatchObject({ fps: 60, nodeCount: 4, memoryMb: 128 });
+    expect(fs.readFileSync(path.join(root, 'Assets', 'Editor', 'ChatBotHubInstrumentationBridge.cs'), 'utf8')).toContain('Profiler.GetTotalAllocatedMemoryLong');
   });
 
-  it('validates Unreal before profiling and surfaces an editor failure without synthetic metrics', async () => {
+  it('surfaces an Unreal CSV profiler process failure without synthetic metrics', async () => {
     const editor = path.join(root, 'Engine', 'Binaries', 'Win64', 'UnrealEditor.exe');
     const commandlet = path.join(path.dirname(editor), 'UnrealEditor-Cmd.exe');
     fs.mkdirSync(path.dirname(editor), { recursive: true });
@@ -60,6 +71,40 @@ describe('InstalledGameEditorBackend', () => {
     await expect(backend.profile('unreal', root, 0)).rejects.toThrow('unreal exited with code 7.');
   });
 
+  it('returns real Unreal gameplay metrics from a flushed native CSV capture', async () => {
+    const editor = path.join(root, 'Engine', 'Binaries', 'Win64', 'UnrealEditor.exe');
+    const commandlet = path.join(path.dirname(editor), 'UnrealEditor-Cmd.exe');
+    fs.mkdirSync(path.dirname(editor), { recursive: true });
+    fs.mkdirSync(path.join(root, 'Engine', 'Build'), { recursive: true });
+    fs.writeFileSync(editor, 'fixture');
+    fs.writeFileSync(commandlet, 'fixture');
+    fs.writeFileSync(path.join(root, 'Engine', 'Build', 'Build.version'), JSON.stringify({ MajorVersion: 5, MinorVersion: 8 }));
+    fs.writeFileSync(path.join(root, 'Smoke.uproject'), '{}');
+    const homedir = jest.spyOn(os, 'homedir').mockReturnValue(root);
+    mockedRunNativeCommand.mockImplementationOnce(async () => {
+      const csvDirectory = path.join(root, 'AppData', 'Local', 'UnrealEngine', '5.8', 'Saved', 'Profiling', 'CSV');
+      fs.mkdirSync(csvDirectory, { recursive: true });
+      fs.writeFileSync(path.join(csvDirectory, 'Profile.csv'), [
+        'EVENTS,FrameTime,PhysicalUsedMB,ActorCount/TotalActorCount,RHI/DrawCalls',
+        ',20,100,4,8',
+        ',10,120,6,12',
+        'EVENTS,FrameTime,PhysicalUsedMB,ActorCount/TotalActorCount,RHI/DrawCalls'
+      ].join('\n'));
+      return { exitCode: 0, stdout: 'profiled', stderr: '', durationMs: 1 };
+    });
+    try {
+      const backend = new InstalledGameEditorBackend({ unreal: editor, ollamaEndpoint: 'http://127.0.0.1:11434' });
+      await expect(backend.profile('unreal', root, 1_000)).resolves.toMatchObject({
+        fps: 1000 / 15, frameTimeMs: 15, drawCalls: 10, nodeCount: 5, memoryMb: 110
+      });
+      expect(mockedRunNativeCommand).toHaveBeenCalledWith(commandlet, expect.arrayContaining([
+        '-game', '-csvCaptureFrames=120', '-ExitAfterCsvProfiling'
+      ]), expect.any(Object));
+    } finally {
+      homedir.mockRestore();
+    }
+  });
+
   it('reports installed editor availability and rejects unsupported or missing editors', async () => {
     const backend = new InstalledGameEditorBackend({ unity: 'Unity.exe', ollamaEndpoint: 'http://127.0.0.1:11434' });
     expect(backend.isAvailable('unity')).toBe(true);
@@ -68,14 +113,28 @@ describe('InstalledGameEditorBackend', () => {
     await expect(backend.runScenario('unreal', root, {}, [])).rejects.toThrow('unreal editor is not installed');
   });
 
-  it('fails Unreal assertions without launching an untrusted project bridge', async () => {
-    const backend = new InstalledGameEditorBackend({ unreal: 'UnrealEditor.exe', ollamaEndpoint: 'http://127.0.0.1:11434' });
+  it('runs Unreal assertions through the reviewed project-side Python bridge', async () => {
+    const editor = path.join(root, 'Engine', 'Binaries', 'Win64', 'UnrealEditor.exe');
+    const commandlet = path.join(path.dirname(editor), 'UnrealEditor-Cmd.exe');
+    fs.mkdirSync(path.dirname(editor), { recursive: true });
+    fs.writeFileSync(editor, 'fixture');
+    fs.writeFileSync(commandlet, 'fixture');
+    fs.writeFileSync(path.join(root, 'Smoke.uproject'), '{}');
+    mockedRunNativeCommand.mockImplementationOnce(async (_editor, _args, options) => {
+      emitInstrumentationResult(options, {
+        mode: 'scenario', scenarioName: 'Map', durationMs: 250,
+        assertions: [{ actual: true, passed: true }]
+      });
+      return { exitCode: 0, stdout: 'asserted', stderr: '', durationMs: 1 };
+    });
+    const backend = new InstalledGameEditorBackend({ unreal: editor, ollamaEndpoint: 'http://127.0.0.1:11434' });
     const report = await backend.runScenario('unreal', root, { scenePath: 'Map' }, [
       { type: 'node_exists', target: 'Hero', expected: true }
     ]);
-    expect(report).toMatchObject({ passed: false, scenarioName: 'Map', error: expect.stringContaining('UNREAL_ASSERTION_BRIDGE_UNAVAILABLE') });
-    expect(report.assertions[0]).toMatchObject({ actual: expect.stringContaining('No trusted'), passed: false });
-    expect(mockedRunNativeCommand).not.toHaveBeenCalled();
+    expect(report).toMatchObject({ passed: true, scenarioName: 'Map' });
+    expect(report.assertions[0]).toMatchObject({ actual: true, passed: true });
+    expect(mockedRunNativeCommand).toHaveBeenCalledWith(commandlet, expect.arrayContaining([expect.stringContaining('-ExecutePythonScript=')]), expect.any(Object));
+    expect(fs.readFileSync(path.join(root, 'Content', 'Python', 'chatbot_hub_instrumentation.py'), 'utf8')).toContain('get_all_level_actors');
   });
 
   it('classifies Unity license errors and generic editor assertion failures from real logs', async () => {
@@ -88,11 +147,18 @@ describe('InstalledGameEditorBackend', () => {
     const license = await backend.runScenario('unity', root, {}, []);
     expect(license.error).toContain('no valid Unity Editor license');
 
-    mockedRunNativeCommand.mockResolvedValueOnce({ exitCode: 0, stdout: 'validated', stderr: '', durationMs: 1 });
+    mockedRunNativeCommand.mockImplementationOnce(async (_editor, _args, options) => {
+      emitInstrumentationResult(options, {
+        mode: 'scenario', scenarioName: 'active scene', durationMs: 250,
+        assertions: [{ actualJson: '"Waiting"', passed: false }], error: 'One or more project-side assertions failed.'
+      });
+      return { exitCode: 2, stdout: 'validated', stderr: '', durationMs: 1 };
+    });
     const assertion = await backend.runScenario('unity', root, { args: ['-custom'] }, [
       { type: 'screen_text', target: 'Label', expected: 'Ready' }
     ]);
-    expect(assertion).toMatchObject({ passed: false, error: 'One or more assertions require project instrumentation.' });
+    expect(assertion).toMatchObject({ passed: false, error: 'One or more project-side assertions failed.' });
+    expect(assertion.assertions[0]).toMatchObject({ actual: 'Waiting', passed: false });
     expect(assertion.capturedLogs).toContain('validated');
 
     mockedRunNativeCommand.mockResolvedValueOnce({ exitCode: 4, stdout: '', stderr: 'unknown failure', durationMs: 1 });

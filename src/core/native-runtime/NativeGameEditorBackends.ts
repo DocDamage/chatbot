@@ -1,9 +1,26 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { NativeEditorBackend } from '../gaming/engine/NativeEditorBackend';
 import { EngineAssertion, EngineAssertionReport, EngineExportPreset, EngineExportResult, EngineProfileSnapshot, EngineRuntimeOptions, EngineType } from '../gaming/engine/GameEngineTypes';
 import { LocalRuntimeInventory } from './RuntimeDiscovery';
 import { runNativeCommand } from './NativeCommandRunner';
+import { UNITY_INSTRUMENTATION_BRIDGE, UNREAL_INSTRUMENTATION_BRIDGE } from './GameEditorInstrumentationSources';
+
+interface InstrumentationAssertionResult {
+  actual?: unknown;
+  actualJson?: string;
+  passed: boolean;
+}
+
+interface InstrumentationResult {
+  mode: 'scenario' | 'profile' | 'error';
+  scenarioName?: string;
+  durationMs?: number;
+  assertions?: InstrumentationAssertionResult[];
+  profile?: EngineProfileSnapshot;
+  error?: string;
+}
 
 function tail(value: string, maximum = 120_000): string {
   return value.length <= maximum ? value : value.slice(-maximum);
@@ -22,18 +39,23 @@ export class InstalledGameEditorBackend implements NativeEditorBackend {
 
   public async runScenario(engine: EngineType, projectRoot: string, options: EngineRuntimeOptions, assertions: EngineAssertion[]): Promise<EngineAssertionReport> {
     const startedAt = Date.now();
-    if (engine === 'unreal' && assertions.length > 0) {
-      return {
-        scenarioName: options.scenePath || 'Unreal project validation',
-        passed: false,
-        durationMs: 0,
-        assertions: assertions.map(assertion => ({
+    if (assertions.length > 0 && (engine === 'unity' || engine === 'unreal')) {
+      const instrumented = await this.runInstrumentation(engine, projectRoot, 'scenario', options, assertions);
+      const evaluated = assertions.map((assertion, index) => {
+        const result = instrumented.output.assertions?.[index];
+        return {
           ...assertion,
-          actual: 'No trusted Unreal project-side assertion bridge is installed.',
-          passed: false
-        })),
-        capturedLogs: [],
-        error: 'UNREAL_ASSERTION_BRIDGE_UNAVAILABLE: install a reviewed project-side automation bridge before running gameplay assertions.'
+          actual: result?.actualJson === undefined ? result?.actual : this.parseJsonValue(result.actualJson),
+          passed: result?.passed === true
+        };
+      });
+      return {
+        scenarioName: instrumented.output.scenarioName || options.scenePath || `${engine} gameplay scenario`,
+        passed: instrumented.output.mode === 'scenario' && evaluated.every(assertion => assertion.passed),
+        durationMs: instrumented.output.durationMs ?? Date.now() - startedAt,
+        assertions: evaluated,
+        capturedLogs: instrumented.logs,
+        error: instrumented.output.error
       };
     }
     const result = engine === 'unity'
@@ -63,19 +85,122 @@ export class InstalledGameEditorBackend implements NativeEditorBackend {
   }
 
   public async profile(engine: EngineType, projectRoot: string, durationMs = 120_000): Promise<EngineProfileSnapshot> {
-    const result = engine === 'unity'
-      ? await this.runUnity(projectRoot, ['-batchmode', '-nographics', '-quit'], Math.ceil(durationMs / 1000))
-      : await this.runUnrealCommandlet(projectRoot, [
-        '-run=ResavePackages', '-ProjectOnly', '-SkipSave', '-unattended', '-nullrhi', '-nosplash', '-stdout', '-FullStdOutLogOutput'
-      ], Math.ceil(durationMs / 1000));
-    const editorLogs = this.collectProjectEditorLogs(projectRoot);
-    if (result.exitCode !== 0) {
-      throw new Error(this.executionFailure(engine, result.exitCode, result.stderr || result.stdout || editorLogs));
+    if (engine !== 'unity' && engine !== 'unreal') throw new Error(`${engine} editor is not supported by the installed editor backend.`);
+    if (engine === 'unreal') return this.profileUnrealCsv(projectRoot, durationMs);
+    const instrumented = await this.runInstrumentation(engine, projectRoot, 'profile', { maxDurationSeconds: Math.ceil(durationMs / 1000) + 120 }, [], durationMs);
+    if (instrumented.output.mode !== 'profile' || !instrumented.output.profile) {
+      throw new Error(instrumented.output.error || `${engine.toUpperCase()}_PROFILER_INSTRUMENTATION_FAILED: the project-side bridge returned no profile.`);
     }
-    throw new Error(
-      `${engine.toUpperCase()}_PROFILER_INSTRUMENTATION_UNAVAILABLE: the installed editor completed its validation run, ` +
-      'but this project does not expose a trusted profiler bridge. No synthetic metrics were returned.'
-    );
+    return instrumented.output.profile;
+  }
+
+  private async profileUnrealCsv(projectRoot: string, durationMs: number): Promise<EngineProfileSnapshot> {
+    const editor = this.requireEditor('unreal');
+    const engineRoot = path.resolve(path.dirname(editor), '..', '..');
+    const buildVersionPath = path.join(engineRoot, 'Build', 'Build.version');
+    let engineVersion = path.basename(path.dirname(engineRoot)).match(/UE_(\d+\.\d+)/i)?.[1];
+    if (fs.existsSync(buildVersionPath)) {
+      try {
+        const version = JSON.parse(fs.readFileSync(buildVersionPath, 'utf8')) as { MajorVersion?: number; MinorVersion?: number };
+        if (Number.isFinite(version.MajorVersion) && Number.isFinite(version.MinorVersion)) {
+          engineVersion = `${version.MajorVersion}.${version.MinorVersion}`;
+        }
+      } catch {
+        // Fall through to the installation-directory version when Build.version is malformed.
+      }
+    }
+    const csvDirectories = [path.join(projectRoot, 'Saved', 'Profiling', 'CSV')];
+    if (process.platform === 'win32' && engineVersion) {
+      csvDirectories.push(path.join(os.homedir(), 'AppData', 'Local', 'UnrealEngine', engineVersion, 'Saved', 'Profiling', 'CSV'));
+    }
+    const before = new Set(this.listCsvFiles(csvDirectories).map(candidate => `${candidate.path}|${candidate.modified}|${candidate.size}`));
+    const startedAt = Date.now();
+    const captureFrames = Math.max(120, Math.min(3_600, Math.ceil(Math.max(durationMs, 1_000) / (1000 / 60))));
+    const result = await this.runUnrealCommandlet(projectRoot, [
+      '-game', '-nullrhi', '-unattended', '-nosplash', '-stdout', '-FullStdOutLogOutput',
+      `-csvCaptureFrames=${captureFrames}`, '-ExitAfterCsvProfiling', '-csvCompression=0'
+    ], Math.ceil(durationMs / 1000) + 180);
+    if (result.exitCode !== 0) throw new Error(this.executionFailure('unreal', result.exitCode, result.stderr || result.stdout));
+    const candidate = this.listCsvFiles(csvDirectories)
+      .filter(file => file.modified >= startedAt - 1_000 && !before.has(`${file.path}|${file.modified}|${file.size}`))
+      .sort((left, right) => right.modified - left.modified)[0];
+    if (!candidate) {
+      throw new Error(`UNREAL_CSV_PROFILER_FAILED: no new CSV capture was found under ${csvDirectories.join(' or ')}.`);
+    }
+    return this.parseUnrealCsvProfile(candidate.path);
+  }
+
+  private listCsvFiles(directories: string[]): Array<{ path: string; modified: number; size: number }> {
+    const files: Array<{ path: string; modified: number; size: number }> = [];
+    for (const directory of directories) {
+      if (!fs.existsSync(directory)) continue;
+      for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+        if (!entry.isFile() || !entry.name.toLowerCase().endsWith('.csv')) continue;
+        const candidatePath = path.join(directory, entry.name);
+        const stat = fs.statSync(candidatePath);
+        files.push({ path: candidatePath, modified: stat.mtimeMs, size: stat.size });
+      }
+    }
+    return files;
+  }
+
+  private parseUnrealCsvProfile(csvPath: string): EngineProfileSnapshot {
+    const lines = fs.readFileSync(csvPath, 'utf8').split(/\r\n|\n|\r/).filter(Boolean);
+    const headerIndex = lines.findIndex(line => line.startsWith('EVENTS,'));
+    if (headerIndex < 0) throw new Error(`UNREAL_CSV_PROFILER_FAILED: ${csvPath} has no CSV header.`);
+    const headers = this.parseCsvLine(lines[headerIndex]);
+    const column = (name: string): number => headers.indexOf(name);
+    const frameIndex = column('FrameTime');
+    const memoryIndex = column('PhysicalUsedMB');
+    const actorIndex = column('ActorCount/TotalActorCount');
+    const drawIndex = column('RHI/DrawCalls');
+    if (frameIndex < 0 || memoryIndex < 0 || actorIndex < 0) {
+      throw new Error(`UNREAL_CSV_PROFILER_FAILED: ${csvPath} is missing required FrameTime, PhysicalUsedMB, or actor-count columns.`);
+    }
+    const parsedRows = lines.slice(headerIndex + 1)
+      .filter(line => !line.startsWith('EVENTS,'))
+      .map(line => this.parseCsvLine(line))
+      .filter(values => Number.isFinite(Number(values[frameIndex])) && Number(values[frameIndex]) > 0);
+    const steadyRows = parsedRows.filter(values => Number(values[frameIndex]) < 1_000).slice(-60);
+    if (steadyRows.length === 0) throw new Error(`UNREAL_CSV_PROFILER_FAILED: ${csvPath} contains no usable gameplay frames.`);
+    const average = (index: number): number | undefined => {
+      if (index < 0) return undefined;
+      const values = steadyRows.map(row => Number(row[index])).filter(Number.isFinite);
+      return values.length > 0 ? values.reduce((sum, value) => sum + value, 0) / values.length : undefined;
+    };
+    const frameTimeMs = average(frameIndex) as number;
+    return {
+      timestamp: fs.statSync(csvPath).mtime.toISOString(),
+      fps: 1000 / frameTimeMs,
+      frameTimeMs,
+      drawCalls: average(drawIndex),
+      nodeCount: Math.round(average(actorIndex) || 0),
+      memoryMb: average(memoryIndex) || 0
+    };
+  }
+
+  private parseCsvLine(line: string): string[] {
+    const values: string[] = [];
+    let value = '';
+    let quoted = false;
+    for (let index = 0; index < line.length; index += 1) {
+      const character = line[index];
+      if (character === '"') {
+        if (quoted && line[index + 1] === '"') {
+          value += '"';
+          index += 1;
+        } else {
+          quoted = !quoted;
+        }
+      } else if (character === ',' && !quoted) {
+        values.push(value);
+        value = '';
+      } else {
+        value += character;
+      }
+    }
+    values.push(value);
+    return values;
   }
 
   public async exportProject(engine: EngineType, projectRoot: string, preset: EngineExportPreset): Promise<EngineExportResult> {
@@ -120,13 +245,70 @@ export class InstalledGameEditorBackend implements NativeEditorBackend {
     });
   }
 
-  private async runUnrealCommandlet(projectRoot: string, args: string[], timeoutSeconds = 120) {
+  private async runUnrealCommandlet(projectRoot: string, args: string[], timeoutSeconds = 120, extraEnv: NodeJS.ProcessEnv = {}) {
     const editor = this.requireEditor('unreal');
     const commandlet = path.join(path.dirname(editor), 'UnrealEditor-Cmd.exe');
     if (!fs.existsSync(commandlet)) throw new Error(`Unreal commandlet executable was not found at ${commandlet}.`);
     return runNativeCommand(commandlet, [this.findUproject(projectRoot), ...args], {
-      timeoutMs: Math.max(30_000, (timeoutSeconds || 120) * 1000)
+      timeoutMs: Math.max(30_000, (timeoutSeconds || 120) * 1000), env: { ...process.env, ...extraEnv }
     });
+  }
+
+  private async runInstrumentation(
+    engine: 'unity' | 'unreal',
+    projectRoot: string,
+    mode: 'scenario' | 'profile',
+    options: EngineRuntimeOptions,
+    assertions: EngineAssertion[],
+    durationMs = 1_000
+  ): Promise<{ output: InstrumentationResult; logs: string[] }> {
+    const instrumentationRoot = path.join(projectRoot, '.chatbot-instrumentation');
+    fs.mkdirSync(instrumentationRoot, { recursive: true });
+    const runId = `${process.pid}-${Date.now()}`;
+    const requestPath = path.join(instrumentationRoot, `request-${runId}.json`);
+    const resultPath = path.join(instrumentationRoot, `result-${runId}.json`);
+    const request = {
+      mode,
+      scenePath: options.scenePath || '',
+      durationMs,
+      assertions: assertions.map(assertion => ({ ...assertion, expectedJson: JSON.stringify(assertion.expected) }))
+    };
+    fs.writeFileSync(requestPath, `${JSON.stringify(request, null, 2)}\n`, 'utf8');
+    const bridgePath = engine === 'unity'
+      ? this.ensureBridge(path.join(projectRoot, 'Assets', 'Editor', 'ChatBotHubInstrumentationBridge.cs'), UNITY_INSTRUMENTATION_BRIDGE)
+      : this.ensureBridge(path.join(projectRoot, 'Content', 'Python', 'chatbot_hub_instrumentation.py'), UNREAL_INSTRUMENTATION_BRIDGE);
+    const instrumentationEnv = {
+      ...process.env,
+      CHATBOT_ENGINE_REQUEST: requestPath,
+      CHATBOT_ENGINE_RESULT: resultPath
+    };
+    const timeoutSeconds = Math.max(options.maxDurationSeconds || 0, Math.ceil(durationMs / 1000) + 120);
+    const result = engine === 'unity'
+      ? await this.runUnity(projectRoot, ['-batchmode', '-nographics', '-executeMethod', 'ChatBotHubInstrumentationBridge.Run', ...(options.args || [])], timeoutSeconds, instrumentationEnv)
+      : await this.runUnrealCommandlet(projectRoot, [
+        `-ExecutePythonScript=${bridgePath.replaceAll('\\', '/')}`, '-unattended', '-nullrhi', '-nosplash', '-stdout', '-FullStdOutLogOutput', ...(options.args || [])
+      ], timeoutSeconds, instrumentationEnv);
+    const editorLogs = this.collectProjectEditorLogs(projectRoot);
+    const logs = [`Instrumentation bridge: ${bridgePath}`, ...`${result.stdout}\n${result.stderr}\n${editorLogs}`.split(/\r?\n/).filter(Boolean).slice(-500)];
+    if (!fs.existsSync(resultPath)) {
+      throw new Error(this.executionFailure(engine, result.exitCode, result.stderr || result.stdout || editorLogs || 'Instrumentation bridge produced no result file.'));
+    }
+    const output = JSON.parse(fs.readFileSync(resultPath, 'utf8')) as InstrumentationResult;
+    if (output.mode === 'error') throw new Error(`${engine.toUpperCase()}_INSTRUMENTATION_FAILED: ${output.error || 'unknown bridge error'}`);
+    if (result.exitCode !== 0 && !(mode === 'scenario' && output.assertions?.some(assertion => !assertion.passed))) {
+      throw new Error(this.executionFailure(engine, result.exitCode, result.stderr || result.stdout || editorLogs));
+    }
+    return { output, logs };
+  }
+
+  private ensureBridge(bridgePath: string, source: string): string {
+    fs.mkdirSync(path.dirname(bridgePath), { recursive: true });
+    if (!fs.existsSync(bridgePath) || fs.readFileSync(bridgePath, 'utf8') !== source) fs.writeFileSync(bridgePath, source, 'utf8');
+    return bridgePath;
+  }
+
+  private parseJsonValue(value: string): unknown {
+    try { return JSON.parse(value); } catch { return value; }
   }
 
   private requireEditor(engine: 'unity' | 'unreal'): string {

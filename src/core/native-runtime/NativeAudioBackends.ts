@@ -53,7 +53,8 @@ export class DemucsCliExecutor implements DemucsWorkerExecutor {
     input.onProgress?.({ stage: 'model_loading', percentage: 15, message: `Loading ${input.config.modelName} on ${device}.` });
     const result = await runNativeCommand(this.demucsPath, args, {
       timeoutMs: 60 * 60_000,
-      onSpawn: child => this.children.set(input.jobId, child)
+      onSpawn: child => this.children.set(input.jobId, child),
+      env: this.demucsEnvironment()
     });
     this.children.delete(input.jobId);
     if (input.isCancelled()) throw new Error('JOB_CANCELLED: Stem separation was cancelled by user.');
@@ -94,6 +95,22 @@ export class DemucsCliExecutor implements DemucsWorkerExecutor {
   public cancel(jobId: string): void {
     this.children.get(jobId)?.kill('SIGKILL');
     this.children.delete(jobId);
+  }
+
+  private demucsEnvironment(): NodeJS.ProcessEnv {
+    const sharedLibraries = process.env.FFMPEG_SHARED_DLL_DIR;
+    if (!sharedLibraries) return process.env;
+    if (!fs.existsSync(sharedLibraries) || !fs.statSync(sharedLibraries).isDirectory()) {
+      throw new Error(`FFMPEG_SHARED_DLL_DIR does not identify a directory: ${sharedLibraries}`);
+    }
+    const entries = fs.readdirSync(sharedLibraries);
+    if (process.platform === 'win32' && !entries.some(entry => /^avcodec-\d+\.dll$/i.test(entry))) {
+      throw new Error(`FFMPEG_SHARED_DLL_DIR contains no FFmpeg shared libraries: ${sharedLibraries}`);
+    }
+    return {
+      ...process.env,
+      PATH: [sharedLibraries, process.env.PATH || process.env.Path || ''].filter(Boolean).join(path.delimiter)
+    };
   }
 
   private async createArtifact(filePath: string, stemType: StemArtifact['stemType']): Promise<StemArtifact> {

@@ -316,10 +316,6 @@ export class Database {
             USING GIN (to_tsvector('english', content))`,
           `CREATE INDEX IF NOT EXISTS idx_document_chunks_source_id
             ON document_chunks (source_id)`,
-          `CREATE INDEX IF NOT EXISTS idx_chunk_embeddings_vector
-            ON chunk_embeddings
-            USING ivfflat (embedding_vector vector_cosine_ops)
-            WITH (lists = 100)`,
           `CREATE TABLE IF NOT EXISTS source_citations (
             id TEXT PRIMARY KEY,
             chunk_id TEXT NOT NULL,

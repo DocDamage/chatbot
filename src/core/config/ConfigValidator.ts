@@ -54,6 +54,7 @@ const configSchema = z.object({
   CHATBOT_NATIVE_PYTHON: z.string().optional(),
   FFMPEG_PATH: z.string().optional(),
   FFPROBE_PATH: z.string().optional(),
+  FFMPEG_SHARED_DLL_DIR: z.string().optional(),
   DEMUCS_PATH: z.string().optional(),
   GODOT_PATH: z.string().optional(),
   UNITY_EDITOR_PATH: z.string().optional(),
@@ -148,7 +149,7 @@ function isPlaceholderSecret(value: string): boolean {
 function validateUrlPolicy(name: string, value: string | undefined, profile: RuntimeProfile, errors: string[]): void {
   if (!value) return;
   const url = new URL(value);
-  const localHost = ['localhost', '127.0.0.1', '::1'].includes(url.hostname);
+  const localHost = ['localhost', '127.0.0.1', '::1'].includes(url.hostname) || !url.hostname.includes('.');
   if (profile === 'hosted' && url.protocol !== 'https:' && !localHost) {
     errors.push(`${name}: hosted mode requires HTTPS for non-local endpoints`);
   }

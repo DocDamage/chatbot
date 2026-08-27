@@ -10,6 +10,7 @@
 - Implemented worktree spans the governance/platform, intelligence, local-model, game/media/studio, integrated UI, security, reliability, evaluation, and release-control phases `PX-00` through `PX-22`.
 - Status: `IMPLEMENTED_NOT_VERIFIED`
 - Audit correction resolved: the implementation is committed, pushed, and certified by Required CI run [33023989410](https://github.com/DocDamage/chatbot/actions/runs/33023989410) on the exact checkpoint above. Independent external/manual release gates remain open.
+- 2026-08-27 follow-up: production-like deployment/recovery/load, Unity/Unreal project instrumentation, and CUDA Demucs are now implemented and locally certified. See `docs/implementation/evidence/profile-expansion/PRODUCTION_LIKE_EDITORS_CUDA_CERTIFICATION_2026-08-27.md`.
 - Capability Maturity: All new game engine adapters remain `LOCAL_ONLY_EXPERIMENTAL` and default-deny in hosted mode, subject to cryptographic approval digests and boundary confinement.
 
 ## Delivered
@@ -60,22 +61,24 @@
 - Required CI run [33023989410](https://github.com/DocDamage/chatbot/actions/runs/33023989410) passed every required job and the aggregate gate on exact checkpoint `9b99435892fe1848e8e03f6c7ce07323d110cf74`. Linux server coverage was 88.3374% lines (33,070/37,436) and 75.3008% branches (15,460/20,531); client coverage was 82.4569% lines and 77.2350% branches.
 - The `branch-75` policy stage is active and certified in CI with continued enforcement of all 19 Tier A files. The CI result is 61 covered branch arms above the 75% minimum; the aspirational 76% buffer remains 144 arms away in CI (107 in the final local report).
 - The complete local `npm run release:check` candidate sequence passed: server and client coverage policy, 7 browser E2E tests, accessibility unit and Chromium/Axe workflows, both production builds, and packaging smoke. Post-implementation `npm run type-check`, `npm run lint`, and `npm run check:phase2` also passed.
+- The isolated production-like Linux OCI target passed client/readiness/auth/security-header checks, PostgreSQL and Redis restart persistence and restore, container hardening/private-port inspection, and image rollback. Its 15.056-second concurrency-20 readiness load generated 135,141 successful requests with zero failures and 4.80 ms p95 latency.
+- Reviewed Unity 6000.4.5f1 and Unreal 5.8 project-side bridges passed in one combined host-native run. Unity entered real Play Mode and verified object/property/FPS assertions plus profiler metrics. Unreal verified real world actors through its Python API and captured 120 native CSV gameplay frames.
+- CUDA Demucs is operational on the physical RTX 3060 with official `torch`/`torchaudio` 2.11.0 CUDA 13.0 wheels and matched TorchCodec. A real two-stem GPU separation produced both MP3 stems; the shared-FFmpeg child-process path is persisted and validated.
 
 ## Open verification gates
 
 - Replace branch/date source observations with immutable upstream revisions and attach actual license review evidence; generated SBOM/notices exist but are not a legal sign-off.
-- Add reviewed Unity/Unreal project-side gameplay assertion and profiler instrumentation, then execute those project-level canaries. CUDA Demucs remains optional/open because the installed runtime is CPU-only.
 - Complete clean-machine/device certification and signed manual WCAG/screen-reader testing.
-- Produce real load/soak, backup/restore, quarterly drill, signed release-artifact, and post-deploy evidence.
+- Repeat the new deployment/recovery harness in a named staging/production environment with real TLS, managed services, representative application traffic, a long soak, signed release artifacts, and post-deploy monitoring evidence.
 
 ## Next authorized task
 
-Close the remaining external/manual certification gates above—beginning with immutable upstream/license evidence and reviewed Unity/Unreal instrumentation—before promoting any PX task to `VERIFIED`. Host-native canaries now pass, including Unity, and Required CI plus the active `branch-75` gate are already certified on `9b99435892fe1848e8e03f6c7ce07323d110cf74`.
+Close the remaining external/manual certification gates above—beginning with immutable upstream/license evidence, clean-machine/manual-accessibility work, and a named deployed-environment rehearsal—before promoting any PX task to `VERIFIED`. Production-like local recovery/load, Unity/Unreal project instrumentation, CUDA Demucs, Required CI, and the active `branch-75` gate are now certified.
 
 ## NEW THREAD START PROMPT
 
 ```text
-Continue the profile-expansion certification from exact Required CI checkpoint 9b99435892fe1848e8e03f6c7ce07323d110cf74 and native certification evidence dated 2026-08-26. Required CI run 33023989410 passed the active branch-75 policy at 75.3008% server branches. Host-native canaries pass, including Unity; do not promote PX tasks until the remaining project-instrumentation, legal, manual-accessibility, clean-machine, load, recovery, release-artifact, and post-deploy evidence gates pass.
+Continue the profile-expansion certification from Required CI checkpoint 9b99435892fe1848e8e03f6c7ce07323d110cf74 plus the production-like/editor/CUDA evidence dated 2026-08-27. Required CI run 33023989410 passed the active branch-75 policy at 75.3008% server branches. Local production-like recovery/load, Unity/Unreal project instrumentation, and CUDA Demucs pass; do not promote PX tasks until legal, manual-accessibility, clean-machine, named-environment, signed-artifact, and post-deploy evidence gates pass.
 ```
 
 ## Thread closure

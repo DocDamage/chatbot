@@ -102,6 +102,17 @@ describe('RT-PLAT-001 / RT-CONF-004: ConfigValidator Deployment Rules and Diagno
     expect(summarySqlite.database).toBe('sqlite');
   });
 
+  it('allows private service-discovery URLs in hosted container networks', () => {
+    const result = ConfigValidator.validate({
+      ...baseValidEnv,
+      DEPLOYMENT_MODE: 'hosted',
+      CORS_ORIGIN: 'https://chat.example',
+      REDIS_URL: 'redis://redis:6379'
+    });
+
+    expect(result.errors).not.toContain(expect.stringContaining('REDIS_URL: hosted mode requires HTTPS'));
+  });
+
   it('throws in getValidatedConfig when config is invalid', () => {
     expect(() => ConfigValidator.getValidatedConfig({ PORT: 'bad' })).toThrow('Configuration validation failed');
   });

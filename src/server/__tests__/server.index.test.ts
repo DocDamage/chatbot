@@ -50,6 +50,11 @@ describe('Server Index Suite', () => {
     expect([200, 503]).toContain(res.status);
   });
 
+  it('does not apply RAG authentication middleware to the client entry point', async () => {
+    const res = await request(app).get('/deployment-entrypoint-probe');
+    expect(res.status).not.toBe(401);
+  });
+
   it('rejects unauthorized knowledge-base modifications', async () => {
     const res = await request(app)
       .post('/api/knowledge-base/add')
