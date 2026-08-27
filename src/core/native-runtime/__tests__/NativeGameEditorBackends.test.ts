@@ -80,9 +80,8 @@ describe('InstalledGameEditorBackend', () => {
     fs.writeFileSync(commandlet, 'fixture');
     fs.writeFileSync(path.join(root, 'Engine', 'Build', 'Build.version'), JSON.stringify({ MajorVersion: 5, MinorVersion: 8 }));
     fs.writeFileSync(path.join(root, 'Smoke.uproject'), '{}');
-    const homedir = jest.spyOn(os, 'homedir').mockReturnValue(root);
     mockedRunNativeCommand.mockImplementationOnce(async () => {
-      const csvDirectory = path.join(root, 'AppData', 'Local', 'UnrealEngine', '5.8', 'Saved', 'Profiling', 'CSV');
+      const csvDirectory = path.join(root, 'Saved', 'Profiling', 'CSV');
       fs.mkdirSync(csvDirectory, { recursive: true });
       fs.writeFileSync(path.join(csvDirectory, 'Profile.csv'), [
         'EVENTS,FrameTime,PhysicalUsedMB,ActorCount/TotalActorCount,RHI/DrawCalls',
@@ -92,17 +91,13 @@ describe('InstalledGameEditorBackend', () => {
       ].join('\n'));
       return { exitCode: 0, stdout: 'profiled', stderr: '', durationMs: 1 };
     });
-    try {
-      const backend = new InstalledGameEditorBackend({ unreal: editor, ollamaEndpoint: 'http://127.0.0.1:11434' });
-      await expect(backend.profile('unreal', root, 1_000)).resolves.toMatchObject({
-        fps: 1000 / 15, frameTimeMs: 15, drawCalls: 10, nodeCount: 5, memoryMb: 110
-      });
-      expect(mockedRunNativeCommand).toHaveBeenCalledWith(commandlet, expect.arrayContaining([
-        '-game', '-csvCaptureFrames=120', '-ExitAfterCsvProfiling'
-      ]), expect.any(Object));
-    } finally {
-      homedir.mockRestore();
-    }
+    const backend = new InstalledGameEditorBackend({ unreal: editor, ollamaEndpoint: 'http://127.0.0.1:11434' });
+    await expect(backend.profile('unreal', root, 1_000)).resolves.toMatchObject({
+      fps: 1000 / 15, frameTimeMs: 15, drawCalls: 10, nodeCount: 5, memoryMb: 110
+    });
+    expect(mockedRunNativeCommand).toHaveBeenCalledWith(commandlet, expect.arrayContaining([
+      '-game', '-csvCaptureFrames=120', '-ExitAfterCsvProfiling'
+    ]), expect.any(Object));
   });
 
   it('reports installed editor availability and rejects unsupported or missing editors', async () => {
