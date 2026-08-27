@@ -120,9 +120,13 @@ export class LocalHardwareCanary {
           model: inferenceModel
         });
         const res = await adapter.generate({
-          prompt: 'Echo test: reply with OK',
-          maxTokens: 10,
-          temperature: 0.1
+          prompt: 'Reply with exactly OK.',
+          systemPrompt: 'This is a local inference health check. Return a short visible response.',
+          // Reasoning models can consume a small completion budget before they
+          // emit visible content. Keep this bounded but large enough to prove
+          // that the user-visible response path is operational.
+          maxTokens: 512,
+          temperature: 0
         });
         responseSnippet = res.content ? res.content.trim() : '';
         inferencePassed = responseSnippet.length > 0;

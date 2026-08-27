@@ -167,16 +167,20 @@ describe('Local Model & Resource Adapter Layer (PX-07)', () => {
 
   describe('PX07-T09: Local Hardware Canary Matrix', () => {
     it('runs local diagnostic canary matrix safely', async () => {
+      let inferenceRequest: any;
       const mockGet = jest.fn().mockResolvedValue({
         data: {
           data: [{ id: 'llama3' }]
         }
       });
-      const mockPost = jest.fn().mockResolvedValue({
-        data: {
-          choices: [{ message: { content: 'Canary OK' } }],
-          usage: { total_tokens: 10 }
-        }
+      const mockPost = jest.fn().mockImplementation((_url, body) => {
+        inferenceRequest = body;
+        return Promise.resolve({
+          data: {
+            choices: [{ message: { content: 'Canary OK' } }],
+            usage: { total_tokens: 10 }
+          }
+        });
       });
 
       mockedAxios.create.mockReturnValue({
@@ -194,6 +198,8 @@ describe('Local Model & Resource Adapter Layer (PX-07)', () => {
       expect(result.hardwareDetected.online).toBe(true);
       expect(result.resourceManagerLease.passed).toBe(true);
       expect(result.durationMs).toBeGreaterThanOrEqual(0);
+      expect(inferenceRequest.max_tokens).toBe(512);
+      expect(inferenceRequest.temperature).toBe(0);
     });
   });
 });

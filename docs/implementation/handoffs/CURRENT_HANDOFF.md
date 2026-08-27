@@ -48,7 +48,9 @@
 - Native/provider-dependent features no longer fabricate transcripts, audio, screenshots, stems, translations, narration, editor runs, builds, or AI transforms. Their contracts accept explicit verified backends and their default routes report unavailable/503 while built-in deterministic functionality remains active.
 - All `npm run release:check` components passed on the audited worktree: 222 active server suites/1,173 passing tests, 36 client files/115 tests, 7 browser E2E tests, 16 accessibility unit checks, 6 Chromium/Axe workflows, both production builds, and packaging smoke.
 - Enforced Stage 2 coverage passed: server 61.8884% lines/49.9779% branches and client 67.5862% lines/60.2345% branches.
-- Local native smokes passed for Faster Whisper, Windows SAPI, screen capture, OCR, Ollama transforms, Demucs, Godot, Unreal 5.8, dubbing/narration, and AssetCooker. Unity is installed but license-blocked; Unity/Unreal assertion and profiler instrumentation remain open. See `docs/implementation/evidence/profile-expansion/NATIVE_RUNTIME_VALIDATION_2026-08-25.md`.
+- Local native certification passed for Faster Whisper, Windows SAPI, screen capture, OCR, Ollama inference, Demucs CPU separation, Godot, Unity 6000.4.5f1, Unreal 5.8, host telemetry, and all seven Chromium browser workflows. Unity's former license blocker is resolved: Unity Hub shows an active Personal license and a real project validation exited 0. Unity/Unreal gameplay assertion and profiler instrumentation remain open. See `docs/implementation/evidence/profile-expansion/NATIVE_RUNTIME_CERTIFICATION_2026-08-26.md`.
+- Certification exposed and repaired a real CF-04 hardware-canary defect: reasoning-capable local models could consume the former ten-token budget before producing visible content. The canary now uses a bounded 512-token deterministic health check; its regression suite and a real `qwen3:8b` run pass.
+- User-supplied license and API-key materials were inventoried offline by SHA-256 without printing, extracting, transmitting, or committing secrets. The generic license text does not identify covered assets or upstream revisions and therefore does not close the repository-wide legal gate. API credentials do not by themselves supply or authorize a production-like test environment.
 - `npm run check:phase2` passed after regenerating inventory and the large-file register: source integrity, inventory, production reachability, file size, environment contract, and release-document checks are current.
 - CycloneDX SBOM and `THIRD_PARTY_NOTICES.md` were regenerated locally.
 - 2026-08-26 lifecycle follow-up: `npm run test:coverage -- --runInBand` completed without `--forceExit` after repairing scheduler and timeout cleanup. It passed 325 suites (1 skipped), 1,690 tests (2 skipped), and the enforced Stage 3 server policy at 78.3438% lines, 63.6939% branches, 74.4757% functions, and 77.1015% statements.
@@ -62,18 +64,18 @@
 ## Open verification gates
 
 - Replace branch/date source observations with immutable upstream revisions and attach actual license review evidence; generated SBOM/notices exist but are not a legal sign-off.
-- Run real Godot/Unity/Unreal, media, local-model, browser, and hardware canaries where applicable.
+- Add reviewed Unity/Unreal project-side gameplay assertion and profiler instrumentation, then execute those project-level canaries. CUDA Demucs remains optional/open because the installed runtime is CPU-only.
 - Complete clean-machine/device certification and signed manual WCAG/screen-reader testing.
 - Produce real load/soak, backup/restore, quarterly drill, signed release-artifact, and post-deploy evidence.
 
 ## Next authorized task
 
-Close the external/manual certification gates above—beginning with immutable upstream/license evidence and real native canaries—before promoting any PX task to `VERIFIED`. Required CI and the active `branch-75` gate are already certified on `9b99435892fe1848e8e03f6c7ce07323d110cf74`.
+Close the remaining external/manual certification gates above—beginning with immutable upstream/license evidence and reviewed Unity/Unreal instrumentation—before promoting any PX task to `VERIFIED`. Host-native canaries now pass, including Unity, and Required CI plus the active `branch-75` gate are already certified on `9b99435892fe1848e8e03f6c7ce07323d110cf74`.
 
 ## NEW THREAD START PROMPT
 
 ```text
-Continue the profile-expansion certification from exact Required CI checkpoint 9b99435892fe1848e8e03f6c7ce07323d110cf74. Required CI run 33023989410 passed the active branch-75 policy at 75.3008% server branches. Do not promote PX tasks until all applicable runtime, legal, accessibility, load, recovery, release-artifact, and post-deploy evidence gates pass.
+Continue the profile-expansion certification from exact Required CI checkpoint 9b99435892fe1848e8e03f6c7ce07323d110cf74 and native certification evidence dated 2026-08-26. Required CI run 33023989410 passed the active branch-75 policy at 75.3008% server branches. Host-native canaries pass, including Unity; do not promote PX tasks until the remaining project-instrumentation, legal, manual-accessibility, clean-machine, load, recovery, release-artifact, and post-deploy evidence gates pass.
 ```
 
 ## Thread closure
