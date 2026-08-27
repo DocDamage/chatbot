@@ -7,6 +7,7 @@
 - Integration branch: `codex/cf04-cf10-integration`
 - Coverage implementation commit: `f07784ceea878256ec9cb4b7c1aef5fe78ecbc9f`
 - Exact Required CI certification checkpoint: `9b99435892fe1848e8e03f6c7ce07323d110cf74`
+- Production-like/editor/CUDA implementation commit: `509f9ffcb93095ca368425eeb2e2c0823aacd12f`
 - Implemented worktree spans the governance/platform, intelligence, local-model, game/media/studio, integrated UI, security, reliability, evaluation, and release-control phases `PX-00` through `PX-22`.
 - Status: `IMPLEMENTED_NOT_VERIFIED`
 - Audit correction resolved: the implementation is committed, pushed, and certified by Required CI run [33023989410](https://github.com/DocDamage/chatbot/actions/runs/33023989410) on the exact checkpoint above. Independent external/manual release gates remain open.

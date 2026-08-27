@@ -10,6 +10,8 @@ This record closes the three machine-executable gates requested on 2026-08-27:
 
 All three targets passed on this workstation. This is strong local production-like and host-native evidence; it is not evidence of deployment into a named cloud/staging account, managed-service recovery, public TLS termination, a long soak, signed artifacts, or post-deployment observation.
 
+Implementation commit: `509f9ffcb93095ca368425eeb2e2c0823aacd12f` on `codex/cf04-cf10-integration`.
+
 ## Implementation delivered
 
 - `deploy/certification/docker-compose.production-like.yml` defines an isolated Linux OCI target with the production application image, PostgreSQL 16 + pgvector, Redis 7 AOF persistence, private data-service networking, loopback-only application publishing, health checks, generated throwaway secrets, read-only application root filesystem, non-root execution, all capabilities dropped, and `no-new-privileges`.
