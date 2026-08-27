@@ -23,7 +23,9 @@ export class LocalKnowledgeAnswerer {
   private readonly stopWords = new Set([
     'what', 'when', 'where', 'who', 'why', 'how', 'tell', 'give', 'show', 'me', 'you', 'can', 'could',
     'would', 'please', 'do', 'know', 'thing', 'something', 'happen', 'happened', 'the', 'a', 'an',
-    'is', 'are', 'was', 'were', 'of', 'in', 'on', 'for', 'from', 'about', 'biggest', 'story'
+    'is', 'are', 'was', 'were', 'of', 'in', 'on', 'for', 'from', 'about', 'biggest', 'story',
+    'more', 'information', 'details', 'detail', 'summary', 'brief', 'briefly', 'concise', 'quick',
+    'short', 'detailed', 'comprehensive', 'thorough'
   ]);
 
   constructor(private readonly documentStore?: Pick<RAGDocumentStore, 'searchKeyword'>) {}
@@ -213,6 +215,7 @@ export class LocalKnowledgeAnswerer {
 
     const selected: string[] = [];
     const seen = new Set<string>();
+    const passageLimit = this.answerDepth(message, { brief: 3, standard: 6, detailed: 8 });
 
     for (const unit of rankedUnits) {
       const normalized = unit.text.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
@@ -226,7 +229,7 @@ export class LocalKnowledgeAnswerer {
 
       selected.push(unit.text);
       seen.add(normalized);
-      if (selected.length >= 4) {
+      if (selected.length >= passageLimit) {
         break;
       }
     }
@@ -382,10 +385,36 @@ export class LocalKnowledgeAnswerer {
     const uniqueEventLines = this.removeTruncatedDuplicates(
       Array.from(new Map(eventLines.map(line => [line.toLowerCase(), line])).values())
     );
-    const ranked = uniqueEventLines
-      .map(line => ({ line, score: this.eventScore(line, message) }))
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 6)
+    const eventLimit = this.answerDepth(message, { brief: 5, standard: 10, detailed: 14 });
+    const candidates = uniqueEventLines
+      .map((line, index) => ({ line, index, score: this.eventScore(line, message) }))
+      .sort((a, b) => b.score - a.score || a.index - b.index);
+    const selected: typeof candidates = [];
+    const selectedMonths = new Set<string>();
+    const uniqueMonthTarget = eventLimit >= 14
+      ? Math.min(12, eventLimit)
+      : eventLimit >= 10
+        ? Math.min(8, eventLimit)
+        : eventLimit;
+
+    for (const candidate of candidates) {
+      const month = candidate.line.match(/^(January|February|March|April|May|June|July|August|September|October|November|December)\b/)?.[1];
+      if (month && selectedMonths.has(month)) continue;
+      selected.push(candidate);
+      if (month) selectedMonths.add(month);
+      if (selected.length >= uniqueMonthTarget) break;
+    }
+
+    if (selected.length < eventLimit) {
+      for (const candidate of candidates) {
+        if (selected.some(item => item.index === candidate.index)) continue;
+        selected.push(candidate);
+        if (selected.length >= eventLimit) break;
+      }
+    }
+
+    const ranked = selected
+      .sort((a, b) => a.index - b.index)
       .map(item => item.line);
 
     const lead = /\b(biggest|top|major|main|important)\b/i.test(message)
@@ -503,6 +532,19 @@ export class LocalKnowledgeAnswerer {
       score += 0.5;
     }
     return score;
+  }
+
+  private answerDepth(
+    message: string,
+    limits: { brief: number; standard: number; detailed: number }
+  ): number {
+    if (/\b(?:brief|briefly|concise|quick|short|one or two|a few)\b/i.test(message)) {
+      return limits.brief;
+    }
+    if (/\b(?:more|detailed|detail|comprehensive|in[- ]depth|thorough|as much as possible|deep dive)\b/i.test(message)) {
+      return limits.detailed;
+    }
+    return limits.standard;
   }
 
   private selectChunks(results: RetrievalResult[], message: string) {

@@ -54,7 +54,7 @@ function normalizeReferenceLine(line: string): string {
     .trim();
 }
 
-function extractDatedReleaseFacts(content: string): string[] {
+function extractDatedReleaseFacts(content: string, limit: number): string[] {
   const releasedSection = content.match(/==\s*Released albums\s*==([\s\S]*?)(?=\n==|$)/i)?.[1];
   if (!releasedSection) return [];
 
@@ -109,7 +109,7 @@ function extractDatedReleaseFacts(content: string): string[] {
   return records
     .map((record, index) => ({ record, index, score: score(record) }))
     .sort((left, right) => right.score - left.score || left.index - right.index)
-    .slice(0, 8)
+    .slice(0, limit)
     .sort((left, right) => left.index - right.index)
     .map(({ record }) => {
       const notes = record.notes.length > 0 ? `; ${record.notes.join('; ')}` : '';
@@ -117,7 +117,7 @@ function extractDatedReleaseFacts(content: string): string[] {
     });
 }
 
-function extractTimelineFacts(content: string, year: string): string[] {
+function extractTimelineFacts(content: string, year: string, limit: number): string[] {
   const eventsSection = content.match(/==\s*Events\s*==([\s\S]*?)(?=\n==[^=]|$)/i)?.[1];
   if (!eventsSection) return [];
 
@@ -137,7 +137,7 @@ function extractTimelineFacts(content: string, year: string): string[] {
     const hasNamedMonth = new RegExp(`\\b${MONTH_PATTERN}\\b`, 'i').test(datePart);
     const fullDate = hasNamedMonth ? datePart : [month, datePart].filter(Boolean).join(' ');
     facts.push(`- ${fullDate}, ${year}: ${description}`);
-    if (facts.length >= 10) break;
+    if (facts.length >= limit) break;
   }
 
   return facts;
@@ -150,9 +150,14 @@ function compactPublicReference(result: KnowledgeResult, query: string): string 
     .find(line => line.length > 30 && !line.startsWith('=='));
   const requestedYear = query.match(/\b(?:19|20)\d{2}\b/)?.[0];
   const titleMatchesYear = requestedYear && new RegExp(`\\b${requestedYear}\\b`).test(result.title);
-  const releaseFacts = titleMatchesYear ? extractDatedReleaseFacts(result.content) : [];
+  const factLimit = /\b(?:brief|briefly|concise|quick|short|one or two|a few)\b/i.test(query)
+    ? 6
+    : /\b(?:more|detailed|detail|comprehensive|in[- ]depth|thorough|as much as possible|deep dive)\b/i.test(query)
+      ? 16
+      : 12;
+  const releaseFacts = titleMatchesYear ? extractDatedReleaseFacts(result.content, factLimit) : [];
   const timelineFacts = titleMatchesYear && requestedYear
-    ? extractTimelineFacts(result.content, requestedYear)
+    ? extractTimelineFacts(result.content, requestedYear, factLimit)
     : [];
 
   if (releaseFacts.length > 0) {

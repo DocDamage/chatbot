@@ -217,6 +217,37 @@ describe('LocalKnowledgeAnswerer', () => {
     expect(answer?.response).not.toMatch(/June 22\s*[–-]\s*June 23/);
   });
 
+  it('returns richer defaults while honoring explicit brief and detailed requests', async () => {
+    const eventLines = Array.from({ length: 16 }, (_, index) => {
+      const month = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ][index % 12];
+      return `- ${month} ${(index % 27) + 1} – Recorded event number ${index + 1} for the annual news timeline.`;
+    });
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: '1979-answer-depth',
+          content: ['# 1979', 'Domain: general', '## Events', ...eventLines, '## Births'].join('\n'),
+          metadata: { source: 'fixtures/1979-depth.md', title: '1979.md' }
+        },
+        score: 0.9,
+        retrievalMethod: 'keyword'
+      }])
+    };
+    const answerer = new LocalKnowledgeAnswerer(store as any);
+    const countItems = (response = '') => response.match(/^\d+\./gm)?.length || 0;
+
+    const standard = await answerer.answer('tell me some news about 1979', 'ask');
+    const brief = await answerer.answer('give me a brief news summary about 1979', 'ask');
+    const detailed = await answerer.answer('give me more detailed news about 1979', 'ask');
+
+    expect(countItems(standard?.response)).toBe(10);
+    expect(countItems(brief?.response)).toBe(5);
+    expect(countItems(detailed?.response)).toBe(14);
+  });
+
   it('does not answer an exact year query from unrelated chunks', async () => {
     const store = {
       searchKeyword: jest.fn().mockResolvedValue([{
