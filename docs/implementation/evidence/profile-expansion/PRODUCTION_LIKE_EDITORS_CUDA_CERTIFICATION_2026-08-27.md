@@ -10,7 +10,7 @@ This record closes the three machine-executable gates requested on 2026-08-27:
 
 All three targets passed on this workstation. This is strong local production-like and host-native evidence; it is not evidence of deployment into a named cloud/staging account, managed-service recovery, public TLS termination, a long soak, signed artifacts, or post-deployment observation.
 
-Implementation commit: `509f9ffcb93095ca368425eeb2e2c0823aacd12f` on `codex/cf04-cf10-integration`.
+Implementation commit: `509f9ffcdd8546badc07c6b46d81f3a4532c3ba9` on `codex/cf04-cf10-integration`.
 
 ## Implementation delivered
 
