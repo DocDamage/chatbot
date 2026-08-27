@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { createGamingPlaybook } from './gaming';
+import { createGamingPlaybook, runLatticeSimulation } from './gaming';
 
 describe('RT-COV-003 / RT-CLIENT-001: Gaming API Client Suite', () => {
   beforeEach(() => {
@@ -55,5 +55,23 @@ describe('RT-COV-003 / RT-CLIENT-001: Gaming API Client Suite', () => {
       kind: 'engine_selection',
       goal: ''
     })).rejects.toThrow();
+  });
+
+  it('runs a bounded deterministic Lattice simulation', async () => {
+    const mockResult = {
+      scenario: { id: 'scenario-1', title: 'Dungeon', world: { seed: 42, dimensions: { width: 8, height: 8 } } },
+      asciiMap: '########',
+      entityTable: '| Hero |',
+      svgPreview: '<svg></svg>',
+      simulation: { won: true, totalTicks: 50, seed: 42 },
+      recommendations: ['Deterministic replay verified.']
+    };
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: true, json: async () => mockResult } as Response);
+
+    await expect(runLatticeSimulation({ seed: 42 })).resolves.toEqual(mockResult);
+    expect(fetch).toHaveBeenCalledWith('/api/gaming/lattice', expect.objectContaining({
+      method: 'POST',
+      body: JSON.stringify({ seed: 42 })
+    }));
   });
 });

@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1650,
-    "productionSourceFiles": 1108,
-    "reachableProductionFiles": 817,
-    "unreachableProductionFiles": 291,
-    "routes": 502,
-    "environmentVariables": 214,
+    "sourceFiles": 1555,
+    "productionSourceFiles": 1016,
+    "reachableProductionFiles": 820,
+    "unreachableProductionFiles": 196,
+    "routes": 503,
+    "environmentVariables": 212,
     "featureFlags": 18,
-    "oversizedProductionFiles": 95
+    "oversizedProductionFiles": 96
   },
   "routes": [
     {
@@ -1527,42 +1527,49 @@
       "receiver": "router",
       "method": "POST",
       "path": "/api/gaming/ask",
-      "line": 17,
+      "line": 18,
       "file": "src/server/routes/gaming.ts"
     },
     {
       "receiver": "router",
       "method": "GET",
       "path": "/api/gaming/playbooks",
-      "line": 24,
+      "line": 25,
       "file": "src/server/routes/gaming.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/gaming/playbook",
-      "line": 30,
+      "line": 31,
       "file": "src/server/routes/gaming.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/gaming/engine",
-      "line": 46,
+      "line": 47,
       "file": "src/server/routes/gaming.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/gaming/assets",
-      "line": 59,
+      "line": 60,
       "file": "src/server/routes/gaming.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/gaming/prompts",
-      "line": 73,
+      "line": 74,
+      "file": "src/server/routes/gaming.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/gaming/lattice",
+      "line": 88,
       "file": "src/server/routes/gaming.ts"
     },
     {
@@ -3541,6 +3548,7 @@
     "client/src/components/KnowledgeOSPanel.tsx",
     "client/src/components/KnowledgeOnlinePanel.tsx",
     "client/src/components/LocalRunApprovalPanel.tsx",
+    "client/src/components/LocalToolDiscoveryPanel.tsx",
     "client/src/components/LocalToolsWorkspace.tsx",
     "client/src/components/MemoryCenterPanel.tsx",
     "client/src/components/MockApiWorkspacePanel.tsx",
@@ -4313,10 +4321,6 @@
   ],
   "tools": [
     {
-      "name": "PhilosophyTimelineTool",
-      "file": "src/core/agents/philosophy/PhilosophyTimelineTool.ts"
-    },
-    {
       "name": "BaseUniversalTool",
       "file": "src/core/contracts/UniversalContract.ts"
     },
@@ -4381,10 +4385,6 @@
       "file": "src/core/tools/audio/SpectrumAnalyzerTool.ts"
     },
     {
-      "name": "StemAnalyzerTool",
-      "file": "src/core/tools/audio/StemAnalyzerTool.ts"
-    },
-    {
       "name": "StereoImageTool",
       "file": "src/core/tools/audio/StereoImageTool.ts"
     },
@@ -4421,32 +4421,12 @@
       "file": "src/core/tools/catalog/ToolCatalogService.ts"
     },
     {
-      "name": "AwardLookupTool",
-      "file": "src/core/tools/culture/AwardLookupTool.ts"
-    },
-    {
       "name": "FranchiseGraphTool",
       "file": "src/core/tools/culture/FranchiseGraphTool.ts"
     },
     {
-      "name": "MusicBrainzTool",
-      "file": "src/core/tools/culture/MusicBrainzTool.ts"
-    },
-    {
-      "name": "OpenLibraryTool",
-      "file": "src/core/tools/culture/OpenLibraryTool.ts"
-    },
-    {
       "name": "PopCultureTimelineTool",
       "file": "src/core/tools/culture/PopCultureTimelineTool.ts"
-    },
-    {
-      "name": "TMDBTool",
-      "file": "src/core/tools/culture/TMDBTool.ts"
-    },
-    {
-      "name": "WikidataEntityTool",
-      "file": "src/core/tools/culture/WikidataEntityTool.ts"
     },
     {
       "name": "BOMBuilderTool",
@@ -4477,24 +4457,8 @@
       "file": "src/core/tools/engineering/UnitConversionTool.ts"
     },
     {
-      "name": "FLMixerControlTool",
-      "file": "src/core/tools/flstudio/FLMixerControlTool.ts"
-    },
-    {
-      "name": "FLPluginParamTool",
-      "file": "src/core/tools/flstudio/FLPluginParamTool.ts"
-    },
-    {
-      "name": "FLRenderTool",
-      "file": "src/core/tools/flstudio/FLRenderTool.ts"
-    },
-    {
       "name": "FLTemplateInspectorTool",
       "file": "src/core/tools/flstudio/FLTemplateInspectorTool.ts"
-    },
-    {
-      "name": "FLTransportTool",
-      "file": "src/core/tools/flstudio/FLTransportTool.ts"
     },
     {
       "name": "BalanceSimTool",
@@ -4565,34 +4529,6 @@
       "file": "src/core/tools/health/RedFlagTriageTool.ts"
     },
     {
-      "name": "ChronologyTool",
-      "file": "src/core/tools/history/ChronologyTool.ts"
-    },
-    {
-      "name": "EuropeanaTool",
-      "file": "src/core/tools/history/EuropeanaTool.ts"
-    },
-    {
-      "name": "LibraryOfCongressTool",
-      "file": "src/core/tools/history/LibraryOfCongressTool.ts"
-    },
-    {
-      "name": "MapContextTool",
-      "file": "src/core/tools/history/MapContextTool.ts"
-    },
-    {
-      "name": "SmithsonianTool",
-      "file": "src/core/tools/history/SmithsonianTool.ts"
-    },
-    {
-      "name": "SourceCriticismTool",
-      "file": "src/core/tools/history/SourceCriticismTool.ts"
-    },
-    {
-      "name": "WikidataHistoryTool",
-      "file": "src/core/tools/history/WikidataHistoryTool.ts"
-    },
-    {
       "name": "GrammarDiagnosticTool",
       "file": "src/core/tools/language/GrammarDiagnosticTool.ts"
     },
@@ -4645,24 +4581,12 @@
       "file": "src/core/tools/market/FredMacroTool.ts"
     },
     {
-      "name": "FundamentalsTool",
-      "file": "src/core/tools/market/FundamentalsTool.ts"
-    },
-    {
-      "name": "NewsEventTool",
-      "file": "src/core/tools/market/NewsEventTool.ts"
-    },
-    {
       "name": "PriceDataTool",
       "file": "src/core/tools/market/PriceDataTool.ts"
     },
     {
       "name": "SecEdgarTool",
       "file": "src/core/tools/market/SecEdgarTool.ts"
-    },
-    {
-      "name": "TechnicalIndicatorTool",
-      "file": "src/core/tools/market/TechnicalIndicatorTool.ts"
     },
     {
       "name": "ValuationTool",
@@ -4897,16 +4821,8 @@
       "file": "src/core/tools/philosophy/SocraticQuestionTool.ts"
     },
     {
-      "name": "GBIFTool",
-      "file": "src/core/tools/science/GBIFTool.ts"
-    },
-    {
       "name": "InventionTimelineTool",
       "file": "src/core/tools/science/InventionTimelineTool.ts"
-    },
-    {
-      "name": "NasaDataTool",
-      "file": "src/core/tools/science/NasaDataTool.ts"
     },
     {
       "name": "OpenAlexTool",
@@ -4919,10 +4835,6 @@
     {
       "name": "USPTOPatentTool",
       "file": "src/core/tools/science/USPTOPatentTool.ts"
-    },
-    {
-      "name": "WikidataScienceTool",
-      "file": "src/core/tools/science/WikidataScienceTool.ts"
     },
     {
       "name": "AuthFlowReviewTool",
@@ -4951,10 +4863,6 @@
     {
       "name": "ThreatModelTool",
       "file": "src/core/tools/security/ThreatModelTool.ts"
-    },
-    {
-      "name": "AnalysisApiTool",
-      "file": "src/core/tools/sixsigma/AnalysisApiTool.ts"
     },
     {
       "name": "AnovaTool",
@@ -5091,26 +4999,6 @@
       "file": "src/core/agents/business/BusinessGeniusAgent.ts"
     },
     {
-      "name": "FinancialModelBuilder",
-      "file": "src/core/agents/business/FinancialModelBuilder.ts"
-    },
-    {
-      "name": "MarketResearchPlanner",
-      "file": "src/core/agents/business/MarketResearchPlanner.ts"
-    },
-    {
-      "name": "OperationsAdvisor",
-      "file": "src/core/agents/business/OperationsAdvisor.ts"
-    },
-    {
-      "name": "PricingAdvisor",
-      "file": "src/core/agents/business/PricingAdvisor.ts"
-    },
-    {
-      "name": "ProductStrategist",
-      "file": "src/core/agents/business/ProductStrategist.ts"
-    },
-    {
       "name": "FranchiseKnowledgeGraph",
       "file": "src/core/agents/culture/FranchiseKnowledgeGraph.ts"
     },
@@ -5135,28 +5023,8 @@
       "file": "src/core/agents/culture/PopCultureTimelineBuilder.ts"
     },
     {
-      "name": "CadDesignCoach",
-      "file": "src/core/agents/engineering/CadDesignCoach.ts"
-    },
-    {
-      "name": "ElectronicsAdvisor",
-      "file": "src/core/agents/engineering/ElectronicsAdvisor.ts"
-    },
-    {
       "name": "EngineeringGeniusAgent",
       "file": "src/core/agents/engineering/EngineeringGeniusAgent.ts"
-    },
-    {
-      "name": "MechanicalAdvisor",
-      "file": "src/core/agents/engineering/MechanicalAdvisor.ts"
-    },
-    {
-      "name": "RoboticsPlanner",
-      "file": "src/core/agents/engineering/RoboticsPlanner.ts"
-    },
-    {
-      "name": "SafetyChecklist",
-      "file": "src/core/agents/engineering/SafetyChecklist.ts"
     },
     {
       "name": "BalanceSimulator",
@@ -5207,52 +5075,16 @@
       "file": "src/core/agents/gaming/GamingPlaybookService.ts"
     },
     {
-      "name": "CultureProfileBuilder",
-      "file": "src/core/agents/geography/CultureProfileBuilder.ts"
-    },
-    {
-      "name": "DemographicsAnalyzer",
-      "file": "src/core/agents/geography/DemographicsAnalyzer.ts"
-    },
-    {
       "name": "GeoCultureGeniusAgent",
       "file": "src/core/agents/geography/GeoCultureGeniusAgent.ts"
-    },
-    {
-      "name": "GeopoliticalContextAdvisor",
-      "file": "src/core/agents/geography/GeopoliticalContextAdvisor.ts"
-    },
-    {
-      "name": "MapContextAdvisor",
-      "file": "src/core/agents/geography/MapContextAdvisor.ts"
     },
     {
       "name": "GISMappingAgent",
       "file": "src/core/agents/gis/GISMappingAgent.ts"
     },
     {
-      "name": "AnatomyTutor",
-      "file": "src/core/agents/health/AnatomyTutor.ts"
-    },
-    {
-      "name": "FitnessPlanner",
-      "file": "src/core/agents/health/FitnessPlanner.ts"
-    },
-    {
       "name": "HealthGeniusAgent",
       "file": "src/core/agents/health/HealthGeniusAgent.ts"
-    },
-    {
-      "name": "MedicationSafetyAdvisor",
-      "file": "src/core/agents/health/MedicationSafetyAdvisor.ts"
-    },
-    {
-      "name": "NutritionCoach",
-      "file": "src/core/agents/health/NutritionCoach.ts"
-    },
-    {
-      "name": "SymptomTriageGuardrails",
-      "file": "src/core/agents/health/SymptomTriageGuardrails.ts"
     },
     {
       "name": "CivilizationGraph",
@@ -5283,52 +5115,12 @@
       "file": "src/core/agents/history/PrimarySourceRetriever.ts"
     },
     {
-      "name": "GrammarExplainer",
-      "file": "src/core/agents/language/GrammarExplainer.ts"
-    },
-    {
       "name": "LanguageGeniusAgent",
       "file": "src/core/agents/language/LanguageGeniusAgent.ts"
     },
     {
-      "name": "RhetoricCoach",
-      "file": "src/core/agents/language/RhetoricCoach.ts"
-    },
-    {
-      "name": "SpeechCoach",
-      "file": "src/core/agents/language/SpeechCoach.ts"
-    },
-    {
-      "name": "ToneRewriter",
-      "file": "src/core/agents/language/ToneRewriter.ts"
-    },
-    {
-      "name": "Translator",
-      "file": "src/core/agents/language/Translator.ts"
-    },
-    {
-      "name": "CivicProcessAdvisor",
-      "file": "src/core/agents/legal/CivicProcessAdvisor.ts"
-    },
-    {
-      "name": "ContractExplainer",
-      "file": "src/core/agents/legal/ContractExplainer.ts"
-    },
-    {
       "name": "LegalCivicGeniusAgent",
       "file": "src/core/agents/legal/LegalCivicGeniusAgent.ts"
-    },
-    {
-      "name": "LegalGuardrails",
-      "file": "src/core/agents/legal/LegalGuardrails.ts"
-    },
-    {
-      "name": "LegalIntentClassifier",
-      "file": "src/core/agents/legal/LegalIntentClassifier.ts"
-    },
-    {
-      "name": "RightsAndObligationsAnalyzer",
-      "file": "src/core/agents/legal/RightsAndObligationsAnalyzer.ts"
     },
     {
       "name": "BacktestRunner",
@@ -5375,20 +5167,8 @@
       "file": "src/core/agents/math/MathVerifier.ts"
     },
     {
-      "name": "BeatArrangementCoach",
-      "file": "src/core/agents/music/BeatArrangementCoach.ts"
-    },
-    {
       "name": "DawWorkflowTranslator",
       "file": "src/core/agents/music/DawWorkflowTranslator.ts"
-    },
-    {
-      "name": "GenreTimelineMapper",
-      "file": "src/core/agents/music/GenreTimelineMapper.ts"
-    },
-    {
-      "name": "MixMasteringAdvisor",
-      "file": "src/core/agents/music/MixMasteringAdvisor.ts"
     },
     {
       "name": "MusicCopyrightGuardrails",
@@ -5403,80 +5183,20 @@
       "file": "src/core/agents/music/MusicProductionGeniusAgent.ts"
     },
     {
-      "name": "MusicPromptEngineer",
-      "file": "src/core/agents/music/MusicPromptEngineer.ts"
-    },
-    {
-      "name": "MusicTheoryAdvisor",
-      "file": "src/core/agents/music/MusicTheoryAdvisor.ts"
-    },
-    {
       "name": "MusicWorkflowRouter",
       "file": "src/core/agents/music/MusicWorkflowRouter.ts"
-    },
-    {
-      "name": "SampleWorkflowAdvisor",
-      "file": "src/core/agents/music/SampleWorkflowAdvisor.ts"
     },
     {
       "name": "SongStructureCoach",
       "file": "src/core/agents/music/SongStructureCoach.ts"
     },
     {
-      "name": "FLAutomationCoach",
-      "file": "src/core/agents/music/flstudio/FLAutomationCoach.ts"
-    },
-    {
-      "name": "FLExportAdvisor",
-      "file": "src/core/agents/music/flstudio/FLExportAdvisor.ts"
-    },
-    {
-      "name": "FLMixerCoach",
-      "file": "src/core/agents/music/flstudio/FLMixerCoach.ts"
-    },
-    {
-      "name": "FLPatternCoach",
-      "file": "src/core/agents/music/flstudio/FLPatternCoach.ts"
-    },
-    {
-      "name": "FLPianoRollCoach",
-      "file": "src/core/agents/music/flstudio/FLPianoRollCoach.ts"
-    },
-    {
-      "name": "FLSoundDesignCoach",
-      "file": "src/core/agents/music/flstudio/FLSoundDesignCoach.ts"
-    },
-    {
       "name": "FLStudioGeniusAgent",
       "file": "src/core/agents/music/flstudio/FLStudioGeniusAgent.ts"
     },
     {
-      "name": "LogicArrangementCoach",
-      "file": "src/core/agents/music/logic/LogicArrangementCoach.ts"
-    },
-    {
-      "name": "LogicExportAdvisor",
-      "file": "src/core/agents/music/logic/LogicExportAdvisor.ts"
-    },
-    {
-      "name": "LogicMidiCoach",
-      "file": "src/core/agents/music/logic/LogicMidiCoach.ts"
-    },
-    {
       "name": "LogicProGeniusAgent",
       "file": "src/core/agents/music/logic/LogicProGeniusAgent.ts"
-    },
-    {
-      "name": "LogicSessionPlayerCoach",
-      "file": "src/core/agents/music/logic/LogicSessionPlayerCoach.ts"
-    },
-    {
-      "name": "LogicStockPluginCoach",
-      "file": "src/core/agents/music/logic/LogicStockPluginCoach.ts"
-    },
-    {
-      "name": "LogicVocalProductionCoach",
-      "file": "src/core/agents/music/logic/LogicVocalProductionCoach.ts"
     },
     {
       "name": "FLStudioMixController",
@@ -5515,32 +5235,8 @@
       "file": "src/core/agents/music/mix/ReferenceMixAnalyzer.ts"
     },
     {
-      "name": "ProToolsEditingCoach",
-      "file": "src/core/agents/music/protools/ProToolsEditingCoach.ts"
-    },
-    {
       "name": "ProToolsGeniusAgent",
       "file": "src/core/agents/music/protools/ProToolsGeniusAgent.ts"
-    },
-    {
-      "name": "ProToolsMixPrepCoach",
-      "file": "src/core/agents/music/protools/ProToolsMixPrepCoach.ts"
-    },
-    {
-      "name": "ProToolsPostProductionCoach",
-      "file": "src/core/agents/music/protools/ProToolsPostProductionCoach.ts"
-    },
-    {
-      "name": "ProToolsRecordingCoach",
-      "file": "src/core/agents/music/protools/ProToolsRecordingCoach.ts"
-    },
-    {
-      "name": "ProToolsRoutingCoach",
-      "file": "src/core/agents/music/protools/ProToolsRoutingCoach.ts"
-    },
-    {
-      "name": "ProToolsVocalCompCoach",
-      "file": "src/core/agents/music/protools/ProToolsVocalCompCoach.ts"
     },
     {
       "name": "SunoGeniusAgent",
@@ -5567,28 +5263,8 @@
       "file": "src/core/agents/music/suno/SunoStyleTagAdvisor.ts"
     },
     {
-      "name": "ArgumentMapper",
-      "file": "src/core/agents/philosophy/ArgumentMapper.ts"
-    },
-    {
-      "name": "DebateCoach",
-      "file": "src/core/agents/philosophy/DebateCoach.ts"
-    },
-    {
-      "name": "EthicsAdvisor",
-      "file": "src/core/agents/philosophy/EthicsAdvisor.ts"
-    },
-    {
-      "name": "FallacyDetector",
-      "file": "src/core/agents/philosophy/FallacyDetector.ts"
-    },
-    {
       "name": "PhilosophyGeniusAgent",
       "file": "src/core/agents/philosophy/PhilosophyGeniusAgent.ts"
-    },
-    {
-      "name": "PhilosophyTimelineTool",
-      "file": "src/core/agents/philosophy/PhilosophyTimelineTool.ts"
     },
     {
       "name": "DiscoveryGraph",
@@ -5619,28 +5295,8 @@
       "file": "src/core/agents/science/TheoryEvolutionAnalyzer.ts"
     },
     {
-      "name": "DependencyRiskAdvisor",
-      "file": "src/core/agents/security/DependencyRiskAdvisor.ts"
-    },
-    {
-      "name": "PrivacyRiskAnalyzer",
-      "file": "src/core/agents/security/PrivacyRiskAnalyzer.ts"
-    },
-    {
-      "name": "SecureCodeReviewer",
-      "file": "src/core/agents/security/SecureCodeReviewer.ts"
-    },
-    {
       "name": "SecurityGeniusAgent",
       "file": "src/core/agents/security/SecurityGeniusAgent.ts"
-    },
-    {
-      "name": "SecurityGuardrails",
-      "file": "src/core/agents/security/SecurityGuardrails.ts"
-    },
-    {
-      "name": "ThreatModeler",
-      "file": "src/core/agents/security/ThreatModeler.ts"
     },
     {
       "name": "SixSigmaBlackBeltAgent",
@@ -5687,28 +5343,8 @@
       "file": "src/core/agents/specialists/GenericSpecialistAgent.ts"
     },
     {
-      "name": "CharacterDesigner",
-      "file": "src/core/agents/story/CharacterDesigner.ts"
-    },
-    {
-      "name": "DialogueCoach",
-      "file": "src/core/agents/story/DialogueCoach.ts"
-    },
-    {
-      "name": "LoreContinuityChecker",
-      "file": "src/core/agents/story/LoreContinuityChecker.ts"
-    },
-    {
-      "name": "PlotArchitect",
-      "file": "src/core/agents/story/PlotArchitect.ts"
-    },
-    {
       "name": "StoryGeniusAgent",
       "file": "src/core/agents/story/StoryGeniusAgent.ts"
-    },
-    {
-      "name": "WorldbuildingEngine",
-      "file": "src/core/agents/story/WorldbuildingEngine.ts"
     },
     {
       "name": "BrowserAgent",
@@ -6456,7 +6092,6 @@
     "ENABLE_SEMANTIC_CACHE",
     "ENABLE_TOOL_CALLING",
     "ENABLE_WEBSOCKET",
-    "EUROPEANA_API_KEY",
     "EVAL_TARGET_URL",
     "FFMPEG_PATH",
     "FFMPEG_SHARED_DLL_DIR",
@@ -6511,6 +6146,8 @@
     "LOCAL_MODEL_API_KEY",
     "LOCAL_MODEL_BASE_URL",
     "LOCAL_MODEL_ENABLED",
+    "LOCAL_MODEL_MAX_CONCURRENCY",
+    "LOCAL_MODEL_MAX_QUEUE_DEPTH",
     "LOCAL_MODEL_NAME",
     "LOCAL_MODEL_PROVIDER_NAME",
     "LOCAL_MODEL_TIMEOUT_MS",
@@ -6579,9 +6216,6 @@
     "SEC_USER_AGENT",
     "SEMANTIC_CACHE_SIMILARITY_THRESHOLD",
     "SEMANTIC_CACHE_TTL",
-    "SIXSIGMA_ANALYSIS_API_KEY",
-    "SIXSIGMA_ANALYSIS_API_URL",
-    "SMITHSONIAN_API_KEY",
     "SQLITE_BUSY_TIMEOUT_MS",
     "STACKOVERFLOW_API_KEY",
     "STARTUP_TIMEOUT_MS",
@@ -6627,6 +6261,26 @@
     {
       "binary": "docker",
       "file": "scripts/certification/production-like.mjs"
+    },
+    {
+      "binary": "npm",
+      "file": "scripts/release/build-release-artifact.mjs"
+    },
+    {
+      "binary": "npm",
+      "file": "scripts/release/check-dependency-vulnerabilities.mjs"
+    },
+    {
+      "binary": "git",
+      "file": "scripts/release/check-secrets.mjs"
+    },
+    {
+      "binary": "git",
+      "file": "scripts/release/generate-third-party-notices.mjs"
+    },
+    {
+      "binary": "git",
+      "file": "scripts/release/run-comprehensive-audit.mjs"
     },
     {
       "binary": "git",
@@ -6701,6 +6355,10 @@
     {
       "file": "scripts/import-wikipedia-general-corpus.ts",
       "lines": 337
+    },
+    {
+      "file": "scripts/release/run-comprehensive-audit.mjs",
+      "lines": 302
     },
     {
       "file": "src/core/agents/AgentTeam.ts",
@@ -6812,7 +6470,7 @@
     },
     {
       "file": "src/core/initialization/ServiceInitializer.ts",
-      "lines": 852
+      "lines": 885
     },
     {
       "file": "src/core/knowledge/GitHubSource.ts",
@@ -6892,7 +6550,7 @@
     },
     {
       "file": "src/core/providers/ModelRouter.ts",
-      "lines": 358
+      "lines": 380
     },
     {
       "file": "src/core/providers/VisionAdapter.ts",
@@ -6916,7 +6574,7 @@
     },
     {
       "file": "src/core/rag/HybridRetriever.ts",
-      "lines": 392
+      "lines": 393
     },
     {
       "file": "src/core/rag/RAGDocumentStore.ts",

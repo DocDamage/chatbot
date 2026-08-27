@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { isStaticPagesBuild } from '../api/runtime';
 import LocalRunApprovalPanel from './LocalRunApprovalPanel';
+import LocalToolDiscoveryPanel from './LocalToolDiscoveryPanel';
 import SpriteLabPanel from './SpriteLabPanel';
 import ProjectIntelligencePanel from './ProjectIntelligencePanel';
 import DocumentWorkspacePanel from './DocumentWorkspacePanel';
@@ -62,6 +63,7 @@ export default function LocalToolsWorkspace() {
           <DesktopCompanionPanel />
         </>}
         {activeGroup === 'automation' && <>
+          <LocalToolDiscoveryPanel />
           <LocalRunApprovalPanel />
           <SpriteLabPanel />
         </>}

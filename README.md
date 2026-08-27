@@ -32,7 +32,7 @@ For release decisions, use the [current project status](docs/PROJECT_STATUS.md),
 
 ### Prerequisites
 
-- Node.js 20 or newer.
+- Node.js 22.12 or newer (Node.js 22 and 24 LTS are supported).
 - npm.
 - Ollama for local models, or credentials for a supported remote provider.
 - Optional native tools only for the local features that need them.
@@ -108,9 +108,10 @@ npm run test:security
 npm run test:e2e:services
 npm run check:phase2
 npm run release:check
+npm run audit:release
 ```
 
-`release:check` is the final release gate. Do not lower or bypass its thresholds to claim readiness.
+`release:check` is the automated behavioral gate. `audit:release` orchestrates all 18 handbook groups, packages the artifact, and records the explicit release decision. Do not lower or bypass thresholds or set lifecycle attestation variables without their supporting evidence.
 
 ## Deployment boundaries
 
@@ -133,6 +134,7 @@ See [Deployment Modes](docs/DEPLOYMENT_MODES.md).
 - [Polyglot coding plan](docs/implementation/POLYGLOT_CODING_CAPABILITY_UPGRADE_PLAN.md)
 - [Coding benchmark evidence](docs/implementation/evidence/coding-upgrade/)
 - [Architecture](docs/architecture/ARCHITECTURE.md)
+- [Release audit automation](docs/RELEASE_AUDIT_AUTOMATION.md)
 
 ## Contributing
 

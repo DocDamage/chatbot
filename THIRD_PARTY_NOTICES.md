@@ -1,6 +1,7 @@
 # Third-Party Software Notices and Attribution
 
-**Generated:** 2026-08-26
+**Generated:** 2026-08-25
+
 **Governing Document:** [CAPABILITY_SOURCE_REGISTER.md](docs/implementation/CAPABILITY_SOURCE_REGISTER.md)
 
 This document lists external software, reference algorithms, and capability pack sources utilized, adapted, or referenced by AI Chatbot Hub.

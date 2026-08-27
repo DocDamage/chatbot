@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -40,11 +41,14 @@ function parseSourceRegister() {
 
 export function generateNotices() {
   const sources = parseSourceRegister();
-  const date = new Date().toISOString().slice(0, 10);
+  const date = execFileSync('git', ['log', '-1', '--format=%cs', '--', sourceRegisterPath], {
+    cwd: root,
+    encoding: 'utf8',
+  }).trim();
 
   let output = `# Third-Party Software Notices and Attribution\n\n`;
-  output += `**Generated:** ${date}  \n`;
-  output += `**Governing Document:** [CAPABILITY_SOURCE_REGISTER.md](docs/implementation/CAPABILITY_SOURCE_REGISTER.md)  \n\n`;
+  output += `**Generated:** ${date}\n\n`;
+  output += `**Governing Document:** [CAPABILITY_SOURCE_REGISTER.md](docs/implementation/CAPABILITY_SOURCE_REGISTER.md)\n\n`;
   output += `This document lists external software, reference algorithms, and capability pack sources utilized, adapted, or referenced by AI Chatbot Hub.\n\n`;
   output += `All native adaptations retain upstream copyright and license notices in accordance with their respective permissive licenses (MIT, Apache-2.0, BSD).\n\n`;
   output += `---\n\n`;

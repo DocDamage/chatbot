@@ -4,7 +4,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import sharp from 'sharp';
+import sharp, { type Metadata } from 'sharp';
 import { logger } from '../../observability/logger';
 import {
   ExtractedDocument,
@@ -180,7 +180,7 @@ export class ImageOcrExtractor implements FileExtractor {
   private formatImageText(
     filePath: string,
     ext: string,
-    metadata: sharp.Metadata,
+    metadata: Metadata,
     ocrResults: Array<OcrResult & { label: string }>
   ): string {
     const header = [

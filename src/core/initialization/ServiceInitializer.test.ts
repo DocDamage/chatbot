@@ -87,6 +87,15 @@ describe('ServiceInitializer configuration branches', () => {
     process.env.OPENAI_COMPATIBLE_BASE_URL = 'http://localhost:9999/v1';
     const compatible = await (ServiceInitializer as any).initializeLLMAdapters();
     expect(Object.keys(compatible.all)).toContain('openai');
+
+    process.env.LLM_PROVIDER = 'local';
+    process.env.LOCAL_MODEL_ENABLED = 'true';
+    process.env.LOCAL_MODEL_BASE_URL = 'http://127.0.0.1:8080/v1';
+    process.env.LOCAL_MODEL_NAME = 'test-local-model';
+    process.env.DEPLOYMENT_MODE = 'local';
+    const local = await (ServiceInitializer as any).initializeLLMAdapters();
+    expect(Object.keys(local.all)).toContain('local');
+    expect(local.primary.getModelName()).toContain('test-local-model');
   });
 
   it('initializes optional Hugging Face and Ollama adapters when enabled', async () => {

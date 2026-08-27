@@ -10,6 +10,9 @@ const lines = workflow.split(/\r?\n/);
 const requiredJobs = [
   "repository-integrity",
   "dependency-integrity",
+  "dependency-security",
+  "secrets-scan",
+  "supply-chain",
   "server-type-check",
   "client-type-check",
   "test-type-check",
@@ -43,6 +46,19 @@ const expectedCommands = new Map([
       "npm --prefix client ci",
       "git diff --exit-code -- package-lock.json client/package-lock.json",
       "npm run type-check",
+    ],
+  ],
+  [
+    "dependency-security",
+    ["npm ci", "npm --prefix client ci", "npm run check:dependencies"],
+  ],
+  ["secrets-scan", ["npm run check:secrets:history"]],
+  [
+    "supply-chain",
+    [
+      "npm ci",
+      "npm run generate:sbom && npm run generate:notices",
+      "git diff --exit-code -- docs/architecture/generated/sbom.cyclonedx.json THIRD_PARTY_NOTICES.md",
     ],
   ],
   ["server-type-check", ["npm run type-check:server"]],

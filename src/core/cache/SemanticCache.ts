@@ -5,7 +5,7 @@
 
 import { CacheManager } from '../../utils/cache';
 import { logger } from '../observability/logger';
-import natural from 'natural';
+import { WordTokenizer } from 'natural/lib/natural/tokenizers';
 
 export interface SemanticCacheEntry<T> {
   key: string;
@@ -19,7 +19,7 @@ export class SemanticCache<T> {
   private cache: Map<string, SemanticCacheEntry<T>> = new Map();
   private cacheManager: CacheManager;
   private similarityThreshold: number;
-  private tokenizer = new natural.WordTokenizer();
+  private tokenizer = new WordTokenizer();
 
   constructor(
     ttlSeconds: number = 3600,

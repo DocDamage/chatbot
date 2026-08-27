@@ -6,14 +6,14 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1650 |
-| Production source files | 1108 |
-| Reachable production files | 817 |
-| Unreachable production files | 291 |
-| Discovered route calls | 502 |
-| Environment variables | 214 |
+| Source files | 1555 |
+| Production source files | 1016 |
+| Reachable production files | 820 |
+| Unreachable production files | 196 |
+| Discovered route calls | 503 |
+| Environment variables | 212 |
 | Feature flags | 18 |
-| Files above 300 lines | 95 |
+| Files above 300 lines | 96 |
 
 ## Server route calls
 
@@ -235,12 +235,13 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/gamedev/prototype` | `src/server/routes/gamedev.ts:11` |
 | POST | `/api/gamedev/balance` | `src/server/routes/gamedev.ts:15` |
 | POST | `/api/gamedev/review` | `src/server/routes/gamedev.ts:19` |
-| POST | `/api/gaming/ask` | `src/server/routes/gaming.ts:17` |
-| GET | `/api/gaming/playbooks` | `src/server/routes/gaming.ts:24` |
-| POST | `/api/gaming/playbook` | `src/server/routes/gaming.ts:30` |
-| POST | `/api/gaming/engine` | `src/server/routes/gaming.ts:46` |
-| POST | `/api/gaming/assets` | `src/server/routes/gaming.ts:59` |
-| POST | `/api/gaming/prompts` | `src/server/routes/gaming.ts:73` |
+| POST | `/api/gaming/ask` | `src/server/routes/gaming.ts:18` |
+| GET | `/api/gaming/playbooks` | `src/server/routes/gaming.ts:25` |
+| POST | `/api/gaming/playbook` | `src/server/routes/gaming.ts:31` |
+| POST | `/api/gaming/engine` | `src/server/routes/gaming.ts:47` |
+| POST | `/api/gaming/assets` | `src/server/routes/gaming.ts:60` |
+| POST | `/api/gaming/prompts` | `src/server/routes/gaming.ts:74` |
+| POST | `/api/gaming/lattice` | `src/server/routes/gaming.ts:88` |
 | POST | `/api/geography/ask` | `src/server/routes/geography.ts:7` |
 | POST | `/api/geography/country` | `src/server/routes/geography.ts:11` |
 | POST | `/api/geography/culture` | `src/server/routes/geography.ts:15` |
@@ -538,6 +539,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `client/src/components/KnowledgeOSPanel.tsx`
 - `client/src/components/KnowledgeOnlinePanel.tsx`
 - `client/src/components/LocalRunApprovalPanel.tsx`
+- `client/src/components/LocalToolDiscoveryPanel.tsx`
 - `client/src/components/LocalToolsWorkspace.tsx`
 - `client/src/components/MemoryCenterPanel.tsx`
 - `client/src/components/MockApiWorkspacePanel.tsx`
@@ -618,7 +620,6 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `ENABLE_SEMANTIC_CACHE`
 - `ENABLE_TOOL_CALLING`
 - `ENABLE_WEBSOCKET`
-- `EUROPEANA_API_KEY`
 - `EVAL_TARGET_URL`
 - `FFMPEG_PATH`
 - `FFMPEG_SHARED_DLL_DIR`
@@ -673,6 +674,8 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `LOCAL_MODEL_API_KEY`
 - `LOCAL_MODEL_BASE_URL`
 - `LOCAL_MODEL_ENABLED`
+- `LOCAL_MODEL_MAX_CONCURRENCY`
+- `LOCAL_MODEL_MAX_QUEUE_DEPTH`
 - `LOCAL_MODEL_NAME`
 - `LOCAL_MODEL_PROVIDER_NAME`
 - `LOCAL_MODEL_TIMEOUT_MS`
@@ -741,9 +744,6 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `SEC_USER_AGENT`
 - `SEMANTIC_CACHE_SIMILARITY_THRESHOLD`
 - `SEMANTIC_CACHE_TTL`
-- `SIXSIGMA_ANALYSIS_API_KEY`
-- `SIXSIGMA_ANALYSIS_API_URL`
-- `SMITHSONIAN_API_KEY`
 - `SQLITE_BUSY_TIMEOUT_MS`
 - `STACKOVERFLOW_API_KEY`
 - `STARTUP_TIMEOUT_MS`
@@ -768,6 +768,11 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 ## External binaries
 
 - `docker` — `scripts/certification/production-like.mjs`
+- `npm` — `scripts/release/build-release-artifact.mjs`
+- `npm` — `scripts/release/check-dependency-vulnerabilities.mjs`
+- `git` — `scripts/release/check-secrets.mjs`
+- `git` — `scripts/release/generate-third-party-notices.mjs`
+- `git` — `scripts/release/run-comprehensive-audit.mjs`
 - `git` — `scripts/run-coding-evals.ts`
 - `kill` — `src/core/coding/verification/CommandCapabilityRunner.ts`
 - `taskkill.exe` — `src/core/coding/verification/CommandCapabilityRunner.ts`
@@ -791,6 +796,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `docs/extract_all_snippets.js` | 364 |
 | `scripts/import-books.ts` | 317 |
 | `scripts/import-wikipedia-general-corpus.ts` | 337 |
+| `scripts/release/run-comprehensive-audit.mjs` | 302 |
 | `src/core/agents/AgentTeam.ts` | 547 |
 | `src/core/agents/CodingAgent.ts` | 440 |
 | `src/core/agents/MultiAgentOrchestrator.ts` | 1269 |
@@ -818,7 +824,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/gis/GISService.ts` | 581 |
 | `src/core/graph/KnowledgeGraphIndexer.ts` | 319 |
 | `src/core/index.ts` | 409 |
-| `src/core/initialization/ServiceInitializer.ts` | 852 |
+| `src/core/initialization/ServiceInitializer.ts` | 885 |
 | `src/core/knowledge/GitHubSource.ts` | 323 |
 | `src/core/knowledge/LocalKnowledgeAnswerer.ts` | 606 |
 | `src/core/knowledge/OnlineKnowledgeIngestionService.ts` | 554 |
@@ -838,13 +844,13 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/personalization/UserProfiler.ts` | 493 |
 | `src/core/providers/DeviceAdapter.ts` | 353 |
 | `src/core/providers/LLMAdapter.ts` | 316 |
-| `src/core/providers/ModelRouter.ts` | 358 |
+| `src/core/providers/ModelRouter.ts` | 380 |
 | `src/core/providers/VisionAdapter.ts` | 375 |
 | `src/core/providers/local/ExternalLocalModelAdapter.ts` | 357 |
 | `src/core/quality/AutoReview.ts` | 398 |
 | `src/core/rag/AudioRAG.ts` | 422 |
 | `src/core/rag/CorrectiveRetriever.ts` | 460 |
-| `src/core/rag/HybridRetriever.ts` | 392 |
+| `src/core/rag/HybridRetriever.ts` | 393 |
 | `src/core/rag/RAGDocumentStore.ts` | 1233 |
 | `src/core/rag/RAGRouter.ts` | 368 |
 | `src/core/rag/TrustRAG.ts` | 368 |

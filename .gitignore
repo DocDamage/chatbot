@@ -36,3 +36,5 @@ knowledge-base/
 config/profiles.json
 config/api_keys.json
 /plans/
+/release-artifacts/
+/release-evidence/

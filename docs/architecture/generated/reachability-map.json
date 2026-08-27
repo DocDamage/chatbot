@@ -98,6 +98,7 @@
     "client/src/api/gaming.ts",
     "client/src/api/knowledge.ts",
     "client/src/api/localRunApprovals.ts",
+    "client/src/api/localTools.ts",
     "client/src/api/runtime.ts",
     "client/src/api/spriteLab.ts",
     "client/src/clipboard.ts",
@@ -121,6 +122,7 @@
     "client/src/components/KnowledgeOnlinePanel.tsx",
     "client/src/components/LoadedFilesBar.tsx",
     "client/src/components/LocalRunApprovalPanel.tsx",
+    "client/src/components/LocalToolDiscoveryPanel.tsx",
     "client/src/components/LocalToolsWorkspace.tsx",
     "client/src/components/MemoryCenterPanel.tsx",
     "client/src/components/MockApiWorkspacePanel.tsx",
@@ -552,6 +554,7 @@
     "src/core/providers/OllamaAdapter.ts",
     "src/core/providers/StableDiffusionAdapter.ts",
     "src/core/providers/VisionAdapter.ts",
+    "src/core/providers/local/ExternalLocalModelAdapter.ts",
     "src/core/providers/local/LocalEndpointPolicy.ts",
     "src/core/providers/local/LocalModelDiscovery.ts",
     "src/core/providers/local/LocalModelRoutingPolicy.ts",
@@ -917,6 +920,7 @@
     "client/src/api/gaming.ts",
     "client/src/api/knowledge.ts",
     "client/src/api/localRunApprovals.ts",
+    "client/src/api/localTools.ts",
     "client/src/api/runtime.ts",
     "client/src/api/spriteLab.ts",
     "client/src/clipboard.ts",
@@ -940,6 +944,7 @@
     "client/src/components/KnowledgeOnlinePanel.tsx",
     "client/src/components/LoadedFilesBar.tsx",
     "client/src/components/LocalRunApprovalPanel.tsx",
+    "client/src/components/LocalToolDiscoveryPanel.tsx",
     "client/src/components/LocalToolsWorkspace.tsx",
     "client/src/components/MemoryCenterPanel.tsx",
     "client/src/components/MockApiWorkspacePanel.tsx",
@@ -1371,6 +1376,7 @@
     "src/core/providers/OllamaAdapter.ts",
     "src/core/providers/StableDiffusionAdapter.ts",
     "src/core/providers/VisionAdapter.ts",
+    "src/core/providers/local/ExternalLocalModelAdapter.ts",
     "src/core/providers/local/LocalEndpointPolicy.ts",
     "src/core/providers/local/LocalModelDiscovery.ts",
     "src/core/providers/local/LocalModelRoutingPolicy.ts",
@@ -1727,84 +1733,14 @@
     "src/utils/retry.ts"
   ],
   "unreachable": [
-    "client/src/api/localTools.ts",
     "client/src/vite-env.d.ts",
     "src/core/agents/AgentTeam.ts",
     "src/core/agents/MultiAgentOrchestrator.ts",
     "src/core/agents/ReasoningController.ts",
-    "src/core/agents/business/FinancialModelBuilder.ts",
-    "src/core/agents/business/MarketResearchPlanner.ts",
-    "src/core/agents/business/OperationsAdvisor.ts",
-    "src/core/agents/business/PricingAdvisor.ts",
-    "src/core/agents/business/ProductStrategist.ts",
-    "src/core/agents/engineering/CadDesignCoach.ts",
-    "src/core/agents/engineering/ElectronicsAdvisor.ts",
-    "src/core/agents/engineering/MechanicalAdvisor.ts",
-    "src/core/agents/engineering/RoboticsPlanner.ts",
-    "src/core/agents/engineering/SafetyChecklist.ts",
     "src/core/agents/gamedev/BalanceSimulator.ts",
-    "src/core/agents/geography/CultureProfileBuilder.ts",
-    "src/core/agents/geography/DemographicsAnalyzer.ts",
-    "src/core/agents/geography/GeopoliticalContextAdvisor.ts",
-    "src/core/agents/geography/MapContextAdvisor.ts",
-    "src/core/agents/health/AnatomyTutor.ts",
-    "src/core/agents/health/FitnessPlanner.ts",
-    "src/core/agents/health/MedicationSafetyAdvisor.ts",
-    "src/core/agents/health/NutritionCoach.ts",
-    "src/core/agents/health/SymptomTriageGuardrails.ts",
     "src/core/agents/history/HistoricalSourceRanker.ts",
     "src/core/agents/index.ts",
-    "src/core/agents/language/GrammarExplainer.ts",
-    "src/core/agents/language/RhetoricCoach.ts",
-    "src/core/agents/language/SpeechCoach.ts",
-    "src/core/agents/language/ToneRewriter.ts",
-    "src/core/agents/language/Translator.ts",
-    "src/core/agents/legal/CivicProcessAdvisor.ts",
-    "src/core/agents/legal/ContractExplainer.ts",
-    "src/core/agents/legal/LegalGuardrails.ts",
-    "src/core/agents/legal/LegalIntentClassifier.ts",
-    "src/core/agents/legal/RightsAndObligationsAnalyzer.ts",
     "src/core/agents/market/PortfolioAnalyzer.ts",
-    "src/core/agents/music/BeatArrangementCoach.ts",
-    "src/core/agents/music/GenreTimelineMapper.ts",
-    "src/core/agents/music/MixMasteringAdvisor.ts",
-    "src/core/agents/music/MusicPromptEngineer.ts",
-    "src/core/agents/music/MusicTheoryAdvisor.ts",
-    "src/core/agents/music/SampleWorkflowAdvisor.ts",
-    "src/core/agents/music/flstudio/FLAutomationCoach.ts",
-    "src/core/agents/music/flstudio/FLExportAdvisor.ts",
-    "src/core/agents/music/flstudio/FLMixerCoach.ts",
-    "src/core/agents/music/flstudio/FLPatternCoach.ts",
-    "src/core/agents/music/flstudio/FLPianoRollCoach.ts",
-    "src/core/agents/music/flstudio/FLSoundDesignCoach.ts",
-    "src/core/agents/music/logic/LogicArrangementCoach.ts",
-    "src/core/agents/music/logic/LogicExportAdvisor.ts",
-    "src/core/agents/music/logic/LogicMidiCoach.ts",
-    "src/core/agents/music/logic/LogicSessionPlayerCoach.ts",
-    "src/core/agents/music/logic/LogicStockPluginCoach.ts",
-    "src/core/agents/music/logic/LogicVocalProductionCoach.ts",
-    "src/core/agents/music/protools/ProToolsEditingCoach.ts",
-    "src/core/agents/music/protools/ProToolsMixPrepCoach.ts",
-    "src/core/agents/music/protools/ProToolsPostProductionCoach.ts",
-    "src/core/agents/music/protools/ProToolsRecordingCoach.ts",
-    "src/core/agents/music/protools/ProToolsRoutingCoach.ts",
-    "src/core/agents/music/protools/ProToolsVocalCompCoach.ts",
-    "src/core/agents/philosophy/ArgumentMapper.ts",
-    "src/core/agents/philosophy/DebateCoach.ts",
-    "src/core/agents/philosophy/EthicsAdvisor.ts",
-    "src/core/agents/philosophy/FallacyDetector.ts",
-    "src/core/agents/philosophy/PhilosophyTimelineTool.ts",
-    "src/core/agents/security/DependencyRiskAdvisor.ts",
-    "src/core/agents/security/PrivacyRiskAnalyzer.ts",
-    "src/core/agents/security/SecureCodeReviewer.ts",
-    "src/core/agents/security/SecurityGuardrails.ts",
-    "src/core/agents/security/ThreatModeler.ts",
-    "src/core/agents/specialists/WorkflowComponent.ts",
-    "src/core/agents/story/CharacterDesigner.ts",
-    "src/core/agents/story/DialogueCoach.ts",
-    "src/core/agents/story/LoreContinuityChecker.ts",
-    "src/core/agents/story/PlotArchitect.ts",
-    "src/core/agents/story/WorldbuildingEngine.ts",
     "src/core/audio/AudioMetadataService.ts",
     "src/core/audio/stemdeck/AudioIngestNormalizer.ts",
     "src/core/audit/AuditLogger.ts",
@@ -1941,7 +1877,6 @@
     "src/core/providers/DeviceAdapter.ts",
     "src/core/providers/UniversalLLM.ts",
     "src/core/providers/contracts/LocalAudioVoiceContracts.ts",
-    "src/core/providers/local/ExternalLocalModelAdapter.ts",
     "src/core/providers/local/LocalHardwareCanary.ts",
     "src/core/providers/local/LocalResourceMonitor.ts",
     "src/core/providers/local/PicchioModelAdapter.ts",
@@ -1980,31 +1915,7 @@
     "src/core/security/threat-model/CapabilityThreatModel.ts",
     "src/core/security/web/WebSecurityBoundaryGuard.ts",
     "src/core/tools/ToolComposer.ts",
-    "src/core/tools/audio/StemAnalyzerTool.ts",
-    "src/core/tools/culture/AwardLookupTool.ts",
-    "src/core/tools/culture/MusicBrainzTool.ts",
-    "src/core/tools/culture/OpenLibraryTool.ts",
-    "src/core/tools/culture/TMDBTool.ts",
-    "src/core/tools/culture/WikidataEntityTool.ts",
-    "src/core/tools/flstudio/FLMixerControlTool.ts",
-    "src/core/tools/flstudio/FLPluginParamTool.ts",
-    "src/core/tools/flstudio/FLRenderTool.ts",
-    "src/core/tools/flstudio/FLTransportTool.ts",
-    "src/core/tools/history/ChronologyTool.ts",
-    "src/core/tools/history/EuropeanaTool.ts",
-    "src/core/tools/history/LibraryOfCongressTool.ts",
-    "src/core/tools/history/MapContextTool.ts",
-    "src/core/tools/history/SmithsonianTool.ts",
-    "src/core/tools/history/SourceCriticismTool.ts",
-    "src/core/tools/history/WikidataHistoryTool.ts",
-    "src/core/tools/market/FundamentalsTool.ts",
-    "src/core/tools/market/NewsEventTool.ts",
-    "src/core/tools/market/TechnicalIndicatorTool.ts",
     "src/core/tools/market/ValuationTool.ts",
-    "src/core/tools/science/GBIFTool.ts",
-    "src/core/tools/science/NasaDataTool.ts",
-    "src/core/tools/science/WikidataScienceTool.ts",
-    "src/core/tools/sixsigma/AnalysisApiTool.ts",
     "src/core/ui/ThinkingUI.ts",
     "src/core/voice/VoiceAgent.ts",
     "src/core/website/WebsiteWorkspaceService.ts",
@@ -2520,6 +2431,9 @@
       "client/src/api/localRunApprovals.ts",
       "client/src/clipboard.ts"
     ],
+    "client/src/components/LocalToolDiscoveryPanel.tsx": [
+      "client/src/api/localTools.ts"
+    ],
     "client/src/components/LocalToolsWorkspace.test.tsx": [
       "client/src/components/LocalToolsWorkspace.tsx"
     ],
@@ -2530,6 +2444,7 @@
       "client/src/components/DocumentWorkspacePanel.tsx",
       "client/src/components/ExpansionStudiosPanel.tsx",
       "client/src/components/LocalRunApprovalPanel.tsx",
+      "client/src/components/LocalToolDiscoveryPanel.tsx",
       "client/src/components/MockApiWorkspacePanel.tsx",
       "client/src/components/ProjectIntelligencePanel.tsx",
       "client/src/components/SpriteLabPanel.tsx",
@@ -2681,15 +2596,7 @@
       "src/core/rag/ingestion/FileTypeRouter.ts",
       "src/types/rag.ts"
     ],
-    "scripts/import-europeana.ts": [],
-    "scripts/import-loc-history.ts": [],
-    "scripts/import-musicbrainz.ts": [],
-    "scripts/import-openalex-science.ts": [],
-    "scripts/import-openlibrary.ts": [],
-    "scripts/import-tmdb-popculture.ts": [],
-    "scripts/import-uspto-patents.ts": [],
     "scripts/import-wikidata-chrono.ts": [],
-    "scripts/import-wikimedia-history.ts": [],
     "scripts/import-wikipedia-general-corpus.ts": [],
     "scripts/native/certify-game-editors.ts": [
       "src/core/native-runtime/NativeGameEditorBackends.ts",
@@ -2707,6 +2614,9 @@
     "scripts/release/__tests__/client-coverage-policy.test.mjs": [
       "scripts/release/lib/client-coverage-policy.mjs"
     ],
+    "scripts/release/__tests__/comprehensive-audit-tools.test.mjs": [
+      "scripts/release/lib/secret-scan.mjs"
+    ],
     "scripts/release/__tests__/phase2-scanners.test.mjs": [
       "scripts/release/check-source-integrity.mjs",
       "scripts/release/lib/reachability.mjs",
@@ -2718,9 +2628,11 @@
     "scripts/release/__tests__/server-coverage-policy.test.mjs": [
       "scripts/release/lib/server-coverage-policy.mjs"
     ],
+    "scripts/release/build-release-artifact.mjs": [],
     "scripts/release/check-client-coverage.mjs": [
       "scripts/release/lib/client-coverage-policy.mjs"
     ],
+    "scripts/release/check-dependency-vulnerabilities.mjs": [],
     "scripts/release/check-docs.mjs": [],
     "scripts/release/check-environment-contract.mjs": [
       "scripts/release/lib/files.mjs"
@@ -2737,6 +2649,9 @@
     "scripts/release/check-release-evidence.mjs": [],
     "scripts/release/check-repository-inventory.mjs": [
       "scripts/release/generate-repository-inventory.mjs"
+    ],
+    "scripts/release/check-secrets.mjs": [
+      "scripts/release/lib/secret-scan.mjs"
     ],
     "scripts/release/check-server-coverage.mjs": [
       "scripts/release/lib/server-coverage-policy.mjs"
@@ -2762,6 +2677,7 @@
       "scripts/release/lib/source-analysis.mjs"
     ],
     "scripts/release/lib/render.mjs": [],
+    "scripts/release/lib/secret-scan.mjs": [],
     "scripts/release/lib/server-branch-report.mjs": [],
     "scripts/release/lib/server-coverage-policy.mjs": [],
     "scripts/release/lib/source-analysis.mjs": [
@@ -2770,6 +2686,7 @@
     "scripts/release/report-server-branch-gaps.mjs": [
       "scripts/release/lib/server-branch-report.mjs"
     ],
+    "scripts/release/run-comprehensive-audit.mjs": [],
     "scripts/release/run-server-coverage.mjs": [],
     "scripts/release/smoke-pages-artifact.mjs": [],
     "scripts/release/smoke-pages-deployment.mjs": [],
@@ -2901,21 +2818,6 @@
       "src/core/tools/business/SwotTool.ts",
       "src/core/tools/business/UnitEconomicsTool.ts"
     ],
-    "src/core/agents/business/FinancialModelBuilder.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/business/MarketResearchPlanner.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/business/OperationsAdvisor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/business/PricingAdvisor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/business/ProductStrategist.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
     "src/core/agents/CodeContextBudgeter.test.ts": [
       "src/core/agents/CodeContextBudgeter.ts"
     ],
@@ -2981,12 +2883,6 @@
     "src/core/agents/culture/PopCultureTimelineBuilder.ts": [
       "src/core/tools/culture/PopCultureTimelineTool.ts"
     ],
-    "src/core/agents/engineering/CadDesignCoach.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/engineering/ElectronicsAdvisor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
     "src/core/agents/engineering/EngineeringGeniusAgent.test.ts": [
       "src/core/agents/engineering/EngineeringGeniusAgent.ts"
     ],
@@ -2999,15 +2895,6 @@
       "src/core/tools/engineering/OhmsLawTool.ts",
       "src/core/tools/engineering/RoboticsKinematicsTool.ts",
       "src/core/tools/engineering/UnitConversionTool.ts"
-    ],
-    "src/core/agents/engineering/MechanicalAdvisor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/engineering/RoboticsPlanner.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/engineering/SafetyChecklist.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
     ],
     "src/core/agents/gamedev/BalanceSimulator.ts": [
       "src/core/tools/gamedev/BalanceSimTool.ts"
@@ -3057,12 +2944,8 @@
     "src/core/agents/gaming/GamingPlaybookService.test.ts": [
       "src/core/agents/gaming/GamingPlaybookService.ts"
     ],
-    "src/core/agents/gaming/GamingPlaybookService.ts": [],
-    "src/core/agents/geography/CultureProfileBuilder.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/geography/DemographicsAnalyzer.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
+    "src/core/agents/gaming/GamingPlaybookService.ts": [
+      "src/core/gaming/lattice/LatticeGameAdapter.ts"
     ],
     "src/core/agents/geography/GeoCultureGeniusAgent.test.ts": [
       "src/core/agents/geography/GeoCultureGeniusAgent.ts"
@@ -3076,24 +2959,12 @@
       "src/core/tools/geography/LanguageRegionTool.ts",
       "src/core/tools/geography/MapLookupTool.ts"
     ],
-    "src/core/agents/geography/GeopoliticalContextAdvisor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/geography/MapContextAdvisor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
     "src/core/agents/gis/__tests__/GISMappingAgent.test.ts": [
       "src/core/agents/gis/GISMappingAgent.ts"
     ],
     "src/core/agents/gis/GISMappingAgent.ts": [
       "src/core/gis/GISService.ts",
       "src/types/gis.ts"
-    ],
-    "src/core/agents/health/AnatomyTutor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/health/FitnessPlanner.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
     ],
     "src/core/agents/health/HealthGeniusAgent.test.ts": [
       "src/core/agents/health/HealthGeniusAgent.ts"
@@ -3106,15 +2977,6 @@
       "src/core/tools/health/MedicationInteractionWarningTool.ts",
       "src/core/tools/health/NutritionMacroTool.ts",
       "src/core/tools/health/RedFlagTriageTool.ts"
-    ],
-    "src/core/agents/health/MedicationSafetyAdvisor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/health/NutritionCoach.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/health/SymptomTriageGuardrails.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
     ],
     "src/core/agents/history/__tests__/HistoryGeniusAgent.test.ts": [
       "src/core/agents/history/HistoryGeniusAgent.ts",
@@ -3141,9 +3003,6 @@
     "src/core/agents/index.ts": [
       "src/core/agents/AgentTeam.ts"
     ],
-    "src/core/agents/language/GrammarExplainer.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
     "src/core/agents/language/LanguageGeniusAgent.test.ts": [
       "src/core/agents/language/LanguageGeniusAgent.ts"
     ],
@@ -3156,24 +3015,6 @@
       "src/core/tools/language/ToneRewriteTool.ts",
       "src/core/tools/language/TranslationTool.ts"
     ],
-    "src/core/agents/language/RhetoricCoach.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/language/SpeechCoach.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/language/ToneRewriter.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/language/Translator.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/legal/CivicProcessAdvisor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/legal/ContractExplainer.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
     "src/core/agents/legal/LegalCivicGeniusAgent.test.ts": [
       "src/core/agents/legal/LegalCivicGeniusAgent.ts"
     ],
@@ -3185,15 +3026,6 @@
       "src/core/tools/legal/LegalRiskChecklistTool.ts",
       "src/core/tools/legal/PlainEnglishLegalTool.ts",
       "src/core/tools/legal/StatuteLookupTool.ts"
-    ],
-    "src/core/agents/legal/LegalGuardrails.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/legal/LegalIntentClassifier.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/legal/RightsAndObligationsAnalyzer.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
     ],
     "src/core/agents/market/BacktestRunner.ts": [],
     "src/core/agents/market/EquityResearchPlanner.ts": [],
@@ -3243,29 +3075,7 @@
     "src/core/agents/MultiAgentOrchestrator.ts": [
       "src/core/observability/logger.ts"
     ],
-    "src/core/agents/music/BeatArrangementCoach.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
     "src/core/agents/music/DawWorkflowTranslator.ts": [],
-    "src/core/agents/music/flstudio/FLAutomationCoach.ts": [
-      "src/core/tools/music/FLAutomationTool.ts"
-    ],
-    "src/core/agents/music/flstudio/FLExportAdvisor.ts": [
-      "src/core/tools/music/FLExportSettingsTool.ts"
-    ],
-    "src/core/agents/music/flstudio/FLMixerCoach.ts": [
-      "src/core/tools/music/FLMixerRoutingTool.ts"
-    ],
-    "src/core/agents/music/flstudio/FLPatternCoach.ts": [
-      "src/core/tools/music/FLStepSequencerPatternTool.ts"
-    ],
-    "src/core/agents/music/flstudio/FLPianoRollCoach.ts": [
-      "src/core/tools/music/FLPianoRollTool.ts"
-    ],
-    "src/core/agents/music/flstudio/FLSoundDesignCoach.ts": [
-      "src/core/tools/music/FLGrossBeatAdvisorTool.ts",
-      "src/core/tools/music/FLPluginChainTool.ts"
-    ],
     "src/core/agents/music/flstudio/FLStudioGeniusAgent.ts": [
       "src/core/tools/music/FLAutomationTool.ts",
       "src/core/tools/music/FLEdisonWorkflowTool.ts",
@@ -3276,18 +3086,6 @@
       "src/core/tools/music/FLPluginChainTool.ts",
       "src/core/tools/music/FLStepSequencerPatternTool.ts"
     ],
-    "src/core/agents/music/GenreTimelineMapper.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/music/logic/LogicArrangementCoach.ts": [
-      "src/core/tools/music/LogicArrangementMarkerTool.ts"
-    ],
-    "src/core/agents/music/logic/LogicExportAdvisor.ts": [
-      "src/core/tools/music/LogicBounceExportTool.ts"
-    ],
-    "src/core/agents/music/logic/LogicMidiCoach.ts": [
-      "src/core/tools/music/LogicMidiWorkflowTool.ts"
-    ],
     "src/core/agents/music/logic/LogicProGeniusAgent.ts": [
       "src/core/tools/music/LogicAlchemyAdvisorTool.ts",
       "src/core/tools/music/LogicArrangementMarkerTool.ts",
@@ -3296,15 +3094,6 @@
       "src/core/tools/music/LogicMidiWorkflowTool.ts",
       "src/core/tools/music/LogicProjectSetupTool.ts",
       "src/core/tools/music/LogicStockPluginChainTool.ts",
-      "src/core/tools/music/LogicVocalChainTool.ts"
-    ],
-    "src/core/agents/music/logic/LogicSessionPlayerCoach.ts": [
-      "src/core/tools/music/LogicDrummerSessionPlayerTool.ts"
-    ],
-    "src/core/agents/music/logic/LogicStockPluginCoach.ts": [
-      "src/core/tools/music/LogicStockPluginChainTool.ts"
-    ],
-    "src/core/agents/music/logic/LogicVocalProductionCoach.ts": [
       "src/core/tools/music/LogicVocalChainTool.ts"
     ],
     "src/core/agents/music/mix/FLStudioMixController.ts": [
@@ -3349,9 +3138,6 @@
     "src/core/agents/music/mix/ReferenceMixAnalyzer.ts": [
       "src/core/tools/audio/ReferenceCompareTool.ts"
     ],
-    "src/core/agents/music/MixMasteringAdvisor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
     "src/core/agents/music/MusicCopyrightGuardrails.ts": [],
     "src/core/agents/music/MusicIntentClassifier.ts": [],
     "src/core/agents/music/MusicProductionGeniusAgent.test.ts": [
@@ -3391,15 +3177,8 @@
       "src/core/agents/music/protools/ProToolsGeniusAgent.ts",
       "src/core/agents/music/suno/SunoGeniusAgent.ts"
     ],
-    "src/core/agents/music/MusicPromptEngineer.ts": [],
-    "src/core/agents/music/MusicTheoryAdvisor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
     "src/core/agents/music/MusicWorkflowRouter.ts": [
       "src/core/agents/music/MusicIntentClassifier.ts"
-    ],
-    "src/core/agents/music/protools/ProToolsEditingCoach.ts": [
-      "src/core/tools/music/ProToolsEditWorkflowTool.ts"
     ],
     "src/core/agents/music/protools/ProToolsGeniusAgent.ts": [
       "src/core/tools/music/ProToolsBusRoutingTool.ts",
@@ -3410,26 +3189,6 @@
       "src/core/tools/music/ProToolsSessionSetupTool.ts",
       "src/core/tools/music/ProToolsSignalFlowTool.ts",
       "src/core/tools/music/ProToolsVocalCompTool.ts"
-    ],
-    "src/core/agents/music/protools/ProToolsMixPrepCoach.ts": [
-      "src/core/tools/music/ProToolsExportStemTool.ts"
-    ],
-    "src/core/agents/music/protools/ProToolsPostProductionCoach.ts": [
-      "src/core/tools/music/ProToolsPostAudioTool.ts"
-    ],
-    "src/core/agents/music/protools/ProToolsRecordingCoach.ts": [
-      "src/core/tools/music/ProToolsSessionSetupTool.ts",
-      "src/core/tools/music/ProToolsSignalFlowTool.ts"
-    ],
-    "src/core/agents/music/protools/ProToolsRoutingCoach.ts": [
-      "src/core/tools/music/ProToolsBusRoutingTool.ts"
-    ],
-    "src/core/agents/music/protools/ProToolsVocalCompCoach.ts": [
-      "src/core/tools/music/ProToolsPlaylistAdvisorTool.ts",
-      "src/core/tools/music/ProToolsVocalCompTool.ts"
-    ],
-    "src/core/agents/music/SampleWorkflowAdvisor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
     ],
     "src/core/agents/music/SongStructureCoach.ts": [],
     "src/core/agents/music/suno/SunoGeniusAgent.ts": [
@@ -3452,18 +3211,6 @@
       "src/core/agents/PatchGenerator.ts"
     ],
     "src/core/agents/PatchGenerator.ts": [],
-    "src/core/agents/philosophy/ArgumentMapper.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/philosophy/DebateCoach.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/philosophy/EthicsAdvisor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/philosophy/FallacyDetector.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
     "src/core/agents/philosophy/PhilosophyGeniusAgent.test.ts": [
       "src/core/agents/philosophy/PhilosophyGeniusAgent.ts"
     ],
@@ -3475,9 +3222,6 @@
       "src/core/tools/philosophy/FallacyDetectionTool.ts",
       "src/core/tools/philosophy/PhilosophyTimelineTool.ts",
       "src/core/tools/philosophy/SocraticQuestionTool.ts"
-    ],
-    "src/core/agents/philosophy/PhilosophyTimelineTool.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
     ],
     "src/core/agents/ReasoningController.ts": [
       "src/core/observability/logger.ts"
@@ -3504,15 +3248,6 @@
       "src/core/tools/science/OpenAlexTool.ts"
     ],
     "src/core/agents/science/TheoryEvolutionAnalyzer.ts": [],
-    "src/core/agents/security/DependencyRiskAdvisor.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/security/PrivacyRiskAnalyzer.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/security/SecureCodeReviewer.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
     "src/core/agents/security/SecurityGeniusAgent.test.ts": [
       "src/core/agents/security/SecurityGeniusAgent.ts"
     ],
@@ -3525,12 +3260,6 @@
       "src/core/tools/security/SecretsScanTool.ts",
       "src/core/tools/security/SecureCodeScanTool.ts",
       "src/core/tools/security/ThreatModelTool.ts"
-    ],
-    "src/core/agents/security/SecurityGuardrails.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/security/ThreatModeler.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
     ],
     "src/core/agents/sixsigma/SixSigmaBlackBeltAgent.test.ts": [
       "src/core/agents/sixsigma/SixSigmaBlackBeltAgent.ts"
@@ -3584,22 +3313,6 @@
     "src/core/agents/specialists/GenericSpecialistAgent.ts": [
       "src/core/rag/RAGDocumentStore.ts"
     ],
-    "src/core/agents/specialists/WorkflowComponent.test.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/specialists/WorkflowComponent.ts": [],
-    "src/core/agents/story/CharacterDesigner.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/story/DialogueCoach.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/story/LoreContinuityChecker.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
-    "src/core/agents/story/PlotArchitect.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
-    ],
     "src/core/agents/story/StoryGeniusAgent.test.ts": [
       "src/core/agents/story/StoryGeniusAgent.ts"
     ],
@@ -3612,9 +3325,6 @@
       "src/core/tools/story/LoreBibleTool.ts",
       "src/core/tools/story/ScenePacingTool.ts",
       "src/core/tools/story/StoryStructureTool.ts"
-    ],
-    "src/core/agents/story/WorldbuildingEngine.ts": [
-      "src/core/agents/specialists/WorkflowComponent.ts"
     ],
     "src/core/agents/VerificationRunner.test.ts": [
       "src/core/agents/VerificationRunner.ts"
@@ -5313,6 +5023,7 @@
       "src/core/agents/story/StoryGeniusAgent.ts",
       "src/core/analytics/AnalyticsService.ts",
       "src/core/chrono/ChronoKnowledgeEngine.ts",
+      "src/core/config/EnvironmentDefinitions.ts",
       "src/core/conversation/ConversationManager.ts",
       "src/core/creative/CreativeWritingAgent.ts",
       "src/core/database/Database.ts",
@@ -5340,6 +5051,7 @@
       "src/core/providers/ModelRouter.ts",
       "src/core/providers/OllamaAdapter.ts",
       "src/core/providers/VisionAdapter.ts",
+      "src/core/providers/local/ExternalLocalModelAdapter.ts",
       "src/core/rag/DocumentManager.ts",
       "src/core/rag/RAGDocumentStore.ts",
       "src/core/rag/RAGService.ts",
@@ -7128,7 +6840,6 @@
     "src/core/tools/audio/MaskingDetectorTool.ts": [],
     "src/core/tools/audio/ReferenceCompareTool.ts": [],
     "src/core/tools/audio/SpectrumAnalyzerTool.ts": [],
-    "src/core/tools/audio/StemAnalyzerTool.ts": [],
     "src/core/tools/audio/StereoImageTool.ts": [],
     "src/core/tools/business/BusinessModelCanvasTool.ts": [],
     "src/core/tools/business/CompetitorResearchTool.ts": [],
@@ -7160,13 +6871,8 @@
     "src/core/tools/CommandRunner.ts": [
       "src/core/observability/logger.ts"
     ],
-    "src/core/tools/culture/AwardLookupTool.ts": [],
     "src/core/tools/culture/FranchiseGraphTool.ts": [],
-    "src/core/tools/culture/MusicBrainzTool.ts": [],
-    "src/core/tools/culture/OpenLibraryTool.ts": [],
     "src/core/tools/culture/PopCultureTimelineTool.ts": [],
-    "src/core/tools/culture/TMDBTool.ts": [],
-    "src/core/tools/culture/WikidataEntityTool.ts": [],
     "src/core/tools/engineering/BeamLoadTool.ts": [],
     "src/core/tools/engineering/BOMBuilderTool.ts": [],
     "src/core/tools/engineering/CircuitChecklistTool.ts": [],
@@ -7174,11 +6880,7 @@
     "src/core/tools/engineering/OhmsLawTool.ts": [],
     "src/core/tools/engineering/RoboticsKinematicsTool.ts": [],
     "src/core/tools/engineering/UnitConversionTool.ts": [],
-    "src/core/tools/flstudio/FLMixerControlTool.ts": [],
-    "src/core/tools/flstudio/FLPluginParamTool.ts": [],
-    "src/core/tools/flstudio/FLRenderTool.ts": [],
     "src/core/tools/flstudio/FLTemplateInspectorTool.ts": [],
-    "src/core/tools/flstudio/FLTransportTool.ts": [],
     "src/core/tools/FunctionCaller.ts": [
       "src/core/observability/logger.ts",
       "src/core/tools/ToolRegistry.ts",
@@ -7204,17 +6906,6 @@
     "src/core/tools/health/MedicationInteractionWarningTool.ts": [],
     "src/core/tools/health/NutritionMacroTool.ts": [],
     "src/core/tools/health/RedFlagTriageTool.ts": [],
-    "src/core/tools/history/ChronologyTool.ts": [
-      "src/core/chrono/TimeRangeParser.ts"
-    ],
-    "src/core/tools/history/EuropeanaTool.ts": [],
-    "src/core/tools/history/LibraryOfCongressTool.ts": [],
-    "src/core/tools/history/MapContextTool.ts": [],
-    "src/core/tools/history/SmithsonianTool.ts": [],
-    "src/core/tools/history/SourceCriticismTool.ts": [],
-    "src/core/tools/history/WikidataHistoryTool.ts": [
-      "src/core/tools/culture/WikidataEntityTool.ts"
-    ],
     "src/core/tools/language/GrammarDiagnosticTool.ts": [],
     "src/core/tools/language/ReadabilityTool.ts": [],
     "src/core/tools/language/RhetoricAnalyzerTool.ts": [],
@@ -7228,13 +6919,8 @@
     "src/core/tools/legal/PlainEnglishLegalTool.ts": [],
     "src/core/tools/legal/StatuteLookupTool.ts": [],
     "src/core/tools/market/FredMacroTool.ts": [],
-    "src/core/tools/market/FundamentalsTool.ts": [
-      "src/core/tools/market/ValuationTool.ts"
-    ],
-    "src/core/tools/market/NewsEventTool.ts": [],
     "src/core/tools/market/PriceDataTool.ts": [],
     "src/core/tools/market/SecEdgarTool.ts": [],
-    "src/core/tools/market/TechnicalIndicatorTool.ts": [],
     "src/core/tools/market/ValuationTool.ts": [],
     "src/core/tools/math/LeanProofTool.ts": [],
     "src/core/tools/math/NumericSolverTool.ts": [],
@@ -7367,17 +7053,12 @@
       "src/core/tools/CommandRunner.ts",
       "src/types/tools.ts"
     ],
-    "src/core/tools/science/GBIFTool.ts": [],
     "src/core/tools/science/InventionTimelineTool.ts": [
       "src/core/chrono/ChronoKnowledgeEngine.ts"
     ],
-    "src/core/tools/science/NasaDataTool.ts": [],
     "src/core/tools/science/OpenAlexTool.ts": [],
     "src/core/tools/science/ScientificConsensusTool.ts": [],
     "src/core/tools/science/USPTOPatentTool.ts": [],
-    "src/core/tools/science/WikidataScienceTool.ts": [
-      "src/core/tools/culture/WikidataEntityTool.ts"
-    ],
     "src/core/tools/security/AuthFlowReviewTool.ts": [],
     "src/core/tools/security/DependencyAuditTool.ts": [],
     "src/core/tools/security/HeadersAuditTool.ts": [],
@@ -7385,7 +7066,6 @@
     "src/core/tools/security/SecretsScanTool.ts": [],
     "src/core/tools/security/SecureCodeScanTool.ts": [],
     "src/core/tools/security/ThreatModelTool.ts": [],
-    "src/core/tools/sixsigma/AnalysisApiTool.ts": [],
     "src/core/tools/sixsigma/AnovaTool.ts": [
       "src/types/tools.ts"
     ],
@@ -8343,6 +8023,7 @@
     ],
     "src/server/routes/gaming.ts": [
       "src/core/agents/gaming/GamingPlaybookService.ts",
+      "src/core/config/EnvironmentDefinitions.ts",
       "src/middleware/errorHandler.ts"
     ],
     "src/server/routes/geography.ts": [
@@ -8627,5 +8308,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1650
+  "sourceRecordCount": 1555
 }
