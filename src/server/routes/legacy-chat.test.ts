@@ -111,6 +111,81 @@ describe('legacy chat knowledge miss contract', () => {
     expect(orchestrator.processRequest).not.toHaveBeenCalled();
   });
 
+  it('uses the configured model when local and specialist knowledge cannot answer', async () => {
+    const previousFallback = process.env.LLM_KNOWLEDGE_FALLBACK;
+    process.env.LLM_KNOWLEDGE_FALLBACK = 'true';
+
+    try {
+      const app = express();
+      const conversationManager = new ConversationManager();
+      const orchestrator = {
+        processRequest: jest.fn().mockResolvedValue({
+          response: '1997 was a pivotal year for hip-hop, shaped by major releases, regional growth, and the deaths of The Notorious B.I.G. and Tupac Shakur in the surrounding era.',
+          model: 'ollama:qwen3:8b',
+          sources: []
+        })
+      };
+      const ragDocumentStore = {
+        searchKeyword: jest.fn().mockResolvedValue([{
+          chunk: {
+            id: '1997-geopolitics-chunk-0',
+            content: '1997 edition. Hegemony of a New Type and the Eurasian Chessboard.',
+            metadata: {
+              source: 'knowledge-base-public/general/geopolitics-1997.md',
+              title: 'The Grand Chessboard'
+            }
+          },
+          score: 0.95,
+          retrievalMethod: 'keyword'
+        }])
+      };
+      const musicProductionGeniusAgent = {
+        ask: jest.fn().mockResolvedValue({
+          response: 'I did not find a direct local knowledge-base record for this exact request, so I am returning the domain workflow instead of inventing facts.',
+          model: 'music-specialist',
+          sources: [],
+          knowledgeMiss: true
+        })
+      };
+
+      app.use(express.json());
+      app.post('/api/chat', ...createLegacyChatHandlers({
+        getServices: () => ({ ragDocumentStore, musicProductionGeniusAgent }),
+        getOrchestrator: () => orchestrator,
+        waitForReady: jest.fn().mockResolvedValue(undefined),
+        getConversationManager: () => conversationManager,
+      }));
+
+      for (const mode of ['ask', 'pop_culture', 'music']) {
+        await request(app)
+          .post('/api/chat')
+          .send({
+            message: 'what can you tell me about hip hop in 1997?',
+            sessionId: `hip-hop-${mode}`,
+            mode,
+          })
+          .expect(200)
+          .expect(response => {
+            expect(response.body.model).toBe('ollama:qwen3:8b');
+            expect(response.body.response).toContain('1997 was a pivotal year for hip-hop');
+          });
+      }
+
+      expect(orchestrator.processRequest).toHaveBeenCalledTimes(3);
+      expect(orchestrator.processRequest).toHaveBeenCalledWith(expect.objectContaining({
+        systemPrompt: expect.stringContaining('Do not return a workflow'),
+        temperature: 0.2,
+        useRAG: false
+      }));
+    } finally {
+      if (previousFallback === undefined) {
+        delete process.env.LLM_KNOWLEDGE_FALLBACK;
+      } else {
+        process.env.LLM_KNOWLEDGE_FALLBACK = previousFallback;
+      }
+    }
+  });
+
   it('prefers local library answers over broad history routing for book questions', async () => {
     const app = express();
     const conversationManager = new ConversationManager();

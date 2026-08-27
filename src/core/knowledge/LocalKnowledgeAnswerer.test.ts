@@ -321,6 +321,100 @@ describe('LocalKnowledgeAnswerer', () => {
     expect(answer?.response).toContain('local pop culture database');
   });
 
+  it('rejects an unrelated year match for a multi-word subject', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: '1997-geopolitics-chunk-0',
+          content: '1997 edition. Hegemony of a New Type. The Eurasian Chessboard and the American global system.',
+          metadata: {
+            source: 'knowledge-base-public/general/geopolitics-1997.md',
+            title: 'The Grand Chessboard'
+          }
+        },
+        score: 0.95,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answer = await new LocalKnowledgeAnswerer(store as any)
+      .answer('what can you tell me about hip hop in 1997?', 'ask');
+
+    expect(answer?.knowledgeMiss).toBe(true);
+    expect(answer?.sources).toEqual([]);
+  });
+
+  it('requires a dated subject to appear near the requested year unless the source is year-specific', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: 'book-with-distant-year-and-topic',
+          content: `Published in 1997. ${'unrelated branding commentary '.repeat(45)} Hip hop influenced fashion and youth marketing.`,
+          metadata: {
+            source: 'books/branding-study.pdf',
+            title: 'A Study of Global Brands'
+          }
+        },
+        score: 0.95,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answer = await new LocalKnowledgeAnswerer(store as any)
+      .answer('what can you tell me about hip hop in 1997?', 'ask');
+
+    expect(answer?.knowledgeMiss).toBe(true);
+  });
+
+  it('rejects extracted dated-topic passages that omit the requested year', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: 'weak-dated-topic-answer',
+          content: 'Published in 1997. Hip hop influenced fashion, branding, and youth marketing at the end of the decade.',
+          metadata: {
+            source: 'books/branding-study.pdf',
+            title: 'A Study of Global Brands'
+          }
+        },
+        score: 0.95,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answer = await new LocalKnowledgeAnswerer(store as any)
+      .answer('what can you tell me about hip hop in 1997?', 'ask');
+
+    expect(answer?.knowledgeMiss).toBe(true);
+  });
+
+  it('rejects a year and subject that occur in separate factual entries', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: 'dictionary-entries-with-unrelated-date',
+          content: [
+            'The composer later used diatonic writing influenced by jazz and popular music.',
+            'Another musician studied at Juilliard from 1959 to 1962.',
+            'Ernest Bloch died in Portland in 1959.'
+          ].join('\n'),
+          metadata: {
+            source: 'books/Oxford Dictionary of Music.pdf',
+            title: 'Oxford Dictionary of Music'
+          }
+        },
+        score: 0.95,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answer = await new LocalKnowledgeAnswerer(store as any)
+      .answer('what can you tell me about jazz in 1959?', 'ask');
+
+    expect(answer?.knowledgeMiss).toBe(true);
+    expect(answer?.sources).toEqual([]);
+  });
+
   it('handles empty document store constructor and passage extraction edge cases', async () => {
     const emptyAnswerer = new LocalKnowledgeAnswerer();
     const answer = await emptyAnswerer.answer('any query', 'ask');

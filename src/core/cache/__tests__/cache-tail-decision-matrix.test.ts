@@ -39,6 +39,14 @@ describe('cache tail decision matrix', () => {
     expect(cache.getStats().size).toBe(0);
   });
 
+  it('does not reuse semantically identical prompts across namespaces', () => {
+    const cache = new SemanticCache<string>(3600, 0.5);
+    cache.set('what happened in 1997?', 'history answer', undefined, 'mode=history');
+
+    expect(cache.get('what happened in 1997?', 'mode=history')).toBe('history answer');
+    expect(cache.get('what happened in 1997?', 'mode=music')).toBeUndefined();
+  });
+
   it('covers multi-level hits, misses, errors, promotion, tags, clearing, and warming', async () => {
     const cache = new MultiLevelCache<string>();
     const failing: CacheLevel = {

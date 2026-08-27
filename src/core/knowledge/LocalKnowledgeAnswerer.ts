@@ -21,7 +21,8 @@ export interface LocalKnowledgeAnswer {
 
 export class LocalKnowledgeAnswerer {
   private readonly stopWords = new Set([
-    'what', 'when', 'where', 'who', 'why', 'how', 'tell', 'give', 'show', 'me', 'the', 'a', 'an',
+    'what', 'when', 'where', 'who', 'why', 'how', 'tell', 'give', 'show', 'me', 'you', 'can', 'could',
+    'would', 'please', 'do', 'know', 'thing', 'something', 'happen', 'happened', 'the', 'a', 'an',
     'is', 'are', 'was', 'were', 'of', 'in', 'on', 'for', 'from', 'about', 'biggest', 'story'
   ]);
 
@@ -46,6 +47,32 @@ export class LocalKnowledgeAnswerer {
     const sourceEntries = this.collectSourceEntries(chunks);
     const sources = sourceEntries.map(entry => entry.source);
     const body = this.formatAnswerBody(chunks, message);
+    const year = this.extractYear(message);
+    const semanticTokens = this.importantTokens(message).filter(token => token !== year);
+    const sourceIdentityHasYear = !!year && chunks.some(chunk =>
+      this.searchableContainsTemporalMarker(
+        `${chunk.metadata.title || ''} ${chunk.metadata.source || ''}`,
+        year
+      )
+    );
+
+    // A dated subject answer must actually mention the requested date in the
+    // selected answer text. A large source may contain the topic and year in
+    // different sections even when the extracted passages do not answer the
+    // user's question.
+    if (
+      year
+      && semanticTokens.length > 0
+      && !sourceIdentityHasYear
+      && !this.hasSubjectNearTemporalMarker(
+        body,
+        year,
+        semanticTokens,
+        semanticTokens.length === 1 ? 1 : Math.min(2, Math.ceil(semanticTokens.length / 2))
+      )
+    ) {
+      return this.noLocalRecord(message, mode);
+    }
 
     return {
       response: `From the local knowledge base:\n\n${body}\n\nSources:\n${sourceEntries.map(entry => `- ${entry.label}`).join('\n')}`,
@@ -513,10 +540,67 @@ export class LocalKnowledgeAnswerer {
     const title = String(result.chunk.metadata.title || '').toLowerCase();
     const source = String(result.chunk.metadata.source || '').toLowerCase();
     const searchable = `${content} ${title} ${source}`;
-    const hasToken = importantTokens.some(token => searchable.includes(token));
     const hasYear = !year || this.searchableContainsTemporalMarker(searchable, year);
+    const semanticTokens = importantTokens.filter(token => token !== year);
 
-    return hasToken && hasYear;
+    // A shared year is not enough to establish relevance. Compare whole tokens so
+    // short subjects such as "hip" do not accidentally match words like
+    // "leadership" in an unrelated document.
+    if (semanticTokens.length === 0) {
+      return hasYear;
+    }
+
+    const searchableTokens = new Set(searchable.split(/[^a-z0-9]+/).filter(Boolean));
+    const semanticMatches = semanticTokens.filter(token => searchableTokens.has(token)).length;
+    const requiredMatches = semanticTokens.length === 1
+      ? 1
+      : Math.min(2, Math.ceil(semanticTokens.length / 2));
+
+    if (year) {
+      const sourceIdentity = `${title} ${source}`;
+      const sourceIsExplicitlyTemporal = this.searchableContainsTemporalMarker(sourceIdentity, year);
+      const subjectIsNearYear = this.hasSubjectNearTemporalMarker(
+        content,
+        year,
+        semanticTokens,
+        requiredMatches
+      );
+
+      if (!sourceIsExplicitlyTemporal && !subjectIsNearYear) {
+        return false;
+      }
+    }
+
+    return semanticMatches >= requiredMatches && hasYear;
+  }
+
+  private hasSubjectNearTemporalMarker(
+    content: string,
+    marker: string,
+    semanticTokens: string[],
+    requiredMatches: number
+  ): boolean {
+    const normalizedContent = this.normalizeTemporalText(content);
+    const markers = [
+      marker,
+      marker.replace(/\s+/g, ''),
+      this.withThousandsComma(marker),
+      this.millenniumQuery(marker)
+    ]
+      .filter(Boolean)
+      .map(candidate => this.normalizeTemporalText(candidate as string));
+    const factualUnits = normalizedContent
+      .split(/(?:\r?\n)+|(?<=[.!?;])\s+/)
+      .map(unit => unit.trim())
+      .filter(Boolean);
+
+    return factualUnits.some(unit => {
+      if (!markers.some(candidate => unit.includes(candidate))) {
+        return false;
+      }
+      const unitTokens = new Set(unit.split(/[^a-z0-9]+/).filter(Boolean));
+      return semanticTokens.filter(token => unitTokens.has(token)).length >= requiredMatches;
+    });
   }
 
   private importantTokens(message: string): string[] {

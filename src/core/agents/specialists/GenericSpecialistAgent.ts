@@ -17,6 +17,8 @@ export interface SpecialistResponse {
   guardrails: string[];
   tools: string[];
   model: string;
+  knowledgeMiss?: true;
+  canUseGenerativeFallback?: true;
 }
 
 export class GenericSpecialistAgent {
@@ -46,7 +48,9 @@ export class GenericSpecialistAgent {
       sources: this.profile.defaultSources,
       guardrails: this.profile.guardrails,
       tools: this.profile.tools,
-      model: `${this.profile.id}-specialist`
+      model: `${this.profile.id}-specialist`,
+      knowledgeMiss: true,
+      canUseGenerativeFallback: true
     };
   }
 

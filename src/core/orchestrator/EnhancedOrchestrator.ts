@@ -161,8 +161,9 @@ export class EnhancedOrchestrator {
     }
 
     // 3. Check semantic cache
+    const cacheNamespace = this.cacheNamespace(request);
     if (this.semanticCache) {
-      const cached = this.semanticCache.get(request.message);
+      const cached = this.semanticCache.get(request.message, cacheNamespace);
       if (cached) {
         logger.info('Semantic cache hit');
         metricsCollector.recordCacheHit(true);
@@ -236,7 +237,7 @@ export class EnhancedOrchestrator {
     let citations: any[] = [];
     const [ragResult, memoryContext, contextSummary] = await Promise.all([
       // RAG retrieval (if enabled)
-      this.ragService && this.shouldUseRAG(request.message)
+      this.ragService && request.useRAG !== false && this.shouldUseRAG(request.message)
         ? this.ragService.processQuery(request.message, false).catch((error: any) => {
             logger.warn('RAG retrieval failed', { error: error.message });
             return null;
@@ -274,7 +275,7 @@ export class EnhancedOrchestrator {
         const llmOptions: LLMGenerateOptions = {
           prompt: userPrompt,
           systemPrompt,
-          temperature: 0.7,
+          temperature: request.temperature ?? 0.7,
           maxTokens: 1000
         };
 
@@ -316,7 +317,7 @@ export class EnhancedOrchestrator {
             response,
             contract,
             selectedModel,
-            { temperature: 0.7, maxTokens: 1000 },
+            { temperature: request.temperature ?? 0.7, maxTokens: 1000 },
             'system'
           );
 
@@ -351,7 +352,7 @@ export class EnhancedOrchestrator {
 
           // 16. Cache response
           if (this.semanticCache) {
-            this.semanticCache.set(request.message, chatResponse);
+            this.semanticCache.set(request.message, chatResponse, undefined, cacheNamespace);
           }
 
           // Record metrics
@@ -529,6 +530,15 @@ export class EnhancedOrchestrator {
     // Use RAG for questions and information queries
     const questionWords = ['what', 'who', 'when', 'where', 'why', 'how', 'explain', 'tell me about'];
     return questionWords.some(word => lower.startsWith(word) || lower.includes(` ${word} `));
+  }
+
+  private cacheNamespace(request: ChatRequest): string {
+    return [
+      `mode=${request.mode || 'ask'}`,
+      `rag=${request.useRAG === false ? 'off' : 'auto'}`,
+      `temperature=${request.temperature ?? 0.7}`,
+      `system=${request.systemPrompt?.trim() || 'default'}`
+    ].join('|');
   }
 
   /**

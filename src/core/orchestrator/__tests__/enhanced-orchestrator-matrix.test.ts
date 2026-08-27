@@ -56,4 +56,27 @@ describe('B75-08: EnhancedOrchestrator Decision Branches Matrix', () => {
     });
     expect(fallbackRes.response).toBeDefined();
   });
+
+  it('allows a confirmed local-knowledge miss to bypass broad RAG retrieval', async () => {
+    const ragService = {
+      processQuery: jest.fn().mockResolvedValue(null),
+      getRetriever: jest.fn().mockReturnValue(undefined)
+    };
+    const orchestrator = new EnhancedOrchestrator(adapter, undefined, {
+      useRAG: true,
+      ragService: ragService as any,
+      useSafetyPipeline: false,
+      useSemanticCache: false,
+      useModelRouting: false
+    });
+
+    const result = await orchestrator.processRequest({
+      message: 'what can you tell me about hip hop in 1997?',
+      sessionId: 'confirmed-knowledge-miss',
+      useRAG: false
+    });
+
+    expect(result.response).toBeDefined();
+    expect(ragService.processQuery).not.toHaveBeenCalled();
+  });
 });
