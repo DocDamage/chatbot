@@ -181,6 +181,42 @@ describe('LocalKnowledgeAnswerer', () => {
     expect(answer?.response).not.toContain('common year starting on Wednesday');
   });
 
+  it('attaches child events to standalone dates without merging the next date heading', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: '1979-structured-events',
+          content: [
+            '# 1979',
+            'Domain: general',
+            '## Events',
+            '- June 15',
+            '- A national restaurant chain introduced a new children\'s meal.',
+            '- A thriller film was released by a major studio.',
+            '- June 20 – A television news correspondent and his interpreter were killed; the news crew captured it on tape.',
+            '- June 22',
+            '- June 23 – A state premier opened a suburban railway.',
+            '## Births'
+          ].join('\n'),
+          metadata: {
+            source: 'fixtures/1979.md',
+            title: '1979.md'
+          }
+        },
+        score: 0.9,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answer = await new LocalKnowledgeAnswerer(store as any)
+      .answer('tell me some news about 1979', 'ask');
+
+    expect(answer?.response).toContain('June 20 – A television news correspondent');
+    expect(answer?.response).toContain('June 23 – A state premier');
+    expect(answer?.response).not.toMatch(/tape\.\s*[–-]\s*June 22/);
+    expect(answer?.response).not.toMatch(/June 22\s*[–-]\s*June 23/);
+  });
+
   it('does not answer an exact year query from unrelated chunks', async () => {
     const store = {
       searchKeyword: jest.fn().mockResolvedValue([{

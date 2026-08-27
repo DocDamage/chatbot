@@ -403,22 +403,20 @@ export class LocalKnowledgeAnswerer {
     const contents = new Map<string, string>();
 
     for (const chunk of chunks) {
-      contents.set(chunk.id, chunk.content);
       const source = chunk.metadata.source;
-      if (!source || typeof source !== 'string') {
-        continue;
+      if (source && typeof source === 'string') {
+        const sourcePath = path.resolve(process.cwd(), source);
+        if (sourcePath.startsWith(process.cwd()) && fs.existsSync(sourcePath)) {
+          try {
+            contents.set(sourcePath, fs.readFileSync(sourcePath, 'utf8'));
+            continue;
+          } catch {
+            // Fall through to the indexed chunk when the source cannot be read.
+          }
+        }
       }
 
-      const sourcePath = path.resolve(process.cwd(), source);
-      if (!sourcePath.startsWith(process.cwd()) || !fs.existsSync(sourcePath)) {
-        continue;
-      }
-
-      try {
-        contents.set(sourcePath, fs.readFileSync(sourcePath, 'utf8'));
-      } catch {
-        // Chunk content is still usable if the source file cannot be read.
-      }
+      contents.set(chunk.id, chunk.content);
     }
 
     return Array.from(contents.values());
@@ -435,12 +433,36 @@ export class LocalKnowledgeAnswerer {
       '\n- '
     );
 
-    return normalizedEvents
+    const lines = normalizedEvents
       .split('\n')
       .map(line => line.trim())
       .filter(line => line.startsWith('- ') || this.looksLikeEventLine(line))
       .map(line => line.replace(/^[-*]\s*/, '').replace(/\s+/g, ' ').trim())
-      .filter(line => line.length > 20);
+      .filter(Boolean);
+    const completeEvents: string[] = [];
+    let pendingDate = '';
+
+    for (const line of lines) {
+      if (this.isStandaloneEventDate(line)) {
+        pendingDate = line;
+        continue;
+      }
+      if (this.looksLikeEventLine(line)) {
+        completeEvents.push(line);
+        pendingDate = '';
+        continue;
+      }
+      if (pendingDate && line.length > 20) {
+        completeEvents.push(`${pendingDate} – ${line}`);
+      }
+    }
+
+    return completeEvents.filter(line => line.length > 20);
+  }
+
+  private isStandaloneEventDate(line: string): boolean {
+    return /^(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:[–-]\d{1,2})?$/.test(line)
+      || /^(?:Around|About|Circa|c\.)?\s*\d{1,5}\s*(?:BC|BCE)$/i.test(line);
   }
 
   private looksLikeEventLine(line: string): boolean {
@@ -613,7 +635,7 @@ export class LocalKnowledgeAnswerer {
   }
 
   private isYearEventQuestion(message: string): boolean {
-    return /\b(what happened|happen|biggest|top story|major event|main event|something from|story|popular|pop culture reference|know about)\b/i.test(message);
+    return /\b(what happened|happen|biggest|top story|major event|main event|something from|story|news|headlines|popular|pop culture reference|know about)\b/i.test(message);
   }
 
   private noLocalRecord(message: string, mode: LocalKnowledgeMode): LocalKnowledgeAnswer {
