@@ -6,6 +6,7 @@ describe('routeManifest', () => {
       expect.objectContaining({ name: 'code', mount: '/api/code', privilege: 'developer', readiness: true }),
       expect.objectContaining({ name: 'files', mount: '/api/files', privilege: 'developer', readiness: false }),
       expect.objectContaining({ name: 'audio', mount: '/api/audio', privilege: 'developer', readiness: false }),
+      expect.objectContaining({ name: 'task-artifacts', mount: '/api/task-artifacts', readiness: false }),
       expect.objectContaining({ name: 'local-tools', mount: '/api/local-tools', privilege: 'developer', readiness: true }),
       expect.objectContaining({ name: 'project-intelligence', mount: '/api/project-intelligence', privilege: 'developer', readiness: true }),
       expect.objectContaining({ name: 'project-memory', mount: '/api/project-memory', privilege: 'developer', readiness: true }),

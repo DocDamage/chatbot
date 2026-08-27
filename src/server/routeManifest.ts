@@ -51,6 +51,7 @@ import { createMediaAccessibilityRouter } from './routes/media-accessibility';
 import { createAgentOperationsRouter } from './routes/agent-operations';
 import { createWritingStudioRouter } from './routes/writing-studio';
 import { createStudyStudioRouter } from './routes/study-studio';
+import { createTaskArtifactsRouter } from './routes/task-artifacts';
 
 export type RouteAvailability = 'hosted-and-local' | 'local-only';
 export type FeatureStatus = 'PRODUCTION_PREVIEW' | 'LOCAL_ONLY_EXPERIMENTAL';
@@ -96,6 +97,7 @@ export const routeManifest: RouteManifestEntry[] = [
   localOnly({ name: 'agent-operations', mount: '/api/agent-operations', readiness: true, privilege: 'developer', auditAction: 'agent-operations' }),
   localOnly({ name: 'writing-studio', mount: '/api/writing-studio', readiness: true, privilege: 'developer', auditAction: 'writing-studio' }),
   localOnly({ name: 'study-studio', mount: '/api/study-studio', readiness: true, privilege: 'developer', auditAction: 'study-studio' }),
+  localOnly({ name: 'task-artifacts', mount: '/api/task-artifacts', readiness: false }),
   preview({ name: 'sec', mount: '/api/sec', readiness: true, privilege: 'developer', auditAction: 'sec' }),
   preview({ name: 'education', mount: '/api/education', readiness: true, privilege: 'developer', auditAction: 'education' }),
   localOnly({ name: 'sprite-lab', mount: '/api/sprite-lab', readiness: true, privilege: 'developer', auditAction: 'sprite-lab' }),
@@ -145,7 +147,7 @@ interface RegisterRouteDeps {
 }
 
 export function registerManifestRoutes(deps: RegisterRouteDeps): void {
-  const relativeRouterNames = new Set(['capabilities', 'context-economy', 'admin', 'export']);
+  const relativeRouterNames = new Set(['capabilities', 'context-economy', 'admin', 'export', 'task-artifacts']);
   const routerFactories: Record<string, () => RequestHandler> = {
     'rag-query': () => createRagQueryRouter(deps.getServices()),
     research: () => createResearchRouter(deps.getServices()),
@@ -166,6 +168,7 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
     'agent-operations': () => createAgentOperationsRouter(),
     'writing-studio': () => createWritingStudioRouter(),
     'study-studio': () => createStudyStudioRouter(),
+    'task-artifacts': () => createTaskArtifactsRouter(deps.workspaceRoot),
     sec: () => createSECRouter(deps.getServices()),
     education: () => createEducationRouter(deps.getServices()),
     'sprite-lab': () => createSpriteLabRouter(deps.getServices(), deps.workspaceRoot),

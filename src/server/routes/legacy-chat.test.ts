@@ -7,6 +7,44 @@ import { ConversationManager } from '../../core/conversation/ConversationManager
 import { createLegacyChatHandlers } from './legacy-chat';
 
 describe('legacy chat knowledge miss contract', () => {
+  it('qualifies and completes artifact-building requests across chat categories', async () => {
+    const app = express();
+    const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'legacy-task-route-'));
+    const conversationManager = new ConversationManager();
+    const orchestrator = { processRequest: jest.fn() };
+
+    try {
+      app.use(express.json());
+      app.post('/api/chat', ...createLegacyChatHandlers({
+        getServices: () => ({}),
+        getOrchestrator: () => orchestrator,
+        waitForReady: jest.fn().mockResolvedValue(undefined),
+        getConversationManager: () => conversationManager,
+        workspaceRoot,
+      }));
+
+      const first = await request(app).post('/api/chat').send({
+        message: 'make a game for me', sessionId: 'builder-session', mode: 'history'
+      });
+      expect(first.body.task).toEqual(expect.objectContaining({ status: 'needs_input', awaiting: 'game_concept' }));
+
+      const second = await request(app).post('/api/chat').send({
+        message: 'a space shooter protecting a moon base', sessionId: 'builder-session', mode: 'music'
+      });
+      expect(second.body.task.awaiting).toBe('game_platform');
+
+      const completed = await request(app).post('/api/chat').send({
+        message: 'browser', sessionId: 'builder-session', mode: 'ask'
+      });
+      expect(completed.body.task.status).toBe('completed');
+      expect(completed.body.artifacts).toHaveLength(2);
+      expect(fs.existsSync(path.join(workspaceRoot, completed.body.artifacts[0].path))).toBe(true);
+      expect(orchestrator.processRequest).not.toHaveBeenCalled();
+    } finally {
+      fs.rmSync(workspaceRoot, { recursive: true, force: true });
+    }
+  });
+
   it('saves Markdown plans and returns implement-mode actions from plan mode', async () => {
     const app = express();
     const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'legacy-plan-route-'));

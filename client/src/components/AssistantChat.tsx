@@ -114,6 +114,14 @@ const modeHints: Record<ChatMode, string> = {
   knowledge_os: 'Knowledge OS mode'
 };
 
+type TaskArtifact = {
+  name: string;
+  path: string;
+  url: string;
+  mimeType: string;
+  kind: string;
+};
+
 const simpleModeOptions: Array<{ value: ChatMode; label: string }> = [
   { value: 'ask', label: 'Ask' },
   { value: 'plan', label: 'Plan' },
@@ -251,6 +259,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
   const [knowledgeActionError, setKnowledgeActionError] = useState('');
   const [connectionState, setConnectionState] = useState<ConnectionState>('connecting');
   const [creativeConfig, setCreativeConfig] = useState(defaultCreativeComposerState);
+  const [taskArtifacts, setTaskArtifacts] = useState<TaskArtifact[]>([]);
   const abortRef = useRef<AbortController | null>(null);
   const showBackendPanels = !isStaticPagesBuild && advancedOpen;
   const showAudioBrowser = showBackendPanels && ['music', 'fl_studio', 'fl_studio_control', 'pro_tools', 'logic', 'mix_master'].includes(mode);
@@ -286,6 +295,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
   }, []);
 
   const sendToBackend = async (input: string, selectedMode: ChatMode) => {
+    setTaskArtifacts([]);
     const controller = new AbortController();
     abortRef.current = controller;
 
@@ -327,6 +337,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
       }
 
       const data = await response.json();
+      setTaskArtifacts(Array.isArray(data.artifacts) ? data.artifacts : []);
       if (data.planId && data.planPath) {
         setPlanAction({ planId: data.planId, planPath: data.planPath });
       }
@@ -357,6 +368,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
         ? { ...message, content, status: 'error' }
         : message
       ));
+      setTaskArtifacts([]);
     } finally {
       setIsRunning(false);
       abortRef.current = null;
@@ -632,6 +644,27 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
               <div className="assistant-knowledge-review-actions">
                 <button type="button" onClick={discardKnowledgePreview}>Discard</button>
                 <button type="button" onClick={ingestPreview}>Save to Knowledge Base</button>
+              </div>
+            </div>
+          )}
+          {taskArtifacts.length > 0 && (
+            <div className="assistant-task-artifacts" role="region" aria-label="Created files">
+              <div>
+                <strong>Created files</strong>
+                <span>Open or download the artifacts produced by this chat task.</span>
+              </div>
+              <div className="assistant-task-artifact-links">
+                {taskArtifacts.map(artifact => (
+                  <a
+                    key={artifact.url}
+                    href={artifact.url}
+                    target={artifact.mimeType === 'text/html' || artifact.mimeType === 'image/svg+xml' ? '_blank' : undefined}
+                    rel="noreferrer"
+                    download={artifact.mimeType === 'text/csv' || artifact.mimeType === 'application/json' ? artifact.name : undefined}
+                  >
+                    {artifact.mimeType === 'text/html' ? 'Play' : artifact.mimeType === 'image/svg+xml' ? 'View' : 'Download'} {artifact.name}
+                  </a>
+                ))}
               </div>
             </div>
           )}

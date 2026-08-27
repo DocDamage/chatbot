@@ -9,7 +9,7 @@ describe('route manifest production boundary', () => {
   it('excludes local-only integrations from hosted registration', () => {
     const hostedNames = getActiveRouteManifest('hosted').map(entry => entry.name);
     expect(hostedNames).not.toEqual(expect.arrayContaining([
-      'code', 'plans', 'files', 'audio', 'local-tools', 'sprite-lab', 'sprite-studio', 'game-studio', 'music-studio', 'flstudio', 'capabilities'
+      'code', 'plans', 'files', 'audio', 'local-tools', 'sprite-lab', 'sprite-studio', 'game-studio', 'music-studio', 'flstudio', 'capabilities', 'task-artifacts'
     ]));
     expect(hostedNames).toEqual(expect.arrayContaining(['rag-query', 'admin', 'knowledge-online']));
   });
@@ -17,7 +17,7 @@ describe('route manifest production boundary', () => {
   it('retains local-only integrations for trusted local mode', () => {
     const localNames = getActiveRouteManifest('local').map(entry => entry.name);
     expect(localNames).toEqual(expect.arrayContaining([
-      'local-tools', 'sprite-lab', 'sprite-studio', 'game-studio', 'music-studio', 'flstudio', 'capabilities'
+      'local-tools', 'sprite-lab', 'sprite-studio', 'game-studio', 'music-studio', 'flstudio', 'capabilities', 'task-artifacts'
     ]));
   });
 });

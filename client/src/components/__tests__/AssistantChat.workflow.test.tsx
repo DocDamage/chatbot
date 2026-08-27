@@ -211,6 +211,35 @@ describe('RT-CHAT-004: AssistantChat Comprehensive Workflow Suite', () => {
     expect(fetchMock).toHaveBeenCalled();
   });
 
+  it('renders created task artifacts returned by chat', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
+      if (String(url).includes('/api/chat')) {
+        return Promise.resolve({
+          ok: true,
+          json: async () => ({
+            response: 'I created the chart.',
+            artifacts: [{
+              name: 'sales.svg',
+              url: '/api/task-artifacts/session/sales.svg',
+              path: 'data/chat-task-artifacts/session/sales.svg',
+              mimeType: 'image/svg+xml',
+              kind: 'chart'
+            }]
+          })
+        });
+      }
+      return Promise.resolve({ ok: true, json: async () => ({ files: [] }) });
+    }));
+
+    render(<AssistantChat advancedOpen={true} />);
+    await act(async () => {
+      await runtimeOptionsRef?.onNew?.({ content: [{ type: 'text', text: 'Create a sales chart' }] });
+    });
+
+    const artifactLink = await screen.findByRole('link', { name: /view sales\.svg/i });
+    expect(artifactLink.getAttribute('href')).toBe('/api/task-artifacts/session/sales.svg');
+  });
+
   it('handles knowledge miss flow, deep online research, discard, and ingest', async () => {
     const fetchMock = vi.fn().mockImplementation((url: string) => {
       const u = String(url);

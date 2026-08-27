@@ -105,7 +105,7 @@ describe('B75-03: Knowledge Flow and Local Knowledge Answerer Decision Matrices'
       };
       const summaryAnswerer = new LocalKnowledgeAnswerer(summaryStore as any);
       const summaryAns = await summaryAnswerer.answer('Give me an overview summary of discoveries', 'science');
-      expect(summaryAns?.response).toContain('Closest local passages indicate');
+      expect(summaryAns?.response).toContain('From the local knowledge base');
     });
   });
 

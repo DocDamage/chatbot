@@ -15,6 +15,7 @@ import { enrichChatRequestWithPlan } from '../chatRequest';
 import { CodingAuthorization } from '../../core/coding/authorization/CodingAuthorization';
 import { WikipediaSource } from '../../core/knowledge/WikipediaSource';
 import { KnowledgeResult } from '../../core/knowledge/KnowledgeSource';
+import { ConversationalTaskOrchestrator } from '../../core/tasks/ConversationalTaskOrchestrator';
 
 type ChatSpecialistMode =
   | 'coding'
@@ -227,6 +228,7 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
   const humanLanguageRouter = new HumanLanguageRouter();
   const codingAuthorization = new CodingAuthorization();
   const wikipediaSource = new WikipediaSource();
+  const taskOrchestrator = new ConversationalTaskOrchestrator(deps.workspaceRoot || process.cwd());
 
   const useGenerativeKnowledgeFallback = () =>
     process.env.LLM_KNOWLEDGE_FALLBACK === 'true';
@@ -444,6 +446,11 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
         });
         return res.json(payload);
       };
+
+      const taskResult = taskOrchestrator.handle(sessionId, sanitizedMessage, mode);
+      if (taskResult) {
+        return sendAndPersist(taskResult);
+      }
 
       const detectedIntent = detectUserIntent(sanitizedMessage);
       const switchRequirement = requiresSwitchForIntent(mode, detectedIntent);
