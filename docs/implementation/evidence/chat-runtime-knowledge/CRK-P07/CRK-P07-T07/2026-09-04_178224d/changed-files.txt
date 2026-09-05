@@ -1,0 +1,8 @@
+src/types/official-docs.ts
+src/types/official-docs.test.ts
+src/core/knowledge/DocumentationSourcePolicy.ts
+src/core/knowledge/DocumentationChunker.ts
+src/core/knowledge/DocumentationVersionIndex.ts
+src/core/knowledge/DocumentationRefreshService.ts
+src/core/knowledge/OfficialDocumentationPack.ts
+src/core/knowledge/__tests__/official-docs-retrieval-eval.test.ts

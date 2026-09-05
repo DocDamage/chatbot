@@ -1,0 +1,32 @@
+PASS src/core/workflow/WorkflowStateRepository.test.ts
+  WorkflowStateRepository (CRK-P04-T02)
+    √ persists and retrieves workflow execution state (2 ms)
+    √ updates active step and attaches step output (2 ms)
+    √ marks workflow cancelled on escape hatch trigger (1 ms)
+    √ records failure and transitions status to failed (1 ms)
+
+PASS src/types/workflow.test.ts
+  Workflow Schemas (CRK-P04-T01)
+    √ validates all 9 canonical step types (§1120-1129) (16 ms)
+    √ validates a complete WorkflowDefinition (4 ms)
+    √ validates tool approval binding schema (§1192-1202) (2 ms)
+    √ validates workflow execution state lifecycle (1 ms)
+
+PASS src/core/workflow/ToolApprovalBinding.test.ts
+  ToolApprovalBinding (CRK-P04-T06)
+    √ generates valid cryptographic approval binding (4 ms)
+    √ invalidates approval when inputs are altered after grant (§1201) (1 ms)
+    √ rejects expired approval tokens (§1199) (1 ms)
+    √ rejects unauthorized target paths (§1197) (1 ms)
+
+PASS src/core/workflow/__tests__/workflow-engine-integration.test.ts
+  CRK Phase 04 Exit Gate: Workflow Engine Integration
+    √ Exit Gate 1: Coding and debug workflows resolve and execute step sequences (8 ms)
+    √ Exit Gate 2: Normal chat, casual questions, and general Q&A bypass workflow engine (§1206) (1 ms)
+    √ Exit Gate 3: Escape hatch immediately halts workflow and yields to chat (§1180-1190) (2 ms)
+    √ Exit Gate 4: Tool approval is strictly verified against cryptographic input hash (§1191-1202) (2 ms)
+
+Test Suites: 4 passed, 4 total
+Tests:       16 passed, 16 total
+Snapshots:   0 total
+Time:        3.42 s

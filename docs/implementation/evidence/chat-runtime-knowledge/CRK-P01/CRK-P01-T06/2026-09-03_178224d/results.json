@@ -1,0 +1,38 @@
+{
+  "taskId": "CRK-P01-T06",
+  "taskTitle": "Shadow Mode & Phase 01 Exit Gate",
+  "phase": "CRK PHASE 01",
+  "branch": "codex/cf04-cf10-integration",
+  "commit": "178224d9c5b7891b78f52ddc781a319faeab64de",
+  "shortSha": "178224d",
+  "date": "2026-09-03",
+  "status": "VERIFIED",
+  "filesCreated": [
+    "src/core/chat/ChatRuntimeShadowRunner.ts",
+    "src/core/chat/ChatRuntimeShadowRunner.test.ts"
+  ],
+  "sourceLineCount": {
+    "src/core/chat/ChatRuntimeShadowRunner.ts": 96,
+    "src/core/chat/ChatRuntimeShadowRunner.test.ts": 88
+  },
+  "tests": {
+    "shadowRunnerUnitTests": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "phase01CumulativeTests": {
+      "total": 47,
+      "passed": 47,
+      "failed": 0
+    }
+  },
+  "exitGateCertified": {
+    "newRuntimeSchemasCompile": true,
+    "newRuntimeCanExecute": true,
+    "existingRouteContractCompatible": true,
+    "shadowModeNonMutating": true,
+    "unitIntegrationTestsProveStageOrdering": true,
+    "noProductionDefaultChanged": true
+  }
+}

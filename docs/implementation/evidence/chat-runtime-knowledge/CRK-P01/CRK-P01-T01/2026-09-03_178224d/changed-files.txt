@@ -1,0 +1,10 @@
+src/types/chat-runtime.ts
+src/types/chat-runtime.test.ts
+docs/implementation/handoffs/CURRENT_HANDOFF.md
+docs/implementation/handoffs/archive/CRK-P01-T01_HANDOFF.md
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P01/CRK-P01-T01/2026-09-03_178224d/summary.md
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P01/CRK-P01-T01/2026-09-03_178224d/commands.md
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P01/CRK-P01-T01/2026-09-03_178224d/results.json
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P01/CRK-P01-T01/2026-09-03_178224d/changed-files.txt
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P01/CRK-P01-T01/2026-09-03_178224d/runtime-checklist.md
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P01/CRK-P01-T01/2026-09-03_178224d/test-output.txt

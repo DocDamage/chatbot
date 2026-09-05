@@ -1,0 +1,15 @@
+src/types/feedback.ts
+src/types/feedback.test.ts
+src/core/feedback/FeedbackTraceBinding.ts
+src/core/feedback/FeedbackTriageService.ts
+src/core/feedback/CanonicalFeedbackService.ts
+src/core/feedback/FeedbackCollectorAdapter.ts
+src/core/feedback/__tests__/feedback-consolidation-integration.test.ts
+src/core/rl/FeedbackCollector.ts
+src/core/learning/FeedbackCollector.ts
+src/core/database/DatasetMigrations.ts
+client/src/components/ResponseFeedbackBar.tsx
+client/src/components/ResponseFeedbackBar.css
+client/src/components/ResponseFeedbackBar.test.tsx
+client/src/components/AssistantChat.tsx
+client/src/components/AssistantChat.css

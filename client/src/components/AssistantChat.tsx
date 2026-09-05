@@ -8,7 +8,8 @@ import {
   MessagePrimitive,
   ThreadMessageLike,
   ThreadPrimitive,
-  useExternalStoreRuntime
+  useExternalStoreRuntime,
+  useMessage,
 } from '@assistant-ui/react';
 import ModeSelector, { ChatMode } from './ModeSelector';
 import StatusBar from './StatusBar';
@@ -25,6 +26,10 @@ import CreativeComposerPanel, { buildCreativeRequestPayload, defaultCreativeComp
 import KnowledgeMissPrompt from './KnowledgeMissPrompt';
 import PlanActionBar from './PlanActionBar';
 import GISMapPanel from '../features/gis/GISMapPanel';
+import { SourcesDrawer } from './SourcesDrawer';
+import { WhyThisAnswerModal } from './WhyThisAnswerModal';
+import { ResponseFeedbackBar } from './ResponseFeedbackBar';
+import type { SourcesDrawerData, WhyThisAnswerDiagnostics } from '../../../src/types/citation';
 import { LoadedFileContext } from '../api/files';
 import { AudioFileContext } from '../api/audio';
 import type { ConversationDetail } from '../api/conversations';
@@ -48,6 +53,8 @@ type ChatMessage = {
   mode?: ChatMode;
   createdAt: string;
   status?: 'running' | 'complete' | 'error';
+  sourcesDrawerData?: SourcesDrawerData;
+  diagnostics?: WhyThisAnswerDiagnostics;
 };
 
 type ConnectionState = 'connected' | 'degraded' | 'connecting' | 'disconnected';
@@ -218,7 +225,9 @@ const convertMessage = (message: ChatMessage): ThreadMessageLike => {
       custom: {
         id: message.id,
         mode: message.mode,
-        createdAt: message.createdAt
+        createdAt: message.createdAt,
+        sourcesDrawerData: message.sourcesDrawerData,
+        diagnostics: message.diagnostics,
       }
     }
   };
@@ -355,7 +364,9 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
             ...message,
             id: data.artifactId || message.id,
             content: data.response || '',
-            status: 'complete'
+            status: 'complete',
+            sourcesDrawerData: data.sourcesDrawerData,
+            diagnostics: data.diagnostics,
           }
         : message
       ));
@@ -725,15 +736,68 @@ function AssistantBubble() {
 }
 
 function ChatBubble({ role }: { role: 'user' | 'assistant' }) {
+  const message = useMessage();
+  const custom = (message?.metadata?.custom as any) || {};
+  const [showDiagnostics, setShowDiagnostics] = useState(false);
+
+  const handleFeedbackSubmit = async (feedback: {
+    responseId: string;
+    thumbs: 'up' | 'down';
+    categories?: any[];
+    comment?: string;
+  }) => {
+    try {
+      await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messageId: feedback.responseId,
+          reaction: feedback.thumbs === 'up' ? 'like' : 'dislike',
+          categories: feedback.categories,
+          comment: feedback.comment,
+        }),
+      });
+    } catch {
+      // Non-blocking UI feedback error
+    }
+  };
+
   return (
     <MessagePrimitive.Root className={`assistant-message assistant-message-${role}`}>
       <div className="assistant-message-shell">
         <MessagePrimitive.Parts components={{ Text: TextPart }} />
         {role === 'assistant' && (
-          <ActionBarPrimitive.Root className="assistant-actions">
-            <ActionBarPrimitive.Copy className="assistant-action">Copy</ActionBarPrimitive.Copy>
-            <ActionBarPrimitive.Reload className="assistant-action">Retry</ActionBarPrimitive.Reload>
-          </ActionBarPrimitive.Root>
+          <>
+            {custom.sourcesDrawerData && (
+              <SourcesDrawer data={custom.sourcesDrawerData} />
+            )}
+            <div className="assistant-message-footer">
+              <ResponseFeedbackBar
+                responseId={custom.id || message.id}
+                onFeedbackSubmit={handleFeedbackSubmit}
+              />
+              {custom.diagnostics && (
+                <button
+                  type="button"
+                  className="assistant-why-answer-btn"
+                  onClick={() => setShowDiagnostics(true)}
+                  title="Why this answer?"
+                >
+                  🔍 Why this answer?
+                </button>
+              )}
+            </div>
+            {showDiagnostics && custom.diagnostics && (
+              <WhyThisAnswerModal
+                diagnostics={custom.diagnostics}
+                onClose={() => setShowDiagnostics(false)}
+              />
+            )}
+            <ActionBarPrimitive.Root className="assistant-actions">
+              <ActionBarPrimitive.Copy className="assistant-action">Copy</ActionBarPrimitive.Copy>
+              <ActionBarPrimitive.Reload className="assistant-action">Retry</ActionBarPrimitive.Reload>
+            </ActionBarPrimitive.Root>
+          </>
         )}
       </div>
     </MessagePrimitive.Root>

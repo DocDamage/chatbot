@@ -1,0 +1,26 @@
+{
+  "taskId": "CRK-P06-T08",
+  "phase": "CRK PHASE 06",
+  "name": "Dataset Registry & Knowledge Pack Infrastructure Exit Gate",
+  "status": "VERIFIED",
+  "baseCommit": "178224d",
+  "date": "2026-09-04",
+  "verification": {
+    "typeCheck": "PASS",
+    "linter": "PASS",
+    "unitTests": {
+      "passed": 11,
+      "failed": 0,
+      "total": 11
+    },
+    "maxFileLineCount": 173,
+    "sourceSizeRuleSatisfied": true
+  },
+  "exitGate": {
+    "manifestsValidate": true,
+    "tablesMigrateSqliteAndPostgres": true,
+    "jobsResumableAndAuditable": true,
+    "licenseResourcePolicyRunsBeforeIngestion": true,
+    "noLargeExternalDatasetInstalledYet": true
+  }
+}

@@ -1,0 +1,11 @@
+src/core/evals/__tests__/ChatBehaviorBaselineHarness.test.ts
+docs/implementation/chat-runtime/CHAT_BEHAVIOR_BASELINE.json
+docs/implementation/chat-runtime/CHAT_BEHAVIOR_BASELINE.md
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P00/CRK-P00-T03/2026-09-03_178224d/summary.md
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P00/CRK-P00-T03/2026-09-03_178224d/commands.md
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P00/CRK-P00-T03/2026-09-03_178224d/results.json
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P00/CRK-P00-T03/2026-09-03_178224d/changed-files.txt
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P00/CRK-P00-T03/2026-09-03_178224d/runtime-checklist.md
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P00/CRK-P00-T03/2026-09-03_178224d/test-output.txt
+docs/implementation/handoffs/CURRENT_HANDOFF.md
+docs/implementation/handoffs/archive/CRK-P00-T03_HANDOFF.md

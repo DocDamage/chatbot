@@ -1,0 +1,261 @@
+[
+  {
+    "caseId": "01_greeting",
+    "category": "Greeting",
+    "prompt": "Hello! What can you help me with today?",
+    "routeUsed": "/api/chat",
+    "model": "default",
+    "retrievedSources": [],
+    "latencyMs": 99,
+    "promptSize": 39,
+    "output": "Default baseline response for prompt: Explicit user-provided context:\nSystem instruction:\nAnswer t...",
+    "warnings": [],
+    "fallbackBehavior": "none",
+    "metadata": {
+      "status": 200,
+      "mode": "default",
+      "cacheHit": false
+    }
+  },
+  {
+    "caseId": "02_simple_factual",
+    "category": "Factual",
+    "prompt": "What is the capital of France?",
+    "routeUsed": "/api/chat",
+    "model": "default",
+    "retrievedSources": [],
+    "latencyMs": 42,
+    "promptSize": 30,
+    "output": "Paris is the capital of France.",
+    "warnings": [],
+    "fallbackBehavior": "none",
+    "metadata": {
+      "status": 200,
+      "mode": "default",
+      "cacheHit": true
+    }
+  },
+  {
+    "caseId": "03_coding_question",
+    "category": "Coding",
+    "prompt": "Write a TypeScript function to reverse a string",
+    "routeUsed": "/api/chat",
+    "model": "unknown",
+    "retrievedSources": [],
+    "latencyMs": 204,
+    "promptSize": 47,
+    "output": "{\"intent\":\"code_question\",\"summary\":\"Inspected 1 file(s): package.json.\",\"filesInspected\":[\"package.json\"],\"plan\":{\"intent\":\"code_question\",\"steps\":[\"Inspect likely files before answering\",\"Gather package scripts and current git diff\",\"Answer with file references and evidence\"],\"requiredEvidence\":[\"relevant source files\",\"related tests\",\"package scripts\",\"git diff\"]},\"patch\":{\"format\":\"unified-diff\",\"diff\":\"\",\"filesChanged\":[],\"explanation\":\"No patch generated. The agent inspected the repo and answered from existing files.\"},\"commandsRun\":[],\"verification\":{\"status\":\"not_run\",\"commandsRun\":[],\"results\":[],\"remainingRisks\":[\"Verification was not requested\"]},\"review\":{\"findings\":[],\"summary\":\"Review completed with no detected findings; project verification is still required.\"},\"toolCalls\":[{\"toolId\":\"search_repo\",\"parameters\":{\"query\":\"Write\",\"maxResults\":20},\"result\":{\"success\":true,\"data\":{\"matches\":[],\"scannedFiles\":0,\"skippedFiles\":0,\"truncated\":false},\"metadata\":{\"executionTime\":2}}},{\"toolId\":\"get_package_scripts\",\"parameters\":{},\"result\":{\"success\":false,\"error\":\"Repository operation failed.\",\"metadata\":{\"executionTime\":1}}},{\"toolId\":\"git_diff\",\"parameters\":{},\"result\":{\"success\":true,\"data\":{\"diff\":\"\"},\"metadata\":{\"executionTime\":184}}},{\"toolId\":\"read_project_file\",\"parameters\":{\"path\":\"package.json\",\"maxBytes\":20000},\"result\":{\"success\":false,\"error\":\"Repository operation failed.\",\"metadata\":{\"executionTime\":0}}}],\"context\":{\"tokenBudget\":12000,\"estimatedTokens\":12,\"items\":[{\"kind\":\"user_request\",\"label\":\"User request\",\"content\":\"Write a TypeScript function to reverse a string\",\"estimatedTokens\":12}]},\"adaptiveContext\":{\"tokenBudget\":11744,\"estimatedTokens\":12,\"items\":[{\"kind\":\"request\",\"label\":\"User request\",\"content\":\"Write a TypeScript function to reverse a string\",\"authority\":\"user\",\"reason\":\"user task\",\"confidence\":1}],\"budgets\":{\"request\":0.08,\"instruction\":0.12,\"architecture\":0.08,\"source\":0.28,\"symbol\":0.16,\"test\":0.14,\"dependency\":0.06,\"diff\":0.06,\"diagnostic\":0.12,\"documentation\":0.04}},\"risks\":[\"Verification was not requested\"],\"nextStep\":\"Run /api/code/verify before trusting behavior-changing code.\",\"nlu\":{\"domain\":\"coding\",\"intent\":\"coding.explicit\",\"route\":\"coding\",\"confidence\":1,\"matchedPhrases\":[],\"aliasesDetected\":[],\"normalizedQuery\":\"Write a TypeScript function to reverse a string\",\"slots\":{},\"vibes\":[],\"candidateDomains\":[\"coding\"]},\"codingAuthorization\":{\"requestId\":\"sess-coding\",\"mode\":\"chat\",\"action\":\"inspect\",\"approved\":true,\"reason\":\"Authorized by coding mode policy and approval state\",\"createdAt\":\"2026-09-04T14:33:55.129Z\"}}",
+    "warnings": [],
+    "fallbackBehavior": "none",
+    "metadata": {
+      "status": 200,
+      "mode": "coding"
+    }
+  },
+  {
+    "caseId": "04_debugging_question",
+    "category": "Debugging",
+    "prompt": "Explain where EnhancedOrchestrator routes code tasks",
+    "routeUsed": "/api/chat",
+    "model": "unknown",
+    "retrievedSources": [],
+    "latencyMs": 144,
+    "promptSize": 52,
+    "output": "{\"intent\":\"explain_code\",\"summary\":\"Inspected 1 file(s): package.json.\",\"filesInspected\":[\"package.json\"],\"plan\":{\"intent\":\"explain_code\",\"steps\":[\"Inspect likely files before answering\",\"Gather package scripts and current git diff\",\"Explain the implementation path with concrete files\"],\"requiredEvidence\":[\"relevant source files\",\"related tests\",\"package scripts\",\"git diff\"]},\"patch\":{\"format\":\"unified-diff\",\"diff\":\"\",\"filesChanged\":[],\"explanation\":\"No patch generated. The agent inspected the repo and answered from existing files.\"},\"commandsRun\":[],\"verification\":{\"status\":\"not_run\",\"commandsRun\":[],\"results\":[],\"remainingRisks\":[\"Verification was not requested\"]},\"review\":{\"findings\":[],\"summary\":\"Review completed with no detected findings; project verification is still required.\"},\"toolCalls\":[{\"toolId\":\"search_repo\",\"parameters\":{\"query\":\"Explain\",\"maxResults\":20},\"result\":{\"success\":true,\"data\":{\"matches\":[],\"scannedFiles\":0,\"skippedFiles\":0,\"truncated\":false},\"metadata\":{\"executionTime\":1}}},{\"toolId\":\"get_package_scripts\",\"parameters\":{},\"result\":{\"success\":false,\"error\":\"Repository operation failed.\",\"metadata\":{\"executionTime\":0}}},{\"toolId\":\"git_diff\",\"parameters\":{},\"result\":{\"success\":true,\"data\":{\"diff\":\"\"},\"metadata\":{\"executionTime\":133}}},{\"toolId\":\"read_project_file\",\"parameters\":{\"path\":\"package.json\",\"maxBytes\":20000},\"result\":{\"success\":false,\"error\":\"Repository operation failed.\",\"metadata\":{\"executionTime\":0}}}],\"context\":{\"tokenBudget\":12000,\"estimatedTokens\":13,\"items\":[{\"kind\":\"user_request\",\"label\":\"User request\",\"content\":\"Explain where EnhancedOrchestrator routes code tasks\",\"estimatedTokens\":13}]},\"adaptiveContext\":{\"tokenBudget\":11744,\"estimatedTokens\":13,\"items\":[{\"kind\":\"request\",\"label\":\"User request\",\"content\":\"Explain where EnhancedOrchestrator routes code tasks\",\"authority\":\"user\",\"reason\":\"user task\",\"confidence\":1}],\"budgets\":{\"request\":0.08,\"instruction\":0.12,\"architecture\":0.08,\"source\":0.28,\"symbol\":0.16,\"test\":0.14,\"dependency\":0.06,\"diff\":0.06,\"diagnostic\":0.12,\"documentation\":0.04}},\"risks\":[\"Verification was not requested\"],\"nextStep\":\"Run /api/code/verify before trusting behavior-changing code.\",\"nlu\":{\"domain\":\"coding\",\"intent\":\"coding.explicit\",\"route\":\"coding\",\"confidence\":1,\"matchedPhrases\":[],\"aliasesDetected\":[],\"normalizedQuery\":\"Explain where EnhancedOrchestrator routes code tasks\",\"slots\":{},\"vibes\":[],\"candidateDomains\":[\"coding\"]},\"codingAuthorization\":{\"requestId\":\"sess-debug\",\"mode\":\"chat\",\"action\":\"inspect\",\"approved\":true,\"reason\":\"Authorized by coding mode policy and approval state\",\"createdAt\":\"2026-09-04T14:33:55.332Z\"}}",
+    "warnings": [],
+    "fallbackBehavior": "none",
+    "metadata": {
+      "status": 200,
+      "mode": "coding"
+    }
+  },
+  {
+    "caseId": "05_current_version_framework",
+    "category": "Framework",
+    "prompt": "How do I configure route handlers in Next.js 15 App Router?",
+    "routeUsed": "/api/chat",
+    "model": "coding-agent",
+    "retrievedSources": [],
+    "latencyMs": 201,
+    "promptSize": 59,
+    "output": "Summary\nInspected 1 file(s): package.json.\n\nIntent\nexplain_code\n\nFiles inspected\n- package.json\n\nPlan\n- Inspect likely files before answering\n- Gather package scripts and current git diff\n- Explain the implementation path with concrete files\n\nPatch\n(no patch generated)\n\nPatch status\nNo structured patch was produced.\n\nVerification\nnot_run\n\nVerification scope\n- Inspect likely files before answering\n- Gather package scripts and current git diff\n- Explain the implementation path with concrete files\n\nUnverified risks\n- Verification was not requested",
+    "warnings": [
+      "Verification was not requested"
+    ],
+    "fallbackBehavior": "none",
+    "metadata": {
+      "status": 200,
+      "mode": "default",
+      "cacheHit": false
+    }
+  },
+  {
+    "caseId": "06_math_question",
+    "category": "Mathematics",
+    "prompt": "differentiate x^2",
+    "routeUsed": "/api/chat",
+    "model": "unknown",
+    "retrievedSources": [],
+    "latencyMs": 2388,
+    "promptSize": 17,
+    "output": "Answer: 2*x\nMethod: Classify problem -> Compute a draft result -> Verify symbolically or numerically -> Check edge cases -> Explain steps\nVerification: passed (python sympy symbolic verification)\nCommon mistake: skipping product/chain rules or trusting an unverified approximation.\nFinal simplified result: 2*x",
+    "warnings": [],
+    "fallbackBehavior": "none",
+    "metadata": {
+      "status": 200,
+      "mode": "math"
+    }
+  },
+  {
+    "caseId": "07_creative_writing",
+    "category": "Creative",
+    "prompt": "Write a short scene set in a rainy futuristic market",
+    "routeUsed": "/api/chat",
+    "model": "creative-writing-deterministic-v1",
+    "retrievedSources": [
+      "creative-writing-agent"
+    ],
+    "latencyMs": 9,
+    "promptSize": 52,
+    "output": "Draft Scene\n\nPrompt: Write a short scene set in a rainy futuristic market\nGenre: custom\nFormat: scene\nRating: Teen\n\nOutput scaffold:\nOpen with a concrete sensory image, establish the scene goal, complicate it, and end on a choice or reveal tied to the selected genre.\n\nContinuity notes: Preserve established names, locations, unresolved promises, tone, and rating limits in the next turn.",
+    "warnings": [],
+    "fallbackBehavior": "none",
+    "metadata": {
+      "status": 200,
+      "mode": "creative_writing"
+    }
+  },
+  {
+    "caseId": "08_loaded_file_followup",
+    "category": "File Context",
+    "prompt": "What is the default port in the loaded file?",
+    "routeUsed": "/api/chat",
+    "model": "default",
+    "retrievedSources": [],
+    "latencyMs": 23,
+    "promptSize": 44,
+    "output": "According to config.json, the default port is 8080.",
+    "warnings": [],
+    "fallbackBehavior": "none",
+    "metadata": {
+      "status": 200,
+      "mode": "default",
+      "cacheHit": true
+    }
+  },
+  {
+    "caseId": "09_active_plan_followup",
+    "category": "Plan Context",
+    "prompt": "Plan a new authentication feature",
+    "routeUsed": "/api/chat",
+    "model": "plan-document-service",
+    "retrievedSources": [
+      "plans/2026-09-04/plan-a-new-authentication-feature-49728e25.md"
+    ],
+    "latencyMs": 11,
+    "promptSize": 33,
+    "output": "Saved Markdown plan for \"Plan a new authentication feature\".\n\nSaved plan: plans/2026-09-04/plan-a-new-authentication-feature-49728e25.md\n\nSwitch to Implement when you want to turn this plan into code.",
+    "warnings": [],
+    "fallbackBehavior": "none",
+    "metadata": {
+      "status": 200,
+      "mode": "plan",
+      "planId": "plan-a-new-authentication-feature-49728e25"
+    }
+  },
+  {
+    "caseId": "10_rag_answerable",
+    "category": "RAG Sourced",
+    "prompt": "What are the rules for AI Contract Gate?",
+    "routeUsed": "/api/chat",
+    "model": "legalgenius-specialist",
+    "retrievedSources": [
+      "legalgenius-corpus"
+    ],
+    "latencyMs": 23,
+    "promptSize": 40,
+    "output": "LegalGenius analysis for: What are the rules for AI Contract Gate?",
+    "warnings": [],
+    "fallbackBehavior": "none",
+    "metadata": {
+      "status": 200,
+      "mode": "default"
+    }
+  },
+  {
+    "caseId": "11_rag_unanswerable",
+    "category": "RAG Unanswerable",
+    "prompt": "What was the secret breakfast eaten on May 12 1984 by the CEO of Antigravity?",
+    "routeUsed": "/api/chat",
+    "model": "default",
+    "retrievedSources": [],
+    "latencyMs": 38,
+    "promptSize": 77,
+    "output": "Default baseline response for prompt: Explicit user-provided context:\nSystem instruction:\nAnswer t...",
+    "warnings": [],
+    "fallbackBehavior": "none",
+    "metadata": {
+      "status": 200,
+      "mode": "default",
+      "cacheHit": true
+    }
+  },
+  {
+    "caseId": "12_provider_failure",
+    "category": "Provider Failure",
+    "prompt": "Generate a long essay on quantum entanglement",
+    "routeUsed": "/api/chat",
+    "model": "fallback",
+    "retrievedSources": [],
+    "latencyMs": 27,
+    "promptSize": 45,
+    "output": "I'm having trouble processing that request right now. Could you try rephrasing?",
+    "warnings": [
+      "Used fallback response due to errors"
+    ],
+    "fallbackBehavior": "Exhausted retries and returned static fallback response",
+    "metadata": {
+      "status": 200,
+      "mode": "default",
+      "cacheHit": true
+    }
+  },
+  {
+    "caseId": "13_invalid_response",
+    "category": "Invalid Output",
+    "prompt": "Tell me bad words and profanity",
+    "routeUsed": "/api/chat",
+    "model": "default",
+    "retrievedSources": [],
+    "latencyMs": 22,
+    "promptSize": 31,
+    "output": "This response contains harmful profanity and forbidden content: damn hell.",
+    "warnings": [
+      "Content matched safety pattern: /harmful/i"
+    ],
+    "fallbackBehavior": "Validation retry / fallback triggered on unsafe content",
+    "metadata": {
+      "status": 200,
+      "mode": "default",
+      "cacheHit": true
+    }
+  },
+  {
+    "caseId": "14_cached_repeat",
+    "category": "Semantic Cache",
+    "prompt": "What is the capital of France?",
+    "routeUsed": "/api/chat",
+    "model": "default",
+    "retrievedSources": [],
+    "latencyMs": 23,
+    "promptSize": 30,
+    "output": "Paris is the capital of France.",
+    "warnings": [],
+    "fallbackBehavior": "Semantic cache hit bypassing LLM provider",
+    "metadata": {
+      "status": 200,
+      "mode": "default",
+      "cacheHit": true
+    }
+  }
+]

@@ -1,0 +1,14 @@
+=== TEST RUN: bot-profile.test.ts ===
+> jest src/types/bot-profile.test.ts
+
+PASS src/types/bot-profile.test.ts
+  BotProfile Schemas (CRK-P02-T01)
+    √ validates a complete BotProfile with all policy bindings (4 ms)
+    √ applies canonical defaults for omitted optional fields (1 ms)
+    √ rejects profiles containing secrets or credentials (§907) (7 ms)
+    √ rejects invalid profile IDs with special characters or whitespace (1 ms)
+    √ validates a BotProfileVersion audit record
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total

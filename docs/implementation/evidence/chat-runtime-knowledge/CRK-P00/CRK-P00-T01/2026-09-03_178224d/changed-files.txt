@@ -1,0 +1,8 @@
+docs/implementation/chat-runtime/CURRENT_CHAT_EXECUTION_MAP.md
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P00/CRK-P00-T01/2026-09-03_178224d/summary.md
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P00/CRK-P00-T01/2026-09-03_178224d/commands.md
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P00/CRK-P00-T01/2026-09-03_178224d/results.json
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P00/CRK-P00-T01/2026-09-03_178224d/changed-files.txt
+docs/implementation/evidence/chat-runtime-knowledge/CRK-P00/CRK-P00-T01/2026-09-03_178224d/runtime-checklist.md
+docs/implementation/handoffs/CURRENT_HANDOFF.md
+docs/implementation/handoffs/archive/CRK-P00-T01_HANDOFF.md

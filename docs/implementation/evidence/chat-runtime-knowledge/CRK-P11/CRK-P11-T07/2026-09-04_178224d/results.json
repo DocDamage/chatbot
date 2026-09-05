@@ -1,0 +1,22 @@
+{
+  "phase": "CRK-P11",
+  "task": "CRK-P11-T07",
+  "name": "Prompt and Context Assembler Exit Gate",
+  "status": "PASSED",
+  "timestamp": "2026-09-04T07:15:00.000Z",
+  "commit": "178224d",
+  "criteria": {
+    "inline_prompt_removed": "PASSED",
+    "typed_versioned_sections": "PASSED",
+    "token_budget_measurable": "PASSED",
+    "retrieved_instructions_untrusted": "PASSED",
+    "truncation_deterministic": "PASSED"
+  },
+  "tests": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0
+  },
+  "typeCheck": "PASSED",
+  "lint": "PASSED"
+}

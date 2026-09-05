@@ -4,6 +4,7 @@
  */
 
 import { logger } from '../observability/logger';
+import { getDatasetMigrations } from './DatasetMigrations';
 
 export interface DatabaseConfig {
   type: 'sqlite' | 'postgresql';
@@ -516,7 +517,12 @@ export class Database {
           )`
         ];
 
-    const migrations = [...baseMigrations, ...ragMigrations, ...knowledgeOsMigrations];
+    const migrations = [
+      ...baseMigrations,
+      ...ragMigrations,
+      ...knowledgeOsMigrations,
+      ...getDatasetMigrations(this.config.type),
+    ];
 
     for (const migration of migrations) {
       try {

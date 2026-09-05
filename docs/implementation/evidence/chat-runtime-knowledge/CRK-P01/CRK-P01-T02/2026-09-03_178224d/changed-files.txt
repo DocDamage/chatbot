@@ -1,0 +1,10 @@
+A  src/core/chat/ChatRequestNormalizer.ts
+A  src/core/chat/ChatRequestNormalizer.test.ts
+A  docs/implementation/evidence/chat-runtime-knowledge/CRK-P01/CRK-P01-T02/2026-09-03_178224d/summary.md
+A  docs/implementation/evidence/chat-runtime-knowledge/CRK-P01/CRK-P01-T02/2026-09-03_178224d/commands.md
+A  docs/implementation/evidence/chat-runtime-knowledge/CRK-P01/CRK-P01-T02/2026-09-03_178224d/results.json
+A  docs/implementation/evidence/chat-runtime-knowledge/CRK-P01/CRK-P01-T02/2026-09-03_178224d/changed-files.txt
+A  docs/implementation/evidence/chat-runtime-knowledge/CRK-P01/CRK-P01-T02/2026-09-03_178224d/test-output.txt
+A  docs/implementation/evidence/chat-runtime-knowledge/CRK-P01/CRK-P01-T02/2026-09-03_178224d/runtime-checklist.md
+A  docs/implementation/handoffs/archive/CRK-P01-T02_HANDOFF.md
+M  docs/implementation/handoffs/CURRENT_HANDOFF.md
