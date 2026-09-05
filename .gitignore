@@ -15,9 +15,10 @@ client/test-results/
 .env
 .env.local
 .env.*.local
-cache/
+/cache/
 knowledge-base/
 *.log
+*.traineddata
 .DS_Store
 *.tsbuildinfo
 .vscode/
@@ -30,3 +31,10 @@ knowledge-base/
 **/target/
 **/__pycache__/
 **/build/
+.capabilities/
+.worktrees/
+config/profiles.json
+config/api_keys.json
+/plans/
+/release-artifacts/
+/release-evidence/

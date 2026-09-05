@@ -23,6 +23,48 @@ describe('AssistantChat knowledge miss state', () => {
     });
   });
 
+  it('uses the miss fallback structure and top-level properties', () => {
+    const state1 = resolveKnowledgeMissState({
+      miss: {
+        knowledgeMiss: true,
+        message: 'Miss',
+        domain: 'music',
+        proposedWebQuery: 'suno chords',
+        recommendedSources: ['suno.com'],
+        canSearchOnline: true,
+        suggestedNextAction: 'search_online',
+      },
+    }, 'Query', 'music');
+
+    expect(state1).toEqual({
+      query: 'suno chords',
+      domain: 'music',
+      recommendedSources: ['suno.com'],
+    });
+
+    const state2 = resolveKnowledgeMissState({
+      knowledgeMiss: true,
+      proposedWebQuery: 'direct query',
+      mode: 'science',
+    }, 'Fallback input', 'ask');
+
+    expect(state2).toEqual({
+      query: 'direct query',
+      domain: 'science',
+      recommendedSources: undefined,
+    });
+
+    const state3 = resolveKnowledgeMissState({
+      knowledgeMiss: true,
+    }, 'Default input', 'math');
+
+    expect(state3).toEqual({
+      query: 'Default input',
+      domain: 'math',
+      recommendedSources: undefined,
+    });
+  });
+
   it('clears the CTA state when a response is not a knowledge miss', () => {
     expect(resolveKnowledgeMissState({ response: 'Known answer' }, 'question', 'ask')).toBeNull();
   });

@@ -22,7 +22,7 @@ export class FLStudioControlAgent {
   async connect(config: Record<string, any> = {}) {
     this.session.setMode(config.mode);
     const result = await this.client.connect({
-      command: config.command || process.env.FL_STUDIO_MCP_COMMAND || 'fl-studio-mcp.cmd',
+      command: config.command !== undefined ? config.command : (process.env.FL_STUDIO_MCP_COMMAND || 'fl-studio-mcp.cmd'),
       args: config.args || this.envArgs(),
       cwd: config.cwd || process.env.FL_STUDIO_MCP_CWD,
       framing: config.framing || 'jsonl'

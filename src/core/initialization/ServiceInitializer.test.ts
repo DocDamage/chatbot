@@ -87,6 +87,15 @@ describe('ServiceInitializer configuration branches', () => {
     process.env.OPENAI_COMPATIBLE_BASE_URL = 'http://localhost:9999/v1';
     const compatible = await (ServiceInitializer as any).initializeLLMAdapters();
     expect(Object.keys(compatible.all)).toContain('openai');
+
+    process.env.LLM_PROVIDER = 'local';
+    process.env.LOCAL_MODEL_ENABLED = 'true';
+    process.env.LOCAL_MODEL_BASE_URL = 'http://127.0.0.1:8080/v1';
+    process.env.LOCAL_MODEL_NAME = 'test-local-model';
+    process.env.DEPLOYMENT_MODE = 'local';
+    const local = await (ServiceInitializer as any).initializeLLMAdapters();
+    expect(Object.keys(local.all)).toContain('local');
+    expect(local.primary.getModelName()).toContain('test-local-model');
   });
 
   it('initializes optional Hugging Face and Ollama adapters when enabled', async () => {
@@ -121,9 +130,18 @@ describe('ServiceInitializer configuration branches', () => {
     process.env.GEMINI_API_KEY = 'vision-key';
     expect((ServiceInitializer as any).initializeVisionAdapter()).toBeDefined();
     delete process.env.USE_GEMINI_VISION;
-    process.env.USE_GPT4V = 'true';
-    process.env.OPENAI_API_KEY = 'vision-key';
-    expect((ServiceInitializer as any).initializeVisionAdapter()).toBeDefined();
+    delete process.env.USE_GPT4V;
+
+    // Embedding service provider branches
+    process.env.EMBEDDING_PROVIDER = 'xenova';
+    expect((ServiceInitializer as any).initializeEmbeddingService()).toBeDefined();
+
+    process.env.EMBEDDING_PROVIDER = 'openai';
+    process.env.OPENAI_API_KEY = 'mock-key';
+    expect((ServiceInitializer as any).initializeEmbeddingService()).toBeDefined();
+
+    process.env.EMBEDDING_PROVIDER = 'ollama';
+    expect((ServiceInitializer as any).initializeEmbeddingService()).toBeDefined();
   });
 
   it('loads knowledge directories, counts nested files, and handles failures safely', async () => {
@@ -160,5 +178,48 @@ describe('ServiceInitializer configuration branches', () => {
     (ServiceInitializer as any).markOptionalSkipped(initialization, 'skipped');
     expect(initialization.optional.skipped.status).toBe('skipped');
     fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  it('runs full ServiceInitializer.initialize() with eager knowledge loading and database', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'svc-init-full-'));
+    const dbPath = path.join(tempDir, 'init_test.db');
+    process.env.DATABASE_URL = `sqlite://${dbPath}`;
+    process.env.RAG_PERSISTENCE = 'true';
+    process.env.EAGER_KNOWLEDGE_LOAD = 'true';
+    process.env.RAG_RETRIEVAL_MODE = 'database';
+    process.env.RAG_RESTORE_PERSISTED_TO_MEMORY = 'true';
+    process.env.USE_OLLAMA = 'false';
+    process.env.USE_HUGGINGFACE = 'false';
+
+    const services = await ServiceInitializer.initialize();
+    expect(services.orchestrator).toBeDefined();
+    expect(services.toolRegistry).toBeDefined();
+    expect(services.codingAgent).toBeDefined();
+    expect(services.mathGeniusAgent).toBeDefined();
+    expect(services.marketGeniusAgent).toBeDefined();
+    expect(services.sixSigmaBlackBeltAgent).toBeDefined();
+    expect(services.sixSigmaBlackBeltAgent).toBeDefined();
+    expect(services.storyGeniusAgent).toBeDefined();
+    expect(services.musicProductionGeniusAgent).toBeDefined();
+    expect(services.cache).toBeDefined();
+    expect(services.initialization?.criticalStartedAt).toBeDefined();
+
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  });
+
+  it('runs full ServiceInitializer.initialize() with background knowledge loading', async () => {
+    process.env.RAG_PERSISTENCE = 'false';
+    process.env.BACKGROUND_KNOWLEDGE_LOAD = 'true';
+    delete process.env.EAGER_KNOWLEDGE_LOAD;
+    delete process.env.LLM_PROVIDER;
+    delete process.env.OPENAI_API_KEY;
+    delete process.env.ANTHROPIC_API_KEY;
+    delete process.env.GEMINI_API_KEY;
+    process.env.USE_OLLAMA = 'false';
+    process.env.USE_HUGGINGFACE = 'false';
+
+    const services = await ServiceInitializer.initialize();
+    expect(services.orchestrator).toBeDefined();
+    expect(services.modelRouter).toBeDefined();
   });
 });

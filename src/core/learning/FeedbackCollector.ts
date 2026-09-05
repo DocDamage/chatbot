@@ -1,6 +1,8 @@
 /**
- * Feedback Collector - Collect user feedback and send to learning pipeline
+ * Feedback Collector - Collect user feedback and send to learning pipeline (Legacy)
  * Research: MIT Online Learning, Stanford Continual Learning
+ *
+ * @deprecated Use CanonicalFeedbackService (CRK-P16) from src/core/feedback/CanonicalFeedbackService.
  */
 
 import { logger } from '../observability/logger';
@@ -134,10 +136,11 @@ export class FeedbackCollector {
       trainingSignals: trainingSignals.length
     });
 
-    // In production, send to fine-tuning pipeline
-    if (trainingSignals.length > 0) {
-      await this.sendToLearningPipeline(trainingSignals);
-    }
+    // In accordance with §2874, automatic fine-tuning is strictly prohibited.
+    // Feedback signals must be triaged into evaluation candidates rather than auto-training.
+    logger.info('Feedback batch evaluated for regression candidates without auto-training (§2874)', {
+      candidates: trainingSignals.length,
+    });
   }
 
   /**

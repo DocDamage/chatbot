@@ -209,6 +209,28 @@ export class ModelRouter {
     });
 
     // ===== FREE MODELS (Ollama) =====
+
+    // Explicitly configured external local OpenAI-compatible endpoint (CF-04).
+    // The capability is inert until ServiceInitializer registers the adapter.
+    this.capabilities.set('external-local-model', {
+      provider: ModelProvider.LOCAL,
+      model: process.env.LOCAL_MODEL_NAME || 'local-model',
+      taskTypes: [
+        TaskType.GENERAL,
+        TaskType.SIMPLE_QUERY,
+        TaskType.ANALYSIS,
+        TaskType.COMPLEX_REASONING,
+        TaskType.CODE_GENERATION,
+        TaskType.CREATIVE_WRITING,
+        TaskType.MULTIMODAL
+      ],
+      maxTokens: 8192,
+      supportsStreaming: true,
+      costPer1kTokens: 0,
+      latencyMs: 1500,
+      qualityScore: 0.82
+    });
+
     
     // Ollama Llama 2 - Free, local, good for general tasks
     this.capabilities.set('ollama-llama2', {

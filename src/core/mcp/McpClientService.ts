@@ -139,6 +139,7 @@ export class McpClientService {
   disconnect(): void {
     if (this.child && !this.child.killed) {
       this.child.kill();
+      this.child.unref?.();
     }
     this.child = undefined;
     this.connected = false;
@@ -181,6 +182,7 @@ export class McpClientService {
         this.pending.delete(id);
         reject(new Error(`MCP request timed out: ${method}`));
       }, 15000);
+      timeout.unref?.();
 
       this.pending.set(id, { resolve, reject, timeout });
       this.writeMessage(payload);

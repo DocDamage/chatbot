@@ -8,7 +8,8 @@ import {
   MessagePrimitive,
   ThreadMessageLike,
   ThreadPrimitive,
-  useExternalStoreRuntime
+  useExternalStoreRuntime,
+  useMessage,
 } from '@assistant-ui/react';
 import ModeSelector, { ChatMode } from './ModeSelector';
 import StatusBar from './StatusBar';
@@ -25,6 +26,10 @@ import CreativeComposerPanel, { buildCreativeRequestPayload, defaultCreativeComp
 import KnowledgeMissPrompt from './KnowledgeMissPrompt';
 import PlanActionBar from './PlanActionBar';
 import GISMapPanel from '../features/gis/GISMapPanel';
+import { SourcesDrawer } from './SourcesDrawer';
+import { WhyThisAnswerModal } from './WhyThisAnswerModal';
+import { ResponseFeedbackBar } from './ResponseFeedbackBar';
+import type { SourcesDrawerData, WhyThisAnswerDiagnostics } from '../../../src/types/citation';
 import { LoadedFileContext } from '../api/files';
 import { AudioFileContext } from '../api/audio';
 import type { ConversationDetail } from '../api/conversations';
@@ -48,6 +53,8 @@ type ChatMessage = {
   mode?: ChatMode;
   createdAt: string;
   status?: 'running' | 'complete' | 'error';
+  sourcesDrawerData?: SourcesDrawerData;
+  diagnostics?: WhyThisAnswerDiagnostics;
 };
 
 type ConnectionState = 'connected' | 'degraded' | 'connecting' | 'disconnected';
@@ -112,6 +119,14 @@ const modeHints: Record<ChatMode, string> = {
   gis: 'GIS mapping mode',
   engineering: 'Engineering mode',
   knowledge_os: 'Knowledge OS mode'
+};
+
+type TaskArtifact = {
+  name: string;
+  path: string;
+  url: string;
+  mimeType: string;
+  kind: string;
 };
 
 const simpleModeOptions: Array<{ value: ChatMode; label: string }> = [
@@ -210,7 +225,9 @@ const convertMessage = (message: ChatMessage): ThreadMessageLike => {
       custom: {
         id: message.id,
         mode: message.mode,
-        createdAt: message.createdAt
+        createdAt: message.createdAt,
+        sourcesDrawerData: message.sourcesDrawerData,
+        diagnostics: message.diagnostics,
       }
     }
   };
@@ -251,6 +268,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
   const [knowledgeActionError, setKnowledgeActionError] = useState('');
   const [connectionState, setConnectionState] = useState<ConnectionState>('connecting');
   const [creativeConfig, setCreativeConfig] = useState(defaultCreativeComposerState);
+  const [taskArtifacts, setTaskArtifacts] = useState<TaskArtifact[]>([]);
   const abortRef = useRef<AbortController | null>(null);
   const showBackendPanels = !isStaticPagesBuild && advancedOpen;
   const showAudioBrowser = showBackendPanels && ['music', 'fl_studio', 'fl_studio_control', 'pro_tools', 'logic', 'mix_master'].includes(mode);
@@ -286,6 +304,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
   }, []);
 
   const sendToBackend = async (input: string, selectedMode: ChatMode) => {
+    setTaskArtifacts([]);
     const controller = new AbortController();
     abortRef.current = controller;
 
@@ -327,6 +346,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
       }
 
       const data = await response.json();
+      setTaskArtifacts(Array.isArray(data.artifacts) ? data.artifacts : []);
       if (data.planId && data.planPath) {
         setPlanAction({ planId: data.planId, planPath: data.planPath });
       }
@@ -344,7 +364,9 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
             ...message,
             id: data.artifactId || message.id,
             content: data.response || '',
-            status: 'complete'
+            status: 'complete',
+            sourcesDrawerData: data.sourcesDrawerData,
+            diagnostics: data.diagnostics,
           }
         : message
       ));
@@ -357,6 +379,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
         ? { ...message, content, status: 'error' }
         : message
       ));
+      setTaskArtifacts([]);
     } finally {
       setIsRunning(false);
       abortRef.current = null;
@@ -635,6 +658,27 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
               </div>
             </div>
           )}
+          {taskArtifacts.length > 0 && (
+            <div className="assistant-task-artifacts" role="region" aria-label="Created files">
+              <div>
+                <strong>Created files</strong>
+                <span>Open or download the artifacts produced by this chat task.</span>
+              </div>
+              <div className="assistant-task-artifact-links">
+                {taskArtifacts.map(artifact => (
+                  <a
+                    key={artifact.url}
+                    href={artifact.url}
+                    target={artifact.mimeType === 'text/html' || artifact.mimeType === 'image/svg+xml' ? '_blank' : undefined}
+                    rel="noreferrer"
+                    download={artifact.mimeType === 'text/csv' || artifact.mimeType === 'application/json' ? artifact.name : undefined}
+                  >
+                    {artifact.mimeType === 'text/html' ? 'Play' : artifact.mimeType === 'image/svg+xml' ? 'View' : 'Download'} {artifact.name}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
           <ThreadPrimitive.Root className="assistant-thread">
             <ThreadPrimitive.Viewport className="assistant-viewport" tabIndex={0} aria-label="Conversation messages">
               <ThreadPrimitive.Empty>
@@ -692,15 +736,68 @@ function AssistantBubble() {
 }
 
 function ChatBubble({ role }: { role: 'user' | 'assistant' }) {
+  const message = useMessage();
+  const custom = (message?.metadata?.custom as any) || {};
+  const [showDiagnostics, setShowDiagnostics] = useState(false);
+
+  const handleFeedbackSubmit = async (feedback: {
+    responseId: string;
+    thumbs: 'up' | 'down';
+    categories?: any[];
+    comment?: string;
+  }) => {
+    try {
+      await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messageId: feedback.responseId,
+          reaction: feedback.thumbs === 'up' ? 'like' : 'dislike',
+          categories: feedback.categories,
+          comment: feedback.comment,
+        }),
+      });
+    } catch {
+      // Non-blocking UI feedback error
+    }
+  };
+
   return (
     <MessagePrimitive.Root className={`assistant-message assistant-message-${role}`}>
       <div className="assistant-message-shell">
         <MessagePrimitive.Parts components={{ Text: TextPart }} />
         {role === 'assistant' && (
-          <ActionBarPrimitive.Root className="assistant-actions">
-            <ActionBarPrimitive.Copy className="assistant-action">Copy</ActionBarPrimitive.Copy>
-            <ActionBarPrimitive.Reload className="assistant-action">Retry</ActionBarPrimitive.Reload>
-          </ActionBarPrimitive.Root>
+          <>
+            {custom.sourcesDrawerData && (
+              <SourcesDrawer data={custom.sourcesDrawerData} />
+            )}
+            <div className="assistant-message-footer">
+              <ResponseFeedbackBar
+                responseId={custom.id || message.id}
+                onFeedbackSubmit={handleFeedbackSubmit}
+              />
+              {custom.diagnostics && (
+                <button
+                  type="button"
+                  className="assistant-why-answer-btn"
+                  onClick={() => setShowDiagnostics(true)}
+                  title="Why this answer?"
+                >
+                  🔍 Why this answer?
+                </button>
+              )}
+            </div>
+            {showDiagnostics && custom.diagnostics && (
+              <WhyThisAnswerModal
+                diagnostics={custom.diagnostics}
+                onClose={() => setShowDiagnostics(false)}
+              />
+            )}
+            <ActionBarPrimitive.Root className="assistant-actions">
+              <ActionBarPrimitive.Copy className="assistant-action">Copy</ActionBarPrimitive.Copy>
+              <ActionBarPrimitive.Reload className="assistant-action">Retry</ActionBarPrimitive.Reload>
+            </ActionBarPrimitive.Root>
+          </>
         )}
       </div>
     </MessagePrimitive.Root>

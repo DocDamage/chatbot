@@ -13,6 +13,7 @@ import { ModelRouter, ModelProvider } from '../providers/ModelRouter';
 import { AnthropicAdapter, GeminiAdapter, OpenAIAdapter, OpenAICompatibleAdapter } from '../providers/LLMAdapter';
 import { OllamaAdapter } from '../providers/OllamaAdapter';
 import { HuggingFaceAdapter } from '../providers/HuggingFaceAdapter';
+import { ExternalLocalModelAdapter } from '../providers/local/ExternalLocalModelAdapter';
 import { EnsembleAdapter } from '../providers/EnsembleAdapter';
 import { SafetyPipeline } from '../safety/SafetyPipeline';
 import { SemanticCache } from '../cache/SemanticCache';
@@ -80,6 +81,7 @@ import { SafeDatabaseQuestionAgent } from '../database/SafeDatabaseQuestionAgent
 import { GovernanceEvidenceService } from '../governance/GovernanceEvidenceService';
 import { GitHubRepoKnowledgeImporter } from '../importers/GitHubRepoKnowledgeImporter';
 import { ConversationManager } from '../conversation/ConversationManager';
+import { resolveDeploymentMode } from '../config/EnvironmentDefinitions';
 import { PyScrappyService } from '../research/PyScrappyService';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -444,7 +446,7 @@ export class ServiceInitializer {
     // Ollama (free, local) - default
     if (process.env.USE_OLLAMA !== 'false') {
       const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
-      const ollamaModel = process.env.OLLAMA_MODEL || 'llama2';
+      const ollamaModel = process.env.OLLAMA_MODEL || 'qwen3:8b';
       const ollamaAdapter = new OllamaAdapter(ollamaUrl, ollamaModel);
 
       // Check availability
@@ -475,7 +477,38 @@ export class ServiceInitializer {
       || (process.env.ANTHROPIC_API_KEY ? 'anthropic' : undefined)
       || (process.env.GEMINI_API_KEY ? 'gemini' : undefined)
       || (process.env.USE_HUGGINGFACE === 'true' ? 'huggingface' : undefined)
+      || (process.env.LOCAL_MODEL_ENABLED === 'true' ? 'local' : undefined)
       || (process.env.USE_OLLAMA !== 'false' ? 'ollama' : 'template');
+
+    // External local OpenAI-compatible endpoint (CF-04). This never starts or
+    // downloads a model server; it only connects to an explicitly configured,
+    // policy-approved endpoint in a non-hosted runtime profile.
+    if (process.env.LOCAL_MODEL_ENABLED === 'true') {
+      const localAdapter = new ExternalLocalModelAdapter({
+        providerName: process.env.LOCAL_MODEL_PROVIDER_NAME || 'local-openai',
+        baseUrl: process.env.LOCAL_MODEL_BASE_URL || 'http://127.0.0.1:8080/v1',
+        model: process.env.LOCAL_MODEL_NAME || 'llama3:8b',
+        apiKey: process.env.LOCAL_MODEL_API_KEY,
+        profile: resolveDeploymentMode(),
+        allowlist: (process.env.LOCAL_MODEL_ALLOWLIST || '127.0.0.1,localhost,::1')
+          .split(',')
+          .map(item => item.trim())
+          .filter(Boolean),
+        timeoutMs: Number(process.env.LOCAL_MODEL_TIMEOUT_MS || 60000),
+        resourceBudget: {
+          maxConcurrency: Number(process.env.LOCAL_MODEL_MAX_CONCURRENCY || 2),
+          maxQueueDepth: Number(process.env.LOCAL_MODEL_MAX_QUEUE_DEPTH || 8),
+          timeoutMs: Number(process.env.LOCAL_MODEL_TIMEOUT_MS || 60000)
+        }
+      });
+      adapters[ModelProvider.LOCAL] = localAdapter;
+      if (configuredProvider === 'local') primary = localAdapter;
+      logger.info('External local model adapter ready', {
+        provider: localAdapter.getProviderName(),
+        model: localAdapter.getModelName(),
+        baseUrl: localAdapter.getBaseUrl()
+      });
+    }
 
     if (configuredProvider === 'openai-compatible' && process.env.OPENAI_COMPATIBLE_API_KEY && process.env.OPENAI_COMPATIBLE_BASE_URL) {
       const compatibleAdapter = new OpenAICompatibleAdapter(

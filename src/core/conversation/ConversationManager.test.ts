@@ -64,4 +64,55 @@ describe('ConversationManager', () => {
       }),
     ]);
   });
+
+  it('manages conversation context window, search, delete, and db load fallbacks', async () => {
+    const dbQuery = jest.fn().mockImplementation(async (sql: string, params: any[]) => {
+      if (sql.includes('SELECT * FROM messages')) {
+        return {
+          rows: [
+            { id: 'm1', session_id: params[0], role: 'user', content: 'What is AI?', created_at: new Date().toISOString(), metadata: '{"k":"v"}' },
+            { id: 'm2', session_id: params[0], role: 'assistant', content: 'AI is artificial intelligence.', created_at: new Date().toISOString() }
+          ]
+        };
+      }
+      if (sql.includes('DELETE FROM')) {
+        return { rows: [] };
+      }
+      return { rows: [] };
+    });
+
+    const manager = new ConversationManager({ query: dbQuery } as any);
+
+    // 1. Get conversation loaded from DB
+    const loaded = await manager.getConversation('db-session');
+    expect(loaded).not.toBeNull();
+    expect(loaded?.messages.length).toBe(2);
+    expect(loaded?.messages[0].metadata?.k).toBe('v');
+
+    // 2. Context window truncation
+    const fullContext = await manager.getConversationContext('db-session', 100);
+    expect(fullContext.length).toBe(2);
+
+    const smallContext = await manager.getConversationContext('db-session', 10); // fits last message
+    expect(smallContext.length).toBe(1);
+
+    // 3. Search conversations
+    const searchRes = await manager.searchConversations('artificial');
+    expect(searchRes.length).toBe(1);
+    expect(searchRes[0].sessionId).toBe('db-session');
+
+    // 4. Delete conversation
+    const deleted = await manager.deleteConversation('db-session');
+    expect(deleted).toBe(true);
+
+    // 5. Query error resilience
+    const failingDb = new ConversationManager({
+      query: jest.fn().mockRejectedValue(new Error('DB disconnect'))
+    } as any);
+
+    await expect(failingDb.addMessage('sess-err', 'user', 'msg')).resolves.toBeDefined();
+    await expect(failingDb.getConversation('sess-err')).resolves.toBeDefined();
+    await expect(failingDb.listConversations('user-x')).resolves.toBeDefined();
+    await expect(failingDb.deleteConversation('sess-err')).resolves.toBeDefined();
+  });
 });

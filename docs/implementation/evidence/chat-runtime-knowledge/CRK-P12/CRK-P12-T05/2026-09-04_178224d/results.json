@@ -1,0 +1,21 @@
+{
+  "phase": "CRK-P12",
+  "task": "CRK-P12-T05",
+  "name": "Grounding, Evidence Sufficiency, and Abstention Exit Gate",
+  "status": "PASSED",
+  "timestamp": "2026-09-04T07:15:00.000Z",
+  "commit": "178224d",
+  "criteria": {
+    "rag_can_abstain": "PASSED",
+    "broaden_local_and_online_separated": "PASSED",
+    "unsupported_claim_meets_threshold": "PASSED",
+    "citation_does_not_substitute_sufficiency": "PASSED"
+  },
+  "tests": {
+    "total": 6,
+    "passed": 6,
+    "failed": 0
+  },
+  "typeCheck": "PASSED",
+  "lint": "PASSED"
+}

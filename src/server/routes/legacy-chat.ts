@@ -13,6 +13,9 @@ import { sanitizeInput, validateChatRequest } from '../../middleware/validator';
 import { ChatRequestDto, buildChatContextBundle } from '../../types/chat';
 import { enrichChatRequestWithPlan } from '../chatRequest';
 import { CodingAuthorization } from '../../core/coding/authorization/CodingAuthorization';
+import { WikipediaSource } from '../../core/knowledge/WikipediaSource';
+import { KnowledgeResult } from '../../core/knowledge/KnowledgeSource';
+import { ConversationalTaskOrchestrator } from '../../core/tasks/ConversationalTaskOrchestrator';
 
 type ChatSpecialistMode =
   | 'coding'
@@ -42,6 +45,146 @@ type ChatSpecialistMode =
   | 'geography'
   | 'engineering'
   | 'knowledge_os';
+
+const MONTH_PATTERN = '(?:January|February|March|April|May|June|July|August|September|October|November|December)';
+
+function normalizeReferenceLine(line: string): string {
+  return line
+    .replace(/^(?:rowspan|colspan|scope)="[^"]*"\s*\|\s*/i, '')
+    .replace(/^\*\s*/, '')
+    .trim();
+}
+
+function extractDatedReleaseFacts(content: string, limit: number): string[] {
+  const releasedSection = content.match(/==\s*Released albums\s*==([\s\S]*?)(?=\n==|$)/i)?.[1];
+  if (!releasedSection) return [];
+
+  const allLines = releasedSection
+    .split(/\r?\n/)
+    .map(normalizeReferenceLine)
+    .filter(Boolean);
+  const hasLabelColumn = allLines.slice(0, 8).some(line => /^Label$/i.test(line));
+  const lines = allLines.filter(line => !/^(?:Release Date|Artist|Album|Notes|Label)$/i.test(line));
+  const datePattern = new RegExp(`^${MONTH_PATTERN}(?:\\s+\\d{1,2})?$`, 'i');
+  const records: Array<{ date: string; artist: string; album: string; notes: string[] }> = [];
+  let date = '';
+
+  for (let index = 0; index < lines.length;) {
+    const line = lines[index];
+    if (datePattern.test(line)) {
+      date = line;
+      index += 1;
+      continue;
+    }
+    if (!date || !lines[index + 1] || datePattern.test(lines[index + 1])) {
+      index += 1;
+      continue;
+    }
+
+    const artist = line;
+    const album = lines[index + 1];
+    index += 2;
+    const notes: string[] = [];
+    if (hasLabelColumn && index < lines.length && !datePattern.test(lines[index])) {
+      index += 1; // Label is useful provenance but not needed in the answer fact.
+    } else {
+      while (index < lines.length && /^(?:Debuted|Certified)/i.test(lines[index])) {
+        notes.push(lines[index]);
+        index += 1;
+      }
+    }
+    records.push({ date, artist, album, notes });
+  }
+
+  const score = (record: typeof records[number]) => {
+    const notes = record.notes.join(' ');
+    let value = record.notes.length;
+    if (/No\.\s*1\b/i.test(notes)) value += 5;
+    if (/Diamond/i.test(notes)) value += 6;
+    const platinum = notes.match(/(?:Certified\s+)?(\d+)\s*x\s*Platinum/i);
+    if (platinum) value += Math.min(Number(platinum[1]), 7);
+    else if (/Platinum/i.test(notes)) value += 2;
+    return value;
+  };
+
+  return records
+    .map((record, index) => ({ record, index, score: score(record) }))
+    .sort((left, right) => right.score - left.score || left.index - right.index)
+    .slice(0, limit)
+    .sort((left, right) => left.index - right.index)
+    .map(({ record }) => {
+      const notes = record.notes.length > 0 ? `; ${record.notes.join('; ')}` : '';
+      return `- ${record.date}: ${record.artist} — ${record.album}${notes}`;
+    });
+}
+
+function extractTimelineFacts(content: string, year: string, limit: number): string[] {
+  const eventsSection = content.match(/==\s*Events\s*==([\s\S]*?)(?=\n==[^=]|$)/i)?.[1];
+  if (!eventsSection) return [];
+
+  const facts: string[] = [];
+  let month = '';
+  for (const rawLine of eventsSection.split(/\r?\n/)) {
+    const heading = rawLine.match(/^===\s*([^=]+?)\s*===$/);
+    if (heading) {
+      month = heading[1].trim();
+      continue;
+    }
+
+    const event = rawLine.match(/^\*\s*([^*].*?)\s+[–-]\s+(.+)$/);
+    if (!event) continue;
+    const datePart = event[1].trim();
+    const description = normalizeReferenceLine(event[2]);
+    const hasNamedMonth = new RegExp(`\\b${MONTH_PATTERN}\\b`, 'i').test(datePart);
+    const fullDate = hasNamedMonth ? datePart : [month, datePart].filter(Boolean).join(' ');
+    facts.push(`- ${fullDate}, ${year}: ${description}`);
+    if (facts.length >= limit) break;
+  }
+
+  return facts;
+}
+
+function compactPublicReference(result: KnowledgeResult, query: string): string {
+  const intro = result.content
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .find(line => line.length > 30 && !line.startsWith('=='));
+  const requestedYear = query.match(/\b(?:19|20)\d{2}\b/)?.[0];
+  const titleMatchesYear = requestedYear && new RegExp(`\\b${requestedYear}\\b`).test(result.title);
+  const factLimit = /\b(?:brief|briefly|concise|quick|short|one or two|a few)\b/i.test(query)
+    ? 6
+    : /\b(?:more|detailed|detail|comprehensive|in[- ]depth|thorough|as much as possible|deep dive)\b/i.test(query)
+      ? 16
+      : 12;
+  const releaseFacts = titleMatchesYear ? extractDatedReleaseFacts(result.content, factLimit) : [];
+  const timelineFacts = titleMatchesYear && requestedYear
+    ? extractTimelineFacts(result.content, requestedYear, factLimit)
+    : [];
+
+  if (releaseFacts.length > 0) {
+    return [
+      intro,
+      `Every dated release below is listed on the source page for ${requestedYear}:`,
+      ...releaseFacts
+    ].filter(Boolean).join('\n');
+  }
+
+  if (timelineFacts.length > 0) {
+    return [
+      intro,
+      `Every dated event below is listed on the source page for ${requestedYear}:`,
+      ...timelineFacts
+    ].filter(Boolean).join('\n');
+  }
+
+  const queryTerms = query.toLowerCase().match(/[a-z0-9]{3,}/g) || [];
+  const usefulLines = result.content
+    .split(/\r?\n/)
+    .map(normalizeReferenceLine)
+    .filter(line => line.length > 25)
+    .filter((line, index) => index < 12 || queryTerms.some(term => line.toLowerCase().includes(term)));
+  return Array.from(new Set(usefulLines)).join('\n').slice(0, 4000);
+}
 
 const specialistModes = new Set([
   'coding',
@@ -84,6 +227,73 @@ export interface LegacyChatRouteDeps {
 export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHandler[] {
   const humanLanguageRouter = new HumanLanguageRouter();
   const codingAuthorization = new CodingAuthorization();
+  const wikipediaSource = new WikipediaSource();
+  const taskOrchestrator = new ConversationalTaskOrchestrator(deps.workspaceRoot || process.cwd());
+
+  const useGenerativeKnowledgeFallback = () =>
+    process.env.LLM_KNOWLEDGE_FALLBACK === 'true';
+
+  const publicKnowledgeQuery = (message: string) => message
+    .replace(/^\s*(?:what\s+can\s+you\s+tell\s+me\s+about|what\s+do\s+you\s+know\s+about|tell\s+me\s+about|explain|describe|give\s+me\s+(?:information|details)\s+about)\s+/i, '')
+    .replace(/[?!.]+$/g, '')
+    .trim() || message;
+
+  const generateKnowledgeFallback = async (
+    message: string,
+    mode: string,
+    nlu?: HumanLanguageRoute,
+    request?: ChatRequestDto
+  ) => {
+    const category = mode.replace(/_/g, ' ');
+    let onlineContext = '';
+    let onlineSources: string[] = [];
+
+    if (process.env.ONLINE_KNOWLEDGE_FALLBACK === 'true') {
+      try {
+        const normalizedQuery = publicKnowledgeQuery(message);
+        const results = await wikipediaSource.search(normalizedQuery, { limit: 1, includeDetails: true });
+        onlineSources = results.map(result => result.url).filter((url): url is string => !!url);
+        onlineContext = results.length > 0
+          ? [
+              'Public reference context:',
+              ...results.map(result => `Source: ${result.title}\nURL: ${result.url || 'unavailable'}\n${compactPublicReference(result, normalizedQuery)}`)
+            ].join('\n\n')
+          : '';
+      } catch {
+        // The configured local model remains available if public lookup fails.
+      }
+    }
+
+    const answerInstruction = onlineContext
+      ? `Answer the user's question directly using only the supplied public reference facts, with emphasis on ${category}. Every name, date, title, statistic, release, and event in the answer must appear in those facts. Omit anything else.`
+      : `Answer the user's question directly using your general knowledge, with emphasis on ${category}.`;
+    const categoryInstruction = [
+      answerInstruction,
+      'Do not return a workflow, routing explanation, or unrelated local passages.',
+      'Use the supplied public reference context when present and do not contradict its dates or names.',
+      'State uncertainty plainly when a claim cannot be supported.',
+      onlineContext
+    ].join(' ');
+    const systemPrompt = [request?.systemPrompt, categoryInstruction].filter(Boolean).join('\n\n');
+    const result = await deps.getOrchestrator().processRequest({
+      ...(request || {}),
+      message,
+      sessionId: request?.sessionId || 'legacy-chat',
+      mode,
+      systemPrompt,
+      temperature: onlineContext ? 0 : 0.2,
+      // Local retrieval already produced a typed miss. Re-running broad RAG here
+      // can reintroduce the same irrelevant context that caused the miss.
+      useRAG: false
+    });
+
+    return {
+      ...result,
+      mode,
+      nlu,
+      sources: Array.from(new Set([...(result.sources || []), ...onlineSources]))
+    };
+  };
 
   const processSpecialistChat = async (
     message: string,
@@ -142,6 +352,10 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
       if (localAnswer && !localAnswer.knowledgeMiss && localAnswer.sources.length > 0) {
         return { ...localAnswer, nlu };
       }
+
+      if (useGenerativeKnowledgeFallback()) {
+        return generateKnowledgeFallback(message, mode, nlu, request);
+      }
     }
 
     if (mode === 'pop_culture' && services.popCultureGeniusAgent) {
@@ -190,7 +404,16 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
     if (mode === 'music' && services.mixGeniusAgent && nlu?.intent?.startsWith('mix.')) {
       return { ...(await services.mixGeniusAgent.plan({ query: message })), nlu };
     }
-    if (genericAgents[mode]) return { ...(await genericAgents[mode].ask(message)), nlu };
+    if (genericAgents[mode]) {
+      const result = await genericAgents[mode].ask(message);
+      if (
+        useGenerativeKnowledgeFallback()
+        && result?.knowledgeMiss === true
+      ) {
+        return generateKnowledgeFallback(message, mode, nlu, request);
+      }
+      return { ...result, nlu };
+    }
 
     return undefined;
   };
@@ -223,6 +446,11 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
         });
         return res.json(payload);
       };
+
+      const taskResult = taskOrchestrator.handle(sessionId, sanitizedMessage, mode);
+      if (taskResult) {
+        return sendAndPersist(taskResult);
+      }
 
       const detectedIntent = detectUserIntent(sanitizedMessage);
       const switchRequirement = requiresSwitchForIntent(mode, detectedIntent);
@@ -288,7 +516,12 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
 
       if (!mode || mode === 'ask') {
         const localResponse = await new LocalKnowledgeAnswerer(services?.ragDocumentStore).answer(sanitizedMessage, 'ask');
-        if (localResponse) return sendAndPersist({ ...localResponse, nlu });
+        if (localResponse && (!localResponse.knowledgeMiss || !useGenerativeKnowledgeFallback())) {
+          return sendAndPersist({ ...localResponse, nlu });
+        }
+        if (localResponse?.knowledgeMiss && useGenerativeKnowledgeFallback()) {
+          return sendAndPersist(await generateKnowledgeFallback(sanitizedMessage, 'ask', nlu, chatRequest));
+        }
       }
 
       const request: ChatRequest = { ...chatRequest, message: sanitizedMessage, sessionId, userId };

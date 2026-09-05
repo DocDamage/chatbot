@@ -1,6 +1,7 @@
+import { describe, expect, it } from '@jest/globals';
 import { LegalCivicGeniusAgent } from './LegalCivicGeniusAgent';
 
-describe('LegalCivicGeniusAgent', () => {
+describe('RT-AGENT-LEG-001: LegalCivicGeniusAgent Suite', () => {
   it('explains contract clauses with jurisdiction and risk checks', async () => {
     const agent = new LegalCivicGeniusAgent();
 
@@ -40,6 +41,19 @@ describe('LegalCivicGeniusAgent', () => {
     expect(result.response).toContain('CaseLawSummaryTool');
     expect(result.response).toContain('holding');
     expect(result.response).toContain('verify citator/status');
+  });
+
+  it('handles statutes and plain English explanations', async () => {
+    const agent = new LegalCivicGeniusAgent();
+
+    const statute = await agent.ask('Look up the statute code and regulation for building safety');
+    expect(statute.response).toContain('StatuteLookupTool');
+
+    const plain = await agent.ask('Explain in plain english what rights and obligations mean');
+    expect(plain.response).toContain('PlainEnglishLegalTool');
+
+    const fallback = await agent.ask('What is justice in philosophy?');
+    expect(fallback).toBeDefined();
   });
 
   it('refuses specificity without jurisdiction by asking for jurisdiction', async () => {

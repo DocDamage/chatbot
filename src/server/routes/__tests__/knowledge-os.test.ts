@@ -313,5 +313,18 @@ describe('knowledge OS routes', () => {
     await request(app).get('/api/knowledge-os/db/schema').expect(200);
     await request(app).get('/api/knowledge-os/governance/evidence?limit=2').expect(200);
     await request(app).post('/api/knowledge-os/governance/golden-tasks').send({ tasks: [{ id: 't' }], answers: { t: 'ok' } }).expect(200);
+
+    // Missing service branches
+    const bareApp = express();
+    bareApp.use(express.json());
+    bareApp.use(createKnowledgeOsRouter({}));
+
+    await request(bareApp).post('/api/knowledge-os/entities/link').send({ text: '' }).expect(400);
+    await request(bareApp).post('/api/knowledge-os/graph/build').send({}).expect(503);
+    await request(bareApp).get('/api/knowledge-os/graph/stats').expect(503);
+    await request(bareApp).get('/api/knowledge-os/graph/export').expect(503);
+    await request(bareApp).post('/api/knowledge-os/db/query').send({ sql: '' }).expect(400);
+    await request(bareApp).post('/api/knowledge-os/memory/remember').send({ content: '' }).expect(400);
+    await request(bareApp).post('/api/knowledge-os/governance/evidence').send({ title: '' }).expect(400);
   });
 });

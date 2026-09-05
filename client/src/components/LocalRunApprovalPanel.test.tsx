@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import LocalRunApprovalPanel from './LocalRunApprovalPanel';
@@ -15,11 +15,22 @@ const runs = [
     commandTemplate: 'node script.js',
     cwd: '.',
     riskLevel: 'low',
-    approvedByUser: true,
+    approvedByUser: false,
     executableEnabled: false,
     executablePath: '/tools/node',
     stdoutPath: '/tmp/stdout.txt',
-    stderrPath: '/tmp/stderr.txt'
+    stderrPath: '/tmp/stderr.txt',
+    durationMs: 120
+  },
+  {
+    id: 'run-2',
+    status: 'running',
+    commandTemplate: 'npm run watch',
+    cwd: './src',
+    riskLevel: 'high',
+    approvedByUser: true,
+    executableEnabled: true,
+    stdoutPath: '/tmp/stdout2.txt'
   }
 ];
 
@@ -35,8 +46,9 @@ beforeEach(() => {
         json: async () => ({
           runId: 'run-1',
           files: [
-            { fileName: 'stdout.txt', size: 11, modifiedTime: '2026-05-21T00:00:00.000Z', kind: 'stdout', downloadUrl: '/stdout' },
-            { fileName: 'stderr.txt', size: 5, modifiedTime: '2026-05-21T00:00:00.000Z', kind: 'stderr', downloadUrl: '/stderr' }
+            { fileName: 'stdout.txt', size: 500, modifiedTime: '2026-05-21T00:00:00.000Z', kind: 'stdout', downloadUrl: '/stdout' },
+            { fileName: 'stderr.txt', size: 2048, modifiedTime: '2026-05-21T00:00:00.000Z', kind: 'stderr', downloadUrl: '/stderr' },
+            { fileName: 'huge.log', size: 2 * 1024 * 1024, modifiedTime: '2026-05-21T00:00:00.000Z', kind: 'output', downloadUrl: '/huge' }
           ]
         })
       } as Response;
@@ -51,10 +63,10 @@ beforeEach(() => {
       return { ok: true, json: async () => ({ run: { ...runs[0], status: 'completed' } }) } as Response;
     }
     if (path.endsWith('/cancel')) {
-      return { ok: true, json: async () => ({ runId: 'run-1', cancelRequested: false, status: 'planned' }) } as Response;
+      return { ok: true, json: async () => ({ runId: 'run-2', cancelRequested: true, status: 'cancel_requested' }) } as Response;
     }
     if (path.endsWith('/approve')) {
-      return { ok: true, json: async () => ({ run: runs[0] }) } as Response;
+      return { ok: true, json: async () => ({ run: { ...runs[0], approvedByUser: true } }) } as Response;
     }
     return { ok: true, json: async () => ({}) } as Response;
   });
@@ -76,6 +88,7 @@ describe('LocalRunApprovalPanel', () => {
     await waitFor(() => expect(screen.getByText('node script.js')).toBeTruthy());
     expect(screen.getByText('Executable disabled')).toBeTruthy();
     expect(screen.getByText('Output browser')).toBeTruthy();
+    expect(screen.getByText('120ms')).toBeTruthy();
 
     await waitFor(() => expect(screen.getByText(/stdout\.txt/i)).toBeTruthy());
     await waitFor(() => expect(screen.getByText(/hello output/i)).toBeTruthy());
@@ -83,9 +96,85 @@ describe('LocalRunApprovalPanel', () => {
     await user.click(screen.getByRole('button', { name: /stderr/i }));
     await waitFor(() => expect(screen.getByText(/error output/i)).toBeTruthy());
 
-    await user.click(screen.getByRole('button', { name: /copy command/i }));
+    // Copy command
+    await user.click(screen.getAllByRole('button', { name: /copy command/i })[0]);
     expect(clipboardWriteText).toHaveBeenCalledWith('node script.js');
     await waitFor(() => expect(screen.getByRole('status').textContent).toMatch(/copied to clipboard/i));
+
+    // Copy output path
+    await user.click(screen.getAllByRole('button', { name: /copy output path/i })[0]);
+    expect(clipboardWriteText).toHaveBeenCalledWith('/tmp/stdout.txt');
+
+    // Reload output
+    await user.click(screen.getByRole('button', { name: /reload output/i }));
+    expect(fetch).toHaveBeenCalledWith('/api/local-tools/runs/run-1/files');
+  });
+
+  it('approves a planned run and cancels a running run', async () => {
+    const user = userEvent.setup();
+    render(<LocalRunApprovalPanel />);
+
+    await waitFor(() => expect(screen.getByText('node script.js')).toBeTruthy());
+
+    // Edit approval note
+    const noteInput = screen.getByPlaceholderText('Why this run is approved');
+    fireEvent.change(noteInput, { target: { value: 'Custom security approval' } });
+
+    // Approve run-1
+    await user.click(screen.getAllByRole('button', { name: /^approve$/i })[0]);
+    expect(fetch).toHaveBeenCalledWith('/api/local-tools/runs/run-1/approve', expect.objectContaining({ method: 'POST' }));
+
+    // Select run-2 and Cancel
+    const selectButtons = screen.getAllByRole('button', { name: /^select$/i });
+    await user.click(selectButtons[1]);
+    await user.click(screen.getAllByRole('button', { name: /^cancel$/i })[1]);
+    expect(fetch).toHaveBeenCalledWith('/api/local-tools/runs/run-2/cancel', expect.objectContaining({ method: 'POST' }));
+  });
+
+  it('handles empty runs and hidden panel state', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ runs: [] })
+    } as Response);
+
+    const { container } = render(<LocalRunApprovalPanel visible={false} />);
+    expect(container.firstChild).toBeNull();
+
+    cleanup();
+    render(<LocalRunApprovalPanel visible={true} />);
+    await waitFor(() => {
+      expect(screen.getByText(/no local runs have been planned yet/i)).toBeTruthy();
+    });
+  });
+
+  it('maps friendly error messages on local tool failures', async () => {
+    globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error('Process requires explicit user approval'));
+    render(<LocalRunApprovalPanel />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert').textContent).toMatch(/needs approval before it can start/i);
+    });
+
+    cleanup();
+    globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error('Executable is not enabled'));
+    render(<LocalRunApprovalPanel />);
+    await waitFor(() => {
+      expect(screen.getByRole('alert').textContent).toMatch(/selected executable is disabled/i);
+    });
+
+    cleanup();
+    globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error('Path resolves outside workspace'));
+    render(<LocalRunApprovalPanel />);
+    await waitFor(() => {
+      expect(screen.getByRole('alert').textContent).toMatch(/resolves outside the trusted workspace/i);
+    });
+
+    cleanup();
+    globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error('File not found'));
+    render(<LocalRunApprovalPanel />);
+    await waitFor(() => {
+      expect(screen.getByRole('alert').textContent).toMatch(/run or output file was not found/i);
+    });
   });
 
   it('reports clipboard rejection without breaking the run controls', async () => {
@@ -97,21 +186,10 @@ describe('LocalRunApprovalPanel', () => {
     render(<LocalRunApprovalPanel />);
 
     await waitFor(() => expect(screen.getByText('node script.js')).toBeTruthy());
-    await user.click(screen.getByRole('button', { name: /copy command/i }));
+    await user.click(screen.getAllByRole('button', { name: /copy command/i })[0]);
 
     await waitFor(() => {
       expect(screen.getByRole('alert').textContent).toMatch(/clipboard access is unavailable/i);
     });
-    expect(screen.getByRole('button', { name: /^start$/i }).hasAttribute('disabled')).toBe(false);
-  });
-
-  it('starts approved runs from the UI', async () => {
-    const user = userEvent.setup();
-    render(<LocalRunApprovalPanel />);
-
-    await waitFor(() => expect(screen.getByRole('button', { name: /^start$/i })).toBeTruthy());
-    await user.click(screen.getByRole('button', { name: /^start$/i }));
-
-    expect(fetch).toHaveBeenCalledWith('/api/local-tools/runs/run-1/start', expect.objectContaining({ method: 'POST' }));
   });
 });

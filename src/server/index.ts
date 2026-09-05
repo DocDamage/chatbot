@@ -246,7 +246,8 @@ app.post('/api/knowledge-base/directory', developerOnly, auditPrivilegedRequest(
 }));
 
 app.use(requireReady(), mountServiceRouter(() => createKnowledgeBaseRouter(services)));
-app.use(...developerOnly, auditPrivilegedRequest('rag-query'), requireReady(), mountServiceRouter(() => createRagQueryRouter(services)));
+app.use('/api/rag', ...developerOnly, auditPrivilegedRequest('rag-query'));
+app.use(requireReady(), mountServiceRouter(() => createRagQueryRouter(services)));
 app.use('/api/knowledge-os', adminOnly, auditPrivilegedRequest('knowledge-os'));
 app.use(requireReady(), mountServiceRouter(() => createKnowledgeOsRouter(services)));
 
@@ -1165,4 +1166,8 @@ const startServer = async () => {
   }
 };
 
-startServer();
+export { app, server, startServer, waitForReady, reinitializeServices, getApiVersion, getConversationManager };
+
+if (require.main === module) {
+  startServer();
+}

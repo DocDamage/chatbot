@@ -18,7 +18,7 @@ test.describe.serial('built-server chat, authentication, and persistence', () =>
 
     const ordinaryUser = createToken({ roles: ['user'] });
     const forbidden = await request.get('/api/settings', { headers: authHeaders(ordinaryUser) });
-    expect(forbidden.status()).toBe(401);
+    expect(forbidden.status()).toBe(403);
 
     const expired = createToken({ roles: ['admin'], expiresIn: '-1s' });
     const expiredSession = await request.get('/api/settings', { headers: authHeaders(expired) });

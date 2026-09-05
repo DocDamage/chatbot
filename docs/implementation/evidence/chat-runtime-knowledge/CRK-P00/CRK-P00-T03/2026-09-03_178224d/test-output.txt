@@ -1,0 +1,22 @@
+PASS src/core/evals/__tests__/ChatBehaviorBaselineHarness.test.ts
+  CRK-P00-T03: Chat Behavior Baseline Capture Harness
+    √ 1. greeting — handles standard welcoming conversational input (34 ms)
+    √ 2. simple_factual — answers general knowledge question (10 ms)
+    √ 3. coding_question — routes coding inquiry through coding agent / specialist (50 ms)
+    √ 4. debugging_question — analyzes component issue and provides patch guidance (43 ms)
+    √ 5. current_version_framework — answers framework configuration query (52 ms)
+    √ 6. math_question — solves quadratic problem through math agent (482 ms)
+    √ 7. creative_writing — drafts descriptive scene via creative agent (6 ms)
+    √ 8. loaded_file_followup — answers question grounded in loaded file context (9 ms)
+    √ 9. active_plan_followup — handles follow-up referring to active plan state (5 ms)
+    √ 10. rag_answerable — retrieves documents and answers grounded query (10 ms)
+    √ 11. rag_unanswerable — handles query with no matching knowledge corpus (14 ms)
+    √ 12. provider_failure — triggers graceful fallback when upstream LLM throws (11 ms)
+    √ 13. invalid_response — handles model output failing validation policy (8 ms)
+    √ 14. cached_repeat — returns cached response with low latency for duplicate query (7 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       14 passed, 14 total
+Snapshots:   0 total
+Time:        4.377 s
+Ran all test suites matching /src\core\evals\__tests__\ChatBehaviorBaselineHarness.test.ts/i.

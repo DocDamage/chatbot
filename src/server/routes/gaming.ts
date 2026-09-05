@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { asyncHandler } from '../../middleware/errorHandler';
 import { GamingPlaybookKind, GamingPlaybookService } from '../../core/agents/gaming/GamingPlaybookService';
+import { resolveDeploymentMode } from '../../core/config/EnvironmentDefinitions';
 
 const playbookKinds: GamingPlaybookKind[] = [
   'engine_selection',
@@ -81,6 +82,19 @@ export function createGamingRouter(services: any): Router {
       genre: req.body.genre ? String(req.body.genre) : undefined,
       targetPlatform: req.body.targetPlatform ? String(req.body.targetPlatform) : undefined,
       constraints: Array.isArray(req.body.constraints) ? req.body.constraints.map(String) : undefined
+    }));
+  }));
+
+  router.post('/api/gaming/lattice', asyncHandler(async (req, res) => {
+    if (resolveDeploymentMode() === 'hosted') {
+      return res.status(403).json({ error: 'Lattice simulation is available only in a local runtime profile' });
+    }
+
+    res.json(playbooks.createIsometricSimulation({
+      width: req.body.width === undefined ? undefined : Number(req.body.width),
+      height: req.body.height === undefined ? undefined : Number(req.body.height),
+      seed: req.body.seed === undefined ? undefined : Number(req.body.seed),
+      enemyCount: req.body.enemyCount === undefined ? undefined : Number(req.body.enemyCount)
     }));
   }));
 

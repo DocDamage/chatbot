@@ -1,0 +1,14 @@
+=== TEST RUN: ChatRuntimeCompatibilityAdapter.test.ts ===
+> jest src/core/chat/ChatRuntimeCompatibilityAdapter.test.ts
+
+PASS src/core/chat/ChatRuntimeCompatibilityAdapter.test.ts
+  ChatRuntimeCompatibilityAdapter (CRK-P01-T05)
+    √ translates legacy ChatRequestDto to NormalizedChatRequest with auth preservation (5 ms)
+    √ translates ChatRuntimeResult to legacy ChatResponse contract (1 ms)
+    √ flags knowledgeMiss in legacy response when grounding was attempted but insufficient
+    √ translates ChatRuntimeResult to V2ChatResponse contract
+    √ creates an operational orchestrator bridge that executes legacy requests on ChatRuntime (3 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total

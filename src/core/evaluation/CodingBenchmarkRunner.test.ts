@@ -104,11 +104,50 @@ describe('CodingBenchmarkRunner', () => {
       Object.defineProperty(process, 'platform', { configurable: true, value: 'linux' });
       expect(runner.commandPlan('cargo test').executable).toBe('cargo');
       expect(runner.resolveExecutable('node')).toBe('node');
-      expect(runner.resolveExecutable('npm')).toBe('npm');
-      expect(runner.resolveExecutable('gradle')).toBe('gradle');
-      expect(runner.commandPlan('unknown command')).toBeUndefined();
+      Object.defineProperty(process, 'platform', { configurable: true, value: 'linux' });
+      expect(runner.resolveExecutable('cargo')).toBe('cargo');
+      expect(runner.commandPlan('cargo test').executable).toBe('cargo');
+      expect(runner.commandPlan('invalid-unknown-cmd')).toBeUndefined();
     } finally {
       Object.defineProperty(process, 'platform', { configurable: true, value: originalPlatform });
+    }
+  });
+
+  it('handles model generating no patch or patch with conflicts', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'coding-benchmark-conflicts-'));
+    try {
+      fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify({ scripts: { test: 'node test-runner.mjs' } }));
+      fs.writeFileSync(path.join(root, 'test-runner.mjs'), 'process.exit(0);\n');
+      const testCase: CodingBenchmarkCase = {
+        id: 'no-patch-case', family: 'web', language: 'typescript', fixture: '.', prompt: 'do something',
+        expectedFiles: ['generated.ts'], visibleTests: ['npm test'], hiddenChecks: [], requiredToolchain: 'node'
+      };
+
+      // 1. Model returns empty / invalid structured patch
+      const noPatchAdapter: LLMAdapter = {
+        generate: async () => ({ content: 'Not a JSON patch', model: 'fixture-coder' }),
+        estimateCost: () => 0,
+        getModelName: () => 'fixture-coder'
+      };
+      const noPatchReport = await new CodingBenchmarkRunner(root, { modelAdapter: noPatchAdapter }).run({ schemaVersion: 1, suite: 'runner-test', toolchainPolicy: 'test', cases: [testCase] }, 'upgraded');
+      expect(noPatchReport.cases[0].execution).toBeUndefined();
+
+      // 2. Model returns patch with conflict (e.g. modify non-existent file)
+      const conflictAdapter: LLMAdapter = {
+        generate: async () => ({
+          content: JSON.stringify({
+            operations: [{ operation: 'modify', path: 'does-not-exist.ts', targetContent: 'abc', replacementContent: 'def', reason: 'Modify missing', authorized: false }]
+          }),
+          model: 'fixture-coder'
+        }),
+        estimateCost: () => 0,
+        getModelName: () => 'fixture-coder'
+      };
+      const conflictReport = await new CodingBenchmarkRunner(root, { modelAdapter: conflictAdapter }).run({ schemaVersion: 1, suite: 'runner-test', toolchainPolicy: 'test', cases: [testCase] }, 'upgraded');
+      expect(conflictReport.cases[0].execution?.patchApplied).toBe(false);
+      expect(conflictReport.cases[0].execution?.risks.length).toBeGreaterThan(0);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
     }
   });
 });

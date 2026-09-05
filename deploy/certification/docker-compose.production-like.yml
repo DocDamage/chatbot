@@ -1,0 +1,100 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: chatbot
+      POSTGRES_USER: chatbot
+      POSTGRES_PASSWORD: ${CERT_DB_PASSWORD:?CERT_DB_PASSWORD is required}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - "${CERT_BACKUP_DIR:?CERT_BACKUP_DIR is required}:/backups"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chatbot -d chatbot"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [private]
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1"]
+    volumes:
+      - redis-data:/data
+      - "${CERT_BACKUP_DIR:?CERT_BACKUP_DIR is required}:/backups"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [private]
+
+  app:
+    image: ${CERT_APP_IMAGE:?CERT_APP_IMAGE is required}
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      DEPLOYMENT_MODE: hosted
+      PORT: "3001"
+      BASE_URL: http://127.0.0.1:${CERT_APP_PORT:-4301}
+      CORS_ORIGIN: http://127.0.0.1:${CERT_APP_PORT:-4301}
+      CORS_CREDENTIALS: "false"
+      TRUST_PROXY: "1"
+      JWT_SECRET: ${CERT_JWT_SECRET:?CERT_JWT_SECRET is required}
+      CSRF_TOKEN: ${CERT_CSRF_TOKEN:?CERT_CSRF_TOKEN is required}
+      API_KEY_ENCRYPTION_SECRET: ${CERT_API_ENCRYPTION_SECRET:?CERT_API_ENCRYPTION_SECRET is required}
+      DATABASE_URL: postgresql://chatbot:${CERT_DB_PASSWORD}@postgres:5432/chatbot
+      RAG_PERSISTENCE: "true"
+      RAG_RETRIEVAL_MODE: database
+      RAG_GENERATE_EMBEDDINGS: "false"
+      ENABLE_REDIS_CACHE: "true"
+      REDIS_URL: redis://redis:6379
+      ENABLE_DISK_CACHE: "false"
+      USE_OLLAMA: "false"
+      LOCAL_MODEL_ENABLED: "false"
+      ENABLE_LOCAL_TOOLS: "false"
+      LOCAL_EXECUTION_ENABLED: "false"
+      ENABLE_BASH_EXECUTOR: "false"
+      ENABLE_FL_STUDIO_MCP: "false"
+      ENABLE_WEBSOCKET: "false"
+      LOG_LEVEL: info
+    ports:
+      - "127.0.0.1:${CERT_APP_PORT:-4301}:3001"
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+    volumes:
+      - app-data:/app/data
+      - app-cache:/app/cache
+      - app-logs:/app/logs
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3001/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      start_period: 45s
+      retries: 30
+    networks: [private, ingress]
+
+networks:
+  private:
+    internal: true
+  ingress:
+
+volumes:
+  postgres-data:
+  redis-data:
+  app-data:
+  app-cache:
+  app-logs:

@@ -1,0 +1,15 @@
+=== TEST RUN: BotProfileResolver.test.ts ===
+> jest src/core/profiles/BotProfileResolver.test.ts
+
+PASS src/core/profiles/BotProfileResolver.test.ts
+  BotProfileResolver (CRK-P02-T04)
+    √ prioritizes admin-enforced profile over all other context inputs (4 ms)
+    √ resolves request profile when allowed and admin profile is absent (2 ms)
+    √ ignores request profile when not in allowedProfileIds and falls back to session profile (1 ms)
+    √ falls back to user preferred profile if request and session are empty (1 ms)
+    √ falls back to default profile when no matching profile is specified (1 ms)
+    √ enforces that security policy cannot be weakened by user-selected profile (§947) (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       6 passed, 6 total
+Snapshots:   0 total

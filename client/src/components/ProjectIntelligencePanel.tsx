@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { isStaticPagesBuild } from '../api/runtime';
+import { MemoryCenterPanel, ProjectMemoryItem } from './MemoryCenterPanel';
+import { ArchitectureCardModel, RepositoryArchitectureView } from './RepositoryArchitectureView';
 
 type FileInsight = {
   path: string;
@@ -20,6 +22,45 @@ type Overview = {
 };
 
 type MemoryEntry = { id: string; category: string; content: string; tags: string[]; createdAt: string };
+
+const memoryKinds = new Set<ProjectMemoryItem['kind']>([
+  'decision', 'gotcha', 'convention', 'flow', 'milestone', 'failure', 'fix', 'context', 'preference', 'changelog', 'note'
+]);
+
+function toMemoryItem(entry: MemoryEntry): ProjectMemoryItem {
+  const kind = memoryKinds.has(entry.category as ProjectMemoryItem['kind'])
+    ? entry.category as ProjectMemoryItem['kind']
+    : 'note';
+  return {
+    id: entry.id,
+    kind,
+    title: entry.content.split(/\r?\n/, 1)[0].slice(0, 100) || `${kind} memory`,
+    content: entry.content,
+    branch: 'workspace',
+    confidence: 1,
+    approvalState: 'approved',
+    freshnessState: 'current',
+    tags: entry.tags,
+    updatedAt: entry.createdAt
+  };
+}
+
+function toArchitectureCards(overview: Overview): ArchitectureCardModel[] {
+  return overview.hotspots.map(item => ({
+    id: item.path,
+    subsystem: item.path.split(/[\\/]/)[0] || 'workspace',
+    title: item.path,
+    purpose: item.recommendation || `Repository hotspot with risk ${item.risk}, complexity ${item.complexity}, and ${item.symbols} indexed symbols.`,
+    sourceFiles: [{ filePath: item.path, fileDigest: 'not-returned-by-overview', sizeBytes: 0 }],
+    keySymbols: [],
+    cruxExcerpts: [],
+    typedLinks: [],
+    entrypoints: [item.path],
+    tests: [],
+    risksAndGotchas: item.risk >= 60 ? [`Risk score ${item.risk}; inspect this file before high-impact changes.`] : [],
+    humanNotes: undefined
+  }));
+}
 
 export default function ProjectIntelligencePanel() {
   const [open, setOpen] = useState(false);
@@ -124,11 +165,12 @@ export default function ProjectIntelligencePanel() {
             <textarea value={content} onChange={event => setContent(event.target.value)} placeholder="Save a project decision, gotcha, or context..." />
             <button type="button" onClick={() => void remember()} disabled={!content.trim()}>Remember</button>
           </div>
-          {memories.length > 0 && (
-            <div className="project-memory-list">
-              {memories.map(memory => <article key={memory.id}><strong>{memory.category}</strong><span>{memory.content}</span></article>)}
+          {overview && overview.hotspots.length > 0 && (
+            <div className="project-architecture-workspace">
+              <RepositoryArchitectureView cards={toArchitectureCards(overview)} />
             </div>
           )}
+          <MemoryCenterPanel memories={memories.map(toMemoryItem)} onExportMarkdown={() => void resume()} />
           {status && <div className="project-intelligence-status" role="status">{status}</div>}
         </div>
       )}

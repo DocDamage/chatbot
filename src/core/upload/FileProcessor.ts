@@ -20,6 +20,14 @@ export interface UploadedFile {
   metadata?: Record<string, any>;
 }
 
+export interface ProcessableUploadFile {
+  originalname: string;
+  mimetype: string;
+  size: number;
+  buffer: Buffer;
+  path?: string;
+}
+
 export interface FileProcessingResult {
   success: boolean;
   chunks?: number;
@@ -47,7 +55,7 @@ export class FileProcessor {
    * Process uploaded file
    */
   async processFile(
-    file: Express.Multer.File,
+    file: ProcessableUploadFile,
     documentManager: DocumentManager,
     metadata?: Record<string, any>
   ): Promise<FileProcessingResult> {
@@ -91,7 +99,7 @@ export class FileProcessor {
   /**
    * Validate file
    */
-  private validateFile(file: Express.Multer.File): void {
+  private validateFile(file: ProcessableUploadFile): void {
     if (file.size > this.maxFileSize) {
       throw new Error(`File too large. Maximum size: ${this.maxFileSize / 1024 / 1024}MB`);
     }
@@ -105,7 +113,7 @@ export class FileProcessor {
    * Save file to disk
    */
   private async saveFile(
-    file: Express.Multer.File,
+    file: ProcessableUploadFile,
     metadata?: Record<string, any>
   ): Promise<UploadedFile> {
     const id = `file_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;

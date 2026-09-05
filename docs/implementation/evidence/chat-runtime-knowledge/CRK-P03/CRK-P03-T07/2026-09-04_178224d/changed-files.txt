@@ -1,0 +1,12 @@
+src/types/conversation-state.ts
+src/types/conversation-state.test.ts
+src/core/state/ConversationVariableExtractor.ts
+src/core/state/ConversationVariableExtractor.test.ts
+src/core/state/ConversationStateReducer.ts
+src/core/state/ConversationStateReducer.test.ts
+src/core/state/ConversationStateRepository.ts
+src/core/state/ConversationStateService.ts
+src/core/state/ConversationStateService.test.ts
+src/core/state/ConversationContextSelector.ts
+src/core/state/ConversationContextSelector.test.ts
+src/core/state/__tests__/conversation-followup-regression.test.ts

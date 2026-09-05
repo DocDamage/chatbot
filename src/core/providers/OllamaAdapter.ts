@@ -38,6 +38,7 @@ export class OllamaAdapter implements LLMAdapter {
         model,
         prompt: fullPrompt,
         stream: false,
+        think: process.env.OLLAMA_THINK === 'true',
         options: {
           temperature: options.temperature ?? 0.7,
           num_predict: options.maxTokens ?? 1000,

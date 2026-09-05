@@ -25,6 +25,8 @@ export const chatRequestSchema = z.object({
   userId: z.string().max(100).optional(),
   mode: z.string().max(100).optional(),
   systemPrompt: z.string().max(8000).optional(),
+  temperature: z.number().min(0).max(2).optional(),
+  useRAG: z.boolean().optional(),
   loadedFiles: z.array(loadedFileContextSchema).max(20).optional(),
   loadedAudio: z.array(loadedAudioContextSchema).max(20).optional(),
   activePlanId: z.string().max(200).optional(),
@@ -43,6 +45,8 @@ export interface ChatRequestDto {
   userId?: string;
   mode?: string;
   systemPrompt?: string;
+  temperature?: number;
+  useRAG?: boolean;
   loadedFiles?: LoadedFileContextDto[];
   loadedAudio?: LoadedAudioContextDto[];
   activePlanId?: string;

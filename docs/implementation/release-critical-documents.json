@@ -2,6 +2,8 @@
   "schemaVersion": 1,
   "documents": [
     { "path": "README.md", "owner": "Product engineering", "reviewDate": "2026-11-05" },
+    { "path": "SECURITY.md", "owner": "Security", "reviewDate": "2026-11-05" },
+    { "path": "docs/RELEASE_AUDIT_AUTOMATION.md", "owner": "Release governance", "reviewDate": "2026-11-05" },
     { "path": "docs/DEPLOYMENT_MODES.md", "owner": "Operations", "reviewDate": "2026-11-05" },
     { "path": "docs/guides/SETUP_PREREQUISITES.md", "owner": "Engineering", "reviewDate": "2026-11-05" },
     { "path": "docs/architecture/REPOSITORY_HYGIENE.md", "owner": "Architecture", "reviewDate": "2026-11-05" },
@@ -14,7 +16,7 @@
   "requiredSetupMarkers": [
     {
       "path": "docs/guides/SETUP_PREREQUISITES.md",
-      "markers": ["Node.js 20", "npm ci", "npm --prefix client ci", "FFmpeg", "Windows", "DEPLOYMENT_MODE=hosted"]
+      "markers": ["Node.js 22.12", "npm ci", "npm --prefix client ci", "FFmpeg", "Windows", "DEPLOYMENT_MODE=hosted"]
     },
     {
       "path": "README.md",

@@ -1,0 +1,25 @@
+=== TEST RUN: ChatRuntime.test.ts ===
+> jest src/core/chat/ChatRuntime.test.ts
+
+PASS src/core/chat/ChatRuntime.test.ts
+  ChatRuntime (CRK-P01-T03)
+    √ executes end-to-end through all lifecycle stages and returns a schema-validated result (6 ms)
+    √ records timing for every execution stage (1 ms)
+    √ works correctly when runRecorder is omitted
+    √ handles stage failures by notifying runRecorder and wrapping in ChatRuntimeError (9 ms)
+    √ rejects result that fails schema validation before returning (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+
+=== COMBINED REGRESSION SUITE ===
+PASS src/types/chat-runtime.test.ts (10 passed)
+PASS src/core/chat/ChatRequestNormalizer.test.ts (21 passed)
+PASS src/core/chat/ChatRuntime.test.ts (5 passed)
+PASS src/server/__tests__/chat.test.ts (2 passed)
+PASS src/core/evals/__tests__/ChatBehaviorBaselineHarness.test.ts (14 passed)
+
+Test Suites: 5 passed, 5 total
+Tests:       52 passed, 52 total
+Snapshots:   0 total

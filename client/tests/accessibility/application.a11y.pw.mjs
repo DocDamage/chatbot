@@ -53,6 +53,21 @@ test('settings dialog traps focus and restores the keyboard trigger', async ({ p
   await expect(trigger).toBeFocused();
 });
 
+test('expansion studios are keyboard reachable and pass Axe', async ({ page }) => {
+  await page.getByRole('button', { name: 'Open settings' }).click();
+  await page.getByRole('button', { name: 'Open advanced workspace' }).click();
+
+  await page.getByRole('button', { name: 'Expansion Studios' }).click();
+  await expect(page.getByRole('region', { name: 'Expansion Studios workspace' })).toBeVisible();
+
+  const writingTab = page.getByRole('tab', { name: 'Writing Studio' });
+  await writingTab.focus();
+  await page.keyboard.press('Enter');
+  await expect(writingTab).toHaveAttribute('aria-selected', 'true');
+  await expect(page.getByRole('button', { name: 'Open document' })).toBeDisabled();
+  await expectNoAxeViolations(page, 'Expansion Studios workspace');
+});
+
 test('async chat completion is announced through the live status region', async ({ page }) => {
   const composer = page.getByPlaceholder('Ask a question...');
   await composer.fill('Run the accessibility fixture');

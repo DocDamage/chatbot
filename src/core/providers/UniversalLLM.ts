@@ -5,9 +5,9 @@
  */
 
 import { logger } from '../observability/logger';
-import { LLMAdapter, LLMGenerateOptions, LLMResponse } from '../providers/LLMAdapter';
-import { OllamaAdapter } from '../providers/OllamaAdapter';
-import { HuggingFaceAdapter } from '../providers/HuggingFaceAdapter';
+import { LLMAdapter, LLMGenerateOptions, LLMResponse, TemplateAdapter, OpenAIAdapter } from './LLMAdapter';
+import { OllamaAdapter } from './OllamaAdapter';
+import { HuggingFaceAdapter } from './HuggingFaceAdapter';
 
 export interface UniversalLLMConfig {
     preferFree: boolean;
@@ -49,7 +49,7 @@ export class UniversalLLM {
         // 1. Try Ollama (free, local) - highest priority if preferFree
         try {
             const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
-            const ollamaModel = process.env.OLLAMA_MODEL || 'llama2';
+            const ollamaModel = process.env.OLLAMA_MODEL || 'qwen3:8b';
             const ollama = new OllamaAdapter(ollamaUrl, ollamaModel);
 
             const { available: isAvailable, models } = await ollama.checkAvailability();
@@ -70,24 +70,47 @@ export class UniversalLLM {
         }
 
         // 2. Try HuggingFace (free with rate limits)
-        try {
-            const hfKey = process.env.HUGGINGFACE_API_KEY;
-            const hfModel = process.env.HUGGINGFACE_MODEL || 'mistralai/Mistral-7B-Instruct-v0.2';
-            const huggingface = new HuggingFaceAdapter(hfKey, hfModel);
-            this.adapters.set('huggingface', huggingface);
-            available.push(`huggingface:${hfModel}`);
+        if (process.env.HUGGINGFACE_API_KEY) {
+            try {
+                const hfKey = process.env.HUGGINGFACE_API_KEY;
+                const hfModel = process.env.HUGGINGFACE_MODEL || 'mistralai/Mistral-7B-Instruct-v0.2';
+                const huggingface = new HuggingFaceAdapter(hfKey, hfModel);
+                this.adapters.set('huggingface', huggingface);
+                available.push(`huggingface:${hfModel}`);
 
-            if (this.config.preferFree && !this.primaryAdapter) {
-                this.primaryAdapter = huggingface;
+                if (this.config.preferFree && !this.primaryAdapter) {
+                    this.primaryAdapter = huggingface;
+                }
+            } catch (error) {
+                logger.debug('HuggingFace not available');
             }
-        } catch (error) {
-            logger.debug('HuggingFace not available');
         }
 
-        // 3. Try OpenAI (paid)
+        // 3. Try Local Model Adapter (CF-04) only when explicitly enabled
+        try {
+            const localEnabled = process.env.LOCAL_MODEL_ENABLED === 'true';
+            if (localEnabled) {
+                const { ExternalLocalModelAdapter } = await import('./local/ExternalLocalModelAdapter');
+                const localAdapter = new ExternalLocalModelAdapter({
+                    providerName: process.env.LOCAL_MODEL_PROVIDER_NAME || 'local-openai',
+                    baseUrl: process.env.LOCAL_MODEL_BASE_URL || 'http://127.0.0.1:11434/v1',
+                    model: process.env.LOCAL_MODEL_NAME || 'llama3:8b'
+                });
+                this.adapters.set('local_cf04', localAdapter);
+                available.push(`local:${localAdapter.getModelName()}`);
+
+                if (this.config.preferFree && !this.primaryAdapter) {
+                    this.primaryAdapter = localAdapter;
+                }
+                logger.info('Local Model Adapter (CF-04) registered', { model: localAdapter.getModelName() });
+            }
+        } catch (error) {
+            logger.debug('Local Model Adapter (CF-04) not available or failed initialization');
+        }
+
+        // 4. Try OpenAI (paid)
         if (process.env.OPENAI_API_KEY) {
             try {
-                const { OpenAIAdapter } = await import('../providers/LLMAdapter');
                 const openai = new OpenAIAdapter(
                     process.env.OPENAI_API_KEY,
                     process.env.OPENAI_MODEL || 'gpt-3.5-turbo'
@@ -103,9 +126,8 @@ export class UniversalLLM {
             }
         }
 
-        // 4. Fallback to template if nothing else available
+        // 5. Fallback to template if nothing else available
         if (!this.primaryAdapter && this.config.fallbackToTemplate) {
-            const { TemplateAdapter } = await import('../providers/LLMAdapter');
             const template = new TemplateAdapter();
             this.adapters.set('template', template);
             this.primaryAdapter = template;
@@ -114,7 +136,9 @@ export class UniversalLLM {
         }
 
         this.initialized = true;
-        const primary = this.primaryAdapter?.getModelName() || 'none';
+        const primary = typeof this.primaryAdapter?.getModelName === 'function'
+            ? this.primaryAdapter.getModelName()
+            : 'none';
 
         logger.info('UniversalLLM initialized', { available, primary });
         return { available, primary };
@@ -137,16 +161,21 @@ export class UniversalLLM {
         const tried = new Set<string>();
 
         for (const adapter of adaptersToTry) {
-            const modelName = adapter.getModelName();
+            const modelName = typeof adapter?.getModelName === 'function'
+                ? adapter.getModelName()
+                : 'default';
             if (tried.has(modelName)) continue;
             tried.add(modelName);
 
+            let timeoutHandle: NodeJS.Timeout | undefined;
             try {
+                const timeoutPromise = new Promise<never>((_, reject) => {
+                    timeoutHandle = setTimeout(() => reject(new Error('Timeout')), this.config.timeout);
+                    timeoutHandle.unref?.();
+                });
                 const result = await Promise.race([
                     adapter.generate(options),
-                    new Promise<never>((_, reject) =>
-                        setTimeout(() => reject(new Error('Timeout')), this.config.timeout)
-                    )
+                    timeoutPromise
                 ]);
                 return result;
             } catch (error: any) {
@@ -155,6 +184,10 @@ export class UniversalLLM {
                     model: modelName,
                     error: error.message
                 });
+            } finally {
+                if (timeoutHandle) {
+                    clearTimeout(timeoutHandle);
+                }
             }
         }
 
@@ -217,6 +250,7 @@ export class UniversalLLM {
         if (setAsPrimary) {
             this.primaryAdapter = adapter;
         }
+        this.initialized = true;
         logger.info('Custom adapter registered', { name, setAsPrimary });
     }
 
@@ -229,9 +263,12 @@ export class UniversalLLM {
         availableAdapters: string[];
         config: UniversalLLMConfig;
     } {
+        const primary = typeof this.primaryAdapter?.getModelName === 'function'
+            ? this.primaryAdapter.getModelName()
+            : null;
         return {
             initialized: this.initialized,
-            primaryAdapter: this.primaryAdapter?.getModelName() || null,
+            primaryAdapter: primary,
             availableAdapters: Array.from(this.adapters.keys()),
             config: this.config
         };

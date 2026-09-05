@@ -63,6 +63,66 @@ jobs:
       - name: Verify supported-LTS type compatibility
         run: npm run type-check
 
+  dependency-security:
+    name: Production dependency vulnerability gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
+      - name: Install server dependencies
+        run: npm ci
+      - name: Install client dependencies
+        run: npm --prefix client ci
+      - name: Reject critical and high production vulnerabilities
+        run: npm run check:dependencies
+
+  secrets-scan:
+    name: Current and Git-history secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout complete history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+      - name: Scan current files and Git history
+        run: npm run check:secrets:history
+
+  supply-chain:
+    name: SBOM and attribution reproducibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install server dependencies
+        run: npm ci
+      - name: Regenerate SBOM and notices
+        run: npm run generate:sbom && npm run generate:notices
+      - name: Verify generated supply-chain records are committed
+        run: git diff --exit-code -- docs/architecture/generated/sbom.cyclonedx.json THIRD_PARTY_NOTICES.md
+
   server-type-check:
     name: Server type check
     runs-on: ubuntu-latest
@@ -399,6 +459,9 @@ jobs:
     needs:
       - repository-integrity
       - dependency-integrity
+      - dependency-security
+      - secrets-scan
+      - supply-chain
       - server-type-check
       - client-type-check
       - test-type-check
@@ -420,6 +483,9 @@ jobs:
     env:
       REPOSITORY_INTEGRITY_RESULT: ${{ needs.repository-integrity.result }}
       DEPENDENCY_INTEGRITY_RESULT: ${{ needs.dependency-integrity.result }}
+      DEPENDENCY_SECURITY_RESULT: ${{ needs.dependency-security.result }}
+      SECRETS_SCAN_RESULT: ${{ needs.secrets-scan.result }}
+      SUPPLY_CHAIN_RESULT: ${{ needs.supply-chain.result }}
       SERVER_TYPE_CHECK_RESULT: ${{ needs.server-type-check.result }}
       CLIENT_TYPE_CHECK_RESULT: ${{ needs.client-type-check.result }}
       TEST_TYPE_CHECK_RESULT: ${{ needs.test-type-check.result }}
@@ -455,6 +521,9 @@ jobs:
 
           check_result "repository-integrity" "$REPOSITORY_INTEGRITY_RESULT"
           check_result "dependency-integrity" "$DEPENDENCY_INTEGRITY_RESULT"
+          check_result "dependency-security" "$DEPENDENCY_SECURITY_RESULT"
+          check_result "secrets-scan" "$SECRETS_SCAN_RESULT"
+          check_result "supply-chain" "$SUPPLY_CHAIN_RESULT"
           check_result "server-type-check" "$SERVER_TYPE_CHECK_RESULT"
           check_result "client-type-check" "$CLIENT_TYPE_CHECK_RESULT"
           check_result "test-type-check" "$TEST_TYPE_CHECK_RESULT"

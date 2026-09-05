@@ -1,3 +1,5 @@
+import { LatticeGameAdapter, IsometricPlaybookResult } from '../../gaming/lattice/LatticeGameAdapter';
+
 export type GamingPlaybookKind =
   | 'engine_selection'
   | 'asset_pipeline'
@@ -24,7 +26,28 @@ export interface GamingPlaybookResult {
   followUpQuestions: string[];
 }
 
+function boundedInteger(value: number | undefined, fallback: number, minimum: number, maximum: number): number {
+  if (!Number.isFinite(value)) return fallback;
+  return Math.min(maximum, Math.max(minimum, Math.trunc(value!)));
+}
+
 export class GamingPlaybookService {
+  private readonly lattice = new LatticeGameAdapter();
+
+  createIsometricSimulation(options: {
+    width?: number;
+    height?: number;
+    seed?: number;
+    enemyCount?: number;
+  } = {}): IsometricPlaybookResult {
+    const width = boundedInteger(options.width, 8, 4, 32);
+    const height = boundedInteger(options.height, 8, 4, 32);
+    const enemyCount = boundedInteger(options.enemyCount, 2, 0, 32);
+    const seed = Number.isFinite(options.seed) ? Math.trunc(options.seed!) : 42;
+    const scenario = this.lattice.createIsometricDungeonScenario({ width, height, seed, enemyCount });
+    return this.lattice.generateIsometricPlaybook(scenario);
+  }
+
   create(input: GamingPlaybookInput): GamingPlaybookResult {
     const goal = String(input.goal || '').trim();
     if (!goal) throw new Error('goal is required');

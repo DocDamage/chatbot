@@ -95,10 +95,6 @@ function parseLogLine(line: string): LogEntry {
 }
 
 async function clearCache(name: string, cache: any): Promise<CacheClearResult> {
-  if (!cache) {
-    return { name, cleared: false, error: 'Cache not available' };
-  }
-
   const methods = ['clear', 'flushAll', 'flush', 'reset'];
   const method = methods.find(candidate => typeof cache[candidate] === 'function');
   if (!method) {

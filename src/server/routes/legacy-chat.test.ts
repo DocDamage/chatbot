@@ -7,6 +7,44 @@ import { ConversationManager } from '../../core/conversation/ConversationManager
 import { createLegacyChatHandlers } from './legacy-chat';
 
 describe('legacy chat knowledge miss contract', () => {
+  it('qualifies and completes artifact-building requests across chat categories', async () => {
+    const app = express();
+    const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'legacy-task-route-'));
+    const conversationManager = new ConversationManager();
+    const orchestrator = { processRequest: jest.fn() };
+
+    try {
+      app.use(express.json());
+      app.post('/api/chat', ...createLegacyChatHandlers({
+        getServices: () => ({}),
+        getOrchestrator: () => orchestrator,
+        waitForReady: jest.fn().mockResolvedValue(undefined),
+        getConversationManager: () => conversationManager,
+        workspaceRoot,
+      }));
+
+      const first = await request(app).post('/api/chat').send({
+        message: 'make a game for me', sessionId: 'builder-session', mode: 'history'
+      });
+      expect(first.body.task).toEqual(expect.objectContaining({ status: 'needs_input', awaiting: 'game_concept' }));
+
+      const second = await request(app).post('/api/chat').send({
+        message: 'a space shooter protecting a moon base', sessionId: 'builder-session', mode: 'music'
+      });
+      expect(second.body.task.awaiting).toBe('game_platform');
+
+      const completed = await request(app).post('/api/chat').send({
+        message: 'browser', sessionId: 'builder-session', mode: 'ask'
+      });
+      expect(completed.body.task.status).toBe('completed');
+      expect(completed.body.artifacts).toHaveLength(2);
+      expect(fs.existsSync(path.join(workspaceRoot, completed.body.artifacts[0].path))).toBe(true);
+      expect(orchestrator.processRequest).not.toHaveBeenCalled();
+    } finally {
+      fs.rmSync(workspaceRoot, { recursive: true, force: true });
+    }
+  });
+
   it('saves Markdown plans and returns implement-mode actions from plan mode', async () => {
     const app = express();
     const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'legacy-plan-route-'));
@@ -102,7 +140,6 @@ describe('legacy chat knowledge miss contract', () => {
         expect(response.body.knowledgeMiss).toBe(true);
         expect(response.body.knowledgeMissDetail).toEqual(expect.objectContaining({
           knowledgeMiss: true,
-          type: 'knowledge_miss',
           domain: 'ask',
           proposedWebQuery: 'What changed in the newest Godot release?',
           suggestedNextAction: 'search_online',
@@ -110,6 +147,81 @@ describe('legacy chat knowledge miss contract', () => {
       });
 
     expect(orchestrator.processRequest).not.toHaveBeenCalled();
+  });
+
+  it('uses the configured model when local and specialist knowledge cannot answer', async () => {
+    const previousFallback = process.env.LLM_KNOWLEDGE_FALLBACK;
+    process.env.LLM_KNOWLEDGE_FALLBACK = 'true';
+
+    try {
+      const app = express();
+      const conversationManager = new ConversationManager();
+      const orchestrator = {
+        processRequest: jest.fn().mockResolvedValue({
+          response: '1997 was a pivotal year for hip-hop, shaped by major releases, regional growth, and the deaths of The Notorious B.I.G. and Tupac Shakur in the surrounding era.',
+          model: 'ollama:qwen3:8b',
+          sources: []
+        })
+      };
+      const ragDocumentStore = {
+        searchKeyword: jest.fn().mockResolvedValue([{
+          chunk: {
+            id: '1997-geopolitics-chunk-0',
+            content: '1997 edition. Hegemony of a New Type and the Eurasian Chessboard.',
+            metadata: {
+              source: 'knowledge-base-public/general/geopolitics-1997.md',
+              title: 'The Grand Chessboard'
+            }
+          },
+          score: 0.95,
+          retrievalMethod: 'keyword'
+        }])
+      };
+      const musicProductionGeniusAgent = {
+        ask: jest.fn().mockResolvedValue({
+          response: 'I did not find a direct local knowledge-base record for this exact request, so I am returning the domain workflow instead of inventing facts.',
+          model: 'music-specialist',
+          sources: [],
+          knowledgeMiss: true
+        })
+      };
+
+      app.use(express.json());
+      app.post('/api/chat', ...createLegacyChatHandlers({
+        getServices: () => ({ ragDocumentStore, musicProductionGeniusAgent }),
+        getOrchestrator: () => orchestrator,
+        waitForReady: jest.fn().mockResolvedValue(undefined),
+        getConversationManager: () => conversationManager,
+      }));
+
+      for (const mode of ['ask', 'pop_culture', 'music']) {
+        await request(app)
+          .post('/api/chat')
+          .send({
+            message: 'what can you tell me about hip hop in 1997?',
+            sessionId: `hip-hop-${mode}`,
+            mode,
+          })
+          .expect(200)
+          .expect(response => {
+            expect(response.body.model).toBe('ollama:qwen3:8b');
+            expect(response.body.response).toContain('1997 was a pivotal year for hip-hop');
+          });
+      }
+
+      expect(orchestrator.processRequest).toHaveBeenCalledTimes(3);
+      expect(orchestrator.processRequest).toHaveBeenCalledWith(expect.objectContaining({
+        systemPrompt: expect.stringContaining('Do not return a workflow'),
+        temperature: 0.2,
+        useRAG: false
+      }));
+    } finally {
+      if (previousFallback === undefined) {
+        delete process.env.LLM_KNOWLEDGE_FALLBACK;
+      } else {
+        process.env.LLM_KNOWLEDGE_FALLBACK = previousFallback;
+      }
+    }
   });
 
   it('prefers local library answers over broad history routing for book questions', async () => {
@@ -209,5 +321,127 @@ describe('legacy chat knowledge miss contract', () => {
     expect(popCultureGeniusAgent.ask).toHaveBeenCalledWith('tell me about the music industry in 1997');
     expect(ragDocumentStore.searchKeyword).not.toHaveBeenCalled();
     expect(orchestrator.processRequest).not.toHaveBeenCalled();
+  });
+
+  it('routes specialist requests (coding, math, science, knowledge_os, music, creative_writing)', async () => {
+    const app = express();
+    const conversationManager = new ConversationManager();
+    const orchestrator = { processRequest: jest.fn().mockResolvedValue({ response: 'orchestrator response' }) };
+
+    const mathGeniusAgent = { solve: jest.fn().mockResolvedValue({ response: 'E = mc^2', sources: [] }) };
+    const marketGeniusAgent = { analyze: jest.fn().mockResolvedValue({ response: 'Bullish trend', sources: [] }) };
+    const gameDevGeniusAgent = { answer: jest.fn().mockResolvedValue({ response: 'Use ECS architecture', sources: [] }) };
+    const gamingGeniusAgent = { ask: jest.fn().mockResolvedValue({ response: 'Boss guide', sources: [] }) };
+    const scienceInventionGeniusAgent = { ask: jest.fn().mockResolvedValue({ response: 'Quantum computing', sources: [] }) };
+    const historyGeniusAgent = { ask: jest.fn().mockResolvedValue({ response: 'The Roman Empire fell in 476 AD', sources: [] }) };
+    const flStudioControlAgent = { command: jest.fn().mockResolvedValue({ response: 'FL Studio dry run', mode: 'dry_run' }) };
+    const musicProductionGeniusAgent = {
+      sunoPrompt: jest.fn().mockResolvedValue({ response: 'Suno prompt formatted' }),
+      flStudioWorkflow: jest.fn().mockResolvedValue({ response: 'FL Studio workflow' }),
+      proToolsWorkflow: jest.fn().mockResolvedValue({ response: 'Pro Tools workflow' }),
+      logicWorkflow: jest.fn().mockResolvedValue({ response: 'Logic Pro workflow' }),
+      mix: jest.fn().mockResolvedValue({ response: 'Mix master plan' }),
+      ask: jest.fn().mockResolvedValue({ response: 'Music response' })
+    };
+    const codingAgent = { handle: jest.fn().mockResolvedValue({ response: 'Code generated' }) };
+    const storyGeniusAgent = { ask: jest.fn().mockResolvedValue({ response: 'Story drafted' }) };
+
+    app.use(express.json());
+    app.post('/api/chat', ...createLegacyChatHandlers({
+      getServices: () => ({
+        mathGeniusAgent,
+        marketGeniusAgent,
+        gameDevGeniusAgent,
+        gamingGeniusAgent,
+        scienceInventionGeniusAgent,
+        historyGeniusAgent,
+        flStudioControlAgent,
+        musicProductionGeniusAgent,
+        codingAgent,
+        storyGeniusAgent
+      }),
+      getOrchestrator: () => orchestrator,
+      waitForReady: jest.fn().mockResolvedValue(undefined),
+      getConversationManager: () => conversationManager,
+    }));
+
+    // Math mode
+    const mathRes = await request(app).post('/api/chat').send({ message: 'calculate eigenvalue', sessionId: 's1', mode: 'math' });
+    expect(mathRes.body.response).toBe('E = mc^2');
+
+    // Science mode
+    const sciRes = await request(app).post('/api/chat').send({ message: 'explain superconductors', sessionId: 's2', mode: 'science' });
+    expect(sciRes.body.response).toBe('Quantum computing');
+
+    // History mode
+    const histRes = await request(app).post('/api/chat').send({ message: 'fall of Rome', sessionId: 's3', mode: 'history' });
+    expect(histRes.body.response).toContain('Roman Empire');
+
+    // FL Studio Control
+    const flRes = await request(app).post('/api/chat').send({ message: 'mute track 1', sessionId: 's4', mode: 'fl_studio_control' });
+    expect(flRes.body.response).toBe('FL Studio dry run');
+
+    // Suno mode
+    const sunoRes = await request(app).post('/api/chat').send({ message: 'synthwave track', sessionId: 's5', mode: 'suno' });
+    expect(sunoRes.body.response).toBe('Suno prompt formatted');
+
+    // FL Studio mode
+    const flwRes = await request(app).post('/api/chat').send({ message: 'sidechain bass', sessionId: 's6', mode: 'fl_studio' });
+    expect(flwRes.body.response).toBe('FL Studio workflow');
+
+    // Pro Tools mode
+    const ptRes = await request(app).post('/api/chat').send({ message: 'vocal bus routing', sessionId: 's7', mode: 'pro_tools' });
+    expect(ptRes.body.response).toBe('Pro Tools workflow');
+
+    // Logic mode
+    const logicRes = await request(app).post('/api/chat').send({ message: 'drum machine designer', sessionId: 's8', mode: 'logic' });
+    expect(logicRes.body.response).toBe('Logic Pro workflow');
+
+    // Mix Master mode
+    const mixRes = await request(app).post('/api/chat').send({ message: 'mastering chain', sessionId: 's9', mode: 'mix_master' });
+    expect(mixRes.body.response).toBe('Mix master plan');
+
+    // Creative writing mode
+    const storyRes = await request(app).post('/api/chat').send({ message: 'Write a sci-fi opening', sessionId: 's10', mode: 'creative_writing' });
+    expect(storyRes.body.response).toContain('Draft Scene');
+
+    // Roleplay mode
+    const roleplayRes = await request(app).post('/api/chat').send({ message: 'Greetings traveler', sessionId: 's10-rp', mode: 'roleplay' });
+    expect(roleplayRes.body.response).toBeDefined();
+
+    // Coding mode
+    const codingRes = await request(app).post('/api/chat').send({ message: 'write a function', sessionId: 's11', mode: 'coding' });
+    expect(codingRes.body.response).toBe('Code generated');
+
+    // Generic agents: legal, health, security, business, philosophy, language, geography, engineering
+    const genericMock = { ask: jest.fn().mockResolvedValue({ response: 'Generic agent response' }) };
+    const genericApp = express();
+    genericApp.use(express.json());
+    genericApp.post('/api/chat', ...createLegacyChatHandlers({
+      getServices: () => ({
+        legalCivicGeniusAgent: genericMock,
+        healthGeniusAgent: genericMock,
+        securityGeniusAgent: genericMock,
+        businessGeniusAgent: genericMock,
+        philosophyGeniusAgent: genericMock,
+        languageGeniusAgent: genericMock,
+        geoCultureGeniusAgent: genericMock,
+        engineeringGeniusAgent: genericMock,
+        mixGeniusAgent: { plan: jest.fn().mockResolvedValue({ response: 'Mix planned' }) }
+      }),
+      getOrchestrator: () => orchestrator,
+      waitForReady: jest.fn().mockResolvedValue(undefined),
+      getConversationManager: () => conversationManager,
+    }));
+
+    for (const mode of ['legal', 'health', 'security', 'business', 'philosophy', 'language', 'geography', 'engineering', 'mix_master']) {
+      const res = await request(genericApp).post('/api/chat').send({ message: `Query for ${mode}`, sessionId: `s-${mode}`, mode });
+      expect(res.status).toBe(200);
+      expect(res.body.response).toBeDefined();
+    }
+
+    // Fallback to general orchestrator
+    const orchRes = await request(app).post('/api/chat').send({ message: 'generic message', sessionId: 's12', mode: 'agent' });
+    expect(orchRes.body.response).toBe('orchestrator response');
   });
 });

@@ -1,0 +1,29 @@
+=== Phase 23: Chat Diagnostics Exit Gate Evidence ===
+Date: 2026-09-04
+Base Commit: 178224d
+
+Test Output (Backend):
+PASS src/types/chat-diagnostics.test.ts
+  chat-diagnostics schemas
+    √ validates a complete chat run record with stage timings
+    √ validates failure taxonomy codes
+
+PASS src/core/diagnostics/__tests__/chat-diagnostics.test.ts
+  Phase 23: Chat Diagnostics Service & Repository
+    √ records run lifecycle with stage timings and successful completion
+    √ classifies failures into normalized failure taxonomy
+    √ strictly sanitizes secrets and internal reasoning from diagnostics records (§3433)
+    √ serves diagnostic reports via express router
+
+Test Suites: 2 passed, 2 total
+Tests: 6 passed, 6 total
+
+Test Output (Client Component):
+✓ src/components/ChatDiagnosticsModal.test.tsx (1 test)
+
+Exit Gate Verification:
+- Every request has a unique requestId and traceId.
+- Developers can locate exact failure stage and reason using normalized FailureTaxonomy.
+- Diagnostics strictly strip hidden reasoning, auth tokens, passwords, and secrets (§3433).
+- Per-stage latency is measurable and visible via stageTimings waterfall.
+- Database migrations implemented for chat_runs, chat_run_sources, and chat_run_tools.

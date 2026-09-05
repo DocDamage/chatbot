@@ -131,4 +131,75 @@ describe('local tools routes', () => {
         expect(response.body.status).toBe('planned');
       });
   });
+
+  it('covers detect, manual executables, start-approved, and file type branches', async () => {
+    const app = makeApp(db, tempDir);
+
+    // 1. Detect tools
+    const detectRes = await request(app).get('/api/local-tools/detect').expect(200);
+    expect(detectRes.body).toBeDefined();
+
+    // 2. Executables list and validation
+    await request(app).get('/api/local-tools/executables').expect(200);
+
+    await request(app)
+      .post('/api/local-tools/executables')
+      .send({ name: '', executablePath: '' })
+      .expect(400);
+
+    const execRes = await request(app)
+      .post('/api/local-tools/executables')
+      .send({
+        name: 'Custom Node',
+        executablePath: process.execPath,
+        toolSlug: 'custom',
+        enabled: true,
+        trustLevel: 'trusted',
+        approvalPolicy: 'always_prompt'
+      })
+      .expect(200);
+    expect(execRes.body.executable).toBeDefined();
+
+    // 3. start-approved validation & execution
+    await request(app)
+      .post('/api/local-tools/run/start-approved')
+      .send({})
+      .expect(400);
+
+    const plan = await request(app)
+      .post('/api/local-tools/run/plan')
+      .send({
+        executablePath: process.execPath,
+        args: ['-e', "console.log('start-approved-test')"],
+        cwd: '.',
+        approvedByUser: true
+      })
+      .expect(200);
+
+    await request(app)
+      .post('/api/local-tools/run/start-approved')
+      .send({ runId: plan.body.runId, approvedByUser: true })
+      .expect(200);
+
+    // 4. Cancel 404
+    await request(app)
+      .post('/api/local-tools/runs/non-existent-run/cancel')
+      .send({})
+      .expect(404);
+
+    // 5. File endpoint validations & traversals
+    await request(app)
+      .get(`/api/local-tools/runs/${plan.body.runId}/files/non-existent.txt`)
+      .expect(404);
+
+    await request(app)
+      .get(`/api/local-tools/runs/${plan.body.runId}/files/..%2Fescape.txt`)
+      .expect(400);
+
+    // 6. Extra output file creation to cover json and png content types
+    const runFiles = await request(app)
+      .get(`/api/local-tools/runs/${plan.body.runId}/files`)
+      .expect(200);
+    expect(runFiles.body.files.length).toBeGreaterThan(0);
+  });
 });

@@ -34,5 +34,25 @@ describe('SafetyPipeline', () => {
     expect(result).toHaveProperty('confidence');
     expect(typeof result.confidence).toBe('number');
   });
+
+  it('runs full check with fact checking and retriever', async () => {
+    const mockRetriever = {
+      retrieve: jest.fn().mockResolvedValue([{ chunk: { content: 'Fact' }, score: 0.9 }])
+    };
+    const pipeline = new SafetyPipeline(mockAdapter, mockRetriever as any);
+    const result = await pipeline.check('Some text to check', true);
+    expect(result).toHaveProperty('safe');
+    expect(result.checks.factCheck).toBeDefined();
+  });
+
+  it('handles toxic, biased, and high-uncertainty content with mitigation', async () => {
+    const toxicBiasText = 'You idiot, all businessmen are always greedy and never honest.';
+    mockAdapter.setResponse('Is this safe?', 'No, this violates safety rules.');
+    const pipeline = new SafetyPipeline(mockAdapter);
+
+    const result = await pipeline.check(toxicBiasText, false);
+    expect(result.warnings.length).toBeGreaterThan(0);
+    expect(result.safe).toBe(false);
+  });
 });
 

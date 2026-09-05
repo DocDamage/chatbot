@@ -127,4 +127,39 @@ describe('CodingAgent', () => {
       fs.rmSync(root, { recursive: true, force: true });
     }
   });
+
+  it('exercises searchFiles, getSymbols, context allocation, and instruction patch', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'coding-agent-extra-'));
+    try {
+      fs.mkdirSync(path.join(root, 'src'), { recursive: true });
+      fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify({ scripts: { test: 'node -v' } }));
+      fs.writeFileSync(path.join(root, 'src', 'calc.ts'), 'export function add(a: number, b: number) { return a + b; }\n');
+
+      const agent = new CodingAgent({ workspaceRoot: root });
+
+      // searchFiles
+      const files = await agent.searchFiles('calc');
+      expect(files.length).toBeGreaterThan(0);
+
+      // getSymbols
+      const symbols = await agent.getSymbols('src/calc.ts');
+      expect(symbols).toBeDefined();
+
+      // allocateContext
+      const allocation = agent.allocateContext({
+        modelContextTokens: 4000,
+        outputTokens: 500,
+        intent: 'generate_code',
+        evidence: [],
+        repositorySize: 10
+      });
+      expect(allocation).toBeDefined();
+
+      // createStructuredPatchFromInstruction
+      const patch = agent.createStructuredPatchFromInstruction('update src/calc.ts', true, true);
+      expect(patch).toBeDefined();
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
 });

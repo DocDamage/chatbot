@@ -47,3 +47,10 @@ test('reachability follows literal relative imports and leaves dormant code isol
   assert.ok(reachability.unreachable.includes('src/server/dormant.ts'));
   assert.equal(reachability.missingEntrypoints.length, 0);
 });
+
+test('source integrity verification passes with complete capability source register', async () => {
+  const { checkSourceIntegrity } = await import('../check-source-integrity.mjs');
+  const result = checkSourceIntegrity();
+  assert.equal(result.ok, true, `Source integrity errors: ${result.errors.join(', ')}`);
+  assert.ok(result.parsedCount >= 25);
+});

@@ -157,7 +157,7 @@ describe('release security controls', () => {
     await request(app)
       .get('/api/settings')
       .set('Authorization', `Bearer ${developerToken()}`)
-      .expect(401);
+      .expect(403);
 
     await request(app)
       .put('/api/settings')
@@ -184,7 +184,7 @@ describe('release security controls', () => {
     await request(app)
       .get('/api/knowledge-os/summary')
       .set('Authorization', `Bearer ${developerToken()}`)
-      .expect(401);
+      .expect(403);
 
     await request(app)
       .get('/api/knowledge-os/summary')

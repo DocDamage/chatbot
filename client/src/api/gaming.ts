@@ -12,6 +12,15 @@ export interface GamingPlaybookResult {
   followUpQuestions: string[];
 }
 
+export interface LatticeSimulationResult {
+  scenario: { id: string; title: string; world: { seed: number; dimensions: { width: number; height: number } } };
+  asciiMap: string;
+  entityTable: string;
+  svgPreview: string;
+  simulation: { won: boolean; totalTicks: number; seed: number };
+  recommendations: string[];
+}
+
 export async function createGamingPlaybook(input: {
   kind: GamingPlaybookKind;
   goal: string;
@@ -25,5 +34,20 @@ export async function createGamingPlaybook(input: {
     body: JSON.stringify(input)
   });
   if (!response.ok) await throwApiError(response, 'Unable to create gaming playbook');
+  return response.json();
+}
+
+export async function runLatticeSimulation(input: {
+  width?: number;
+  height?: number;
+  seed?: number;
+  enemyCount?: number;
+} = {}): Promise<LatticeSimulationResult> {
+  const response = await fetch('/api/gaming/lattice', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input)
+  });
+  if (!response.ok) await throwApiError(response, 'Unable to run Lattice simulation');
   return response.json();
 }

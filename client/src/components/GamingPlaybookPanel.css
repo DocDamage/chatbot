@@ -22,8 +22,17 @@
 
 .gaming-playbook-controls {
   display: grid;
-  grid-template-columns: 140px repeat(4, minmax(0, 1fr)) auto;
+  grid-template-columns: 140px repeat(4, minmax(0, 1fr)) repeat(2, auto);
   gap: 8px;
+}
+
+.gaming-lattice-map {
+  margin: 0;
+  overflow: auto;
+  border: 1px solid #262626;
+  border-radius: 6px;
+  padding: 10px;
+  color: #d4d4d4;
 }
 
 .gaming-playbook-controls select,

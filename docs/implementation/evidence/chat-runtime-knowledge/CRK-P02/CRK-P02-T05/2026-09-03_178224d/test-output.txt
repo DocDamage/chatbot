@@ -1,0 +1,14 @@
+=== TEST RUN: bot-profiles.test.ts ===
+> jest src/server/routes/__tests__/bot-profiles.test.ts
+
+PASS src/server/routes/__tests__/bot-profiles.test.ts
+  Bot Profiles API Routes (CRK-P02-T05)
+    √ GET /api/bot-profiles lists active bot profiles (23 ms)
+    √ GET /api/bot-profiles/:id returns profile details or 404 for missing (9 ms)
+    √ POST /api/bot-profiles creates a new profile and tracks audit history (18 ms)
+    √ POST /api/bot-profiles/:id/rollback reverts profile to specified version (5 ms)
+    √ POST /api/bot-profiles/resolve returns resolved profile based on context (4 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total

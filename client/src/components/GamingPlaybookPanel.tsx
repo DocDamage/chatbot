@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { createGamingPlaybook, GamingPlaybookKind, GamingPlaybookResult } from '../api/gaming';
+import {
+  createGamingPlaybook,
+  GamingPlaybookKind,
+  GamingPlaybookResult,
+  LatticeSimulationResult,
+  runLatticeSimulation
+} from '../api/gaming';
 import './GamingPlaybookPanel.css';
 
 const playbookOptions: Array<{ kind: GamingPlaybookKind; label: string }> = [
@@ -17,6 +23,7 @@ function GamingPlaybookPanel() {
   const [genre, setGenre] = useState('');
   const [targetPlatform, setTargetPlatform] = useState('');
   const [result, setResult] = useState<GamingPlaybookResult | null>(null);
+  const [latticeResult, setLatticeResult] = useState<LatticeSimulationResult | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -42,11 +49,23 @@ function GamingPlaybookPanel() {
     }
   };
 
+  const runLattice = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      setLatticeResult(await runLatticeSimulation());
+    } catch (err: any) {
+      setError(err.message || 'Lattice simulation failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="gaming-playbook-panel" aria-label="Gaming playbooks">
       <div className="gaming-playbook-header">
         <strong>Gaming Playbooks</strong>
-        <span>Engine, assets, design, modding, prompts</span>
+        <span>Engine, assets, design, modding, prompts, deterministic simulation</span>
       </div>
 
       <div className="gaming-playbook-controls">
@@ -58,6 +77,7 @@ function GamingPlaybookPanel() {
         <input value={genre} onChange={event => setGenre(event.target.value)} placeholder="Genre optional" />
         <input value={targetPlatform} onChange={event => setTargetPlatform(event.target.value)} placeholder="Target platform optional" />
         <button type="button" onClick={submit} disabled={loading || !goal.trim()}>{loading ? 'Working...' : 'Create Playbook'}</button>
+        <button type="button" onClick={runLattice} disabled={loading}>{loading ? 'Working...' : 'Run Lattice'}</button>
       </div>
 
       {error && <div className="gaming-playbook-error">{error}</div>}
@@ -69,6 +89,17 @@ function GamingPlaybookPanel() {
           <PlaybookList title="Checklist" items={result.checklist} />
           <PlaybookList title="Risks" items={result.risks} />
           <PlaybookList title="Follow-up" items={result.followUpQuestions} />
+        </div>
+      )}
+
+      {latticeResult && (
+        <div className="gaming-playbook-result" aria-live="polite">
+          <h4>{latticeResult.scenario.title}</h4>
+          <p>
+            Seed {latticeResult.scenario.world.seed}; {latticeResult.scenario.world.dimensions.width}×{latticeResult.scenario.world.dimensions.height}; {latticeResult.simulation.totalTicks} deterministic ticks.
+          </p>
+          <pre className="gaming-lattice-map" aria-label="Lattice ASCII map">{latticeResult.asciiMap}</pre>
+          <PlaybookList title="Simulation notes" items={latticeResult.recommendations} />
         </div>
       )}
     </section>

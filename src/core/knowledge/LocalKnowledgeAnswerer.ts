@@ -21,8 +21,11 @@ export interface LocalKnowledgeAnswer {
 
 export class LocalKnowledgeAnswerer {
   private readonly stopWords = new Set([
-    'what', 'when', 'where', 'who', 'why', 'how', 'tell', 'give', 'show', 'me', 'the', 'a', 'an',
-    'is', 'are', 'was', 'were', 'of', 'in', 'on', 'for', 'from', 'about', 'biggest', 'story'
+    'what', 'when', 'where', 'who', 'why', 'how', 'tell', 'give', 'show', 'me', 'you', 'can', 'could',
+    'would', 'please', 'do', 'know', 'thing', 'something', 'happen', 'happened', 'the', 'a', 'an',
+    'is', 'are', 'was', 'were', 'of', 'in', 'on', 'for', 'from', 'about', 'biggest', 'story',
+    'more', 'information', 'details', 'detail', 'summary', 'brief', 'briefly', 'concise', 'quick',
+    'short', 'detailed', 'comprehensive', 'thorough'
   ]);
 
   constructor(private readonly documentStore?: Pick<RAGDocumentStore, 'searchKeyword'>) {}
@@ -46,6 +49,32 @@ export class LocalKnowledgeAnswerer {
     const sourceEntries = this.collectSourceEntries(chunks);
     const sources = sourceEntries.map(entry => entry.source);
     const body = this.formatAnswerBody(chunks, message);
+    const year = this.extractYear(message);
+    const semanticTokens = this.importantTokens(message).filter(token => token !== year);
+    const sourceIdentityHasYear = !!year && chunks.some(chunk =>
+      this.searchableContainsTemporalMarker(
+        `${chunk.metadata.title || ''} ${chunk.metadata.source || ''}`,
+        year
+      )
+    );
+
+    // A dated subject answer must actually mention the requested date in the
+    // selected answer text. A large source may contain the topic and year in
+    // different sections even when the extracted passages do not answer the
+    // user's question.
+    if (
+      year
+      && semanticTokens.length > 0
+      && !sourceIdentityHasYear
+      && !this.hasSubjectNearTemporalMarker(
+        body,
+        year,
+        semanticTokens,
+        semanticTokens.length === 1 ? 1 : Math.min(2, Math.ceil(semanticTokens.length / 2))
+      )
+    ) {
+      return this.noLocalRecord(message, mode);
+    }
 
     return {
       response: `From the local knowledge base:\n\n${body}\n\nSources:\n${sourceEntries.map(entry => `- ${entry.label}`).join('\n')}`,
@@ -186,6 +215,7 @@ export class LocalKnowledgeAnswerer {
 
     const selected: string[] = [];
     const seen = new Set<string>();
+    const passageLimit = this.answerDepth(message, { brief: 3, standard: 6, detailed: 8 });
 
     for (const unit of rankedUnits) {
       const normalized = unit.text.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
@@ -199,7 +229,7 @@ export class LocalKnowledgeAnswerer {
 
       selected.push(unit.text);
       seen.add(normalized);
-      if (selected.length >= 4) {
+      if (selected.length >= passageLimit) {
         break;
       }
     }
@@ -355,10 +385,36 @@ export class LocalKnowledgeAnswerer {
     const uniqueEventLines = this.removeTruncatedDuplicates(
       Array.from(new Map(eventLines.map(line => [line.toLowerCase(), line])).values())
     );
-    const ranked = uniqueEventLines
-      .map(line => ({ line, score: this.eventScore(line, message) }))
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 6)
+    const eventLimit = this.answerDepth(message, { brief: 5, standard: 10, detailed: 14 });
+    const candidates = uniqueEventLines
+      .map((line, index) => ({ line, index, score: this.eventScore(line, message) }))
+      .sort((a, b) => b.score - a.score || a.index - b.index);
+    const selected: typeof candidates = [];
+    const selectedMonths = new Set<string>();
+    const uniqueMonthTarget = eventLimit >= 14
+      ? Math.min(12, eventLimit)
+      : eventLimit >= 10
+        ? Math.min(8, eventLimit)
+        : eventLimit;
+
+    for (const candidate of candidates) {
+      const month = candidate.line.match(/^(January|February|March|April|May|June|July|August|September|October|November|December)\b/)?.[1];
+      if (month && selectedMonths.has(month)) continue;
+      selected.push(candidate);
+      if (month) selectedMonths.add(month);
+      if (selected.length >= uniqueMonthTarget) break;
+    }
+
+    if (selected.length < eventLimit) {
+      for (const candidate of candidates) {
+        if (selected.some(item => item.index === candidate.index)) continue;
+        selected.push(candidate);
+        if (selected.length >= eventLimit) break;
+      }
+    }
+
+    const ranked = selected
+      .sort((a, b) => a.index - b.index)
       .map(item => item.line);
 
     const lead = /\b(biggest|top|major|main|important)\b/i.test(message)
@@ -376,22 +432,20 @@ export class LocalKnowledgeAnswerer {
     const contents = new Map<string, string>();
 
     for (const chunk of chunks) {
-      contents.set(chunk.id, chunk.content);
       const source = chunk.metadata.source;
-      if (!source || typeof source !== 'string') {
-        continue;
+      if (source && typeof source === 'string') {
+        const sourcePath = path.resolve(process.cwd(), source);
+        if (sourcePath.startsWith(process.cwd()) && fs.existsSync(sourcePath)) {
+          try {
+            contents.set(sourcePath, fs.readFileSync(sourcePath, 'utf8'));
+            continue;
+          } catch {
+            // Fall through to the indexed chunk when the source cannot be read.
+          }
+        }
       }
 
-      const sourcePath = path.resolve(process.cwd(), source);
-      if (!sourcePath.startsWith(process.cwd()) || !fs.existsSync(sourcePath)) {
-        continue;
-      }
-
-      try {
-        contents.set(sourcePath, fs.readFileSync(sourcePath, 'utf8'));
-      } catch {
-        // Chunk content is still usable if the source file cannot be read.
-      }
+      contents.set(chunk.id, chunk.content);
     }
 
     return Array.from(contents.values());
@@ -408,12 +462,36 @@ export class LocalKnowledgeAnswerer {
       '\n- '
     );
 
-    return normalizedEvents
+    const lines = normalizedEvents
       .split('\n')
       .map(line => line.trim())
       .filter(line => line.startsWith('- ') || this.looksLikeEventLine(line))
       .map(line => line.replace(/^[-*]\s*/, '').replace(/\s+/g, ' ').trim())
-      .filter(line => line.length > 20);
+      .filter(Boolean);
+    const completeEvents: string[] = [];
+    let pendingDate = '';
+
+    for (const line of lines) {
+      if (this.isStandaloneEventDate(line)) {
+        pendingDate = line;
+        continue;
+      }
+      if (this.looksLikeEventLine(line)) {
+        completeEvents.push(line);
+        pendingDate = '';
+        continue;
+      }
+      if (pendingDate && line.length > 20) {
+        completeEvents.push(`${pendingDate} – ${line}`);
+      }
+    }
+
+    return completeEvents.filter(line => line.length > 20);
+  }
+
+  private isStandaloneEventDate(line: string): boolean {
+    return /^(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}(?:[–-]\d{1,2})?$/.test(line)
+      || /^(?:Around|About|Circa|c\.)?\s*\d{1,5}\s*(?:BC|BCE)$/i.test(line);
   }
 
   private looksLikeEventLine(line: string): boolean {
@@ -454,6 +532,19 @@ export class LocalKnowledgeAnswerer {
       score += 0.5;
     }
     return score;
+  }
+
+  private answerDepth(
+    message: string,
+    limits: { brief: number; standard: number; detailed: number }
+  ): number {
+    if (/\b(?:brief|briefly|concise|quick|short|one or two|a few)\b/i.test(message)) {
+      return limits.brief;
+    }
+    if (/\b(?:more|detailed|detail|comprehensive|in[- ]depth|thorough|as much as possible|deep dive)\b/i.test(message)) {
+      return limits.detailed;
+    }
+    return limits.standard;
   }
 
   private selectChunks(results: RetrievalResult[], message: string) {
@@ -513,10 +604,67 @@ export class LocalKnowledgeAnswerer {
     const title = String(result.chunk.metadata.title || '').toLowerCase();
     const source = String(result.chunk.metadata.source || '').toLowerCase();
     const searchable = `${content} ${title} ${source}`;
-    const hasToken = importantTokens.some(token => searchable.includes(token));
     const hasYear = !year || this.searchableContainsTemporalMarker(searchable, year);
+    const semanticTokens = importantTokens.filter(token => token !== year);
 
-    return hasToken && hasYear;
+    // A shared year is not enough to establish relevance. Compare whole tokens so
+    // short subjects such as "hip" do not accidentally match words like
+    // "leadership" in an unrelated document.
+    if (semanticTokens.length === 0) {
+      return hasYear;
+    }
+
+    const searchableTokens = new Set(searchable.split(/[^a-z0-9]+/).filter(Boolean));
+    const semanticMatches = semanticTokens.filter(token => searchableTokens.has(token)).length;
+    const requiredMatches = semanticTokens.length === 1
+      ? 1
+      : Math.min(2, Math.ceil(semanticTokens.length / 2));
+
+    if (year) {
+      const sourceIdentity = `${title} ${source}`;
+      const sourceIsExplicitlyTemporal = this.searchableContainsTemporalMarker(sourceIdentity, year);
+      const subjectIsNearYear = this.hasSubjectNearTemporalMarker(
+        content,
+        year,
+        semanticTokens,
+        requiredMatches
+      );
+
+      if (!sourceIsExplicitlyTemporal && !subjectIsNearYear) {
+        return false;
+      }
+    }
+
+    return semanticMatches >= requiredMatches && hasYear;
+  }
+
+  private hasSubjectNearTemporalMarker(
+    content: string,
+    marker: string,
+    semanticTokens: string[],
+    requiredMatches: number
+  ): boolean {
+    const normalizedContent = this.normalizeTemporalText(content);
+    const markers = [
+      marker,
+      marker.replace(/\s+/g, ''),
+      this.withThousandsComma(marker),
+      this.millenniumQuery(marker)
+    ]
+      .filter(Boolean)
+      .map(candidate => this.normalizeTemporalText(candidate as string));
+    const factualUnits = normalizedContent
+      .split(/(?:\r?\n)+|(?<=[.!?;])\s+/)
+      .map(unit => unit.trim())
+      .filter(Boolean);
+
+    return factualUnits.some(unit => {
+      if (!markers.some(candidate => unit.includes(candidate))) {
+        return false;
+      }
+      const unitTokens = new Set(unit.split(/[^a-z0-9]+/).filter(Boolean));
+      return semanticTokens.filter(token => unitTokens.has(token)).length >= requiredMatches;
+    });
   }
 
   private importantTokens(message: string): string[] {
@@ -529,7 +677,7 @@ export class LocalKnowledgeAnswerer {
   }
 
   private isYearEventQuestion(message: string): boolean {
-    return /\b(what happened|happen|biggest|top story|major event|main event|something from|story|popular|pop culture reference|know about)\b/i.test(message);
+    return /\b(what happened|happen|biggest|top story|major event|main event|something from|story|news|headlines|popular|pop culture reference|know about)\b/i.test(message);
   }
 
   private noLocalRecord(message: string, mode: LocalKnowledgeMode): LocalKnowledgeAnswer {
