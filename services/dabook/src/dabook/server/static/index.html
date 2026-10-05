@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DABOOK — Control Room</title>
+  <meta name="description" content="DABOOK live processing dashboard — monitor book processing, resource usage, and export progress in real time.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header id="header">
+      <div class="header-left">
+        <div class="logo">
+          <span class="logo-icon">◈</span>
+          <span class="logo-text">DABOOK</span>
+          <span class="logo-sub">Control Room</span>
+        </div>
+        <div id="overall-progress-wrap">
+          <div class="progress-bar-outer" title="Overall progress">
+            <div id="overall-progress-bar" class="progress-bar-inner" style="width:0%"></div>
+          </div>
+          <span id="overall-pct">0%</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div id="eta-badge" class="stat-badge">ETA: <span id="eta-val">—</span></div>
+        <div id="status-badge" class="stat-badge status-running">Running</div>
+        <button id="pause-btn" class="btn btn-ghost" onclick="togglePause()">⏸ Pause</button>
+      </div>
+    </header>
+
+    <!-- Alert banner -->
+    <div id="alert-banner" class="alert-banner" style="display:none"></div>
+
+    <!-- Nav -->
+    <nav id="nav">
+      <button class="nav-tab active" data-panel="overview" onclick="switchPanel('overview')">Overview</button>
+      <button class="nav-tab" data-panel="books" onclick="switchPanel('books')">Books</button>
+      <button class="nav-tab" data-panel="datasets" onclick="switchPanel('datasets')">Datasets</button>
+      <button class="nav-tab" data-panel="settings" onclick="switchPanel('settings')">Settings</button>
+      <button class="nav-tab" data-panel="launch" onclick="switchPanel('launch')">🚀 Launch</button>
+      <button class="nav-tab" data-panel="logs" onclick="switchPanel('logs')">Logs</button>
+      <div id="stale-indicator" class="stale-indicator" style="display:none">● Reconnecting…</div>
+    </nav>
+
+
+    <!-- Panels -->
+    <main id="panels">
+
+      <!-- ═══ Overview ═══ -->
+      <section id="panel-overview" class="panel active">
+        <div class="panel-grid">
+
+          <!-- Book / task counters -->
+          <div class="card span-2" id="card-counters">
+            <h3 class="card-title">Progress</h3>
+            <div class="counters-row">
+              <div class="counter-block">
+                <div class="counter-val" id="c-books-done">0</div>
+                <div class="counter-label">Books Done</div>
+              </div>
+              <div class="counter-block">
+                <div class="counter-val" id="c-books-active">0</div>
+                <div class="counter-label">Processing</div>
+              </div>
+              <div class="counter-block">
+                <div class="counter-val" id="c-books-queued">0</div>
+                <div class="counter-label">Queued</div>
+              </div>
+              <div class="counter-block accent-red">
+                <div class="counter-val" id="c-books-failed">0</div>
+                <div class="counter-label">Failed</div>
+              </div>
+              <div class="counter-sep"></div>
+              <div class="counter-block accent-green">
+                <div class="counter-val" id="c-tasks-done">0</div>
+                <div class="counter-label">Tasks Done</div>
+              </div>
+              <div class="counter-block">
+                <div class="counter-val" id="c-tasks-running">0</div>
+                <div class="counter-label">Running</div>
+              </div>
+              <div class="counter-block">
+                <div class="counter-val" id="c-tasks-pending">0</div>
+                <div class="counter-label">Pending</div>
+              </div>
+              <div class="counter-block accent-orange">
+                <div class="counter-val" id="c-tasks-dead">0</div>
+                <div class="counter-label">Dead</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Now processing -->
+          <div class="card span-4" id="card-now">
+            <h3 class="card-title">Now Processing</h3>
+            <table class="data-table" id="running-table">
+              <thead>
+                <tr>
+                  <th>Worker</th><th>Book</th><th>Stage</th><th>Shard</th>
+                  <th>Progress</th><th>Elapsed</th><th>Sub-step</th>
+                </tr>
+              </thead>
+              <tbody id="running-tbody">
+                <tr class="empty-row"><td colspan="7">No tasks running</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- CPU/RAM -->
+          <div class="card span-2" id="card-system">
+            <h3 class="card-title">System Resources</h3>
+            <div class="resource-row">
+              <label>CPU</label>
+              <div class="resource-bar-wrap">
+                <div class="resource-bar" id="cpu-bar"></div>
+              </div>
+              <span id="cpu-val">—</span>
+            </div>
+            <div class="resource-row">
+              <label>RAM</label>
+              <div class="resource-bar-wrap">
+                <div class="resource-bar" id="ram-bar"></div>
+              </div>
+              <span id="ram-val">—</span>
+            </div>
+            <div class="resource-row">
+              <label>Disk Free</label>
+              <div class="resource-bar-wrap">
+                <div class="resource-bar resource-bar-disk" id="disk-bar"></div>
+              </div>
+              <span id="disk-val">—</span>
+            </div>
+            <div id="gpu-section"></div>
+          </div>
+
+          <!-- Throughput chart -->
+          <div class="card span-2" id="card-throughput">
+            <h3 class="card-title">Pages / min</h3>
+            <canvas id="chart-throughput" height="120"></canvas>
+          </div>
+
+          <!-- Burn-down chart -->
+          <div class="card span-2" id="card-burndown">
+            <h3 class="card-title">Task Burn-down</h3>
+            <canvas id="chart-burndown" height="120"></canvas>
+          </div>
+
+          <!-- Worker swimlane -->
+          <div class="card span-4" id="card-swimlane">
+            <h3 class="card-title">Worker Swimlane</h3>
+            <div id="swimlane-container"></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ═══ Books ═══ -->
+      <section id="panel-books" class="panel">
+        <div class="books-toolbar">
+          <button class="btn btn-primary" onclick="showUpload()">＋ Add Books</button>
+          <input id="books-search" type="text" placeholder="Filter books…" class="search-input" oninput="filterBooks()">
+        </div>
+        <div id="books-list"></div>
+        <div id="upload-drop" class="upload-drop" style="display:none">
+          <div class="upload-inner">
+            <div class="upload-icon">📄</div>
+            <p>Drop PDF files here or <label class="link" for="file-input">browse</label></p>
+            <input id="file-input" type="file" accept=".pdf" multiple style="display:none" onchange="handleFileUpload(event)">
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Datasets ═══ -->
+      <section id="panel-datasets" class="panel">
+        <div class="datasets-header">
+          <div>
+            <h2 class="panel-heading">Model Training Datasets</h2>
+            <p class="panel-sub">Train-ready continuous pretraining chapters, instruction pairs (ChatML / Alpaca), clean assembly code blocks, and RAG vectors.</p>
+          </div>
+          <div class="datasets-header-actions">
+            <button class="btn btn-primary" onclick="consolidateDatasets()">⚡ Consolidate All Books</button>
+            <button class="btn btn-ghost" onclick="loadDatasets()">↺ Refresh</button>
+          </div>
+        </div>
+
+        <!-- Dataset Cards Grid -->
+        <div class="dataset-cards-grid" id="dataset-cards-summary"></div>
+
+        <!-- Dataset Explorer / Preview -->
+        <div class="card dataset-preview-card">
+          <div class="dataset-preview-toolbar">
+            <div class="dataset-picker-wrap">
+              <label for="dataset-select" class="dataset-picker-label">Active Dataset:</label>
+              <select id="dataset-select" class="dataset-select" onchange="onSelectDataset()"></select>
+            </div>
+            <div class="dataset-view-toggle">
+              <button id="view-toggle-rendered" class="toggle-btn active" onclick="setDatasetView('rendered')">Rendered View</button>
+              <button id="view-toggle-json" class="toggle-btn" onclick="setDatasetView('json')">Raw JSONL</button>
+            </div>
+            <div class="dataset-pagination">
+              <button class="btn btn-ghost btn-sm" id="btn-prev-page" onclick="prevDatasetPage()">◀ Prev</button>
+              <span id="dataset-page-info" class="dataset-page-info">1 - 10</span>
+              <button class="btn btn-ghost btn-sm" id="btn-next-page" onclick="nextDatasetPage()">Next ▶</button>
+            </div>
+          </div>
+
+          <!-- Preview Content Container -->
+          <div id="dataset-preview-content" class="dataset-preview-content">
+            <div class="empty-preview">Select a dataset to preview</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Settings ═══ -->
+      <section id="panel-settings" class="panel">
+        <div class="settings-page">
+
+          <!-- Workspace card -->
+          <div class="card settings-card">
+            <h3 class="card-title">📁 Workspace &amp; Directories</h3>
+            <div class="settings-info-row" id="ws-info-row">
+              <span class="settings-info-label">Current workspace</span>
+              <span class="settings-info-val" id="ws-path-display">—</span>
+            </div>
+            <div class="settings-info-row">
+              <span class="settings-info-label">Database</span>
+              <span class="settings-info-val" id="ws-db-display">—</span>
+            </div>
+            <div class="settings-info-row">
+              <span class="settings-info-label">Disk usage</span>
+              <span class="settings-info-val" id="ws-disk-display">—</span>
+            </div>
+            <div class="settings-info-row">
+              <span class="settings-info-label">Books / Tasks</span>
+              <span class="settings-info-val" id="ws-counts-display">—</span>
+            </div>
+          </div>
+
+          <!-- Workers card -->
+          <div class="card settings-card">
+            <h3 class="card-title">⚙️ Workers</h3>
+            <div class="settings-field">
+              <label for="s-workers-cpu">CPU Workers</label>
+              <input id="s-workers-cpu" data-key="workers.cpu" type="number" min="1" max="32" class="settings-input">
+              <span class="settings-hint">Parallel CPU-bound extract tasks</span>
+            </div>
+            <div class="settings-field">
+              <label for="s-workers-gpu">GPU Workers</label>
+              <input id="s-workers-gpu" data-key="workers.gpu" type="number" min="0" max="8" class="settings-input">
+              <span class="settings-hint">Set 0 if no GPU</span>
+            </div>
+            <div class="settings-field">
+              <label for="s-workers-io">IO Workers</label>
+              <input id="s-workers-io" data-key="workers.io" type="number" min="1" max="16" class="settings-input">
+            </div>
+            <div class="settings-field">
+              <label for="s-book-concurrency">Book Concurrency</label>
+              <input id="s-book-concurrency" data-key="book_concurrency" type="number" min="1" max="16" class="settings-input">
+              <span class="settings-hint">Max books processed in parallel</span>
+            </div>
+          </div>
+
+          <!-- Limits card -->
+          <div class="card settings-card">
+            <h3 class="card-title">🛡 Resource Limits</h3>
+            <div class="settings-field">
+              <label for="s-ram-ceil">RAM Ceiling %</label>
+              <input id="s-ram-ceil" data-key="ram_ceiling_pct" type="number" min="10" max="99" step="1" class="settings-input">
+              <span class="settings-hint">Pause workers above this RAM usage</span>
+            </div>
+            <div class="settings-field">
+              <label for="s-vram-ceil">VRAM Ceiling %</label>
+              <input id="s-vram-ceil" data-key="vram_ceiling_pct" type="number" min="10" max="99" step="1" class="settings-input">
+            </div>
+            <div class="settings-field">
+              <label for="s-min-free-gb">Min Free Disk (GB)</label>
+              <input id="s-min-free-gb" data-key="min_free_gb" type="number" min="0.5" max="100" step="0.5" class="settings-input">
+            </div>
+            <div class="settings-field">
+              <label for="s-shard-pages">Shard Pages</label>
+              <input id="s-shard-pages" data-key="shard_pages" type="number" min="1" max="500" class="settings-input">
+              <span class="settings-hint">Pages per extraction shard</span>
+            </div>
+            <div class="settings-field">
+              <label for="s-lease-s">Lease Seconds</label>
+              <input id="s-lease-s" data-key="lease_s" type="number" min="30" max="600" class="settings-input">
+            </div>
+            <div class="settings-field">
+              <label for="s-heartbeat-s">Heartbeat Seconds</label>
+              <input id="s-heartbeat-s" data-key="heartbeat_s" type="number" min="5" max="120" class="settings-input">
+            </div>
+            <div class="settings-field">
+              <label for="s-max-attempts">Max Retry Attempts</label>
+              <input id="s-max-attempts" data-key="retry.max_attempts" type="number" min="1" max="10" class="settings-input">
+            </div>
+            <div class="settings-field">
+              <label for="s-backoff-s">Retry Backoff (s)</label>
+              <input id="s-backoff-s" data-key="retry.backoff_s" type="number" min="1" max="60" step="0.5" class="settings-input">
+            </div>
+          </div>
+
+          <!-- Queue control card -->
+          <div class="card settings-card">
+            <h3 class="card-title">🎛 Queue Control</h3>
+            <div class="queue-controls-row">
+              <button class="btn btn-ghost" onclick="apiPost('/api/queue/pause')">⏸ Pause Queue</button>
+              <button class="btn btn-ghost" onclick="apiPost('/api/queue/resume')">▶ Resume Queue</button>
+              <button class="btn btn-danger" onclick="apiPost('/api/queue/drain')">⏹ Drain &amp; Stop</button>
+            </div>
+          </div>
+
+          <!-- Save row -->
+          <div class="settings-save-row">
+            <button class="btn btn-primary" id="save-settings-btn" onclick="saveSettings()">💾 Save All Settings</button>
+            <button class="btn btn-ghost" onclick="loadSettings()">↺ Reset</button>
+            <span id="settings-save-msg" class="settings-save-msg"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Launch ═══ -->
+      <section id="panel-launch" class="panel">
+        <div class="launch-page">
+
+          <!-- Input card -->
+          <div class="card launch-card">
+            <h3 class="card-title">📄 Input PDFs</h3>
+            <div class="launch-field">
+              <label>PDF Paths (one per line, or paste folder path)</label>
+              <textarea id="launch-paths" class="launch-textarea" placeholder="/path/to/book1.pdf&#10;/path/to/book2.pdf&#10;C:\Users\you\Documents\books"></textarea>
+            </div>
+            <div class="launch-drop-area" id="launch-drop-area" ondragover="event.preventDefault()" ondrop="handleLaunchDrop(event)">
+              <span>📎 Or drag &amp; drop PDF files here</span>
+              <input id="launch-file-input" type="file" accept=".pdf" multiple style="display:none" onchange="handleLaunchFileSelect(event)">
+              <button class="btn btn-ghost btn-sm" onclick="document.getElementById('launch-file-input').click()">Browse Files</button>
+            </div>
+          </div>
+
+          <!-- Output card -->
+          <div class="card launch-card">
+            <h3 class="card-title">📂 Output Directory</h3>
+            <div class="launch-field">
+              <label for="launch-output-dir">Output / Workspace Folder</label>
+              <input id="launch-output-dir" type="text" class="launch-input" placeholder="Leave blank to use current workspace">
+              <span class="settings-hint" id="launch-ws-hint">Current: —</span>
+            </div>
+          </div>
+
+          <!-- Options card -->
+          <div class="card launch-card">
+            <h3 class="card-title">⚙️ Processing Options</h3>
+            <div class="launch-options-grid">
+              <div class="launch-field">
+                <label for="launch-profile">Profile</label>
+                <select id="launch-profile" class="launch-select">
+                  <option value="balanced">balanced (default)</option>
+                  <option value="fast">fast</option>
+                  <option value="accurate">accurate</option>
+                  <option value="lowram">lowram</option>
+                </select>
+              </div>
+              <div class="launch-field">
+                <label for="launch-modes">Dataset Modes</label>
+                <select id="launch-modes" class="launch-select">
+                  <option value="raw,rag">raw + rag (default)</option>
+                  <option value="raw">raw only</option>
+                  <option value="rag">rag only</option>
+                  <option value="raw,rag,instruct">raw + rag + instruct</option>
+                </select>
+              </div>
+              <div class="launch-field">
+                <label for="launch-formats">Export Formats</label>
+                <select id="launch-formats" class="launch-select">
+                  <option value="jsonl">jsonl (default)</option>
+                  <option value="jsonl,parquet">jsonl + parquet</option>
+                  <option value="parquet">parquet only</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Launch button -->
+          <div class="launch-action-row">
+            <button class="btn btn-launch" id="launch-btn" onclick="launchRun()">
+              🚀 Start Processing
+            </button>
+            <div id="launch-status" class="launch-status"></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ═══ Logs ═══ -->
+      <section id="panel-logs" class="panel">
+        <div class="logs-toolbar">
+          <select id="log-level-filter" onchange="filterLogs()">
+            <option value="">All Levels</option>
+            <option value="ERROR">Error</option>
+            <option value="WARNING">Warning</option>
+            <option value="INFO">Info</option>
+          </select>
+          <button class="btn btn-ghost" onclick="clearLogs()">✕ Clear</button>
+          <button class="btn btn-ghost" onclick="copyDiagnostics()">📋 Copy Diagnostics</button>
+        </div>
+        <div id="log-tail"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Vendored Chart.js (will be fetched once; for offline use, download and serve locally) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script type="module" src="/static/app.js"></script>
+</body>
+</html>
+

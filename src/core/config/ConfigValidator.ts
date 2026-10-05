@@ -52,6 +52,7 @@ const configSchema = z.object({
   LOCAL_MODEL_TIMEOUT_MS: integerText,
   LOCAL_MODEL_ROUTING_PRIVACY_MODE: z.enum(['strict_local', 'prefer_local', 'cloud_allowed', 'local_disabled']).optional(),
   CHATBOT_NATIVE_PYTHON: z.string().optional(),
+  DABOOK_PYTHON: z.string().optional(),
   FFMPEG_PATH: z.string().optional(),
   FFPROBE_PATH: z.string().optional(),
   FFMPEG_SHARED_DLL_DIR: z.string().optional(),

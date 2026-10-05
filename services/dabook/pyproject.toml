@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dabook"
+version = "1.0.22"
+description = "Compile PDF books into structure-aware RAG chunks and ML-ready training datasets."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.6",
+    "typer>=0.12",
+    "rich>=13.7",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "python-multipart>=0.0.9",
+    "pypdfium2>=4.28",
+    "ftfy>=6.2",
+    "portalocker>=2.8",
+    "psutil>=5.9",
+    "tomli_w>=1.0",
+]
+
+[project.optional-dependencies]
+gpu = ["pynvml>=11.5"]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.scripts]
+dabook = "dabook.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dabook"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: slower integration/chaos tests"]
+addopts = "-p no:cacheprovider"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

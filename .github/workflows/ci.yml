@@ -233,6 +233,28 @@ jobs:
       - name: Run service tests
         run: npm run test:services -- --runInBand
 
+  dabook-tests:
+    name: DABOOK Python tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.PRIMARY_NODE_VERSION }}
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
+      - name: Install DABOOK
+        run: npm run setup:dabook
+      - name: Run DABOOK tests
+        run: npm run test:dabook
+
   client-tests:
     name: Client unit and component tests
     runs-on: ubuntu-latest
@@ -468,6 +490,7 @@ jobs:
       - server-lint
       - client-lint
       - server-tests
+      - dabook-tests
       - client-tests
       - e2e-tests
       - accessibility
@@ -492,6 +515,7 @@ jobs:
       SERVER_LINT_RESULT: ${{ needs.server-lint.result }}
       CLIENT_LINT_RESULT: ${{ needs.client-lint.result }}
       SERVER_TESTS_RESULT: ${{ needs.server-tests.result }}
+      DABOOK_TESTS_RESULT: ${{ needs.dabook-tests.result }}
       CLIENT_TESTS_RESULT: ${{ needs.client-tests.result }}
       E2E_TESTS_RESULT: ${{ needs.e2e-tests.result }}
       ACCESSIBILITY_RESULT: ${{ needs.accessibility.result }}
@@ -530,6 +554,7 @@ jobs:
           check_result "server-lint" "$SERVER_LINT_RESULT"
           check_result "client-lint" "$CLIENT_LINT_RESULT"
           check_result "server-tests" "$SERVER_TESTS_RESULT"
+          check_result "dabook-tests" "$DABOOK_TESTS_RESULT"
           check_result "client-tests" "$CLIENT_TESTS_RESULT"
           check_result "e2e-tests" "$E2E_TESTS_RESULT"
           check_result "accessibility" "$ACCESSIBILITY_RESULT"

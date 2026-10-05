@@ -76,6 +76,7 @@ export const ENVIRONMENT_DEFINITIONS: EnvironmentDefinition[] = [
   localOnly('LOCAL_MODEL_TIMEOUT_MS', 'providers', 'Timeout in milliseconds for local model requests.', '60000'),
   localOnly('LOCAL_MODEL_ROUTING_PRIVACY_MODE', 'providers', 'Privacy routing mode: strict_local, prefer_local, cloud_allowed, or local_disabled.', 'prefer_local'),
   localOnly('CHATBOT_NATIVE_PYTHON', 'native-runtime', 'Python executable containing the faster-whisper runtime.'),
+  localOnly('DABOOK_PYTHON', 'native-runtime', 'Python 3.11+ executable used to create the DABOOK venv (defaults to uv or the py launcher).'),
   localOnly('FFMPEG_PATH', 'native-runtime', 'FFmpeg executable override.'),
   localOnly('FFPROBE_PATH', 'native-runtime', 'FFprobe executable override.'),
   localOnly('FFMPEG_SHARED_DLL_DIR', 'native-runtime', 'Directory containing shared FFmpeg libraries required by TorchCodec on Windows.'),

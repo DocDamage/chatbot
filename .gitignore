@@ -30,6 +30,9 @@ knowledge-base/
 **/obj/
 **/target/
 **/__pycache__/
+services/dabook/.venv/
+services/dabook/**/*.egg-info/
+services/dabook/dabook_workspace/
 **/build/
 .capabilities/
 .worktrees/

@@ -28,6 +28,8 @@
     "start": "node dist/server/index.js",
     "start:prod": "npm run build && npm start",
     "setup:native-runtime": "node scripts/native/setup-local-runtime.mjs",
+    "setup:dabook": "node scripts/dabook/setup.mjs",
+    "test:dabook": "node scripts/dabook/test.mjs",
     "certify:game-editors": "tsx scripts/native/certify-game-editors.ts",
     "certify:production-like": "node scripts/certification/production-like.mjs",
     "certify:load": "node scripts/certification/http-load.mjs",

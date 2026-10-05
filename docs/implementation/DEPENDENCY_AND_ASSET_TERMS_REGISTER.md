@@ -39,6 +39,7 @@ Every non-code asset and runtime dependency is cataloged below with its specific
 | **Tesseract OCR** | Subtitle image OCR (`PX-13`) | System binary / user PATH | Apache-2.0 | User-provided system installation |
 | **Godot Engine CLI** | Game editor/runtime verification (`PX-08`) | External binary | MIT | Operated over IPC / MCP / stdio |
 | **Unity / Unreal Editors** | Game creation adapters (`PX-09`) | External proprietary editor | Proprietary EULA | Controlled solely via local bridge; no proprietary binaries bundled |
+| **DABOOK Python sidecar** (`services/dabook`) | Structure-aware PDF → RAG/training dataset pipeline | Vendored source; deps installed into `services/dabook/.venv` by `npm run setup:dabook`, pinned in `services/dabook/uv.lock` | pypdfium2 (BSD-3-Clause / Apache-2.0, bundles PDFium BSD-3), pydantic, typer, rich, fastapi, tomli_w (MIT), uvicorn, portalocker, psutil (BSD-3-Clause), ftfy, python-multipart (Apache-2.0) | Invoked as a child process; no Python packages bundled into the Node build. Optional extras (e.g. `pynvml`, future OCR/Docling) must be added here before enabling. Book-derived training data is governed separately by the license gate in `DABOOK_INTEGRATION_PLAN.md` Phase 4 |
 
 ---
 
