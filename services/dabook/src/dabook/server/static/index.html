@@ -166,7 +166,7 @@
           <input id="books-search" type="text" placeholder="Filter books…" class="search-input" oninput="filterBooks()">
         </div>
         <div id="books-list"></div>
-        <div id="upload-drop" class="upload-drop" style="display:none">
+        <div id="upload-drop" class="upload-drop" style="display:none" ondragover="event.preventDefault()" ondrop="event.preventDefault(); handleFileUpload({target: {files: event.dataTransfer.files}})">
           <div class="upload-inner">
             <div class="upload-icon">📄</div>
             <p>Drop PDF files here or <label class="link" for="file-input">browse</label></p>
@@ -335,7 +335,7 @@
               <textarea id="launch-paths" class="launch-textarea" placeholder="/path/to/book1.pdf&#10;/path/to/book2.pdf&#10;C:\Users\you\Documents\books"></textarea>
             </div>
             <div class="launch-drop-area" id="launch-drop-area" ondragover="event.preventDefault()" ondrop="handleLaunchDrop(event)">
-              <span>📎 Or drag &amp; drop PDF files here</span>
+              <span>📎 Or drag &amp; drop PDF files here to upload them (uploaded files start processing immediately)</span>
               <input id="launch-file-input" type="file" accept=".pdf" multiple style="display:none" onchange="handleLaunchFileSelect(event)">
               <button class="btn btn-ghost btn-sm" onclick="document.getElementById('launch-file-input').click()">Browse Files</button>
             </div>
@@ -370,15 +370,14 @@
                   <option value="raw,rag">raw + rag (default)</option>
                   <option value="raw">raw only</option>
                   <option value="rag">rag only</option>
-                  <option value="raw,rag,instruct">raw + rag + instruct</option>
+                  <option value="raw,rag,sft,code">raw + rag + sft + code</option>
+                  <option value="raw,rag,pretrain,sft,code">all datasets</option>
                 </select>
               </div>
               <div class="launch-field">
                 <label for="launch-formats">Export Formats</label>
                 <select id="launch-formats" class="launch-select">
                   <option value="jsonl">jsonl (default)</option>
-                  <option value="jsonl,parquet">jsonl + parquet</option>
-                  <option value="parquet">parquet only</option>
                 </select>
               </div>
             </div>

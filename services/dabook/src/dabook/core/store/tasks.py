@@ -182,9 +182,12 @@ def mark_failed(
     error_msg: str,
     max_attempts: int,
     backoff_s: float,
+    retryable: bool = True,
 ) -> str:
     """
     Fail a task.  If attempts < max_attempts, reschedule with exponential backoff.
+    ``retryable=False`` (a missing source file, a corrupt PDF) goes straight to ``dead``:
+    another attempt cannot succeed.
     Returns new state: ``'pending'``, ``'dead'``, or ``'failed'``.
     """
     now = time.time()
@@ -195,7 +198,7 @@ def mark_failed(
     attempts = row["attempts"]
     effective_max = max(max_attempts, row["max_attempts"])
 
-    if attempts >= effective_max:
+    if not retryable or attempts >= effective_max:
         new_state = "dead"
         not_before = now
     else:
@@ -289,19 +292,56 @@ def register_book(
     size_bytes: int,
     priority: int = 0,
     profile: str | None = None,
+    license_status: str | None = None,
 ) -> int:
-    """Insert or retrieve a book.  Returns the book id."""
+    """
+    Insert or retrieve a book.  Returns the book id.
+
+    Re-registering the same content refreshes its ``path`` (the file may have moved, and workers
+    read the PDF from there) and revives a book that was previously removed.
+    """
     now = time.time()
     with write_txn(con):
         existing = con.execute("SELECT id FROM books WHERE sha256=?", (sha256,)).fetchone()
         if existing:
+            con.execute(
+                """UPDATE books
+                      SET path=?, size_bytes=?,
+                          profile=COALESCE(?, profile),
+                          state=CASE WHEN state='removed' THEN 'queued' ELSE state END
+                    WHERE id=?""",
+                (path, size_bytes, profile, existing["id"]),
+            )
             return int(existing["id"])
         cur = con.execute(
-            """INSERT INTO books (sha256, path, size_bytes, priority, profile, added_at)
-               VALUES (?, ?, ?, ?, ?, ?) RETURNING id""",
-            (sha256, path, size_bytes, priority, profile, now),
+            """INSERT INTO books (sha256, path, size_bytes, priority, profile, license_status, added_at)
+               VALUES (?, ?, ?, ?, ?, COALESCE(?, 'unknown'), ?) RETURNING id""",
+            (sha256, path, size_bytes, priority, profile, license_status, now),
         )
         return int(cur.fetchone()["id"])
+
+
+def upstream_stage_keys(con: sqlite3.Connection, task_id: int) -> dict[str, list[str]]:
+    """
+    Planned stage keys of every ancestor of *task_id*, grouped by stage and ordered by shard.
+
+    Stages resolve their inputs from these exact keys, never from "whatever is on disk".
+    """
+    rows = con.execute(
+        """WITH RECURSIVE anc(id) AS (
+               SELECT depends_on FROM task_deps WHERE task_id = :t
+               UNION
+               SELECT d.depends_on FROM task_deps d JOIN anc ON d.task_id = anc.id
+           )
+           SELECT t.stage, t.stage_key
+             FROM tasks t JOIN anc ON t.id = anc.id
+            ORDER BY t.stage_order, t.shard_idx""",
+        {"t": task_id},
+    ).fetchall()
+    out: dict[str, list[str]] = {}
+    for r in rows:
+        out.setdefault(r["stage"], []).append(r["stage_key"])
+    return out
 
 
 # ---------------------------------------------------------------------------

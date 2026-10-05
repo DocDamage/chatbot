@@ -9,9 +9,9 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 
 ## Counts
 
-- Reachable production files: 830
-- Unreachable production files: 386
-- Unresolved relative imports: 69
+- Reachable production files: 846
+- Unreachable production files: 384
+- Unresolved relative imports: 70
 
 ## Unreachable production modules
 
@@ -224,7 +224,6 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/knowledge/SourceCodeStructuralChunker.ts`
 - `src/core/knowledge/SourcesDrawerFormatter.ts`
 - `src/core/knowledge/StoragePlanningEstimator.ts`
-- `src/core/knowledge/TrainingSeparationCoordinator.ts`
 - `src/core/knowledge/VersionCompatibilityEvaluator.ts`
 - `src/core/knowledge/WikidataStructuredStore.ts`
 - `src/core/knowledge/WikipediaChunker.ts`
@@ -398,7 +397,6 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/types/storage-planning.ts`
 - `src/types/testing-strategy.ts`
 - `src/types/tool-truth.ts`
-- `src/types/training-separation.ts`
 - `src/types/workflow.ts`
 - `src/utils/memoize.ts`
 

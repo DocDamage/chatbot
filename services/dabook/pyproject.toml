@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "dabook"
-version = "1.0.22"
+version = "1.1.0"
 description = "Compile PDF books into structure-aware RAG chunks and ML-ready training datasets."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -24,10 +24,12 @@ dependencies = [
 
 [project.optional-dependencies]
 gpu = ["pynvml>=11.5"]
-dev = ["pytest>=8", "ruff>=0.5"]
+tokens = ["tiktoken>=0.7"]
+dev = ["pytest>=8", "ruff>=0.5", "reportlab>=4", "httpx>=0.27", "jsonschema>=4", "pyarrow>=15"]
+export = ["pyarrow>=15"]
 
 [project.scripts]
-dabook = "dabook.cli:app"
+dabook = "dabook.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/dabook"]
@@ -35,7 +37,7 @@ packages = ["src/dabook"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = ["slow: slower integration/chaos tests"]
-addopts = "-p no:cacheprovider"
+addopts = "-p no:cacheprovider --strict-markers"
 
 [tool.ruff]
 line-length = 100

@@ -202,6 +202,9 @@ app.post('/api/chat', ...createLegacyChatHandlers({
   getConversationManager
 }));
 
+// DABOOK health exposes local interpreter and workspace paths: developers only, and audited.
+app.use('/api/knowledge-base/dabook', ...developerOnly, auditPrivilegedRequest('knowledge-base:dabook'));
+
 // Knowledge base management endpoints
 app.post('/api/knowledge-base/add', developerOnly, auditPrivilegedRequest('knowledge-base:add'), asyncHandler(async (req, res) => {
   if (!services?.documentManager) {

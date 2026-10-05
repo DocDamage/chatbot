@@ -5,27 +5,28 @@ tasks whose workers have died or whose leases have expired (§5.3).
 
 from __future__ import annotations
 
-import os
 import sqlite3
 import time
 from pathlib import Path
+
+import psutil
 
 from dabook.core.store.db import write_txn
 from dabook.core.store.tasks import log_event
 
 
 def pid_alive(pid: int) -> bool:
-    """Cross-platform: return True if *pid* is an alive process."""
+    """
+    Cross-platform liveness probe.
+
+    Deliberately not ``os.kill(pid, 0)``: on Windows signal 0 is ``CTRL_C_EVENT`` and would
+    interrupt the very worker being checked.
+    """
     if pid <= 0:
         return False
     try:
-        os.kill(pid, 0)  # signal 0 = probe
-        return True
-    except ProcessLookupError:
-        return False
-    except PermissionError:
-        return True  # exists but not ours — assume alive
-    except OSError:
+        return psutil.pid_exists(pid) and psutil.Process(pid).status() != psutil.STATUS_ZOMBIE
+    except psutil.Error:
         return False
 
 

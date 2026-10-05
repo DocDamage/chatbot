@@ -8,7 +8,7 @@ import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { logger } from '../observability/logger';
 import * as fs from 'fs';
 import * as path from 'path';
-import { FileExtractionOptions } from './ingestion/ExtractedDocument';
+import { FileExtractionOptions, PreChunkedSection } from './ingestion/ExtractedDocument';
 import { FileTypeRouter } from './ingestion/FileTypeRouter';
 
 export interface IngestOptions extends FileExtractionOptions {
@@ -41,20 +41,25 @@ export class DocumentIngester {
     const content = await this.fileTypeRouter.extract(filePath, options);
     const fileStats = fs.statSync(filePath);
 
-    const chunks = this.chunkText(
-      content.text,
-      {
-        ...content.metadata,
-        fileName: path.basename(filePath),
-        fileExtension: path.extname(filePath).toLowerCase(),
-        fileSizeBytes: fileStats.size,
-        modifiedAt: fileStats.mtime.toISOString(),
-        extractionWarnings: content.warnings,
-        supportedExtensions: this.fileTypeRouter.getSupportedExtensions()
-      },
-      options.chunkSize || this.defaultChunkSize,
-      options.chunkOverlap || this.defaultChunkOverlap
-    );
+    const baseMetadata = {
+      ...content.metadata,
+      fileName: path.basename(filePath),
+      fileExtension: path.extname(filePath).toLowerCase(),
+      fileSizeBytes: fileStats.size,
+      modifiedAt: fileStats.mtime.toISOString(),
+      extractionWarnings: content.warnings,
+      supportedExtensions: this.fileTypeRouter.getSupportedExtensions()
+    };
+
+    // Structure-aware extractors (DABOOK) hand over finished chunks; do not re-chunk them.
+    const chunks = content.sections && content.sections.length > 0
+      ? this.chunksFromSections(content.sections, baseMetadata)
+      : this.chunkText(
+        content.text,
+        baseMetadata,
+        options.chunkSize || this.defaultChunkSize,
+        options.chunkOverlap || this.defaultChunkOverlap
+      );
 
     // Generate embeddings if requested
     if (options.generateEmbeddings && this.embeddingService && chunks.length > 0) {
@@ -144,6 +149,23 @@ export class DocumentIngester {
    */
   getSupportedExtensions(): string[] {
     return this.fileTypeRouter.getSupportedExtensions();
+  }
+
+  /**
+   * Turn an extractor's pre-chunked sections into chunks. Section metadata wins over the generic
+   * file metadata, and `chunkIndex` is filled in when the extractor did not provide one.
+   */
+  private chunksFromSections(sections: PreChunkedSection[], baseMetadata: Record<string, any>): DocumentChunk[] {
+    return sections.map((section, index) => ({
+      id: section.id,
+      content: section.content,
+      parentId: section.parentId,
+      metadata: {
+        ...baseMetadata,
+        chunkIndex: index,
+        ...section.metadata
+      }
+    }));
   }
 
   /**

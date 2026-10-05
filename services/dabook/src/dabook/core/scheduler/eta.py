@@ -29,7 +29,8 @@ _PRIORS: dict[str, float] = {
     "s10_clean": 200.0,
     "s11_validate": 150.0,
     "s12_semantic": 1000.0,
-    "s13_compile": 200.0,
+    "s13_assist_sft": 4000.0,
+    "s14_compile": 200.0,
 }
 
 _ALPHA = 0.3  # EWMA smoothing factor

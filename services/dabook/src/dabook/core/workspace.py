@@ -48,6 +48,7 @@ def register_pdf(
     pdf_path: Path,
     priority: int = 0,
     profile: str | None = None,
+    license_status: str | None = None,
 ) -> tuple[int, str]:
     """
     Hash the PDF and register it in the DB.
@@ -78,7 +79,15 @@ def register_pdf(
 
     con = connect(get_db_path(workspace))
     try:
-        book_id = register_book(con, sha, str(pdf_path), size, priority=priority, profile=profile)
+        book_id = register_book(
+            con,
+            sha,
+            str(pdf_path),
+            size,
+            priority=priority,
+            profile=profile,
+            license_status=license_status,
+        )
     finally:
         con.close()
 

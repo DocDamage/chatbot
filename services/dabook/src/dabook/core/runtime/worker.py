@@ -15,6 +15,7 @@ CUDA/Torch). They communicate only via the SQLite DB and the filesystem.
 
 from __future__ import annotations
 
+import multiprocessing
 import os
 import signal
 import threading
@@ -26,8 +27,9 @@ from pathlib import Path
 from typing import Any
 
 from dabook.core.scheduler.eta import EtaEngine
+from dabook.core.scheduler.outcomes import settle_book
 from dabook.core.store.db import connect
-from dabook.core.store.settings import SettingsCache
+from dabook.core.store.settings import LiveSettings, SettingsCache, read_flag
 from dabook.core.store.tasks import (
     claim_task,
     deregister_worker,
@@ -39,7 +41,10 @@ from dabook.core.store.tasks import (
     register_worker,
     release_task_unspent,
     set_worker_idle,
+    upstream_stage_keys,
 )
+from dabook.assist.providers import ProviderError
+from dabook.stages.registry import MissingSourceError, MissingUpstreamError
 
 # ---------------------------------------------------------------------------
 # Stop flags (set by signal handlers)
@@ -179,7 +184,17 @@ def _run_fake_stage(
 # ---------------------------------------------------------------------------
 
 
+# Failure classes where another attempt cannot succeed.
+NON_RETRYABLE = frozenset({"missing_source", "corrupt_pdf"})
+
+
 def classify_error(exc: BaseException) -> str:
+    if isinstance(exc, MissingSourceError):
+        return "missing_source"
+    if isinstance(exc, MissingUpstreamError):
+        return "missing_upstream"
+    if isinstance(exc, ProviderError):
+        return "model_error"
     msg = str(exc).lower()
     if "cuda out of memory" in msg or "oom" in msg:
         return "oom"
@@ -187,11 +202,133 @@ def classify_error(exc: BaseException) -> str:
         return "timeout"
     if "no space left" in msg or "enospc" in msg:
         return "disk_full"
-    if "pdf" in msg and ("corrupt" in msg or "invalid" in msg):
+    if ("pdf" in msg or "pdfium" in msg) and (
+        "corrupt" in msg or "invalid" in msg or "failed to load" in msg or "format error" in msg
+    ):
         return "corrupt_pdf"
     if isinstance(exc, MemoryError):
         return "oom"
     return "bug"
+
+
+def fake_stages_enabled() -> bool:
+    """The synthetic sleep-and-stub stage exists for infrastructure tests only."""
+    return os.environ.get("DABOOK_FAKE_STAGES") == "1"
+
+
+def execute_task(
+    con: Any,
+    db_path: Path,
+    workspace: Path,
+    worker_id: str,
+    task: dict[str, Any],
+    s: LiveSettings,
+    stop: StopFlags,
+    eta: EtaEngine,
+    logger: Any,
+) -> str:
+    """
+    Run one claimed task to completion and record the outcome.
+
+    Returns the task's resulting state (``done``, ``pending`` for a retry or graceful release,
+    ``dead``). A missing source PDF fails the task as ``missing_source`` instead of producing
+    fake output (defect D10).
+    """
+    book_id = task["book_id"]
+    logger.info("Claimed task %d: %s shard=%d", task["id"], task["stage"], task["shard_idx"])
+
+    hb_thread = HeartbeatThread(
+        db_path, worker_id, task["id"], lease_s=s.lease_s, interval=s.heartbeat_s
+    )
+    hb_thread.start()
+    t0 = time.time()
+    try:
+        book = con.execute("SELECT sha256, path FROM books WHERE id=?", (book_id,)).fetchone()
+        if book is None:
+            raise RuntimeError(f"book {book_id} no longer exists")
+        book_work_dir = workspace / "books" / book["sha256"][:12]
+        pdf_path = Path(book["path"])
+
+        if not pdf_path.is_file() and fake_stages_enabled():
+            result = _run_fake_stage(
+                task, book_work_dir, hb_thread.progress, lambda: stop.hard, eta
+            )
+        else:
+            from dabook.stages.runner import load_params, run_stage
+
+            result = run_stage(
+                task,
+                work_dir=book_work_dir,
+                pdf_path=pdf_path,
+                progress_fn=hb_thread.progress,
+                should_abort=lambda: stop.hard,
+                upstream=upstream_stage_keys(con, task["id"]),
+                params=load_params(book_work_dir),
+            )
+
+        duration_ms = int((time.time() - t0) * 1000)
+        mark_done(
+            con,
+            task["id"],
+            output_path=result.get("output_path"),
+            duration_ms=result.get("duration_ms", duration_ms),
+        )
+        con.execute(
+            "INSERT INTO stage_stats (stage, units, ms, ts) VALUES (?,?,?,?)",
+            (task["stage"], task.get("units_total") or 1, duration_ms, time.time()),
+        )
+        # Publish facts from S01/S11 onto the book row and decide terminal states (done,
+        # review, needs_input) immediately, not at the next supervisor tick.
+        settle_book(con, book_id, workspace)
+
+        logger.info("Task %d done in %.1fs: %s", task["id"], time.time() - t0, task["stage"])
+        log_event(
+            con,
+            "INFO",
+            "task_done",
+            f"Stage {task['stage']} shard {task['shard_idx']} done",
+            book_id=book_id,
+            task_id=task["id"],
+            worker_id=worker_id,
+        )
+        return "done"
+
+    except (KeyboardInterrupt, SystemExit):
+        release_task_unspent(con, task["id"])  # graceful: don't burn the attempt
+        stop.soft = True
+        logger.info("Task %d released (graceful stop)", task["id"])
+        return "pending"
+
+    except Exception as exc:
+        err_class = classify_error(exc)
+        retryable = err_class not in NON_RETRYABLE
+        # A missing file needs a clean message, not a traceback.
+        err_msg = str(exc) if not retryable else traceback.format_exc()[-2000:]
+        logger.error("Task %d failed (%s): %s", task["id"], err_class, exc)
+        new_state = mark_failed(
+            con,
+            task["id"],
+            err_class,
+            err_msg,
+            max_attempts=s.max_attempts,
+            backoff_s=s.backoff_s,
+            retryable=retryable,
+        )
+        log_event(
+            con,
+            "ERROR",
+            f"task_{new_state}",
+            f"{err_class}: {exc}",
+            book_id=book_id,
+            task_id=task["id"],
+            worker_id=worker_id,
+            data={"error_class": err_class},
+        )
+        return new_state
+
+    finally:
+        hb_thread.stop()
+        hb_thread.join(timeout=2.0)
 
 
 # ---------------------------------------------------------------------------
@@ -238,19 +375,24 @@ def worker_main(
     # Register in DB
     register_worker(con, worker_id, os.getpid(), resource_class, gpu_index)
 
-    # Model loading (placeholder; real backends do this in M3)
-    logger.info("Models loaded (fake/no-op for M0/M1)")
+    # No model backends yet (OCR / layout models arrive with Phase 5); the pdfium route is CPU-only.
     mark_worker_models_loaded(con, worker_id)
 
-    hb_thread: HeartbeatThread | None = None
-    _consecutive_errors = 0
+    consecutive_errors = 0
+    parent = multiprocessing.parent_process()
 
     try:
         while not stop.hard:
+            # An orphaned worker (supervisor killed hard) would poll the DB forever.
+            if parent is not None and not parent.is_alive():
+                logger.warning("Supervisor process is gone; exiting")
+                break
+
             s = settings_cache.get()
 
-            if s.stopping or stop.soft:
-                logger.info("Stop flag set; draining")
+            # `stopping` and `draining` are read uncached so a worker reacts within one poll.
+            if s.stopping or stop.soft or read_flag(con, "stopping") or _is_draining(con, worker_id):
+                logger.info("Stop/drain flag set; exiting")
                 break
 
             if s.queue_paused:
@@ -261,29 +403,26 @@ def worker_main(
                 time.sleep(0.5)
                 continue
 
-            # Wrap the claim loop in a retry-friendly try/except so a transient
-            # DB error (locked, busy, connection hiccup) doesn't kill the worker.
+            # A transient DB error (locked, busy) must not kill the worker.
             try:
                 active_count = con.execute(
                     "SELECT COUNT(*) FROM books WHERE state='active'"
                 ).fetchone()[0]
-                free_slots = s.free_book_slots(active_count)
-
                 task = claim_task(
                     con,
                     worker_id,
                     resource_class,
                     now=time.time(),
                     lease_s=s.lease_s,
-                    free_slots=free_slots,
+                    free_slots=s.free_book_slots(active_count),
                 )
-                _consecutive_errors = 0
+                consecutive_errors = 0
             except Exception as claim_exc:
-                _consecutive_errors += 1
-                backoff = min(30.0, 0.5 * (2 ** min(_consecutive_errors, 6)))
+                consecutive_errors += 1
+                backoff = min(30.0, 0.5 * (2 ** min(consecutive_errors, 6)))
                 logger.warning(
                     "DB error in claim loop (attempt %d, retry in %.1fs): %s",
-                    _consecutive_errors,
+                    consecutive_errors,
                     backoff,
                     claim_exc,
                 )
@@ -298,119 +437,7 @@ def worker_main(
                 time.sleep(0.5)
                 continue
 
-            book_id = task["book_id"]
-            logger.info(
-                "Claimed task %d: %s shard=%d", task["id"], task["stage"], task["shard_idx"]
-            )
-
-            # Start heartbeat thread
-            hb_thread = HeartbeatThread(
-                db_path,
-                worker_id,
-                task["id"],
-                lease_s=s.lease_s,
-                interval=s.heartbeat_s,
-            )
-            hb_thread.start()
-
-            t0 = time.time()
-            try:
-                book_work_dir = workspace / "books" / task["stage_key"][:12]
-                pdf_path = None
-                # Find actual book dir and source path
-                book_rows = con.execute(
-                    "SELECT sha256, path FROM books WHERE id=?", (book_id,)
-                ).fetchone()
-                if book_rows:
-                    book_work_dir = workspace / "books" / book_rows["sha256"][:12]
-                    pdf_candidate = Path(book_rows["path"])
-                    if pdf_candidate.is_file():
-                        pdf_path = pdf_candidate
-
-                if pdf_path is not None:
-                    from dabook.stages.runner import run_stage
-
-                    result = run_stage(
-                        task,
-                        work_dir=book_work_dir,
-                        pdf_path=pdf_path,
-                        progress_fn=hb_thread.progress,
-                        should_abort=lambda: stop.hard,
-                    )
-                else:
-                    result = _run_fake_stage(
-                        task,
-                        work_dir=book_work_dir,
-                        progress_fn=hb_thread.progress,
-                        should_abort=lambda: stop.hard,
-                        eta=eta,
-                    )
-
-                duration_ms = int((time.time() - t0) * 1000)
-                mark_done(
-                    con,
-                    task["id"],
-                    output_path=result.get("output_path"),
-                    duration_ms=result.get("duration_ms", duration_ms),
-                )
-
-                # Record stage stats for ETA model
-                units = task.get("units_total") or 1
-                con.execute(
-                    "INSERT INTO stage_stats (stage, units, ms, ts) VALUES (?,?,?,?)",
-                    (task["stage"], units, duration_ms, time.time()),
-                )
-
-                logger.info(
-                    "Task %d done in %.1fs: %s",
-                    task["id"],
-                    (time.time() - t0),
-                    task["stage"],
-                )
-                log_event(
-                    con,
-                    "INFO",
-                    "task_done",
-                    f"Stage {task['stage']} shard {task['shard_idx']} done",
-                    book_id=book_id,
-                    task_id=task["id"],
-                    worker_id=worker_id,
-                )
-
-            except (KeyboardInterrupt, SystemExit):
-                # Graceful: don't burn the attempt
-                release_task_unspent(con, task["id"])
-                stop.soft = True
-                logger.info("Task %d released (graceful stop)", task["id"])
-
-            except Exception as exc:
-                err_class = classify_error(exc)
-                err_msg = traceback.format_exc()[-2000:]
-                logger.error("Task %d failed (%s): %s", task["id"], err_class, exc)
-                new_state = mark_failed(
-                    con,
-                    task["id"],
-                    err_class,
-                    err_msg,
-                    max_attempts=s.max_attempts,
-                    backoff_s=s.backoff_s,
-                )
-                log_event(
-                    con,
-                    "ERROR",
-                    f"task_{new_state}",
-                    f"{err_class}: {exc}",
-                    book_id=book_id,
-                    task_id=task["id"],
-                    worker_id=worker_id,
-                    data={"error_class": err_class},
-                )
-
-            finally:
-                if hb_thread is not None:
-                    hb_thread.stop()
-                    hb_thread.join(timeout=2.0)
-                    hb_thread = None
+            execute_task(con, db_path, workspace, worker_id, task, s, stop, eta, logger)
 
     except Exception as exc:
         logger.exception("Worker crashed: %s", exc)
@@ -418,3 +445,11 @@ def worker_main(
         deregister_worker(con, worker_id)
         con.close()
         logger.info("Worker exiting: %s", worker_id)
+
+
+def _is_draining(con: Any, worker_id: str) -> bool:
+    try:
+        row = con.execute("SELECT state FROM workers WHERE id=?", (worker_id,)).fetchone()
+    except Exception:
+        return False
+    return row is not None and row["state"] == "draining"

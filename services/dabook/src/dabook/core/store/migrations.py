@@ -28,10 +28,18 @@ def _m001_baseline(con: sqlite3.Connection) -> None:
     con.executescript(sql_path.read_text(encoding="utf-8"))
 
 
+def _m002_review_status(con: sqlite3.Connection) -> None:
+    """Per-book human review state (unreviewed | approved | rejected) for the training export gate."""
+    cols = {r["name"] for r in con.execute("PRAGMA table_info(books)")}
+    if "review_status" not in cols:
+        con.execute("ALTER TABLE books ADD COLUMN review_status TEXT NOT NULL DEFAULT 'unreviewed'")
+
+
 # Register migrations in order: (version, fn_that_runs_outside_txn, fn_that_runs_inside_txn)
 # For the baseline we run outside a transaction; later deltas can run inside.
 MIGRATIONS: list[tuple[int, callable, bool]] = [  # type: ignore[type-arg]
     (1, _m001_baseline, False),  # False = run outside explicit txn
+    (2, _m002_review_status, True),
 ]
 
 

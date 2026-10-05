@@ -8,6 +8,7 @@ import { logger } from '../observability/logger';
 import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { RAGDocumentStore } from './RAGDocumentStore';
 import { RAGInjectionScanner } from './RAGInjectionScanner';
+import { applyStructureBoost } from './StructureBoost';
 import { TfIdf } from 'natural/lib/natural/tfidf';
 import { WordTokenizer } from 'natural/lib/natural/tokenizers';
 
@@ -86,7 +87,7 @@ export class HybridRetriever {
   ): Promise<RetrievalResult[]> {
     if (this.retrievalMode === 'database' && this.documentStore) {
       const queryEmbedding = await this.getQueryEmbedding(query);
-      return this.documentStore.hybridSearch(query, queryEmbedding || undefined, topK, filters);
+      return applyStructureBoost(query, await this.documentStore.hybridSearch(query, queryEmbedding || undefined, topK, filters));
     }
 
     if (this.retrievalMode === 'hybrid' && this.documentStore) {
@@ -95,10 +96,10 @@ export class HybridRetriever {
         this.getQueryEmbedding(query)
       ]);
       const databaseResults = await this.documentStore.hybridSearch(query, queryEmbedding || undefined, topK, filters);
-      return this.mergeResults([...memoryResults, ...databaseResults], topK);
+      return applyStructureBoost(query, this.mergeResults([...memoryResults, ...databaseResults], topK));
     }
 
-    return this.retrieveFromMemory(query, topK, weights, filters);
+    return applyStructureBoost(query, await this.retrieveFromMemory(query, topK, weights, filters));
   }
 
   private async retrieveFromMemory(

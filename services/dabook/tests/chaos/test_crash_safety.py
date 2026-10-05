@@ -174,3 +174,25 @@ class TestCrashSafety:
         # Now lock2 should be acquirable
         lock2.acquire()
         lock2.release()
+
+
+def test_pid_alive_probe_is_safe_and_correct() -> None:
+    """The probe must not signal the process it checks (os.kill(pid, 0) is Ctrl+C on Windows)."""
+    import os
+    import subprocess
+    import sys
+
+    from dabook.core.scheduler.recovery import pid_alive
+
+    assert pid_alive(os.getpid())
+    assert not pid_alive(0) and not pid_alive(-5) and not pid_alive(999999)
+
+    child = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
+    try:
+        assert pid_alive(child.pid)
+        assert pid_alive(child.pid)  # still running after being probed twice
+        assert child.poll() is None
+    finally:
+        child.kill()
+        child.wait()
+    assert not pid_alive(child.pid)

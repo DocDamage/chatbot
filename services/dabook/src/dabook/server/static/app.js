@@ -392,77 +392,41 @@ function showUpload() {
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
-async function handleFileUpload(event) {
-  const files = event.target.files;
+// Upload PDFs to the server (POST /api/upload). The server saves them to the workspace inbox and
+// enqueues them immediately; browsers cannot expose real file paths, so uploading is the only
+// way a dropped/browsed file can reach the pipeline.
+async function uploadFiles(files, options = {}) {
+  const pdfs = [...files].filter(f => f.name.toLowerCase().endsWith('.pdf'));
+  if (!pdfs.length) throw new Error('Please choose PDF files.');
   const fd = new FormData();
-  for (const f of files) fd.append('files', f);
-  await fetch(`${API}/api/books`, {
+  pdfs.forEach(f => fd.append('files', f));
+  Object.entries(options).forEach(([k, v]) => { if (v) fd.append(k, v); });
+  const res = await fetch(`${API}/api/upload`, {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${getToken()}` },
     body: fd,
   });
-  loadBooks();
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.detail || `Upload failed (${res.status})`);
+  return body;
 }
 
-// ─── Settings panel ───────────────────────────────────────
-async function loadSettings() {
-  const res = await fetch(`${API}/api/settings`);
-  const rows = await res.json();
-  state.settings = {};
-  rows.forEach(r => { state.settings[r.k] = r; });
-  renderSettings(rows);
+function describeUpload(body) {
+  const queued = (body.queued || []).length;
+  const failed = (body.errors || []).length;
+  return `${queued} book(s) queued` + (failed ? `, ${failed} failed` : '');
 }
 
-const SETTING_LABELS = {
-  'workers.cpu':       { label: 'CPU Workers',        live: true  },
-  'workers.gpu':       { label: 'GPU Workers',        live: true  },
-  'workers.io':        { label: 'IO Workers',         live: true  },
-  'workers.llm':       { label: 'LLM Workers',        live: true  },
-  'book_concurrency':  { label: 'Book Concurrency',   live: true  },
-  'queue.paused':      { label: 'Queue Paused',       live: true  },
-  'ram_ceiling_pct':   { label: 'RAM Ceiling %',      live: true  },
-  'vram_ceiling_pct':  { label: 'VRAM Ceiling %',     live: true  },
-  'min_free_gb':       { label: 'Min Free Disk (GB)', live: true  },
-  'shard_pages':       { label: 'Pages per Shard',    live: true  },
-  'retry.max_attempts':{ label: 'Max Retry Attempts', live: true  },
-  'dataset.merge_all': { label: 'Consolidate All Books (all_*.jsonl)', live: true },
-  'dataset.filter_boilerplate': { label: 'Filter Boilerplate & Index', live: true },
-  'dataset.sft_format':{ label: 'SFT Format (both / chatml / alpaca)', live: true },
-  'ui.port':           { label: 'Dashboard Port',     live: false },
-};
-
-function renderSettings(rows) {
-  const form = document.getElementById('settings-form');
-  form.innerHTML = rows.map(r => {
-    const meta = SETTING_LABELS[r.k] || { label: r.k, live: r.live === 1 };
-    return `<div class="setting-card">
-      <div class="setting-key">${esc(r.k)}</div>
-      <div class="setting-label">
-        ${esc(meta.label)}
-        <span class="setting-badge ${meta.live ? 'badge-live' : 'badge-restart'}">
-          ${meta.live ? 'live' : 'restart'}
-        </span>
-      </div>
-      <input class="setting-input" id="setting-${esc(r.k)}" value="${esc(r.v)}"
-        ${meta.live ? '' : 'disabled title="Requires restart"'}>
-    </div>`;
-  }).join('');
-}
-
-async function saveSettings() {
-  const updates = {};
-  document.querySelectorAll('.setting-input:not([disabled])').forEach(inp => {
-    const key = inp.id.replace('setting-', '');
-    updates[key] = inp.value;
-  });
-  await fetch(`${API}/api/settings`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${getToken()}`,
-    },
-    body: JSON.stringify(updates),
-  });
+async function handleFileUpload(event) {
+  try {
+    const body = await uploadFiles(event.target.files);
+    showAlert(`✓ ${describeUpload(body)}`);
+  } catch (err) {
+    showAlert(`✗ ${err.message}`);
+  } finally {
+    event.target.value = '';
+    loadBooks();
+  }
 }
 
 // ─── Queue controls ───────────────────────────────────────
@@ -968,29 +932,32 @@ async function apiPost(endpoint) {
 }
 
 // ─── Launch Panel ─────────────────────────────────────────
+function launchOptions() {
+  return {
+    profile: document.getElementById('launch-profile')?.value || 'balanced',
+    modes: document.getElementById('launch-modes')?.value || 'raw,rag',
+    formats: document.getElementById('launch-formats')?.value || 'jsonl',
+  };
+}
+
+async function uploadFromLaunchPanel(files) {
+  const statusEl = document.getElementById('launch-status');
+  try {
+    const body = await uploadFiles(files, launchOptions());
+    if (statusEl) { statusEl.textContent = `✓ ${describeUpload(body)}. Switch to Overview to monitor.`; statusEl.style.color = 'var(--green)'; }
+  } catch (err) {
+    if (statusEl) { statusEl.textContent = `✗ ${err.message}`; statusEl.style.color = 'var(--red)'; }
+  }
+}
+
 function handleLaunchDrop(event) {
   event.preventDefault();
-  const files = [...(event.dataTransfer.files || [])];
-  const pdfs = files.filter(f => f.name.toLowerCase().endsWith('.pdf'));
-  const ta = document.getElementById('launch-paths');
-  if (!ta) return;
-  const existing = ta.value.trim();
-  const names = pdfs.map(f => f.name).join('\n');
-  ta.value = existing ? existing + '\n' + names : names;
-  document.getElementById('launch-drop-area').style.borderColor = 'var(--green)';
-  setTimeout(() => {
-    const el = document.getElementById('launch-drop-area');
-    if (el) el.style.borderColor = '';
-  }, 1500);
+  uploadFromLaunchPanel(event.dataTransfer.files || []);
 }
 
 function handleLaunchFileSelect(event) {
-  const files = [...(event.target.files || [])];
-  const ta = document.getElementById('launch-paths');
-  if (!ta) return;
-  const existing = ta.value.trim();
-  const names = files.map(f => f.name).join('\n');
-  ta.value = existing ? existing + '\n' + names : names;
+  uploadFromLaunchPanel(event.target.files || []);
+  event.target.value = '';
 }
 
 async function launchRun() {
@@ -1023,7 +990,8 @@ async function launchRun() {
     const result = await res.json();
     if (result.ok) {
       if (statusEl) {
-        statusEl.textContent = `✓ Processing started (PID ${result.pid}). Switch to Overview to monitor.`;
+        const n = (result.queued || []).length;
+        statusEl.textContent = `✓ ${n} book(s) queued. Switch to Overview to monitor.`;
         statusEl.style.color = 'var(--green)';
       }
       setTimeout(() => switchPanel('overview'), 1800);

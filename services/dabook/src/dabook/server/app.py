@@ -8,6 +8,9 @@ SSE stream for real-time updates; REST endpoints for control.
 from __future__ import annotations
 
 import json
+import logging
+import os
+import re
 import secrets
 import shutil as _shutil
 import time
@@ -15,52 +18,116 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+import dabook
 from dabook.core.store.db import connect
 
-# Module-level token generated once per supervisor run
-_API_TOKEN: str = secrets.token_urlsafe(32)
+log = logging.getLogger("dabook.server")
+
+# Mutating endpoints require this token. It is handed to the browser in the URL the CLI opens
+# (``dashboard_url``); set DABOOK_API_TOKEN to pin it (e.g. for a scripted client).
+_API_TOKEN: str = os.environ.get("DABOOK_API_TOKEN") or secrets.token_urlsafe(32)
+
+# Origins always allowed to call the API from a browser: the dashboard itself and the Chatbot UI.
+CHATBOT_DEV_ORIGINS = ("http://localhost:3000", "http://127.0.0.1:3000")
 
 
 def get_token() -> str:
     return _API_TOKEN
 
 
-def _launch_run_job(
-    paths: list[str],
-    workspace_str: str | None,
+def dashboard_url(port: int, fragment: str | None = None) -> str:
+    """URL to open the dashboard with its API token attached."""
+    url = f"http://127.0.0.1:{port}/?t={_API_TOKEN}"
+    return f"{url}#{fragment}" if fragment else url
+
+
+def allowed_origins(port: int, extra: list[str] | None = None) -> list[str]:
+    """Explicit CORS allow-list (Starlette does not expand ``http://host:*`` wildcards)."""
+    origins = [
+        f"http://127.0.0.1:{port}",
+        f"http://localhost:{port}",
+        *CHATBOT_DEV_ORIGINS,
+        *(extra or []),
+        *[o.strip() for o in os.environ.get("DABOOK_CORS_ORIGINS", "").split(",") if o.strip()],
+    ]
+    return list(dict.fromkeys(origins))
+
+
+def _safe_pdf_name(raw: str) -> str:
+    """A bare, filesystem-safe ``*.pdf`` file name from a client-supplied name."""
+    base = re.split(r"[\\/]", raw or "")[-1].strip().strip(".")
+    base = re.sub(r"[^\w.\- ()]", "_", base) or "upload.pdf"
+    return base if base.lower().endswith(".pdf") else f"{base}.pdf"
+
+
+def _plan_settings(profile: str, modes: list[str], formats: list[str]) -> tuple[Any, dict[str, Any]]:
+    """Validated config + params for a UI-launched run; ``ValueError`` on anything invalid."""
+    from pydantic import ValidationError
+
+    from dabook.config.loader import load_config
+    from dabook.config.models import PROFILES
+
+    if profile not in PROFILES:
+        raise ValueError(f"Unknown profile {profile!r}; choose from {sorted(PROFILES)}")
+    try:
+        cfg = load_config(
+            overrides={"profile": profile, "dataset": {"modes": modes, "formats": formats}}
+        )
+    except ValidationError as exc:
+        raise ValueError(
+            "; ".join(f"{'.'.join(str(x) for x in e['loc'])}: {e['msg']}" for e in exc.errors())
+        ) from None
+    return cfg, cfg.to_params_dict()
+
+
+def _enqueue_many(
+    db_path: Path,
+    workspace: Path,
+    pdfs: list[Path],
     profile: str,
     modes: list[str],
     formats: list[str],
-) -> None:
-    """Background worker process spawned by /api/launch to process books."""
-    from pathlib import Path
+) -> dict[str, Any]:
+    """Register + plan PDFs in the already-running workspace. Runs in a worker thread."""
+    from dabook.core.ingest import enqueue_pdf
 
-    from dabook.cli import run
-
-    path_objs = [Path(p) for p in paths]
-    ws_obj = Path(workspace_str) if workspace_str else None
+    cfg, params = _plan_settings(profile, modes, formats)
+    con = connect(db_path)
+    queued: list[dict[str, Any]] = []
+    errors: list[dict[str, Any]] = []
     try:
-        run(
-            paths=path_objs,
-            workspace=ws_obj,
-            profile=profile,
-            modes=modes,
-            formats=formats,
-            workers_cpu=None,
-            workers_gpu=None,
-            book_concurrency=None,
-            port=8765,
-            start_ui=False,
-            open_browser=False,
-            watch=False,
-            autotune=False,
-        )
-    except Exception:
-        pass
+        for pdf in pdfs:
+            try:
+                res = enqueue_pdf(
+                    workspace,
+                    con,
+                    pdf,
+                    params,
+                    shard_pages=cfg.limits.shard_pages,
+                    profile=profile,
+                    license_status=cfg.license.default_status,
+                )
+                entry = {
+                    "book_id": res.book_id,
+                    "path": res.path,
+                    "pages": res.pages,
+                    "state": res.state,
+                }
+                if res.error:
+                    errors.append({**entry, "error": res.error})
+                else:
+                    queued.append(entry)
+            except Exception as exc:
+                log.exception("enqueue failed for %s", pdf)
+                errors.append({"path": str(pdf), "error": str(exc)})
+    finally:
+        con.close()
+    return {"queued": queued, "errors": errors}
 
 
 def create_app(
@@ -68,18 +135,24 @@ def create_app(
     workspace: Path,
     telemetry: Any | None = None,
     eta_engine: Any | None = None,
+    *,
+    port: int = 8765,
+    cors_origins: list[str] | None = None,
+    watcher: Any | None = None,
 ) -> FastAPI:
-    app = FastAPI(title="DABOOK Control Room", version="0.1.0", docs_url=None, redoc_url=None)
+    app = FastAPI(
+        title="DABOOK Control Room", version=dabook.__version__, docs_url=None, redoc_url=None
+    )
 
     # Read-only DB connection for dashboard (never blocks workers)
     _ro_con = connect(
         db_path, readonly=False
     )  # SSE needs some writes for events; use rw but read carefully
 
-    # CORS: localhost only
+    # CORS: an explicit origin list (no wildcard ports: Starlette matches origins literally)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://127.0.0.1:*", "http://localhost:*"],
+        allow_origins=allowed_origins(port, cors_origins),
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -138,6 +211,10 @@ def create_app(
             media_type="text/event-stream",
             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
         )
+
+    @app.get("/api/health")
+    async def health() -> JSONResponse:
+        return JSONResponse({"ok": True, "version": dabook.__version__, "workspace": str(workspace)})
 
     # ------------------------------------------------------------------ #
     # Overview snapshot
@@ -279,65 +356,45 @@ def create_app(
     @app.post("/api/launch")
     async def launch_run(request: Request) -> JSONResponse:
         """
-        Enqueue PDFs for processing without restarting the server.
-        Body: {
-          "paths": ["/abs/path/book.pdf", ...],
-          "output_dir": "/abs/output",  # optional
-          "profile": "balanced",
-          "modes": "raw,rag",
-          "formats": "jsonl"
-        }
+        Enqueue PDFs into the running workspace; the supervisor picks the tasks up.
+        Body: {"paths": [...], "profile": "balanced", "modes": "raw,rag", "formats": "jsonl"}
         """
         _require_token(request)
-        import multiprocessing
-
         body = await request.json()
-        raw_paths: list[str] = body.get("paths", [])
-        profile: str = body.get("profile", "balanced")
-        modes_str: str = body.get("modes", "raw,rag")
-        formats_str: str = body.get("formats", "jsonl")
-        output_dir: str | None = body.get("output_dir") or None
+        raw_paths = body.get("paths", [])
+        profile = str(body.get("profile") or "balanced")
+        modes = [m.strip() for m in str(body.get("modes") or "raw,rag").split(",") if m.strip()]
+        formats = [f.strip() for f in str(body.get("formats") or "jsonl").split(",") if f.strip()]
 
-        ALLOWED_PROFILES = {"fast", "balanced", "quality", "archive"}
-        ALLOWED_MODES = {"raw", "pretrain", "sft", "rag", "code"}
-        ALLOWED_FORMATS = {"jsonl", "parquet", "hf"}
+        output_dir = body.get("output_dir")
+        if output_dir and Path(output_dir).resolve() != workspace.resolve():
+            raise HTTPException(
+                400,
+                f"This dashboard serves the workspace {workspace}. To use {output_dir}, "
+                "start DABOOK with that workspace.",
+            )
 
-        clean_profile = profile if profile in ALLOWED_PROFILES else "balanced"
-        clean_modes = [m.strip() for m in modes_str.split(",") if m.strip() in ALLOWED_MODES] or [
-            "raw",
-            "rag",
-        ]
-        clean_formats = [
-            f.strip() for f in formats_str.split(",") if f.strip() in ALLOWED_FORMATS
-        ] or ["jsonl"]
+        try:
+            _plan_settings(profile, modes, formats)  # fail fast with a 400, before touching files
+        except ValueError as exc:
+            raise HTTPException(400, str(exc)) from None
 
-        clean_paths: list[str] = []
-        for p in raw_paths:
+        pdfs: list[Path] = []
+        for p in raw_paths if isinstance(raw_paths, list) else []:
             if not isinstance(p, str) or not p.strip() or p.startswith("-"):
                 continue
             path_obj = Path(p).resolve()
-            if path_obj.exists():
-                clean_paths.append(str(path_obj))
+            if path_obj.is_file() and path_obj.suffix.lower() == ".pdf":
+                pdfs.append(path_obj)
+            elif path_obj.is_dir():
+                pdfs.extend(sorted(path_obj.rglob("*.pdf")))
+        if not pdfs:
+            raise HTTPException(400, "No valid or existing PDF paths provided")
 
-        if not clean_paths:
-            raise HTTPException(400, "No valid or existing paths provided")
-
-        clean_workspace: str | None = None
-        if output_dir:
-            ws_path = Path(output_dir).resolve()
-            clean_workspace = str(ws_path)
-        else:
-            clean_workspace = str(workspace.resolve())
-
-        try:
-            proc = multiprocessing.Process(
-                target=_launch_run_job,
-                args=(clean_paths, clean_workspace, clean_profile, clean_modes, clean_formats),
-            )
-            proc.start()
-            return JSONResponse({"ok": True, "pid": proc.pid, "paths": clean_paths})
-        except Exception as exc:
-            raise HTTPException(500, f"Failed to launch: {exc}") from exc
+        result = await run_in_threadpool(
+            _enqueue_many, db_path, workspace, pdfs, profile, modes, formats
+        )
+        return JSONResponse({"ok": bool(result["queued"]), **result})
 
     # ------------------------------------------------------------------ #
     # Upload PDF directly via browser
@@ -345,26 +402,52 @@ def create_app(
     @app.post("/api/upload")
     async def upload_pdf(request: Request) -> JSONResponse:
         _require_token(request)
-        from fastapi import UploadFile
+        # request.form() yields *starlette* UploadFile objects (fastapi.UploadFile is a subclass,
+        # so an isinstance check against that one silently drops every file).
+        from starlette.datastructures import UploadFile
 
         form = await request.form()
-        files = form.getlist("files")
-        saved: list[str] = []
         inbox = workspace / "inbox"
         inbox.mkdir(parents=True, exist_ok=True)
 
-        for f in files:
-            if not isinstance(f, UploadFile):
+        saved: list[Path] = []
+        for f in form.getlist("files"):
+            if not isinstance(f, UploadFile) or not (f.filename or "").lower().endswith(".pdf"):
                 continue
-            fname = f.filename or "upload.pdf"
-            if not fname.lower().endswith(".pdf"):
-                continue
-            dest = inbox / fname
-            with dest.open("wb") as out:
+            name = _safe_pdf_name(f.filename)
+            dest = inbox / name
+            n = 1
+            while dest.exists():  # never overwrite a different earlier upload
+                dest = inbox / f"{Path(name).stem}-{n}.pdf"
+                n += 1
+            tmp = dest.with_name(f".{dest.name}.part")
+            with tmp.open("wb") as out:
                 _shutil.copyfileobj(f.file, out)
-            saved.append(str(dest))
+            tmp.replace(dest)
+            saved.append(dest)
 
-        return JSONResponse({"ok": True, "saved": saved, "inbox": str(inbox)})
+        if not saved:
+            raise HTTPException(400, "No PDF files in the upload")
+        def _field(name: str, default: str) -> str:
+            value = form.get(name)
+            return value if isinstance(value, str) and value.strip() else default
+
+        profile = _field("profile", "balanced")
+        modes = [m.strip() for m in _field("modes", "raw,rag").split(",") if m.strip()]
+        formats = [f.strip() for f in _field("formats", "jsonl").split(",") if f.strip()]
+        try:
+            _plan_settings(profile, modes, formats)
+        except ValueError as exc:
+            for path in saved:  # don't leave rejected uploads behind in the inbox
+                path.unlink(missing_ok=True)
+            raise HTTPException(400, str(exc)) from None
+        # Enqueue immediately (a watcher polling inbox/ would find them too, idempotently).
+        result = await run_in_threadpool(
+            _enqueue_many, db_path, workspace, saved, profile, modes, formats
+        )
+        return JSONResponse(
+            {"ok": bool(result["queued"]), "saved": [str(p) for p in saved], "inbox": str(inbox), **result}
+        )
 
     # ------------------------------------------------------------------ #
     # Queue control
@@ -460,7 +543,9 @@ def _require_token(request: Request) -> None:
     """Verify Bearer token on mutating endpoints."""
     auth = request.headers.get("Authorization", "")
     token = request.query_params.get("t", "")
-    if auth == f"Bearer {_API_TOKEN}" or token == _API_TOKEN:
+    if secrets.compare_digest(auth, f"Bearer {_API_TOKEN}") or secrets.compare_digest(
+        token, _API_TOKEN
+    ):
         return
     raise HTTPException(403, "Forbidden")
 

@@ -129,3 +129,23 @@ def test_workspace_consolidation_and_preview(tmp_path: Path) -> None:
     preview_p2 = read_dataset_preview(workspace, "compiled/all_pretrain.jsonl", offset=1, limit=1)
     assert len(preview_p2["records"]) == 1
     assert preview_p2["records"][0]["doc_id"] == "doc_02"
+
+
+def test_count_tokens_falls_back_to_the_estimate_for_unknown_encodings() -> None:
+    from dabook.core.datasets import count_tokens, estimate_tokens, tokenizer_backend
+
+    text = "alpha beta gamma delta " * 10
+    assert count_tokens(text, "no-such-encoding") == estimate_tokens(text)
+    assert tokenizer_backend("no-such-encoding") == "estimate"
+    assert estimate_tokens("") == 0
+
+
+def test_count_tokens_uses_tiktoken_when_it_is_usable() -> None:
+    import pytest
+
+    from dabook.core.datasets import count_tokens, estimate_tokens, tokenizer_backend
+
+    if tokenizer_backend("cl100k_base") == "estimate":
+        pytest.skip("tiktoken (or its vocabulary) is not available here")
+    text = "def add(a, b):\n    return a + b\n" * 5
+    assert count_tokens(text, "cl100k_base") != estimate_tokens(text)

@@ -39,7 +39,16 @@ def write_file(path: Path, data: bytes) -> None:
         f.write(data)
         f.flush()
         os.fsync(f.fileno())
-    os.replace(tmp, path)  # atomic on POSIX and same-volume Windows
+    # atomic on POSIX and same-volume Windows. On Windows an indexer or antivirus can briefly hold
+    # the destination open, which surfaces as a transient PermissionError: retry before giving up.
+    for attempt in range(6):
+        try:
+            os.replace(tmp, path)
+            break
+        except PermissionError:
+            if attempt == 5:
+                raise
+            time.sleep(0.05 * (attempt + 1))
     _fsync_dir(path.parent)
 
 
@@ -135,15 +144,20 @@ class StageCommit:
         # _SUCCESS written LAST inside .partial
         write_json(self.partial / "_SUCCESS", manifest)
 
-        # Atomic rename .partial → final
-        try:
-            os.replace(self.partial, self.final)
-        except OSError:
-            if self.final.exists():
-                # Another worker won the race — discard ours (idempotent)
-                shutil.rmtree(self.partial, ignore_errors=True)
-            else:
-                raise
+        # Atomic rename .partial → final. On Windows an indexer/antivirus can briefly hold the freshly
+        # written directory ("Access is denied"): retry before concluding anything.
+        for attempt in range(8):
+            try:
+                os.replace(self.partial, self.final)
+                break
+            except OSError:
+                if self.final.exists():
+                    # Another worker won the race — discard ours (idempotent)
+                    shutil.rmtree(self.partial, ignore_errors=True)
+                    break
+                if attempt == 7:
+                    raise
+                time.sleep(0.05 * (attempt + 1))
 
         _fsync_dir(self.final.parent)
         return False

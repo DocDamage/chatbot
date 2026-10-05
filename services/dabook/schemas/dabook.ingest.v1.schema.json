@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chatbot.local/schemas/dabook.ingest.v1.schema.json",
+  "title": "dabook.ingest.v1",
+  "description": "Single JSON document written to stdout by `dabook ingest --json`. Paths under `datasets` are relative to `workspace` and use forward slashes. Unknown additional properties must be ignored by consumers.",
+  "type": "object",
+  "required": [
+    "schema",
+    "dabook_version",
+    "books"
+  ],
+  "properties": {
+    "schema": {
+      "const": "dabook.ingest.v1"
+    },
+    "dabook_version": {
+      "type": "string"
+    },
+    "workspace": {
+      "type": "string",
+      "description": "Absolute path of the workspace root."
+    },
+    "books": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/book"
+      }
+    },
+    "error": {
+      "description": "Present only when the command failed before producing a report (bad arguments, lock held, enqueue failure).",
+      "type": "object",
+      "required": [
+        "code",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "enum": [
+            "bad_args",
+            "lock_held",
+            "enqueue_failed"
+          ]
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "datasetKey": {
+      "enum": [
+        "rag",
+        "raw",
+        "sft",
+        "pretrain",
+        "code"
+      ]
+    },
+    "book": {
+      "type": "object",
+      "required": [
+        "book_id",
+        "sha256",
+        "source_path",
+        "state",
+        "warnings",
+        "datasets",
+        "counts"
+      ],
+      "properties": {
+        "book_id": {
+          "type": "integer"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "source_path": {
+          "type": "string"
+        },
+        "title": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pages": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "doc_type": {
+          "enum": [
+            "native",
+            "scanned",
+            "mixed",
+            null
+          ]
+        },
+        "state": {
+          "enum": [
+            "queued",
+            "active",
+            "paused",
+            "needs_input",
+            "review",
+            "done",
+            "failed",
+            "removed"
+          ]
+        },
+        "quality_score": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "license_status": {
+          "enum": [
+            "unknown",
+            "owned",
+            "permissive",
+            "copyrighted",
+            "public_domain",
+            null
+          ]
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "error": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "datasets": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/datasetKey"
+          },
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "counts": {
+          "type": "object",
+          "propertyNames": {
+            "$ref": "#/$defs/datasetKey"
+          },
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "review_status": {
+          "enum": [
+            "unreviewed",
+            "approved",
+            "rejected",
+            null
+          ]
+        },
+        "splits": {
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "sft",
+              "pretrain",
+              "code"
+            ]
+          },
+          "additionalProperties": {
+            "type": "object",
+            "propertyNames": {
+              "enum": [
+                "train",
+                "val",
+                "test"
+              ]
+            },
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "description": "Per-mode train/val/test JSONL paths (relative to the workspace); empty when splits are off."
+        }
+      }
+    }
+  }
+}

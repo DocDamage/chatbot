@@ -10,6 +10,7 @@ import { logger } from '../observability/logger';
 import { RAGDocumentStore } from './RAGDocumentStore';
 import { randomUUID } from 'crypto';
 import { EntityLinkingService } from '../entity/EntityLinkingService';
+import { isDabookEnabled } from '../dabook/DabookConfig';
 
 export type DocumentManagerIngestOptions = IngestOptions;
 
@@ -135,6 +136,8 @@ export class DocumentManager {
       embeddingProvider: this.embeddingService ? 'configured' : 'none',
       persistentStore: !!this.documentStore,
       persistence,
+      /** Which extractor new PDFs go through (each source also records its own `extractor`). */
+      pdfExtractor: isDabookEnabled() ? 'dabook' : 'pdf-parse',
       supportedExtensions: this.getSupportedExtensions()
     };
   }

@@ -1,6 +1,32 @@
 # DABOOK Integration Plan
 
-**Status:** Approved, decisions resolved (see §8) · **Date:** 2026-10-05 · **Source under review:** `F:\book2ml\Dabook` (DABOOK v1.0.22)
+**Status:** Approved, implemented through Phase 4 (see Implementation status) · **Date:** 2026-10-05 · **Source under review:** `F:\book2ml\Dabook` (DABOOK v1.0.22)
+
+## Implementation status
+
+Last updated 2026-10-05, on branch `feat/dabook-integration`. Phases 0 to 4 are implemented and covered by tests (DABOOK: 300+ pytest tests; Chatbot: Jest and Vitest suites, with live end-to-end tests behind `DABOOK_LIVE_TEST=1`). Phase 5 is not started.
+
+| Phase | Status | Notes |
+| --- | --- | --- |
+| 0 Baseline and packaging | Done | Vendored, lockfile, setup/test scripts, CI job |
+| 1 Make DABOOK run as intended | Done | D1–D12, plus defects found while implementing (below) |
+| 2 Headless contract | Done | `dabook ingest --json` (`dabook.ingest.v1`), schema in `services/dabook/schemas/` |
+| 3 Chatbot integration | Done | `src/core/dabook/*`, `DabookPdfExtractor`, health endpoint, capability entry, client badges |
+| 4 Training lane | Done | Assisted SFT, dedup, splits, Parquet/HF, provenance, license/review/contamination gates, export endpoint, review UI |
+| 5 Capability upgrades | Not started | OCR, Docling, typography headings, EPUB, fine-tuning hookup |
+
+### Deviations from this plan
+
+- **Chunks have no `parentId`.** `document_chunks.parent_id` is a foreign key to another chunk, so a book-level `dabook:<sha12>` broke inserts. Chunks are grouped by `metadata.bookKey` instead.
+- **Stage names.** The assisted stage runs *before* compile, so the stages are `s13_assist_sft` and `s14_compile` (compile was `s13_compile`).
+- **Unimplemented config fails loudly.** `extract.backend`, `extract.routing`, `ocr_engine`, `toc_mode: toc_page|typography`, `clean.ocr_repair|quotes_policy`, `license.allow_distribution` are rejected at validation until Phase 5. Config sections reject unknown keys.
+- **Contamination audit.** `TrainingSeparationCoordinator` only detects whole-record hash equality, so an exact-duplicate check is complemented by a containment scan (an evaluation question embedded anywhere in a training record). Training-vs-RAG overlap is reported but does not block; overlap with held-out evaluation does.
+- **`needsOcr` for scanned PDFs** is set on the fallback only when `pdf-parse` also recovered no text.
+- **Governance lives in DABOOK too.** `dabook export` enforces the license and review gates itself, so a copyrighted book cannot be exported through any client.
+
+### Defects found while implementing (not in §2)
+
+The dashboard never received its API token (every write button returned 403); `app.js` declared `loadSettings`/`saveSettings` twice so the whole UI failed to load; the upload handler's `isinstance(UploadFile)` check dropped every file; `pid_alive` used `os.kill(pid, 0)`, which is `CTRL_C_EVENT` on Windows; workers survived a hard-killed supervisor; the PDF extractor never detected bold text and fused two-column lines; `dabook stop` never ended a supervisor; `dabook retry` left failed books unclaimable; `dabook settings` called `init_workspace` with the wrong arguments; stage-directory renames were not retried on transient Windows `PermissionError`.
 
 ## 1. Verdict
 

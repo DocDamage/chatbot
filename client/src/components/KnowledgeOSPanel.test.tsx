@@ -33,7 +33,16 @@ function installFetchRouter() {
       sources: [{
         id: 'source-1', source: '/library/book.pdf', sourceType: 'document', title: 'A Book', author: 'Author',
         publishedDate: '2026', fileExtension: '.pdf', citationLabel: 'Book', chunks: 12, embeddings: 11,
-        warnings: ['needs review'], needsOcr: true, duplicateCount: 2, latestRun: { status: 'done' }
+        warnings: ['needs review'], needsOcr: true, duplicateCount: 2, latestRun: { status: 'done' },
+        metadata: { type: 'pdf', dabookFallbackReason: 'timeout' }
+      }, {
+        id: 'source-2', source: '/library/manual.pdf', sourceType: 'document', title: 'Structured Manual',
+        fileExtension: '.pdf', citationLabel: 'Manual', chunks: 40, embeddings: 40, warnings: [], needsOcr: false,
+        duplicateCount: 1, metadata: { type: 'pdf', extractor: 'dabook', qualityScore: 0.95 }
+      }, {
+        id: 'source-3', source: '/library/notes.md', sourceType: 'document', title: 'Plain Notes',
+        fileExtension: '.md', citationLabel: 'Notes', chunks: 2, embeddings: 2, warnings: [], needsOcr: false,
+        duplicateCount: 1, metadata: { type: 'markdown' }
       }],
       total: 1234,
       limit: 75,
@@ -105,6 +114,12 @@ describe('KnowledgeOSPanel', () => {
     await screen.findByText('A Book');
     expect(screen.getByText('1,234 sources · 9 OCR queued')).toBeTruthy();
     expect(screen.getByText('2 copies')).toBeTruthy();
+
+    // PDF sources say which extractor produced them; non-PDF sources show no extractor badge.
+    expect(screen.getByText('Structured (DABOOK)')).toBeTruthy();
+    expect(screen.getByText('quality 0.95')).toBeTruthy();
+    expect(screen.getAllByText('Flat (pdf-parse)')).toHaveLength(1);
+    expect(screen.getByText('DABOOK fallback: timeout')).toBeTruthy();
     await user.type(screen.getByPlaceholderText('Search title, author, or path...'), 'book');
     const switches = screen.getAllByRole('checkbox');
     await user.click(switches[0]);
@@ -227,5 +242,27 @@ describe('KnowledgeOSPanel', () => {
     view.unmount();
     resolveRequest(jsonResponse(summary));
     await Promise.resolve();
+  });
+  it('offers the training data lane and degrades gracefully in the static demo build', async () => {
+    const fetchMock = installFetchRouter();
+    fetchMock.mockImplementation(async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url === '/api/knowledge-os/summary') return jsonResponse(summary);
+      if (url === '/api/knowledge-base/dabook/books') return jsonResponse({ books: [], policy: { training_licenses: ['owned'], quality_verified: 0.95 } });
+      throw new Error(`Unhandled fetch: ${url}`);
+    });
+    const user = userEvent.setup();
+    const { unmount } = render(<KnowledgeOSPanel />);
+    await user.click(screen.getByRole('button', { name: /Knowledge OS/ }));
+    await user.click(screen.getByRole('button', { name: 'training' }));
+    await screen.findByText('Training data lane');
+    await screen.findByText('No DABOOK books yet.');
+    unmount();
+
+    runtime.staticBuild = true;
+    render(<KnowledgeOSPanel />);
+    await user.click(screen.getByRole('button', { name: /Knowledge OS/ }));
+    await user.click(screen.getByRole('button', { name: 'training' }));
+    expect(screen.getByText('Requires the local backend.')).toBeTruthy();
   });
 });

@@ -74,6 +74,7 @@ class PageData(BaseModel):
     is_scanned: bool = False
     char_count: int = 0
     image_count: int = 0
+    error: str | None = None  # set when this page failed to extract
 
 
 class TocItem(BaseModel):

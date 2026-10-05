@@ -137,9 +137,11 @@
     "client/src/components/SpriteLabPanel.tsx",
     "client/src/components/StaticDemo.tsx",
     "client/src/components/StatusBar.tsx",
+    "client/src/components/TrainingLanePanel.tsx",
     "client/src/components/UtilityWorkbenchPanel.tsx",
     "client/src/components/WebsiteWorkspacePanel.tsx",
     "client/src/components/WhyThisAnswerModal.tsx",
+    "client/src/components/trainingLane.ts",
     "client/src/features/gis/GISMapCard.tsx",
     "client/src/features/gis/GISMapPanel.tsx",
     "client/src/features/gis/gisApi.ts",
@@ -356,6 +358,16 @@
     "src/core/creative/CreativeStylePolicy.ts",
     "src/core/creative/CreativeTypes.ts",
     "src/core/creative/CreativeWritingAgent.ts",
+    "src/core/dabook/DabookBridge.ts",
+    "src/core/dabook/DabookChunkMapper.ts",
+    "src/core/dabook/DabookConfig.ts",
+    "src/core/dabook/DabookContract.ts",
+    "src/core/dabook/index.ts",
+    "src/core/dabook/shared.ts",
+    "src/core/dabook/training/ContaminationScanner.ts",
+    "src/core/dabook/training/EvaluationCorpus.ts",
+    "src/core/dabook/training/TrainingCorpusImporter.ts",
+    "src/core/dabook/training/TrainingExporter.ts",
     "src/core/database/Database.ts",
     "src/core/database/DatasetMigrations.ts",
     "src/core/database/ExpansionDatabase.ts",
@@ -475,6 +487,7 @@
     "src/core/knowledge/SpecializedTopicSource.ts",
     "src/core/knowledge/StackOverflowSource.ts",
     "src/core/knowledge/TelegramSource.ts",
+    "src/core/knowledge/TrainingSeparationCoordinator.ts",
     "src/core/knowledge/UIDesignSource.ts",
     "src/core/knowledge/UniversitySource.ts",
     "src/core/knowledge/WebDesignSource.ts",
@@ -574,6 +587,8 @@
     "src/core/rag/RAGInjectionScanner.ts",
     "src/core/rag/RAGService.ts",
     "src/core/rag/ReRanker.ts",
+    "src/core/rag/StructureBoost.ts",
+    "src/core/rag/ingestion/DabookPdfExtractor.ts",
     "src/core/rag/ingestion/EpubExtractor.ts",
     "src/core/rag/ingestion/ExtractedDocument.ts",
     "src/core/rag/ingestion/FileTypeRouter.ts",
@@ -915,6 +930,7 @@
     "src/types/provenance.ts",
     "src/types/rag.ts",
     "src/types/tools.ts",
+    "src/types/training-separation.ts",
     "src/types/vision.ts",
     "src/utils/cache.ts",
     "src/utils/errors.ts",
@@ -969,9 +985,11 @@
     "client/src/components/SpriteLabPanel.tsx",
     "client/src/components/StaticDemo.tsx",
     "client/src/components/StatusBar.tsx",
+    "client/src/components/TrainingLanePanel.tsx",
     "client/src/components/UtilityWorkbenchPanel.tsx",
     "client/src/components/WebsiteWorkspacePanel.tsx",
     "client/src/components/WhyThisAnswerModal.tsx",
+    "client/src/components/trainingLane.ts",
     "client/src/features/gis/GISMapCard.tsx",
     "client/src/features/gis/GISMapPanel.tsx",
     "client/src/features/gis/gisApi.ts",
@@ -1188,6 +1206,16 @@
     "src/core/creative/CreativeStylePolicy.ts",
     "src/core/creative/CreativeTypes.ts",
     "src/core/creative/CreativeWritingAgent.ts",
+    "src/core/dabook/DabookBridge.ts",
+    "src/core/dabook/DabookChunkMapper.ts",
+    "src/core/dabook/DabookConfig.ts",
+    "src/core/dabook/DabookContract.ts",
+    "src/core/dabook/index.ts",
+    "src/core/dabook/shared.ts",
+    "src/core/dabook/training/ContaminationScanner.ts",
+    "src/core/dabook/training/EvaluationCorpus.ts",
+    "src/core/dabook/training/TrainingCorpusImporter.ts",
+    "src/core/dabook/training/TrainingExporter.ts",
     "src/core/database/Database.ts",
     "src/core/database/DatasetMigrations.ts",
     "src/core/database/ExpansionDatabase.ts",
@@ -1307,6 +1335,7 @@
     "src/core/knowledge/SpecializedTopicSource.ts",
     "src/core/knowledge/StackOverflowSource.ts",
     "src/core/knowledge/TelegramSource.ts",
+    "src/core/knowledge/TrainingSeparationCoordinator.ts",
     "src/core/knowledge/UIDesignSource.ts",
     "src/core/knowledge/UniversitySource.ts",
     "src/core/knowledge/WebDesignSource.ts",
@@ -1406,6 +1435,8 @@
     "src/core/rag/RAGInjectionScanner.ts",
     "src/core/rag/RAGService.ts",
     "src/core/rag/ReRanker.ts",
+    "src/core/rag/StructureBoost.ts",
+    "src/core/rag/ingestion/DabookPdfExtractor.ts",
     "src/core/rag/ingestion/EpubExtractor.ts",
     "src/core/rag/ingestion/ExtractedDocument.ts",
     "src/core/rag/ingestion/FileTypeRouter.ts",
@@ -1747,6 +1778,7 @@
     "src/types/provenance.ts",
     "src/types/rag.ts",
     "src/types/tools.ts",
+    "src/types/training-separation.ts",
     "src/types/vision.ts",
     "src/utils/cache.ts",
     "src/utils/errors.ts",
@@ -1962,7 +1994,6 @@
     "src/core/knowledge/SourceCodeStructuralChunker.ts",
     "src/core/knowledge/SourcesDrawerFormatter.ts",
     "src/core/knowledge/StoragePlanningEstimator.ts",
-    "src/core/knowledge/TrainingSeparationCoordinator.ts",
     "src/core/knowledge/VersionCompatibilityEvaluator.ts",
     "src/core/knowledge/WikidataStructuredStore.ts",
     "src/core/knowledge/WikipediaChunker.ts",
@@ -2136,7 +2167,6 @@
     "src/types/storage-planning.ts",
     "src/types/testing-strategy.ts",
     "src/types/tool-truth.ts",
-    "src/types/training-separation.ts",
     "src/types/workflow.ts",
     "src/utils/memoize.ts"
   ],
@@ -2232,6 +2262,10 @@
     {
       "importer": "client/src/components/StatusBar.tsx",
       "specifier": "./StatusBar.css"
+    },
+    {
+      "importer": "client/src/components/TrainingLanePanel.tsx",
+      "specifier": "./KnowledgeOSPanel.css"
     },
     {
       "importer": "client/src/components/WhyThisAnswerModal.tsx",
@@ -2675,7 +2709,8 @@
       "client/src/components/KnowledgeOSPanel.tsx"
     ],
     "client/src/components/KnowledgeOSPanel.tsx": [
-      "client/src/api/runtime.ts"
+      "client/src/api/runtime.ts",
+      "client/src/components/TrainingLanePanel.tsx"
     ],
     "client/src/components/LoadedFilesBar.tsx": [
       "client/src/api/audio.ts",
@@ -2765,6 +2800,13 @@
       "client/src/components/StatusBar.tsx"
     ],
     "client/src/components/StatusBar.tsx": [],
+    "client/src/components/trainingLane.ts": [],
+    "client/src/components/TrainingLanePanel.test.tsx": [
+      "client/src/components/TrainingLanePanel.tsx"
+    ],
+    "client/src/components/TrainingLanePanel.tsx": [
+      "client/src/components/trainingLane.ts"
+    ],
     "client/src/components/UtilityWorkbenchPanel.test.tsx": [
       "client/src/components/UtilityWorkbenchPanel.tsx"
     ],
@@ -3882,6 +3924,7 @@
       "src/core/gaming/lattice/LatticeSimulationEngine.ts",
       "src/core/multimodal/localization/MediaConsentRecord.ts",
       "src/core/multimodal/localization/VideoLocalizationJob.ts",
+      "src/core/native-runtime/RuntimeDiscovery.ts",
       "src/core/providers/local/LocalModelDiscovery.ts"
     ],
     "src/core/capabilities/config/CapabilityConfigManager.ts": [],
@@ -4845,6 +4888,88 @@
     ],
     "src/core/creative/StoryBibleStore.ts": [
       "src/core/creative/CreativeTypes.ts"
+    ],
+    "src/core/dabook/__tests__/DabookBridge.governance.test.ts": [
+      "src/core/dabook/DabookBridge.ts",
+      "src/core/dabook/DabookConfig.ts"
+    ],
+    "src/core/dabook/__tests__/DabookBridge.test.ts": [
+      "src/core/dabook/DabookBridge.ts",
+      "src/core/dabook/DabookConfig.ts",
+      "src/core/dabook/DabookContract.ts"
+    ],
+    "src/core/dabook/__tests__/DabookConfigContractMapper.test.ts": [
+      "src/core/dabook/DabookBridge.ts",
+      "src/core/dabook/DabookChunkMapper.ts",
+      "src/core/dabook/DabookConfig.ts",
+      "src/core/dabook/DabookContract.ts",
+      "src/core/dabook/index.ts"
+    ],
+    "src/core/dabook/__tests__/pdfFixture.ts": [],
+    "src/core/dabook/__tests__/training.test.ts": [
+      "src/core/dabook/DabookContract.ts",
+      "src/core/dabook/training/ContaminationScanner.ts",
+      "src/core/dabook/training/EvaluationCorpus.ts",
+      "src/core/dabook/training/TrainingCorpusImporter.ts"
+    ],
+    "src/core/dabook/__tests__/TrainingExporter.test.ts": [
+      "src/core/dabook/DabookContract.ts",
+      "src/core/dabook/training/TrainingExporter.ts"
+    ],
+    "src/core/dabook/__tests__/TrainingLive.integration.test.ts": [
+      "src/core/dabook/DabookBridge.ts",
+      "src/core/dabook/DabookConfig.ts",
+      "src/core/dabook/__tests__/pdfFixture.ts",
+      "src/core/dabook/training/EvaluationCorpus.ts",
+      "src/core/dabook/training/TrainingExporter.ts"
+    ],
+    "src/core/dabook/DabookBridge.ts": [
+      "src/core/dabook/DabookConfig.ts",
+      "src/core/dabook/DabookContract.ts",
+      "src/core/native-runtime/NativeCommandRunner.ts",
+      "src/core/observability/logger.ts"
+    ],
+    "src/core/dabook/DabookChunkMapper.ts": [
+      "src/core/dabook/DabookContract.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/dabook/DabookConfig.ts": [],
+    "src/core/dabook/DabookContract.ts": [],
+    "src/core/dabook/index.ts": [
+      "src/core/dabook/DabookBridge.ts",
+      "src/core/dabook/DabookChunkMapper.ts",
+      "src/core/dabook/DabookConfig.ts",
+      "src/core/dabook/DabookContract.ts",
+      "src/core/dabook/shared.ts",
+      "src/core/dabook/training/ContaminationScanner.ts",
+      "src/core/dabook/training/EvaluationCorpus.ts",
+      "src/core/dabook/training/TrainingCorpusImporter.ts",
+      "src/core/dabook/training/TrainingExporter.ts"
+    ],
+    "src/core/dabook/shared.ts": [
+      "src/core/dabook/DabookBridge.ts"
+    ],
+    "src/core/dabook/training/ContaminationScanner.ts": [],
+    "src/core/dabook/training/EvaluationCorpus.ts": [
+      "src/core/dabook/training/ContaminationScanner.ts"
+    ],
+    "src/core/dabook/training/TrainingCorpusImporter.ts": [
+      "src/core/dabook/DabookBridge.ts",
+      "src/core/dabook/DabookContract.ts",
+      "src/core/dabook/training/ContaminationScanner.ts",
+      "src/core/knowledge/TrainingSeparationCoordinator.ts",
+      "src/types/rag.ts",
+      "src/types/training-separation.ts"
+    ],
+    "src/core/dabook/training/TrainingExporter.ts": [
+      "src/core/dabook/DabookBridge.ts",
+      "src/core/dabook/DabookContract.ts",
+      "src/core/dabook/shared.ts",
+      "src/core/dabook/training/ContaminationScanner.ts",
+      "src/core/dabook/training/EvaluationCorpus.ts",
+      "src/core/dabook/training/TrainingCorpusImporter.ts",
+      "src/core/observability/logger.ts",
+      "src/types/training-separation.ts"
     ],
     "src/core/database/__tests__/SafeDatabaseQuestionAgent.guardrails.test.ts": [
       "src/core/database/Database.ts",
@@ -6637,6 +6762,11 @@
       "src/core/native-runtime/NativeCommandRunner.ts",
       "src/core/native-runtime/NativeGameEditorBackends.ts"
     ],
+    "src/core/native-runtime/__tests__/RuntimeDiscovery.dabook.test.ts": [
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/dabook/DabookConfig.ts",
+      "src/core/native-runtime/RuntimeDiscovery.ts"
+    ],
     "src/core/native-runtime/__tests__/RuntimeDiscovery.test.ts": [
       "src/core/native-runtime/RuntimeDiscovery.ts"
     ],
@@ -6683,7 +6813,9 @@
       "src/core/voice-companion/ScreenContextCaptureService.ts",
       "src/core/voice-companion/VoiceCompanionTypes.ts"
     ],
-    "src/core/native-runtime/RuntimeDiscovery.ts": [],
+    "src/core/native-runtime/RuntimeDiscovery.ts": [
+      "src/core/dabook/DabookConfig.ts"
+    ],
     "src/core/nlu/__tests__/CrossDomainAmbiguity.test.ts": [
       "src/core/nlu/HumanLanguageRouter.ts"
     ],
@@ -7189,6 +7321,13 @@
     "src/core/rag/__tests__/CorrectiveRetriever.test.ts": [
       "src/core/rag/CorrectiveRetriever.ts"
     ],
+    "src/core/rag/__tests__/DocumentIngester.dabook.test.ts": [
+      "src/core/rag/DocumentIngester.ts",
+      "src/core/rag/ingestion/DabookPdfExtractor.ts",
+      "src/core/rag/ingestion/ExtractedDocument.ts",
+      "src/core/rag/ingestion/FileTypeRouter.ts",
+      "src/core/rag/ingestion/PdfExtractor.ts"
+    ],
     "src/core/rag/__tests__/DocumentIngester.test.ts": [
       "src/core/rag/DocumentIngester.ts",
       "src/core/rag/ingestion/FileTypeRouter.ts"
@@ -7210,6 +7349,12 @@
       "src/core/rag/RAGDocumentStore.ts",
       "src/types/rag.ts"
     ],
+    "src/core/rag/__tests__/RAGDocumentStore.dabook.test.ts": [
+      "src/core/dabook/DabookChunkMapper.ts",
+      "src/core/dabook/DabookContract.ts",
+      "src/core/database/Database.ts",
+      "src/core/rag/RAGDocumentStore.ts"
+    ],
     "src/core/rag/__tests__/RAGDocumentStore.test.ts": [
       "src/core/database/Database.ts",
       "src/core/rag/RAGDocumentStore.ts",
@@ -7217,6 +7362,11 @@
     ],
     "src/core/rag/__tests__/RAGRouter.test.ts": [
       "src/core/rag/RAGRouter.ts"
+    ],
+    "src/core/rag/__tests__/StructureBoost.test.ts": [
+      "src/core/knowledge/LocalKnowledgeAnswerer.ts",
+      "src/core/rag/StructureBoost.ts",
+      "src/types/rag.ts"
     ],
     "src/core/rag/__tests__/TrustRAG.test.ts": [
       "src/core/rag/TrustRAG.ts"
@@ -7258,6 +7408,7 @@
       "src/core/rag/DocumentManager.ts"
     ],
     "src/core/rag/DocumentManager.ts": [
+      "src/core/dabook/DabookConfig.ts",
       "src/core/embeddings/EmbeddingService.ts",
       "src/core/entity/EntityLinkingService.ts",
       "src/core/observability/logger.ts",
@@ -7281,7 +7432,23 @@
       "src/core/observability/logger.ts",
       "src/core/rag/RAGDocumentStore.ts",
       "src/core/rag/RAGInjectionScanner.ts",
+      "src/core/rag/StructureBoost.ts",
       "src/types/rag.ts"
+    ],
+    "src/core/rag/ingestion/__tests__/DabookPdfExtractor.integration.test.ts": [
+      "src/core/dabook/DabookConfig.ts",
+      "src/core/dabook/__tests__/pdfFixture.ts",
+      "src/core/dabook/index.ts",
+      "src/core/database/Database.ts",
+      "src/core/rag/DocumentManager.ts",
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/core/rag/ingestion/DabookPdfExtractor.ts"
+    ],
+    "src/core/rag/ingestion/__tests__/DabookPdfExtractor.test.ts": [
+      "src/core/dabook/DabookContract.ts",
+      "src/core/dabook/index.ts",
+      "src/core/rag/ingestion/DabookPdfExtractor.ts",
+      "src/core/rag/ingestion/ExtractedDocument.ts"
     ],
     "src/core/rag/ingestion/__tests__/epub-and-extractors-deep.test.ts": [
       "src/core/rag/ingestion/EpubExtractor.ts"
@@ -7315,12 +7482,21 @@
     "src/core/rag/ingestion/__tests__/PdfExtractor.test.ts": [
       "src/core/rag/ingestion/PdfExtractor.ts"
     ],
+    "src/core/rag/ingestion/DabookPdfExtractor.ts": [
+      "src/core/dabook/DabookChunkMapper.ts",
+      "src/core/dabook/index.ts",
+      "src/core/observability/logger.ts",
+      "src/core/rag/ingestion/ExtractedDocument.ts",
+      "src/core/rag/ingestion/PdfExtractor.ts"
+    ],
     "src/core/rag/ingestion/EpubExtractor.ts": [
       "src/core/observability/logger.ts",
       "src/core/rag/ingestion/ExtractedDocument.ts"
     ],
     "src/core/rag/ingestion/ExtractedDocument.ts": [],
     "src/core/rag/ingestion/FileTypeRouter.ts": [
+      "src/core/dabook/DabookConfig.ts",
+      "src/core/rag/ingestion/DabookPdfExtractor.ts",
       "src/core/rag/ingestion/EpubExtractor.ts",
       "src/core/rag/ingestion/ExtractedDocument.ts",
       "src/core/rag/ingestion/HtmlExtractor.ts",
@@ -7395,6 +7571,9 @@
     "src/core/rag/ReRanker.ts": [
       "src/core/observability/logger.ts",
       "src/core/providers/LLMAdapter.ts",
+      "src/types/rag.ts"
+    ],
+    "src/core/rag/StructureBoost.ts": [
       "src/types/rag.ts"
     ],
     "src/core/rag/TrustRAG.ts": [
@@ -8895,6 +9074,15 @@
       "src/middleware/errorHandler.ts",
       "src/server/routes/gis.ts"
     ],
+    "src/server/routes/__tests__/knowledge-base-dabook.test.ts": [
+      "src/core/dabook/index.ts",
+      "src/core/rag/DocumentManager.ts",
+      "src/server/routes/knowledge-base.ts"
+    ],
+    "src/server/routes/__tests__/knowledge-base-governance.test.ts": [
+      "src/core/dabook/index.ts",
+      "src/server/routes/knowledge-base.ts"
+    ],
     "src/server/routes/__tests__/knowledge-base-stats.test.ts": [
       "src/server/routes/knowledge-base.ts"
     ],
@@ -9203,6 +9391,7 @@
       "src/middleware/errorHandler.ts"
     ],
     "src/server/routes/knowledge-base.ts": [
+      "src/core/dabook/index.ts",
       "src/middleware/errorHandler.ts"
     ],
     "src/server/routes/knowledge-online.ts": [
@@ -9671,5 +9860,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1885
+  "sourceRecordCount": 1915
 }

@@ -14,8 +14,13 @@ from __future__ import annotations
 import json
 import re
 import time
+from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
+
+from dabook.core.codedetect import classify_code, detect_language
+from dabook.core.dedup import Deduplicator
 
 # Regex patterns for boilerplate front-matter and index detection
 _BOILERPLATE_PATTERNS = [
@@ -47,11 +52,49 @@ _ASM_OR_CODE_KEYWORDS = re.compile(
 
 
 def estimate_tokens(text: str) -> int:
-    """Fast, accurate token count estimation (~1.3 tokens per word or len // 4)."""
+    """Fast token estimate (~1.33 tokens per word); used when no tokenizer is installed."""
     words = len(text.split())
     if words == 0:
         return 0
     return max(words, int(words * 1.33))
+
+
+@lru_cache(maxsize=4)
+def _load_tokenizer(name: str) -> Any | None:
+    """
+    The tiktoken encoding, or ``None`` (not installed / unknown name / vocabulary unavailable).
+
+    ``tiktoken`` downloads its vocabulary on first use. On an offline machine that request can
+    hang, so the load runs under a watchdog and a slow load simply means "use the estimate".
+    """
+    try:
+        import tiktoken
+    except ImportError:
+        return None
+
+    import concurrent.futures
+
+    pool = concurrent.futures.ThreadPoolExecutor(max_workers=1, thread_name_prefix="tiktoken")
+    future = pool.submit(tiktoken.get_encoding, name)
+    try:
+        return future.result(timeout=10.0)
+    except Exception:  # timeout, unknown encoding name, offline
+        return None
+    finally:
+        pool.shutdown(wait=False, cancel_futures=True)
+
+
+def tokenizer_backend(name: str) -> str:
+    """``tiktoken:<encoding>`` when the real tokenizer loads, else ``estimate``."""
+    return f"tiktoken:{name}" if _load_tokenizer(name) is not None else "estimate"
+
+
+def count_tokens(text: str, tokenizer: str = "cl100k_base") -> int:
+    """Token count via ``tiktoken`` when available, otherwise :func:`estimate_tokens`."""
+    enc = _load_tokenizer(tokenizer)
+    if enc is None:
+        return estimate_tokens(text)
+    return len(enc.encode(text, disallowed_special=()))
 
 
 def is_boilerplate_node(node: dict[str, Any], page_idx: int, total_pages: int) -> bool:
@@ -94,66 +137,91 @@ def is_boilerplate_node(node: dict[str, Any], page_idx: int, total_pages: int) -
 
 def is_valid_code_block(text: str) -> bool:
     """
-    Validate that a code node contains actual multi-line routines or syntax,
-    filtering out single-line monospace URLs, emails, filenames, and isolated words.
+    Validate that a code node contains actual code, filtering out single-line monospace URLs,
+    emails, filenames, and isolated words.
     """
     cleaned = text.strip()
     if not cleaned:
         return False
 
-    # Check for URLs even across line breaks
-    if re.search(
-        r"(?:https?://|www\.|(?:\.com|\.org|\.edu|\.gov|\.io|\.html?|\.pdf)(?:/|\)|$))",
-        cleaned,
-        re.IGNORECASE,
-    ) and not _ASM_OR_CODE_KEYWORDS.search(cleaned):
+    lang = classify_code(cleaned, is_mono=True)
+    strong = lang is not None and lang != "text"
+
+    # URLs (even across line breaks) are not code unless real code keywords accompany them
+    if (
+        re.search(
+            r"(?:https?://|www\.|(?:\.com|\.org|\.edu|\.gov|\.io|\.html?|\.pdf)(?:/|\)|$))",
+            cleaned,
+            re.IGNORECASE,
+        )
+        and not _ASM_OR_CODE_KEYWORDS.search(cleaned)
+        and not strong
+    ):
         return False
 
-    # Filter out single-line URLs, filenames, or emails
     if "\n" not in cleaned:
         if _URL_OR_REF_PATTERN.match(cleaned):
             return False
+        if strong:
+            return True
         if len(cleaned.split()) <= 2 and not _ASM_OR_CODE_KEYWORDS.search(cleaned):
             return False
 
     lines = [line for line in cleaned.splitlines() if line.strip()]
     if len(lines) >= 2:
-        # Check that it's not just lines of URLs or emails
+        # Not just lines of URLs or emails
         return not all(re.search(r"(@|\.com|\.org|https?:)", line) for line in lines)
 
-    # Single line: must match known opcodes or C syntax
-    return bool(_ASM_OR_CODE_KEYWORDS.search(cleaned) and len(cleaned) > 10)
+    # Single line: must show recognisable syntax
+    return bool(strong or (_ASM_OR_CODE_KEYWORDS.search(cleaned) and len(cleaned) > 10))
 
 
 def detect_code_language(code_text: str) -> str:
-    """Identify programming or assembly language for markdown fencing."""
-    lower = code_text.lower()
-    if re.search(
-        r"\b(mov|push|pop|call|retn?|jmp|lea|cmp|test|xor|eax|ebx|ecx|edx|esp|ebp|esi|edi)\b", lower
-    ):
-        if re.search(r"\b(rax|rbx|rcx|rdx|rsp|rbp|rsi|rdi|r8|r9|r10|r11|r12|r13|r14|r15)\b", lower):
-            return "x64_asm"
-        return "x86_asm"
-    if re.search(
-        r"\b(struct|typedef|void\*?|int|char\*?|unsigned|#include|#define|NTSTATUS)\b", code_text
-    ):
-        return "c"
-    if re.search(r"\b(def\s+\w+|import\s+\w+|class\s+\w+:)\b", code_text):
-        return "python"
-    return "asm"
+    """Fence tag for a code block (``text`` when no language fits)."""
+    return detect_language(code_text)
 
 
-def consolidate_workspace_datasets(workspace: Path) -> dict[str, Any]:
+@dataclass(frozen=True)
+class DedupSettings:
+    exact: bool = True
+    near: bool = True
+    jaccard: float = 0.8
+
+    @property
+    def enabled(self) -> bool:
+        return self.exact or self.near
+
+
+def record_text(kind: str, record: dict[str, Any]) -> str | None:
+    """The text that identifies a record of dataset *kind* for dedup (``None``: do not dedup)."""
+    if kind == "sft":
+        if "instruction" in record:
+            return f"{record['instruction']} {record.get('input', '')} {record.get('output', '')}"
+        return " ".join(m.get("content", "") for m in record.get("messages", []) if m.get("role") != "system")
+    if kind == "pretrain":
+        return record.get("text")
+    if kind == "code":
+        return record.get("code")
+    if kind == "rag":
+        return record.get("content")
+    return None
+
+
+def consolidate_workspace_datasets(
+    workspace: Path, dedup: DedupSettings | None = None
+) -> dict[str, Any]:
     """
     Consolidate all book datasets in workspace into master files:
-    workspace / compiled / all_pretrain.jsonl
-    workspace / compiled / all_sft.jsonl
-    workspace / compiled / all_code.jsonl
-    workspace / compiled / all_rag.jsonl
-    workspace / compiled / all_raw.jsonl
-    workspace / compiled / manifest.json
+    workspace / compiled / all_{pretrain,sft,code,rag,raw}.jsonl + manifest.json
+
+    With ``dedup`` enabled, duplicates *across books* are dropped from the training/retrieval masters
+    (the first book, in sorted order, keeps its copy). Safe to call from several worker processes at
+    once: callers serialise on a file lock and every master file is replaced atomically.
     """
+    import os
     from contextlib import ExitStack
+
+    import portalocker
 
     books_dir = workspace / "books"
     compiled_dir = workspace / "compiled"
@@ -168,51 +236,73 @@ def consolidate_workspace_datasets(workspace: Path) -> dict[str, Any]:
     }
 
     counts = {key: 0 for key in targets}
+    removed = {key: {"exact": 0, "near": 0} for key in targets}
     book_sources: list[str] = []
-
-    with ExitStack() as stack:
-        handles = {
-            key: stack.enter_context(path.open("w", encoding="utf-8"))
-            for key, (path, _) in targets.items()
-        }
-
-        if books_dir.is_dir():
-            for book_dir in sorted(books_dir.iterdir()):
-                if not book_dir.is_dir():
-                    continue
-                datasets_path = book_dir / "datasets"
-                if not datasets_path.is_dir():
-                    continue
-
-                book_sources.append(book_dir.name)
-                for key, (_, filename) in targets.items():
-                    src_file = datasets_path / filename
-                    if src_file.is_file():
-                        with src_file.open(encoding="utf-8") as in_f:
-                            for line in in_f:
-                                line = line.strip()
-                                if line:
-                                    handles[key].write(line + "\n")
-                                    counts[key] += 1
-
-    manifest = {
-        "compiled_at": time.time(),
-        "total_books": len(book_sources),
-        "book_sources": book_sources,
-        "datasets": {
-            key: {
-                "file": targets[key][0].name,
-                "path": str(targets[key][0]),
-                "records": counts[key],
-                "size_bytes": targets[key][0].stat().st_size if targets[key][0].is_file() else 0,
-            }
-            for key in targets
-        },
+    dedup = dedup or DedupSettings(exact=False, near=False)
+    deduplicators = {
+        key: Deduplicator(exact=dedup.exact, near=dedup.near, jaccard_threshold=dedup.jaccard)
+        for key in targets
+        if key != "raw" and dedup.enabled
     }
 
-    manifest_path = compiled_dir / "manifest.json"
-    with open(manifest_path, "w", encoding="utf-8") as f:
-        json.dump(manifest, f, indent=2, ensure_ascii=False)
+    with portalocker.Lock(str(compiled_dir / ".consolidate.lock"), timeout=60):
+        tmp_paths = {key: path.with_name(f"{path.name}.{os.getpid()}.tmp") for key, (path, _) in targets.items()}
+        try:
+            with ExitStack() as stack:
+                handles = {
+                    key: stack.enter_context(tmp.open("w", encoding="utf-8"))
+                    for key, tmp in tmp_paths.items()
+                }
+
+                if books_dir.is_dir():
+                    for book_dir in sorted(books_dir.iterdir()):
+                        datasets_path = book_dir / "datasets"
+                        if not book_dir.is_dir() or not datasets_path.is_dir():
+                            continue
+
+                        book_sources.append(book_dir.name)
+                        for key, (_, filename) in targets.items():
+                            src_file = datasets_path / filename
+                            if not src_file.is_file():
+                                continue
+                            dd = deduplicators.get(key)
+                            with src_file.open(encoding="utf-8") as in_f:
+                                for line in in_f:
+                                    line = line.strip()
+                                    if not line:
+                                        continue
+                                    if dd is not None:
+                                        text = record_text(key, json.loads(line))
+                                        verdict = dd.is_duplicate(text) if text else None
+                                        if verdict:
+                                            removed[key][verdict] += 1
+                                            continue
+                                    handles[key].write(line + "\n")
+                                    counts[key] += 1
+            for key, (path, _) in targets.items():
+                os.replace(tmp_paths[key], path)
+        finally:
+            for tmp in tmp_paths.values():
+                tmp.unlink(missing_ok=True)
+
+        manifest = {
+            "compiled_at": time.time(),
+            "total_books": len(book_sources),
+            "book_sources": book_sources,
+            "dedup": {"enabled": dedup.enabled, "jaccard": dedup.jaccard, "removed": removed},
+            "datasets": {
+                key: {
+                    "file": targets[key][0].name,
+                    "path": str(targets[key][0]),
+                    "records": counts[key],
+                    "size_bytes": targets[key][0].stat().st_size,
+                }
+                for key in targets
+            },
+        }
+        manifest_tmp = compiled_dir / f"manifest.json.{os.getpid()}.tmp"
+        manifest_tmp.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
+        os.replace(manifest_tmp, compiled_dir / "manifest.json")
 
     return manifest
 

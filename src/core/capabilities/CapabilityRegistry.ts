@@ -16,6 +16,7 @@ import { LatticeSimulationEngine } from '../gaming/lattice/LatticeSimulationEngi
 import { CapabilityInstallationManager } from './packs/CapabilityInstallationManager';
 import { CapabilityPackManifest } from './packs/CapabilityPackManifest';
 import { CapabilityHealthDiagnostics } from './health/CapabilityHealthDiagnostics';
+import { discoverDabookRuntime } from '../native-runtime/RuntimeDiscovery';
 
 export type CapabilitySection =
   | 'available_now'
@@ -535,6 +536,68 @@ export class CapabilityRegistry {
     }
   }
 
+  /**
+   * Structured PDF ingestion (DABOOK). Health comes from a cached synchronous probe: interpreter
+   * present, `dabook` importable, version. `GET /api/knowledge-base/dabook/health` runs the full
+   * `dabook doctor` check; this entry never claims more than the probe verified.
+   */
+  private buildStructuredPdfCapability(isLocal: boolean): CapabilityItem {
+    const runtime = isLocal ? discoverDabookRuntime() : undefined;
+    const ready = !!runtime?.enabled && !!runtime.importable;
+    const installedButOff = !!runtime && runtime.importable && !runtime.enabled;
+    const remediation = [
+      'Run `npm run setup:dabook` to create services/dabook/.venv and install DABOOK.',
+      'Set `DABOOK_ENABLED=true` in your `.env` file and restart the server.',
+      'Optionally verify the install with `python -m dabook doctor` inside services/dabook.'
+    ];
+    return {
+      id: 'structured_pdf_ingestion',
+      name: 'Structured PDF Ingestion (DABOOK)',
+      shortDescription: 'Page-accurate, chapter-aware PDF ingestion with header, footer and TOC removal.',
+      detailedDescription: 'Runs the vendored DABOOK pipeline as a local Python sidecar to turn PDFs into structure-aware chunks with page numbers and chapter/section breadcrumbs for citations. Every failure (missing runtime, timeout, scanned PDF) falls back to flat pdf-parse extraction with a visible warning.',
+      category: 'data',
+      section: !isLocal ? 'disabled_by_policy' : ready ? 'local_only' : 'needs_setup',
+      maturity: 'LOCAL_ONLY_EXPERIMENTAL',
+      processingLocation: 'local',
+      provider: 'DABOOK (services/dabook) via DabookBridge',
+      requiredSoftware: ['Python 3.11+ with DABOOK installed (npm run setup:dabook)'],
+      authorityAndEgress: {
+        filesystemAuthority: 'Reads ingested PDFs; writes only the DABOOK workspace (data/dabook_workspace)',
+        networkEgress: 'Zero network egress',
+        processAuthority: 'One short-lived Python child process per ingest call, with worker subprocesses',
+        approvalGateRequired: false
+      },
+      healthState: !isLocal ? 'disabled' : ready ? 'healthy' : installedButOff ? 'not_configured' : 'not_configured',
+      healthReason: !isLocal
+        ? 'Local sidecars are blocked in hosted profile'
+        : ready
+          ? `DABOOK ${runtime!.version} is importable from ${runtime!.source}; run the health endpoint for a full doctor check`
+          : installedButOff
+            ? `DABOOK ${runtime!.version} is installed but DABOOK_ENABLED is not true`
+            : runtime?.reason,
+      version: runtime?.version ?? 'not-installed',
+      estimatedCostAndResources: {
+        computeImpact: 'Low (CPU only)',
+        estimatedLatency: 'Seconds for a typical book on first ingest; near-instant on a cache hit',
+        costProfile: 'Free / Local Compute'
+      },
+      dataRetentionPolicy: 'Content-addressed stage cache and datasets stay in the local DABOOK workspace until deleted.',
+      supportStatusAndLimitations: [
+        'Scanned (image-only) PDFs are not OCR-processed by DABOOK yet and fall back to the existing OCR queue',
+        'Disabled by default (DABOOK_ENABLED=false) until enabled by the operator',
+        'Heading detection relies on the PDF outline or bold typography'
+      ],
+      diagnostics: ready ? undefined : {
+        isBlocked: true,
+        issues: [runtime?.reason ?? (installedButOff ? 'DABOOK_ENABLED is not true.' : 'DABOOK runtime unavailable.')],
+        remediationSteps: remediation
+      },
+      actions: [],
+      localOnly: true,
+      apiBasePath: '/api/knowledge-base/dabook'
+    };
+  }
+
   private buildBaseCapabilities(): CapabilityItem[] {
     const isLocal = resolveDeploymentMode() !== 'hosted';
 
@@ -691,6 +754,7 @@ export class CapabilityRegistry {
         ],
         localOnly: true
       },
+      this.buildStructuredPdfCapability(isLocal),
       {
         id: 'repository_findings',
         name: 'Repository Findings, SARIF & SBOM (CF-03)',

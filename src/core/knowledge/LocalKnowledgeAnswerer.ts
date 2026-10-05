@@ -47,7 +47,7 @@ export class LocalKnowledgeAnswerer {
 
     const chunks = this.selectChunks(results, message);
     const sourceEntries = this.collectSourceEntries(chunks);
-    const sources = sourceEntries.map(entry => entry.source);
+    const sources = Array.from(new Set(sourceEntries.map(entry => entry.source)));
     const body = this.formatAnswerBody(chunks, message);
     const year = this.extractYear(message);
     const semanticTokens = this.importantTokens(message).filter(token => token !== year);
@@ -163,14 +163,15 @@ export class LocalKnowledgeAnswerer {
 
     for (const chunk of chunks) {
       const source = String(chunk.metadata.source || chunk.metadata.title || 'local knowledge base');
-      if (entries.has(source)) {
+      const label = this.formatSourceLabel(chunk);
+      // Structured chunks (DABOOK) cite a chapter/section/page, so one book can yield several
+      // distinct citations; everything else stays one entry per source.
+      const key = chunk.metadata.structured === true ? `${source}::${label}` : source;
+      if (entries.has(key)) {
         continue;
       }
 
-      entries.set(source, {
-        source,
-        label: this.formatSourceLabel(chunk)
-      });
+      entries.set(key, { source, label });
     }
 
     return Array.from(entries.values());
@@ -183,7 +184,22 @@ export class LocalKnowledgeAnswerer {
     const location = this.cleanLabelPart(chunk.metadata.chapterTitle || chunk.metadata.sectionTitle);
     const parts = [title, author].filter(Boolean);
     const label = parts.length ? parts.join(' - ') : 'local knowledge base';
+
+    // Structured PDFs: "Book › Chapter › Section, p. 42"
+    const breadcrumbs = Array.isArray(chunk.metadata.breadcrumbs)
+      ? chunk.metadata.breadcrumbs.map((part: unknown) => this.cleanLabelPart(part)).filter(Boolean)
+      : [];
+    if (breadcrumbs.length > 0) {
+      return `${[label, ...breadcrumbs].join(' › ')}${this.formatPages(chunk.metadata.page, chunk.metadata.pageEnd)}`;
+    }
     return location ? `${label}, ${location}` : label;
+  }
+
+  private formatPages(start: unknown, end: unknown): string {
+    if (!Number.isInteger(start) || (start as number) < 1) return '';
+    return Number.isInteger(end) && (end as number) > (start as number)
+      ? `, pp. ${start}–${end}`
+      : `, p. ${start}`;
   }
 
   private cleanLabelPart(value: unknown): string | undefined {

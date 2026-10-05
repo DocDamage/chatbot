@@ -5,6 +5,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { ExtractedDocument, FileExtractionOptions, FileExtractor } from './ExtractedDocument';
+import { isDabookEnabled } from '../../dabook/DabookConfig';
+import { DabookPdfExtractor } from './DabookPdfExtractor';
 import { EpubExtractor } from './EpubExtractor';
 import { HtmlExtractor } from './HtmlExtractor';
 import { ImageOcrExtractor } from './ImageOcrExtractor';
@@ -22,6 +24,8 @@ export class FileTypeRouter {
       new TextLikeExtractor(),
       new HtmlExtractor(),
       new RtfExtractor(),
+      // Structure-aware PDFs first when DABOOK_ENABLED=true; it falls back to PdfExtractor itself.
+      ...(isDabookEnabled() ? [new DabookPdfExtractor()] : []),
       new PdfExtractor(),
       new EpubExtractor(),
       new MobiExtractor(),

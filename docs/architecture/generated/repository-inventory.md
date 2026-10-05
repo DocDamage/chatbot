@@ -6,14 +6,14 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1885 |
-| Production source files | 1216 |
-| Reachable production files | 830 |
-| Unreachable production files | 386 |
-| Discovered route calls | 511 |
-| Environment variables | 227 |
+| Source files | 1915 |
+| Production source files | 1230 |
+| Reachable production files | 846 |
+| Unreachable production files | 384 |
+| Discovered route calls | 520 |
+| Environment variables | 229 |
 | Feature flags | 18 |
-| Files above 300 lines | 97 |
+| Files above 300 lines | 98 |
 
 ## Server route calls
 
@@ -29,74 +29,75 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | USE | `/api/v1` | `src/server/index.ts:185` |
 | USE | `/api/v2` | `src/server/index.ts:191` |
 | POST | `/api/chat` | `src/server/index.ts:198` |
-| POST | `/api/knowledge-base/add` | `src/server/index.ts:206` |
-| POST | `/api/knowledge-base/file` | `src/server/index.ts:216` |
-| POST | `/api/knowledge-base/directory` | `src/server/index.ts:226` |
-| USE | `/api/rag` | `src/server/index.ts:249` |
-| USE | `/api/knowledge-os` | `src/server/index.ts:251` |
-| GET | `/api/tools` | `src/server/index.ts:255` |
-| GET | `/api/models/free` | `src/server/index.ts:272` |
-| GET | `/api-docs` | `src/server/index.ts:288` |
-| POST | `/api/upload` | `src/server/index.ts:314` |
-| POST | `/api/feedback` | `src/server/index.ts:341` |
-| GET | `/api/feedback/:messageId` | `src/server/index.ts:358` |
-| GET | `/api/user/instructions` | `src/server/index.ts:369` |
-| PUT | `/api/user/instructions` | `src/server/index.ts:377` |
-| GET | `/api/chat/quick-replies` | `src/server/index.ts:389` |
-| POST | `/api/conversations/:sessionId/share` | `src/server/index.ts:411` |
-| GET | `/api/share/:shareId` | `src/server/index.ts:428` |
-| GET | `/api/documents/search` | `src/server/index.ts:444` |
-| USE | `/api/knowledge` | `src/server/index.ts:460` |
-| POST | `/api/knowledge/reddit` | `src/server/index.ts:462` |
-| POST | `/api/knowledge/youtube` | `src/server/index.ts:472` |
-| POST | `/api/knowledge/university` | `src/server/index.ts:482` |
-| POST | `/api/knowledge/papers` | `src/server/index.ts:492` |
-| POST | `/api/knowledge/github` | `src/server/index.ts:502` |
-| POST | `/api/knowledge/stackoverflow` | `src/server/index.ts:512` |
-| POST | `/api/knowledge/news` | `src/server/index.ts:522` |
-| POST | `/api/knowledge/medium` | `src/server/index.ts:537` |
-| POST | `/api/knowledge/quora` | `src/server/index.ts:547` |
-| POST | `/api/knowledge/gutenberg` | `src/server/index.ts:557` |
-| POST | `/api/knowledge/docs` | `src/server/index.ts:567` |
-| POST | `/api/knowledge/library-of-congress` | `src/server/index.ts:577` |
-| POST | `/api/knowledge/entertainment` | `src/server/index.ts:587` |
-| POST | `/api/knowledge/books` | `src/server/index.ts:601` |
-| POST | `/api/knowledge/specialized-topics` | `src/server/index.ts:614` |
-| POST | `/api/knowledge/financial-advice` | `src/server/index.ts:627` |
-| POST | `/api/knowledge/religion` | `src/server/index.ts:635` |
-| POST | `/api/knowledge/mental-health` | `src/server/index.ts:643` |
-| POST | `/api/knowledge/web-design` | `src/server/index.ts:651` |
-| POST | `/api/knowledge/ui-design` | `src/server/index.ts:659` |
-| POST | `/api/knowledge/backend-design` | `src/server/index.ts:667` |
-| POST | `/api/knowledge/music-theory` | `src/server/index.ts:675` |
-| POST | `/api/knowledge/llm-programming` | `src/server/index.ts:683` |
-| POST | `/api/knowledge/anatomy` | `src/server/index.ts:691` |
-| POST | `/api/knowledge/pottery` | `src/server/index.ts:699` |
-| POST | `/api/knowledge/gardening` | `src/server/index.ts:707` |
-| POST | `/api/knowledge/cna` | `src/server/index.ts:715` |
-| POST | `/api/knowledge/dsp` | `src/server/index.ts:723` |
-| POST | `/api/knowledge/rn` | `src/server/index.ts:731` |
-| POST | `/api/knowledge/astronomy` | `src/server/index.ts:739` |
-| POST | `/api/knowledge/astrology` | `src/server/index.ts:747` |
-| POST | `/api/knowledge/botany` | `src/server/index.ts:755` |
-| POST | `/api/knowledge/marijuana-growing` | `src/server/index.ts:763` |
-| POST | `/api/knowledge/load-telegram` | `src/server/index.ts:771` |
-| POST | `/api/knowledge/wikipedia` | `src/server/index.ts:792` |
-| POST | `/api/knowledge/scrape` | `src/server/index.ts:802` |
-| POST | `/api/knowledge/load-csv` | `src/server/index.ts:813` |
-| POST | `/api/knowledge/load-json` | `src/server/index.ts:837` |
-| POST | `/api/knowledge/graph/entity` | `src/server/index.ts:859` |
-| GET | `/api/knowledge/graph/query` | `src/server/index.ts:869` |
-| POST | `/api/knowledge/fuse` | `src/server/index.ts:881` |
-| POST | `/api/reasoning/chain-of-thought` | `src/server/index.ts:1039` |
-| GET | `/api/debug/:requestId` | `src/server/index.ts:1055` |
-| GET | `/api/conversations` | `src/server/index.ts:1068` |
-| GET | `/api/conversations/:sessionId` | `src/server/index.ts:1078` |
-| DELETE | `/api/conversations/:sessionId` | `src/server/index.ts:1089` |
-| POST | `/api/webhooks` | `src/server/index.ts:1097` |
-| GET | `/api/webhooks` | `src/server/index.ts:1113` |
-| DELETE | `/api/webhooks/:id` | `src/server/index.ts:1119` |
-| GET | `*` | `src/server/index.ts:1128` |
+| USE | `/api/knowledge-base/dabook` | `src/server/index.ts:206` |
+| POST | `/api/knowledge-base/add` | `src/server/index.ts:209` |
+| POST | `/api/knowledge-base/file` | `src/server/index.ts:219` |
+| POST | `/api/knowledge-base/directory` | `src/server/index.ts:229` |
+| USE | `/api/rag` | `src/server/index.ts:252` |
+| USE | `/api/knowledge-os` | `src/server/index.ts:254` |
+| GET | `/api/tools` | `src/server/index.ts:258` |
+| GET | `/api/models/free` | `src/server/index.ts:275` |
+| GET | `/api-docs` | `src/server/index.ts:291` |
+| POST | `/api/upload` | `src/server/index.ts:317` |
+| POST | `/api/feedback` | `src/server/index.ts:344` |
+| GET | `/api/feedback/:messageId` | `src/server/index.ts:361` |
+| GET | `/api/user/instructions` | `src/server/index.ts:372` |
+| PUT | `/api/user/instructions` | `src/server/index.ts:380` |
+| GET | `/api/chat/quick-replies` | `src/server/index.ts:392` |
+| POST | `/api/conversations/:sessionId/share` | `src/server/index.ts:414` |
+| GET | `/api/share/:shareId` | `src/server/index.ts:431` |
+| GET | `/api/documents/search` | `src/server/index.ts:447` |
+| USE | `/api/knowledge` | `src/server/index.ts:463` |
+| POST | `/api/knowledge/reddit` | `src/server/index.ts:465` |
+| POST | `/api/knowledge/youtube` | `src/server/index.ts:475` |
+| POST | `/api/knowledge/university` | `src/server/index.ts:485` |
+| POST | `/api/knowledge/papers` | `src/server/index.ts:495` |
+| POST | `/api/knowledge/github` | `src/server/index.ts:505` |
+| POST | `/api/knowledge/stackoverflow` | `src/server/index.ts:515` |
+| POST | `/api/knowledge/news` | `src/server/index.ts:525` |
+| POST | `/api/knowledge/medium` | `src/server/index.ts:540` |
+| POST | `/api/knowledge/quora` | `src/server/index.ts:550` |
+| POST | `/api/knowledge/gutenberg` | `src/server/index.ts:560` |
+| POST | `/api/knowledge/docs` | `src/server/index.ts:570` |
+| POST | `/api/knowledge/library-of-congress` | `src/server/index.ts:580` |
+| POST | `/api/knowledge/entertainment` | `src/server/index.ts:590` |
+| POST | `/api/knowledge/books` | `src/server/index.ts:604` |
+| POST | `/api/knowledge/specialized-topics` | `src/server/index.ts:617` |
+| POST | `/api/knowledge/financial-advice` | `src/server/index.ts:630` |
+| POST | `/api/knowledge/religion` | `src/server/index.ts:638` |
+| POST | `/api/knowledge/mental-health` | `src/server/index.ts:646` |
+| POST | `/api/knowledge/web-design` | `src/server/index.ts:654` |
+| POST | `/api/knowledge/ui-design` | `src/server/index.ts:662` |
+| POST | `/api/knowledge/backend-design` | `src/server/index.ts:670` |
+| POST | `/api/knowledge/music-theory` | `src/server/index.ts:678` |
+| POST | `/api/knowledge/llm-programming` | `src/server/index.ts:686` |
+| POST | `/api/knowledge/anatomy` | `src/server/index.ts:694` |
+| POST | `/api/knowledge/pottery` | `src/server/index.ts:702` |
+| POST | `/api/knowledge/gardening` | `src/server/index.ts:710` |
+| POST | `/api/knowledge/cna` | `src/server/index.ts:718` |
+| POST | `/api/knowledge/dsp` | `src/server/index.ts:726` |
+| POST | `/api/knowledge/rn` | `src/server/index.ts:734` |
+| POST | `/api/knowledge/astronomy` | `src/server/index.ts:742` |
+| POST | `/api/knowledge/astrology` | `src/server/index.ts:750` |
+| POST | `/api/knowledge/botany` | `src/server/index.ts:758` |
+| POST | `/api/knowledge/marijuana-growing` | `src/server/index.ts:766` |
+| POST | `/api/knowledge/load-telegram` | `src/server/index.ts:774` |
+| POST | `/api/knowledge/wikipedia` | `src/server/index.ts:795` |
+| POST | `/api/knowledge/scrape` | `src/server/index.ts:805` |
+| POST | `/api/knowledge/load-csv` | `src/server/index.ts:816` |
+| POST | `/api/knowledge/load-json` | `src/server/index.ts:840` |
+| POST | `/api/knowledge/graph/entity` | `src/server/index.ts:862` |
+| GET | `/api/knowledge/graph/query` | `src/server/index.ts:872` |
+| POST | `/api/knowledge/fuse` | `src/server/index.ts:884` |
+| POST | `/api/reasoning/chain-of-thought` | `src/server/index.ts:1042` |
+| GET | `/api/debug/:requestId` | `src/server/index.ts:1058` |
+| GET | `/api/conversations` | `src/server/index.ts:1071` |
+| GET | `/api/conversations/:sessionId` | `src/server/index.ts:1081` |
+| DELETE | `/api/conversations/:sessionId` | `src/server/index.ts:1092` |
+| POST | `/api/webhooks` | `src/server/index.ts:1100` |
+| GET | `/api/webhooks` | `src/server/index.ts:1116` |
+| DELETE | `/api/webhooks/:id` | `src/server/index.ts:1122` |
+| GET | `*` | `src/server/index.ts:1131` |
 | GET | `/stats` | `src/server/routes/admin.ts:123` |
 | POST | `/cache/clear` | `src/server/routes/admin.ts:172` |
 | GET | `/users` | `src/server/routes/admin.ts:218` |
@@ -278,9 +279,17 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/history/timeline` | `src/server/routes/history.ts:7` |
 | POST | `/api/history/compare` | `src/server/routes/history.ts:8` |
 | POST | `/api/history/primary-sources` | `src/server/routes/history.ts:9` |
-| GET | `/api/knowledge-base/stats` | `src/server/routes/knowledge-base.ts:7` |
-| GET | `/api/knowledge-base/sources` | `src/server/routes/knowledge-base.ts:18` |
-| GET | `/api/knowledge-base/ocr-queue` | `src/server/routes/knowledge-base.ts:34` |
+| GET | `/api/knowledge-base/stats` | `src/server/routes/knowledge-base.ts:76` |
+| GET | `/api/knowledge-base/dabook/health` | `src/server/routes/knowledge-base.ts:89` |
+| GET | `/api/knowledge-base/dabook/books` | `src/server/routes/knowledge-base.ts:101` |
+| POST | `/api/knowledge-base/dabook/license` | `src/server/routes/knowledge-base.ts:105` |
+| GET | `/api/knowledge-base/dabook/review/sample` | `src/server/routes/knowledge-base.ts:110` |
+| POST | `/api/knowledge-base/dabook/review/decision` | `src/server/routes/knowledge-base.ts:115` |
+| POST | `/api/knowledge-base/dabook/review/book` | `src/server/routes/knowledge-base.ts:120` |
+| POST | `/api/knowledge-base/dabook/recompile` | `src/server/routes/knowledge-base.ts:125` |
+| POST | `/api/knowledge-base/dabook/training-export` | `src/server/routes/knowledge-base.ts:129` |
+| GET | `/api/knowledge-base/sources` | `src/server/routes/knowledge-base.ts:135` |
+| GET | `/api/knowledge-base/ocr-queue` | `src/server/routes/knowledge-base.ts:151` |
 | POST | `/api/knowledge-online/miss` | `src/server/routes/knowledge-online.ts:18` |
 | POST | `/api/knowledge-online/check` | `src/server/routes/knowledge-online.ts:22` |
 | POST | `/api/knowledge-online/research` | `src/server/routes/knowledge-online.ts:38` |
@@ -555,6 +564,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `client/src/components/ProjectIntelligencePanel.tsx`
 - `client/src/components/SettingsMenu.tsx`
 - `client/src/components/SpriteLabPanel.tsx`
+- `client/src/components/TrainingLanePanel.tsx`
 - `client/src/components/UtilityWorkbenchPanel.tsx`
 - `client/src/components/WebsiteWorkspacePanel.tsx`
 - `client/src/features/gis/GISMapPanel.tsx`
@@ -607,6 +617,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `CORS_ORIGIN`
 - `CSRF_TOKEN`
 - `CUDA_VISIBLE_DEVICES`
+- `DABOOK_EVALS_DIR`
 - `DABOOK_PYTHON`
 - `DATABASE_URL`
 - `DEBUG_MODE`
@@ -773,6 +784,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `STARTUP_TIMEOUT_MS`
 - `TEMP`
 - `TMDB_API_KEY`
+- `TRAINING_EXPORT_DIR`
 - `TWILIO_ACCOUNT_SID`
 - `TWILIO_AUTH_TOKEN`
 - `TWILIO_FROM_NUMBER`
@@ -800,6 +812,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `git` — `scripts/run-coding-evals.ts`
 - `kill` — `src/core/coding/verification/CommandCapabilityRunner.ts`
 - `taskkill.exe` — `src/core/coding/verification/CommandCapabilityRunner.ts`
+- `taskkill` — `src/core/dabook/DabookBridge.ts`
 - `git` — `src/core/project/ProjectIntelligenceService.ts`
 - `git` — `src/core/tools/RepoTools.ts`
 
@@ -812,7 +825,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `client/src/components/CapabilityPromotionView.tsx` | 423 |
 | `client/src/components/CreativeComposerPanel.tsx` | 456 |
 | `client/src/components/FLStudioControlPanel.tsx` | 622 |
-| `client/src/components/KnowledgeOSPanel.tsx` | 406 |
+| `client/src/components/KnowledgeOSPanel.tsx` | 444 |
 | `client/src/components/ModeSelector.tsx` | 393 |
 | `client/src/components/RepositoryFindingsView.tsx` | 316 |
 | `client/src/components/SettingsMenu.tsx` | 568 |
@@ -821,7 +834,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `scripts/import-books.ts` | 317 |
 | `scripts/import-wikipedia-general-corpus.ts` | 337 |
 | `scripts/release/run-comprehensive-audit.mjs` | 302 |
-| `services/dabook/src/dabook/server/static/app.js` | 1084 |
+| `services/dabook/src/dabook/server/static/app.js` | 1052 |
 | `src/core/agents/AgentTeam.ts` | 547 |
 | `src/core/agents/CodingAgent.ts` | 440 |
 | `src/core/agents/MultiAgentOrchestrator.ts` | 1269 |
@@ -832,7 +845,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/browser/AuthorizedBrowserJob.ts` | 419 |
 | `src/core/browser/BrowserAgent.ts` | 388 |
 | `src/core/browser/BrowserJobRunner.ts` | 447 |
-| `src/core/capabilities/CapabilityRegistry.ts` | 1218 |
+| `src/core/capabilities/CapabilityRegistry.ts` | 1282 |
 | `src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts` | 534 |
 | `src/core/capabilities/observability/CapabilityObservabilityService.ts` | 341 |
 | `src/core/capabilities/promotion/CapabilityPromotionEngine.ts` | 360 |
@@ -842,6 +855,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/config/ProfileManager.ts` | 434 |
 | `src/core/contracts/UniversalContract.ts` | 321 |
 | `src/core/creative/CreativeWritingAgent.ts` | 345 |
+| `src/core/dabook/DabookBridge.ts` | 606 |
 | `src/core/database/Database.ts` | 552 |
 | `src/core/database/ExpansionMigrations.ts` | 383 |
 | `src/core/developer/MockApiEngine.ts` | 450 |
@@ -851,7 +865,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/index.ts` | 409 |
 | `src/core/initialization/ServiceInitializer.ts` | 885 |
 | `src/core/knowledge/GitHubSource.ts` | 323 |
-| `src/core/knowledge/LocalKnowledgeAnswerer.ts` | 754 |
+| `src/core/knowledge/LocalKnowledgeAnswerer.ts` | 770 |
 | `src/core/knowledge/OnlineKnowledgeIngestionService.ts` | 554 |
 | `src/core/knowledge/QueryEnhancer.ts` | 440 |
 | `src/core/knowledge/ScientificPapersSource.ts` | 325 |
@@ -875,7 +889,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/quality/AutoReview.ts` | 398 |
 | `src/core/rag/AudioRAG.ts` | 422 |
 | `src/core/rag/CorrectiveRetriever.ts` | 460 |
-| `src/core/rag/HybridRetriever.ts` | 393 |
+| `src/core/rag/HybridRetriever.ts` | 394 |
 | `src/core/rag/RAGDocumentStore.ts` | 1233 |
 | `src/core/rag/RAGRouter.ts` | 368 |
 | `src/core/rag/TrustRAG.ts` | 368 |
@@ -899,7 +913,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/writing/DocumentEditorEngine.ts` | 327 |
 | `src/core/writing/DocumentImportExportService.ts` | 360 |
 | `src/core/writing/WritingStudioService.ts` | 339 |
-| `src/server/index.ts` | 1174 |
+| `src/server/index.ts` | 1177 |
 | `src/server/routes/admin.ts` | 313 |
 | `src/server/routes/capabilities.ts` | 452 |
 | `src/server/routes/legacy-chat.ts` | 600 |

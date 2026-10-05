@@ -123,5 +123,11 @@ def update_setting(con: sqlite3.Connection, key: str, value: Any) -> None:
         )
 
 
+def read_flag(con: sqlite3.Connection, key: str) -> bool:
+    """Uncached read of a boolean setting (for flags that must act within one poll)."""
+    row = con.execute("SELECT v FROM settings WHERE k=?", (key,)).fetchone()
+    return row is not None and row["v"] not in ("0", "false", "False")
+
+
 def set_stopping(con: sqlite3.Connection, value: bool) -> None:
     update_setting(con, "stopping", "1" if value else "0")

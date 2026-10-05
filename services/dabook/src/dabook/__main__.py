@@ -1,4 +1,4 @@
-from dabook.cli import app
+from dabook.cli import main
 
 if __name__ == "__main__":
-    app()
+    main()

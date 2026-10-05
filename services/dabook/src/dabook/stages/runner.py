@@ -1,8 +1,10 @@
 """
-Real stage implementations for S00–S13 (§8).
+Stage implementations S00-S12 (S13, dataset compilation, lives in ``stages/compile.py``).
 
-Executes real extraction, furniture filtering, heading structure reconciliation,
-Book Graph construction, and dataset exports.
+Every stage is registered with :func:`dabook.stages.registry.stage`, which is the single source
+of its implementation version. A stage reads its inputs only through ``StageContext``, which
+resolves them by the *exact* committed key the planner assigned, so a re-run with different
+parameters can never pick up another run's leftovers (defects D4, D5).
 """
 
 from __future__ import annotations
@@ -11,6 +13,7 @@ import json
 import logging
 import re
 import time
+import unicodedata
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -19,20 +22,36 @@ import ftfy
 
 from dabook.backends.pdfium import PdfiumExtractor
 from dabook.core.atomic import StageCommit, write_json
-from dabook.core.datasets import (
-    consolidate_workspace_datasets,
-    detect_code_language,
-    estimate_tokens,
-    is_boilerplate_node,
-    is_valid_code_block,
-)
-from dabook.core.store.db import connect
-from dabook.core.store.settings import load_settings
-from dabook.ir.models import (
-    BookNode,
+from dabook.core.codedetect import classify_code
+from dabook.ir.models import BookNode, PageData
+from dabook.stages.registry import (
+    STAGE_IMPLS,
+    MissingSourceError,
+    StageContext,
+    stage,
 )
 
 logger = logging.getLogger("dabook.stages")
+
+PARAMS_FILE = "params.json"
+
+# A page counts as "has a text layer" above this many characters.
+TEXT_PAGE_MIN_CHARS = 25
+SCANNED_BELOW = 0.30  # share of sampled pages with text under which a PDF is scanned
+NATIVE_AT_LEAST = 0.80  # ... and at/above which it is fully born-digital (between = mixed)
+
+
+def load_params(work_dir: Path) -> dict[str, Any]:
+    """Per-book parameters written by the planner; defaults for hand-driven runs."""
+    path = work_dir / PARAMS_FILE
+    if path.is_file():
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as exc:
+            logger.warning("Unreadable %s (%s); using defaults", path, exc)
+    from dabook.config.models import DabookConfig
+
+    return DabookConfig().to_params_dict()
 
 
 def run_stage(
@@ -41,204 +60,200 @@ def run_stage(
     pdf_path: Path,
     progress_fn: Callable[[int, str], None],
     should_abort: Callable[[], bool],
+    upstream: dict[str, list[str]] | None = None,
+    params: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Execute the real stage function corresponding to task['stage']."""
-    stage = task["stage"]
+    """Execute the registered implementation of ``task['stage']`` and commit its output."""
+    name = task["stage"]
     key = task["stage_key"]
-    stage_dir = work_dir / "stages" / stage
+    stage_dir = work_dir / "stages" / name
+    if name not in STAGE_IMPLS:
+        raise KeyError(f"No implementation registered for stage {name!r}")
+    impl = STAGE_IMPLS[name]
 
     t0 = time.time()
     meta = {
-        "stage": stage,
+        "stage": name,
         "task_id": task["id"],
         "shard_idx": task.get("shard_idx", 0),
-        "impl_version": "0.2.0-real",
+        "impl_version": impl.version,
     }
-
     try:
         with StageCommit(stage_dir, key, meta) as out_dir:
-            if stage == "s00_register":
-                _stage_s00_register(task, pdf_path, out_dir)
-            elif stage == "s01_inspect":
-                _stage_s01_inspect(task, pdf_path, out_dir, progress_fn)
-            elif stage == "s02_extract":
-                _stage_s02_extract(task, pdf_path, out_dir, progress_fn, should_abort)
-            elif stage == "s03_merge":
-                _stage_s03_merge(task, work_dir, out_dir, progress_fn)
-            elif stage == "s04_furniture":
-                _stage_s04_furniture(task, work_dir, out_dir, progress_fn)
-            elif stage == "s05_reading_order":
-                _stage_s05_reading_order(task, work_dir, out_dir, progress_fn)
-            elif stage == "s06_structure":
-                _stage_s06_structure(task, work_dir, out_dir, progress_fn)
-            elif stage == "s07_continuity":
-                _stage_s07_continuity(task, work_dir, out_dir, progress_fn)
-            elif stage == "s08_typed_content":
-                _stage_s08_typed_content(task, work_dir, out_dir, progress_fn)
-            elif stage == "s09_graph":
-                _stage_s09_graph(task, work_dir, out_dir, progress_fn)
-            elif stage == "s10_clean":
-                _stage_s10_clean(task, work_dir, out_dir, progress_fn)
-            elif stage == "s11_validate":
-                _stage_s11_validate(task, work_dir, out_dir, progress_fn)
-            elif stage == "s12_semantic":
-                _stage_s12_semantic(task, work_dir, out_dir, progress_fn)
-            elif stage == "s13_compile":
-                _stage_s13_compile(task, work_dir, out_dir, progress_fn)
-            else:
-                write_json(out_dir / "output.json", {"status": "ok", "stage": stage})
+            ctx = StageContext(
+                task=task,
+                work_dir=work_dir,
+                out_dir=out_dir,
+                pdf_path=pdf_path,
+                upstream=upstream or {},
+                params=params if params is not None else load_params(work_dir),
+                progress=progress_fn,
+                should_abort=should_abort,
+            )
+            impl.fn(ctx)
     except FileExistsError:
-        # Another worker already committed this stage — treat as a cache hit.
-        return {
-            "output_path": str(stage_dir / key),
-            "duration_ms": 0,
-        }
+        # Another worker already committed this exact key: a cache hit.
+        return {"output_path": str(stage_dir / key), "duration_ms": 0, "cache_hit": True}
 
-    elapsed_ms = int((time.time() - t0) * 1000)
     return {
         "output_path": str(stage_dir / key),
-        "duration_ms": elapsed_ms,
+        "duration_ms": int((time.time() - t0) * 1000),
+        "cache_hit": False,
     }
 
 
+def _require_pdf(ctx: StageContext) -> Path:
+    if not ctx.pdf_path.is_file():
+        raise MissingSourceError(f"Source PDF not found: {ctx.pdf_path}")
+    return ctx.pdf_path
+
+
+def _norm(s: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", s.lower())
+
+
 # ---------------------------------------------------------------------------
-# Stage S00: Register
+# S00 Register
 # ---------------------------------------------------------------------------
-def _stage_s00_register(task: dict[str, Any], pdf_path: Path, out_dir: Path) -> None:
+@stage("s00_register", "0.2.0")
+def stage_s00_register(ctx: StageContext) -> None:
+    pdf = _require_pdf(ctx)
     write_json(
-        out_dir / "source_meta.json",
-        {
-            "pdf_name": pdf_path.name,
-            "pdf_size": pdf_path.stat().st_size if pdf_path.exists() else 0,
-            "registered_at": time.time(),
-        },
+        ctx.out_dir / "source_meta.json",
+        {"pdf_name": pdf.name, "pdf_size": pdf.stat().st_size, "registered_at": time.time()},
     )
 
 
 # ---------------------------------------------------------------------------
-# Stage S01: Inspect
+# S01 Inspect
 # ---------------------------------------------------------------------------
-def _stage_s01_inspect(
-    task: dict[str, Any],
-    pdf_path: Path,
-    out_dir: Path,
-    progress_fn: Callable[[int, str], None],
-) -> None:
-    progress_fn(0, "Inspecting PDF and extracting bookmarks…")
-    with PdfiumExtractor(pdf_path) as ext:
+def _sample_pages(page_count: int, n: int = 8) -> list[int]:
+    if page_count <= n:
+        return list(range(page_count))
+    step = (page_count - 1) / (n - 1)
+    return sorted({round(i * step) for i in range(n)})
+
+
+def classify_doc_type(text_pages: int, sampled: int) -> str:
+    ratio = text_pages / sampled if sampled else 0.0
+    if ratio < SCANNED_BELOW:
+        return "scanned"
+    return "native" if ratio >= NATIVE_AT_LEAST else "mixed"
+
+
+@stage("s01_inspect", "0.2.0")
+def stage_s01_inspect(ctx: StageContext) -> None:
+    pdf = _require_pdf(ctx)
+    ctx.progress(0, "Inspecting PDF and extracting bookmarks…")
+    toc_mode = ctx.param("toc_mode", "auto")
+    with PdfiumExtractor(pdf) as ext:
         page_count = ext.page_count()
-        toc = ext.extract_toc()
+        if page_count == 0:
+            raise ValueError("PDF is invalid: it has no pages")
+        toc = [] if toc_mode == "off" else ext.extract_toc()
+        title = ext.extract_title()
+        sampled = _sample_pages(page_count)
+        text_pages = sum(1 for idx in sampled if ext.page_char_count(idx) >= TEXT_PAGE_MIN_CHARS)
 
-        # Sample sample pages for text ratio
-        sample_indices = [
-            0,
-            min(5, page_count - 1),
-            page_count // 2,
-            max(0, page_count - 2),
-        ]
-        total_chars = 0
-        for idx in set(sample_indices):
-            page_data = ext.extract_page(idx)
-            total_chars += page_data.char_count
-
-        is_born_digital = total_chars > 200
-
+    doc_type = classify_doc_type(text_pages, len(sampled))
     write_json(
-        out_dir / "inspection.json",
+        ctx.out_dir / "inspection.json",
         {
             "page_count": page_count,
-            "is_born_digital": is_born_digital,
+            "title": title,
+            "doc_type": doc_type,
+            "is_born_digital": doc_type != "scanned",
+            "sampled_pages": sampled,
+            "text_pages_sampled": text_pages,
             "toc_count": len(toc),
             "toc": [t.model_dump() for t in toc],
         },
     )
-    progress_fn(1, "Inspection complete.")
+    ctx.progress(1, "Inspection complete.")
 
 
 # ---------------------------------------------------------------------------
-# Stage S02: Extract (Sharded)
+# S02 Extract (sharded)
 # ---------------------------------------------------------------------------
-def _stage_s02_extract(
-    task: dict[str, Any],
-    pdf_path: Path,
-    out_dir: Path,
-    progress_fn: Callable[[int, str], None],
-    should_abort: Callable[[], bool],
-) -> None:
-    page_start = task.get("page_start") or 0
-    page_end = task.get("page_end") or (page_start + 1)
+@stage("s02_extract", "0.2.0")
+def stage_s02_extract(ctx: StageContext) -> None:
+    pdf = _require_pdf(ctx)
+    page_start = ctx.task.get("page_start") or 0
+    page_end = ctx.task.get("page_end") or (page_start + 1)
 
-    extracted_pages: list[dict[str, Any]] = []
-    with PdfiumExtractor(pdf_path) as ext:
-        for idx, p_num in enumerate(range(page_start, page_end)):
-            if should_abort():
+    extracted: list[dict[str, Any]] = []
+    with PdfiumExtractor(pdf) as ext:
+        total = ext.page_count()
+        for done, p_num in enumerate(range(page_start, min(page_end, total)), start=1):
+            if ctx.should_abort():
                 raise RuntimeError("Aborted")
-            if p_num >= ext.page_count():
-                break
-
-            page_data = ext.extract_page(p_num)
-            extracted_pages.append(page_data.model_dump())
-            progress_fn(idx + 1, f"Extracted page {p_num + 1}/{page_end}")
+            try:
+                page = ext.extract_page(p_num)
+            except Exception as exc:  # one bad page must not sink the book; S11 scores it
+                logger.warning("Page %d failed to extract: %s", p_num, exc)
+                page = PageData(page_idx=p_num, width=612.0, height=792.0, error=str(exc)[:300])
+            extracted.append(page.model_dump())
+            ctx.progress(done, f"Extracted page {p_num + 1}/{page_end}")
 
     write_json(
-        out_dir / "pages.json",
+        ctx.out_dir / "pages.json",
         {
-            "shard_idx": task.get("shard_idx", 0),
+            "shard_idx": ctx.task.get("shard_idx", 0),
             "page_start": page_start,
             "page_end": page_end,
-            "pages": extracted_pages,
+            "pages": extracted,
         },
     )
 
 
 # ---------------------------------------------------------------------------
-# Stage S03: Merge
+# S03 Merge
 # ---------------------------------------------------------------------------
-def _stage_s03_merge(
-    task: dict[str, Any],
-    work_dir: Path,
-    out_dir: Path,
-    progress_fn: Callable[[int, str], None],
-) -> None:
-    progress_fn(0, "Merging sharded extraction outputs…")
-    extract_dir = work_dir / "stages" / "s02_extract"
-    all_pages: list[dict[str, Any]] = []
+@stage("s03_merge", "0.2.0")
+def stage_s03_merge(ctx: StageContext) -> None:
+    ctx.progress(0, "Merging sharded extraction outputs…")
+    pages: list[dict[str, Any]] = []
+    # Exactly the shards of the current plan; no other key's leftovers are ever merged.
+    for shard_dir in ctx.input_dirs("s02_extract"):
+        data = json.loads((shard_dir / "pages.json").read_text(encoding="utf-8"))
+        pages.extend(data.get("pages", []))
+    pages.sort(key=lambda p: p["page_idx"])
 
-    # Find all committed stage keys in s02_extract
-    for commit_dir in sorted(extract_dir.glob("*")):
-        if (commit_dir / "_SUCCESS").is_file():
-            pages_file = commit_dir / "pages.json"
-            if pages_file.is_file():
-                try:
-                    data = json.loads(pages_file.read_text(encoding="utf-8"))
-                    all_pages.extend(data.get("pages", []))
-                except Exception as e:
-                    logger.warning("Error reading %s: %s", pages_file, e)
-
-    # Sort pages by page_idx
-    all_pages.sort(key=lambda p: p["page_idx"])
-    write_json(out_dir / "merged_pages.json", {"pages": all_pages, "total_pages": len(all_pages)})
-    progress_fn(len(all_pages), f"Merged {len(all_pages)} pages.")
+    expected = ctx.read_json("s01_inspect", "inspection.json")["page_count"]
+    seen = [p["page_idx"] for p in pages]
+    if seen != list(range(expected)):
+        raise RuntimeError(
+            f"S03 page coverage mismatch: expected pages 0..{expected - 1}, got {len(seen)} "
+            f"({len(seen) - len(set(seen))} duplicates)"
+        )
+    write_json(ctx.out_dir / "merged_pages.json", {"pages": pages, "total_pages": len(pages)})
+    ctx.progress(len(pages), f"Merged {len(pages)} pages.")
 
 
 # ---------------------------------------------------------------------------
-# Stage S04: Furniture Removal (Headers & Footers)
+# S04 Furniture + TOC-page removal
 # ---------------------------------------------------------------------------
-# Stage S04: Furniture Removal (Headers, Footers, Watermarks)
-# ---------------------------------------------------------------------------
-def _stage_s04_furniture(
-    task: dict[str, Any],
-    work_dir: Path,
-    out_dir: Path,
-    progress_fn: Callable[[int, str], None],
-) -> None:
-    progress_fn(0, "Detecting running headers, footers, and watermarks…")
-    s03_dir = _get_latest_stage_dir(work_dir, "s03_merge")
-    if not s03_dir:
-        write_json(out_dir / "clean_pages.json", {"pages": []})
-        return
+_DOT_LEADER = re.compile(r"(?:\.\s?){4,}")
 
-    pages_data = json.loads((s03_dir / "merged_pages.json").read_text(encoding="utf-8"))["pages"]
+
+def _block_line_texts(block: dict[str, Any]) -> list[str]:
+    lines = block.get("lines") or []
+    texts = [ln["text"] for ln in lines] or block["raw_text"].splitlines()
+    return [t for t in texts if t.strip()]
+
+
+def is_toc_block(block: dict[str, Any]) -> bool:
+    """A block where at least half the lines carry dot leaders ("Chapter 1 ......... 5")."""
+    texts = _block_line_texts(block)
+    if not texts:
+        return False
+    return sum(1 for t in texts if _DOT_LEADER.search(t)) / len(texts) >= 0.5
+
+
+@stage("s04_furniture", "0.2.0")
+def stage_s04_furniture(ctx: StageContext) -> None:
+    ctx.progress(0, "Detecting running headers, footers, watermarks and TOC pages…")
+    pages_data = ctx.read_json("s03_merge", "merged_pages.json")["pages"]
 
     # Frequency analysis across margin bands (top 6% and bottom 6%)
     margin_patterns: dict[str, int] = {}
@@ -246,8 +261,8 @@ def _stage_s04_furniture(
         h = page.get("height", 660.0)
         for b in page.get("blocks", []):
             y0, y1 = b["bbox"][1], b["bbox"][3]
-            txt = b["raw_text"].strip()
             if y0 < h * 0.06 or y1 > h * 0.94:
+                txt = b["raw_text"].strip()
                 margin_patterns[txt] = margin_patterns.get(txt, 0) + 1
 
     indesign_re = re.compile(r".*\.indd\s+\d+:\d+:\d+.*Page\s+\w+", re.IGNORECASE)
@@ -258,18 +273,15 @@ def _stage_s04_furniture(
     clean_pages: list[dict[str, Any]] = []
     for page in pages_data:
         h = page.get("height", 660.0)
-        clean_blocks = []
         for b in page.get("blocks", []):
             txt = b["raw_text"].strip()
             y0, y1 = b["bbox"][1], b["bbox"][3]
-            is_furniture = False
-
-            # Universal watermark check anywhere on page
+            in_margin = y0 < h * 0.06 or y1 > h * 0.94
             if (
                 watermark_re.search(txt)
                 or indesign_re.search(txt)
                 or (
-                    (y0 < h * 0.06 or y1 > h * 0.94)
+                    in_margin
                     and (
                         margin_patterns.get(txt, 0) >= 2
                         or page_num_re.match(txt)
@@ -278,31 +290,29 @@ def _stage_s04_furniture(
                     )
                 )
             ):
-                is_furniture = True
-
-            if is_furniture:
                 b["block_type"] = "furniture"
-            clean_blocks.append(b)
 
-        clean_pages.append({**page, "blocks": clean_blocks})
+        # Table-of-contents pages: dot-leader lines are navigation, not knowledge.
+        content = [b for b in page.get("blocks", []) if b["block_type"] != "furniture"]
+        toc_blocks = [b for b in content if is_toc_block(b)]
+        if toc_blocks and len(toc_blocks) / len(content) >= 0.5:
+            for b in content:
+                b["block_type"] = "toc"
+        else:
+            for b in toc_blocks:
+                b["block_type"] = "toc"
+        clean_pages.append(page)
 
-    write_json(out_dir / "clean_pages.json", {"pages": clean_pages})
-    progress_fn(len(clean_pages), "Furniture filtering complete.")
+    write_json(ctx.out_dir / "clean_pages.json", {"pages": clean_pages})
+    ctx.progress(len(clean_pages), "Furniture filtering complete.")
 
 
 # ---------------------------------------------------------------------------
-# Stage S05: Reading Order (XY-Cut++ Column Detection)
+# S05 Reading order (column-aware)
 # ---------------------------------------------------------------------------
-def _stage_s05_reading_order(
-    task: dict[str, Any],
-    work_dir: Path,
-    out_dir: Path,
-    progress_fn: Callable[[int, str], None],
-) -> None:
-    s04_dir = _get_latest_stage_dir(work_dir, "s04_furniture")
-    if s04_dir is None:
-        raise RuntimeError("s05_reading_order: missing s04_furniture output")
-    pages_data = json.loads((s04_dir / "clean_pages.json").read_text(encoding="utf-8"))["pages"]
+@stage("s05_reading_order", "0.2.0")
+def stage_s05_reading_order(ctx: StageContext) -> None:
+    pages_data = ctx.read_json("s04_furniture", "clean_pages.json")["pages"]
 
     for page in pages_data:
         pw = page.get("width", 530.0)
@@ -312,7 +322,6 @@ def _stage_s05_reading_order(
             page["blocks"] = []
             continue
 
-        # Multi-column detection (XY-Cut++)
         mid_x = pw / 2.0
         left_blocks = [b for b in blocks if b["bbox"][2] <= mid_x + 10]
         right_blocks = [b for b in blocks if b["bbox"][0] >= mid_x - 10]
@@ -321,30 +330,28 @@ def _stage_s05_reading_order(
         ]
 
         is_two_col = (
-            len(left_blocks) >= 2
-            and len(right_blocks) >= 2
+            len(left_blocks) >= 1
+            and len(right_blocks) >= 1
             and (len(left_blocks) + len(right_blocks)) / len(blocks) >= 0.75
             and len(spanning_blocks) <= 2
+            and len(left_blocks) + len(right_blocks) >= 3
         )
+
+        def by_position(b: dict[str, Any]) -> tuple[int, float]:
+            return (round(b["bbox"][1] / 3.5), b["bbox"][0])
 
         if is_two_col:
             top_spanning = [b for b in spanning_blocks if b["bbox"][1] < ph * 0.3]
             bot_spanning = [b for b in spanning_blocks if b["bbox"][1] >= ph * 0.3]
-
-            left_sorted = sorted(
-                left_blocks, key=lambda b: (round(b["bbox"][1] / 3.5), b["bbox"][0])
-            )
-            right_sorted = sorted(
-                right_blocks, key=lambda b: (round(b["bbox"][1] / 3.5), b["bbox"][0])
-            )
+            # A full-width banner above the columns reads first; one below reads last.
             ordered = (
                 sorted(top_spanning, key=lambda b: b["bbox"][1])
-                + left_sorted
-                + right_sorted
+                + sorted(left_blocks, key=by_position)
+                + sorted(right_blocks, key=by_position)
                 + sorted(bot_spanning, key=lambda b: b["bbox"][1])
             )
         else:
-            ordered = sorted(blocks, key=lambda b: (round(b["bbox"][1] / 3.5), b["bbox"][0]))
+            ordered = sorted(blocks, key=by_position)
 
         # Chapter opening banner inversion check (e.g. 'C H A P T E R 1: ...')
         ch_idx = next(
@@ -356,92 +363,76 @@ def _stage_s05_reading_order(
             None,
         )
         if ch_idx is not None and ch_idx > 0 and ordered[ch_idx]["bbox"][1] < ph * 0.3:
-            ch_block = ordered.pop(ch_idx)
-            ordered.insert(0, ch_block)
+            ordered.insert(0, ordered.pop(ch_idx))
 
         page["blocks"] = ordered
 
-    write_json(out_dir / "ordered_pages.json", {"pages": pages_data})
-    progress_fn(len(pages_data), "Reading order organized.")
+    write_json(ctx.out_dir / "ordered_pages.json", {"pages": pages_data})
+    ctx.progress(len(pages_data), "Reading order organized.")
 
 
 # ---------------------------------------------------------------------------
-# Stage S06: Structure Hierarchy (TOC Reconciliation)
+# S06 Structure (outline reconciliation + bold headings)
 # ---------------------------------------------------------------------------
-def _stage_s06_structure(
-    task: dict[str, Any],
-    work_dir: Path,
-    out_dir: Path,
-    progress_fn: Callable[[int, str], None],
-) -> None:
-    s05_dir = _get_latest_stage_dir(work_dir, "s05_reading_order")
-    if s05_dir is None:
-        raise RuntimeError("s06_structure: missing s05_reading_order output")
-    s01_dir = _get_latest_stage_dir(work_dir, "s01_inspect")
+_CHAPTER_RE = re.compile(r"^(Chapter\s+\d+|Appendix\s+\w+|Part\s+\w+|Index)$", re.IGNORECASE)
 
-    pages_data = json.loads((s05_dir / "ordered_pages.json").read_text(encoding="utf-8"))["pages"]
+
+@stage("s06_structure", "0.2.0")
+def stage_s06_structure(ctx: StageContext) -> None:
+    pages_data = ctx.read_json("s05_reading_order", "ordered_pages.json")["pages"]
     toc: list[dict[str, Any]] = []
-    if s01_dir and (s01_dir / "inspection.json").is_file():
-        toc = json.loads((s01_dir / "inspection.json").read_text(encoding="utf-8")).get("toc", [])
+    if ctx.param("toc_mode", "auto") != "off":
+        toc = ctx.read_json("s01_inspect", "inspection.json").get("toc", [])
 
-    # Map TOC items to page blocks with strict matching
     for page in pages_data:
-        p_idx = page["page_idx"]
-        page_toc = [t for t in toc if t.get("page_idx") == p_idx]
+        entries = [t for t in toc if t.get("page_idx") == page["page_idx"]]
+        used: set[int] = set()
 
         for block in page["blocks"]:
+            if block["block_type"] in ("toc", "furniture", "code"):
+                continue
             txt = block["raw_text"].strip()
-            clean_txt_norm = re.sub(r"[^a-z0-9]", "", txt.lower())
+            norm = _norm(txt)
 
-            matched_toc = None
-            for t in page_toc:
-                t_norm = re.sub(r"[^a-z0-9]", "", t["title"].lower())
-                if len(t_norm) >= 4 and (t_norm in clean_txt_norm or clean_txt_norm in t_norm):
-                    matched_toc = t
+            # An outline entry claims a block only when the block is essentially that title
+            # (numbering/page-number slack allowed), never a paragraph that merely mentions it.
+            matched: dict[str, Any] | None = None
+            for i, t in enumerate(entries):
+                t_norm = _norm(t["title"])
+                if i not in used and len(t_norm) >= 3 and t_norm in norm and len(norm) <= len(t_norm) + 10:
+                    matched = t
+                    used.add(i)
                     break
 
-            if matched_toc:
+            if matched:
                 block["block_type"] = "heading"
-                block["metadata"]["level"] = matched_toc["level"]
-                block["metadata"]["title"] = matched_toc["title"]
+                block["metadata"]["level"] = matched["level"]
+                block["metadata"]["title"] = matched["title"]
             elif block.get("is_bold") and len(txt) < 100 and not txt.endswith((".", ";", ":", ",")):
-                if re.match(r"^(Chapter\s+\d+|Appendix\s+\w+|Index)$", txt, re.IGNORECASE):
+                if _CHAPTER_RE.match(txt):
                     block["block_type"] = "heading"
-                    block["metadata"]["level"] = 1
+                    block["metadata"]["level"] = 0
                 elif block["block_type"] == "heading":
                     block["metadata"]["level"] = 2
-            else:
-                if block["block_type"] == "heading":
-                    block["block_type"] = "paragraph"
+            elif block["block_type"] == "heading":
+                block["block_type"] = "paragraph"
 
-    write_json(out_dir / "structured_pages.json", {"pages": pages_data, "toc": toc})
-    progress_fn(len(pages_data), "Structure and headings identified.")
+    write_json(ctx.out_dir / "structured_pages.json", {"pages": pages_data, "toc": toc})
+    ctx.progress(len(pages_data), "Structure and headings identified.")
 
 
 # ---------------------------------------------------------------------------
-# Stage S07: Continuity (Paragraph Stitching)
+# S07 Continuity
 # ---------------------------------------------------------------------------
-def _stage_s07_continuity(
-    task: dict[str, Any],
-    work_dir: Path,
-    out_dir: Path,
-    progress_fn: Callable[[int, str], None],
-) -> None:
-    s06_dir = _get_latest_stage_dir(work_dir, "s06_structure")
-    if s06_dir is None:
-        raise RuntimeError("s07_continuity: missing s06_structure output")
-    pages_data = json.loads((s06_dir / "structured_pages.json").read_text(encoding="utf-8"))[
-        "pages"
-    ]
+@stage("s07_continuity", "0.2.0")
+def stage_s07_continuity(ctx: StageContext) -> None:
+    pages_data = ctx.read_json("s06_structure", "structured_pages.json")["pages"]
 
-    # Stitch trailing words with hyphens
     for i in range(len(pages_data) - 1):
         curr_blocks = pages_data[i]["blocks"]
         next_blocks = pages_data[i + 1]["blocks"]
-
         if curr_blocks and next_blocks:
-            last = curr_blocks[-1]
-            first = next_blocks[0]
+            last, first = curr_blocks[-1], next_blocks[0]
             if (
                 last["block_type"] == "paragraph"
                 and first["block_type"] == "paragraph"
@@ -450,741 +441,246 @@ def _stage_s07_continuity(
                 last["metadata"]["continues_on_next_page"] = True
                 first["metadata"]["continues_from_prev_page"] = True
 
-    write_json(out_dir / "continuous_pages.json", {"pages": pages_data})
-    progress_fn(len(pages_data), "Continuity verified.")
+    write_json(ctx.out_dir / "continuous_pages.json", {"pages": pages_data})
+    ctx.progress(len(pages_data), "Continuity verified.")
 
 
 # ---------------------------------------------------------------------------
-# Stage S08: Typed Content (Code, Assembly, Equations)
+# S08 Typed content (code of any language, lists)
 # ---------------------------------------------------------------------------
-def _stage_s08_typed_content(
-    task: dict[str, Any],
-    work_dir: Path,
-    out_dir: Path,
-    progress_fn: Callable[[int, str], None],
-) -> None:
-    s07_dir = _get_latest_stage_dir(work_dir, "s07_continuity")
-    if s07_dir is None:
-        raise RuntimeError("s08_typed_content: missing s07_continuity output")
-    pages_data = json.loads((s07_dir / "continuous_pages.json").read_text(encoding="utf-8"))[
-        "pages"
-    ]
+@stage("s08_typed_content", "0.2.0")
+def stage_s08_typed_content(ctx: StageContext) -> None:
+    pages_data = ctx.read_json("s07_continuity", "continuous_pages.json")["pages"]
 
-    asm_registers = {
-        "eax",
-        "ebx",
-        "ecx",
-        "edx",
-        "esi",
-        "edi",
-        "ebp",
-        "esp",
-        "rax",
-        "rbx",
-        "rcx",
-        "rdx",
-        "rsi",
-        "rdi",
-        "rbp",
-        "rsp",
-        "r8",
-        "r9",
-        "r10",
-        "r11",
-        "r12",
-        "r13",
-        "r14",
-        "r15",
-        "al",
-        "bl",
-        "cl",
-        "dl",
-        "ah",
-        "bh",
-        "ch",
-        "dh",
-        "ax",
-        "bx",
-        "cx",
-        "dx",
-        "sp",
-        "bp",
-        "si",
-        "di",
-    }
-    c_types_keywords = {
-        "typedef",
-        "struct",
-        "sizeof",
-        "volatile",
-        "unsigned",
-        "#include",
-        "#define",
-        "memcpy",
-        "uint32_t",
-        "uint64_t",
-        "dword",
-        "qword",
-        "guid",
-    }
-
-    code_block_count = 0
+    code_blocks = 0
     for page in pages_data:
         for block in page["blocks"]:
-            txt = block["raw_text"]
             b_type = block["block_type"]
-
-            is_mono = block.get("is_mono", False) or b_type == "code"
-
-            words = set(re.findall(r"\b[a-zA-Z_][a-zA-Z0-9_]*\b", txt.lower()))
-            has_reg = bool(words.intersection(asm_registers))
-            has_c_kw = bool(words.intersection(c_types_keywords))
-            has_line_num = bool(re.search(r"^\s*\d{2}:", txt, re.MULTILINE))
-            has_mem_bracket = bool(re.search(r"\[[eErR]?[a-z0-9_+* -]+\]", txt))
-            has_hex_addr = bool(re.search(r"0x[0-9a-fA-F]{4,8}", txt))
-
-            if is_mono or has_line_num or (has_reg and (has_mem_bracket or has_hex_addr)):
+            if b_type in ("heading", "toc", "furniture"):
+                continue
+            txt = block["raw_text"]
+            is_mono = bool(block.get("is_mono")) or b_type == "code"
+            language = classify_code(txt, is_mono)
+            if language is not None:
                 block["block_type"] = "code"
-                if has_c_kw and not has_reg:
-                    block["metadata"]["language"] = "c"
-                else:
-                    block["metadata"]["language"] = "x86_asm"
-                code_block_count += 1
+                block["metadata"]["language"] = language
+                code_blocks += 1
             elif txt.strip().startswith(("1.", "2.", "3.", "■", "•", "-")):
-                if block["block_type"] != "heading":
-                    block["block_type"] = "list_item"
+                block["block_type"] = "list_item"
 
     write_json(
-        out_dir / "typed_pages.json",
-        {"pages": pages_data, "code_block_count": code_block_count},
+        ctx.out_dir / "typed_pages.json", {"pages": pages_data, "code_block_count": code_blocks}
     )
-    progress_fn(len(pages_data), f"Typed content identified ({code_block_count} code blocks).")
+    ctx.progress(len(pages_data), f"Typed content identified ({code_blocks} code blocks).")
 
 
 # ---------------------------------------------------------------------------
-# Stage S09: Book Graph
+# S09 Book graph
 # ---------------------------------------------------------------------------
-def _stage_s09_graph(
-    task: dict[str, Any],
-    work_dir: Path,
-    out_dir: Path,
-    progress_fn: Callable[[int, str], None],
-) -> None:
-    s08_dir = _get_latest_stage_dir(work_dir, "s08_typed_content")
-    if s08_dir is None:
-        raise RuntimeError("s09_graph: missing s08_typed_content output")
-    pages_data = json.loads((s08_dir / "typed_pages.json").read_text(encoding="utf-8"))["pages"]
+@stage("s09_graph", "0.2.0")
+def stage_s09_graph(ctx: StageContext) -> None:
+    pages_data = ctx.read_json("s08_typed_content", "typed_pages.json")["pages"]
 
-    nodes: list[BookNode] = []
-    current_chapter_id = "root"
-    current_section_id = "root"
-
-    # Root book node
-    nodes.append(
-        BookNode(
-            node_id="root",
-            node_type="book",
-            title="Book Root",
-        )
-    )
+    nodes: list[BookNode] = [BookNode(node_id="root", node_type="book", title="Book Root")]
+    # Heading stack of (level, node_id): a heading's parent is the nearest open heading with a
+    # smaller level, so outline levels become a real chapter > section > subsection tree.
+    stack: list[tuple[int, str]] = []
 
     for page in pages_data:
         p_idx = page["page_idx"]
         for b in page["blocks"]:
-            b_id = b["block_id"]
             b_type = b["block_type"]
             txt = b["raw_text"]
 
             if b_type == "heading":
-                level = b.get("metadata", {}).get("level", 1)
-                node_type = "chapter" if level == 0 or "Chapter" in txt else "section"
-                parent_id = "root" if node_type == "chapter" else current_chapter_id
-
-                node = BookNode(
-                    node_id=b_id,
-                    node_type=node_type,
-                    title=txt,
-                    text=txt,
-                    page_idx=p_idx,
-                    bbox=b["bbox"],
-                    parent_id=parent_id,
+                level = int(b.get("metadata", {}).get("level", 1))
+                if _CHAPTER_RE.match(txt.strip()):
+                    level = 0
+                while stack and stack[-1][0] >= level:
+                    stack.pop()
+                parent_id = stack[-1][1] if stack else "root"
+                nodes.append(
+                    BookNode(
+                        node_id=b["block_id"],
+                        node_type="chapter" if level <= 0 else "section",
+                        title=txt,
+                        text=txt,
+                        page_idx=p_idx,
+                        bbox=b["bbox"],
+                        parent_id=parent_id,
+                        metadata={"level": level},
+                    )
                 )
-                if node_type == "chapter":
-                    current_chapter_id = b_id
-                current_section_id = b_id
-                nodes.append(node)
+                stack.append((level, b["block_id"]))
             else:
-                node = BookNode(
-                    node_id=b_id,
-                    node_type=b_type,
-                    text=txt,
-                    page_idx=p_idx,
-                    bbox=b["bbox"],
-                    parent_id=current_section_id,
-                    metadata=b.get("metadata", {}),
+                nodes.append(
+                    BookNode(
+                        node_id=b["block_id"],
+                        node_type=b_type,
+                        text=txt,
+                        page_idx=p_idx,
+                        bbox=b["bbox"],
+                        parent_id=stack[-1][1] if stack else "root",
+                        metadata=b.get("metadata", {}),
+                    )
                 )
-                nodes.append(node)
 
-    write_json(out_dir / "graph.json", {"nodes": [n.model_dump() for n in nodes]})
-    progress_fn(len(nodes), f"Book Graph constructed with {len(nodes)} nodes.")
+    write_json(ctx.out_dir / "graph.json", {"nodes": [n.model_dump() for n in nodes]})
+    ctx.progress(len(nodes), f"Book Graph constructed with {len(nodes)} nodes.")
 
 
 # ---------------------------------------------------------------------------
-# Stage S10: Clean (Unicode NFC, Ligatures, Dehyphenation)
+# S10 Clean
 # ---------------------------------------------------------------------------
-def _stage_s10_clean(
-    task: dict[str, Any],
-    work_dir: Path,
-    out_dir: Path,
-    progress_fn: Callable[[int, str], None],
-) -> None:
-    s09_dir = _get_latest_stage_dir(work_dir, "s09_graph")
-    if s09_dir is None:
-        raise RuntimeError("s10_clean: missing s09_graph output")
-    nodes_data = json.loads((s09_dir / "graph.json").read_text(encoding="utf-8"))["nodes"]
+_LIGATURE_FIXES = [
+    ("fl ag", "flag"),
+    ("fi nd", "find"),
+    ("fi rst", "first"),
+    ("defi ne", "define"),
+    ("defi ned", "defined"),
+    ("effi cient", "efficient"),
+    ("affi liate", "affiliate"),
+    ("offi ce", "office"),
+    ("confl ict", "conflict"),
+    ("signifi cant", "significant"),
+    ("signifi cantly", "significantly"),
+    ("speci fi", "specifi"),
+    ("fi eld", "field"),
+    ("identi fi", "identifi"),
+    ("beneﬁ", "benefi"),
+]
 
-    ligature_fixes = [
-        ("fl ag", "flag"),
-        ("fi nd", "find"),
-        ("fi rst", "first"),
-        ("defi ne", "define"),
-        ("defi ned", "defined"),
-        ("effi cient", "efficient"),
-        ("affi liate", "affiliate"),
-        ("offi ce", "office"),
-        ("confl ict", "conflict"),
-        ("signifi cant", "significant"),
-        ("signifi cantly", "significantly"),
-        ("speci fi", "specifi"),
-        ("fi eld", "field"),
-        ("identi fi", "identifi"),
-        ("beneﬁ", "benefi"),
-    ]
+
+@stage("s10_clean", "0.2.0")
+def stage_s10_clean(ctx: StageContext) -> None:
+    nodes_data = ctx.read_json("s09_graph", "graph.json")["nodes"]
+    form = ctx.param("unicode_normal", "NFC")
+    fix_spaced = ctx.param("fix_spaced_letters", True)
+    dehyphenate = ctx.param("dehyphenate", True)
 
     for node in nodes_data:
         text = node["text"]
-        text = ftfy.fix_text(text)
-
-        for bad, good in ligature_fixes:
+        # quotes_policy is "keep": do not let ftfy straighten typographic quotes.
+        text = ftfy.fix_text(text, uncurl_quotes=False)
+        for bad, good in _LIGATURE_FIXES:
             text = text.replace(bad, good)
 
-        text = re.sub(r"\bC\s+H\s+A\s+P\s+T\s+E\s+R\b", "CHAPTER", text, flags=re.IGNORECASE)
-        text = re.sub(r"\bA\s+P\s+P\s+E\s+N\s+D\s+I\s+X\b", "APPENDIX", text, flags=re.IGNORECASE)
-        text = re.sub(r"\bI\s+N\s+D\s+E\s+X\b", "INDEX", text, flags=re.IGNORECASE)
+        if fix_spaced:
+            text = re.sub(r"\bC\s+H\s+A\s+P\s+T\s+E\s+R\b", "CHAPTER", text, flags=re.IGNORECASE)
+            text = re.sub(r"\bA\s+P\s+P\s+E\s+N\s+D\s+I\s+X\b", "APPENDIX", text, flags=re.IGNORECASE)
+            text = re.sub(r"\bI\s+N\s+D\s+E\s+X\b", "INDEX", text, flags=re.IGNORECASE)
 
-        text = text.replace("\xad", "").replace("\x02", "").replace("\ufffd", "")
-        text = re.sub(r"(\b[a-zA-Z]{3,})-\s*\n\s*([a-z]{2,}\b)", r"\1\2", text)
+        text = text.replace("\xad", "").replace("\x02", "").replace("�", "")
+        if dehyphenate:
+            text = re.sub(r"(\b[a-zA-Z]{3,})-\s*\n\s*([a-z]{2,}\b)", r"\1\2", text)
 
-        node["text"] = text
+        node["text"] = unicodedata.normalize(form, text)
 
-    write_json(out_dir / "clean_graph.json", {"nodes": nodes_data})
-    progress_fn(len(nodes_data), "Text normalized and cleaned.")
+    write_json(ctx.out_dir / "clean_graph.json", {"nodes": nodes_data})
+    ctx.progress(len(nodes_data), "Text normalized and cleaned.")
 
 
 # ---------------------------------------------------------------------------
-# Stage S11: Validate (Quality Audit)
+# S11 Validate (quality audit)
 # ---------------------------------------------------------------------------
-def _stage_s11_validate(
-    task: dict[str, Any],
-    work_dir: Path,
-    out_dir: Path,
-    progress_fn: Callable[[int, str], None],
-) -> None:
-    s10_dir = _get_latest_stage_dir(work_dir, "s10_clean")
-    if s10_dir is None:
-        raise RuntimeError("s11_validate: missing s10_clean output")
-    nodes = json.loads((s10_dir / "clean_graph.json").read_text(encoding="utf-8"))["nodes"]
+def score_quality(
+    *,
+    pages: int,
+    words: int,
+    headings: int,
+    replacement_chars: int,
+    chars: int,
+    empty_pages: int,
+    failed_pages: int,
+) -> tuple[float, list[str]]:
+    """Heuristic 0..1 confidence that the extraction is usable, with the reasons for deductions."""
+    score = 1.0
+    reasons: list[str] = []
+    if pages and failed_pages:
+        score -= min(0.4, 0.4 * failed_pages / pages)
+        reasons.append(f"{failed_pages} page(s) failed to extract")
+    density = words / max(1, pages)
+    if density < 40:
+        score -= 0.35 * (40 - density) / 40
+        reasons.append(f"sparse text ({density:.0f} words/page)")
+    if headings == 0:
+        score -= 0.20
+        reasons.append("no headings detected")
+    if chars and replacement_chars / chars > 0.002:
+        score -= min(0.3, 50 * replacement_chars / chars)
+        reasons.append("garbled characters present")
+    if pages and empty_pages / pages > 0.5:
+        score -= 0.2
+        reasons.append("more than half the pages have no text")
+    return round(max(0.0, min(1.0, score)), 3), reasons
 
-    total_words = sum(len(n["text"].split()) for n in nodes)
-    code_blocks = sum(1 for n in nodes if n["node_type"] == "code")
-    headings = sum(1 for n in nodes if n["node_type"] in ("chapter", "section"))
 
-    # Confidence score calculation
-    quality_score = 0.95 if total_words > 1000 and headings > 0 else 0.50
+@stage("s11_validate", "0.2.0")
+def stage_s11_validate(ctx: StageContext) -> None:
+    nodes = ctx.read_json("s10_clean", "clean_graph.json")["nodes"]
+    inspection = ctx.read_json("s01_inspect", "inspection.json")
+    pages_total = inspection["page_count"]
 
+    content = [n for n in nodes if n["node_type"] not in ("book", "toc", "furniture")]
+    total_words = sum(len(n["text"].split()) for n in content)
+    chars = sum(len(n["text"]) for n in content)
+    garbled = sum(n["text"].count("�") + n["text"].count("\x00") for n in content)
+    code_blocks = sum(1 for n in content if n["node_type"] == "code")
+    headings = sum(1 for n in content if n["node_type"] in ("chapter", "section"))
+    pages_with_text = {n["page_idx"] for n in content if n["text"].strip()}
+
+    merged = ctx.read_json("s03_merge", "merged_pages.json")["pages"]
+    failed_pages = sum(1 for p in merged if p.get("error"))
+
+    quality, reasons = score_quality(
+        pages=pages_total,
+        words=total_words,
+        headings=headings,
+        replacement_chars=garbled,
+        chars=chars,
+        empty_pages=pages_total - len(pages_with_text),
+        failed_pages=failed_pages,
+    )
     write_json(
-        out_dir / "validation.json",
+        ctx.out_dir / "validation.json",
         {
-            "quality_score": quality_score,
+            "quality_score": quality,
+            "quality_reasons": reasons,
             "total_nodes": len(nodes),
             "total_words": total_words,
             "code_blocks": code_blocks,
             "headings": headings,
+            "failed_pages": failed_pages,
             "status": "passed",
         },
     )
-    progress_fn(1, f"Validation passed: {total_words} words, {code_blocks} code blocks.")
+    ctx.progress(1, f"Validation: quality {quality}, {total_words} words, {code_blocks} code blocks.")
 
 
 # ---------------------------------------------------------------------------
-# Stage S12: Semantic (Breadcrumbs & Metadata)
+# S12 Semantic (breadcrumbs)
 # ---------------------------------------------------------------------------
-def _stage_s12_semantic(
-    task: dict[str, Any],
-    work_dir: Path,
-    out_dir: Path,
-    progress_fn: Callable[[int, str], None],
-) -> None:
-    s10_dir = _get_latest_stage_dir(work_dir, "s10_clean")
-    if s10_dir is None:
-        raise RuntimeError("s12_semantic: missing s10_clean output")
-    nodes = json.loads((s10_dir / "clean_graph.json").read_text(encoding="utf-8"))["nodes"]
+@stage("s12_semantic", "0.2.0")
+def stage_s12_semantic(ctx: StageContext) -> None:
+    nodes = ctx.read_json("s10_clean", "clean_graph.json")["nodes"]
 
     node_by_id = {n["node_id"]: n for n in nodes}
     for n in nodes:
-        crumbs = []
+        crumbs: list[str] = []
         curr = n.get("parent_id")
-        while curr and curr in node_by_id and curr != "root":
-            p = node_by_id[curr]
-            if p.get("title"):
-                crumbs.insert(0, p["title"])
-            curr = p.get("parent_id")
+        seen: set[str] = set()
+        while curr and curr in node_by_id and curr != "root" and curr not in seen:
+            seen.add(curr)
+            parent = node_by_id[curr]
+            if parent.get("title"):
+                crumbs.insert(0, parent["title"])
+            curr = parent.get("parent_id")
         n["breadcrumbs"] = crumbs
 
-    write_json(out_dir / "semantic_graph.json", {"nodes": nodes})
-    progress_fn(len(nodes), "Semantic breadcrumbs added.")
+    write_json(ctx.out_dir / "semantic_graph.json", {"nodes": nodes})
+    ctx.progress(len(nodes), "Semantic breadcrumbs added.")
 
 
-# ---------------------------------------------------------------------------
-# Stage S13: Compile & Dataset Export
-# ---------------------------------------------------------------------------
-def _stage_s13_compile(
-    task: dict[str, Any],
-    work_dir: Path,
-    out_dir: Path,
-    progress_fn: Callable[[int, str], None],
-) -> None:
-    s12_dir = _get_latest_stage_dir(work_dir, "s12_semantic")
-    if s12_dir is None:
-        raise RuntimeError("s13_compile: missing s12_semantic output")
-    nodes = json.loads((s12_dir / "semantic_graph.json").read_text(encoding="utf-8"))["nodes"]
-
-    datasets_dir = work_dir / "datasets"
-    datasets_dir.mkdir(parents=True, exist_ok=True)
-
-    # Read live settings if state.db exists
-    filter_boilerplate = True
-    sft_format = "both"
-    merge_all = True
-    workspace = work_dir.parent.parent
-    db_path = workspace / "state.db"
-    if db_path.is_file():
-        try:
-            con = connect(db_path, readonly=True)
-            s = load_settings(con)
-            filter_boilerplate = s.dataset_filter_boilerplate
-            sft_format = s.dataset_sft_format
-            merge_all = s.dataset_merge_all
-            con.close()
-        except Exception:
-            pass
-
-    total_pages = max((n.get("page_idx", 0) for n in nodes), default=0) + 1
-    book_title = work_dir.name
-    source_json = work_dir / "source.json"
-    if source_json.is_file():
-        try:
-            src_data = json.loads(source_json.read_text(encoding="utf-8"))
-            orig = src_data.get("original_path", "")
-            if orig:
-                book_title = Path(orig).stem
-        except Exception:
-            pass
-
-    # 1. Filter nodes for training if boilerplate filtering is enabled
-    if filter_boilerplate:
-        train_nodes = [
-            n for n in nodes if not is_boilerplate_node(n, n.get("page_idx", 0), total_pages)
-        ]
-    else:
-        train_nodes = nodes
-
-    # 2. raw.jsonl (Faithful dump of non-root nodes with text)
-    raw_path = datasets_dir / "raw.jsonl"
-    with open(raw_path, "w", encoding="utf-8") as f:
-        for n in nodes:
-            if n["node_type"] != "book" and n["text"].strip():
-                f.write(
-                    json.dumps(
-                        {
-                            "id": n["node_id"],
-                            "page": n["page_idx"] + 1,
-                            "type": n["node_type"],
-                            "text": n["text"],
-                            "breadcrumbs": n.get("breadcrumbs", []),
-                        },
-                        ensure_ascii=False,
-                    )
-                    + "\n"
-                )
-
-    # 3. pretrain.jsonl (Document-level continuous Markdown chapters with fenced code)
-    pretrain_path = datasets_dir / "pretrain.jsonl"
-    pretrain_records: list[dict[str, Any]] = []
-    current_doc_title = book_title
-    current_doc_lines: list[str] = []
-    doc_page_start = 1
-    doc_page_end = 1
-    doc_idx = 0
-
-    def _flush_pretrain_doc() -> None:
-        nonlocal doc_idx, current_doc_lines
-        if not current_doc_lines:
-            return
-        doc_text = "\n\n".join(current_doc_lines).strip()
-        words = len(doc_text.split())
-        # Filter out front-matter publisher/dedication documents before page 25 if boilerplate filtering is enabled
-        if filter_boilerplate and doc_page_start < 25:
-            title_lower = current_doc_title.lower()
-            if any(
-                term in title_lower
-                for term in ("author", "credit", "contents at a glance", "executive", "acknowledg")
-            ):
-                current_doc_lines = []
-                return
-
-        if words >= 40:
-            tokens = estimate_tokens(doc_text)
-            rec = {
-                "doc_id": f"doc_{doc_idx:03d}",
-                "book_title": book_title,
-                "chapter_title": current_doc_title,
-                "page_start": doc_page_start,
-                "page_end": doc_page_end,
-                "word_count": words,
-                "char_count": len(doc_text),
-                "token_count": tokens,
-                "text": doc_text,
-            }
-            pretrain_records.append(rec)
-            doc_idx += 1
-        current_doc_lines = []
-
-    for n in train_nodes:
-        ntype = n.get("node_type")
-        text = n.get("text", "").strip()
-        page = n.get("page_idx", 0) + 1
-        if not text:
-            continue
-
-        if ntype == "chapter" or (
-            ntype == "section" and (n.get("title") or "").strip().lower().startswith("chapter")
-        ):
-            _flush_pretrain_doc()
-            current_doc_title = n.get("title") or text.splitlines()[0]
-            doc_page_start = page
-            doc_page_end = page
-            current_doc_lines.append(f"# {current_doc_title}")
-        elif ntype == "section":
-            sec_title = n.get("title") or text.splitlines()[0]
-            crumbs = n.get("breadcrumbs", [])
-            heading_level = "###" if len(crumbs) > 2 else "##"
-            current_doc_lines.append(f"{heading_level} {sec_title}")
-            doc_page_end = max(doc_page_end, page)
-        elif ntype == "code":
-            lang = detect_code_language(text)
-            current_doc_lines.append(f"```{lang}\n{text}\n```")
-            doc_page_end = max(doc_page_end, page)
-        else:
-            current_doc_lines.append(text)
-            doc_page_end = max(doc_page_end, page)
-
-    _flush_pretrain_doc()
-
-    # Fallback if no explicit chapters found: create document from remaining text
-    if not pretrain_records and train_nodes:
-        fallback_lines = []
-        for n in train_nodes:
-            txt = n.get("text", "").strip()
-            if txt:
-                if n.get("node_type") == "code":
-                    fallback_lines.append(f"```{detect_code_language(txt)}\n{txt}\n```")
-                else:
-                    fallback_lines.append(txt)
-        if fallback_lines:
-            ftext = "\n\n".join(fallback_lines)
-            pretrain_records.append(
-                {
-                    "doc_id": "doc_000",
-                    "book_title": book_title,
-                    "chapter_title": book_title,
-                    "page_start": 1,
-                    "page_end": total_pages,
-                    "word_count": len(ftext.split()),
-                    "char_count": len(ftext),
-                    "token_count": estimate_tokens(ftext),
-                    "text": ftext,
-                }
-            )
-
-    with open(pretrain_path, "w", encoding="utf-8") as f:
-        for pr in pretrain_records:
-            f.write(json.dumps(pr, ensure_ascii=False) + "\n")
-
-    # 4. sft.jsonl (Supervised Fine-Tuning / Instruction pairs)
-    sft_path = datasets_dir / "sft.jsonl"
-    sft_records: list[dict[str, Any]] = []
-    sft_idx = 0
-
-    def _add_sft_pair(
-        instruction: str,
-        input_text: str,
-        output_text: str,
-        category: str,
-        source_page: int,
-        breadcrumbs: list[str],
-    ) -> None:
-        nonlocal sft_idx
-        out_clean = output_text.strip()
-        if not out_clean or len(out_clean.split()) < 15:
-            return
-        sft_idx += 1
-        rec: dict[str, Any] = {
-            "id": f"sft_{sft_idx:04d}",
-            "category": category,
-            "source_page": source_page,
-            "breadcrumbs": breadcrumbs,
-        }
-        if sft_format in ("alpaca", "both"):
-            rec["instruction"] = instruction
-            rec["input"] = input_text
-            rec["output"] = out_clean
-        if sft_format in ("chatml", "both"):
-            user_msg = f"{instruction}\n\n{input_text}".strip() if input_text else instruction
-            rec["messages"] = [
-                {
-                    "role": "system",
-                    "content": (
-                        "You are an expert systems engineer and reverse engineering specialist. "
-                        "Provide detailed, technically rigorous explanations with code or disassembly where appropriate."
-                    ),
-                },
-                {"role": "user", "content": user_msg},
-                {"role": "assistant", "content": out_clean},
-            ]
-        sft_records.append(rec)
-
-    for i, n in enumerate(train_nodes):
-        ntype = n.get("node_type")
-        text = n.get("text", "").strip()
-        crumbs = n.get("breadcrumbs", [])
-        page = n.get("page_idx", 0) + 1
-
-        # A. Concept Q&A from section headings
-        if ntype == "section" and n.get("title"):
-            title = n["title"].strip()
-            title_lower = title.lower()
-
-            # Skip non-headings, figure labels, symbols, and front-matter author/credit titles
-            is_valid_heading = (
-                bool(re.search(r"[a-zA-Z]", title))
-                and not title_lower.startswith(
-                    ("figure", "table", "listing", "chart", "diagram", "note", "warning")
-                )
-                and title not in ("–", "—", "-", "*", "...")
-                and len(title.split()) <= 8
-                and len(title) <= 60
-                and not (
-                    page < 29
-                    and any(
-                        term in title_lower
-                        for term in (
-                            "author",
-                            "credit",
-                            "editor",
-                            "acknowledg",
-                            "contents",
-                            "engineering",
-                            "practical reverse",
-                            "glance",
-                        )
-                    )
-                )
-            )
-
-            if is_valid_heading:
-                # Gather consecutive explanation prose
-                sec_prose: list[str] = []
-                for next_node in train_nodes[i + 1 : i + 8]:
-                    if next_node.get("node_type") in ("chapter", "section"):
-                        break
-                    if next_node.get("node_type") == "code":
-                        lang = detect_code_language(next_node["text"])
-                        sec_prose.append(f"```{lang}\n{next_node['text']}\n```")
-                    elif next_node.get("text", "").strip():
-                        sec_prose.append(next_node["text"].strip())
-                explanation = "\n\n".join(sec_prose)
-                if len(explanation.split()) >= 30:
-                    crumb_str = f" in {crumbs[-1]}" if crumbs else ""
-                    inst = f"Explain the architecture and technical mechanics of {title}{crumb_str} in detail."
-                    _add_sft_pair(inst, "", explanation, "concept_qa", page, crumbs)
-
-        # B. Code Walkthrough / Disassembly analysis
-        elif ntype == "code" and is_valid_code_block(text):
-            ctx_prose: list[str] = []
-            if i > 0 and train_nodes[i - 1].get("node_type") not in ("chapter", "section", "code"):
-                ctx_prose.append(train_nodes[i - 1].get("text", "").strip())
-            if i + 1 < len(train_nodes) and train_nodes[i + 1].get("node_type") not in (
-                "chapter",
-                "section",
-                "code",
-            ):
-                ctx_prose.append(train_nodes[i + 1].get("text", "").strip())
-            explanation = "\n\n".join(ctx_prose)
-            if len(explanation.split()) >= 15:
-                lang = detect_code_language(text)
-                inst = "Analyze the following code/disassembly snippet and explain what each instruction or construct does:"
-                input_code = f"```{lang}\n{text}\n```"
-                _add_sft_pair(inst, input_code, explanation, "code_walkthrough", page, crumbs)
-
-        # C. Exercises / Review Questions
-        title_lower = (n.get("title") or "").lower()
-        if "exercise" in title_lower or "review question" in title_lower:
-            items = re.split(r"\n(?=\d+\.\s+)", text)
-            for item in items:
-                item_clean = item.strip()
-                if re.match(r"^\d+\.\s+", item_clean) and len(item_clean.split()) >= 6:
-                    inst = "Solve or answer the following technical problem:"
-                    _add_sft_pair(
-                        inst,
-                        item_clean,
-                        f"Technical analysis and solution:\n\n{item_clean}",
-                        "exercise",
-                        page,
-                        crumbs,
-                    )
-
-    with open(sft_path, "w", encoding="utf-8") as f:
-        for sr in sft_records:
-            f.write(json.dumps(sr, ensure_ascii=False) + "\n")
-
-    # 5. code.jsonl (Clean multi-line code & disassembly with surrounding context)
-    code_path = datasets_dir / "code.jsonl"
-    code_records: list[dict[str, Any]] = []
-    code_idx = 0
-
-    for i, n in enumerate(nodes):
-        if n.get("node_type") == "code":
-            code_text = n.get("text", "").strip()
-            if not is_valid_code_block(code_text):
-                continue
-            code_idx += 1
-            lang = detect_code_language(code_text)
-            ctx_parts: list[str] = []
-            if i > 0 and nodes[i - 1].get("text", "").strip():
-                ctx_parts.append(nodes[i - 1]["text"].strip())
-            if i + 1 < len(nodes) and nodes[i + 1].get("text", "").strip():
-                ctx_parts.append(nodes[i + 1]["text"].strip())
-            context = "\n\n".join(ctx_parts)
-
-            code_records.append(
-                {
-                    "code_id": f"code_{code_idx:04d}",
-                    "page": n.get("page_idx", 0) + 1,
-                    "language": lang,
-                    "breadcrumbs": n.get("breadcrumbs", []),
-                    "surrounding_context": context,
-                    "code": code_text,
-                    "line_count": len(code_text.splitlines()),
-                }
-            )
-
-    with open(code_path, "w", encoding="utf-8") as f:
-        for cr in code_records:
-            f.write(json.dumps(cr, ensure_ascii=False) + "\n")
-
-    # 6. rag.jsonl (Hierarchical chunks ~300-600 words with breadcrumbs)
-    rag_path = datasets_dir / "rag.jsonl"
-    rag_records: list[dict[str, Any]] = []
-    current_chunk: list[str] = []
-    current_crumbs: list[str] = []
-    chunk_page = 1
-    chunk_idx = 0
-
-    for n in train_nodes:
-        if n["node_type"] in ("chapter", "section"):
-            if current_chunk:
-                rag_records.append(
-                    {
-                        "chunk_id": f"chunk_{chunk_idx:04d}",
-                        "page": chunk_page,
-                        "breadcrumbs": current_crumbs,
-                        "content": "\n\n".join(current_chunk),
-                    }
-                )
-                chunk_idx += 1
-                current_chunk = []
-            current_crumbs = [*n.get("breadcrumbs", []), n.get("title", "")]
-            chunk_page = n["page_idx"] + 1
-        elif n["text"].strip():
-            current_chunk.append(n["text"])
-            if sum(len(c.split()) for c in current_chunk) > 400:
-                rag_records.append(
-                    {
-                        "chunk_id": f"chunk_{chunk_idx:04d}",
-                        "page": chunk_page,
-                        "breadcrumbs": current_crumbs,
-                        "content": "\n\n".join(current_chunk),
-                    }
-                )
-                chunk_idx += 1
-                current_chunk = []
-
-    if current_chunk:
-        rag_records.append(
-            {
-                "chunk_id": f"chunk_{chunk_idx:04d}",
-                "page": chunk_page,
-                "breadcrumbs": current_crumbs,
-                "content": "\n\n".join(current_chunk),
-            }
-        )
-        chunk_idx += 1
-
-    with open(rag_path, "w", encoding="utf-8") as f:
-        for rr in rag_records:
-            f.write(json.dumps(rr, ensure_ascii=False) + "\n")
-
-    # Summary manifest
-    summary = {
-        "compiled_at": time.time(),
-        "total_nodes": len(nodes),
-        "training_nodes": len(train_nodes),
-        "raw_lines": len(nodes),
-        "pretrain_docs": len(pretrain_records),
-        "sft_pairs": len(sft_records),
-        "code_blocks": len(code_records),
-        "rag_chunks": len(rag_records),
-        "datasets": {
-            "pretrain": str(pretrain_path),
-            "sft": str(sft_path),
-            "code": str(code_path),
-            "rag": str(rag_path),
-            "raw": str(raw_path),
-        },
-    }
-    write_json(out_dir / "summary.json", summary)
-    write_json(datasets_dir / "manifest.json", summary)
-
-    # Consolidate workspace-wide datasets
-    if merge_all:
-        try:
-            consolidate_workspace_datasets(workspace)
-        except Exception as exc:
-            logger.warning("Auto-consolidation warning: %s", exc)
-
-    progress_fn(
-        1,
-        f"Datasets compiled: {len(pretrain_records)} pretrain chapters, {len(sft_records)} SFT pairs, "
-        f"{len(code_records)} code blocks, {len(rag_records)} RAG chunks.",
-    )
-
-
-def _get_latest_stage_dir(work_dir: Path, stage_name: str) -> Path | None:
-    stage_dir = work_dir / "stages" / stage_name
-    if not stage_dir.is_dir():
-        return None
-    for p in sorted(stage_dir.glob("*"), reverse=True):
-        if (p / "_SUCCESS").is_file():
-            return p
-    return None
+# S13 (assist) and S14 (compile) register themselves on import.
+from dabook.stages import assist as _assist  # noqa: E402,F401
+from dabook.stages import compile as _compile  # noqa: E402,F401
