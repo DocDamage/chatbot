@@ -131,12 +131,15 @@
     "client/src/components/ProjectIntelligencePanel.tsx",
     "client/src/components/RepositoryArchitectureView.tsx",
     "client/src/components/RepositoryFindingsView.tsx",
+    "client/src/components/ResponseFeedbackBar.tsx",
     "client/src/components/SettingsMenu.tsx",
+    "client/src/components/SourcesDrawer.tsx",
     "client/src/components/SpriteLabPanel.tsx",
     "client/src/components/StaticDemo.tsx",
     "client/src/components/StatusBar.tsx",
     "client/src/components/UtilityWorkbenchPanel.tsx",
     "client/src/components/WebsiteWorkspacePanel.tsx",
+    "client/src/components/WhyThisAnswerModal.tsx",
     "client/src/features/gis/GISMapCard.tsx",
     "client/src/features/gis/GISMapPanel.tsx",
     "client/src/features/gis/gisApi.ts",
@@ -354,6 +357,7 @@
     "src/core/creative/CreativeTypes.ts",
     "src/core/creative/CreativeWritingAgent.ts",
     "src/core/database/Database.ts",
+    "src/core/database/DatasetMigrations.ts",
     "src/core/database/ExpansionDatabase.ts",
     "src/core/database/ExpansionMigrations.ts",
     "src/core/database/SafeDatabaseQuestionAgent.ts",
@@ -624,6 +628,9 @@
     "src/core/study/StudyTypes.ts",
     "src/core/study/index.ts",
     "src/core/suggestions/QuickReplies.ts",
+    "src/core/tasks/ConversationalTaskOrchestrator.ts",
+    "src/core/tasks/TaskArtifactBuilders.ts",
+    "src/core/tasks/TaskArtifactStore.ts",
     "src/core/tools/ArchitectureRepoTools.ts",
     "src/core/tools/CodeExecutor.ts",
     "src/core/tools/CodingKnowledgeTool.ts",
@@ -889,6 +896,7 @@
     "src/server/routes/sprite-studio/spriteStudioRoutes.ts",
     "src/server/routes/story.ts",
     "src/server/routes/study-studio.ts",
+    "src/server/routes/task-artifacts.ts",
     "src/server/routes/toolCatalog.ts",
     "src/server/routes/v1/chat.ts",
     "src/server/routes/v2/chat.ts",
@@ -896,7 +904,9 @@
     "src/server/routes/writing-studio.ts",
     "src/server/security/webhookUrl.ts",
     "src/types/chat.ts",
+    "src/types/citation.ts",
     "src/types/contract.ts",
+    "src/types/feedback.ts",
     "src/types/gis.ts",
     "src/types/intent.ts",
     "src/types/memory.ts",
@@ -953,12 +963,15 @@
     "client/src/components/ProjectIntelligencePanel.tsx",
     "client/src/components/RepositoryArchitectureView.tsx",
     "client/src/components/RepositoryFindingsView.tsx",
+    "client/src/components/ResponseFeedbackBar.tsx",
     "client/src/components/SettingsMenu.tsx",
+    "client/src/components/SourcesDrawer.tsx",
     "client/src/components/SpriteLabPanel.tsx",
     "client/src/components/StaticDemo.tsx",
     "client/src/components/StatusBar.tsx",
     "client/src/components/UtilityWorkbenchPanel.tsx",
     "client/src/components/WebsiteWorkspacePanel.tsx",
+    "client/src/components/WhyThisAnswerModal.tsx",
     "client/src/features/gis/GISMapCard.tsx",
     "client/src/features/gis/GISMapPanel.tsx",
     "client/src/features/gis/gisApi.ts",
@@ -1176,6 +1189,7 @@
     "src/core/creative/CreativeTypes.ts",
     "src/core/creative/CreativeWritingAgent.ts",
     "src/core/database/Database.ts",
+    "src/core/database/DatasetMigrations.ts",
     "src/core/database/ExpansionDatabase.ts",
     "src/core/database/ExpansionMigrations.ts",
     "src/core/database/SafeDatabaseQuestionAgent.ts",
@@ -1446,6 +1460,9 @@
     "src/core/study/StudyTypes.ts",
     "src/core/study/index.ts",
     "src/core/suggestions/QuickReplies.ts",
+    "src/core/tasks/ConversationalTaskOrchestrator.ts",
+    "src/core/tasks/TaskArtifactBuilders.ts",
+    "src/core/tasks/TaskArtifactStore.ts",
     "src/core/tools/ArchitectureRepoTools.ts",
     "src/core/tools/CodeExecutor.ts",
     "src/core/tools/CodingKnowledgeTool.ts",
@@ -1711,6 +1728,7 @@
     "src/server/routes/sprite-studio/spriteStudioRoutes.ts",
     "src/server/routes/story.ts",
     "src/server/routes/study-studio.ts",
+    "src/server/routes/task-artifacts.ts",
     "src/server/routes/toolCatalog.ts",
     "src/server/routes/v1/chat.ts",
     "src/server/routes/v2/chat.ts",
@@ -1718,7 +1736,9 @@
     "src/server/routes/writing-studio.ts",
     "src/server/security/webhookUrl.ts",
     "src/types/chat.ts",
+    "src/types/citation.ts",
     "src/types/contract.ts",
+    "src/types/feedback.ts",
     "src/types/gis.ts",
     "src/types/intent.ts",
     "src/types/memory.ts",
@@ -1733,7 +1753,13 @@
     "src/utils/retry.ts"
   ],
   "unreachable": [
+    "client/src/components/ChatDiagnosticsModal.tsx",
+    "client/src/components/KnowledgeManagerPanel.tsx",
+    "client/src/components/ModelSelectorDropdown.tsx",
     "client/src/vite-env.d.ts",
+    "src/core/adapters/ChatInputAdapterFactory.ts",
+    "src/core/adapters/VoiceInputAdapter.ts",
+    "src/core/adapters/VoiceOutputAdapter.ts",
     "src/core/agents/AgentTeam.ts",
     "src/core/agents/MultiAgentOrchestrator.ts",
     "src/core/agents/ReasoningController.ts",
@@ -1793,6 +1819,19 @@
     "src/core/capabilities/reliability/LoadSoakBenchmarkRunner.ts",
     "src/core/capabilities/reliability/PerformanceRegressionGate.ts",
     "src/core/capabilities/storage/StorageQuotaManager.ts",
+    "src/core/chat/ChatContextPlanner.ts",
+    "src/core/chat/ChatRequestNormalizer.ts",
+    "src/core/chat/ChatRuntime.ts",
+    "src/core/chat/ChatRuntimeCompatibilityAdapter.ts",
+    "src/core/chat/ChatRuntimeFactory.ts",
+    "src/core/chat/ChatRuntimeShadowRunner.ts",
+    "src/core/chat/ContextClassifier.ts",
+    "src/core/chat/ContextPlanDiagnostics.ts",
+    "src/core/chat/ContextRoutingSignals.ts",
+    "src/core/chat/LegacyOrchestratorDeprecation.ts",
+    "src/core/chat/ProjectContextPlanner.ts",
+    "src/core/chat/ReleaseCutoverOrchestrator.ts",
+    "src/core/chat/WhyThisAnswerService.ts",
     "src/core/chrono/ClaimVerifier.ts",
     "src/core/coding/CodingController.ts",
     "src/core/coding/CodingRequestRouter.ts",
@@ -1810,6 +1849,7 @@
     "src/core/coding/teams/index.ts",
     "src/core/coding/testing/TestStrategy.ts",
     "src/core/config/APIKeyManager.ts",
+    "src/core/config/CanonicalRuntimeConfig.ts",
     "src/core/config/ProfileManager.ts",
     "src/core/context-economy/budgets/ContextBudgetPlanner.ts",
     "src/core/context-economy/checkpoints/ContextCheckpointManager.ts",
@@ -1821,9 +1861,24 @@
     "src/core/creative/RoleplaySessionEngine.ts",
     "src/core/creative/StoryBibleStore.ts",
     "src/core/developer/index.ts",
+    "src/core/diagnostics/ChatDiagnosticsService.ts",
+    "src/core/diagnostics/ChatRunRepository.ts",
+    "src/core/evals/AnswerabilityEvalSet.ts",
+    "src/core/evals/DatasetAbEvaluator.ts",
+    "src/core/evals/GoldenConversationRunner.ts",
+    "src/core/evals/GroundingEscalationFlow.ts",
+    "src/core/evals/GroundingEvaluator.ts",
+    "src/core/evals/ReleaseThresholdFramework.ts",
+    "src/core/evals/ResponseWordingPolicy.ts",
+    "src/core/evals/RetrievalWeightTuner.ts",
+    "src/core/evals/golden-dataset-seed.ts",
     "src/core/evaluation/CodingBenchmarkRunner.ts",
     "src/core/evaluation/CodingEvalHarness.ts",
     "src/core/evaluation/EvalHarness.ts",
+    "src/core/feedback/CanonicalFeedbackService.ts",
+    "src/core/feedback/FeedbackCollectorAdapter.ts",
+    "src/core/feedback/FeedbackTraceBinding.ts",
+    "src/core/feedback/FeedbackTriageService.ts",
     "src/core/gaming/asset-cooker/index.ts",
     "src/core/gaming/engine/index.ts",
     "src/core/gaming/godot/GodotCanaryMatrix.ts",
@@ -1835,10 +1890,82 @@
     "src/core/gaming/unity/index.ts",
     "src/core/gaming/unreal/UnrealMutationManager.ts",
     "src/core/gaming/unreal/index.ts",
+    "src/core/governance/BacklogReconciliationOrchestrator.ts",
+    "src/core/governance/CIGatesOrchestrator.ts",
+    "src/core/governance/CanonicalCliRegistry.ts",
+    "src/core/governance/CanonicalProgramCompletionOrchestrator.ts",
+    "src/core/governance/DocumentationDeliverablesAuditor.ts",
+    "src/core/governance/HandoffAdditionsBuilder.ts",
+    "src/core/governance/ImplementationDependencyGraph.ts",
+    "src/core/governance/ImplementationPromptTemplate.ts",
+    "src/core/governance/KnowledgePackEvidenceValidator.ts",
+    "src/core/governance/MilestoneManager.ts",
+    "src/core/governance/ParallelWorkCoordinator.ts",
+    "src/core/governance/ProhibitedShortcutsDetector.ts",
+    "src/core/governance/RepositoryFileMapAuditor.ts",
+    "src/core/governance/RuntimeDefinitionOfDoneEvaluator.ts",
+    "src/core/governance/TaskDefinitionOfDoneAuditor.ts",
+    "src/core/governance/VerificationCommandsOrchestrator.ts",
     "src/core/index.ts",
+    "src/core/knowledge/AcademicLicensePolicy.ts",
+    "src/core/knowledge/AtomicDatasetActivation.ts",
+    "src/core/knowledge/CanonicalDatasetFixtures.ts",
+    "src/core/knowledge/CapacityPerformanceTracker.ts",
+    "src/core/knowledge/CitationResolverService.ts",
+    "src/core/knowledge/ClaimAssociationService.ts",
+    "src/core/knowledge/CodingRetrievalPolicyEngine.ts",
+    "src/core/knowledge/DatasetBackupPolicy.ts",
+    "src/core/knowledge/DatasetFixtureProvider.ts",
+    "src/core/knowledge/DatasetLicensePolicy.ts",
+    "src/core/knowledge/DatasetManager.ts",
+    "src/core/knowledge/DatasetRefreshScheduler.ts",
+    "src/core/knowledge/DatasetRegistry.ts",
+    "src/core/knowledge/DatasetStorageQuota.ts",
+    "src/core/knowledge/DeveloperQAPack.ts",
+    "src/core/knowledge/DeveloperQAQualityFilter.ts",
+    "src/core/knowledge/DeveloperQARefreshService.ts",
+    "src/core/knowledge/DeveloperQAVersionExtractor.ts",
+    "src/core/knowledge/DocumentationChunker.ts",
+    "src/core/knowledge/DocumentationRefreshService.ts",
+    "src/core/knowledge/DocumentationSourcePolicy.ts",
+    "src/core/knowledge/DocumentationVersionIndex.ts",
+    "src/core/knowledge/EducationalWebPack.ts",
+    "src/core/knowledge/EntityLinkingService.ts",
+    "src/core/knowledge/FailureModeMatrixHandler.ts",
+    "src/core/knowledge/FineWebEduSourcePolicy.ts",
+    "src/core/knowledge/FreshnessScorer.ts",
+    "src/core/knowledge/GeneralKnowledgePack.ts",
+    "src/core/knowledge/GeneralRetrievalPolicyEngine.ts",
+    "src/core/knowledge/IncrementalUpdateService.ts",
+    "src/core/knowledge/JobRecoveryService.ts",
+    "src/core/knowledge/KnowledgeMaintenanceMetrics.ts",
+    "src/core/knowledge/KnowledgePackManager.ts",
+    "src/core/knowledge/KnowledgeRouter.ts",
+    "src/core/knowledge/MathPack.ts",
+    "src/core/knowledge/MathStructuralChunker.ts",
+    "src/core/knowledge/MultilingualPack.ts",
+    "src/core/knowledge/OfficialDocumentationPack.ts",
+    "src/core/knowledge/QualityScorer.ts",
+    "src/core/knowledge/ReembeddingMigrationService.ts",
+    "src/core/knowledge/ResearchPack.ts",
+    "src/core/knowledge/ResearchPaperChunker.ts",
+    "src/core/knowledge/ResourceGuardrailService.ts",
+    "src/core/knowledge/RetrievalConflictResolver.ts",
+    "src/core/knowledge/RetrievalPolicyEngine.ts",
     "src/core/knowledge/SmartKnowledgeSource.ts",
     "src/core/knowledge/SmartSourceFactory.ts",
     "src/core/knowledge/SmartSourceWrapper.ts",
+    "src/core/knowledge/SourceAuthorityPolicy.ts",
+    "src/core/knowledge/SourceCodeDeduplicator.ts",
+    "src/core/knowledge/SourceCodeFileFilter.ts",
+    "src/core/knowledge/SourceCodePack.ts",
+    "src/core/knowledge/SourceCodeStructuralChunker.ts",
+    "src/core/knowledge/SourcesDrawerFormatter.ts",
+    "src/core/knowledge/StoragePlanningEstimator.ts",
+    "src/core/knowledge/TrainingSeparationCoordinator.ts",
+    "src/core/knowledge/VersionCompatibilityEvaluator.ts",
+    "src/core/knowledge/WikidataStructuredStore.ts",
+    "src/core/knowledge/WikipediaChunker.ts",
     "src/core/learning/ABTester.ts",
     "src/core/learning/FeedbackCollector.ts",
     "src/core/learning/ModelUpdater.ts",
@@ -1848,6 +1975,9 @@
     "src/core/memory/HierarchicalMemory.ts",
     "src/core/memory/MemoryConsolidator.ts",
     "src/core/memory/MemoryRetrievalNetwork.ts",
+    "src/core/migration/APICompatibilityBridge.ts",
+    "src/core/migration/CanonicalRollbackCoordinator.ts",
+    "src/core/migration/RolloutStageCoordinator.ts",
     "src/core/moderation/ContentModerator.ts",
     "src/core/multimodal/ImageProcessor.ts",
     "src/core/multimodal/VideoProcessor.ts",
@@ -1858,12 +1988,16 @@
     "src/core/multimodal/localization/index.ts",
     "src/core/notifications/TwilioAdapter.ts",
     "src/core/notifications/index.ts",
+    "src/core/observability/CanonicalMetricsRegistry.ts",
     "src/core/optimization/ToonSerializer.ts",
     "src/core/optimization/index.ts",
     "src/core/personalization/CollaborativeFilter.ts",
     "src/core/personalization/PreferenceLearner.ts",
     "src/core/personalization/StyleAdapter.ts",
     "src/core/personalization/UserProfiler.ts",
+    "src/core/profiles/BotProfileRepository.ts",
+    "src/core/profiles/BotProfileResolver.ts",
+    "src/core/profiles/DefaultBotProfile.ts",
     "src/core/project-memory/capture/MemoryCaptureService.ts",
     "src/core/project-memory/capture/MemoryManagementService.ts",
     "src/core/project-memory/capture/ProjectMemorySchema.ts",
@@ -1874,7 +2008,14 @@
     "src/core/project-memory/index.ts",
     "src/core/project-memory/reconciliation/BranchMemoryReconciler.ts",
     "src/core/project-memory/retrieval/HybridMemoryRetriever.ts",
+    "src/core/prompt/ContextBudgetService.ts",
+    "src/core/prompt/PromptAssembler.ts",
+    "src/core/prompt/PromptTruncationService.ts",
     "src/core/providers/DeviceAdapter.ts",
+    "src/core/providers/ModelFallbackPlanner.ts",
+    "src/core/providers/ModelHealthChecker.ts",
+    "src/core/providers/ModelPolicyEngine.ts",
+    "src/core/providers/ModelRegistry.ts",
     "src/core/providers/UniversalLLM.ts",
     "src/core/providers/contracts/LocalAudioVoiceContracts.ts",
     "src/core/providers/local/LocalHardwareCanary.ts",
@@ -1904,6 +2045,7 @@
     "src/core/safety/SandboxController.ts",
     "src/core/scheduler/TaskScheduler.ts",
     "src/core/scheduler/index.ts",
+    "src/core/security/KnowledgeSecurityPolicy.ts",
     "src/core/security/artifacts/ArtifactHandoffGuard.ts",
     "src/core/security/composition/CapabilityCompositionDefense.ts",
     "src/core/security/consent/MediaConsentGuard.ts",
@@ -1914,20 +2056,88 @@
     "src/core/security/supply-chain/PackSupplyChainGuard.ts",
     "src/core/security/threat-model/CapabilityThreatModel.ts",
     "src/core/security/web/WebSecurityBoundaryGuard.ts",
+    "src/core/state/ConversationContextSelector.ts",
+    "src/core/state/ConversationStateReducer.ts",
+    "src/core/state/ConversationStateRepository.ts",
+    "src/core/state/ConversationStateService.ts",
+    "src/core/state/ConversationVariableExtractor.ts",
+    "src/core/state/MemoryKnowledgeArbiter.ts",
+    "src/core/testing/CanonicalTestingOrchestrator.ts",
+    "src/core/tools/CodingTruthBridge.ts",
+    "src/core/tools/SideEffectLedger.ts",
     "src/core/tools/ToolComposer.ts",
+    "src/core/tools/ToolLanguageTruthfulness.ts",
     "src/core/tools/market/ValuationTool.ts",
     "src/core/ui/ThinkingUI.ts",
+    "src/core/validation/CodingResponseValidator.ts",
+    "src/core/validation/CoreResponseValidators.ts",
+    "src/core/validation/GroundedResponseValidator.ts",
+    "src/core/validation/ResponseQualityGate.ts",
+    "src/core/validation/ResponseRetryPolicy.ts",
     "src/core/voice/VoiceAgent.ts",
     "src/core/website/WebsiteWorkspaceService.ts",
     "src/core/website/index.ts",
+    "src/core/workflow/ToolApprovalBinding.ts",
+    "src/core/workflow/WorkflowEngine.ts",
+    "src/core/workflow/WorkflowResolver.ts",
+    "src/core/workflow/WorkflowStateRepository.ts",
+    "src/core/workflow/definitions/CodingBuildWorkflow.ts",
+    "src/core/workflow/definitions/DebugWorkflow.ts",
     "src/mesh/CircuitBreaker.ts",
     "src/mesh/LoadBalancer.ts",
     "src/middleware/apiKeyAuth.ts",
     "src/observability/alerts.ts",
     "src/observability/tracing.ts",
+    "src/server/routes/bot-profiles.ts",
+    "src/server/routes/chat-diagnostics.ts",
     "src/server/routes/setup.ts",
     "src/services/ServiceRegistry.ts",
     "src/testing/failure-injection/ProcessFailureInjector.ts",
+    "src/types/ab-evaluation.ts",
+    "src/types/api-compatibility.ts",
+    "src/types/backlog-reconciliation.ts",
+    "src/types/bot-profile.ts",
+    "src/types/chat-diagnostics.ts",
+    "src/types/chat-runtime.ts",
+    "src/types/ci-gates.ts",
+    "src/types/cli-scripts.ts",
+    "src/types/coding-retrieval-policy.ts",
+    "src/types/context-plan.ts",
+    "src/types/conversation-state.ts",
+    "src/types/dataset-fixtures.ts",
+    "src/types/dependency-graph.ts",
+    "src/types/developer-qa.ts",
+    "src/types/documentation-spec.ts",
+    "src/types/educational-multilingual.ts",
+    "src/types/eval-thresholds.ts",
+    "src/types/file-map.ts",
+    "src/types/general-knowledge.ts",
+    "src/types/general-retrieval-policy.ts",
+    "src/types/golden-eval.ts",
+    "src/types/grounding-eval.ts",
+    "src/types/input-adapters.ts",
+    "src/types/knowledge-datasets.ts",
+    "src/types/knowledge-maintenance.ts",
+    "src/types/knowledge-packs.ts",
+    "src/types/knowledge-router.ts",
+    "src/types/memory-knowledge-table.ts",
+    "src/types/model-registry.ts",
+    "src/types/observability-spec.ts",
+    "src/types/official-docs.ts",
+    "src/types/program-completion.ts",
+    "src/types/prompt-assembler.ts",
+    "src/types/research-math-packs.ts",
+    "src/types/response-quality.ts",
+    "src/types/retrieval-scoring.ts",
+    "src/types/rollback-recovery.ts",
+    "src/types/rollout-migration.ts",
+    "src/types/runtime-definition-of-done.ts",
+    "src/types/source-code-pack.ts",
+    "src/types/storage-planning.ts",
+    "src/types/testing-strategy.ts",
+    "src/types/tool-truth.ts",
+    "src/types/training-separation.ts",
+    "src/types/workflow.ts",
     "src/utils/memoize.ts"
   ],
   "unresolvedRelativeImports": [
@@ -1946,6 +2156,10 @@
     {
       "importer": "client/src/components/CapabilityHubPanel.tsx",
       "specifier": "./CapabilityHubPanel.css"
+    },
+    {
+      "importer": "client/src/components/ChatDiagnosticsModal.tsx",
+      "specifier": "./ChatDiagnosticsModal.css"
     },
     {
       "importer": "client/src/components/CodeWorkflowPanel.tsx",
@@ -1972,6 +2186,10 @@
       "specifier": "./GamingPlaybookPanel.css"
     },
     {
+      "importer": "client/src/components/KnowledgeManagerPanel.tsx",
+      "specifier": "./KnowledgeManagerPanel.css"
+    },
+    {
       "importer": "client/src/components/KnowledgeOnlinePanel.tsx",
       "specifier": "./KnowledgeOnlinePanel.css"
     },
@@ -1988,12 +2206,24 @@
       "specifier": "./MemoryCenterPanel.css"
     },
     {
+      "importer": "client/src/components/ModelSelectorDropdown.tsx",
+      "specifier": "./ModelSelectorDropdown.css"
+    },
+    {
       "importer": "client/src/components/ModeSelector.tsx",
       "specifier": "./ModeSelector.css"
     },
     {
+      "importer": "client/src/components/ResponseFeedbackBar.tsx",
+      "specifier": "./ResponseFeedbackBar.css"
+    },
+    {
       "importer": "client/src/components/SettingsMenu.tsx",
       "specifier": "./SettingsMenu.css"
+    },
+    {
+      "importer": "client/src/components/SourcesDrawer.tsx",
+      "specifier": "./SourcesDrawer.css"
     },
     {
       "importer": "client/src/components/StaticDemo.tsx",
@@ -2002,6 +2232,10 @@
     {
       "importer": "client/src/components/StatusBar.tsx",
       "specifier": "./StatusBar.css"
+    },
+    {
+      "importer": "client/src/components/WhyThisAnswerModal.tsx",
+      "specifier": "./WhyThisAnswerModal.css"
     },
     {
       "importer": "client/src/features/gis/GISMapCard.tsx",
@@ -2116,6 +2350,10 @@
       "specifier": "./services"
     },
     {
+      "importer": "src/core/evals/__tests__/ChatBehaviorBaselineHarness.test.ts",
+      "specifier": "../../../core/cache/SemanticCache"
+    },
+    {
       "importer": "src/core/graph/__tests__/knowledge-graph-indexer-matrix.test.ts",
       "specifier": "./helper"
     },
@@ -2174,6 +2412,10 @@
     {
       "importer": "src/server/routes/local-tools.ts",
       "specifier": "../../core/local-tools/LocalToolService"
+    },
+    {
+      "importer": "src/types/source-code-pack.test.ts",
+      "specifier": "./math"
     }
   ],
   "importGraph": {
@@ -2276,6 +2518,10 @@
     "client/src/components/__tests__/CapabilityPromotionView.workflow.test.tsx": [
       "client/src/components/CapabilityPromotionView.tsx"
     ],
+    "client/src/components/__tests__/client-ux-spec.test.tsx": [
+      "client/src/components/KnowledgeManagerPanel.tsx",
+      "client/src/components/ModelSelectorDropdown.tsx"
+    ],
     "client/src/components/__tests__/FileExplorerPanel.workflow.test.tsx": [
       "client/src/api/files.ts",
       "client/src/components/FileExplorerPanel.tsx"
@@ -2327,8 +2573,12 @@
       "client/src/components/LoadedFilesBar.tsx",
       "client/src/components/ModeSelector.tsx",
       "client/src/components/PlanActionBar.tsx",
+      "client/src/components/ResponseFeedbackBar.tsx",
+      "client/src/components/SourcesDrawer.tsx",
       "client/src/components/StatusBar.tsx",
-      "client/src/features/gis/GISMapPanel.tsx"
+      "client/src/components/WhyThisAnswerModal.tsx",
+      "client/src/features/gis/GISMapPanel.tsx",
+      "src/types/citation.ts"
     ],
     "client/src/components/AssistantChatPanelScope.test.tsx": [
       "client/src/components/AssistantChat.tsx"
@@ -2351,6 +2601,13 @@
     ],
     "client/src/components/CapabilityPromotionView.tsx": [
       "client/src/api/runtime.ts"
+    ],
+    "client/src/components/ChatDiagnosticsModal.test.tsx": [
+      "client/src/components/ChatDiagnosticsModal.tsx",
+      "src/types/chat-diagnostics.ts"
+    ],
+    "client/src/components/ChatDiagnosticsModal.tsx": [
+      "src/types/chat-diagnostics.ts"
     ],
     "client/src/components/CodeWorkflowPanel.test.tsx": [
       "client/src/components/CodeWorkflowPanel.tsx"
@@ -2403,6 +2660,7 @@
     "client/src/components/GamingPlaybookPanel.tsx": [
       "client/src/api/gaming.ts"
     ],
+    "client/src/components/KnowledgeManagerPanel.tsx": [],
     "client/src/components/KnowledgeMissPrompt.test.tsx": [
       "client/src/components/KnowledgeMissPrompt.tsx"
     ],
@@ -2453,6 +2711,7 @@
     ],
     "client/src/components/MemoryCenterPanel.tsx": [],
     "client/src/components/MockApiWorkspacePanel.tsx": [],
+    "client/src/components/ModelSelectorDropdown.tsx": [],
     "client/src/components/ModeSelector.test.tsx": [
       "client/src/components/ModeSelector.tsx"
     ],
@@ -2471,10 +2730,23 @@
     ],
     "client/src/components/RepositoryArchitectureView.tsx": [],
     "client/src/components/RepositoryFindingsView.tsx": [],
+    "client/src/components/ResponseFeedbackBar.test.tsx": [
+      "client/src/components/ResponseFeedbackBar.tsx"
+    ],
+    "client/src/components/ResponseFeedbackBar.tsx": [
+      "src/types/feedback.ts"
+    ],
     "client/src/components/SettingsMenu.test.tsx": [
       "client/src/components/SettingsMenu.tsx"
     ],
     "client/src/components/SettingsMenu.tsx": [],
+    "client/src/components/SourcesDrawer.test.tsx": [
+      "client/src/components/SourcesDrawer.tsx",
+      "src/types/citation.ts"
+    ],
+    "client/src/components/SourcesDrawer.tsx": [
+      "src/types/citation.ts"
+    ],
     "client/src/components/SpriteLabPanel.test.tsx": [
       "client/src/components/SpriteLabPanel.tsx",
       "client/src/test/browserTestUtils.ts"
@@ -2498,6 +2770,13 @@
     ],
     "client/src/components/UtilityWorkbenchPanel.tsx": [],
     "client/src/components/WebsiteWorkspacePanel.tsx": [],
+    "client/src/components/WhyThisAnswerModal.test.tsx": [
+      "client/src/components/WhyThisAnswerModal.tsx",
+      "src/types/citation.ts"
+    ],
+    "client/src/components/WhyThisAnswerModal.tsx": [
+      "src/types/citation.ts"
+    ],
     "client/src/features/gis/gisApi.test.ts": [
       "client/src/features/gis/gisApi.ts"
     ],
@@ -2582,8 +2861,19 @@
     "scripts/backup-knowledge-db.ts": [],
     "scripts/browser/local-tool-fixture.mjs": [],
     "scripts/browser/prepare-browser-e2e.mjs": [],
+    "scripts/canonical-cli.ts": [
+      "src/core/governance/CanonicalCliRegistry.ts",
+      "src/types/cli-scripts.ts"
+    ],
     "scripts/certification/http-load.mjs": [],
     "scripts/certification/production-like.mjs": [],
+    "scripts/dabook/dabook-env.mjs": [],
+    "scripts/dabook/setup.mjs": [
+      "scripts/dabook/dabook-env.mjs"
+    ],
+    "scripts/dabook/test.mjs": [
+      "scripts/dabook/dabook-env.mjs"
+    ],
     "scripts/export-skill.ts": [],
     "scripts/extract_encyclopedia.js": [],
     "scripts/extract_encyclopedia.ts": [],
@@ -2700,6 +2990,7 @@
       "src/core/evaluation/EvalHarness.ts"
     ],
     "scripts/verify-package-smoke.mjs": [],
+    "services/dabook/src/dabook/server/static/app.js": [],
     "src/__tests__/core/providers/LLMAdapter.test.ts": [
       "src/__tests__/utils/test-helpers.ts",
       "src/core/providers/LLMAdapter.ts"
@@ -2744,6 +3035,27 @@
       "src/core/validator/Validators.ts",
       "src/observability/alerts.ts",
       "src/observability/tracing.ts"
+    ],
+    "src/core/adapters/__tests__/voice-external-adapters.test.ts": [
+      "src/core/adapters/ChatInputAdapterFactory.ts",
+      "src/core/adapters/VoiceInputAdapter.ts",
+      "src/core/adapters/VoiceOutputAdapter.ts",
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/adapters/ChatInputAdapterFactory.ts": [
+      "src/core/adapters/VoiceInputAdapter.ts",
+      "src/core/chat/ChatRequestNormalizer.ts",
+      "src/types/chat-runtime.ts",
+      "src/types/input-adapters.ts"
+    ],
+    "src/core/adapters/VoiceInputAdapter.ts": [
+      "src/core/chat/ChatRequestNormalizer.ts",
+      "src/types/chat-runtime.ts",
+      "src/types/input-adapters.ts"
+    ],
+    "src/core/adapters/VoiceOutputAdapter.ts": [
+      "src/types/chat-runtime.ts",
+      "src/types/input-adapters.ts"
     ],
     "src/core/agent-operations/__tests__/agent-communication-and-coordination-matrix.test.ts": [
       "src/core/agent-operations/communication/AgentCommunicationHub.ts",
@@ -3776,6 +4088,98 @@
       "src/core/capabilities/resources/ResourceBudgetManager.ts"
     ],
     "src/core/capabilities/storage/StorageQuotaManager.ts": [],
+    "src/core/chat/__tests__/context-planner-matrix.test.ts": [
+      "src/core/chat/ChatContextPlanner.ts",
+      "src/core/chat/ChatRuntime.ts",
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/chat/ChatContextPlanner.ts": [
+      "src/core/chat/ChatRuntime.ts",
+      "src/core/chat/ContextClassifier.ts",
+      "src/core/chat/ContextPlanDiagnostics.ts",
+      "src/core/chat/ContextRoutingSignals.ts",
+      "src/core/chat/ProjectContextPlanner.ts",
+      "src/types/chat-runtime.ts",
+      "src/types/context-plan.ts"
+    ],
+    "src/core/chat/ChatRequestNormalizer.test.ts": [
+      "src/core/chat/ChatRequestNormalizer.ts"
+    ],
+    "src/core/chat/ChatRequestNormalizer.ts": [
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/chat/ChatRuntime.test.ts": [
+      "src/core/chat/ChatRuntime.ts",
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/chat/ChatRuntime.ts": [
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/chat/ChatRuntimeCompatibilityAdapter.test.ts": [
+      "src/core/chat/ChatRuntimeCompatibilityAdapter.ts",
+      "src/core/chat/ChatRuntimeFactory.ts",
+      "src/types/chat-runtime.ts",
+      "src/types/chat.ts"
+    ],
+    "src/core/chat/ChatRuntimeCompatibilityAdapter.ts": [
+      "src/core/chat/ChatRequestNormalizer.ts",
+      "src/core/chat/ChatRuntime.ts",
+      "src/core/orchestrator/Orchestrator.ts",
+      "src/types/chat-runtime.ts",
+      "src/types/chat.ts"
+    ],
+    "src/core/chat/ChatRuntimeFactory.test.ts": [
+      "src/core/chat/ChatRuntime.ts",
+      "src/core/chat/ChatRuntimeFactory.ts",
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/chat/ChatRuntimeFactory.ts": [
+      "src/core/chat/ChatContextPlanner.ts",
+      "src/core/chat/ChatRuntime.ts",
+      "src/core/state/ConversationStateService.ts",
+      "src/core/validation/ResponseQualityGate.ts",
+      "src/core/workflow/WorkflowResolver.ts",
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/chat/ChatRuntimeShadowRunner.test.ts": [
+      "src/core/chat/ChatRuntimeFactory.ts",
+      "src/core/chat/ChatRuntimeShadowRunner.ts",
+      "src/core/orchestrator/Orchestrator.ts",
+      "src/types/chat.ts"
+    ],
+    "src/core/chat/ChatRuntimeShadowRunner.ts": [
+      "src/core/chat/ChatRequestNormalizer.ts",
+      "src/core/chat/ChatRuntime.ts",
+      "src/core/chat/ChatRuntimeCompatibilityAdapter.ts",
+      "src/core/orchestrator/Orchestrator.ts",
+      "src/types/chat-runtime.ts",
+      "src/types/chat.ts"
+    ],
+    "src/core/chat/ContextClassifier.ts": [
+      "src/types/context-plan.ts"
+    ],
+    "src/core/chat/ContextPlanDiagnostics.ts": [
+      "src/types/context-plan.ts"
+    ],
+    "src/core/chat/ContextRoutingSignals.ts": [
+      "src/core/chat/ChatRuntime.ts",
+      "src/types/chat-runtime.ts",
+      "src/types/conversation-state.ts"
+    ],
+    "src/core/chat/LegacyOrchestratorDeprecation.ts": [
+      "src/core/chat/ChatRuntime.ts",
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/chat/ProjectContextPlanner.ts": [
+      "src/types/context-plan.ts"
+    ],
+    "src/core/chat/ReleaseCutoverOrchestrator.ts": [
+      "src/types/knowledge-maintenance.ts"
+    ],
+    "src/core/chat/WhyThisAnswerService.ts": [
+      "src/types/chat-runtime.ts",
+      "src/types/citation.ts"
+    ],
     "src/core/chrono/ChronoDate.ts": [],
     "src/core/chrono/ChronoKnowledgeEngine.test.ts": [
       "src/core/chrono/ChronoKnowledgeEngine.ts"
@@ -4259,6 +4663,9 @@
     "src/core/config/__tests__/APIKeyManager.security.test.ts": [
       "src/core/config/APIKeyManager.ts"
     ],
+    "src/core/config/__tests__/canonical-runtime-config.test.ts": [
+      "src/core/config/CanonicalRuntimeConfig.ts"
+    ],
     "src/core/config/__tests__/ConfigValidator.test.ts": [
       "src/core/config/ConfigValidator.ts"
     ],
@@ -4274,6 +4681,7 @@
     "src/core/config/APIKeyManager.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/config/CanonicalRuntimeConfig.ts": [],
     "src/core/config/ConfigValidator.test.ts": [
       "src/core/config/ConfigValidator.ts",
       "src/core/observability/logger.ts"
@@ -4446,7 +4854,11 @@
       "src/core/database/Database.ts"
     ],
     "src/core/database/Database.ts": [
+      "src/core/database/DatasetMigrations.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/database/DatasetMigrations.ts": [
+      "src/core/database/Database.ts"
     ],
     "src/core/database/ExpansionDatabase.sec.test.ts": [
       "src/core/database/Database.ts",
@@ -4523,6 +4935,18 @@
     "src/core/developer/SourcePreservingSkillExporter.ts": [
       "src/core/developer/DeveloperTypes.ts"
     ],
+    "src/core/diagnostics/__tests__/chat-diagnostics.test.ts": [
+      "src/core/diagnostics/ChatDiagnosticsService.ts",
+      "src/core/diagnostics/ChatRunRepository.ts",
+      "src/server/routes/chat-diagnostics.ts"
+    ],
+    "src/core/diagnostics/ChatDiagnosticsService.ts": [
+      "src/core/diagnostics/ChatRunRepository.ts",
+      "src/types/chat-diagnostics.ts"
+    ],
+    "src/core/diagnostics/ChatRunRepository.ts": [
+      "src/types/chat-diagnostics.ts"
+    ],
     "src/core/documents/__tests__/document-metadata-and-feedback-matrix.test.ts": [
       "src/core/documents/DocumentMetadata.ts",
       "src/core/feedback/FeedbackService.ts"
@@ -4552,6 +4976,64 @@
     "src/core/entity/EntityLinkingService.ts": [
       "src/core/database/Database.ts"
     ],
+    "src/core/evals/__tests__/ChatBehaviorBaselineHarness.test.ts": [
+      "src/core/agents/CodingAgent.ts",
+      "src/core/agents/math/MathGeniusAgent.ts",
+      "src/core/conversation/ConversationManager.ts",
+      "src/core/creative/CreativeWritingAgent.ts",
+      "src/core/orchestrator/EnhancedOrchestrator.ts",
+      "src/core/orchestrator/Orchestrator.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/rag/RAGService.ts",
+      "src/server/routes/legacy-chat.ts"
+    ],
+    "src/core/evals/__tests__/dataset-ab-eval.test.ts": [
+      "src/core/evals/DatasetAbEvaluator.ts",
+      "src/core/evals/RetrievalWeightTuner.ts",
+      "src/types/ab-evaluation.ts"
+    ],
+    "src/core/evals/__tests__/golden-regression-suite.test.ts": [
+      "src/core/evals/GoldenConversationRunner.ts",
+      "src/core/evals/golden-dataset-seed.ts"
+    ],
+    "src/core/evals/__tests__/grounding-abstention.test.ts": [
+      "src/core/evals/AnswerabilityEvalSet.ts",
+      "src/core/evals/GroundingEscalationFlow.ts",
+      "src/core/evals/GroundingEvaluator.ts",
+      "src/core/evals/ResponseWordingPolicy.ts"
+    ],
+    "src/core/evals/__tests__/release-threshold-framework.test.ts": [
+      "src/core/evals/ReleaseThresholdFramework.ts",
+      "src/types/eval-thresholds.ts"
+    ],
+    "src/core/evals/AnswerabilityEvalSet.ts": [
+      "src/types/grounding-eval.ts"
+    ],
+    "src/core/evals/DatasetAbEvaluator.ts": [
+      "src/types/ab-evaluation.ts"
+    ],
+    "src/core/evals/golden-dataset-seed.ts": [
+      "src/types/golden-eval.ts"
+    ],
+    "src/core/evals/GoldenConversationRunner.ts": [
+      "src/types/golden-eval.ts"
+    ],
+    "src/core/evals/GroundingEscalationFlow.ts": [
+      "src/core/evals/GroundingEvaluator.ts",
+      "src/types/grounding-eval.ts"
+    ],
+    "src/core/evals/GroundingEvaluator.ts": [
+      "src/types/grounding-eval.ts"
+    ],
+    "src/core/evals/ReleaseThresholdFramework.ts": [
+      "src/types/eval-thresholds.ts"
+    ],
+    "src/core/evals/ResponseWordingPolicy.ts": [
+      "src/types/grounding-eval.ts"
+    ],
+    "src/core/evals/RetrievalWeightTuner.ts": [
+      "src/types/ab-evaluation.ts"
+    ],
     "src/core/evaluation/__tests__/coding-benchmark-runner-matrix.test.ts": [
       "src/core/evaluation/CodingBenchmarkRunner.ts"
     ],
@@ -4573,9 +5055,36 @@
       "src/core/evaluation/EvalHarness.ts"
     ],
     "src/core/evaluation/EvalHarness.ts": [],
+    "src/core/feedback/__tests__/feedback-consolidation-integration.test.ts": [
+      "src/core/feedback/CanonicalFeedbackService.ts",
+      "src/core/feedback/FeedbackCollectorAdapter.ts",
+      "src/core/feedback/FeedbackTraceBinding.ts",
+      "src/core/feedback/FeedbackTriageService.ts",
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/feedback/CanonicalFeedbackService.ts": [
+      "src/core/database/Database.ts",
+      "src/core/feedback/FeedbackTraceBinding.ts",
+      "src/core/feedback/FeedbackTriageService.ts",
+      "src/core/observability/logger.ts",
+      "src/types/feedback.ts"
+    ],
+    "src/core/feedback/FeedbackCollectorAdapter.ts": [
+      "src/core/feedback/CanonicalFeedbackService.ts",
+      "src/core/observability/logger.ts",
+      "src/types/feedback.ts"
+    ],
     "src/core/feedback/FeedbackService.ts": [
       "src/core/database/Database.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/feedback/FeedbackTraceBinding.ts": [
+      "src/types/chat-runtime.ts",
+      "src/types/feedback.ts"
+    ],
+    "src/core/feedback/FeedbackTriageService.ts": [
+      "src/core/observability/logger.ts",
+      "src/types/feedback.ts"
     ],
     "src/core/files/__tests__/FileExplorerService.test.ts": [
       "src/core/files/FileExplorerService.ts"
@@ -4887,6 +5396,19 @@
     "src/core/gis/SpatialAnalysisService.ts": [
       "src/types/gis.ts"
     ],
+    "src/core/governance/__tests__/backlog-reconciliation.test.ts": [
+      "src/core/governance/BacklogReconciliationOrchestrator.ts"
+    ],
+    "src/core/governance/__tests__/canonical-cli.test.ts": [
+      "src/core/governance/CanonicalCliRegistry.ts",
+      "src/types/cli-scripts.ts"
+    ],
+    "src/core/governance/__tests__/ci-gates-orchestrator.test.ts": [
+      "src/core/governance/CIGatesOrchestrator.ts"
+    ],
+    "src/core/governance/__tests__/documentation-deliverables.test.ts": [
+      "src/core/governance/DocumentationDeliverablesAuditor.ts"
+    ],
     "src/core/governance/__tests__/governance-evidence-matrix.test.ts": [
       "src/core/governance/GovernanceEvidenceService.ts",
       "src/core/personalization/StyleAdapter.ts",
@@ -4895,11 +5417,97 @@
       "src/core/webhooks/WebhookService.ts",
       "src/core/wiki/LocalKnowledgeWiki.ts"
     ],
+    "src/core/governance/__tests__/implementation-dependency-graph.test.ts": [
+      "src/core/governance/ImplementationDependencyGraph.ts",
+      "src/types/dependency-graph.ts"
+    ],
+    "src/core/governance/__tests__/milestone-manager.test.ts": [
+      "src/core/governance/MilestoneManager.ts",
+      "src/types/dependency-graph.ts"
+    ],
+    "src/core/governance/__tests__/pack-evidence-validator.test.ts": [
+      "src/core/governance/KnowledgePackEvidenceValidator.ts"
+    ],
+    "src/core/governance/__tests__/parallel-work-coordinator.test.ts": [
+      "src/core/governance/ParallelWorkCoordinator.ts",
+      "src/types/dependency-graph.ts"
+    ],
+    "src/core/governance/__tests__/program-completion-orchestrator.test.ts": [
+      "src/core/governance/CanonicalProgramCompletionOrchestrator.ts"
+    ],
+    "src/core/governance/__tests__/prohibited-shortcuts.test.ts": [
+      "src/core/governance/ProhibitedShortcutsDetector.ts"
+    ],
+    "src/core/governance/__tests__/repository-file-map.test.ts": [
+      "src/core/governance/RepositoryFileMapAuditor.ts"
+    ],
+    "src/core/governance/__tests__/runtime-definition-of-done.test.ts": [
+      "src/core/governance/RuntimeDefinitionOfDoneEvaluator.ts"
+    ],
+    "src/core/governance/__tests__/task-dod-auditor.test.ts": [
+      "src/core/governance/HandoffAdditionsBuilder.ts",
+      "src/core/governance/ImplementationPromptTemplate.ts",
+      "src/core/governance/TaskDefinitionOfDoneAuditor.ts"
+    ],
+    "src/core/governance/__tests__/verification-commands.test.ts": [
+      "src/core/governance/VerificationCommandsOrchestrator.ts"
+    ],
+    "src/core/governance/BacklogReconciliationOrchestrator.ts": [
+      "src/types/backlog-reconciliation.ts"
+    ],
+    "src/core/governance/CanonicalCliRegistry.ts": [
+      "src/types/cli-scripts.ts"
+    ],
+    "src/core/governance/CanonicalProgramCompletionOrchestrator.ts": [
+      "src/core/governance/BacklogReconciliationOrchestrator.ts",
+      "src/core/governance/RuntimeDefinitionOfDoneEvaluator.ts",
+      "src/core/governance/VerificationCommandsOrchestrator.ts",
+      "src/types/program-completion.ts"
+    ],
+    "src/core/governance/CIGatesOrchestrator.ts": [
+      "src/types/ci-gates.ts"
+    ],
+    "src/core/governance/DocumentationDeliverablesAuditor.ts": [
+      "src/types/documentation-spec.ts"
+    ],
     "src/core/governance/GovernanceEvidenceService.test.ts": [
       "src/core/governance/GovernanceEvidenceService.ts"
     ],
     "src/core/governance/GovernanceEvidenceService.ts": [
       "src/core/database/Database.ts"
+    ],
+    "src/core/governance/HandoffAdditionsBuilder.ts": [
+      "src/types/program-completion.ts"
+    ],
+    "src/core/governance/ImplementationDependencyGraph.ts": [
+      "src/types/dependency-graph.ts"
+    ],
+    "src/core/governance/ImplementationPromptTemplate.ts": [
+      "src/types/program-completion.ts"
+    ],
+    "src/core/governance/KnowledgePackEvidenceValidator.ts": [
+      "src/types/program-completion.ts"
+    ],
+    "src/core/governance/MilestoneManager.ts": [
+      "src/types/dependency-graph.ts"
+    ],
+    "src/core/governance/ParallelWorkCoordinator.ts": [
+      "src/types/dependency-graph.ts"
+    ],
+    "src/core/governance/ProhibitedShortcutsDetector.ts": [
+      "src/types/program-completion.ts"
+    ],
+    "src/core/governance/RepositoryFileMapAuditor.ts": [
+      "src/types/file-map.ts"
+    ],
+    "src/core/governance/RuntimeDefinitionOfDoneEvaluator.ts": [
+      "src/types/runtime-definition-of-done.ts"
+    ],
+    "src/core/governance/TaskDefinitionOfDoneAuditor.ts": [
+      "src/types/program-completion.ts"
+    ],
+    "src/core/governance/VerificationCommandsOrchestrator.ts": [
+      "src/types/program-completion.ts"
     ],
     "src/core/graph/__tests__/knowledge-graph-indexer-matrix.test.ts": [
       "src/core/graph/KnowledgeGraphIndexer.ts"
@@ -5112,11 +5720,58 @@
       "src/core/knowledge-os/KnowledgeOsChatAgent.ts"
     ],
     "src/core/knowledge-os/KnowledgeOsChatAgent.ts": [],
+    "src/core/knowledge/__tests__/capacity-performance.test.ts": [
+      "src/core/knowledge/CapacityPerformanceTracker.ts",
+      "src/core/knowledge/ResourceGuardrailService.ts"
+    ],
+    "src/core/knowledge/__tests__/citation-provenance-integration.test.ts": [
+      "src/core/chat/WhyThisAnswerService.ts",
+      "src/core/knowledge/CitationResolverService.ts",
+      "src/core/knowledge/ClaimAssociationService.ts",
+      "src/core/knowledge/SourcesDrawerFormatter.ts",
+      "src/types/chat-runtime.ts",
+      "src/types/citation.ts"
+    ],
+    "src/core/knowledge/__tests__/coding-retrieval-policy.test.ts": [
+      "src/core/knowledge/CodingRetrievalPolicyEngine.ts",
+      "src/types/coding-retrieval-policy.ts"
+    ],
+    "src/core/knowledge/__tests__/dataset-fixtures.test.ts": [
+      "src/core/knowledge/CanonicalDatasetFixtures.ts",
+      "src/core/knowledge/DatasetFixtureProvider.ts"
+    ],
     "src/core/knowledge/__tests__/DatasetLoader.test.ts": [
       "src/core/knowledge/DatasetLoader.ts"
     ],
+    "src/core/knowledge/__tests__/developer-qa-eval.test.ts": [
+      "src/core/knowledge/DeveloperQAPack.ts",
+      "src/core/knowledge/DeveloperQAQualityFilter.ts",
+      "src/core/knowledge/DeveloperQARefreshService.ts",
+      "src/core/knowledge/DeveloperQAVersionExtractor.ts",
+      "src/types/developer-qa.ts"
+    ],
+    "src/core/knowledge/__tests__/educational-multilingual-pack.test.ts": [
+      "src/core/knowledge/EducationalWebPack.ts",
+      "src/core/knowledge/FineWebEduSourcePolicy.ts",
+      "src/core/knowledge/MultilingualPack.ts"
+    ],
     "src/core/knowledge/__tests__/entertainment-source-deep-matrix.test.ts": [
       "src/core/knowledge/EntertainmentSource.ts"
+    ],
+    "src/core/knowledge/__tests__/failure-mode-matrix.test.ts": [
+      "src/core/knowledge/FailureModeMatrixHandler.ts"
+    ],
+    "src/core/knowledge/__tests__/general-knowledge-pack.test.ts": [
+      "src/core/knowledge/EntityLinkingService.ts",
+      "src/core/knowledge/GeneralKnowledgePack.ts",
+      "src/core/knowledge/KnowledgeRouter.ts",
+      "src/core/knowledge/WikidataStructuredStore.ts",
+      "src/core/knowledge/WikipediaChunker.ts",
+      "src/types/general-knowledge.ts"
+    ],
+    "src/core/knowledge/__tests__/general-retrieval-policy.test.ts": [
+      "src/core/knowledge/GeneralRetrievalPolicyEngine.ts",
+      "src/types/general-retrieval-policy.ts"
     ],
     "src/core/knowledge/__tests__/GitHubSource.test.ts": [
       "src/core/knowledge/GitHubSource.ts"
@@ -5131,11 +5786,37 @@
       "src/core/knowledge/LocalKnowledgeAnswerer.ts",
       "src/core/knowledge/OnlineKnowledgeIngestionService.ts"
     ],
+    "src/core/knowledge/__tests__/knowledge-infrastructure-integration.test.ts": [
+      "src/core/database/DatasetMigrations.ts",
+      "src/core/knowledge/DatasetLicensePolicy.ts",
+      "src/core/knowledge/DatasetManager.ts",
+      "src/core/knowledge/DatasetRegistry.ts",
+      "src/core/knowledge/DatasetStorageQuota.ts",
+      "src/core/knowledge/KnowledgePackManager.ts",
+      "src/types/knowledge-datasets.ts"
+    ],
+    "src/core/knowledge/__tests__/knowledge-maintenance-production.test.ts": [
+      "src/core/chat/ChatRuntime.ts",
+      "src/core/chat/LegacyOrchestratorDeprecation.ts",
+      "src/core/chat/ReleaseCutoverOrchestrator.ts",
+      "src/core/knowledge/AtomicDatasetActivation.ts",
+      "src/core/knowledge/DatasetBackupPolicy.ts",
+      "src/core/knowledge/DatasetRefreshScheduler.ts",
+      "src/core/knowledge/IncrementalUpdateService.ts",
+      "src/core/knowledge/JobRecoveryService.ts",
+      "src/core/knowledge/KnowledgeMaintenanceMetrics.ts",
+      "src/core/knowledge/ReembeddingMigrationService.ts",
+      "src/types/chat-runtime.ts"
+    ],
     "src/core/knowledge/__tests__/knowledge-ranking-reasoning.test.ts": [
       "src/core/knowledge/KnowledgeFusion.ts",
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/knowledge/ReasoningEngine.ts",
       "src/core/knowledge/ResultRanker.ts"
+    ],
+    "src/core/knowledge/__tests__/knowledge-router.test.ts": [
+      "src/core/knowledge/KnowledgePackManager.ts",
+      "src/core/knowledge/KnowledgeRouter.ts"
     ],
     "src/core/knowledge/__tests__/knowledge-sources-decision-matrix.test.ts": [
       "src/core/knowledge/BaseKnowledgeSource.ts",
@@ -5168,6 +5849,19 @@
       "src/core/knowledge/EntertainmentSource.ts",
       "src/core/knowledge/ResultRanker.ts"
     ],
+    "src/core/knowledge/__tests__/official-docs-retrieval-eval.test.ts": [
+      "src/core/knowledge/DocumentationRefreshService.ts",
+      "src/core/knowledge/DocumentationSourcePolicy.ts",
+      "src/core/knowledge/OfficialDocumentationPack.ts"
+    ],
+    "src/core/knowledge/__tests__/research-math-packs-eval.test.ts": [
+      "src/core/knowledge/AcademicLicensePolicy.ts",
+      "src/core/knowledge/KnowledgeRouter.ts",
+      "src/core/knowledge/MathPack.ts",
+      "src/core/knowledge/MathStructuralChunker.ts",
+      "src/core/knowledge/ResearchPack.ts",
+      "src/core/knowledge/ResearchPaperChunker.ts"
+    ],
     "src/core/knowledge/__tests__/scientific-papers-source-matrix.test.ts": [
       "src/core/knowledge/ScientificPapersSource.ts"
     ],
@@ -5178,17 +5872,36 @@
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/knowledge/SmartKnowledgeSource.ts"
     ],
+    "src/core/knowledge/__tests__/source-code-retrieval-benchmark.test.ts": [
+      "src/core/knowledge/SourceCodePack.ts",
+      "src/types/source-code-pack.ts"
+    ],
     "src/core/knowledge/__tests__/SpecializedTopicSource.test.ts": [
       "src/core/knowledge/SpecializedTopicSource.ts"
     ],
     "src/core/knowledge/__tests__/StackOverflowSource.test.ts": [
       "src/core/knowledge/StackOverflowSource.ts"
     ],
+    "src/core/knowledge/__tests__/storage-planning-estimator.test.ts": [
+      "src/core/knowledge/StoragePlanningEstimator.ts"
+    ],
     "src/core/knowledge/__tests__/telegram-source-matrix.test.ts": [
       "src/core/knowledge/TelegramSource.ts"
     ],
+    "src/core/knowledge/__tests__/training-separation-coordinator.test.ts": [
+      "src/core/knowledge/TrainingSeparationCoordinator.ts",
+      "src/types/training-separation.ts"
+    ],
     "src/core/knowledge/__tests__/UniversitySource.test.ts": [
       "src/core/knowledge/UniversitySource.ts"
+    ],
+    "src/core/knowledge/__tests__/version-conflict-benchmark.test.ts": [
+      "src/core/knowledge/RetrievalConflictResolver.ts",
+      "src/core/knowledge/RetrievalPolicyEngine.ts",
+      "src/types/retrieval-scoring.ts"
+    ],
+    "src/core/knowledge/AcademicLicensePolicy.ts": [
+      "src/types/research-math-packs.ts"
     ],
     "src/core/knowledge/AnatomySource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
@@ -5201,6 +5914,9 @@
     "src/core/knowledge/AstronomySource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/AtomicDatasetActivation.ts": [
+      "src/types/knowledge-maintenance.ts"
     ],
     "src/core/knowledge/BackendDesignSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
@@ -5218,6 +5934,17 @@
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/CanonicalDatasetFixtures.ts": [
+      "src/types/dataset-fixtures.ts"
+    ],
+    "src/core/knowledge/CapacityPerformanceTracker.ts": [],
+    "src/core/knowledge/CitationResolverService.ts": [
+      "src/core/observability/logger.ts",
+      "src/types/citation.ts"
+    ],
+    "src/core/knowledge/ClaimAssociationService.ts": [
+      "src/types/citation.ts"
+    ],
     "src/core/knowledge/CNASource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
@@ -5227,35 +5954,114 @@
       "src/core/knowledge/KnowledgeExtractor.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/CodingRetrievalPolicyEngine.ts": [
+      "src/types/coding-retrieval-policy.ts"
+    ],
+    "src/core/knowledge/DatasetBackupPolicy.ts": [
+      "src/types/knowledge-maintenance.ts"
+    ],
+    "src/core/knowledge/DatasetFixtureProvider.ts": [
+      "src/core/knowledge/CanonicalDatasetFixtures.ts",
+      "src/types/dataset-fixtures.ts"
+    ],
+    "src/core/knowledge/DatasetLicensePolicy.ts": [
+      "src/types/knowledge-datasets.ts"
+    ],
     "src/core/knowledge/DatasetLoader.ts": [
       "src/core/database/Database.ts",
       "src/core/embeddings/EmbeddingService.ts",
       "src/core/observability/logger.ts",
       "src/types/rag.ts"
     ],
+    "src/core/knowledge/DatasetManager.ts": [
+      "src/core/knowledge/DatasetLicensePolicy.ts",
+      "src/core/knowledge/DatasetRegistry.ts",
+      "src/core/knowledge/DatasetStorageQuota.ts",
+      "src/types/knowledge-datasets.ts"
+    ],
+    "src/core/knowledge/DatasetRefreshScheduler.ts": [
+      "src/types/knowledge-maintenance.ts"
+    ],
+    "src/core/knowledge/DatasetRegistry.ts": [
+      "src/types/knowledge-datasets.ts"
+    ],
+    "src/core/knowledge/DatasetStorageQuota.ts": [
+      "src/types/knowledge-datasets.ts"
+    ],
+    "src/core/knowledge/DeveloperQAPack.ts": [
+      "src/core/knowledge/DeveloperQAQualityFilter.ts",
+      "src/core/knowledge/DeveloperQAVersionExtractor.ts",
+      "src/types/developer-qa.ts"
+    ],
+    "src/core/knowledge/DeveloperQAQualityFilter.ts": [
+      "src/types/developer-qa.ts"
+    ],
+    "src/core/knowledge/DeveloperQARefreshService.ts": [
+      "src/core/knowledge/DeveloperQAPack.ts",
+      "src/types/developer-qa.ts"
+    ],
+    "src/core/knowledge/DeveloperQAVersionExtractor.ts": [],
+    "src/core/knowledge/DocumentationChunker.ts": [
+      "src/types/official-docs.ts"
+    ],
+    "src/core/knowledge/DocumentationRefreshService.ts": [
+      "src/core/knowledge/DocumentationChunker.ts",
+      "src/types/official-docs.ts"
+    ],
     "src/core/knowledge/DocumentationSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/DocumentationSourcePolicy.ts": [
+      "src/types/official-docs.ts"
+    ],
+    "src/core/knowledge/DocumentationVersionIndex.ts": [
+      "src/types/official-docs.ts"
     ],
     "src/core/knowledge/DSPSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/EducationalWebPack.ts": [
+      "src/core/knowledge/FineWebEduSourcePolicy.ts",
+      "src/types/educational-multilingual.ts"
+    ],
     "src/core/knowledge/EntertainmentSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/EntityLinkingService.ts": [
+      "src/core/knowledge/WikidataStructuredStore.ts",
+      "src/types/general-knowledge.ts"
+    ],
+    "src/core/knowledge/FailureModeMatrixHandler.ts": [],
     "src/core/knowledge/FinancialAdviceSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/FineWebEduSourcePolicy.ts": [
+      "src/types/educational-multilingual.ts"
+    ],
+    "src/core/knowledge/FreshnessScorer.ts": [],
     "src/core/knowledge/GardeningSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/GeneralKnowledgePack.ts": [
+      "src/core/knowledge/EntityLinkingService.ts",
+      "src/core/knowledge/WikidataStructuredStore.ts",
+      "src/core/knowledge/WikipediaChunker.ts",
+      "src/types/general-knowledge.ts"
+    ],
+    "src/core/knowledge/GeneralRetrievalPolicyEngine.ts": [
+      "src/types/general-retrieval-policy.ts"
+    ],
     "src/core/knowledge/GitHubSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/IncrementalUpdateService.ts": [
+      "src/types/knowledge-maintenance.ts"
     ],
     "src/core/knowledge/index.ts": [
       "src/core/knowledge/AnatomySource.ts",
@@ -5299,6 +6105,7 @@
       "src/core/knowledge/WikipediaSource.ts",
       "src/core/knowledge/YouTubeSource.ts"
     ],
+    "src/core/knowledge/JobRecoveryService.ts": [],
     "src/core/knowledge/KnowledgeExtractor.ts": [
       "src/core/observability/logger.ts"
     ],
@@ -5309,6 +6116,9 @@
     ],
     "src/core/knowledge/KnowledgeGraph.ts": [
       "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/KnowledgeMaintenanceMetrics.ts": [
+      "src/types/knowledge-maintenance.ts"
     ],
     "src/core/knowledge/KnowledgeMiss.ts": [],
     "src/core/knowledge/KnowledgeMissHandler.test.ts": [
@@ -5323,6 +6133,13 @@
     "src/core/knowledge/KnowledgeOnlineFlowService.ts": [
       "src/core/knowledge/KnowledgeMissHandler.ts",
       "src/core/knowledge/OnlineKnowledgeIngestionService.ts"
+    ],
+    "src/core/knowledge/KnowledgePackManager.ts": [
+      "src/types/knowledge-packs.ts"
+    ],
+    "src/core/knowledge/KnowledgeRouter.ts": [
+      "src/core/knowledge/KnowledgePackManager.ts",
+      "src/types/knowledge-router.ts"
     ],
     "src/core/knowledge/KnowledgeSource.ts": [],
     "src/core/knowledge/KnowledgeSourceHelper.ts": [
@@ -5350,6 +6167,13 @@
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/MathPack.ts": [
+      "src/core/knowledge/MathStructuralChunker.ts",
+      "src/types/research-math-packs.ts"
+    ],
+    "src/core/knowledge/MathStructuralChunker.ts": [
+      "src/types/research-math-packs.ts"
+    ],
     "src/core/knowledge/MediumSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
@@ -5357,6 +6181,9 @@
     "src/core/knowledge/MentalHealthSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/MultilingualPack.ts": [
+      "src/types/educational-multilingual.ts"
     ],
     "src/core/knowledge/MusicTheorySource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
@@ -5368,6 +6195,12 @@
     "src/core/knowledge/NewsSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/OfficialDocumentationPack.ts": [
+      "src/core/knowledge/DocumentationChunker.ts",
+      "src/core/knowledge/DocumentationSourcePolicy.ts",
+      "src/core/knowledge/DocumentationVersionIndex.ts",
+      "src/types/official-docs.ts"
     ],
     "src/core/knowledge/OnlineKnowledgeIngestionService.test.ts": [
       "src/core/knowledge/OnlineKnowledgeIngestionService.ts"
@@ -5387,6 +6220,9 @@
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/QualityScorer.ts": [
+      "src/types/retrieval-scoring.ts"
+    ],
     "src/core/knowledge/QueryEnhancer.ts": [
       "src/core/observability/logger.ts",
       "src/core/providers/LLMAdapter.ts"
@@ -5403,14 +6239,36 @@
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/ReembeddingMigrationService.ts": [
+      "src/types/knowledge-maintenance.ts"
+    ],
     "src/core/knowledge/ReligionSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/ResearchPack.ts": [
+      "src/core/knowledge/AcademicLicensePolicy.ts",
+      "src/core/knowledge/ResearchPaperChunker.ts",
+      "src/types/research-math-packs.ts"
+    ],
+    "src/core/knowledge/ResearchPaperChunker.ts": [
+      "src/types/research-math-packs.ts"
+    ],
+    "src/core/knowledge/ResourceGuardrailService.ts": [],
     "src/core/knowledge/ResultRanker.ts": [
       "src/core/embeddings/EmbeddingService.ts",
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/RetrievalConflictResolver.ts": [
+      "src/types/retrieval-scoring.ts"
+    ],
+    "src/core/knowledge/RetrievalPolicyEngine.ts": [
+      "src/core/knowledge/FreshnessScorer.ts",
+      "src/core/knowledge/QualityScorer.ts",
+      "src/core/knowledge/SourceAuthorityPolicy.ts",
+      "src/core/knowledge/VersionCompatibilityEvaluator.ts",
+      "src/types/retrieval-scoring.ts"
     ],
     "src/core/knowledge/RNSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
@@ -5444,6 +6302,26 @@
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/SourceAuthorityPolicy.ts": [
+      "src/types/retrieval-scoring.ts"
+    ],
+    "src/core/knowledge/SourceCodeDeduplicator.ts": [],
+    "src/core/knowledge/SourceCodeFileFilter.ts": [
+      "src/types/source-code-pack.ts"
+    ],
+    "src/core/knowledge/SourceCodePack.ts": [
+      "src/core/knowledge/SourceCodeDeduplicator.ts",
+      "src/core/knowledge/SourceCodeFileFilter.ts",
+      "src/core/knowledge/SourceCodeStructuralChunker.ts",
+      "src/types/source-code-pack.ts"
+    ],
+    "src/core/knowledge/SourceCodeStructuralChunker.ts": [
+      "src/core/knowledge/SourceCodeDeduplicator.ts",
+      "src/types/source-code-pack.ts"
+    ],
+    "src/core/knowledge/SourcesDrawerFormatter.ts": [
+      "src/types/citation.ts"
+    ],
     "src/core/knowledge/SpecializedTopicSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
@@ -5452,10 +6330,16 @@
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/StoragePlanningEstimator.ts": [
+      "src/types/storage-planning.ts"
+    ],
     "src/core/knowledge/TelegramSource.ts": [
       "src/core/embeddings/EmbeddingService.ts",
       "src/core/observability/logger.ts",
       "src/types/rag.ts"
+    ],
+    "src/core/knowledge/TrainingSeparationCoordinator.ts": [
+      "src/types/training-separation.ts"
     ],
     "src/core/knowledge/UIDesignSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
@@ -5465,6 +6349,9 @@
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
     ],
+    "src/core/knowledge/VersionCompatibilityEvaluator.ts": [
+      "src/types/retrieval-scoring.ts"
+    ],
     "src/core/knowledge/WebDesignSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
@@ -5472,6 +6359,13 @@
     "src/core/knowledge/WebScraperSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/WikidataStructuredStore.ts": [
+      "src/core/knowledge/KnowledgeGraph.ts",
+      "src/types/general-knowledge.ts"
+    ],
+    "src/core/knowledge/WikipediaChunker.ts": [
+      "src/types/general-knowledge.ts"
     ],
     "src/core/knowledge/WikipediaSource.ts": [
       "src/core/embeddings/EmbeddingService.ts",
@@ -5631,6 +6525,28 @@
     ],
     "src/core/memory/ProjectContext.ts": [
       "src/core/observability/logger.ts"
+    ],
+    "src/core/migration/__tests__/api-compatibility-bridge.test.ts": [
+      "src/core/migration/APICompatibilityBridge.ts",
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/migration/__tests__/canonical-rollback-coordinator.test.ts": [
+      "src/core/migration/CanonicalRollbackCoordinator.ts",
+      "src/types/rollback-recovery.ts"
+    ],
+    "src/core/migration/__tests__/rollout-stage-coordinator.test.ts": [
+      "src/core/migration/RolloutStageCoordinator.ts",
+      "src/types/rollout-migration.ts"
+    ],
+    "src/core/migration/APICompatibilityBridge.ts": [
+      "src/types/api-compatibility.ts",
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/migration/CanonicalRollbackCoordinator.ts": [
+      "src/types/rollback-recovery.ts"
+    ],
+    "src/core/migration/RolloutStageCoordinator.ts": [
+      "src/types/rollout-migration.ts"
     ],
     "src/core/moderation/ContentModerator.ts": [
       "src/core/observability/logger.ts"
@@ -5881,6 +6797,12 @@
     "src/core/notifications/TwilioAdapter.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/observability/__tests__/canonical-metrics-registry.test.ts": [
+      "src/core/observability/CanonicalMetricsRegistry.ts"
+    ],
+    "src/core/observability/CanonicalMetricsRegistry.ts": [
+      "src/types/observability-spec.ts"
+    ],
     "src/core/observability/logger.ts": [],
     "src/core/observability/metrics.ts": [
       "src/core/observability/logger.ts"
@@ -5985,6 +6907,29 @@
       "src/core/planning/PlanDocumentService.ts"
     ],
     "src/core/planning/PlanDocumentService.ts": [],
+    "src/core/profiles/BotProfileRepository.test.ts": [
+      "src/core/profiles/BotProfileRepository.ts"
+    ],
+    "src/core/profiles/BotProfileRepository.ts": [
+      "src/types/bot-profile.ts"
+    ],
+    "src/core/profiles/BotProfileResolver.test.ts": [
+      "src/core/profiles/BotProfileRepository.ts",
+      "src/core/profiles/BotProfileResolver.ts",
+      "src/core/profiles/DefaultBotProfile.ts"
+    ],
+    "src/core/profiles/BotProfileResolver.ts": [
+      "src/core/profiles/BotProfileRepository.ts",
+      "src/core/profiles/DefaultBotProfile.ts",
+      "src/types/bot-profile.ts"
+    ],
+    "src/core/profiles/DefaultBotProfile.test.ts": [
+      "src/core/profiles/DefaultBotProfile.ts",
+      "src/types/bot-profile.ts"
+    ],
+    "src/core/profiles/DefaultBotProfile.ts": [
+      "src/types/bot-profile.ts"
+    ],
     "src/core/project-memory/__tests__/BranchMemoryLifecycle.test.ts": [
       "src/core/project-memory/capture/ProjectMemorySchema.ts",
       "src/core/project-memory/capture/ProjectMemoryStore.ts",
@@ -6056,6 +7001,24 @@
       "src/core/memory/ProjectContext.ts"
     ],
     "src/core/project/ProjectMemoryService.ts": [],
+    "src/core/prompt/__tests__/prompt-assembler.test.ts": [
+      "src/core/prompt/ContextBudgetService.ts",
+      "src/core/prompt/PromptAssembler.ts",
+      "src/core/prompt/PromptTruncationService.ts",
+      "src/types/prompt-assembler.ts"
+    ],
+    "src/core/prompt/ContextBudgetService.ts": [
+      "src/types/prompt-assembler.ts"
+    ],
+    "src/core/prompt/PromptAssembler.ts": [
+      "src/core/prompt/ContextBudgetService.ts",
+      "src/core/prompt/PromptTruncationService.ts",
+      "src/types/prompt-assembler.ts"
+    ],
+    "src/core/prompt/PromptTruncationService.ts": [
+      "src/core/prompt/ContextBudgetService.ts",
+      "src/types/prompt-assembler.ts"
+    ],
     "src/core/provenance/ProvenanceLedger.ts": [
       "src/core/observability/logger.ts",
       "src/types/contract.ts",
@@ -6068,6 +7031,12 @@
       "src/core/providers/EnsembleAdapter.ts",
       "src/core/providers/LLMAdapter.ts",
       "src/core/providers/ModelRouter.ts"
+    ],
+    "src/core/providers/__tests__/model-registry-policy.test.ts": [
+      "src/core/providers/ModelFallbackPlanner.ts",
+      "src/core/providers/ModelPolicyEngine.ts",
+      "src/core/providers/ModelRegistry.ts",
+      "src/types/model-registry.ts"
     ],
     "src/core/providers/__tests__/ModelRouter.test.ts": [
       "src/core/providers/LLMAdapter.ts",
@@ -6160,6 +7129,21 @@
       "src/core/observability/logger.ts",
       "src/core/providers/LLMAdapter.ts",
       "src/core/providers/local/ExternalLocalModelAdapter.ts"
+    ],
+    "src/core/providers/ModelFallbackPlanner.ts": [
+      "src/types/model-registry.ts"
+    ],
+    "src/core/providers/ModelHealthChecker.ts": [
+      "src/types/model-registry.ts"
+    ],
+    "src/core/providers/ModelPolicyEngine.ts": [
+      "src/core/providers/ModelFallbackPlanner.ts",
+      "src/core/providers/ModelRegistry.ts",
+      "src/types/model-registry.ts"
+    ],
+    "src/core/providers/ModelRegistry.ts": [
+      "src/core/providers/ModelHealthChecker.ts",
+      "src/types/model-registry.ts"
     ],
     "src/core/providers/ModelRouter.ts": [
       "src/core/observability/logger.ts",
@@ -6542,6 +7526,9 @@
       "src/core/rag/HybridRetriever.ts",
       "src/types/rag.ts"
     ],
+    "src/core/safety/SafetyPipeline.test.ts": [
+      "src/core/safety/SafetyPipeline.ts"
+    ],
     "src/core/safety/SafetyPipeline.ts": [
       "src/core/observability/logger.ts",
       "src/core/providers/LLMAdapter.ts",
@@ -6628,12 +7615,18 @@
       "src/core/security/threat-model/CapabilityThreatModel.ts",
       "src/core/security/web/WebSecurityBoundaryGuard.ts"
     ],
+    "src/core/security/__tests__/knowledge-security-policy.test.ts": [
+      "src/core/security/KnowledgeSecurityPolicy.ts"
+    ],
     "src/core/security/artifacts/ArtifactHandoffGuard.ts": [],
     "src/core/security/composition/CapabilityCompositionDefense.ts": [],
     "src/core/security/consent/MediaConsentGuard.ts": [],
     "src/core/security/desktop/DesktopPermissionGuard.ts": [],
     "src/core/security/injection/MemoryInjectionDefense.ts": [],
     "src/core/security/isolation/WorkerProcessIsolationGuard.ts": [],
+    "src/core/security/KnowledgeSecurityPolicy.ts": [
+      "src/core/security/web/WebSecurityBoundaryGuard.ts"
+    ],
     "src/core/security/retention/DataRetentionManager.ts": [],
     "src/core/security/supply-chain/PackSupplyChainGuard.ts": [],
     "src/core/security/threat-model/CapabilityThreatModel.ts": [],
@@ -6706,6 +7699,58 @@
     ],
     "src/core/sprite-lab/SpriteLabPlanService.ts": [
       "src/core/database/Database.ts"
+    ],
+    "src/core/state/__tests__/conversation-followup-regression.test.ts": [
+      "src/core/state/ConversationContextSelector.ts",
+      "src/core/state/ConversationStateRepository.ts",
+      "src/core/state/ConversationStateService.ts",
+      "src/types/chat-runtime.ts",
+      "src/types/conversation-state.ts"
+    ],
+    "src/core/state/__tests__/memory-knowledge-arbiter.test.ts": [
+      "src/core/state/MemoryKnowledgeArbiter.ts",
+      "src/types/memory-knowledge-table.ts"
+    ],
+    "src/core/state/ConversationContextSelector.test.ts": [
+      "src/core/state/ConversationContextSelector.ts",
+      "src/types/conversation-state.ts"
+    ],
+    "src/core/state/ConversationContextSelector.ts": [
+      "src/types/conversation-state.ts"
+    ],
+    "src/core/state/ConversationStateReducer.test.ts": [
+      "src/core/state/ConversationStateReducer.ts",
+      "src/types/conversation-state.ts"
+    ],
+    "src/core/state/ConversationStateReducer.ts": [
+      "src/types/conversation-state.ts"
+    ],
+    "src/core/state/ConversationStateRepository.ts": [
+      "src/types/conversation-state.ts"
+    ],
+    "src/core/state/ConversationStateService.test.ts": [
+      "src/core/state/ConversationStateRepository.ts",
+      "src/core/state/ConversationStateService.ts",
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/state/ConversationStateService.ts": [
+      "src/core/chat/ChatRuntime.ts",
+      "src/core/state/ConversationStateReducer.ts",
+      "src/core/state/ConversationStateRepository.ts",
+      "src/core/state/ConversationVariableExtractor.ts",
+      "src/types/chat-runtime.ts",
+      "src/types/conversation-state.ts"
+    ],
+    "src/core/state/ConversationVariableExtractor.test.ts": [
+      "src/core/state/ConversationVariableExtractor.ts",
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/state/ConversationVariableExtractor.ts": [
+      "src/types/chat-runtime.ts",
+      "src/types/conversation-state.ts"
+    ],
+    "src/core/state/MemoryKnowledgeArbiter.ts": [
+      "src/types/memory-knowledge-table.ts"
     ],
     "src/core/study/__tests__/study-studio-deep-coverage.test.ts": [
       "src/core/study/StudyStudioService.ts"
@@ -6804,6 +7849,30 @@
       "src/core/observability/logger.ts",
       "src/core/providers/LLMAdapter.ts"
     ],
+    "src/core/tasks/ConversationalTaskOrchestrator.test.ts": [
+      "src/core/tasks/ConversationalTaskOrchestrator.ts"
+    ],
+    "src/core/tasks/ConversationalTaskOrchestrator.ts": [
+      "src/core/tasks/TaskArtifactBuilders.ts",
+      "src/core/tasks/TaskArtifactStore.ts"
+    ],
+    "src/core/tasks/TaskArtifactBuilders.ts": [
+      "src/core/tasks/TaskArtifactStore.ts"
+    ],
+    "src/core/tasks/TaskArtifactStore.ts": [],
+    "src/core/testing/__tests__/canonical-testing-orchestrator.test.ts": [
+      "src/core/testing/CanonicalTestingOrchestrator.ts"
+    ],
+    "src/core/testing/CanonicalTestingOrchestrator.ts": [
+      "src/types/testing-strategy.ts"
+    ],
+    "src/core/tools/__tests__/tool-truthfulness-failure.test.ts": [
+      "src/core/tools/CodingTruthBridge.ts",
+      "src/core/tools/SideEffectLedger.ts",
+      "src/core/tools/ToolLanguageTruthfulness.ts",
+      "src/core/validation/ResponseQualityGate.ts",
+      "src/types/tool-truth.ts"
+    ],
     "src/core/tools/__tests__/tools-execution-and-composition-matrix.test.ts": [
       "src/core/knowledge/index.ts",
       "src/core/tools/CodeExecutor.ts",
@@ -6864,6 +7933,10 @@
       "src/core/knowledge/CodingKnowledgeBase.ts",
       "src/core/observability/logger.ts",
       "src/types/tools.ts"
+    ],
+    "src/core/tools/CodingTruthBridge.ts": [
+      "src/core/tools/SideEffectLedger.ts",
+      "src/types/tool-truth.ts"
     ],
     "src/core/tools/CommandRunner.test.ts": [
       "src/core/tools/CommandRunner.ts"
@@ -7066,6 +8139,9 @@
     "src/core/tools/security/SecretsScanTool.ts": [],
     "src/core/tools/security/SecureCodeScanTool.ts": [],
     "src/core/tools/security/ThreatModelTool.ts": [],
+    "src/core/tools/SideEffectLedger.ts": [
+      "src/types/tool-truth.ts"
+    ],
     "src/core/tools/sixsigma/AnovaTool.ts": [
       "src/types/tools.ts"
     ],
@@ -7117,6 +8193,9 @@
       "src/core/tools/FunctionCaller.ts",
       "src/types/tools.ts"
     ],
+    "src/core/tools/ToolLanguageTruthfulness.ts": [
+      "src/types/tool-truth.ts"
+    ],
     "src/core/tools/ToolRegistry.ts": [
       "src/core/observability/logger.ts",
       "src/types/tools.ts"
@@ -7142,6 +8221,30 @@
     "src/core/user/CustomInstructions.ts": [
       "src/core/database/Database.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/validation/__tests__/response-quality-gate.test.ts": [
+      "src/core/validation/ResponseQualityGate.ts",
+      "src/types/response-quality.ts"
+    ],
+    "src/core/validation/CodingResponseValidator.ts": [
+      "src/types/response-quality.ts"
+    ],
+    "src/core/validation/CoreResponseValidators.ts": [
+      "src/types/response-quality.ts"
+    ],
+    "src/core/validation/GroundedResponseValidator.ts": [
+      "src/core/evals/GroundingEvaluator.ts",
+      "src/types/response-quality.ts"
+    ],
+    "src/core/validation/ResponseQualityGate.ts": [
+      "src/core/validation/CodingResponseValidator.ts",
+      "src/core/validation/CoreResponseValidators.ts",
+      "src/core/validation/GroundedResponseValidator.ts",
+      "src/core/validation/ResponseRetryPolicy.ts",
+      "src/types/response-quality.ts"
+    ],
+    "src/core/validation/ResponseRetryPolicy.ts": [
+      "src/types/response-quality.ts"
     ],
     "src/core/validator/Validators.ts": [
       "src/core/observability/logger.ts"
@@ -7309,6 +8412,45 @@
       "src/core/website/WebsiteTypes.ts"
     ],
     "src/core/wiki/LocalKnowledgeWiki.ts": [],
+    "src/core/workflow/__tests__/workflow-engine-integration.test.ts": [
+      "src/core/workflow/ToolApprovalBinding.ts",
+      "src/core/workflow/WorkflowEngine.ts",
+      "src/core/workflow/WorkflowResolver.ts",
+      "src/core/workflow/WorkflowStateRepository.ts",
+      "src/core/workflow/definitions/CodingBuildWorkflow.ts",
+      "src/core/workflow/definitions/DebugWorkflow.ts",
+      "src/types/chat-runtime.ts"
+    ],
+    "src/core/workflow/definitions/CodingBuildWorkflow.ts": [
+      "src/types/workflow.ts"
+    ],
+    "src/core/workflow/definitions/DebugWorkflow.ts": [
+      "src/types/workflow.ts"
+    ],
+    "src/core/workflow/ToolApprovalBinding.test.ts": [
+      "src/core/workflow/ToolApprovalBinding.ts"
+    ],
+    "src/core/workflow/ToolApprovalBinding.ts": [
+      "src/types/workflow.ts"
+    ],
+    "src/core/workflow/WorkflowEngine.ts": [
+      "src/core/workflow/WorkflowStateRepository.ts",
+      "src/types/workflow.ts"
+    ],
+    "src/core/workflow/WorkflowResolver.ts": [
+      "src/core/chat/ChatRuntime.ts",
+      "src/core/workflow/definitions/CodingBuildWorkflow.ts",
+      "src/core/workflow/definitions/DebugWorkflow.ts",
+      "src/types/chat-runtime.ts",
+      "src/types/workflow.ts"
+    ],
+    "src/core/workflow/WorkflowStateRepository.test.ts": [
+      "src/core/workflow/WorkflowStateRepository.ts",
+      "src/types/workflow.ts"
+    ],
+    "src/core/workflow/WorkflowStateRepository.ts": [
+      "src/types/workflow.ts"
+    ],
     "src/core/writing/__tests__/document-import-export-matrix.test.ts": [
       "src/core/writing/DocumentImportExportService.ts",
       "src/core/writing/WritingStudioService.ts"
@@ -7683,6 +8825,7 @@
       "src/server/routes/sprite-studio/index.ts",
       "src/server/routes/story.ts",
       "src/server/routes/study-studio.ts",
+      "src/server/routes/task-artifacts.ts",
       "src/server/routes/toolCatalog.ts",
       "src/server/routes/website-workspace.ts",
       "src/server/routes/writing-studio.ts"
@@ -7693,6 +8836,11 @@
     ],
     "src/server/routes/__tests__/agent-operations-routes.test.ts": [
       "src/server/routes/agent-operations.ts"
+    ],
+    "src/server/routes/__tests__/bot-profiles.test.ts": [
+      "src/core/profiles/BotProfileRepository.ts",
+      "src/core/profiles/DefaultBotProfile.ts",
+      "src/server/routes/bot-profiles.ts"
     ],
     "src/server/routes/__tests__/capabilities-routes-deep-matrix.test.ts": [
       "src/server/routes/capabilities.ts"
@@ -7923,6 +9071,12 @@
       "src/core/audio/AudioLibraryService.ts",
       "src/middleware/errorHandler.ts"
     ],
+    "src/server/routes/bot-profiles.ts": [
+      "src/core/profiles/BotProfileRepository.ts",
+      "src/core/profiles/BotProfileResolver.ts",
+      "src/core/profiles/DefaultBotProfile.ts",
+      "src/types/bot-profile.ts"
+    ],
     "src/server/routes/business.ts": [
       "src/core/agents/business/BusinessGeniusAgent.ts",
       "src/middleware/errorHandler.ts"
@@ -7938,6 +9092,9 @@
       "src/core/coding/security/ApprovedRepositoryGateway.ts",
       "src/core/config/EnvironmentDefinitions.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/server/routes/chat-diagnostics.ts": [
+      "src/core/diagnostics/ChatDiagnosticsService.ts"
     ],
     "src/server/routes/chat-stream.ts": [
       "src/core/observability/logger.ts",
@@ -8072,11 +9229,14 @@
       "src/core/conversation/ConversationManager.ts",
       "src/core/creative/CreativeWritingAgent.ts",
       "src/core/knowledge-os/KnowledgeOsChatAgent.ts",
+      "src/core/knowledge/KnowledgeSource.ts",
       "src/core/knowledge/LocalKnowledgeAnswerer.ts",
+      "src/core/knowledge/WikipediaSource.ts",
       "src/core/modes/ModePolicy.ts",
       "src/core/nlu/HumanLanguageRouter.ts",
       "src/core/orchestrator/Orchestrator.ts",
       "src/core/planning/PlanDocumentService.ts",
+      "src/core/tasks/ConversationalTaskOrchestrator.ts",
       "src/middleware/errorHandler.ts",
       "src/middleware/rateLimiter.ts",
       "src/middleware/validator.ts",
@@ -8240,6 +9400,13 @@
       "src/middleware/validator.ts",
       "src/utils/errors.ts"
     ],
+    "src/server/routes/task-artifacts.test.ts": [
+      "src/core/tasks/TaskArtifactStore.ts",
+      "src/server/routes/task-artifacts.ts"
+    ],
+    "src/server/routes/task-artifacts.ts": [
+      "src/core/tasks/TaskArtifactStore.ts"
+    ],
     "src/server/routes/toolCatalog.ts": [
       "src/core/tools/catalog/ToolCatalogService.ts",
       "src/middleware/errorHandler.ts",
@@ -8284,6 +9451,34 @@
       "src/testing/failure-injection/ProcessFailureInjector.ts"
     ],
     "src/testing/failure-injection/ProcessFailureInjector.ts": [],
+    "src/types/ab-evaluation.test.ts": [
+      "src/types/ab-evaluation.ts"
+    ],
+    "src/types/ab-evaluation.ts": [],
+    "src/types/api-compatibility.test.ts": [
+      "src/types/api-compatibility.ts"
+    ],
+    "src/types/api-compatibility.ts": [
+      "src/types/chat-runtime.ts"
+    ],
+    "src/types/backlog-reconciliation.test.ts": [
+      "src/types/backlog-reconciliation.ts"
+    ],
+    "src/types/backlog-reconciliation.ts": [],
+    "src/types/bot-profile.test.ts": [
+      "src/types/bot-profile.ts"
+    ],
+    "src/types/bot-profile.ts": [],
+    "src/types/chat-diagnostics.test.ts": [
+      "src/types/chat-diagnostics.ts"
+    ],
+    "src/types/chat-diagnostics.ts": [],
+    "src/types/chat-runtime.test.ts": [
+      "src/types/chat-runtime.ts"
+    ],
+    "src/types/chat-runtime.ts": [
+      "src/types/context-plan.ts"
+    ],
     "src/types/chat.test.ts": [
       "src/types/chat.ts"
     ],
@@ -8291,16 +9486,184 @@
       "src/core/creative/CreativeTypes.ts",
       "src/types/contract.ts"
     ],
+    "src/types/ci-gates.test.ts": [
+      "src/types/ci-gates.ts"
+    ],
+    "src/types/ci-gates.ts": [],
+    "src/types/citation.test.ts": [
+      "src/types/citation.ts"
+    ],
+    "src/types/citation.ts": [],
+    "src/types/cli-scripts.test.ts": [
+      "src/types/cli-scripts.ts"
+    ],
+    "src/types/cli-scripts.ts": [],
+    "src/types/coding-retrieval-policy.test.ts": [
+      "src/types/coding-retrieval-policy.ts"
+    ],
+    "src/types/coding-retrieval-policy.ts": [],
+    "src/types/context-plan.test.ts": [
+      "src/types/context-plan.ts"
+    ],
+    "src/types/context-plan.ts": [],
     "src/types/contract.ts": [],
+    "src/types/conversation-state.test.ts": [
+      "src/types/conversation-state.ts"
+    ],
+    "src/types/conversation-state.ts": [],
+    "src/types/dataset-fixtures.test.ts": [
+      "src/types/dataset-fixtures.ts"
+    ],
+    "src/types/dataset-fixtures.ts": [],
+    "src/types/dependency-graph.test.ts": [
+      "src/types/dependency-graph.ts"
+    ],
+    "src/types/dependency-graph.ts": [],
+    "src/types/developer-qa.test.ts": [
+      "src/types/developer-qa.ts"
+    ],
+    "src/types/developer-qa.ts": [],
+    "src/types/documentation-spec.test.ts": [
+      "src/types/documentation-spec.ts"
+    ],
+    "src/types/documentation-spec.ts": [],
+    "src/types/educational-multilingual.test.ts": [
+      "src/types/educational-multilingual.ts"
+    ],
+    "src/types/educational-multilingual.ts": [],
+    "src/types/eval-thresholds.test.ts": [
+      "src/types/eval-thresholds.ts"
+    ],
+    "src/types/eval-thresholds.ts": [],
+    "src/types/feedback.test.ts": [
+      "src/types/feedback.ts"
+    ],
+    "src/types/feedback.ts": [],
+    "src/types/file-map.test.ts": [
+      "src/types/file-map.ts"
+    ],
+    "src/types/file-map.ts": [],
+    "src/types/general-knowledge.test.ts": [
+      "src/types/general-knowledge.ts"
+    ],
+    "src/types/general-knowledge.ts": [],
+    "src/types/general-retrieval-policy.test.ts": [
+      "src/types/general-retrieval-policy.ts"
+    ],
+    "src/types/general-retrieval-policy.ts": [],
     "src/types/gis.ts": [],
+    "src/types/golden-eval.test.ts": [
+      "src/types/golden-eval.ts"
+    ],
+    "src/types/golden-eval.ts": [],
+    "src/types/grounding-eval.test.ts": [
+      "src/types/grounding-eval.ts"
+    ],
+    "src/types/grounding-eval.ts": [],
+    "src/types/input-adapters.test.ts": [
+      "src/types/input-adapters.ts"
+    ],
+    "src/types/input-adapters.ts": [
+      "src/types/chat-runtime.ts"
+    ],
     "src/types/intent.ts": [],
+    "src/types/knowledge-datasets.test.ts": [
+      "src/types/knowledge-datasets.ts"
+    ],
+    "src/types/knowledge-datasets.ts": [],
+    "src/types/knowledge-maintenance.test.ts": [
+      "src/types/knowledge-maintenance.ts"
+    ],
+    "src/types/knowledge-maintenance.ts": [],
+    "src/types/knowledge-packs.test.ts": [
+      "src/types/knowledge-packs.ts"
+    ],
+    "src/types/knowledge-packs.ts": [],
+    "src/types/knowledge-router.test.ts": [
+      "src/types/knowledge-router.ts"
+    ],
+    "src/types/knowledge-router.ts": [],
+    "src/types/memory-knowledge-table.test.ts": [
+      "src/types/memory-knowledge-table.ts"
+    ],
+    "src/types/memory-knowledge-table.ts": [],
     "src/types/memory.ts": [],
+    "src/types/model-registry.test.ts": [
+      "src/types/model-registry.ts"
+    ],
+    "src/types/model-registry.ts": [],
     "src/types/model-routing.ts": [],
     "src/types/modes.ts": [],
+    "src/types/observability-spec.test.ts": [
+      "src/types/observability-spec.ts"
+    ],
+    "src/types/observability-spec.ts": [],
+    "src/types/official-docs.test.ts": [
+      "src/types/official-docs.ts"
+    ],
+    "src/types/official-docs.ts": [],
+    "src/types/program-completion.test.ts": [
+      "src/types/program-completion.ts"
+    ],
+    "src/types/program-completion.ts": [],
+    "src/types/prompt-assembler.test.ts": [
+      "src/types/prompt-assembler.ts"
+    ],
+    "src/types/prompt-assembler.ts": [],
     "src/types/provenance.ts": [],
     "src/types/rag.ts": [],
+    "src/types/research-math-packs.test.ts": [
+      "src/types/research-math-packs.ts"
+    ],
+    "src/types/research-math-packs.ts": [],
+    "src/types/response-quality.test.ts": [
+      "src/types/response-quality.ts"
+    ],
+    "src/types/response-quality.ts": [
+      "src/types/chat-runtime.ts"
+    ],
+    "src/types/retrieval-scoring.test.ts": [
+      "src/types/retrieval-scoring.ts"
+    ],
+    "src/types/retrieval-scoring.ts": [],
+    "src/types/rollback-recovery.test.ts": [
+      "src/types/rollback-recovery.ts"
+    ],
+    "src/types/rollback-recovery.ts": [],
+    "src/types/rollout-migration.test.ts": [
+      "src/types/rollout-migration.ts"
+    ],
+    "src/types/rollout-migration.ts": [],
+    "src/types/runtime-definition-of-done.test.ts": [
+      "src/types/runtime-definition-of-done.ts"
+    ],
+    "src/types/runtime-definition-of-done.ts": [],
+    "src/types/source-code-pack.test.ts": [
+      "src/types/source-code-pack.ts"
+    ],
+    "src/types/source-code-pack.ts": [],
+    "src/types/storage-planning.test.ts": [
+      "src/types/storage-planning.ts"
+    ],
+    "src/types/storage-planning.ts": [],
+    "src/types/testing-strategy.test.ts": [
+      "src/types/testing-strategy.ts"
+    ],
+    "src/types/testing-strategy.ts": [],
+    "src/types/tool-truth.test.ts": [
+      "src/types/tool-truth.ts"
+    ],
+    "src/types/tool-truth.ts": [],
     "src/types/tools.ts": [],
+    "src/types/training-separation.test.ts": [
+      "src/types/training-separation.ts"
+    ],
+    "src/types/training-separation.ts": [],
     "src/types/vision.ts": [],
+    "src/types/workflow.test.ts": [
+      "src/types/workflow.ts"
+    ],
+    "src/types/workflow.ts": [],
     "src/utils/cache.ts": [],
     "src/utils/errors.ts": [],
     "src/utils/memoize.ts": [],
@@ -8308,5 +9671,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1555
+  "sourceRecordCount": 1885
 }

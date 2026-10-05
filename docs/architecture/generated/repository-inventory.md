@@ -6,14 +6,14 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1555 |
-| Production source files | 1016 |
-| Reachable production files | 820 |
-| Unreachable production files | 196 |
-| Discovered route calls | 503 |
-| Environment variables | 212 |
+| Source files | 1885 |
+| Production source files | 1216 |
+| Reachable production files | 830 |
+| Unreachable production files | 386 |
+| Discovered route calls | 511 |
+| Environment variables | 227 |
 | Feature flags | 18 |
-| Files above 300 lines | 96 |
+| Files above 300 lines | 97 |
 
 ## Server route calls
 
@@ -114,6 +114,12 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | GET | `/api/audio/waveform` | `src/server/routes/audio.ts:29` |
 | POST | `/api/audio/load-into-chat` | `src/server/routes/audio.ts:35` |
 | POST | `/api/audio/analyze` | `src/server/routes/audio.ts:40` |
+| GET | `/` | `src/server/routes/bot-profiles.ts:31` |
+| GET | `/:id` | `src/server/routes/bot-profiles.ts:41` |
+| GET | `/:id/versions` | `src/server/routes/bot-profiles.ts:54` |
+| POST | `/` | `src/server/routes/bot-profiles.ts:64` |
+| POST | `/:id/rollback` | `src/server/routes/bot-profiles.ts:81` |
+| POST | `/resolve` | `src/server/routes/bot-profiles.ts:96` |
 | POST | `/api/business/ask` | `src/server/routes/business.ts:7` |
 | POST | `/api/business/plan` | `src/server/routes/business.ts:11` |
 | POST | `/api/business/pricing` | `src/server/routes/business.ts:15` |
@@ -140,6 +146,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/:id/test` | `src/server/routes/capabilities.ts:398` |
 | POST | `/:id/enable` | `src/server/routes/capabilities.ts:413` |
 | POST | `/:id/disable` | `src/server/routes/capabilities.ts:430` |
+| GET | `/chat-runs/:requestId` | `src/server/routes/chat-diagnostics.ts:32` |
 | POST | `/api/chrono/ask` | `src/server/routes/chrono.ts:6` |
 | POST | `/api/code/ask` | `src/server/routes/code.ts:31` |
 | POST | `/api/code/plan` | `src/server/routes/code.ts:46` |
@@ -487,6 +494,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | POST | `/api/study-studio/socratic` | `src/server/routes/study-studio.ts:105` |
 | POST | `/api/study-studio/socratic/:sessionId/turns` | `src/server/routes/study-studio.ts:117` |
 | POST | `/api/study-studio/audio-lessons` | `src/server/routes/study-studio.ts:123` |
+| GET | `/:sessionId/:fileName` | `src/server/routes/task-artifacts.ts:9` |
 | GET | `/api/tool-catalog` | `src/server/routes/toolCatalog.ts:11` |
 | GET | `/api/tool-catalog/stats` | `src/server/routes/toolCatalog.ts:19` |
 | POST | `/chat` | `src/server/routes/v1/chat.ts:14` |
@@ -536,6 +544,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `client/src/components/FLStudioControlPanel.tsx`
 - `client/src/components/FileExplorerPanel.tsx`
 - `client/src/components/GamingPlaybookPanel.tsx`
+- `client/src/components/KnowledgeManagerPanel.tsx`
 - `client/src/components/KnowledgeOSPanel.tsx`
 - `client/src/components/KnowledgeOnlinePanel.tsx`
 - `client/src/components/LocalRunApprovalPanel.tsx`
@@ -556,6 +565,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `ANTHROPIC_API_KEY`
 - `ANTHROPIC_MODEL`
 - `API_KEY_ENCRYPTION_SECRET`
+- `API_SECRET_KEY`
 - `ASSEMBLYAI_API_KEY`
 - `AUDIO_SEARCH_MAX_FILES`
 - `BACKGROUND_CODING_KNOWLEDGE_LOAD`
@@ -573,6 +583,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `BOOKS_SOURCE_TYPE`
 - `BOOKS_VISIBILITY`
 - `BRANCH_PROTECTION_TOKEN`
+- `CANONICAL_CLI_AUTH_TOKEN`
 - `CAPABILITY_ALERT_WEBHOOK_URL`
 - `CARTESIA_API_KEY`
 - `CEREBRAS_API_KEY`
@@ -581,6 +592,8 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `CF_ACCESSIBILITY_CERTIFIED`
 - `CF_RELEASE_CERTIFIED`
 - `CHATBOT_NATIVE_PYTHON`
+- `CHAT_RUNTIME_V2_SHADOW`
+- `CI`
 - `CLAUDE_MODEL`
 - `CODE_EXECUTOR_SANDBOX`
 - `CODE_EXECUTOR_TIMEOUT`
@@ -594,10 +607,12 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `CORS_ORIGIN`
 - `CSRF_TOKEN`
 - `CUDA_VISIBLE_DEVICES`
+- `DABOOK_PYTHON`
 - `DATABASE_URL`
 - `DEBUG_MODE`
 - `DEEPSEEK_API_KEY`
 - `DEEPSEEK_MODEL`
+- `DEFAULT_BOT_PROFILE_ID`
 - `DEMUCS_PATH`
 - `DEPLOYMENT_MODE`
 - `DISK_CACHE_DIR`
@@ -667,7 +682,12 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `JWT_SECRET`
 - `KNOWLEDGE_BASE_DIR`
 - `KNOWLEDGE_GRAPH_MAX_FILES`
+- `KNOWLEDGE_MAX_DATASET_GB`
+- `KNOWLEDGE_MAX_DOWNLOAD_GB`
+- `KNOWLEDGE_MAX_INDEX_GB`
+- `KNOWLEDGE_MIN_FREE_DISK_GB`
 - `LLAVA_MODEL`
+- `LLM_KNOWLEDGE_FALLBACK`
 - `LLM_PROVIDER`
 - `LOCAL_KNOWLEDGE_WIKI_DIR`
 - `LOCAL_MODEL_ALLOWLIST`
@@ -690,8 +710,10 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `OCR_REIMPORT_EMBEDDINGS`
 - `OLLAMA_BASE_URL`
 - `OLLAMA_MODEL`
+- `OLLAMA_THINK`
 - `OLLAMA_URL`
 - `OMDB_API_KEY`
+- `ONLINE_KNOWLEDGE_FALLBACK`
 - `OPENAI_API_KEY`
 - `OPENAI_COMPATIBLE_API_KEY`
 - `OPENAI_COMPATIBLE_BASE_URL`
@@ -700,6 +722,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `OPENAI_MODEL`
 - `OPENROUTER_API_KEY`
 - `OPENROUTER_MODEL`
+- `OPERATOR_ROLE`
 - `OSRM_BASE_URL`
 - `PATH`
 - `PDF_OCR_DPI`
@@ -709,6 +732,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `PIXELORAMA_CLI_ARGS_JSON`
 - `POLYGON_API_KEY`
 - `PORT`
+- `PRIMARY_LLM_MODEL`
 - `PUBLIC_KNOWLEDGE_BASE_DIR`
 - `PYSCRAPPY_ENABLED`
 - `PYSCRAPPY_MAX_OUTPUT_BYTES`
@@ -783,7 +807,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | File | Lines |
 |---|---|
-| `client/src/components/AssistantChat.tsx` | 791 |
+| `client/src/components/AssistantChat.tsx` | 888 |
 | `client/src/components/CapabilityHubPanel.tsx` | 1126 |
 | `client/src/components/CapabilityPromotionView.tsx` | 423 |
 | `client/src/components/CreativeComposerPanel.tsx` | 456 |
@@ -797,6 +821,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `scripts/import-books.ts` | 317 |
 | `scripts/import-wikipedia-general-corpus.ts` | 337 |
 | `scripts/release/run-comprehensive-audit.mjs` | 302 |
+| `services/dabook/src/dabook/server/static/app.js` | 1084 |
 | `src/core/agents/AgentTeam.ts` | 547 |
 | `src/core/agents/CodingAgent.ts` | 440 |
 | `src/core/agents/MultiAgentOrchestrator.ts` | 1269 |
@@ -817,7 +842,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/config/ProfileManager.ts` | 434 |
 | `src/core/contracts/UniversalContract.ts` | 321 |
 | `src/core/creative/CreativeWritingAgent.ts` | 345 |
-| `src/core/database/Database.ts` | 546 |
+| `src/core/database/Database.ts` | 552 |
 | `src/core/database/ExpansionMigrations.ts` | 383 |
 | `src/core/developer/MockApiEngine.ts` | 450 |
 | `src/core/gaming/lattice/LatticeSimulationEngine.ts` | 387 |
@@ -826,7 +851,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/index.ts` | 409 |
 | `src/core/initialization/ServiceInitializer.ts` | 885 |
 | `src/core/knowledge/GitHubSource.ts` | 323 |
-| `src/core/knowledge/LocalKnowledgeAnswerer.ts` | 606 |
+| `src/core/knowledge/LocalKnowledgeAnswerer.ts` | 754 |
 | `src/core/knowledge/OnlineKnowledgeIngestionService.ts` | 554 |
 | `src/core/knowledge/QueryEnhancer.ts` | 440 |
 | `src/core/knowledge/ScientificPapersSource.ts` | 325 |
@@ -839,7 +864,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/multimodal/localization/VideoLocalizationPipeline.ts` | 487 |
 | `src/core/native-runtime/NativeGameEditorBackends.ts` | 380 |
 | `src/core/notifications/TwilioAdapter.ts` | 360 |
-| `src/core/orchestrator/EnhancedOrchestrator.ts` | 584 |
+| `src/core/orchestrator/EnhancedOrchestrator.ts` | 594 |
 | `src/core/orchestrator/Orchestrator.ts` | 375 |
 | `src/core/personalization/UserProfiler.ts` | 493 |
 | `src/core/providers/DeviceAdapter.ts` | 353 |
@@ -877,5 +902,5 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/server/index.ts` | 1174 |
 | `src/server/routes/admin.ts` | 313 |
 | `src/server/routes/capabilities.ts` | 452 |
-| `src/server/routes/legacy-chat.ts` | 367 |
+| `src/server/routes/legacy-chat.ts` | 600 |
 | `src/server/routes/setup.ts` | 437 |

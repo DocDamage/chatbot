@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1555,
-    "productionSourceFiles": 1016,
-    "reachableProductionFiles": 820,
-    "unreachableProductionFiles": 196,
-    "routes": 503,
-    "environmentVariables": 212,
+    "sourceFiles": 1885,
+    "productionSourceFiles": 1216,
+    "reachableProductionFiles": 830,
+    "unreachableProductionFiles": 386,
+    "routes": 511,
+    "environmentVariables": 227,
     "featureFlags": 18,
-    "oversizedProductionFiles": 96
+    "oversizedProductionFiles": 97
   },
   "routes": [
     {
@@ -678,6 +678,48 @@
     },
     {
       "receiver": "router",
+      "method": "GET",
+      "path": "/",
+      "line": 31,
+      "file": "src/server/routes/bot-profiles.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/:id",
+      "line": 41,
+      "file": "src/server/routes/bot-profiles.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/:id/versions",
+      "line": 54,
+      "file": "src/server/routes/bot-profiles.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/",
+      "line": 64,
+      "file": "src/server/routes/bot-profiles.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/:id/rollback",
+      "line": 81,
+      "file": "src/server/routes/bot-profiles.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/resolve",
+      "line": 96,
+      "file": "src/server/routes/bot-profiles.ts"
+    },
+    {
+      "receiver": "router",
       "method": "POST",
       "path": "/api/business/ask",
       "line": 7,
@@ -857,6 +899,13 @@
       "path": "/:id/disable",
       "line": 430,
       "file": "src/server/routes/capabilities.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/chat-runs/:requestId",
+      "line": 32,
+      "file": "src/server/routes/chat-diagnostics.ts"
     },
     {
       "receiver": "router",
@@ -3290,6 +3339,13 @@
     {
       "receiver": "router",
       "method": "GET",
+      "path": "/:sessionId/:fileName",
+      "line": 9,
+      "file": "src/server/routes/task-artifacts.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
       "path": "/api/tool-catalog",
       "line": 11,
       "file": "src/server/routes/toolCatalog.ts"
@@ -3545,6 +3601,7 @@
     "client/src/components/FLStudioControlPanel.tsx",
     "client/src/components/FileExplorerPanel.tsx",
     "client/src/components/GamingPlaybookPanel.tsx",
+    "client/src/components/KnowledgeManagerPanel.tsx",
     "client/src/components/KnowledgeOSPanel.tsx",
     "client/src/components/KnowledgeOnlinePanel.tsx",
     "client/src/components/LocalRunApprovalPanel.tsx",
@@ -3701,6 +3758,14 @@
       "file": "src/core/capabilities/storage/StorageQuotaManager.ts"
     },
     {
+      "name": "ReleaseCutoverOrchestrator",
+      "file": "src/core/chat/ReleaseCutoverOrchestrator.ts"
+    },
+    {
+      "name": "WhyThisAnswerService",
+      "file": "src/core/chat/WhyThisAnswerService.ts"
+    },
+    {
       "name": "CodingController",
       "file": "src/core/coding/CodingController.ts"
     },
@@ -3727,6 +3792,10 @@
     {
       "name": "APIKeyManager",
       "file": "src/core/config/APIKeyManager.ts"
+    },
+    {
+      "name": "CanonicalRuntimeConfigManager",
+      "file": "src/core/config/CanonicalRuntimeConfig.ts"
     },
     {
       "name": "ProfileManager",
@@ -3765,6 +3834,10 @@
       "file": "src/core/developer/ProjectDoctorService.ts"
     },
     {
+      "name": "ChatDiagnosticsService",
+      "file": "src/core/diagnostics/ChatDiagnosticsService.ts"
+    },
+    {
       "name": "DocumentMetadataManager",
       "file": "src/core/documents/DocumentMetadata.ts"
     },
@@ -3785,8 +3858,16 @@
       "file": "src/core/entity/EntityLinkingService.ts"
     },
     {
+      "name": "CanonicalFeedbackService",
+      "file": "src/core/feedback/CanonicalFeedbackService.ts"
+    },
+    {
       "name": "FeedbackService",
       "file": "src/core/feedback/FeedbackService.ts"
+    },
+    {
+      "name": "FeedbackTriageService",
+      "file": "src/core/feedback/FeedbackTriageService.ts"
     },
     {
       "name": "FileExplorerService",
@@ -3829,16 +3910,96 @@
       "file": "src/core/gis/SpatialAnalysisService.ts"
     },
     {
+      "name": "BacklogReconciliationOrchestrator",
+      "file": "src/core/governance/BacklogReconciliationOrchestrator.ts"
+    },
+    {
+      "name": "CIGatesOrchestrator",
+      "file": "src/core/governance/CIGatesOrchestrator.ts"
+    },
+    {
+      "name": "CanonicalCliRegistry",
+      "file": "src/core/governance/CanonicalCliRegistry.ts"
+    },
+    {
+      "name": "CanonicalProgramCompletionOrchestrator",
+      "file": "src/core/governance/CanonicalProgramCompletionOrchestrator.ts"
+    },
+    {
       "name": "GovernanceEvidenceService",
       "file": "src/core/governance/GovernanceEvidenceService.ts"
+    },
+    {
+      "name": "MilestoneManager",
+      "file": "src/core/governance/MilestoneManager.ts"
+    },
+    {
+      "name": "ParallelWorkCoordinator",
+      "file": "src/core/governance/ParallelWorkCoordinator.ts"
+    },
+    {
+      "name": "VerificationCommandsOrchestrator",
+      "file": "src/core/governance/VerificationCommandsOrchestrator.ts"
+    },
+    {
+      "name": "CitationResolverService",
+      "file": "src/core/knowledge/CitationResolverService.ts"
+    },
+    {
+      "name": "ClaimAssociationService",
+      "file": "src/core/knowledge/ClaimAssociationService.ts"
+    },
+    {
+      "name": "DatasetManager",
+      "file": "src/core/knowledge/DatasetManager.ts"
+    },
+    {
+      "name": "DatasetRegistry",
+      "file": "src/core/knowledge/DatasetRegistry.ts"
+    },
+    {
+      "name": "DeveloperQARefreshService",
+      "file": "src/core/knowledge/DeveloperQARefreshService.ts"
+    },
+    {
+      "name": "DocumentationRefreshService",
+      "file": "src/core/knowledge/DocumentationRefreshService.ts"
+    },
+    {
+      "name": "EntityLinkingService",
+      "file": "src/core/knowledge/EntityLinkingService.ts"
+    },
+    {
+      "name": "IncrementalUpdateService",
+      "file": "src/core/knowledge/IncrementalUpdateService.ts"
+    },
+    {
+      "name": "JobRecoveryService",
+      "file": "src/core/knowledge/JobRecoveryService.ts"
     },
     {
       "name": "KnowledgeOnlineFlowService",
       "file": "src/core/knowledge/KnowledgeOnlineFlowService.ts"
     },
     {
+      "name": "KnowledgePackManager",
+      "file": "src/core/knowledge/KnowledgePackManager.ts"
+    },
+    {
       "name": "OnlineKnowledgeIngestionService",
       "file": "src/core/knowledge/OnlineKnowledgeIngestionService.ts"
+    },
+    {
+      "name": "ReembeddingMigrationService",
+      "file": "src/core/knowledge/ReembeddingMigrationService.ts"
+    },
+    {
+      "name": "ResourceGuardrailService",
+      "file": "src/core/knowledge/ResourceGuardrailService.ts"
+    },
+    {
+      "name": "TrainingSeparationCoordinator",
+      "file": "src/core/knowledge/TrainingSeparationCoordinator.ts"
     },
     {
       "name": "SpacedRepetitionService",
@@ -3873,12 +4034,24 @@
       "file": "src/core/memory/MemoryService.ts"
     },
     {
+      "name": "CanonicalRollbackCoordinator",
+      "file": "src/core/migration/CanonicalRollbackCoordinator.ts"
+    },
+    {
+      "name": "RolloutStageCoordinator",
+      "file": "src/core/migration/RolloutStageCoordinator.ts"
+    },
+    {
       "name": "ImageProcessor",
       "file": "src/core/multimodal/ImageProcessor.ts"
     },
     {
       "name": "VideoProcessor",
       "file": "src/core/multimodal/VideoProcessor.ts"
+    },
+    {
+      "name": "CanonicalMetricsRegistry",
+      "file": "src/core/observability/CanonicalMetricsRegistry.ts"
     },
     {
       "name": "EnhancedOrchestrator",
@@ -3909,8 +4082,20 @@
       "file": "src/core/project/ProjectMemoryService.ts"
     },
     {
+      "name": "ContextBudgetService",
+      "file": "src/core/prompt/ContextBudgetService.ts"
+    },
+    {
+      "name": "PromptTruncationService",
+      "file": "src/core/prompt/PromptTruncationService.ts"
+    },
+    {
       "name": "FreeModelRegistry",
       "file": "src/core/providers/FreeModelRegistry.ts"
+    },
+    {
+      "name": "ModelRegistry",
+      "file": "src/core/providers/ModelRegistry.ts"
     },
     {
       "name": "LocalResourceManager",
@@ -3961,12 +4146,24 @@
       "file": "src/core/sprite-lab/pipeline/SpriteBatchPresetService.ts"
     },
     {
+      "name": "ConversationStateService",
+      "file": "src/core/state/ConversationStateService.ts"
+    },
+    {
       "name": "StudyStudioService",
       "file": "src/core/study/StudyStudioService.ts"
     },
     {
       "name": "QuickRepliesService",
       "file": "src/core/suggestions/QuickReplies.ts"
+    },
+    {
+      "name": "ConversationalTaskOrchestrator",
+      "file": "src/core/tasks/ConversationalTaskOrchestrator.ts"
+    },
+    {
+      "name": "CanonicalTestingOrchestrator",
+      "file": "src/core/testing/CanonicalTestingOrchestrator.ts"
     },
     {
       "name": "ToolRegistry",
@@ -4045,6 +4242,10 @@
       "file": "src/core/website/WebsiteWorkspaceService.ts"
     },
     {
+      "name": "ToolApprovalService",
+      "file": "src/core/workflow/ToolApprovalBinding.ts"
+    },
+    {
       "name": "AIProposalService",
       "file": "src/core/writing/AIProposalService.ts"
     },
@@ -4079,6 +4280,26 @@
   ],
   "providers": [
     {
+      "name": "WebTextInputAdapter",
+      "file": "src/core/adapters/ChatInputAdapterFactory.ts"
+    },
+    {
+      "name": "IntegrationMessageAdapter",
+      "file": "src/core/adapters/ChatInputAdapterFactory.ts"
+    },
+    {
+      "name": "DesktopCompanionAdapter",
+      "file": "src/core/adapters/ChatInputAdapterFactory.ts"
+    },
+    {
+      "name": "VoiceInputAdapter",
+      "file": "src/core/adapters/VoiceInputAdapter.ts"
+    },
+    {
+      "name": "VoiceOutputAdapter",
+      "file": "src/core/adapters/VoiceOutputAdapter.ts"
+    },
+    {
       "name": "SessionDiscoveryAdapter",
       "file": "src/core/agent-operations/discovery/SessionDiscoveryAdapter.ts"
     },
@@ -4089,6 +4310,10 @@
     {
       "name": "PydollAdapter",
       "file": "src/core/browser/PydollAdapter.ts"
+    },
+    {
+      "name": "ChatRuntimeCompatibilityAdapter",
+      "file": "src/core/chat/ChatRuntimeCompatibilityAdapter.ts"
     },
     {
       "name": "FallbackParserProvider",
@@ -4105,6 +4330,10 @@
     {
       "name": "GatewayLexicalRetrievalProvider",
       "file": "src/core/coding/retrieval/GatewayLexicalRetrievalProvider.ts"
+    },
+    {
+      "name": "FeedbackCollectorAdapter",
+      "file": "src/core/feedback/FeedbackCollectorAdapter.ts"
     },
     {
       "name": "AssetCookerAdapter",
@@ -4157,6 +4386,10 @@
     {
       "name": "FLStudioMcpClient",
       "file": "src/core/integrations/flstudio/FLStudioMcpClient.ts"
+    },
+    {
+      "name": "DatasetFixtureProvider",
+      "file": "src/core/knowledge/DatasetFixtureProvider.ts"
     },
     {
       "name": "AuthorizedMediaIngestAdapter",
@@ -4213,6 +4446,22 @@
     {
       "name": "GeminiAdapter",
       "file": "src/core/providers/LLMAdapter.ts"
+    },
+    {
+      "name": "ModelFallbackPlanner",
+      "file": "src/core/providers/ModelFallbackPlanner.ts"
+    },
+    {
+      "name": "ModelHealthChecker",
+      "file": "src/core/providers/ModelHealthChecker.ts"
+    },
+    {
+      "name": "ModelPolicyEngine",
+      "file": "src/core/providers/ModelPolicyEngine.ts"
+    },
+    {
+      "name": "ModelRegistry",
+      "file": "src/core/providers/ModelRegistry.ts"
     },
     {
       "name": "ModelRouter",
@@ -4337,6 +4586,10 @@
       "file": "src/core/tools/CodingKnowledgeTool.ts"
     },
     {
+      "name": "CodingTruthBridge",
+      "file": "src/core/tools/CodingTruthBridge.ts"
+    },
+    {
       "name": "CommandRunner",
       "file": "src/core/tools/CommandRunner.ts"
     },
@@ -4349,8 +4602,16 @@
       "file": "src/core/tools/PersonalKnowledgeTool.ts"
     },
     {
+      "name": "SideEffectLedger",
+      "file": "src/core/tools/SideEffectLedger.ts"
+    },
+    {
       "name": "ToolComposer",
       "file": "src/core/tools/ToolComposer.ts"
+    },
+    {
+      "name": "ToolLanguageTruthfulness",
+      "file": "src/core/tools/ToolLanguageTruthfulness.ts"
     },
     {
       "name": "ToolRegistry",
@@ -5474,6 +5735,46 @@
         "file": "src/core/database/Database.ts"
       },
       {
+        "name": "chat_run_sources",
+        "file": "src/core/database/DatasetMigrations.ts"
+      },
+      {
+        "name": "chat_run_tools",
+        "file": "src/core/database/DatasetMigrations.ts"
+      },
+      {
+        "name": "chat_runs",
+        "file": "src/core/database/DatasetMigrations.ts"
+      },
+      {
+        "name": "dataset_jobs",
+        "file": "src/core/database/DatasetMigrations.ts"
+      },
+      {
+        "name": "dataset_source_links",
+        "file": "src/core/database/DatasetMigrations.ts"
+      },
+      {
+        "name": "knowledge_dataset_versions",
+        "file": "src/core/database/DatasetMigrations.ts"
+      },
+      {
+        "name": "knowledge_datasets",
+        "file": "src/core/database/DatasetMigrations.ts"
+      },
+      {
+        "name": "knowledge_pack_memberships",
+        "file": "src/core/database/DatasetMigrations.ts"
+      },
+      {
+        "name": "knowledge_packs",
+        "file": "src/core/database/DatasetMigrations.ts"
+      },
+      {
+        "name": "message_feedback",
+        "file": "src/core/database/DatasetMigrations.ts"
+      },
+      {
         "name": "sec_ingestion_queue",
         "file": "src/core/database/ExpansionDatabase.ts"
       },
@@ -5566,7 +5867,11 @@
         "file": "src/core/database/ExpansionMigrations.ts"
       }
     ],
-    "migrations": []
+    "migrations": [
+      "src/core/migration/APICompatibilityBridge.ts",
+      "src/core/migration/CanonicalRollbackCoordinator.ts",
+      "src/core/migration/RolloutStageCoordinator.ts"
+    ]
   },
   "backgroundProcesses": [
     {
@@ -5627,6 +5932,13 @@
     {
       "file": "scripts/release/smoke-pages-deployment.mjs",
       "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "services/dabook/src/dabook/server/static/app.js",
+      "signals": [
+        "queue-or-worker",
         "timer"
       ]
     },
@@ -5777,6 +6089,12 @@
       ]
     },
     {
+      "file": "src/core/chat/ContextClassifier.ts",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
       "file": "src/core/coding/teams/AgentTeamCoordinator.ts",
       "signals": [
         "queue-or-worker",
@@ -5803,6 +6121,24 @@
     },
     {
       "file": "src/core/index.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/knowledge/DatasetManager.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/knowledge/DatasetRefreshScheduler.ts",
+      "signals": [
+        "queue-or-worker"
+      ]
+    },
+    {
+      "file": "src/core/knowledge/JobRecoveryService.ts",
       "signals": [
         "queue-or-worker"
       ]
@@ -6028,6 +6364,7 @@
     "ANTHROPIC_API_KEY",
     "ANTHROPIC_MODEL",
     "API_KEY_ENCRYPTION_SECRET",
+    "API_SECRET_KEY",
     "ASSEMBLYAI_API_KEY",
     "AUDIO_SEARCH_MAX_FILES",
     "BACKGROUND_CODING_KNOWLEDGE_LOAD",
@@ -6045,6 +6382,7 @@
     "BOOKS_SOURCE_TYPE",
     "BOOKS_VISIBILITY",
     "BRANCH_PROTECTION_TOKEN",
+    "CANONICAL_CLI_AUTH_TOKEN",
     "CAPABILITY_ALERT_WEBHOOK_URL",
     "CARTESIA_API_KEY",
     "CEREBRAS_API_KEY",
@@ -6053,6 +6391,8 @@
     "CF_ACCESSIBILITY_CERTIFIED",
     "CF_RELEASE_CERTIFIED",
     "CHATBOT_NATIVE_PYTHON",
+    "CHAT_RUNTIME_V2_SHADOW",
+    "CI",
     "CLAUDE_MODEL",
     "CODE_EXECUTOR_SANDBOX",
     "CODE_EXECUTOR_TIMEOUT",
@@ -6066,10 +6406,12 @@
     "CORS_ORIGIN",
     "CSRF_TOKEN",
     "CUDA_VISIBLE_DEVICES",
+    "DABOOK_PYTHON",
     "DATABASE_URL",
     "DEBUG_MODE",
     "DEEPSEEK_API_KEY",
     "DEEPSEEK_MODEL",
+    "DEFAULT_BOT_PROFILE_ID",
     "DEMUCS_PATH",
     "DEPLOYMENT_MODE",
     "DISK_CACHE_DIR",
@@ -6139,7 +6481,12 @@
     "JWT_SECRET",
     "KNOWLEDGE_BASE_DIR",
     "KNOWLEDGE_GRAPH_MAX_FILES",
+    "KNOWLEDGE_MAX_DATASET_GB",
+    "KNOWLEDGE_MAX_DOWNLOAD_GB",
+    "KNOWLEDGE_MAX_INDEX_GB",
+    "KNOWLEDGE_MIN_FREE_DISK_GB",
     "LLAVA_MODEL",
+    "LLM_KNOWLEDGE_FALLBACK",
     "LLM_PROVIDER",
     "LOCAL_KNOWLEDGE_WIKI_DIR",
     "LOCAL_MODEL_ALLOWLIST",
@@ -6162,8 +6509,10 @@
     "OCR_REIMPORT_EMBEDDINGS",
     "OLLAMA_BASE_URL",
     "OLLAMA_MODEL",
+    "OLLAMA_THINK",
     "OLLAMA_URL",
     "OMDB_API_KEY",
+    "ONLINE_KNOWLEDGE_FALLBACK",
     "OPENAI_API_KEY",
     "OPENAI_COMPATIBLE_API_KEY",
     "OPENAI_COMPATIBLE_BASE_URL",
@@ -6172,6 +6521,7 @@
     "OPENAI_MODEL",
     "OPENROUTER_API_KEY",
     "OPENROUTER_MODEL",
+    "OPERATOR_ROLE",
     "OSRM_BASE_URL",
     "PATH",
     "PDF_OCR_DPI",
@@ -6181,6 +6531,7 @@
     "PIXELORAMA_CLI_ARGS_JSON",
     "POLYGON_API_KEY",
     "PORT",
+    "PRIMARY_LLM_MODEL",
     "PUBLIC_KNOWLEDGE_BASE_DIR",
     "PYSCRAPPY_ENABLED",
     "PYSCRAPPY_MAX_OUTPUT_BYTES",
@@ -6306,7 +6657,7 @@
   "oversizedFiles": [
     {
       "file": "client/src/components/AssistantChat.tsx",
-      "lines": 791
+      "lines": 888
     },
     {
       "file": "client/src/components/CapabilityHubPanel.tsx",
@@ -6359,6 +6710,10 @@
     {
       "file": "scripts/release/run-comprehensive-audit.mjs",
       "lines": 302
+    },
+    {
+      "file": "services/dabook/src/dabook/server/static/app.js",
+      "lines": 1084
     },
     {
       "file": "src/core/agents/AgentTeam.ts",
@@ -6442,7 +6797,7 @@
     },
     {
       "file": "src/core/database/Database.ts",
-      "lines": 546
+      "lines": 552
     },
     {
       "file": "src/core/database/ExpansionMigrations.ts",
@@ -6478,7 +6833,7 @@
     },
     {
       "file": "src/core/knowledge/LocalKnowledgeAnswerer.ts",
-      "lines": 606
+      "lines": 754
     },
     {
       "file": "src/core/knowledge/OnlineKnowledgeIngestionService.ts",
@@ -6530,7 +6885,7 @@
     },
     {
       "file": "src/core/orchestrator/EnhancedOrchestrator.ts",
-      "lines": 584
+      "lines": 594
     },
     {
       "file": "src/core/orchestrator/Orchestrator.ts",
@@ -6682,7 +7037,7 @@
     },
     {
       "file": "src/server/routes/legacy-chat.ts",
-      "lines": 367
+      "lines": 600
     },
     {
       "file": "src/server/routes/setup.ts",
