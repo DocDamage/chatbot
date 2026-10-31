@@ -133,6 +133,7 @@
     "client/src/components/ModeSelector.tsx",
     "client/src/components/PlanActionBar.tsx",
     "client/src/components/ProjectIntelligencePanel.tsx",
+    "client/src/components/ReaPanel.tsx",
     "client/src/components/RepositoryArchitectureView.tsx",
     "client/src/components/RepositoryFindingsView.tsx",
     "client/src/components/ResponseFeedbackBar.tsx",
@@ -267,6 +268,7 @@
     "src/core/browser/AuthorizedBrowserJob.ts",
     "src/core/capabilities/CapabilityJobManager.ts",
     "src/core/capabilities/CapabilityRegistry.ts",
+    "src/core/capabilities/ReaCapability.ts",
     "src/core/capabilities/approvals/CapabilityApprovalService.ts",
     "src/core/capabilities/artifacts/CapabilityArtifactStore.ts",
     "src/core/capabilities/config/CapabilityConfigManager.ts",
@@ -615,6 +617,12 @@
     "src/core/rag/ingestion/PdfExtractor.ts",
     "src/core/rag/ingestion/RtfExtractor.ts",
     "src/core/rag/ingestion/TextLikeExtractor.ts",
+    "src/core/rea/ReaChat.ts",
+    "src/core/rea/ReaConfig.ts",
+    "src/core/rea/ReaJobs.ts",
+    "src/core/rea/ReaProtocol.ts",
+    "src/core/rea/ReaService.ts",
+    "src/core/rea/ReaTargets.ts",
     "src/core/realtime/WebSocketServer.ts",
     "src/core/research/PyScrappyService.ts",
     "src/core/router/IntentRouter.ts",
@@ -929,6 +937,7 @@
     "src/server/routes/project-intelligence.ts",
     "src/server/routes/project-memory.ts",
     "src/server/routes/rag-query.ts",
+    "src/server/routes/rea.ts",
     "src/server/routes/research.ts",
     "src/server/routes/science.ts",
     "src/server/routes/sec.ts",
@@ -946,6 +955,7 @@
     "src/server/routes/v2/chat.ts",
     "src/server/routes/website-workspace.ts",
     "src/server/routes/writing-studio.ts",
+    "src/server/security/reaAccess.ts",
     "src/server/security/webhookUrl.ts",
     "src/types/chat-runtime.ts",
     "src/types/chat.ts",
@@ -1014,6 +1024,7 @@
     "client/src/components/ModeSelector.tsx",
     "client/src/components/PlanActionBar.tsx",
     "client/src/components/ProjectIntelligencePanel.tsx",
+    "client/src/components/ReaPanel.tsx",
     "client/src/components/RepositoryArchitectureView.tsx",
     "client/src/components/RepositoryFindingsView.tsx",
     "client/src/components/ResponseFeedbackBar.tsx",
@@ -1148,6 +1159,7 @@
     "src/core/browser/AuthorizedBrowserJob.ts",
     "src/core/capabilities/CapabilityJobManager.ts",
     "src/core/capabilities/CapabilityRegistry.ts",
+    "src/core/capabilities/ReaCapability.ts",
     "src/core/capabilities/approvals/CapabilityApprovalService.ts",
     "src/core/capabilities/artifacts/CapabilityArtifactStore.ts",
     "src/core/capabilities/config/CapabilityConfigManager.ts",
@@ -1496,6 +1508,12 @@
     "src/core/rag/ingestion/PdfExtractor.ts",
     "src/core/rag/ingestion/RtfExtractor.ts",
     "src/core/rag/ingestion/TextLikeExtractor.ts",
+    "src/core/rea/ReaChat.ts",
+    "src/core/rea/ReaConfig.ts",
+    "src/core/rea/ReaJobs.ts",
+    "src/core/rea/ReaProtocol.ts",
+    "src/core/rea/ReaService.ts",
+    "src/core/rea/ReaTargets.ts",
     "src/core/realtime/WebSocketServer.ts",
     "src/core/research/PyScrappyService.ts",
     "src/core/router/IntentRouter.ts",
@@ -1810,6 +1828,7 @@
     "src/server/routes/project-intelligence.ts",
     "src/server/routes/project-memory.ts",
     "src/server/routes/rag-query.ts",
+    "src/server/routes/rea.ts",
     "src/server/routes/research.ts",
     "src/server/routes/science.ts",
     "src/server/routes/sec.ts",
@@ -1827,6 +1846,7 @@
     "src/server/routes/v2/chat.ts",
     "src/server/routes/website-workspace.ts",
     "src/server/routes/writing-studio.ts",
+    "src/server/security/reaAccess.ts",
     "src/server/security/webhookUrl.ts",
     "src/types/chat-runtime.ts",
     "src/types/chat.ts",
@@ -2285,6 +2305,10 @@
       "specifier": "./ModeSelector.css"
     },
     {
+      "importer": "client/src/components/ReaPanel.tsx",
+      "specifier": "./ReaPanel.css"
+    },
+    {
       "importer": "client/src/components/ResponseFeedbackBar.tsx",
       "specifier": "./ResponseFeedbackBar.css"
     },
@@ -2665,6 +2689,7 @@
       "client/src/components/LoadedFilesBar.tsx",
       "client/src/components/ModeSelector.tsx",
       "client/src/components/PlanActionBar.tsx",
+      "client/src/components/ReaPanel.tsx",
       "client/src/components/ResponseFeedbackBar.tsx",
       "client/src/components/SourcesDrawer.tsx",
       "client/src/components/StatusBar.tsx",
@@ -2836,6 +2861,13 @@
       "client/src/api/runtime.ts",
       "client/src/components/MemoryCenterPanel.tsx",
       "client/src/components/RepositoryArchitectureView.tsx"
+    ],
+    "client/src/components/ReaPanel.test.tsx": [
+      "client/src/api/http.ts",
+      "client/src/components/ReaPanel.tsx"
+    ],
+    "client/src/components/ReaPanel.tsx": [
+      "client/src/api/http.ts"
     ],
     "client/src/components/RepositoryArchitectureView.tsx": [],
     "client/src/components/RepositoryFindingsView.tsx": [],
@@ -3025,6 +3057,8 @@
       "src/core/rag/ingestion/FileTypeRouter.ts",
       "src/types/rag.ts"
     ],
+    "scripts/rea/setup.mjs": [],
+    "scripts/rea/verify.mjs": [],
     "scripts/release/__tests__/client-coverage-policy.test.mjs": [
       "scripts/release/lib/client-coverage-policy.mjs"
     ],
@@ -3997,6 +4031,7 @@
     "src/core/capabilities/CapabilityRegistry.ts": [
       "src/core/browser/AuthorizedBrowserJob.ts",
       "src/core/capabilities/CapabilityJobManager.ts",
+      "src/core/capabilities/ReaCapability.ts",
       "src/core/capabilities/health/CapabilityHealthDiagnostics.ts",
       "src/core/capabilities/packs/CapabilityInstallationManager.ts",
       "src/core/capabilities/packs/CapabilityPackManifest.ts",
@@ -4186,6 +4221,10 @@
     ],
     "src/core/capabilities/promotion/CrossCapabilityPromotionLedger.ts": [
       "src/core/capabilities/CapabilityRegistry.ts"
+    ],
+    "src/core/capabilities/ReaCapability.ts": [
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/rea/ReaConfig.ts"
     ],
     "src/core/capabilities/release/ControlledRolloutManager.ts": [],
     "src/core/capabilities/release/PostDeployValidationSuite.ts": [],
@@ -5907,6 +5946,8 @@
       "src/core/rag/DocumentManager.ts",
       "src/core/rag/RAGDocumentStore.ts",
       "src/core/rag/RAGService.ts",
+      "src/core/rea/ReaChat.ts",
+      "src/core/rea/ReaService.ts",
       "src/core/research/PyScrappyService.ts",
       "src/core/safety/SafetyPipeline.ts",
       "src/core/tools/CodeExecutor.ts",
@@ -7707,6 +7748,46 @@
       "src/core/observability/logger.ts",
       "src/core/voice/VoiceAgent.ts"
     ],
+    "src/core/rea/ReaChat.ts": [
+      "src/core/rea/ReaJobs.ts",
+      "src/core/rea/ReaService.ts",
+      "src/types/chat.ts"
+    ],
+    "src/core/rea/ReaConfig.ts": [
+      "src/core/config/EnvironmentDefinitions.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/core/rea/ReaJobs.ts": [
+      "src/core/rea/ReaConfig.ts",
+      "src/core/rea/ReaProtocol.ts"
+    ],
+    "src/core/rea/ReaProtocol.test.ts": [
+      "src/core/rea/ReaConfig.ts",
+      "src/core/rea/ReaProtocol.ts"
+    ],
+    "src/core/rea/ReaProtocol.ts": [
+      "src/core/mcp/McpClientService.ts",
+      "src/core/rea/ReaConfig.ts"
+    ],
+    "src/core/rea/ReaService.test.ts": [
+      "src/core/rea/ReaChat.ts",
+      "src/core/rea/ReaConfig.ts",
+      "src/core/rea/ReaJobs.ts",
+      "src/core/rea/ReaProtocol.ts",
+      "src/core/rea/ReaService.ts",
+      "src/core/rea/ReaTargets.ts"
+    ],
+    "src/core/rea/ReaService.ts": [
+      "src/core/mcp/McpClientService.ts",
+      "src/core/rea/ReaConfig.ts",
+      "src/core/rea/ReaJobs.ts",
+      "src/core/rea/ReaProtocol.ts",
+      "src/core/rea/ReaTargets.ts"
+    ],
+    "src/core/rea/ReaTargets.ts": [
+      "src/core/coding/security/WorkspacePathPolicy.ts",
+      "src/core/rea/ReaConfig.ts"
+    ],
     "src/core/realtime/__tests__/WebSocketServer.test.ts": [
       "src/core/realtime/WebSocketServer.ts"
     ],
@@ -9121,6 +9202,7 @@
       "src/server/routes/project-intelligence.ts",
       "src/server/routes/project-memory.ts",
       "src/server/routes/rag-query.ts",
+      "src/server/routes/rea.ts",
       "src/server/routes/research.ts",
       "src/server/routes/science.ts",
       "src/server/routes/sec.ts",
@@ -9551,11 +9633,13 @@
       "src/core/nlu/HumanLanguageRouter.ts",
       "src/core/orchestrator/Orchestrator.ts",
       "src/core/planning/PlanDocumentService.ts",
+      "src/core/rea/ReaChat.ts",
       "src/core/tasks/ConversationalTaskOrchestrator.ts",
       "src/middleware/errorHandler.ts",
       "src/middleware/rateLimiter.ts",
       "src/middleware/validator.ts",
       "src/server/chatRequest.ts",
+      "src/server/security/reaAccess.ts",
       "src/types/chat.ts"
     ],
     "src/server/routes/legal.ts": [
@@ -9655,6 +9739,23 @@
       "src/middleware/errorHandler.ts",
       "src/middleware/validator.ts"
     ],
+    "src/server/routes/rea.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/core/conversation/ConversationManager.ts",
+      "src/core/rea/ReaService.ts",
+      "src/middleware/auth.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routeManifest.ts",
+      "src/server/routes/legacy-chat.ts",
+      "src/server/routes/rea.ts",
+      "src/server/routes/v1/chat.ts",
+      "src/server/routes/v2/chat.ts"
+    ],
+    "src/server/routes/rea.ts": [
+      "src/core/rea/ReaConfig.ts",
+      "src/core/rea/ReaService.ts",
+      "src/middleware/errorHandler.ts"
+    ],
     "src/server/routes/research.ts": [
       "src/core/research/PyScrappyService.ts",
       "src/middleware/errorHandler.ts"
@@ -9738,14 +9839,16 @@
       "src/core/orchestrator/Orchestrator.ts",
       "src/middleware/errorHandler.ts",
       "src/middleware/rateLimiter.ts",
-      "src/middleware/validator.ts"
+      "src/middleware/validator.ts",
+      "src/server/security/reaAccess.ts"
     ],
     "src/server/routes/v2/chat.ts": [
       "src/core/orchestrator/Orchestrator.ts",
       "src/middleware/errorHandler.ts",
       "src/middleware/rateLimiter.ts",
       "src/middleware/validator.ts",
-      "src/server/routes/chat-stream.ts"
+      "src/server/routes/chat-stream.ts",
+      "src/server/security/reaAccess.ts"
     ],
     "src/server/routes/website-workspace.ts": [
       "src/core/website/WebStudioService.ts",
@@ -9756,6 +9859,12 @@
       "src/core/writing/WritingAIProviderRouter.ts",
       "src/core/writing/index.ts",
       "src/middleware/errorHandler.ts",
+      "src/middleware/validator.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/server/security/reaAccess.ts": [
+      "src/core/config/EnvironmentDefinitions.ts",
+      "src/core/rea/ReaChat.ts",
       "src/middleware/validator.ts",
       "src/utils/errors.ts"
     ],
@@ -9993,5 +10102,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1929
+  "sourceRecordCount": 1945
 }

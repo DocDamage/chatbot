@@ -8,6 +8,7 @@ import { validateChatRequest, sanitizeInput } from '../../../middleware/validato
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { ChatRequest } from '../../../core/orchestrator/Orchestrator';
 import { streamChat } from '../chat-stream';
+import { requireReaChatAccess } from '../../security/reaAccess';
 
 export function createChatRouterV2(orchestrator: any) {
   const router = Router();
@@ -17,6 +18,7 @@ export function createChatRouterV2(orchestrator: any) {
     '/chat',
     rateLimiter.middleware(),
     validateChatRequest,
+    requireReaChatAccess,
     asyncHandler(async (req, res) => {
       const { message, sessionId, userId } = req.body;
       const sanitizedMessage = sanitizeInput(message);
@@ -38,6 +40,7 @@ export function createChatRouterV2(orchestrator: any) {
     '/chat/stream',
     rateLimiter.middleware(),
     validateChatRequest,
+    requireReaChatAccess,
     asyncHandler(async (req, res) => {
       await streamChat(req, res, orchestrator);
     })

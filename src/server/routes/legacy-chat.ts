@@ -16,6 +16,8 @@ import { CodingAuthorization } from '../../core/coding/authorization/CodingAutho
 import { WikipediaSource } from '../../core/knowledge/WikipediaSource';
 import { KnowledgeResult } from '../../core/knowledge/KnowledgeSource';
 import { ConversationalTaskOrchestrator } from '../../core/tasks/ConversationalTaskOrchestrator';
+import { isReaCommand } from '../../core/rea/ReaChat';
+import { requireReaChatAccess } from '../security/reaAccess';
 
 type ChatSpecialistMode =
   | 'coding'
@@ -421,6 +423,7 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
   return [
     rateLimiter.middleware(),
     validateChatRequest,
+    requireReaChatAccess,
     asyncHandler(async (req, res) => {
       await deps.waitForReady(Number(process.env.REQUEST_READY_TIMEOUT_MS || 10000));
 
@@ -429,10 +432,11 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
       const userId = req.user?.userId || body.userId;
       const sanitizedMessage = sanitizeInput(message);
       const chatRequest = await enrichChatRequestWithPlan({ ...body, userId, message: sanitizedMessage });
-      const taskResult = taskOrchestrator.handle(sessionId, sanitizedMessage, mode);
+      const reaCommand = isReaCommand(sanitizedMessage);
+      const taskResult = reaCommand ? undefined : taskOrchestrator.handle(sessionId, sanitizedMessage, mode);
       const dailyChat = deps.getServices()?.dailyChat;
-      if (dailyChat && !taskResult && (!mode || ['ask', 'explain'].includes(mode))
-        && !requiresSwitchForIntent(mode, detectUserIntent(sanitizedMessage)).required) {
+      if (dailyChat && (reaCommand || (!taskResult && (!mode || ['ask', 'explain'].includes(mode))
+        && !requiresSwitchForIntent(mode, detectUserIntent(sanitizedMessage)).required))) {
         return res.json(await dailyChat.processRequest(chatRequest));
       }
       const conversationManager = deps.getConversationManager();

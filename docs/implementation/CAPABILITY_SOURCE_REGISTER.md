@@ -22,6 +22,7 @@ Every external source is assigned exactly one status:
 
 | Source / Repository | Canonical Upstream / Mirror | Reviewed Revision / Branch | Root License | File Exceptions / Notices | Integration Mode | Security & Compliance Boundary | Status |
 |---|---|---|---|---|---|---|---|
+| **REA** | `DocDamage/rea` / `morluto/rea` | `d48e472fa6a664cacbb400560e673533005795ce`; runtime `rea-agents@6.8.0` | MIT | Copyright (c) 2026 morluto; full notice in `services/rea/LICENSE.rea`; separately locked dependencies | `EXTERNAL_SERVICE_ADAPTER` | Local developer/admin static MCP workflows, approved target snapshots, isolated per-job process, owner-scoped evidence; no target execution or arbitrary tool dispatch | Local experimental; see `docs/REA.md` |
 | **Headroom** | `DocDamage/Headroom` | `main` (`2026-08-24`) | Apache-2.0 | NOTICE file present; ML models separate | `NATIVE_ADAPTATION` / `EXTERNAL_SERVICE_ADAPTER` | Native compression algorithms adapted; ML compressors use external adapter | Active |
 | **Graft** | `DocDamage/graft` | `main` (`2026-08-24`) | MIT | Copyright (c) 2026 Graft authors | `NATIVE_ADAPTATION` | Native architecture card provider; deterministic graph maintained | Active |
 | **Basemind** | `DocDamage/basemind` | `main` (`2026-08-24`) | MIT | Standard MIT notice | `NATIVE_ADAPTATION` | Narrow memory/context contracts adapted; uncontained shell execution stripped | Active |

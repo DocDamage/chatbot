@@ -12,6 +12,7 @@
   flex-direction: column;
   background: #050505;
   color: #ffffff;
+  overflow-y: auto;
 }
 
 .conversation-history { padding: 8px 16px; border-bottom: 1px solid #262626; }

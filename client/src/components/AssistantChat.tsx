@@ -24,6 +24,7 @@ import AudioPreviewBrowser from './AudioPreviewBrowser';
 import CodeWorkflowPanel from './CodeWorkflowPanel';
 import ConversationToolsPanel from './ConversationToolsPanel';
 import ConversationHistory from './ConversationHistory';
+import ReaPanel from './ReaPanel';
 import CreativeComposerPanel, { buildCreativeRequestPayload, defaultCreativeComposerState } from './CreativeComposerPanel';
 import KnowledgeMissPrompt from './KnowledgeMissPrompt';
 import PlanActionBar from './PlanActionBar';
@@ -534,7 +535,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
     <AssistantRuntimeProvider runtime={runtime}>
       <div className="assistant-workspace">
         {showBackendPanels && <FileExplorerPanel onLoadFile={addLoadedFile} />}
-        <section className="assistant-chat" aria-label="AI chat">
+        <section className="assistant-chat" aria-label="AI chat" tabIndex={0}>
           <div className="assistant-toolbar">
             <div className="assistant-toolbar-controls">
               {advancedOpen ? (
@@ -595,6 +596,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
             <span className="assistant-mode-hint">{advancedOpen ? modeHints[mode] : 'Focused chat'}</span>
           </div>
           {!isStaticPagesBuild && <ConversationHistory disabled={isRunning} onLoad={loadConversation} onNew={newConversation} />}
+          {!isStaticPagesBuild && <ReaPanel />}
           {showBackendPanels && <KnowledgeOSPanel />}
           {showGamingPlaybooks && <GamingPlaybookPanel />}
           {showKnowledgeOnlinePanel && <KnowledgeOnlinePanel />}

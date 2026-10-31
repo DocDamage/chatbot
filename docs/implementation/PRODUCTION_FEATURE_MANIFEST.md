@@ -2,6 +2,10 @@
 
 > Authoritative Phase 0 classification of the currently discovered product surface. This file records what is reachable or present; it does **not** certify production readiness.
 
+## REA addition (2026-10-30)
+
+`REA-001` is `LOCAL_ONLY_EXPERIMENTAL`: the chat REA panel, explicit `/rea` commands and `/api/rea/*` provide static JavaScript, archive, PE, managed, model and native analysis. The optional `rea-agents@6.8.0` runtime uses developer/admin authorization and is excluded from hosted routes. Reports, input snapshots and evidence persist under `data/rea` with owner-scoped access and deletion. Native function inspection depends on a compatible installed provider. See [setup and boundaries](../REA.md); this entry does not change the historical baseline counts below.
+
 ## Manifest metadata
 
 - Repository: `DocDamage/chatbot`

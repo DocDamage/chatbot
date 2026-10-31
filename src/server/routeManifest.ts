@@ -52,6 +52,7 @@ import { createAgentOperationsRouter } from './routes/agent-operations';
 import { createWritingStudioRouter } from './routes/writing-studio';
 import { createStudyStudioRouter } from './routes/study-studio';
 import { createTaskArtifactsRouter } from './routes/task-artifacts';
+import { createReaRouter } from './routes/rea';
 
 export type RouteAvailability = 'hosted-and-local' | 'local-only';
 export type FeatureStatus = 'PRODUCTION_PREVIEW' | 'LOCAL_ONLY_EXPERIMENTAL';
@@ -78,6 +79,7 @@ const localOnly = (entry: Omit<RouteManifestEntry, 'availability' | 'status'>): 
 });
 
 export const routeManifest: RouteManifestEntry[] = [
+  localOnly({ name: 'rea', mount: '/api/rea', readiness: true, privilege: 'developer', auditAction: 'rea' }),
   preview({ name: 'rag-query', readiness: true }),
   localOnly({ name: 'research', mount: '/api/research', readiness: true, privilege: 'developer', auditAction: 'research' }),
   localOnly({ name: 'code', mount: '/api/code', readiness: true, privilege: 'developer', auditAction: 'code' }),
@@ -147,8 +149,9 @@ interface RegisterRouteDeps {
 }
 
 export function registerManifestRoutes(deps: RegisterRouteDeps): void {
-  const relativeRouterNames = new Set(['capabilities', 'context-economy', 'admin', 'export', 'task-artifacts']);
+  const relativeRouterNames = new Set(['capabilities', 'context-economy', 'admin', 'export', 'task-artifacts', 'rea']);
   const routerFactories: Record<string, () => RequestHandler> = {
+    rea: () => createReaRouter(deps.getServices()),
     'rag-query': () => createRagQueryRouter(deps.getServices()),
     research: () => createResearchRouter(deps.getServices()),
     code: () => createCodeRouter(deps.getServices()),

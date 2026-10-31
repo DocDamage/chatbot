@@ -1,0 +1,175 @@
+{
+  "verifiedAt": "2026-10-31T03:33:03.814Z",
+  "classification": "LOCAL_ONLY_EXPERIMENTAL",
+  "baseCommit": "ada5d0e",
+  "branch": "codex/rea-integration",
+  "runtime": {
+    "package": "rea-agents",
+    "version": "6.8.0",
+    "node": "24.22.1",
+    "nativeProvider": "Ghidra 12.1.4",
+    "reviewedForkCommit": "d48e472fa6a664cacbb400560e673533005795ce",
+    "install": "separate locked npm package; no vendored fork code"
+  },
+  "live": [
+    {
+      "operation": "javascript",
+      "target": "rea-inert.js",
+      "id": "12fe83cf-31d2-4223-84a8-60fd9f4f7c09",
+      "status": "completed",
+      "tools": [
+        "analyze_javascript_application",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_fb92847df8477b0ad980d4899b5b27acfd8e382839de082841ae07340de5aa17"
+      ],
+      "evidenceSha256": "32db233c09e94682875f037d64c74fb36826057819508b5786db2363306b3015"
+    },
+    {
+      "operation": "archive",
+      "target": "rea-inert.zip",
+      "id": "689bbe4d-e63c-426c-a473-4f300a892743",
+      "status": "completed",
+      "tools": [
+        "open_binary",
+        "inspect_artifact",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_58214bc766cbf125563bab1a73e5915d377ca8ab7857c6befcbae64430902e9f"
+      ],
+      "evidenceSha256": "6c0b8128def257ba02b03f656a6add4a447dcd4c955421cd2e2dc796bae913bb"
+    },
+    {
+      "operation": "model",
+      "target": "rea-empty.gguf",
+      "id": "d461d1d5-91eb-4cca-a252-b88dbda98e41",
+      "status": "completed",
+      "tools": [
+        "inspect_model_artifact",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_ac0b1a342d41a757a9fa80b2f4098bb9476906001fefaa45fe11876d379fdbd0"
+      ],
+      "evidenceSha256": "f9af4d87871614e2a01d39256b02bd4f406412f4941c155bd0955b797f15b0ae"
+    },
+    {
+      "operation": "pe",
+      "target": "where.exe",
+      "id": "b7f3c577-52f0-4c02-9a58-bcef09f8837f",
+      "status": "completed",
+      "tools": [
+        "inspect_pe_imports",
+        "inspect_pe_resources",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_5eccf73e1db80bb12378300cd1540fbb265c11945034c9f2b3bfa45bdda15e0a",
+        "ev_90504387c654c612b030cf466de010482e0dcf9f0386bf76388de0327372df89"
+      ],
+      "evidenceSha256": "e8cc0ff0d2d80de87f611c7f1a8604cfd1c3b32efdb19d8b80a3420965655546"
+    },
+    {
+      "operation": "managed",
+      "target": "System.Management.Automation.dll",
+      "id": "7b2bc356-d005-4c25-980d-33e514859cc1",
+      "status": "completed",
+      "tools": [
+        "inspect_managed_artifact",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_b4fbae32a6b0f0b57fd3b1fa8672c193fcee8335adc2321156fae7486eae87f2"
+      ],
+      "evidenceSha256": "ceada7e3c8fda2ef84c6bb62a9c4992b118755f572acce0f4fb84caadaae2455"
+    },
+    {
+      "operation": "native",
+      "target": "where.exe",
+      "id": "1b835c4b-321f-44d6-bcc2-3344c92f7e18",
+      "status": "completed",
+      "tools": [
+        "open_binary",
+        "binary_overview",
+        "list_procedures",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_cabb5fd1528cb386c5189b0ea554622be482dc45b20f1bf8d5daa94bd40fd1b0",
+        "ev_3636bb1e89be771c852f6bb64d07917f3eda13d06b0848b396de044176acacfc"
+      ],
+      "evidenceSha256": "4b2a5e2c9ab385475e31ec537aa843daaf7c03807cd09fbbcddc554ba2c9de2b"
+    },
+    {
+      "operation": "native",
+      "target": "where.exe",
+      "id": "86e6caa5-e852-42cb-b5de-7b7818c05d38",
+      "status": "completed",
+      "tools": [
+        "open_binary",
+        "binary_overview",
+        "analyze_function",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_cabb5fd1528cb386c5189b0ea554622be482dc45b20f1bf8d5daa94bd40fd1b0",
+        "ev_493bee59329e38ae8e213bfca68eb041a27dcc04719463fa71c3c510aeae7a7b"
+      ],
+      "evidenceSha256": "af9a8361535489ed5222fdff2de537e1d26ff22defb6c9ab0ed9b67847da0e99",
+      "pseudocodeChars": 702
+    },
+    {
+      "operation": "chat-command",
+      "status": "completed"
+    }
+  ],
+  "checks": {
+    "productionBuild": "passed",
+    "serverTypes": "passed",
+    "testTypes": "passed",
+    "clientTypes": "passed",
+    "serverLint": "passed",
+    "clientLint": "passed",
+    "focusedServerTests": {
+      "passed": 69,
+      "suites": 8,
+      "note": "68-test combined run plus the added legacy chat access case in the complete 7-test HTTP suite rerun"
+    },
+    "clientTests": {
+      "passed": 200,
+      "files": 60
+    },
+    "browserRegression": {
+      "passed": 7,
+      "failed": 0
+    },
+    "accessibilityRegression": {
+      "passed": 6,
+      "failed": 0
+    },
+    "expandedReaPanelAxe": {
+      "violations": 0
+    },
+    "browserReaUploadAndEvidenceDownload": "passed against the running built app",
+    "repositoryPolicyChecks": "passed",
+    "secrets": "passed"
+  },
+  "coverage": [
+    "MCP stdio transport, retained export, partial analysis export, native function arguments, explicit model/managed paths",
+    "UTF-8 chunk boundaries, reconnect and output budget",
+    "Snapshot limits, path/credential/link rejection, upload staging isolation",
+    "Owner authorization, hosted exclusion, every versioned chat route including SSE",
+    "Cancellation, timeout, evidence-required success, restart recovery, shutdown and deletion",
+    "Command persistence without a model request",
+    "Authorization uses the same normalized message as command dispatch; whitespace and sanitized-prefix attempts are denied. Credential backups and local auth stores are excluded."
+  ],
+  "limitations": [
+    "Static workflows only; dynamic execution, process attachment, device and browser tools are not exposed.",
+    "Native analysis depends on an installed compatible provider; Windows Ghidra was exercised here.",
+    "Directory snapshots are intentionally filtered.",
+    "Optional runtime dependencies have a separate lockfile and are outside the base app SBOM.",
+    "The entire server suite and release coverage gates were not rerun for this integration."
+  ]
+}

@@ -1,5 +1,9 @@
 # Third-Party Software Notices and Attribution
 
+## Optional REA runtime
+
+The optional adapter uses `rea-agents@6.8.0` (MIT), installed separately under `services/rea`. Source reference: [DocDamage/rea](https://github.com/DocDamage/rea), reviewed at `d48e472fa6a664cacbb400560e673533005795ce`; the npm package identifies [morluto/rea](https://github.com/morluto/rea) as upstream. Copyright (c) 2026 morluto. The full notice is retained in [services/rea/LICENSE.rea](services/rea/LICENSE.rea). Its separately locked transitive dependencies retain their package notices and are outside the base application SBOM.
+
 **Generated:** 2026-08-25
 
 **Governing Document:** [CAPABILITY_SOURCE_REGISTER.md](docs/implementation/CAPABILITY_SOURCE_REGISTER.md)

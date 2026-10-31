@@ -1,5 +1,7 @@
 # Release Evidence Index
 
+REA local integration (2026-10-30): [verification record](evidence/rea/2026-10-30/verification.json) covers actual JavaScript, archive, model, PE, .NET and Ghidra native function analysis, retained evidence downloads, command routing, focused regression tests and browser accessibility. Classification remains `LOCAL_ONLY_EXPERIMENTAL`; see [REA setup and boundaries](../REA.md).
+
 This index links verified production-completion tasks to evidence collected against an exact implementation commit.
 
 > **Profile-expansion correction (2026-08-25):** all `PX00`–`PX22` entries below are `IMPLEMENTED_NOT_VERIFIED`. Their referenced work is not present in the previously cited commit, and the generated task summaries do not replace exact-head CI, runtime, clean-machine, device, manual accessibility, SBOM/license, load/soak, restore, drill, or post-deploy evidence. They must not be used for release promotion.

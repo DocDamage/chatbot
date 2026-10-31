@@ -3,6 +3,8 @@
 **Date:** 2026-08-25
 **Scope:** Categorized legal and technical boundary register for binary tools, neural model weights, voice datasets, fonts, media codecs, and third-party web services.
 
+**REA addition (2026-10-30):** The optional `rea-agents@6.8.0` MIT runtime is isolated under `services/rea` with its own lockfile and retained license. Native providers, including separately installed Ghidra, keep their own license and runtime terms and are not redistributed by this adapter. Model artifacts are inspected as caller-provided data; no model weights are installed or redistributed. See [REA](../REA.md) and [third-party notices](../../THIRD_PARTY_NOTICES.md).
+
 ---
 
 ## 1. Boundary Separation Principle

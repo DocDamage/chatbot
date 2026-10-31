@@ -28,6 +28,8 @@
     "start": "node dist/server/index.js",
     "start:prod": "npm run build && npm start",
     "setup:local": "node scripts/local/setup.mjs",
+    "setup:rea": "node scripts/rea/setup.mjs",
+    "verify:rea": "node scripts/rea/verify.mjs",
     "start:local": "npm run setup:local && npm run build && npm start",
     "doctor:local": "node scripts/local/doctor.mjs",
     "verify:local": "node scripts/local/verify.mjs",

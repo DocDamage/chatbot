@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "definitionCount": 261,
-  "templateCount": 261,
-  "usageCount": 237,
+  "definitionCount": 266,
+  "templateCount": 266,
+  "usageCount": 242,
   "duplicateDefinitions": [],
   "duplicateTemplateEntries": [],
   "missingFromTemplate": [],
@@ -257,10 +257,12 @@
       "src/core/capabilities/observability/CapabilityObservabilityService.test.ts",
       "src/core/capabilities/observability/CapabilityObservabilityService.ts",
       "src/core/initialization/ServiceInitializer.test.ts",
+      "src/core/rea/ReaService.test.ts",
       "src/server/index.ts",
       "src/server/routes/__tests__/gaming-playbook-routes.test.ts",
       "src/server/routes/local-session.test.ts",
-      "src/server/routes/local-session.ts"
+      "src/server/routes/local-session.ts",
+      "src/server/routes/rea.test.ts"
     ],
     "DISK_CACHE_DIR": [
       "src/core/initialization/ServiceInitializer.ts"
@@ -525,6 +527,7 @@
       "src/server/routes/__tests__/route-core-services-matrices.test.ts",
       "src/server/routes/__tests__/route-workspace-persistence.test.ts",
       "src/server/routes/local-session.test.ts",
+      "src/server/routes/rea.test.ts",
       "src/server/routes/setup.test.ts"
     ],
     "KNOWLEDGE_BASE_DIR": [
@@ -909,6 +912,23 @@
     ],
     "RATE_LIMIT_WINDOW_MS": [
       "src/middleware/rateLimiter.ts"
+    ],
+    "REA_ALLOWED_ROOTS": [
+      "src/core/rea/ReaConfig.ts"
+    ],
+    "REA_ENABLED": [
+      "src/core/rea/ReaConfig.ts",
+      "src/core/rea/ReaService.test.ts"
+    ],
+    "REA_MAX_INPUT_BYTES": [
+      "src/core/rea/ReaConfig.ts"
+    ],
+    "REA_NODE_PATH": [
+      "scripts/rea/setup.mjs",
+      "src/core/rea/ReaConfig.ts"
+    ],
+    "REA_TIMEOUT_MS": [
+      "src/core/rea/ReaConfig.ts"
     ],
     "REDIS_URL": [
       "src/core/initialization/ServiceInitializer.ts",

@@ -171,4 +171,33 @@ describe('RT-MCP-001: McpClientService Protocol, Execution, and Governance Suite
     expect(connectRes.mode).toBe('dry_run');
     expect(connectRes.message).toContain('did not complete initialization');
   });
+
+  it('preserves UTF-8 split across JSONL chunks and survives reconnecting', async () => {
+    const script = `
+      require('readline').createInterface({input:process.stdin}).on('line', line => {
+        const m = JSON.parse(line); if (!m.id) return;
+        const result = m.method === 'tools/list' ? {tools:[{name:'Unicode ☃'}]} : {serverInfo:{name:'unicode'}};
+        const bytes = Buffer.from(JSON.stringify({jsonrpc:'2.0', id:m.id, result})+'\\n');
+        const split = bytes.indexOf(Buffer.from('☃')) + 1;
+        if (split > 0) { process.stdout.write(bytes.subarray(0,split)); setTimeout(()=>process.stdout.write(bytes.subarray(split)),20); }
+        else process.stdout.write(bytes);
+      });
+    `;
+    const config = { command: process.execPath, args: ['-e', script], framing: 'jsonl' as const };
+    expect((await service.connectServer(config)).connected).toBe(true);
+    expect((await service.listTools())[0].name).toBe('Unicode ☃');
+    expect((await service.connectServer(config)).connected).toBe(true);
+    expect((await service.listTools())[0].name).toBe('Unicode ☃');
+  });
+
+  it('rejects oversized responses and disconnects rather than buffering indefinitely', async () => {
+    const script = `require('readline').createInterface({input:process.stdin}).on('line', line=>{
+      const m=JSON.parse(line); if(!m.id)return;
+      const result=m.method==='tools/list'?{tools:[],padding:'x'.repeat(5000)}:{serverInfo:{name:'bounded'}};
+      process.stdout.write(JSON.stringify({jsonrpc:'2.0',id:m.id,result})+'\\n');
+    });`;
+    expect((await service.connectServer({ command: process.execPath, args: ['-e', script], framing: 'jsonl', maxMessageBytes: 1024 })).connected).toBe(true);
+    await expect(service.listTools()).rejects.toThrow(/limit|budget/i);
+    expect(service.healthCheck().connected).toBe(false);
+  });
 });

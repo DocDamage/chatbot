@@ -7,6 +7,7 @@ import { rateLimiter } from '../../../middleware/rateLimiter';
 import { validateChatRequest, sanitizeInput } from '../../../middleware/validator';
 import { asyncHandler } from '../../../middleware/errorHandler';
 import { ChatRequest } from '../../../core/orchestrator/Orchestrator';
+import { requireReaChatAccess } from '../../security/reaAccess';
 
 export function createChatRouter(orchestrator: any) {
   const router = Router();
@@ -15,6 +16,7 @@ export function createChatRouter(orchestrator: any) {
     '/chat',
     rateLimiter.middleware(),
     validateChatRequest,
+    requireReaChatAccess,
     asyncHandler(async (req, res) => {
       const { message, sessionId, userId } = req.body;
       const sanitizedMessage = sanitizeInput(message);

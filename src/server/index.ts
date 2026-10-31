@@ -93,6 +93,7 @@ function getConversationManager(): ConversationManager {
 }
 
 async function reinitializeServices(): Promise<void> {
+  services?.reaService?.shutdown();
   services = await ServiceInitializer.initialize();
   orchestrator = services.orchestrator;
 }
@@ -1176,5 +1177,12 @@ const startServer = async () => {
 export { app, server, startServer, waitForReady, reinitializeServices, getApiVersion, getConversationManager };
 
 if (require.main === module) {
+  const stop = () => {
+    services?.reaService?.shutdown();
+    server.close(() => process.exit(0));
+    setTimeout(() => process.exit(0), 5000).unref();
+  };
+  process.once('SIGINT', stop);
+  process.once('SIGTERM', stop);
   startServer();
 }

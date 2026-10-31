@@ -1,4 +1,5 @@
 node_modules/
+services/rea/runtime.json
 dist/
 coverage/
 client/coverage/

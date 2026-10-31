@@ -1,4 +1,5 @@
-import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
+import { ChildProcessWithoutNullStreams, spawn, spawnSync } from 'child_process';
+import { StringDecoder } from 'string_decoder';
 import { McpToolDefinition } from './McpToolRegistry';
 
 export interface McpServerConfig {
@@ -8,6 +9,9 @@ export interface McpServerConfig {
   cwd?: string;
   env?: Record<string, string>;
   framing?: 'headers' | 'jsonl';
+  timeoutMs?: number;
+  maxMessageBytes?: number;
+  killProcessTree?: boolean;
 }
 
 export interface McpCallResult {
@@ -35,6 +39,11 @@ export class McpClientService {
   private connected = false;
   private initialized = false;
   private framing: 'headers' | 'jsonl' = 'headers';
+  private timeoutMs = 15000;
+  private maxMessageBytes = 32 * 1024 * 1024;
+  private decoder = new StringDecoder('utf8');
+  private killProcessTree = false;
+  private stderr = '';
 
   async connectServer(config: McpServerConfig = {}): Promise<{ connected: boolean; serverId: string; mode: string; message: string }> {
     this.serverId = config.id || 'fl-studio-mcp';
@@ -50,22 +59,33 @@ export class McpClientService {
     }
 
     this.disconnect();
+    this.buffer = Buffer.alloc(0);
+    this.lineBuffer = '';
+    this.decoder = new StringDecoder('utf8');
+    this.stderr = '';
+    this.killProcessTree = config.killProcessTree === true;
+    this.timeoutMs = config.timeoutMs ?? 15000;
+    this.maxMessageBytes = config.maxMessageBytes ?? 32 * 1024 * 1024;
     this.framing = config.framing || 'headers';
     const useWindowsCommandShell = process.platform === 'win32' && /\.(cmd|bat)$/i.test(config.command);
     this.child = spawn(config.command, config.args || [], {
       cwd: config.cwd,
       env: { ...process.env, ...(config.env || {}) },
       stdio: 'pipe',
-      shell: useWindowsCommandShell
+      shell: useWindowsCommandShell,
+      windowsHide: true,
     });
 
-    this.child.stdout.on('data', data => this.handleOutput(Buffer.isBuffer(data) ? data : Buffer.from(data)));
-    this.child.stderr.on('data', () => undefined);
-    this.child.on('exit', () => {
+    const child = this.child;
+    child.stdout.on('data', data => { if (this.child === child) this.handleOutput(Buffer.isBuffer(data) ? data : Buffer.from(data)); });
+    child.stderr.on('data', data => { if (this.child === child) this.stderr = (this.stderr + data.toString()).slice(-2000); });
+    child.on('exit', () => {
+      if (this.child !== child) return;
       this.connected = false;
       this.rejectAll('MCP server exited.');
     });
-    this.child.on('error', error => {
+    child.on('error', error => {
+      if (this.child !== child) return;
       this.connected = false;
       this.rejectAll(error.message);
     });
@@ -79,7 +99,7 @@ export class McpClientService {
         connected: false,
         serverId: this.serverId,
         mode: 'dry_run',
-        message: `MCP server started but did not complete initialization: ${error.message}`
+        message: `MCP server started but did not complete initialization: ${error.message}${this.stderr ? ` (${this.stderr.trim()})` : ''}`
       };
     }
 
@@ -138,6 +158,9 @@ export class McpClientService {
 
   disconnect(): void {
     if (this.child && !this.child.killed) {
+      if (this.killProcessTree && process.platform === 'win32' && this.child.pid) {
+        spawnSync('taskkill.exe', ['/PID', String(this.child.pid), '/T', '/F'], { windowsHide: true, stdio: 'ignore', timeout: 5000 });
+      }
       this.child.kill();
       this.child.unref?.();
     }
@@ -181,7 +204,7 @@ export class McpClientService {
       const timeout = setTimeout(() => {
         this.pending.delete(id);
         reject(new Error(`MCP request timed out: ${method}`));
-      }, 15000);
+      }, this.timeoutMs);
       timeout.unref?.();
 
       this.pending.set(id, { resolve, reject, timeout });
@@ -211,6 +234,11 @@ export class McpClientService {
   }
 
   private handleOutput(chunk: Buffer): void {
+    if (this.buffer.length + Buffer.byteLength(this.lineBuffer) + chunk.length > this.maxMessageBytes) {
+      this.rejectAll('MCP message exceeds the configured output budget.');
+      this.disconnect();
+      return;
+    }
     if (this.framing === 'jsonl') {
       this.handleJsonLines(chunk);
       return;
@@ -241,7 +269,7 @@ export class McpClientService {
   }
 
   private handleJsonLines(chunk: Buffer): void {
-    this.lineBuffer += chunk.toString('utf8');
+    this.lineBuffer += this.decoder.write(chunk);
     let index = this.lineBuffer.indexOf('\n');
 
     while (index >= 0) {

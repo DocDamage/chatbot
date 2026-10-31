@@ -17,6 +17,7 @@ import { CapabilityInstallationManager } from './packs/CapabilityInstallationMan
 import { CapabilityPackManifest } from './packs/CapabilityPackManifest';
 import { CapabilityHealthDiagnostics } from './health/CapabilityHealthDiagnostics';
 import { discoverDabookRuntime } from '../native-runtime/RuntimeDiscovery';
+import { buildReaCapability } from './ReaCapability';
 
 export type CapabilitySection =
   | 'available_now'
@@ -755,6 +756,7 @@ export class CapabilityRegistry {
         localOnly: true
       },
       this.buildStructuredPdfCapability(isLocal),
+      buildReaCapability(isLocal),
       {
         id: 'repository_findings',
         name: 'Repository Findings, SARIF & SBOM (CF-03)',

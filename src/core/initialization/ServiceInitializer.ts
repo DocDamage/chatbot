@@ -4,6 +4,8 @@
 
 import { logger } from '../observability/logger';
 import { EmbeddingService } from '../embeddings/EmbeddingService';
+import { ReaService } from '../rea/ReaService';
+import { handleReaChat } from '../rea/ReaChat';
 import { RAGService } from '../rag/RAGService';
 import { DocumentManager } from '../rag/DocumentManager';
 import { Database } from '../database/Database';
@@ -91,6 +93,7 @@ import * as path from 'path';
 export interface InitializedServices {
   orchestrator: EnhancedOrchestrator;
   dailyChat?: DailyChatService;
+  reaService?: ReaService;
   ragService?: RAGService;
   documentManager?: DocumentManager;
   modelRouter?: ModelRouter;
@@ -299,6 +302,7 @@ export class ServiceInitializer {
     const analytics = new AnalyticsService();
     logger.info('Analytics service initialized');
     const conversationManager = new ConversationManager(database, Boolean(database));
+    const reaService = new ReaService();
     const dailyChat = process.env.CHAT_RUNTIME_ENABLED === 'false' ? undefined : new DailyChatService(
       ChatRuntimeFactory.create({
         database, conversationManager, llmAdapter: primaryAdapter, ragService,
@@ -308,6 +312,7 @@ export class ServiceInitializer {
       }),
       conversationManager,
       orchestrator,
+      request => handleReaChat(reaService, request),
     );
 
     const mathGeniusAgent = new MathGeniusAgent();
@@ -381,6 +386,7 @@ export class ServiceInitializer {
       initialization,
       orchestrator,
       dailyChat,
+      reaService,
       ragService,
       documentManager,
       modelRouter,

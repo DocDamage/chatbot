@@ -96,4 +96,15 @@ describe('Daily chat with real persisted state', () => {
     expect(legacy.processRequest).toHaveBeenCalled();
     expect(generate).not.toHaveBeenCalled();
   });
+  it('persists explicit command replies without invoking the model', async () => {
+    const runtime = { execute: jest.fn() };
+    const conversations = new ConversationManager(database);
+    const commands = jest.fn(async () => ({ response: 'REA analysis queued; results pending.', model: 'rea-local' }));
+    const chat = new DailyChatService(runtime as any, conversations, legacy, commands);
+    await chat.processRequest({ sessionId: 'rea', userId: 'alice', message: '/rea status' });
+    expect(runtime.execute).not.toHaveBeenCalled();
+    expect(commands).toHaveBeenCalledTimes(1);
+    const history = await conversations.getConversation('rea');
+    expect(history?.messages.map(message => message.content)).toEqual(['/rea status', 'REA analysis queued; results pending.']);
+  });
 });

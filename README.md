@@ -6,10 +6,12 @@ AI Chatbot Hub is a TypeScript/React chatbot workspace with provider adapters, s
 
 Daily local use now has a dedicated setup and verification path: see [Daily local use](docs/DAILY_USE.md). Run `npm run start:local` to start the built app with an installed Ollama model, then open <http://127.0.0.1:3001>. Ordinary chat uses the persistent canonical runtime; History reopens the original conversation. This personal-use checkpoint does not establish hosted production support.
 
+Optional [REA reverse engineering](docs/REA.md) adds local artifact analysis, native function inspection, saved evidence bundles, and `/rea` chat commands. Run `npm run setup:rea`, restart, and open the REA panel in chat.
+
 The implementation is active and suitable for local development, evaluation, and trusted internal use. It includes the complete **Capability Fusion (CF-01 through CF-10)** stack with persistent disk observability, process supervisors, native Git worktrees, Playwright browser drivers, media localization, Lattice game development tools, and multi-domain canary certification.
 
 - Canonical branch: `main`.
-- Current local implementation branch: `codex/daily-use-readiness`, including persistent canonical chat, local Ollama setup, history, document citations, and the existing specialist tools.
+- Current local implementation branch: `codex/rea-integration`, extending the daily-use checkpoint with local REA artifact analysis.
 - Coding and desktop/local filesystem capabilities are gated via explicit RBAC and exact-scope confirmation.
 - Server regression: over 2,900 tests exercised; corrected fixture failures passed their complete suite reruns. See the [verification record](docs/implementation/evidence/daily-use/2026-10-30/verification.json).
 - Client Vitest suite: 59 files / 198 tests passed; built-server browser regression: 7 tests passed; browser accessibility: 6 tests passed.
