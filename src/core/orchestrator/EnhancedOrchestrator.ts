@@ -178,17 +178,19 @@ export class EnhancedOrchestrator {
     const taskType = this.inferTaskType(request.message);
 
     if (taskType === TaskType.CODE_GENERATION && this.codingAgent) {
-      let codingModel = 'coding-agent';
-      let codingAdapter: LLMAdapter | undefined;
+      let codingAdapter: LLMAdapter | undefined = /^template(?:[:/]|$)/i.test(this.llmAdapter.getModelName()) ? undefined : this.llmAdapter;
+      let codingModel = codingAdapter ? `coding-agent:${codingAdapter.getModelName()}` : 'coding-agent';
+      let providerModel: string | undefined;
       if (this.modelRouter && !this.ensembleAdapter) {
         try {
           const routed = await this.modelRouter.route(taskType, { prompt: request.message }, contract.max_cost_per_request);
           const selection = routed.selection;
           codingAdapter = routed.adapter;
+          providerModel = selection.model;
           codingModel = `coding-agent:${selection.provider}/${selection.model}`;
           logger.info('Coding model capability selected', { model: codingModel, confidence: selection.confidence, reasoning: selection.reasoning });
         } catch (error: any) {
-          logger.warn('Coding model routing failed; continuing without model-generated patch', { error: error.message });
+          logger.warn('Coding model routing failed; using the configured coding adapter when available', { error: error.message });
         }
       }
       const codingResult = await this.codingAgent.handle({
@@ -196,7 +198,7 @@ export class EnhancedOrchestrator {
         runVerification: false,
         context: buildChatContextBundle(request),
         modelAdapter: codingAdapter,
-        model: codingModel === 'coding-agent' ? undefined : codingModel.split('/').pop(),
+        model: providerModel,
         generatePatch: Boolean(codingAdapter)
       });
       const artifactId = uuidv4();

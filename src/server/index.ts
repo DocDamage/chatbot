@@ -94,6 +94,7 @@ function getConversationManager(): ConversationManager {
 
 async function reinitializeServices(): Promise<void> {
   services?.reaService?.shutdown();
+  services?.codingTools?.shutdown();
   services = await ServiceInitializer.initialize();
   orchestrator = services.orchestrator;
 }
@@ -1179,6 +1180,7 @@ export { app, server, startServer, waitForReady, reinitializeServices, getApiVer
 if (require.main === module) {
   const stop = () => {
     services?.reaService?.shutdown();
+    services?.codingTools?.shutdown();
     server.close(() => process.exit(0));
     setTimeout(() => process.exit(0), 5000).unref();
   };

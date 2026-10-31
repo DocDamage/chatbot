@@ -15,6 +15,8 @@ export interface LLMGenerateOptions {
   temperature?: number;
   maxTokens?: number;
   model?: string;
+  contextTokens?: number;
+  jsonSchema?: Record<string, unknown>;
 }
 
 export interface LLMResponse {

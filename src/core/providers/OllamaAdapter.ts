@@ -25,7 +25,7 @@ export class OllamaAdapter implements LLMAdapter {
 
   async generate(options: LLMGenerateOptions): Promise<LLMResponse> {
     const startTime = Date.now();
-    const model = options.model || this.model;
+    const model = (options.model || this.model).replace(/^ollama:/, '');
 
     try {
       // Build the prompt with system prompt if provided
@@ -34,19 +34,23 @@ export class OllamaAdapter implements LLMAdapter {
         fullPrompt = `${options.systemPrompt}\n\nUser: ${options.prompt}\nAssistant:`;
       }
 
-      const response = await this.client.post('/api/generate', {
+      const body = {
         model,
-        prompt: fullPrompt,
+        ...(options.jsonSchema ? {
+          messages: [...(options.systemPrompt ? [{ role: 'system', content: options.systemPrompt }] : []), { role: 'user', content: options.prompt }],
+          format: options.jsonSchema,
+        } : { prompt: fullPrompt }),
         stream: false,
-        think: process.env.OLLAMA_THINK === 'true',
+        think: options.jsonSchema ? /^(?:qwen3:|deepseek-r1:|gpt-oss:)/.test(model) : process.env.OLLAMA_THINK === 'true',
         options: {
           temperature: options.temperature ?? 0.7,
           num_predict: options.maxTokens ?? 1000,
-          num_ctx: Number(process.env.OLLAMA_CONTEXT_TOKENS || 8192),
+          num_ctx: options.contextTokens ?? Number(process.env.OLLAMA_CONTEXT_TOKENS || 8192),
         }
-      });
+      };
+      const response = options.jsonSchema ? await this.client.post('/api/chat', body, { timeout: 180000 }) : await this.client.post('/api/generate', body);
 
-      const content = response.data.response || '';
+      const content = (options.jsonSchema ? response.data.message?.content : response.data.response) || '';
       const latency = Date.now() - startTime;
       
       // Ollama returns token counts if available

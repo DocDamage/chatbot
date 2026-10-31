@@ -6,6 +6,7 @@ import { logger } from '../observability/logger';
 import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { ReaService } from '../rea/ReaService';
 import { handleReaChat } from '../rea/ReaChat';
+import { CodingToolsService } from '../coding/integrations/CodingToolsService';
 import { RAGService } from '../rag/RAGService';
 import { DocumentManager } from '../rag/DocumentManager';
 import { Database } from '../database/Database';
@@ -94,6 +95,8 @@ export interface InitializedServices {
   orchestrator: EnhancedOrchestrator;
   dailyChat?: DailyChatService;
   reaService?: ReaService;
+  codingTools?: CodingToolsService;
+  codingModelAdapter?: import('../providers/LLMAdapter').LLMAdapter;
   ragService?: RAGService;
   documentManager?: DocumentManager;
   modelRouter?: ModelRouter;
@@ -268,7 +271,8 @@ export class ServiceInitializer {
 
     // 9. Initialize Tools & Coding Knowledge
     const pyScrappyService = PyScrappyService.fromEnv();
-    const { toolRegistry, functionCaller, knowledgeLearner, codingAgent } = await this.initializeTools(embeddingService, initialization, pyScrappyService);
+    const codingTools = new CodingToolsService(process.env.CODING_WORKSPACE_ROOT || process.cwd());
+    const { toolRegistry, functionCaller, knowledgeLearner, codingAgent } = await this.initializeTools(embeddingService, initialization, pyScrappyService, codingTools.workspaceRoot);
     logger.info('Tools initialized', {
       toolsCount: toolRegistry.getStats().totalTools,
       learner: !!knowledgeLearner
@@ -387,6 +391,8 @@ export class ServiceInitializer {
       orchestrator,
       dailyChat,
       reaService,
+      codingTools,
+      codingModelAdapter: codingTools.config.enabled ? new OllamaAdapter(codingTools.config.ollamaUrl, codingTools.config.model) : primaryAdapter,
       ragService,
       documentManager,
       modelRouter,
@@ -781,7 +787,7 @@ export class ServiceInitializer {
   /**
    * Initialize tools and coding knowledge
    */
-  private static async initializeTools(embeddingService: EmbeddingService, initialization?: InitializationStatus, pyScrappyService?: PyScrappyService): Promise<{
+  private static async initializeTools(embeddingService: EmbeddingService, initialization?: InitializationStatus, pyScrappyService?: PyScrappyService, workspaceRoot = process.cwd()): Promise<{
     toolRegistry: ToolRegistry;
     functionCaller: FunctionCaller;
     knowledgeLearner: KnowledgeLearner;
@@ -823,14 +829,14 @@ export class ServiceInitializer {
     }
 
     // 5. Repo-aware coding tools
-    const commandRunner = new CommandRunner(process.cwd());
-    for (const repoTool of createRepoTools(process.cwd(), commandRunner)) {
+    const commandRunner = new CommandRunner(workspaceRoot);
+    for (const repoTool of createRepoTools(workspaceRoot, commandRunner)) {
       registry.register(repoTool);
     }
 
     const functionCaller = new FunctionCaller(registry);
     const codingAgent = new CodingAgent({
-      workspaceRoot: process.cwd(),
+      workspaceRoot,
       toolRegistry: registry,
       functionCaller,
       verificationRunner: new VerificationRunner(commandRunner)

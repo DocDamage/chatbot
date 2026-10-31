@@ -24,4 +24,15 @@ describe('DiagnosticParser', () => {
       expect.objectContaining({ file: 'src\\App.cs', line: 31, column: 9, code: 'CS1002' })
     ]));
   });
+  it('retains Node assertion differences and runtime errors instead of sending only stack frames to repair', () => {
+    const result = new DiagnosticParser().parse('node', [
+      'AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:',
+      "+ 'Hello, Ada'", "- 'Hello, Ada!'", 'at TestContext.<anonymous> (C:\\project\\check.cjs:12:3)',
+      'at Test.run (node:internal/test_runner/test:111:4)', 'TypeError: t.end is not a function',
+    ].join('\n'));
+    expect(result[0]).toMatchObject({ code: 'ERR_ASSERTION', file: 'C:\\project\\check.cjs', line: 12 });
+    expect(result[0].raw).toContain("- 'Hello, Ada!'");
+    expect(result.some(item => item.message.includes('t.end is not a function'))).toBe(true);
+    expect(result.some(item => item.message.startsWith('at Test.run'))).toBe(false);
+  });
 });

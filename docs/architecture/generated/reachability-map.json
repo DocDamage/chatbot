@@ -110,6 +110,7 @@
     "client/src/components/CapabilityHubPanel.tsx",
     "client/src/components/CapabilityPromotionView.tsx",
     "client/src/components/CodeWorkflowPanel.tsx",
+    "client/src/components/CodingToolsPanel.tsx",
     "client/src/components/ConversationHistory.tsx",
     "client/src/components/ConversationToolsPanel.tsx",
     "client/src/components/CreativeComposerPanel.tsx",
@@ -327,6 +328,16 @@
     "src/core/coding/index/SymbolIndex.ts",
     "src/core/coding/index/TreeSitterParserProvider.ts",
     "src/core/coding/index/TypeScriptParserProvider.ts",
+    "src/core/coding/index/TypeScriptReferences.ts",
+    "src/core/coding/integrations/AiderAdapter.ts",
+    "src/core/coding/integrations/AstGrepAdapter.ts",
+    "src/core/coding/integrations/CodingToolConfig.ts",
+    "src/core/coding/integrations/CodingToolsService.ts",
+    "src/core/coding/integrations/Context7Adapter.ts",
+    "src/core/coding/integrations/DraftChecks.ts",
+    "src/core/coding/integrations/SerenaAdapter.ts",
+    "src/core/coding/integrations/ToolProcess.ts",
+    "src/core/coding/integrations/ToolWorkspace.ts",
     "src/core/coding/languages/LanguageCapability.ts",
     "src/core/coding/languages/LanguageCapabilityRegistry.ts",
     "src/core/coding/repository/BuildSystemDetector.ts",
@@ -348,6 +359,7 @@
     "src/core/coding/types.ts",
     "src/core/coding/verification/CommandCapabilityRunner.ts",
     "src/core/coding/verification/DiagnosticParser.ts",
+    "src/core/coding/verification/ModelRepairProposal.ts",
     "src/core/coding/verification/RepairController.ts",
     "src/core/coding/verification/VerificationOrchestrator.ts",
     "src/core/config/ConfigValidator.ts",
@@ -897,6 +909,7 @@
     "src/server/routes/chat-stream.ts",
     "src/server/routes/chrono.ts",
     "src/server/routes/code.ts",
+    "src/server/routes/coding-tools.ts",
     "src/server/routes/context-economy/contextInspectorRoutes.ts",
     "src/server/routes/creative.ts",
     "src/server/routes/desktop-companion.ts",
@@ -1001,6 +1014,7 @@
     "client/src/components/CapabilityHubPanel.tsx",
     "client/src/components/CapabilityPromotionView.tsx",
     "client/src/components/CodeWorkflowPanel.tsx",
+    "client/src/components/CodingToolsPanel.tsx",
     "client/src/components/ConversationHistory.tsx",
     "client/src/components/ConversationToolsPanel.tsx",
     "client/src/components/CreativeComposerPanel.tsx",
@@ -1218,6 +1232,16 @@
     "src/core/coding/index/SymbolIndex.ts",
     "src/core/coding/index/TreeSitterParserProvider.ts",
     "src/core/coding/index/TypeScriptParserProvider.ts",
+    "src/core/coding/index/TypeScriptReferences.ts",
+    "src/core/coding/integrations/AiderAdapter.ts",
+    "src/core/coding/integrations/AstGrepAdapter.ts",
+    "src/core/coding/integrations/CodingToolConfig.ts",
+    "src/core/coding/integrations/CodingToolsService.ts",
+    "src/core/coding/integrations/Context7Adapter.ts",
+    "src/core/coding/integrations/DraftChecks.ts",
+    "src/core/coding/integrations/SerenaAdapter.ts",
+    "src/core/coding/integrations/ToolProcess.ts",
+    "src/core/coding/integrations/ToolWorkspace.ts",
     "src/core/coding/languages/LanguageCapability.ts",
     "src/core/coding/languages/LanguageCapabilityRegistry.ts",
     "src/core/coding/repository/BuildSystemDetector.ts",
@@ -1239,6 +1263,7 @@
     "src/core/coding/types.ts",
     "src/core/coding/verification/CommandCapabilityRunner.ts",
     "src/core/coding/verification/DiagnosticParser.ts",
+    "src/core/coding/verification/ModelRepairProposal.ts",
     "src/core/coding/verification/RepairController.ts",
     "src/core/coding/verification/VerificationOrchestrator.ts",
     "src/core/config/ConfigValidator.ts",
@@ -1788,6 +1813,7 @@
     "src/server/routes/chat-stream.ts",
     "src/server/routes/chrono.ts",
     "src/server/routes/code.ts",
+    "src/server/routes/coding-tools.ts",
     "src/server/routes/context-economy/contextInspectorRoutes.ts",
     "src/server/routes/creative.ts",
     "src/server/routes/desktop-companion.ts",
@@ -2257,6 +2283,10 @@
       "specifier": "./CodeWorkflowPanel.css"
     },
     {
+      "importer": "client/src/components/CodingToolsPanel.tsx",
+      "specifier": "./CodingToolsPanel.css"
+    },
+    {
       "importer": "client/src/components/ConversationToolsPanel.tsx",
       "specifier": "./ConversationToolsPanel.css"
     },
@@ -2353,6 +2383,22 @@
       "specifier": "./config/server-coverage-policy.json"
     },
     {
+      "importer": "scripts/coding/verify.ts",
+      "specifier": "./calc"
+    },
+    {
+      "importer": "scripts/coding/verify.ts",
+      "specifier": "./calc.cjs"
+    },
+    {
+      "importer": "scripts/coding/verify.ts",
+      "specifier": "./format.cjs"
+    },
+    {
+      "importer": "scripts/coding/verify.ts",
+      "specifier": "./greeter.cjs"
+    },
+    {
       "importer": "scripts/release/__tests__/phase2-scanners.test.mjs",
       "specifier": "./App"
     },
@@ -2415,6 +2461,14 @@
     {
       "importer": "src/core/coding/index/RelationshipStore.test.ts",
       "specifier": "./b"
+    },
+    {
+      "importer": "src/core/coding/index/TypeScriptReferences.test.ts",
+      "specifier": "./calc"
+    },
+    {
+      "importer": "src/core/coding/verification/ModelRepairProposal.test.ts",
+      "specifier": "./calc.cjs"
     },
     {
       "importer": "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
@@ -2677,6 +2731,7 @@
       "client/src/api/runtime.ts",
       "client/src/components/AudioPreviewBrowser.tsx",
       "client/src/components/CodeWorkflowPanel.tsx",
+      "client/src/components/CodingToolsPanel.tsx",
       "client/src/components/ConversationHistory.tsx",
       "client/src/components/ConversationToolsPanel.tsx",
       "client/src/components/CreativeComposerPanel.tsx",
@@ -2733,6 +2788,15 @@
     ],
     "client/src/components/CodeWorkflowPanel.tsx": [
       "client/src/api/code.ts",
+      "client/src/components/ModeSelector.tsx"
+    ],
+    "client/src/components/CodingToolsPanel.test.tsx": [
+      "client/src/api/http.ts",
+      "client/src/components/CodingToolsPanel.tsx"
+    ],
+    "client/src/components/CodingToolsPanel.tsx": [
+      "client/src/api/code.ts",
+      "client/src/api/http.ts",
       "client/src/components/ModeSelector.tsx"
     ],
     "client/src/components/ConversationHistory.tsx": [
@@ -3020,6 +3084,15 @@
     ],
     "scripts/certification/http-load.mjs": [],
     "scripts/certification/production-like.mjs": [],
+    "scripts/coding/setup.mjs": [],
+    "scripts/coding/verify.ts": [
+      "src/core/agents/CodingAgent.ts",
+      "src/core/coding/editing/StructuredEditEngine.ts",
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/CodingToolsService.ts",
+      "src/core/coding/verification/VerificationOrchestrator.ts",
+      "src/core/providers/OllamaAdapter.ts"
+    ],
     "scripts/dabook/dabook-env.mjs": [],
     "scripts/dabook/setup.mjs": [
       "scripts/dabook/dabook-env.mjs"
@@ -3320,6 +3393,7 @@
       "src/core/coding/retrieval/StructuralRetriever.ts",
       "src/core/coding/security/ApprovedRepositoryGateway.ts",
       "src/core/coding/types.ts",
+      "src/core/coding/verification/ModelRepairProposal.ts",
       "src/core/coding/verification/RepairController.ts",
       "src/core/coding/verification/VerificationOrchestrator.ts",
       "src/core/modes/ExecutionModePolicy.ts",
@@ -4659,6 +4733,7 @@
       "src/core/coding/index/ParserProvider.ts",
       "src/core/coding/index/TreeSitterParserProvider.ts",
       "src/core/coding/index/TypeScriptParserProvider.ts",
+      "src/core/coding/index/TypeScriptReferences.ts",
       "src/core/coding/security/ApprovedRepositoryGateway.ts"
     ],
     "src/core/coding/index/TreeSitterParserProvider.test.ts": [
@@ -4672,6 +4747,68 @@
     ],
     "src/core/coding/index/TypeScriptParserProvider.ts": [
       "src/core/coding/index/ParserProvider.ts"
+    ],
+    "src/core/coding/index/TypeScriptReferences.test.ts": [
+      "src/core/coding/index/SymbolIndex.ts"
+    ],
+    "src/core/coding/index/TypeScriptReferences.ts": [
+      "src/core/coding/index/ParserProvider.ts"
+    ],
+    "src/core/coding/integrations/AiderAdapter.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/DraftChecks.ts",
+      "src/core/coding/integrations/ToolProcess.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts",
+      "src/core/coding/types.ts"
+    ],
+    "src/core/coding/integrations/AstGrepAdapter.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/ToolProcess.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts",
+      "src/core/coding/types.ts"
+    ],
+    "src/core/coding/integrations/CodingToolConfig.ts": [
+      "src/core/config/EnvironmentDefinitions.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/core/coding/integrations/CodingToolsService.test.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/CodingToolsService.ts",
+      "src/core/coding/integrations/ToolProcess.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts"
+    ],
+    "src/core/coding/integrations/CodingToolsService.ts": [
+      "src/core/coding/editing/StructuredEditEngine.ts",
+      "src/core/coding/integrations/AiderAdapter.ts",
+      "src/core/coding/integrations/AstGrepAdapter.ts",
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/Context7Adapter.ts",
+      "src/core/coding/integrations/SerenaAdapter.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts"
+    ],
+    "src/core/coding/integrations/Context7Adapter.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/ToolProcess.ts"
+    ],
+    "src/core/coding/integrations/DraftChecks.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/ToolProcess.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts"
+    ],
+    "src/core/coding/integrations/SerenaAdapter.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/ToolProcess.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts"
+    ],
+    "src/core/coding/integrations/ToolProcess.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/mcp/McpClientService.ts"
+    ],
+    "src/core/coding/integrations/ToolWorkspace.ts": [
+      "src/core/coding/editing/PatchConflictDetector.ts",
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
+      "src/core/coding/security/WorkspacePathPolicy.ts"
     ],
     "src/core/coding/knowledge/CodingKnowledgeAuthority.ts": [
       "src/core/coding/knowledge/ProvenancePolicy.ts"
@@ -4831,6 +4968,15 @@
     ],
     "src/core/coding/verification/DiagnosticParser.ts": [
       "src/core/coding/types.ts"
+    ],
+    "src/core/coding/verification/ModelRepairProposal.test.ts": [
+      "src/core/agents/CodingAgent.ts",
+      "src/core/coding/verification/ModelRepairProposal.ts"
+    ],
+    "src/core/coding/verification/ModelRepairProposal.ts": [
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
+      "src/core/coding/types.ts",
+      "src/core/providers/LLMAdapter.ts"
     ],
     "src/core/coding/verification/RepairController.test.ts": [
       "src/core/coding/verification/RepairController.ts"
@@ -5914,6 +6060,7 @@
       "src/core/chat/ChatRuntimeFactory.ts",
       "src/core/chat/DailyChatService.ts",
       "src/core/chrono/ChronoKnowledgeEngine.ts",
+      "src/core/coding/integrations/CodingToolsService.ts",
       "src/core/config/EnvironmentDefinitions.ts",
       "src/core/conversation/ConversationManager.ts",
       "src/core/creative/CreativeWritingAgent.ts",
@@ -9504,7 +9651,20 @@
       "src/core/modes/ExecutionModePolicy.ts",
       "src/core/modes/ModePolicy.ts",
       "src/middleware/errorHandler.ts",
-      "src/middleware/validator.ts"
+      "src/middleware/validator.ts",
+      "src/server/routes/coding-tools.ts"
+    ],
+    "src/server/routes/coding-tools.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/middleware/auth.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routeManifest.ts",
+      "src/server/routes/code.ts"
+    ],
+    "src/server/routes/coding-tools.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/CodingToolsService.ts",
+      "src/middleware/errorHandler.ts"
     ],
     "src/server/routes/context-economy/contextInspectorRoutes.ts": [
       "src/core/context-economy/evaluation/ContextBenchmarkSuite.ts",
@@ -10102,5 +10262,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1945
+  "sourceRecordCount": 1965
 }

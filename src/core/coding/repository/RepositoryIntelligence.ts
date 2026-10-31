@@ -17,7 +17,7 @@ const IGNORED = new Set([
   'node_modules', '.git', 'dist', 'coverage', 'build', '.next', '.venv', '.venv-pyscrappy',
   'target', 'obj', 'bin', '.gradle', '.idea', '.vscode', '.pytest_cache', '__pycache__',
   '.mypy_cache', '.ruff_cache', 'vendor', 'cache', 'logs', 'data', 'knowledge-base',
-  'knowledge-base-public', '.mex', '.playwright-cli', '.remembrandt', '.tmp-skill-test'
+  'knowledge-base-public', '.mex', '.playwright-cli', '.remembrandt', '.tmp-skill-test', 'temp', 'output', '.capabilities', '.worktrees'
 ]);
 
 export class RepositoryIntelligence {

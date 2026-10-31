@@ -1,5 +1,7 @@
 # Release Evidence Index
 
+Coding tools (2026-10-31): [verification record](evidence/coding-tools/2026-10-31/verification.json) records installed Serena, Aider, ast-grep and Context7 workflows, actual Ollama outcomes including failed intermediate runs, scoped patch/repair regressions and browser checks. Classification remains `LOCAL_ONLY_EXPERIMENTAL`; see [setup and limits](../CODING_TOOLS.md).
+
 REA local integration (2026-10-30): [verification record](evidence/rea/2026-10-30/verification.json) covers actual JavaScript, archive, model, PE, .NET and Ghidra native function analysis, retained evidence downloads, command routing, focused regression tests and browser accessibility. Classification remains `LOCAL_ONLY_EXPERIMENTAL`; see [REA setup and boundaries](../REA.md).
 
 This index links verified production-completion tasks to evidence collected against an exact implementation commit.

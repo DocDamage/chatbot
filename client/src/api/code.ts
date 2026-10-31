@@ -127,11 +127,11 @@ export async function verifyNativeCode(mode: string, run = true) {
   return response.json();
 }
 
-export async function repairCode(operations: StructuredCodeOperation[], mode: string, maxIterations = 3) {
+export async function repairCode(operations: StructuredCodeOperation[], mode: string, maxIterations = 3, alreadyApplied = false, documentation?: { library: string; query: string }, context?: { contextFiles: string[]; message: string }) {
   const response = await apiFetch('/api/code/repair', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-work-mode': mode },
-    body: JSON.stringify({ operations: operations.map(operation => ({ ...operation, authorized: true })), mode, approved: true, maxIterations }),
+    body: JSON.stringify({ operations: operations.map(operation => ({ ...operation, authorized: true })), mode, approved: true, maxIterations, alreadyApplied, documentation, ...context }),
   });
   if (!response.ok) await throwApiError(response, 'Unable to run bounded repair');
   return response.json();

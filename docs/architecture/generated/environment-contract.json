@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "definitionCount": 266,
-  "templateCount": 266,
-  "usageCount": 242,
+  "definitionCount": 272,
+  "templateCount": 272,
+  "usageCount": 248,
   "duplicateDefinitions": [],
   "duplicateTemplateEntries": [],
   "missingFromTemplate": [],
@@ -163,6 +163,10 @@
     "CODE_EXECUTOR_TIMEOUT": [
       "src/core/initialization/ServiceInitializer.ts"
     ],
+    "CODING_CONTEXT_TOKENS": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/verification/ModelRepairProposal.ts"
+    ],
     "CODING_EVAL_MODEL": [
       "scripts/run-coding-evals.ts"
     ],
@@ -175,6 +179,18 @@
     "CODING_MODEL_MAX_OUTPUT_TOKENS": [
       "src/core/agents/CodingAgent.ts"
     ],
+    "CODING_OLLAMA_MODEL": [
+      "src/core/coding/integrations/CodingToolConfig.ts"
+    ],
+    "CODING_TOOL_TIMEOUT_MS": [
+      "src/core/coding/integrations/CodingToolConfig.ts"
+    ],
+    "CODING_TOOLS_ENABLED": [
+      "src/core/coding/integrations/CodingToolConfig.ts"
+    ],
+    "CODING_WORKSPACE_ROOT": [
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
     "COHERE_API_KEY": [
       "src/core/agents/MultiAgentOrchestrator.ts"
     ],
@@ -184,6 +200,10 @@
     "COMICVINE_API_KEY": [
       "src/core/knowledge/EntertainmentSource.ts",
       "src/core/knowledge/__tests__/entertainment-source-deep-matrix.test.ts"
+    ],
+    "CONTEXT7_API_KEY": [
+      "src/core/coding/integrations/CodingToolsService.ts",
+      "src/core/coding/integrations/Context7Adapter.ts"
     ],
     "CORS_ORIGIN": [
       "src/middleware/security.ts",
@@ -526,6 +546,7 @@
       "src/server/routes/__tests__/admin.security.test.ts",
       "src/server/routes/__tests__/route-core-services-matrices.test.ts",
       "src/server/routes/__tests__/route-workspace-persistence.test.ts",
+      "src/server/routes/coding-tools.test.ts",
       "src/server/routes/local-session.test.ts",
       "src/server/routes/rea.test.ts",
       "src/server/routes/setup.test.ts"
@@ -676,6 +697,7 @@
       "src/server/routes/music-studio/musicStudioRoutes.ts"
     ],
     "OLLAMA_CONTEXT_TOKENS": [
+      "src/core/agents/CodingAgent.ts",
       "src/core/initialization/ServiceInitializer.ts",
       "src/core/providers/OllamaAdapter.ts"
     ],
@@ -683,6 +705,7 @@
       "scripts/local/doctor.mjs",
       "scripts/local/setup.mjs",
       "scripts/local/verify.mjs",
+      "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/initialization/ServiceInitializer.ts",
       "src/core/native-runtime/LocalAIBackends.ts",
       "src/core/native-runtime/__tests__/NativeBackends.test.ts",
@@ -704,6 +727,7 @@
       "scripts/local/verify.mjs",
       "scripts/ocr-queue.ts",
       "src/core/agents/MultiAgentOrchestrator.ts",
+      "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/initialization/ServiceInitializer.ts",
       "src/core/providers/UniversalLLM.ts",
       "src/server/healthRoutes.ts"

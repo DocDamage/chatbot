@@ -1,0 +1,7 @@
+{
+  "name": "chatbot-coding-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Optional isolated coding integrations",
+  "dependencies": { "@ast-grep/cli": "0.51.0", "@upstash/context7-mcp": "4.4.4" }
+}

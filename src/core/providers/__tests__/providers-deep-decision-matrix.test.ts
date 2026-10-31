@@ -223,6 +223,22 @@ describe('B75-05: Providers Deep Decision Matrix', () => {
   });
 
   describe('OllamaAdapter', () => {
+    it('uses chat roles and a JSON schema for bounded coding repairs', async () => {
+      const post = jest.fn().mockResolvedValue({ data: { message: { content: '{"operations":[]}' } } });
+      mockedAxios.create.mockReturnValue({ post } as any);
+      const schema = { type: 'object' };
+      const result = await new OllamaAdapter('http://127.0.0.1:11434', 'qwen3:8b').generate({ prompt: 'repair', systemPrompt: 'JSON only', jsonSchema: schema, contextTokens: 16384 });
+      expect(post).toHaveBeenCalledWith('/api/chat', expect.objectContaining({ format: schema,
+        messages: [{ role: 'system', content: 'JSON only' }, { role: 'user', content: 'repair' }], think: true, options: expect.objectContaining({ num_ctx: 16384 }) }), { timeout: 180000 });
+      expect(result.content).toBe('{"operations":[]}');
+    });
+    it('accepts its namespaced display label without sending it as an Ollama model ID', async () => {
+      const post = jest.fn().mockResolvedValue({ data: { response: 'ok', eval_count: 1 } });
+      mockedAxios.create.mockReturnValue({ post } as any);
+      const adapter = new OllamaAdapter('http://127.0.0.1:11434', 'qwen3:8b');
+      await adapter.generate({ prompt: 'code', model: adapter.getModelName() });
+      expect(post).toHaveBeenCalledWith('/api/generate', expect.objectContaining({ model: 'qwen3:8b' }));
+    });
     it('generates completions with systemPrompt and custom model', async () => {
       const mockPost = jest.fn().mockResolvedValue({
         data: {

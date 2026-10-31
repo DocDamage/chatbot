@@ -25,6 +25,7 @@ import CodeWorkflowPanel from './CodeWorkflowPanel';
 import ConversationToolsPanel from './ConversationToolsPanel';
 import ConversationHistory from './ConversationHistory';
 import ReaPanel from './ReaPanel';
+import CodingToolsPanel from './CodingToolsPanel';
 import CreativeComposerPanel, { buildCreativeRequestPayload, defaultCreativeComposerState } from './CreativeComposerPanel';
 import KnowledgeMissPrompt from './KnowledgeMissPrompt';
 import PlanActionBar from './PlanActionBar';
@@ -597,6 +598,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
           </div>
           {!isStaticPagesBuild && <ConversationHistory disabled={isRunning} onLoad={loadConversation} onNew={newConversation} />}
           {!isStaticPagesBuild && <ReaPanel />}
+          {!isStaticPagesBuild && <CodingToolsPanel mode={mode} />}
           {showBackendPanels && <KnowledgeOSPanel />}
           {showGamingPlaybooks && <GamingPlaybookPanel />}
           {showKnowledgeOnlinePanel && <KnowledgeOnlinePanel />}

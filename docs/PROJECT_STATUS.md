@@ -1,10 +1,16 @@
 # AI Chatbot Hub — Current Project Status
 
-Updated: 2026-10-30 (America/New_York)
+Updated: 2026-10-31 (America/New_York)
+
+## Local coding checkpoint
+
+The current implementation branch is `codex/coding-reliability`, extending the daily-use and REA checkpoints. Serena, Aider, ast-grep and Context7 are installed as optional external runtimes and exposed in **Coding workspace**. Aider drafts use local Ollama; Context7 queries its external documentation service. Reviewed application, fresh scoped repair and actual project verification are separate steps.
+
+Reference lookup now follows TypeScript aliases rather than matching text, stale patches are rechecked before application, Node assertion/runtime details reach repair, and absent/skipped checks cannot become a passing result. The [coding verification record](implementation/evidence/coding-tools/2026-10-31/verification.json) includes live model outcomes and intermediate failures. Local 8B model output still requires review and testing; this checkpoint does not establish general autonomous coding correctness. See [setup, workflow and limits](CODING_TOOLS.md).
 
 ## Personal daily-use checkpoint
 
-The current implementation branch is `codex/daily-use-readiness`, based on `feat/dabook-integration` at `e19cfea`. It prepares the app for a personal local daily-use trial with Ollama. This is a local-use checkpoint, not hosted-production certification.
+The daily-use checkpoint originated on `codex/daily-use-readiness`, based on `feat/dabook-integration` at `e19cfea`. It prepares the app for a personal local daily-use trial with Ollama. This is a local-use checkpoint, not hosted-production certification.
 
 Implemented changes:
 

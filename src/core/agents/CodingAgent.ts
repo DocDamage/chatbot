@@ -24,6 +24,8 @@ import { RepairRun } from '../coding/verification/RepairController';
 import { ApprovedRepositoryGateway } from '../coding/security/ApprovedRepositoryGateway';
 import { GatewayLexicalRetrievalProvider } from '../coding/retrieval/GatewayLexicalRetrievalProvider';
 import { HybridRepositoryRetriever } from '../coding/retrieval/HybridRepositoryRetriever';
+import { proposeModelRepair } from '../coding/verification/ModelRepairProposal';
+import crypto from 'crypto';
 
 export interface CodingAgentConfig {
   workspaceRoot?: string;
@@ -79,7 +81,7 @@ export class CodingAgent {
 
   constructor(config: CodingAgentConfig = {}) {
     this.workspaceRoot = config.workspaceRoot || process.cwd();
-    this.contextBudgeter = new CodeContextBudgeter(config.modelContextTokens || Number(process.env.CODING_MODEL_CONTEXT_TOKENS || 12000));
+    this.contextBudgeter = new CodeContextBudgeter(config.modelContextTokens || Number(process.env.CODING_MODEL_CONTEXT_TOKENS || process.env.OLLAMA_CONTEXT_TOKENS || 8192));
     this.indexer = new CodeIndexer(this.workspaceRoot);
 
     const registry = config.toolRegistry || new ToolRegistry();
@@ -117,7 +119,7 @@ export class CodingAgent {
     });
     const adaptiveContext = new AdaptiveContextAllocator().allocate({
       modelContextTokens: context.tokenBudget,
-      outputTokens: Math.max(256, Math.ceil(contextualMessage.length / 4)),
+      outputTokens: Math.min(2048, Math.floor(context.tokenBudget / 3)),
       intent: plan.intent,
       repositorySize: evidence.filesInspected.length,
       evidence: [
@@ -226,11 +228,15 @@ export class CodingAgent {
     return this.nativeVerification.verify(options);
   }
 
-  async repair(options: { operations: EditOperation[]; mode: WorkMode; maxIterations?: number }): Promise<RepairRun> {
+  async repair(options: { operations: EditOperation[]; mode: WorkMode; maxIterations?: number; modelAdapter?: LLMAdapter; message?: string; alreadyApplied?: boolean; referenceContext?: string; contextFiles?: string[] }): Promise<RepairRun> {
+    if (!options.operations.length || options.operations.some(operation => !operation.authorized)) throw new Error('Repair requires an explicitly approved, nonempty file scope.');
+    const scope = [...new Set(options.operations.filter(operation => operation.operation !== 'delete').map(operation => operation.path.replace(/\\/g, '/')))];
     return this.nativeVerification.verifyWithRepair({
-      propose: async (diagnostics, iteration) => iteration === 1 && diagnostics.length > 0
-        ? { hypothesis: `Apply the approved repair proposal after ${diagnostics.length} diagnostic(s).`, operations: options.operations }
-        : undefined,
+      propose: async (diagnostics, iteration) => {
+        if (iteration === 1 && !options.alreadyApplied) return { hypothesis: `Apply the approved repair proposal after ${diagnostics.length} diagnostic(s).`, operations: options.operations };
+        if (!options.modelAdapter || !scope.length) return undefined;
+        return proposeModelRepair(options.modelAdapter, this.workspaceRoot, scope, diagnostics, iteration, options.message, options.referenceContext, options.contextFiles);
+      },
       apply: async operations => {
         const patch = this.createStructuredPatch(operations.map(operation => ({ ...operation, authorized: true })));
         this.applyStructuredPatch(patch, options.mode);
@@ -378,10 +384,19 @@ export class CodingAgent {
     request: string,
     context: AllocatedContext
   ): Promise<{ patch: GeneratedPatch; structuredPatch?: StructuredPatch; risks: string[] }> {
+    if (request.length > 8000) return { patch: this.patchGenerator.createEmptyPatch(), risks: ['Coding request exceeds the model context budget. Narrow the task.'] };
+    const originals = new Map<string, string>();
+    for (const item of context.items) {
+      if (!item.path) continue;
+      try {
+        const file = this.repositoryGateway.readTextFile(item.path);
+        if (!file.truncated && file.content === item.content) originals.set(file.path, file.content);
+      } catch { /* Only fully captured approved source can anchor a replacement. */ }
+    }
     const response = await adapter.generate({
       model,
       temperature: 0,
-      maxTokens: Math.max(256, Math.min(context.tokenBudget, Number(process.env.CODING_MODEL_MAX_OUTPUT_TOKENS || 8192))),
+      maxTokens: Math.max(256, Math.min(2048, Number(process.env.CODING_MODEL_MAX_OUTPUT_TOKENS || 2048))),
       systemPrompt: [
         'You are a repository coding agent.',
         'Return only JSON with this shape: {"operations":[{"operation":"create|modify|delete","path":"relative/path","content":"new content for create/modify","expectedContent":"current content for modify/delete","reason":"why","authorized":false}]}',
@@ -393,7 +408,15 @@ export class CodingAgent {
     if (!parsed) {
       return { patch: this.patchGenerator.createEmptyPatch('The selected coding model did not return the required structured operation format.'), risks: ['Model output was not valid structured patch JSON; no patch was created'] };
     }
-    const structured = this.editEngine.createPatch(parsed, { requireAuthorization: false });
+    const anchored = parsed.map(operation => ({ ...operation, path: operation.path.replace(/\\/g, '/') }));
+    if (anchored.some(operation => operation.operation !== 'create' && !originals.has(operation.path))) {
+      return { patch: this.patchGenerator.createEmptyPatch(), risks: ['Full current source is required before replacing or deleting a file. Select a smaller task or use the Aider file selection.'] };
+    }
+    for (const operation of anchored) if (originals.has(operation.path)) {
+      operation.expectedContent = originals.get(operation.path)!;
+      operation.expectedHash = crypto.createHash('sha256').update(operation.expectedContent).digest('hex');
+    }
+    const structured = this.editEngine.createPatch(anchored, { requireAuthorization: false });
     return {
       patch: { format: 'unified-diff', diff: structured.diff, filesChanged: structured.filesChanged, explanation: structured.conflicts.length ? 'Model patch requires conflict review before application.' : 'Structured patch proposed by the selected coding model.' },
       structuredPatch: structured,
@@ -407,7 +430,8 @@ export class CodingAgent {
     try {
       const value = JSON.parse(candidate) as { operations?: unknown };
       if (!Array.isArray(value.operations)) return undefined;
-      const operations = value.operations.filter((operation): operation is EditOperation => {
+      if (value.operations.length > 32) return undefined;
+      const valid = (operation: unknown): operation is EditOperation => {
         if (!operation || typeof operation !== 'object') return false;
         const item = operation as Record<string, unknown>;
         return (item.operation === 'create' || item.operation === 'modify' || item.operation === 'delete')
@@ -415,8 +439,9 @@ export class CodingAgent {
           && typeof item.reason === 'string'
           && (item.content === undefined || typeof item.content === 'string')
           && (item.expectedContent === undefined || typeof item.expectedContent === 'string');
-      }).map(operation => ({ ...operation, authorized: false }));
-      return operations;
+      };
+      if (!value.operations.every(valid)) return undefined;
+      return value.operations.map(operation => ({ ...(operation as EditOperation), authorized: false }));
     } catch {
       return undefined;
     }
