@@ -183,7 +183,9 @@ describe('ServiceInitializer configuration branches', () => {
   it('runs full ServiceInitializer.initialize() with eager knowledge loading and database', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'svc-init-full-'));
     const dbPath = path.join(tempDir, 'init_test.db');
-    process.env.DATABASE_URL = `sqlite://${dbPath}`;
+    delete process.env.DATABASE_URL;
+    delete process.env.RAG_DATABASE_URL;
+    process.env.RAG_SQLITE_PATH = dbPath;
     process.env.RAG_PERSISTENCE = 'true';
     process.env.EAGER_KNOWLEDGE_LOAD = 'true';
     process.env.RAG_RETRIEVAL_MODE = 'database';
@@ -204,6 +206,7 @@ describe('ServiceInitializer configuration branches', () => {
     expect(services.cache).toBeDefined();
     expect(services.initialization?.criticalStartedAt).toBeDefined();
 
+    await services.database?.close();
     fs.rmSync(tempDir, { recursive: true, force: true });
   });
 

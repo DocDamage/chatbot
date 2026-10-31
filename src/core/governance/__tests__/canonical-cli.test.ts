@@ -5,7 +5,7 @@ describe('CanonicalCliRegistry (§46)', () => {
   let registry: CanonicalCliRegistry;
 
   beforeEach(() => {
-    registry = new CanonicalCliRegistry();
+    registry = new CanonicalCliRegistry({ run: async name => ({ success: true, stdout: `Real handler dispatched: ${name}` }) });
   });
 
   it('registers all 16 canonical commands', () => {
@@ -82,5 +82,17 @@ describe('CanonicalCliRegistry (§46)', () => {
     expect(result.success).toBe(false);
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain('Unknown CLI command');
+  });
+
+  it('propagates an operational failure instead of returning registration success', async () => {
+    const failing = new CanonicalCliRegistry({ run: async () => ({ success: false, exitCode: 7, stdout: '', stderr: 'Verification failed' }) });
+    const result = await failing.execute('chat:runtime:smoke', { environment: 'test', authenticated: false, bypassAuthRequested: false, args: [] });
+    expect(result).toMatchObject({ success: false, exitCode: 7, stderr: 'Verification failed' });
+  });
+
+  it('fails clearly for an unsupported installer without claiming an installation', async () => {
+    const result = await new CanonicalCliRegistry().execute('knowledge:install', { environment: 'test', authenticated: false, bypassAuthRequested: false, args: ['--pack', 'official_docs'] });
+    expect(result).toMatchObject({ success: false, exitCode: 2 });
+    expect(result.stderr).toContain('No installation');
   });
 });

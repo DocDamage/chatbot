@@ -9,11 +9,12 @@ import {
   CliExecutionResult,
   CliScriptCategory
 } from '../../types/cli-scripts';
+import { CanonicalCommandOperations, CanonicalOperations } from './CanonicalCommandOperations';
 
 export class CanonicalCliRegistry {
   private handlers = new Map<CanonicalCliCommandName, CliCommandHandler>();
 
-  constructor() {
+  constructor(private readonly operations: CanonicalOperations = new CanonicalCommandOperations()) {
     this.registerDefaultHandlers();
   }
 
@@ -101,10 +102,10 @@ export class CanonicalCliRegistry {
       handlerFn?: (ctx: CliExecutionContext) => Promise<{ stdout: string; success: boolean }>;
     }> = [
       { name: 'chat:runtime:smoke', category: 'chat', description: 'Run chat runtime fast smoke tests', requiresAuth: false },
-      { name: 'chat:runtime:golden', category: 'chat', description: 'Run full golden conversation benchmark suite', requiresAuth: true },
+      { name: 'chat:runtime:golden', category: 'chat', description: 'Run offline golden conversation regression tests', requiresAuth: true },
       { name: 'chat:runtime:shadow-report', category: 'chat', description: 'Generate shadow mode parity report', requiresAuth: false },
       { name: 'knowledge:list', category: 'knowledge', description: 'List registered knowledge packs and versions', requiresAuth: false },
-      { name: 'knowledge:verify-manifests', category: 'knowledge', description: 'Audit dataset manifest checksums and schemas', requiresAuth: false },
+      { name: 'knowledge:verify-manifests', category: 'knowledge', description: 'Validate persisted dataset manifest schemas', requiresAuth: false },
       { name: 'knowledge:install', category: 'knowledge', description: 'Install a designated knowledge pack', requiresAuth: true },
       { name: 'knowledge:update', category: 'knowledge', description: 'Incrementally refresh knowledge pack data', requiresAuth: true },
       { name: 'knowledge:verify', category: 'knowledge', description: 'Verify knowledge pack integrity and indexing', requiresAuth: false },
@@ -112,8 +113,8 @@ export class CanonicalCliRegistry {
       { name: 'eval:chat', category: 'eval', description: 'Run chat conversational evaluation matrix', requiresAuth: false },
       { name: 'eval:retrieval', category: 'eval', description: 'Run retrieval scoring and grounding evaluation', requiresAuth: false },
       { name: 'eval:tool-truth', category: 'eval', description: 'Run tool call precision and ground truth evals', requiresAuth: false },
-      { name: 'eval:datasets', category: 'eval', description: 'Run dataset A/B regression benchmarks', requiresAuth: false },
-      { name: 'check:chat-runtime', category: 'check', description: 'Full architectural check of canonical chat runtime', requiresAuth: false },
+      { name: 'eval:datasets', category: 'eval', description: 'Run offline dataset loading regression tests', requiresAuth: false },
+      { name: 'check:chat-runtime', category: 'check', description: 'Run canonical runtime and state regression tests', requiresAuth: false },
       { name: 'check:knowledge-licenses', category: 'check', description: 'Enforce open licensing compliance for all datasets', requiresAuth: false },
       { name: 'check:knowledge-provenance', category: 'check', description: 'Audit provenance and data lineage records', requiresAuth: false }
     ];
@@ -137,12 +138,14 @@ export class CanonicalCliRegistry {
               executionTimeMs: Date.now() - t0
             };
           }
+          const result = await this.operations.run(cmd.name, ctx);
           return {
             command: cmd.name,
             category: cmd.category,
-            success: true,
-            exitCode: 0,
-            stdout: `[CRK-CLI] Executed ${cmd.name} (args: ${ctx.args.join(' ') || 'none'})`,
+            success: result.success,
+            exitCode: result.exitCode ?? (result.success ? 0 : 1),
+            stdout: result.stdout,
+            stderr: result.stderr,
             executionTimeMs: Date.now() - t0
           };
         }

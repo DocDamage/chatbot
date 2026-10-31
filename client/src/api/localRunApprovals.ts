@@ -1,3 +1,4 @@
+import { apiFetch } from './http';
 import { throwApiError } from './errors';
 
 export interface LocalRunSummary {
@@ -26,13 +27,13 @@ export interface LocalRunOutputFile {
 }
 
 export async function listLocalRuns(limit = 25): Promise<{ runs: LocalRunSummary[] }> {
-  const response = await fetch(`/api/local-tools/runs?limit=${encodeURIComponent(String(limit))}`);
+  const response = await apiFetch(`/api/local-tools/runs?limit=${encodeURIComponent(String(limit))}`);
   if (!response.ok) await throwApiError(response, 'Unable to list local runs');
   return response.json();
 }
 
 export async function approveLocalRun(runId: string, approvalNote?: string): Promise<{ run: LocalRunSummary }> {
-  const response = await fetch(`/api/local-tools/runs/${encodeURIComponent(runId)}/approve`, {
+  const response = await apiFetch(`/api/local-tools/runs/${encodeURIComponent(runId)}/approve`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ approvalNote })
@@ -42,7 +43,7 @@ export async function approveLocalRun(runId: string, approvalNote?: string): Pro
 }
 
 export async function startLocalRun(runId: string): Promise<{ run: LocalRunSummary & { stdout?: string; stderr?: string } }> {
-  const response = await fetch(`/api/local-tools/runs/${encodeURIComponent(runId)}/start`, {
+  const response = await apiFetch(`/api/local-tools/runs/${encodeURIComponent(runId)}/start`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({})
@@ -52,7 +53,7 @@ export async function startLocalRun(runId: string): Promise<{ run: LocalRunSumma
 }
 
 export async function cancelLocalRun(runId: string): Promise<{ runId: string; cancelRequested: boolean; status: string }> {
-  const response = await fetch(`/api/local-tools/runs/${encodeURIComponent(runId)}/cancel`, {
+  const response = await apiFetch(`/api/local-tools/runs/${encodeURIComponent(runId)}/cancel`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({})
@@ -62,13 +63,13 @@ export async function cancelLocalRun(runId: string): Promise<{ runId: string; ca
 }
 
 export async function listLocalRunFiles(runId: string): Promise<{ runId: string; files: LocalRunOutputFile[] }> {
-  const response = await fetch(`/api/local-tools/runs/${encodeURIComponent(runId)}/files`);
+  const response = await apiFetch(`/api/local-tools/runs/${encodeURIComponent(runId)}/files`);
   if (!response.ok) await throwApiError(response, 'Unable to list local run output files');
   return response.json();
 }
 
 export async function readLocalRunFile(runId: string, fileName: string): Promise<string> {
-  const response = await fetch(`/api/local-tools/runs/${encodeURIComponent(runId)}/files/${encodeURIComponent(fileName)}`);
+  const response = await apiFetch(`/api/local-tools/runs/${encodeURIComponent(runId)}/files/${encodeURIComponent(fileName)}`);
   if (!response.ok) await throwApiError(response, `Unable to read ${fileName}`);
   return response.text();
 }

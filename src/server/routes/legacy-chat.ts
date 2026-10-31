@@ -425,9 +425,16 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
       await deps.waitForReady(Number(process.env.REQUEST_READY_TIMEOUT_MS || 10000));
 
       const body = req.body as ChatRequestDto;
-      const { message, sessionId, userId, mode } = body;
+      const { message, sessionId, mode } = body;
+      const userId = req.user?.userId || body.userId;
       const sanitizedMessage = sanitizeInput(message);
-      const chatRequest = await enrichChatRequestWithPlan({ ...body, message: sanitizedMessage });
+      const chatRequest = await enrichChatRequestWithPlan({ ...body, userId, message: sanitizedMessage });
+      const taskResult = taskOrchestrator.handle(sessionId, sanitizedMessage, mode);
+      const dailyChat = deps.getServices()?.dailyChat;
+      if (dailyChat && !taskResult && (!mode || ['ask', 'explain'].includes(mode))
+        && !requiresSwitchForIntent(mode, detectUserIntent(sanitizedMessage)).required) {
+        return res.json(await dailyChat.processRequest(chatRequest));
+      }
       const conversationManager = deps.getConversationManager();
       const persistMetadata = {
         userId,
@@ -447,7 +454,6 @@ export function createLegacyChatHandlers(deps: LegacyChatRouteDeps): RequestHand
         return res.json(payload);
       };
 
-      const taskResult = taskOrchestrator.handle(sessionId, sanitizedMessage, mode);
       if (taskResult) {
         return sendAndPersist(taskResult);
       }

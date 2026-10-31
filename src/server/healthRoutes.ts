@@ -81,6 +81,18 @@ export function registerHealthRoutes(app: Express, deps: RegisterHealthRoutesDep
       });
     }
 
+    if (process.env.LLM_PROVIDER === 'ollama') {
+      try {
+        const axios = require('axios');
+        const response = await axios.get(`${process.env.OLLAMA_URL || 'http://localhost:11434'}/api/tags`, { timeout: 2000 });
+        if (!response.data.models?.some((model: any) => model.name === (process.env.OLLAMA_MODEL || 'llama2'))) {
+          return res.status(503).json({ status: 'degraded', error: 'The selected Ollama model is not installed.' });
+        }
+      } catch {
+        return res.status(503).json({ status: 'degraded', error: 'Ollama is unavailable. Start Ollama to resume chatting.' });
+      }
+    }
+
     res.json({
       status: 'ready',
       services: {

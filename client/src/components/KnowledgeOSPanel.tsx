@@ -1,3 +1,4 @@
+import { apiFetch } from '../api/http';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { isStaticPagesBuild } from '../api/runtime';
 import { TrainingLanePanel } from './TrainingLanePanel';
@@ -82,7 +83,7 @@ function KnowledgeOSPanel() {
     }
     setLoading(true);
     try {
-      const response = await fetch('/api/knowledge-os/summary');
+      const response = await apiFetch('/api/knowledge-os/summary');
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (mountedRef.current) {
@@ -110,7 +111,7 @@ function KnowledgeOSPanel() {
     if (isStaticPagesBuild) {
       throw new Error('Knowledge OS APIs require the local backend.');
     }
-    const response = await fetch(url, {
+    const response = await apiFetch(url, {
       headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
       ...options
     });

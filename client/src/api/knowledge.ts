@@ -1,3 +1,4 @@
+import { apiFetch } from './http';
 import { throwApiError } from './errors';
 
 export interface KnowledgeCheckResult {
@@ -46,7 +47,7 @@ export async function checkOnlineKnowledge(
   domain: string,
   confidenceThreshold?: number
 ): Promise<KnowledgeCheckResult> {
-  const response = await fetch('/api/knowledge-online/check', {
+  const response = await apiFetch('/api/knowledge-online/check', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ question, domain, confidenceThreshold })
@@ -56,7 +57,7 @@ export async function checkOnlineKnowledge(
 }
 
 export async function searchOnlineKnowledge(query: string, domain: string) {
-  const response = await fetch('/api/knowledge-online/search', {
+  const response = await apiFetch('/api/knowledge-online/search', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query, domain })
@@ -66,7 +67,7 @@ export async function searchOnlineKnowledge(query: string, domain: string) {
 }
 
 export async function ingestOnlineKnowledge(preview: unknown, sessionId: string) {
-  const response = await fetch('/api/knowledge-online/ingest', {
+  const response = await apiFetch('/api/knowledge-online/ingest', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ preview, approved: true, approvedBy: sessionId })
@@ -76,7 +77,7 @@ export async function ingestOnlineKnowledge(preview: unknown, sessionId: string)
 }
 
 export async function deepResearchOnlineKnowledge(query: string, domain: string): Promise<OnlineKnowledgePreview> {
-  const response = await fetch('/api/knowledge-online/research', {
+  const response = await apiFetch('/api/knowledge-online/research', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query, domain })
@@ -92,7 +93,7 @@ export async function searchAndIngestOnlineKnowledge(input: {
   approvedBy: string;
   notes?: string;
 }) {
-  const response = await fetch('/api/knowledge-online/search-and-ingest', {
+  const response = await apiFetch('/api/knowledge-online/search-and-ingest', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input)

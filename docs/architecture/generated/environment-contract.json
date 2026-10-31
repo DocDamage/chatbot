@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "definitionCount": 179,
-  "templateCount": 179,
-  "usageCount": 155,
+  "definitionCount": 261,
+  "templateCount": 261,
+  "usageCount": 237,
   "duplicateDefinitions": [],
   "duplicateTemplateEntries": [],
   "missingFromTemplate": [],
@@ -11,15 +11,14 @@
   "unusedDefinitions": [
     "AUDIO_LAB_DIR",
     "CORS_CREDENTIALS",
-    "DEPLOYMENT_MODE",
-    "ENABLE_CACHING",
-    "ENABLE_CONTRACTS",
+    "DABOOK_DASHBOARD",
+    "DABOOK_PROFILE",
+    "DABOOK_TIMEOUT_MS",
     "ENABLE_FL_STUDIO_MCP",
     "ENABLE_LOCAL_TOOLS",
-    "ENABLE_MEMORY",
-    "ENABLE_PROVENANCE",
     "ENSEMBLE_ENABLED",
     "LOCAL_EXECUTION_ENABLED",
+    "LOCAL_MODEL_ROUTING_PRIVACY_MODE",
     "LOCAL_TOOLS_DIR",
     "MAX_COST_PER_REQUEST",
     "MAX_LATENCY_MS",
@@ -31,6 +30,7 @@
     "SAFETY_CHECK_FACTS",
     "SAFETY_CONFIDENCE_THRESHOLD",
     "SEC_DATA_DIR",
+    "SIXSIGMA_ANALYSIS_API_URL",
     "SPRITE_LAB_DIR",
     "TRUST_PROXY"
   ],
@@ -40,7 +40,10 @@
     ],
     "ANTHROPIC_API_KEY": [
       "src/core/agents/MultiAgentOrchestrator.ts",
+      "src/core/config/APIKeyManager.test.ts",
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts",
+      "src/server/routes/__tests__/route-core-services-matrices.test.ts",
       "src/server/routes/settings.ts"
     ],
     "ANTHROPIC_MODEL": [
@@ -48,26 +51,77 @@
     ],
     "API_KEY_ENCRYPTION_SECRET": [
       "src/core/config/APIKeyManager.test.ts",
-      "src/core/config/APIKeyManager.ts"
+      "src/core/config/APIKeyManager.ts",
+      "src/core/config/__tests__/APIKeyManager.security.test.ts",
+      "src/server/routes/__tests__/route-core-services-matrices.test.ts"
     ],
     "ASSEMBLYAI_API_KEY": [
-      "src/core/voice/VoiceAgent.ts"
+      "src/core/voice/VoiceAgent.ts",
+      "src/core/voice/__tests__/VoiceAgent.test.ts"
+    ],
+    "AUDIO_SEARCH_MAX_FILES": [
+      "src/server/routes/audio.ts"
+    ],
+    "BACKGROUND_CODING_KNOWLEDGE_LOAD": [
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "BACKGROUND_KNOWLEDGE_LOAD": [
+      "src/core/initialization/ServiceInitializer.test.ts",
+      "src/core/initialization/ServiceInitializer.ts"
     ],
     "BASE_URL": [
       "client/src/api/runtime.ts",
       "src/server/index.ts"
     ],
     "BING_API_KEY": [
-      "src/core/tools/WebSearcher.ts"
+      "src/core/tools/WebSearcher.ts",
+      "src/core/tools/__tests__/web-searcher-matrix.test.ts"
     ],
     "BLACKBELT_SOURCE_DIR": [
       "scripts/import-blackbelt-knowledge.ts"
     ],
+    "BOOKS_CHUNK_OVERLAP": [
+      "scripts/import-books.ts",
+      "scripts/ocr-queue.ts"
+    ],
+    "BOOKS_CHUNK_SIZE": [
+      "scripts/import-books.ts",
+      "scripts/ocr-queue.ts"
+    ],
+    "BOOKS_COLLECTION": [
+      "scripts/import-books.ts"
+    ],
+    "BOOKS_DIR": [
+      "scripts/import-books.ts"
+    ],
+    "BOOKS_EMBEDDING_BATCH_SIZE": [
+      "scripts/import-books.ts",
+      "scripts/ocr-queue.ts"
+    ],
+    "BOOKS_GENERATE_EMBEDDINGS": [
+      "scripts/import-books.ts"
+    ],
+    "BOOKS_PERSISTENCE_BATCH_SIZE": [
+      "src/core/rag/RAGDocumentStore.ts"
+    ],
+    "BOOKS_SOURCE_TYPE": [
+      "scripts/import-books.ts"
+    ],
+    "BOOKS_VISIBILITY": [
+      "scripts/import-books.ts"
+    ],
     "BRANCH_PROTECTION_TOKEN": [
       "scripts/release/configure-main-branch-protection.mjs"
     ],
+    "CANONICAL_CLI_AUTH_TOKEN": [
+      "scripts/canonical-cli.ts"
+    ],
+    "CAPABILITY_ALERT_WEBHOOK_URL": [
+      "src/core/capabilities/observability/AlertNotificationDispatcher.ts"
+    ],
     "CARTESIA_API_KEY": [
-      "src/core/voice/VoiceAgent.ts"
+      "src/core/voice/VoiceAgent.ts",
+      "src/core/voice/__tests__/VoiceAgent.test.ts"
     ],
     "CEREBRAS_API_KEY": [
       "src/core/agents/MultiAgentOrchestrator.ts"
@@ -75,11 +129,51 @@
     "CEREBRAS_MODEL": [
       "src/core/agents/MultiAgentOrchestrator.ts"
     ],
+    "CERT_APP_PORT": [
+      "scripts/certification/production-like.mjs"
+    ],
+    "CF_ACCESSIBILITY_CERTIFIED": [
+      "src/core/capabilities/promotion/CapabilityPromotionEngine.test.ts",
+      "src/core/capabilities/promotion/CapabilityPromotionEngine.ts",
+      "src/server/routes/__tests__/capability-evaluations-routes.test.ts"
+    ],
+    "CF_RELEASE_CERTIFIED": [
+      "src/core/capabilities/promotion/CapabilityPromotionEngine.test.ts",
+      "src/core/capabilities/promotion/CapabilityPromotionEngine.ts"
+    ],
+    "CHAT_RUNTIME_ENABLED": [
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "CHAT_RUNTIME_V2_SHADOW": [
+      "src/core/chat/ChatRuntimeShadowRunner.ts"
+    ],
+    "CHATBOT_NATIVE_PYTHON": [
+      "src/core/native-runtime/RuntimeDiscovery.ts",
+      "src/server/routes/__tests__/knowledge-base-dabook.test.ts"
+    ],
+    "CI": [
+      "scripts/canonical-cli.ts"
+    ],
     "CLAUDE_MODEL": [
       "src/core/agents/MultiAgentOrchestrator.ts"
     ],
+    "CODE_EXECUTOR_SANDBOX": [
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
     "CODE_EXECUTOR_TIMEOUT": [
       "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "CODING_EVAL_MODEL": [
+      "scripts/run-coding-evals.ts"
+    ],
+    "CODING_EVAL_PROVIDER": [
+      "scripts/run-coding-evals.ts"
+    ],
+    "CODING_MODEL_CONTEXT_TOKENS": [
+      "src/core/agents/CodingAgent.ts"
+    ],
+    "CODING_MODEL_MAX_OUTPUT_TOKENS": [
+      "src/core/agents/CodingAgent.ts"
     ],
     "COHERE_API_KEY": [
       "src/core/agents/MultiAgentOrchestrator.ts"
@@ -88,30 +182,85 @@
       "src/core/agents/MultiAgentOrchestrator.ts"
     ],
     "COMICVINE_API_KEY": [
-      "src/core/knowledge/EntertainmentSource.ts"
+      "src/core/knowledge/EntertainmentSource.ts",
+      "src/core/knowledge/__tests__/entertainment-source-deep-matrix.test.ts"
     ],
     "CORS_ORIGIN": [
       "src/middleware/security.ts",
-      "src/server/__tests__/release-security.test.ts"
+      "src/server/__tests__/release-security.test.ts",
+      "src/server/__tests__/security-middleware.test.ts"
     ],
     "CSRF_TOKEN": [
       "src/middleware/auth.ts",
+      "src/server/__tests__/auth-middleware.security.test.ts",
+      "src/server/__tests__/index.test.ts",
+      "src/server/__tests__/server.entrypoint.failures.test.ts",
+      "src/server/__tests__/server.entrypoint.lifecycle.test.ts",
       "src/server/routes/setup.test.ts"
     ],
     "CUDA_VISIBLE_DEVICES": [
+      "src/core/audio/stemdeck/DemucsWorkerAdapter.ts",
       "src/core/providers/DeviceAdapter.ts"
     ],
+    "DABOOK_ENABLED": [
+      "src/core/native-runtime/__tests__/RuntimeDiscovery.dabook.test.ts",
+      "src/core/rag/__tests__/DocumentIngester.dabook.test.ts",
+      "src/core/rag/ingestion/__tests__/DabookPdfExtractor.integration.test.ts",
+      "src/server/routes/__tests__/knowledge-base-dabook.test.ts"
+    ],
+    "DABOOK_EVALS_DIR": [
+      "src/core/dabook/__tests__/TrainingExporter.test.ts",
+      "src/core/dabook/training/TrainingExporter.ts"
+    ],
+    "DABOOK_LIVE_TEST": [
+      "src/core/dabook/__tests__/TrainingLive.integration.test.ts",
+      "src/core/rag/ingestion/__tests__/DabookPdfExtractor.integration.test.ts"
+    ],
+    "DABOOK_PYTHON": [
+      "scripts/dabook/setup.mjs",
+      "src/core/native-runtime/__tests__/RuntimeDiscovery.dabook.test.ts",
+      "src/server/routes/__tests__/knowledge-base-dabook.test.ts"
+    ],
+    "DABOOK_WORKSPACE": [
+      "src/core/dabook/__tests__/TrainingLive.integration.test.ts",
+      "src/core/rag/ingestion/__tests__/DabookPdfExtractor.integration.test.ts"
+    ],
     "DATABASE_URL": [
+      "scripts/backup-knowledge-db.ts",
+      "scripts/import-books.ts",
+      "scripts/ocr-queue.ts",
+      "src/core/governance/CanonicalCommandOperations.ts",
+      "src/core/governance/__tests__/canonical-operations.test.ts",
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "DEBUG_MODE": [
+      "src/core/__tests__/branch-coverage-tail-services.test.ts",
       "src/core/debug/DebugMode.ts"
     ],
     "DEEPSEEK_API_KEY": [
+      "scripts/run-coding-evals.ts",
       "src/core/agents/MultiAgentOrchestrator.ts"
     ],
     "DEEPSEEK_MODEL": [
+      "scripts/run-coding-evals.ts",
       "src/core/agents/MultiAgentOrchestrator.ts"
+    ],
+    "DEFAULT_BOT_PROFILE_ID": [
+      "src/core/chat/ChatRuntimeFactory.test.ts",
+      "src/core/chat/ChatRuntimeFactory.ts"
+    ],
+    "DEMUCS_PATH": [
+      "src/core/native-runtime/RuntimeDiscovery.ts"
+    ],
+    "DEPLOYMENT_MODE": [
+      "src/core/capabilities/observability/CapabilityObservabilityService.test.ts",
+      "src/core/capabilities/observability/CapabilityObservabilityService.ts",
+      "src/core/initialization/ServiceInitializer.test.ts",
+      "src/server/index.ts",
+      "src/server/routes/__tests__/gaming-playbook-routes.test.ts",
+      "src/server/routes/local-session.test.ts",
+      "src/server/routes/local-session.ts"
     ],
     "DISK_CACHE_DIR": [
       "src/core/initialization/ServiceInitializer.ts"
@@ -120,19 +269,27 @@
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "EAGER_KNOWLEDGE_LOAD": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "ELEVENLABS_API_KEY": [
-      "src/core/voice/VoiceAgent.ts"
+      "src/core/voice/VoiceAgent.ts",
+      "src/core/voice/__tests__/VoiceAgent.test.ts"
     ],
     "EMBEDDING_MODEL": [
+      "scripts/import-books.ts",
+      "scripts/ocr-queue.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "EMBEDDING_PROVIDER": [
+      "scripts/import-books.ts",
+      "scripts/ocr-queue.ts",
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "EMBEDDING_USE_TRANSFORMERS": [
       "src/core/embeddings/EmbeddingService.ts",
+      "src/core/embeddings/__tests__/EmbeddingService.branches.test.ts",
       "src/server/routes/settings.ts"
     ],
     "ENABLE_AGENT_PATCH_APPLY": [
@@ -141,7 +298,11 @@
     "ENABLE_BASH_EXECUTOR": [
       "src/core/initialization/ServiceInitializer.ts"
     ],
+    "ENABLE_CODE_EXECUTOR": [
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
     "ENABLE_DISK_CACHE": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "ENABLE_ENSEMBLE": [
@@ -152,35 +313,50 @@
     ],
     "ENABLE_MODEL_ROUTING": [
       "src/core/initialization/ServiceInitializer.ts",
+      "src/server/__tests__/server.entrypoint.lifecycle.test.ts",
       "src/server/index.ts"
     ],
     "ENABLE_RAG": [
+      "src/core/chat/ChatRuntimeFactory.ts",
       "src/core/initialization/ServiceInitializer.ts",
+      "src/server/__tests__/server.entrypoint.lifecycle.test.ts",
       "src/server/index.ts"
     ],
     "ENABLE_REDIS_CACHE": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts",
       "src/server/healthRoutes.ts"
     ],
     "ENABLE_SAFETY_PIPELINE": [
       "src/core/initialization/ServiceInitializer.ts",
+      "src/server/__tests__/server.entrypoint.lifecycle.test.ts",
       "src/server/index.ts"
     ],
     "ENABLE_SEMANTIC_CACHE": [
       "src/core/initialization/ServiceInitializer.ts",
+      "src/server/__tests__/server.entrypoint.lifecycle.test.ts",
       "src/server/index.ts"
     ],
     "ENABLE_TOOL_CALLING": [
+      "src/core/chat/ChatRuntimeFactory.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "ENABLE_WEBSOCKET": [
+      "src/server/__tests__/server.entrypoint.failures.test.ts",
+      "src/server/__tests__/server.entrypoint.lifecycle.test.ts",
       "src/server/index.ts"
-    ],
-    "EUROPEANA_API_KEY": [
-      "src/core/tools/history/EuropeanaTool.ts"
     ],
     "EVAL_TARGET_URL": [
       "scripts/run-evals.ts"
+    ],
+    "FFMPEG_PATH": [
+      "src/core/native-runtime/RuntimeDiscovery.ts"
+    ],
+    "FFMPEG_SHARED_DLL_DIR": [
+      "src/core/native-runtime/NativeAudioBackends.ts"
+    ],
+    "FFPROBE_PATH": [
+      "src/core/native-runtime/RuntimeDiscovery.ts"
     ],
     "FILE_SEARCH_MAX_CONTENT_BYTES": [
       "src/core/files/FileExplorerService.ts"
@@ -202,11 +378,15 @@
       "src/core/tools/market/FredMacroTool.ts"
     ],
     "GEMINI_API_KEY": [
+      "scripts/run-coding-evals.ts",
       "src/core/agents/MultiAgentOrchestrator.ts",
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts",
+      "src/server/routes/__tests__/settings-routes.test.ts",
       "src/server/routes/settings.ts"
     ],
     "GEMINI_MODEL": [
+      "scripts/run-coding-evals.ts",
       "src/core/agents/MultiAgentOrchestrator.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
@@ -267,28 +447,39 @@
       "src/core/knowledge/LLMProgrammingSource.ts",
       "src/server/index.ts"
     ],
+    "GODOT_PATH": [
+      "src/core/native-runtime/RuntimeDiscovery.ts"
+    ],
     "GOOGLE_API_KEY": [
       "src/core/agents/MultiAgentOrchestrator.ts",
-      "src/core/tools/WebSearcher.ts"
+      "src/core/tools/WebSearcher.ts",
+      "src/core/tools/__tests__/web-searcher-matrix.test.ts"
     ],
     "GOOGLE_BOOKS_API_KEY": [
       "src/core/knowledge/BookSource.ts",
       "src/server/index.ts"
     ],
     "GOOGLE_CSE_ID": [
-      "src/core/tools/WebSearcher.ts"
+      "src/core/tools/WebSearcher.ts",
+      "src/core/tools/__tests__/web-searcher-matrix.test.ts"
     ],
     "GPT4V_MODEL": [
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "GPU_AVAILABLE": [
-      "src/core/providers/DeviceAdapter.ts"
+      "src/core/audio/stemdeck/DemucsWorkerAdapter.ts",
+      "src/core/native-runtime/NativeAudioBackends.ts",
+      "src/core/native-runtime/__tests__/NativeBackends.test.ts",
+      "src/core/providers/DeviceAdapter.ts",
+      "src/core/providers/__tests__/DeviceAdapter.test.ts"
     ],
     "GPU_MEMORY_MB": [
-      "src/core/providers/DeviceAdapter.ts"
+      "src/core/providers/DeviceAdapter.ts",
+      "src/core/providers/__tests__/DeviceAdapter.test.ts"
     ],
     "GROQ_API_KEY": [
-      "src/core/agents/MultiAgentOrchestrator.ts"
+      "src/core/agents/MultiAgentOrchestrator.ts",
+      "src/core/config/__tests__/APIKeyManager.security.test.ts"
     ],
     "GROQ_MODEL": [
       "src/core/agents/MultiAgentOrchestrator.ts"
@@ -303,10 +494,16 @@
       "src/core/knowledge/NewsSource.ts",
       "src/server/index.ts"
     ],
+    "HOST": [
+      "src/server/index.ts",
+      "src/server/routes/local-session.test.ts",
+      "src/server/routes/local-session.ts"
+    ],
     "HUGGINGFACE_API_KEY": [
       "src/core/agents/MultiAgentOrchestrator.ts",
       "src/core/initialization/ServiceInitializer.ts",
       "src/core/providers/UniversalLLM.ts",
+      "src/core/providers/__tests__/providers-deep-decision-matrix.test.ts",
       "src/server/routes/settings.ts"
     ],
     "HUGGINGFACE_MODEL": [
@@ -315,7 +512,19 @@
     ],
     "JWT_SECRET": [
       "src/core/auth/AuthService.ts",
+      "src/core/auth/__tests__/AuthService.test.ts",
+      "src/server/__tests__/auth-middleware.security.test.ts",
+      "src/server/__tests__/index.routes.test.ts",
+      "src/server/__tests__/index.test.ts",
+      "src/server/__tests__/permission-profile-matrix.test.ts",
       "src/server/__tests__/release-security.test.ts",
+      "src/server/__tests__/server.entrypoint.failures.test.ts",
+      "src/server/__tests__/server.entrypoint.lifecycle.test.ts",
+      "src/server/__tests__/server.index.test.ts",
+      "src/server/routes/__tests__/admin.security.test.ts",
+      "src/server/routes/__tests__/route-core-services-matrices.test.ts",
+      "src/server/routes/__tests__/route-workspace-persistence.test.ts",
+      "src/server/routes/local-session.test.ts",
       "src/server/routes/setup.test.ts"
     ],
     "KNOWLEDGE_BASE_DIR": [
@@ -326,16 +535,89 @@
     "KNOWLEDGE_GRAPH_MAX_FILES": [
       "src/core/initialization/ServiceInitializer.ts"
     ],
+    "KNOWLEDGE_MAX_DATASET_GB": [
+      "src/core/knowledge/DatasetStorageQuota.ts"
+    ],
+    "KNOWLEDGE_MAX_DOWNLOAD_GB": [
+      "src/core/knowledge/DatasetStorageQuota.ts"
+    ],
+    "KNOWLEDGE_MAX_INDEX_GB": [
+      "src/core/knowledge/DatasetStorageQuota.ts"
+    ],
+    "KNOWLEDGE_MIN_FREE_DISK_GB": [
+      "src/core/knowledge/DatasetStorageQuota.ts"
+    ],
     "LLAVA_MODEL": [
       "src/core/initialization/ServiceInitializer.ts"
     ],
+    "LLM_KNOWLEDGE_FALLBACK": [
+      "src/core/evals/__tests__/ChatBehaviorBaselineHarness.test.ts",
+      "src/server/routes/legacy-chat.test.ts",
+      "src/server/routes/legacy-chat.ts"
+    ],
     "LLM_PROVIDER": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts",
       "src/core/orchestrator/EnhancedOrchestrator.ts",
+      "src/server/healthRoutes.ts",
+      "src/server/routes/__tests__/settings-routes.test.ts",
+      "src/server/routes/code.ts",
       "src/server/routes/settings.ts"
     ],
     "LOCAL_KNOWLEDGE_WIKI_DIR": [
       "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "LOCAL_MODEL_ALLOWLIST": [
+      "src/core/capabilities/CapabilityRegistry.test.ts",
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "LOCAL_MODEL_API_KEY": [
+      "src/core/capabilities/CapabilityRegistry.test.ts",
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "LOCAL_MODEL_BASE_URL": [
+      "src/core/capabilities/CapabilityRegistry.test.ts",
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/initialization/ServiceInitializer.test.ts",
+      "src/core/initialization/ServiceInitializer.ts",
+      "src/core/providers/UniversalLLM.ts",
+      "src/core/providers/local/LocalHardwareCanary.ts"
+    ],
+    "LOCAL_MODEL_ENABLED": [
+      "src/core/capabilities/CapabilityRegistry.test.ts",
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/initialization/ServiceInitializer.test.ts",
+      "src/core/initialization/ServiceInitializer.ts",
+      "src/core/providers/UniversalLLM.ts"
+    ],
+    "LOCAL_MODEL_MAX_CONCURRENCY": [
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "LOCAL_MODEL_MAX_QUEUE_DEPTH": [
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "LOCAL_MODEL_NAME": [
+      "src/core/initialization/ServiceInitializer.test.ts",
+      "src/core/initialization/ServiceInitializer.ts",
+      "src/core/providers/ModelRouter.ts",
+      "src/core/providers/UniversalLLM.ts",
+      "src/core/providers/local/LocalHardwareCanary.ts"
+    ],
+    "LOCAL_MODEL_PROVIDER_NAME": [
+      "src/core/capabilities/CapabilityRegistry.test.ts",
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/initialization/ServiceInitializer.ts",
+      "src/core/providers/UniversalLLM.ts"
+    ],
+    "LOCAL_MODEL_TIMEOUT_MS": [
+      "src/core/capabilities/CapabilityRegistry.test.ts",
+      "src/core/capabilities/CapabilityRegistry.ts",
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "LOCALAPPDATA": [
+      "scripts/local/setup.mjs"
     ],
     "LOG_LEVEL": [
       "src/__tests__/setup.ts",
@@ -350,13 +632,18 @@
       "src/server/index.ts"
     ],
     "NODE_ENV": [
+      "scripts/canonical-cli.ts",
       "src/__tests__/setup.ts",
+      "src/core/__tests__/branch-coverage-tail-services.test.ts",
       "src/core/debug/DebugMode.ts",
+      "src/core/gaming/engine/ProjectMutationStore.ts",
+      "src/core/native-runtime/NativeVoiceBackends.ts",
       "src/core/observability/logger.ts",
       "src/middleware/errorHandler.ts",
       "src/middleware/rateLimiter.ts",
       "src/middleware/security.ts",
       "src/server/__tests__/release-security.test.ts",
+      "src/server/__tests__/security-middleware.test.ts",
       "src/server/healthRoutes.ts",
       "src/server/index.ts",
       "src/server/security/webhookUrl.ts"
@@ -371,11 +658,48 @@
       "src/core/knowledge/NewsSource.ts",
       "src/server/index.ts"
     ],
-    "OLLAMA_MODEL": [
+    "OCR_QUEUE_LIMIT": [
+      "scripts/ocr-queue.ts"
+    ],
+    "OCR_REIMPORT_EMBEDDINGS": [
+      "scripts/ocr-queue.ts"
+    ],
+    "OLLAMA_BASE_URL": [
+      "src/core/native-runtime/LocalAIBackends.ts",
+      "src/core/native-runtime/RuntimeDiscovery.ts",
+      "src/core/native-runtime/__tests__/NativeBackends.test.ts",
+      "src/server/routes/desktop-companion.ts",
+      "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts",
+      "src/server/routes/music-studio/musicStudioRoutes.ts"
+    ],
+    "OLLAMA_CONTEXT_TOKENS": [
       "src/core/initialization/ServiceInitializer.ts",
-      "src/core/providers/UniversalLLM.ts"
+      "src/core/providers/OllamaAdapter.ts"
+    ],
+    "OLLAMA_MODEL": [
+      "scripts/local/doctor.mjs",
+      "scripts/local/setup.mjs",
+      "scripts/local/verify.mjs",
+      "src/core/initialization/ServiceInitializer.ts",
+      "src/core/native-runtime/LocalAIBackends.ts",
+      "src/core/native-runtime/__tests__/NativeBackends.test.ts",
+      "src/core/native-runtime/__tests__/NativeCommandRunner.test.ts",
+      "src/core/providers/UniversalLLM.ts",
+      "src/core/writing/WritingAIProviderRouter.ts",
+      "src/server/healthRoutes.ts",
+      "src/server/routes/desktop-companion.ts",
+      "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts",
+      "src/server/routes/writing-studio.ts"
+    ],
+    "OLLAMA_THINK": [
+      "src/core/providers/OllamaAdapter.ts"
     ],
     "OLLAMA_URL": [
+      "scripts/import-books.ts",
+      "scripts/local/doctor.mjs",
+      "scripts/local/setup.mjs",
+      "scripts/local/verify.mjs",
+      "scripts/ocr-queue.ts",
       "src/core/agents/MultiAgentOrchestrator.ts",
       "src/core/initialization/ServiceInitializer.ts",
       "src/core/providers/UniversalLLM.ts",
@@ -385,17 +709,30 @@
       "src/core/knowledge/EntertainmentSource.ts",
       "src/server/index.ts"
     ],
+    "ONLINE_KNOWLEDGE_FALLBACK": [
+      "src/server/routes/legacy-chat.ts"
+    ],
     "OPENAI_API_KEY": [
+      "scripts/import-books.ts",
+      "scripts/ocr-queue.ts",
+      "scripts/run-coding-evals.ts",
       "src/core/agents/MultiAgentOrchestrator.ts",
+      "src/core/config/APIKeyManager.test.ts",
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts",
       "src/core/providers/UniversalLLM.ts",
+      "src/core/providers/__tests__/providers-deep-decision-matrix.test.ts",
+      "src/server/routes/__tests__/route-core-services-matrices.test.ts",
+      "src/server/routes/code.ts",
       "src/server/routes/settings.ts"
     ],
     "OPENAI_COMPATIBLE_API_KEY": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts",
       "src/server/routes/settings.ts"
     ],
     "OPENAI_COMPATIBLE_BASE_URL": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts",
       "src/server/routes/settings.ts"
     ],
@@ -406,6 +743,7 @@
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "OPENAI_MODEL": [
+      "scripts/run-coding-evals.ts",
       "src/core/agents/MultiAgentOrchestrator.ts",
       "src/core/initialization/ServiceInitializer.ts",
       "src/core/providers/UniversalLLM.ts"
@@ -416,12 +754,31 @@
     "OPENROUTER_MODEL": [
       "src/core/agents/MultiAgentOrchestrator.ts"
     ],
+    "OPERATOR_ROLE": [
+      "scripts/canonical-cli.ts"
+    ],
     "OSRM_BASE_URL": [
       "src/core/gis/GISProviderRegistry.ts"
     ],
     "PATH": [
+      "src/core/native-runtime/NativeAudioBackends.ts",
       "src/core/tools/CodeExecutor.ts",
       "src/core/tools/math/LeanProofTool.ts"
+    ],
+    "PDF_OCR_DPI": [
+      "scripts/ocr-queue.ts",
+      "src/core/rag/ingestion/PdfExtractor.ts"
+    ],
+    "PDF_OCR_ENABLED": [
+      "src/core/rag/ingestion/PdfExtractor.ts"
+    ],
+    "PDF_OCR_LANGUAGE": [
+      "scripts/ocr-queue.ts",
+      "src/core/rag/ingestion/PdfExtractor.ts"
+    ],
+    "PDF_OCR_MAX_PAGES": [
+      "scripts/ocr-queue.ts",
+      "src/core/rag/ingestion/PdfExtractor.ts"
     ],
     "PIXELORAMA_CLI_ARGS_JSON": [
       "src/core/sprite-lab/SpriteExternalToolAdapter.test.ts",
@@ -431,32 +788,118 @@
       "src/core/tools/market/PriceDataTool.ts"
     ],
     "PORT": [
+      "scripts/local/doctor.mjs",
       "scripts/release/__tests__/phase2-scanners.test.mjs",
-      "src/server/index.ts"
+      "src/server/index.ts",
+      "src/server/routes/local-session.test.ts",
+      "src/server/routes/local-session.ts"
     ],
     "POSTGRES_VECTOR_TEST_URL": [
       "src/core/database/Database.test.ts"
     ],
+    "PRIMARY_LLM_MODEL": [
+      "src/core/chat/ChatRuntimeFactory.test.ts",
+      "src/core/chat/ChatRuntimeFactory.ts"
+    ],
     "PUBLIC_KNOWLEDGE_BASE_DIR": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
+    "PYSCRAPPY_ENABLED": [
+      "src/core/knowledge/__tests__/knowledge-flow-and-importers-deep.test.ts",
+      "src/core/research/PyScrappyService.test.ts",
+      "src/core/research/PyScrappyService.ts"
+    ],
+    "PYSCRAPPY_MAX_OUTPUT_BYTES": [
+      "src/core/research/PyScrappyService.test.ts",
+      "src/core/research/PyScrappyService.ts"
+    ],
+    "PYSCRAPPY_MCP_ARGS": [
+      "src/core/knowledge/__tests__/knowledge-flow-and-importers-deep.test.ts",
+      "src/core/research/PyScrappyService.test.ts",
+      "src/core/research/PyScrappyService.ts"
+    ],
+    "PYSCRAPPY_MCP_COMMAND": [
+      "src/core/research/PyScrappyService.test.ts",
+      "src/core/research/PyScrappyService.ts"
+    ],
+    "PYSCRAPPY_MCP_CWD": [
+      "src/core/research/PyScrappyService.test.ts",
+      "src/core/research/PyScrappyService.ts"
+    ],
+    "PYSCRAPPY_SCRAPE_TOOL": [
+      "src/core/research/PyScrappyService.test.ts",
+      "src/core/research/PyScrappyService.ts"
+    ],
+    "RAG_BACKUP_DIR": [
+      "scripts/backup-knowledge-db.ts"
+    ],
     "RAG_CHUNK_SIZE": [
+      "scripts/import-books.ts",
+      "scripts/ocr-queue.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "RAG_DATABASE_URL": [
+      "scripts/backup-knowledge-db.ts",
+      "scripts/import-books.ts",
+      "scripts/ocr-queue.ts",
+      "src/core/governance/CanonicalCommandOperations.ts",
+      "src/core/governance/__tests__/canonical-operations.test.ts",
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
+    "RAG_EMBEDDING_BATCH_SIZE": [
+      "scripts/import-books.ts",
+      "scripts/ocr-queue.ts",
+      "src/core/rag/DocumentIngester.ts"
+    ],
     "RAG_GENERATE_EMBEDDINGS": [
+      "scripts/import-books.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "RAG_PERSISTENCE": [
+      "src/core/initialization/ServiceInitializer.test.ts",
+      "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "RAG_PERSISTENCE_BATCH_SIZE": [
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/core/rag/__tests__/RAGDocumentStore.branches.test.ts"
+    ],
+    "RAG_RESTORE_PERSISTED_TO_MEMORY": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "RAG_RETRIEVAL_MODE": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
+    "RAG_SQLITE_CANDIDATE_BATCH_SIZE": [
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/core/rag/__tests__/RAGDocumentStore.branches.test.ts"
+    ],
+    "RAG_SQLITE_FTS_TOKEN_LIMIT": [
+      "src/core/rag/RAGDocumentStore.ts"
+    ],
+    "RAG_SQLITE_FULL_VECTOR_SCAN": [
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/core/rag/__tests__/RAGDocumentStore.branches.test.ts"
+    ],
+    "RAG_SQLITE_KEYWORD_CANDIDATES": [
+      "src/core/rag/RAGDocumentStore.ts"
+    ],
     "RAG_SQLITE_PATH": [
+      "scripts/backup-knowledge-db.ts",
+      "scripts/import-books.ts",
+      "scripts/local/doctor.mjs",
+      "scripts/ocr-queue.ts",
+      "src/core/governance/CanonicalCommandOperations.ts",
+      "src/core/governance/__tests__/canonical-operations.test.ts",
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "RAG_SQLITE_VECTOR_SCAN_PAGE_SIZE": [
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/core/rag/__tests__/RAGDocumentStore.branches.test.ts"
     ],
     "RATE_LIMIT_FAIL_OPEN": [
       "src/middleware/rateLimiter.ts"
@@ -473,6 +916,7 @@
       "src/server/healthRoutes.ts"
     ],
     "REQUEST_READY_TIMEOUT_MS": [
+      "src/server/__tests__/server.entrypoint.failures.test.ts",
       "src/server/index.ts",
       "src/server/routes/legacy-chat.ts"
     ],
@@ -491,7 +935,8 @@
     ],
     "SEC_MAX_REQUESTS_PER_SECOND": [
       "src/core/sec/EDGARClient.ts",
-      "src/core/sec/SECService.ts"
+      "src/core/sec/SECService.ts",
+      "src/core/sec/__tests__/sec-comprehensive-matrix.test.ts"
     ],
     "SEC_QUEUE_MAX_ITEMS": [
       "src/core/sec/SECService.ts"
@@ -499,6 +944,7 @@
     "SEC_USER_AGENT": [
       "src/core/sec/EDGARClient.ts",
       "src/core/sec/SECService.ts",
+      "src/core/sec/__tests__/sec-comprehensive-matrix.test.ts",
       "src/core/tools/market/SecEdgarTool.ts"
     ],
     "SEMANTIC_CACHE_SIMILARITY_THRESHOLD": [
@@ -507,14 +953,8 @@
     "SEMANTIC_CACHE_TTL": [
       "src/core/initialization/ServiceInitializer.ts"
     ],
-    "SIXSIGMA_ANALYSIS_API_KEY": [
-      "src/core/tools/sixsigma/AnalysisApiTool.ts"
-    ],
-    "SIXSIGMA_ANALYSIS_API_URL": [
-      "src/core/tools/sixsigma/AnalysisApiTool.ts"
-    ],
-    "SMITHSONIAN_API_KEY": [
-      "src/core/tools/history/SmithsonianTool.ts"
+    "SQLITE_BUSY_TIMEOUT_MS": [
+      "src/core/database/Database.ts"
     ],
     "STACKOVERFLOW_API_KEY": [
       "src/core/knowledge/StackOverflowSource.ts",
@@ -528,35 +968,53 @@
     ],
     "TMDB_API_KEY": [
       "src/core/knowledge/EntertainmentSource.ts",
-      "src/core/tools/culture/TMDBTool.ts",
       "src/server/index.ts"
     ],
+    "TRAINING_EXPORT_DIR": [
+      "src/core/dabook/__tests__/TrainingExporter.test.ts",
+      "src/core/dabook/training/TrainingExporter.ts"
+    ],
     "TWILIO_ACCOUNT_SID": [
-      "src/core/notifications/TwilioAdapter.ts"
+      "src/core/notifications/TwilioAdapter.ts",
+      "src/core/notifications/__tests__/TwilioAdapter.test.ts"
     ],
     "TWILIO_AUTH_TOKEN": [
-      "src/core/notifications/TwilioAdapter.ts"
+      "src/core/notifications/TwilioAdapter.ts",
+      "src/core/notifications/__tests__/TwilioAdapter.test.ts"
     ],
     "TWILIO_FROM_NUMBER": [
-      "src/core/notifications/TwilioAdapter.ts"
+      "src/core/notifications/TwilioAdapter.ts",
+      "src/core/notifications/__tests__/TwilioAdapter.test.ts"
+    ],
+    "UNITY_EDITOR_PATH": [
+      "src/core/native-runtime/RuntimeDiscovery.ts"
+    ],
+    "UNREAL_EDITOR_PATH": [
+      "src/core/native-runtime/RuntimeDiscovery.ts"
     ],
     "USE_GEMINI_VISION": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "USE_GPT4V": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "USE_HUGGINGFACE": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts",
       "src/server/routes/settings.ts"
     ],
     "USE_LLAVA": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "USE_OLLAMA": [
+      "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts",
       "src/server/healthRoutes.test.ts",
       "src/server/healthRoutes.ts",
+      "src/server/routes/__tests__/settings-routes.test.ts",
       "src/server/routes/settings.ts"
     ],
     "USERPROFILE": [

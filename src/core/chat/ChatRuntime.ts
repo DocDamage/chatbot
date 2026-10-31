@@ -16,6 +16,7 @@ import {
   ChatContextPlan,
   ChatTraceContext,
 } from '../../types/chat-runtime';
+import { AppError } from '../../utils/errors';
 
 export class ChatRuntimeError extends Error {
   constructor(message: string, public readonly stage: string, public readonly cause?: unknown) {
@@ -54,10 +55,12 @@ export interface ChatExecutionContext {
     content: string;
     authority?: number;
     sourceUrl?: string;
+    path?: string;
   }>;
   memoryItems: string[];
   toolDefinitions?: Array<{ name: string; description: string; parameters?: unknown }>;
   budgetUsed: { contextTokens?: number };
+  warnings?: string[];
 }
 
 export interface ModelSelectionResult {
@@ -176,9 +179,18 @@ export interface ChatRuntimeDependencies {
 }
 
 export class ChatRuntime {
+  private readonly sessions = new Map<string, Promise<unknown>>();
   constructor(private readonly deps: ChatRuntimeDependencies) {}
 
   public async execute(request: NormalizedChatRequest): Promise<ChatRuntimeResult> {
+    const previous = this.sessions.get(request.sessionId) || Promise.resolve();
+    const turn = previous.catch(() => {}).then(() => this.executeTurn(request));
+    this.sessions.set(request.sessionId, turn);
+    try { return await turn; }
+    finally { if (this.sessions.get(request.sessionId) === turn) this.sessions.delete(request.sessionId); }
+  }
+
+  private async executeTurn(request: NormalizedChatRequest): Promise<ChatRuntimeResult> {
     const startTime = Date.now();
     const trace: ChatTraceContext = this.deps.runRecorder
       ? await this.deps.runRecorder.recordStart(request)
@@ -245,10 +257,10 @@ export class ChatRuntime {
       recordStage('validationAndGrounding', Date.now() - vStart);
 
       const cStart = Date.now();
-      await this.deps.stateService.commit({ request, state, result: validatedResult, trace });
+      const parsedResult = chatRuntimeResultSchema.parse(validatedResult);
+      await this.deps.stateService.commit({ request, state, result: parsedResult, trace });
       recordStage('stateCommit', Date.now() - cStart);
 
-      const parsedResult = chatRuntimeResultSchema.parse(validatedResult);
       if (this.deps.runRecorder) {
         await this.deps.runRecorder.complete(trace, parsedResult);
       }
@@ -259,6 +271,7 @@ export class ChatRuntime {
         await this.deps.runRecorder.fail(trace, err as Error).catch(() => {});
       }
       if (err instanceof ChatRuntimeError) throw err;
+      if (err instanceof AppError) throw err;
       throw new ChatRuntimeError((err as Error).message, 'execution', err);
     }
   }

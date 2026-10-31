@@ -4,13 +4,15 @@ AI Chatbot Hub is a TypeScript/React chatbot workspace with provider adapters, s
 
 ## Current status
 
+Daily local use now has a dedicated setup and verification path: see [Daily local use](docs/DAILY_USE.md). Run `npm run start:local` to start the built app with an installed Ollama model, then open <http://127.0.0.1:3001>. Ordinary chat uses the persistent canonical runtime; History reopens the original conversation. This personal-use checkpoint does not establish hosted production support.
+
 The implementation is active and suitable for local development, evaluation, and trusted internal use. It includes the complete **Capability Fusion (CF-01 through CF-10)** stack with persistent disk observability, process supervisors, native Git worktrees, Playwright browser drivers, media localization, Lattice game development tools, and multi-domain canary certification.
 
 - Canonical branch: `main`.
-- Latest implementation line: Capability Fusion (CF-01 to CF-10), Canary Certification Suite, polyglot repository-aware coding, structural retrieval, safe structured edits, verification, bounded repair, and review.
+- Current local implementation branch: `codex/daily-use-readiness`, including persistent canonical chat, local Ollama setup, history, document citations, and the existing specialist tools.
 - Coding and desktop/local filesystem capabilities are gated via explicit RBAC and exact-scope confirmation.
-- Full automated Jest suite: 182 suites passed, 696 tests passed, 2 skipped, 0 failures.
-- Client Vitest suite: 31 files passed, 96 tests passed.
+- Server regression: over 2,900 tests exercised; corrected fixture failures passed their complete suite reruns. See the [verification record](docs/implementation/evidence/daily-use/2026-10-30/verification.json).
+- Client Vitest suite: 59 files / 198 tests passed; built-server browser regression: 7 tests passed; browser accessibility: 6 tests passed.
 - Production server & client build and packaging smoke checks pass.
 
 For release decisions, use the [current project status](docs/PROJECT_STATUS.md), [production feature manifest](docs/implementation/PRODUCTION_FEATURE_MANIFEST.md), [master completion tracker](docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md), and [release evidence index](docs/implementation/RELEASE_EVIDENCE_INDEX.md). Historical documents are retained for audit context and do not override those sources.

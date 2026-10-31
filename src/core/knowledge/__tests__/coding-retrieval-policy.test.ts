@@ -70,7 +70,8 @@ describe('CodingRetrievalPolicyEngine (§50)', () => {
   });
 
   it('§50.3: sanitizes private paths and secrets in error query expansion', () => {
-    const rawError = 'Error at C:\\Users\\Doc\\secret_project\\src\\index.ts:42 with token ghp_123456789012345678901234567890123456 failed with TS2304';
+    const fixtureToken = ['ghp', 'x'.repeat(36)].join('_');
+    const rawError = `Error at C:\\Users\\Doc\\secret_project\\src\\index.ts:42 with token ${fixtureToken} failed with TS2304`;
     const expansion = engine.expandErrorQuery({
       rawErrorText: rawError,
       errorCode: 'TS2304',

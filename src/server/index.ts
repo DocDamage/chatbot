@@ -17,7 +17,8 @@ import { logger } from '../core/observability/logger';
 import { errorHandler, asyncHandler } from '../middleware/errorHandler';
 import { apiErrorSchema } from '../middleware/apiErrorSchema';
 import { securityHeaders, corsOptions } from '../middleware/security';
-import { auditPrivilegedRequest, requireAuth, requireCsrfForStateChange, requireRole } from '../middleware/auth';
+import { auditPrivilegedRequest, optionalAuth, requireAuth, requireCsrfForStateChange, requireRole } from '../middleware/auth';
+import { createLocalSessionRouter } from './routes/local-session';
 import { createKnowledgeBaseRouter } from './routes/knowledge-base';
 import { createKnowledgeOsRouter } from './routes/knowledge-os';
 import { createRagQueryRouter } from './routes/rag-query';
@@ -35,6 +36,7 @@ try {
 } catch (error: any) {
   logger.error('Configuration validation failed', { error: error.message });
   process.exit(1);
+  throw error; // Do not initialize services if an embedding host intercepts process.exit.
 }
 
 const app = express();
@@ -73,6 +75,7 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(apiErrorSchema);
+app.use('/api/auth', createLocalSessionRouter());
 
 // Initialize all services automatically
 let services: any;
@@ -182,20 +185,20 @@ const getApiVersion = (req: any): string => {
 };
 
 // Versioned API routes
-app.use('/api/v1', requireReady(), (req, res, next) => {
+app.use('/api/v1', requireReady(), optionalAuth, (req, res, next) => {
   const { createChatRouter } = require('./routes/v1/chat');
-  const router = createChatRouter(orchestrator);
+  const router = createChatRouter(services?.dailyChat || orchestrator);
   router(req, res, next);
 });
 
-app.use('/api/v2', requireReady(), (req, res, next) => {
+app.use('/api/v2', requireReady(), optionalAuth, (req, res, next) => {
   const { createChatRouterV2 } = require('./routes/v2/chat');
-  const router = createChatRouterV2(orchestrator);
+  const router = createChatRouterV2(services?.dailyChat || orchestrator);
   router(req, res, next);
 });
 
 // Legacy endpoint (defaults to v1)
-app.post('/api/chat', ...createLegacyChatHandlers({
+app.post('/api/chat', optionalAuth, ...createLegacyChatHandlers({
   getServices: () => services,
   getOrchestrator: () => orchestrator,
   waitForReady,
@@ -1152,7 +1155,8 @@ const startServer = async () => {
     logger.info('Waiting for services to initialize...');
     await waitForReady(STARTUP_TIMEOUT_MS);
 
-    server.listen(PORT, () => {
+    const host = process.env.HOST || (process.env.DEPLOYMENT_MODE === 'hosted' || process.env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1');
+    server.listen(Number(PORT), host, () => {
       logger.info(`🚀 Server running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
       logger.info(`📚 Knowledge base: ${process.env.KNOWLEDGE_BASE_DIR || './knowledge-base'}`);

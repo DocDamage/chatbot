@@ -519,6 +519,7 @@ export class Database {
 
     const migrations = [
       ...baseMigrations,
+      'CREATE TABLE IF NOT EXISTS conversation_states (session_id TEXT PRIMARY KEY, state_json TEXT NOT NULL)',
       ...ragMigrations,
       ...knowledgeOsMigrations,
       ...getDatasetMigrations(this.config.type),
@@ -528,6 +529,7 @@ export class Database {
       try {
         await this.query(migration);
       } catch (error: any) {
+        if (migration.includes('CREATE TABLE IF NOT EXISTS conversation_states')) throw error;
         logger.warn('Migration failed (may already exist)', { error: error.message });
       }
     }

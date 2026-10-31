@@ -12,11 +12,12 @@ describe('legacy chat knowledge miss contract', () => {
     const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'legacy-task-route-'));
     const conversationManager = new ConversationManager();
     const orchestrator = { processRequest: jest.fn() };
+    const dailyChat = { processRequest: jest.fn() };
 
     try {
       app.use(express.json());
       app.post('/api/chat', ...createLegacyChatHandlers({
-        getServices: () => ({}),
+        getServices: () => ({ dailyChat }),
         getOrchestrator: () => orchestrator,
         waitForReady: jest.fn().mockResolvedValue(undefined),
         getConversationManager: () => conversationManager,
@@ -40,6 +41,7 @@ describe('legacy chat knowledge miss contract', () => {
       expect(completed.body.artifacts).toHaveLength(2);
       expect(fs.existsSync(path.join(workspaceRoot, completed.body.artifacts[0].path))).toBe(true);
       expect(orchestrator.processRequest).not.toHaveBeenCalled();
+      expect(dailyChat.processRequest).not.toHaveBeenCalled();
     } finally {
       fs.rmSync(workspaceRoot, { recursive: true, force: true });
     }

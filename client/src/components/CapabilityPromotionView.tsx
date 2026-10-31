@@ -1,3 +1,4 @@
+import { apiFetch } from '../api/http';
 import { useState, useEffect, useCallback } from 'react';
 import { isStaticPagesBuild } from '../api/runtime';
 
@@ -81,7 +82,7 @@ export default function CapabilityPromotionView() {
   const fetchDashboard = useCallback(async () => {
     if (isStaticPagesBuild) return;
     try {
-      const res = await fetch('/api/capabilities/metrics/dashboard', {
+      const res = await apiFetch('/api/capabilities/metrics/dashboard', {
         headers: getAuthHeaders()
       });
       if (!res.ok) throw new Error(`Metrics request failed with HTTP ${res.status}`);
@@ -101,14 +102,14 @@ export default function CapabilityPromotionView() {
   useEffect(() => {
     if (isStaticPagesBuild) return;
     void Promise.all([
-      fetch('/api/capabilities', { headers: getAuthHeaders() }).then(async response => {
+      apiFetch('/api/capabilities', { headers: getAuthHeaders() }).then(async response => {
         if (!response.ok) throw new Error(`Capabilities request failed with HTTP ${response.status}`);
         const data = await response.json();
         const items = (data.capabilities || []).map((item: any) => ({ id: item.id, name: item.name, maturity: item.maturity }));
         setPromotionCapabilities(items);
         setSelectedCapabilityId((current: string) => current || items[0]?.id || '');
       }),
-      fetch('/api/capabilities/promotions/decisions', { headers: getAuthHeaders() }).then(async response => {
+      apiFetch('/api/capabilities/promotions/decisions', { headers: getAuthHeaders() }).then(async response => {
         if (!response.ok) throw new Error(`Decision records request failed with HTTP ${response.status}`);
         const data = await response.json();
         setPromotionDecisions(data.decisions || []);
@@ -125,7 +126,7 @@ export default function CapabilityPromotionView() {
     setIsEvaluatingPromotion(true);
     setPromotionFeedback('Evaluating objective promotion gates…');
     try {
-      const response = await fetch('/api/capabilities/promotions/evaluate', {
+      const response = await apiFetch('/api/capabilities/promotions/evaluate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ capabilityId: selectedCapabilityId, targetMaturity })
@@ -145,7 +146,7 @@ export default function CapabilityPromotionView() {
   const handlePromote = async () => {
     setIsPromoting(true);
     try {
-      const response = await fetch('/api/capabilities/promotions/promote', {
+      const response = await apiFetch('/api/capabilities/promotions/promote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({
@@ -172,7 +173,7 @@ export default function CapabilityPromotionView() {
     setIsRunningEval(true);
     setEvalFeedback('Running cross-capability evaluation suite across all 10 domain vectors...');
     try {
-      const res = await fetch('/api/capabilities/evaluations/run', {
+      const res = await apiFetch('/api/capabilities/evaluations/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({})
@@ -194,7 +195,7 @@ export default function CapabilityPromotionView() {
   const handleExportSupportBundle = async () => {
     setIsExportingBundle(true);
     try {
-      const res = await fetch('/api/capabilities/support-bundle', {
+      const res = await apiFetch('/api/capabilities/support-bundle', {
         headers: getAuthHeaders()
       });
       if (res.ok) {

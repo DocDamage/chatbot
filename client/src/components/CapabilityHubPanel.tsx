@@ -1,3 +1,4 @@
+import { apiFetch } from '../api/http';
 import { useState, useEffect, useCallback } from 'react';
 import ExactScopeConfirmModal from './ExactScopeConfirmModal';
 import RepositoryFindingsView, { FindingOverlayItem, FindingDetail } from './RepositoryFindingsView';
@@ -156,7 +157,7 @@ export default function CapabilityHubPanel({ onOpenCapability }: { onOpenCapabil
     if (isStaticPagesBuild) return;
     setIsLoading(true);
     try {
-      const response = await fetch('/api/capabilities', {
+      const response = await apiFetch('/api/capabilities', {
         headers: getAuthHeaders()
       });
       if (!response.ok) throw new Error(`Capability registry request failed with HTTP ${response.status}`);
@@ -173,7 +174,7 @@ export default function CapabilityHubPanel({ onOpenCapability }: { onOpenCapabil
   const fetchJobs = useCallback(async () => {
     if (isStaticPagesBuild) return;
     try {
-      const response = await fetch('/api/capabilities/jobs/list', {
+      const response = await apiFetch('/api/capabilities/jobs/list', {
         headers: getAuthHeaders()
       });
       if (response.ok) {
@@ -188,7 +189,7 @@ export default function CapabilityHubPanel({ onOpenCapability }: { onOpenCapabil
   const fetchArtifacts = useCallback(async () => {
     if (isStaticPagesBuild) return;
     try {
-      const response = await fetch('/api/capabilities/artifacts/list', {
+      const response = await apiFetch('/api/capabilities/artifacts/list', {
         headers: getAuthHeaders()
       });
       if (response.ok) {
@@ -203,7 +204,7 @@ export default function CapabilityHubPanel({ onOpenCapability }: { onOpenCapabil
   const fetchPacks = useCallback(async () => {
     if (isStaticPagesBuild) return;
     try {
-      const response = await fetch('/api/capabilities/packs/list', {
+      const response = await apiFetch('/api/capabilities/packs/list', {
         headers: getAuthHeaders()
       });
       if (response.ok) {
@@ -218,7 +219,7 @@ export default function CapabilityHubPanel({ onOpenCapability }: { onOpenCapabil
   const fetchFindings = useCallback(async () => {
     if (isStaticPagesBuild) return;
     try {
-      const response = await fetch('/api/capabilities/repository-findings', {
+      const response = await apiFetch('/api/capabilities/repository-findings', {
         headers: getAuthHeaders()
       });
       if (response.ok) {
@@ -255,7 +256,7 @@ export default function CapabilityHubPanel({ onOpenCapability }: { onOpenCapabil
 
     setStatusMessage(`Executing ${action.label}...`);
     try {
-      const response = await fetch(`/api/capabilities/${capability.id}/action`, {
+      const response = await apiFetch(`/api/capabilities/${capability.id}/action`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ actionId: action.id })
@@ -281,7 +282,7 @@ export default function CapabilityHubPanel({ onOpenCapability }: { onOpenCapabil
     setStatusMessage(`Executing dangerous action: ${action.label}...`);
 
     try {
-      const response = await fetch(`/api/capabilities/${capability.id}/action`, {
+      const response = await apiFetch(`/api/capabilities/${capability.id}/action`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({
@@ -304,7 +305,7 @@ export default function CapabilityHubPanel({ onOpenCapability }: { onOpenCapabil
 
   const handleCancelJob = async (jobId: string) => {
     try {
-      const response = await fetch(`/api/capabilities/jobs/${jobId}/cancel`, {
+      const response = await apiFetch(`/api/capabilities/jobs/${jobId}/cancel`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ reason: 'Cancelled by operator via Capability Hub' })

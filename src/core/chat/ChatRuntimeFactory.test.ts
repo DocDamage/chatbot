@@ -21,14 +21,11 @@ describe('ChatRuntimeFactory (CRK-P01-T04)', () => {
     metadata: {},
   };
 
-  it('creates an operational ChatRuntime instance with default configuration', async () => {
+  it('refuses to fabricate an answer when no provider is configured', async () => {
     const runtime = ChatRuntimeFactory.create();
     expect(runtime).toBeInstanceOf(ChatRuntime);
 
-    const result = await runtime.execute(sampleRequest);
-    expect(result.requestId).toBe(sampleRequest.requestId);
-    expect(result.response).toBeDefined();
-    expect(result.model.model).toBe('gpt-4o');
+    await expect(runtime.execute(sampleRequest)).rejects.toMatchObject({ statusCode: 503, code: 'MODEL_UNAVAILABLE' });
   });
 
   it('wires custom adapters and RAG service correctly', async () => {
@@ -41,7 +38,7 @@ describe('ChatRuntimeFactory (CRK-P01-T04)', () => {
     };
 
     const mockLlmAdapter = {
-      generateText: jest.fn().mockResolvedValue('Here is the date formatter implementation.'),
+      generateText: jest.fn().mockResolvedValue('Here is the date formatter implementation [1].'),
       getModelName: jest.fn().mockReturnValue('claude-3-5-sonnet'),
     };
 
@@ -56,7 +53,7 @@ describe('ChatRuntimeFactory (CRK-P01-T04)', () => {
 
     const result = await runtime.execute(sampleRequest);
 
-    expect(mockRagService.processQuery).toHaveBeenCalledWith(sampleRequest.message);
+    expect(mockRagService.processQuery).toHaveBeenCalledWith(sampleRequest.message, false);
     expect(mockLlmAdapter.generateText).toHaveBeenCalled();
     expect(result.model.model).toBe('claude-3-5-sonnet');
     expect(result.citations).toHaveLength(1);
@@ -76,7 +73,7 @@ describe('ChatRuntimeFactory (CRK-P01-T04)', () => {
     process.env.DEFAULT_BOT_PROFILE_ID = 'custom-default-profile';
 
     try {
-      const runtime = ChatRuntimeFactory.createFromEnv();
+      const runtime = ChatRuntimeFactory.createFromEnv({ llmAdapter: { generate: async () => ({ content: 'A configured provider answered.' }) } });
       const result = await runtime.execute({
         ...sampleRequest,
         botProfileId: 'custom-default-profile',

@@ -26,6 +26,7 @@ export interface ConversationStateServiceConfig {
   extractor?: ConversationVariableExtractor;
   reducer?: ConversationStateReducer;
   maxHistoryTurns?: number;
+  historyReader?: (sessionId: string) => Promise<Array<{ role: 'user' | 'assistant'; content: string }>>;
 }
 
 export class ConversationStateService implements IChatStateService {
@@ -33,12 +34,14 @@ export class ConversationStateService implements IChatStateService {
   private readonly extractor: ConversationVariableExtractor;
   private readonly reducer: ConversationStateReducer;
   private readonly maxHistoryTurns: number;
+  private readonly historyReader?: ConversationStateServiceConfig['historyReader'];
 
   constructor(config: ConversationStateServiceConfig = {}) {
     this.repository = config.repository || new ConversationStateRepository();
     this.extractor = config.extractor || new ConversationVariableExtractor();
     this.reducer = config.reducer || new ConversationStateReducer();
     this.maxHistoryTurns = config.maxHistoryTurns || 50;
+    this.historyReader = config.historyReader;
   }
 
   public async load(request: NormalizedChatRequest): Promise<ChatConversationState> {
@@ -73,10 +76,14 @@ export class ConversationStateService implements IChatStateService {
     }
 
     // Build message history including current user turn
-    const history: Array<{ role: 'user' | 'assistant' | 'system'; content: string }> = [
-      ...updatedState.sessionMemory.messages.map((m) => ({ role: m.role, content: m.content })),
-      { role: 'user', content: request.message },
-    ];
+    const prior = this.historyReader
+      ? await this.historyReader(request.sessionId)
+      : updatedState.sessionMemory.messages;
+    const history: ChatConversationState['messageHistory'] = prior.slice(-this.maxHistoryTurns * 2)
+      .map(m => ({ role: m.role, content: m.content }));
+    // HTTP entry points already persist the incoming user turn.
+    const last = history[history.length - 1];
+    if (last?.role !== 'user' || last.content !== request.message) history.push({ role: 'user', content: request.message });
 
     return {
       sessionId: request.sessionId,

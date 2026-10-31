@@ -38,7 +38,7 @@ export class ConversationManager {
   private db?: Database;
   private maxContextLength: number = 4000; // Max tokens in context
 
-  constructor(db?: Database) {
+  constructor(db?: Database, private readonly strictPersistence = false) {
     this.db = db;
   }
 
@@ -55,7 +55,7 @@ export class ConversationManager {
       metadata,
     };
 
-    let conversation = this.conversations.get(sessionId);
+    let conversation = await this.getConversation(sessionId);
     if (!conversation) {
       conversation = {
         sessionId,
@@ -81,6 +81,7 @@ export class ConversationManager {
         );
       } catch (error: any) {
         logger.warn('Failed to persist message to database', { error: error.message });
+        if (this.strictPersistence) throw error;
       }
     }
 
@@ -125,7 +126,7 @@ export class ConversationManager {
               role: row.role as 'user' | 'assistant',
               content: row.content,
               timestamp: new Date(row.created_at),
-              metadata: row.metadata ? JSON.parse(row.metadata) : undefined,
+              metadata: typeof row.metadata === 'string' ? JSON.parse(row.metadata) : row.metadata || undefined,
             })),
             createdAt: new Date(result.rows[0].created_at),
             updatedAt: new Date(result.rows[result.rows.length - 1].created_at),
@@ -134,6 +135,7 @@ export class ConversationManager {
         }
       } catch (error: any) {
         logger.warn('Failed to load conversation from database', { error: error.message });
+        if (this.strictPersistence) throw error;
       }
     }
 
@@ -200,6 +202,7 @@ export class ConversationManager {
         }));
       } catch (error: any) {
         logger.warn('Failed to list conversations from database', { error: error.message });
+        if (this.strictPersistence) throw error;
       }
     }
 
@@ -226,14 +229,17 @@ export class ConversationManager {
    * Delete a conversation
    */
   async deleteConversation(sessionId: string): Promise<boolean> {
-    const deleted = this.conversations.delete(sessionId);
+    let deleted = this.conversations.delete(sessionId);
 
     if (this.db) {
       try {
-        await this.db.query('DELETE FROM messages WHERE session_id = ?', [sessionId]);
-        await this.db.query('DELETE FROM sessions WHERE id = ?', [sessionId]);
+        await this.db.query('DELETE FROM conversation_states WHERE session_id = ?', [sessionId]);
+        const messages = await this.db.query('DELETE FROM messages WHERE session_id = ?', [sessionId]);
+        const sessions = await this.db.query('DELETE FROM sessions WHERE id = ?', [sessionId]);
+        deleted = deleted || messages.rowCount > 0 || sessions.rowCount > 0;
       } catch (error: any) {
         logger.warn('Failed to delete conversation from database', { error: error.message });
+        if (this.strictPersistence) throw error;
       }
     }
 

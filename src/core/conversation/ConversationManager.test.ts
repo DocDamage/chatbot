@@ -1,6 +1,10 @@
 import { ConversationManager } from './ConversationManager';
 
 describe('ConversationManager', () => {
+  it('reports database failures when durable history is required', async () => {
+    const manager = new ConversationManager({ query: jest.fn().mockRejectedValue(new Error('Database unavailable')) } as any, true);
+    await expect(manager.addMessage('daily', 'user', 'Remember this')).rejects.toThrow('Database unavailable');
+  });
   it('persists a session before inserting messages', async () => {
     const query = jest.fn().mockResolvedValue({ rows: [], rowCount: 0 });
     const manager = new ConversationManager({ query } as any);
@@ -8,12 +12,12 @@ describe('ConversationManager', () => {
     await manager.addMessage('session-1', 'user', 'hello', { userId: 'user-1' });
 
     expect(query).toHaveBeenNthCalledWith(
-      1,
+      2,
       expect.stringContaining('INSERT INTO sessions'),
       ['session-1', 'user-1']
     );
     expect(query).toHaveBeenNthCalledWith(
-      2,
+      3,
       expect.stringContaining('INSERT INTO messages'),
       expect.arrayContaining(['session-1', 'user', 'hello'])
     );

@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1915,
-    "productionSourceFiles": 1230,
-    "reachableProductionFiles": 846,
-    "unreachableProductionFiles": 384,
-    "routes": 520,
-    "environmentVariables": 229,
+    "sourceFiles": 1929,
+    "productionSourceFiles": 1236,
+    "reachableProductionFiles": 879,
+    "unreachableProductionFiles": 357,
+    "routes": 522,
+    "environmentVariables": 232,
     "featureFlags": 18,
-    "oversizedProductionFiles": 98
+    "oversizedProductionFiles": 99
   },
   "routes": [
     {
@@ -43,525 +43,532 @@
       "receiver": "app",
       "method": "GET",
       "path": "/health/live",
-      "line": 96,
+      "line": 108,
       "file": "src/server/healthRoutes.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api/metrics",
-      "line": 100,
+      "line": 112,
       "file": "src/server/healthRoutes.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/metrics",
-      "line": 121,
+      "line": 133,
       "file": "src/server/healthRoutes.ts"
     },
     {
       "receiver": "app",
       "method": "USE",
+      "path": "/api/auth",
+      "line": 78,
+      "file": "src/server/index.ts"
+    },
+    {
+      "receiver": "app",
+      "method": "USE",
       "path": "/api/v1",
-      "line": 185,
+      "line": 188,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "USE",
       "path": "/api/v2",
-      "line": 191,
+      "line": 194,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/chat",
-      "line": 198,
+      "line": 201,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "USE",
       "path": "/api/knowledge-base/dabook",
-      "line": 206,
-      "file": "src/server/index.ts"
-    },
-    {
-      "receiver": "app",
-      "method": "POST",
-      "path": "/api/knowledge-base/add",
       "line": 209,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
+      "path": "/api/knowledge-base/add",
+      "line": 212,
+      "file": "src/server/index.ts"
+    },
+    {
+      "receiver": "app",
+      "method": "POST",
       "path": "/api/knowledge-base/file",
-      "line": 219,
+      "line": 222,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge-base/directory",
-      "line": 229,
+      "line": 232,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "USE",
       "path": "/api/rag",
-      "line": 252,
+      "line": 255,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "USE",
       "path": "/api/knowledge-os",
-      "line": 254,
+      "line": 257,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api/tools",
-      "line": 258,
+      "line": 261,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api/models/free",
-      "line": 275,
+      "line": 278,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api-docs",
-      "line": 291,
+      "line": 294,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/upload",
-      "line": 317,
+      "line": 320,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/feedback",
-      "line": 344,
+      "line": 347,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api/feedback/:messageId",
-      "line": 361,
+      "line": 364,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api/user/instructions",
-      "line": 372,
+      "line": 375,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "PUT",
       "path": "/api/user/instructions",
-      "line": 380,
+      "line": 383,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api/chat/quick-replies",
-      "line": 392,
+      "line": 395,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/conversations/:sessionId/share",
-      "line": 414,
+      "line": 417,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api/share/:shareId",
-      "line": 431,
+      "line": 434,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api/documents/search",
-      "line": 447,
+      "line": 450,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "USE",
       "path": "/api/knowledge",
-      "line": 463,
+      "line": 466,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/reddit",
-      "line": 465,
+      "line": 468,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/youtube",
-      "line": 475,
+      "line": 478,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/university",
-      "line": 485,
+      "line": 488,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/papers",
-      "line": 495,
+      "line": 498,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/github",
-      "line": 505,
+      "line": 508,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/stackoverflow",
-      "line": 515,
+      "line": 518,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/news",
-      "line": 525,
+      "line": 528,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/medium",
-      "line": 540,
+      "line": 543,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/quora",
-      "line": 550,
+      "line": 553,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/gutenberg",
-      "line": 560,
+      "line": 563,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/docs",
-      "line": 570,
+      "line": 573,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/library-of-congress",
-      "line": 580,
+      "line": 583,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/entertainment",
-      "line": 590,
+      "line": 593,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/books",
-      "line": 604,
+      "line": 607,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/specialized-topics",
-      "line": 617,
+      "line": 620,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/financial-advice",
-      "line": 630,
+      "line": 633,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/religion",
-      "line": 638,
+      "line": 641,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/mental-health",
-      "line": 646,
+      "line": 649,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/web-design",
-      "line": 654,
+      "line": 657,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/ui-design",
-      "line": 662,
+      "line": 665,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/backend-design",
-      "line": 670,
+      "line": 673,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/music-theory",
-      "line": 678,
+      "line": 681,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/llm-programming",
-      "line": 686,
+      "line": 689,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/anatomy",
-      "line": 694,
+      "line": 697,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/pottery",
-      "line": 702,
+      "line": 705,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/gardening",
-      "line": 710,
+      "line": 713,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/cna",
-      "line": 718,
+      "line": 721,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/dsp",
-      "line": 726,
+      "line": 729,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/rn",
-      "line": 734,
+      "line": 737,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/astronomy",
-      "line": 742,
+      "line": 745,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/astrology",
-      "line": 750,
+      "line": 753,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/botany",
-      "line": 758,
+      "line": 761,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/marijuana-growing",
-      "line": 766,
+      "line": 769,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/load-telegram",
-      "line": 774,
+      "line": 777,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/wikipedia",
-      "line": 795,
+      "line": 798,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/scrape",
-      "line": 805,
+      "line": 808,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/load-csv",
-      "line": 816,
+      "line": 819,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/load-json",
-      "line": 840,
+      "line": 843,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/graph/entity",
-      "line": 862,
+      "line": 865,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api/knowledge/graph/query",
-      "line": 872,
+      "line": 875,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/knowledge/fuse",
-      "line": 884,
+      "line": 887,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/reasoning/chain-of-thought",
-      "line": 1042,
+      "line": 1045,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api/debug/:requestId",
-      "line": 1058,
+      "line": 1061,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api/conversations",
-      "line": 1071,
+      "line": 1074,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api/conversations/:sessionId",
-      "line": 1081,
+      "line": 1084,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "DELETE",
       "path": "/api/conversations/:sessionId",
-      "line": 1092,
+      "line": 1095,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "POST",
       "path": "/api/webhooks",
-      "line": 1100,
+      "line": 1103,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "/api/webhooks",
-      "line": 1116,
+      "line": 1119,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "DELETE",
       "path": "/api/webhooks/:id",
-      "line": 1122,
+      "line": 1125,
       "file": "src/server/index.ts"
     },
     {
       "receiver": "app",
       "method": "GET",
       "path": "*",
-      "line": 1131,
+      "line": 1134,
       "file": "src/server/index.ts"
     },
     {
@@ -2183,6 +2190,13 @@
     },
     {
       "receiver": "router",
+      "method": "POST",
+      "path": "/local-session",
+      "line": 7,
+      "file": "src/server/routes/local-session.ts"
+    },
+    {
+      "receiver": "router",
       "method": "GET",
       "path": "/api/local-tools/detect",
       "line": 18,
@@ -3438,7 +3452,7 @@
       "receiver": "router",
       "method": "POST",
       "path": "/chat/stream",
-      "line": 36,
+      "line": 37,
       "file": "src/server/routes/v2/chat.ts"
     },
     {
@@ -3820,6 +3834,10 @@
     {
       "name": "StorageQuotaManager",
       "file": "src/core/capabilities/storage/StorageQuotaManager.ts"
+    },
+    {
+      "name": "DailyChatService",
+      "file": "src/core/chat/DailyChatService.ts"
     },
     {
       "name": "ReleaseCutoverOrchestrator",
@@ -5747,6 +5765,10 @@
         "file": "src/core/database/Database.ts"
       },
       {
+        "name": "conversation_states",
+        "file": "src/core/database/Database.ts"
+      },
+      {
         "name": "document_chunks",
         "file": "src/core/database/Database.ts"
       },
@@ -5976,6 +5998,18 @@
     },
     {
       "file": "scripts/import-wikipedia-general-corpus.ts",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "scripts/local/setup.mjs",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "scripts/local/verify.mjs",
       "signals": [
         "timer"
       ]
@@ -6393,12 +6427,6 @@
       ]
     },
     {
-      "file": "src/server/routes/chat-stream.ts",
-      "signals": [
-        "timer"
-      ]
-    },
-    {
       "file": "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts",
       "signals": [
         "queue-or-worker"
@@ -6428,7 +6456,6 @@
     "ANTHROPIC_API_KEY",
     "ANTHROPIC_MODEL",
     "API_KEY_ENCRYPTION_SECRET",
-    "API_SECRET_KEY",
     "ASSEMBLYAI_API_KEY",
     "AUDIO_SEARCH_MAX_FILES",
     "BACKGROUND_CODING_KNOWLEDGE_LOAD",
@@ -6455,6 +6482,7 @@
     "CF_ACCESSIBILITY_CERTIFIED",
     "CF_RELEASE_CERTIFIED",
     "CHATBOT_NATIVE_PYTHON",
+    "CHAT_RUNTIME_ENABLED",
     "CHAT_RUNTIME_V2_SHADOW",
     "CI",
     "CLAUDE_MODEL",
@@ -6541,6 +6569,7 @@
     "GROUNDING_MODE",
     "GROUNDING_REQUIRED_COVERAGE",
     "GUARDIAN_API_KEY",
+    "HOST",
     "HUGGINGFACE_API_KEY",
     "HUGGINGFACE_MODEL",
     "JWT_SECRET",
@@ -6553,6 +6582,7 @@
     "LLAVA_MODEL",
     "LLM_KNOWLEDGE_FALLBACK",
     "LLM_PROVIDER",
+    "LOCALAPPDATA",
     "LOCAL_KNOWLEDGE_WIKI_DIR",
     "LOCAL_MODEL_ALLOWLIST",
     "LOCAL_MODEL_API_KEY",
@@ -6573,6 +6603,7 @@
     "OCR_QUEUE_LIMIT",
     "OCR_REIMPORT_EMBEDDINGS",
     "OLLAMA_BASE_URL",
+    "OLLAMA_CONTEXT_TOKENS",
     "OLLAMA_MODEL",
     "OLLAMA_THINK",
     "OLLAMA_URL",
@@ -6727,15 +6758,15 @@
   "oversizedFiles": [
     {
       "file": "client/src/components/AssistantChat.tsx",
-      "lines": 888
+      "lines": 914
     },
     {
       "file": "client/src/components/CapabilityHubPanel.tsx",
-      "lines": 1126
+      "lines": 1127
     },
     {
       "file": "client/src/components/CapabilityPromotionView.tsx",
-      "lines": 423
+      "lines": 424
     },
     {
       "file": "client/src/components/CreativeComposerPanel.tsx",
@@ -6743,11 +6774,11 @@
     },
     {
       "file": "client/src/components/FLStudioControlPanel.tsx",
-      "lines": 622
+      "lines": 623
     },
     {
       "file": "client/src/components/KnowledgeOSPanel.tsx",
-      "lines": 444
+      "lines": 445
     },
     {
       "file": "client/src/components/ModeSelector.tsx",
@@ -6759,7 +6790,7 @@
     },
     {
       "file": "client/src/components/SettingsMenu.tsx",
-      "lines": 568
+      "lines": 569
     },
     {
       "file": "client/src/components/SpriteLabPanel.tsx",
@@ -6854,6 +6885,10 @@
       "lines": 648
     },
     {
+      "file": "src/core/config/EnvironmentDefinitions.ts",
+      "lines": 306
+    },
+    {
       "file": "src/core/config/ProfileManager.ts",
       "lines": 434
     },
@@ -6871,7 +6906,7 @@
     },
     {
       "file": "src/core/database/Database.ts",
-      "lines": 552
+      "lines": 554
     },
     {
       "file": "src/core/database/ExpansionMigrations.ts",
@@ -6899,7 +6934,7 @@
     },
     {
       "file": "src/core/initialization/ServiceInitializer.ts",
-      "lines": 885
+      "lines": 899
     },
     {
       "file": "src/core/knowledge/GitHubSource.ts",
@@ -7007,7 +7042,7 @@
     },
     {
       "file": "src/core/rag/RAGDocumentStore.ts",
-      "lines": 1233
+      "lines": 1251
     },
     {
       "file": "src/core/rag/RAGRouter.ts",
@@ -7099,7 +7134,7 @@
     },
     {
       "file": "src/server/index.ts",
-      "lines": 1177
+      "lines": 1181
     },
     {
       "file": "src/server/routes/admin.ts",
@@ -7111,7 +7146,7 @@
     },
     {
       "file": "src/server/routes/legacy-chat.ts",
-      "lines": 600
+      "lines": 606
     },
     {
       "file": "src/server/routes/setup.ts",

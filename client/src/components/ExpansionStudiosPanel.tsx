@@ -1,3 +1,4 @@
+import { apiFetch } from '../api/http';
 import { useEffect, useMemo, useState } from 'react';
 import './ExpansionStudiosPanel.css';
 
@@ -46,7 +47,7 @@ export default function ExpansionStudiosPanel({ initialCapabilityId }: { initial
     setBusy(true);
     setStatus(`Running ${definition.label} action…`);
     try {
-      const response = await fetch(path, {
+      const response = await apiFetch(path, {
         method,
         headers: authHeaders(body !== undefined),
         ...(body !== undefined ? { body: JSON.stringify(body) } : {})

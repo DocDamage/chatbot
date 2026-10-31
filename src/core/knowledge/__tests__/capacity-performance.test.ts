@@ -4,7 +4,10 @@ import { ResourceGuardrailService } from '../ResourceGuardrailService';
 describe('CapacityPerformanceTracker & ResourceGuardrails (Section 34 Compliance)', () => {
   beforeEach(() => {
     CapacityPerformanceTracker.resetInstance();
+    const actual = process.memoryUsage();
+    jest.spyOn(process, 'memoryUsage').mockReturnValue({ ...actual, heapTotal: 100, heapUsed: 50 });
   });
+  afterEach(() => jest.restoreAllMocks());
 
   describe('34.1: Chat Latency Budget Tracking', () => {
     it('records and aggregates latency stages for no-retrieval requests', () => {

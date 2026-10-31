@@ -9,8 +9,8 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 
 ## Counts
 
-- Reachable production files: 846
-- Unreachable production files: 384
+- Reachable production files: 879
+- Unreachable production files: 357
 - Unresolved relative imports: 70
 
 ## Unreachable production modules
@@ -81,17 +81,8 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/capabilities/reliability/LoadSoakBenchmarkRunner.ts`
 - `src/core/capabilities/reliability/PerformanceRegressionGate.ts`
 - `src/core/capabilities/storage/StorageQuotaManager.ts`
-- `src/core/chat/ChatContextPlanner.ts`
-- `src/core/chat/ChatRequestNormalizer.ts`
-- `src/core/chat/ChatRuntime.ts`
-- `src/core/chat/ChatRuntimeCompatibilityAdapter.ts`
-- `src/core/chat/ChatRuntimeFactory.ts`
 - `src/core/chat/ChatRuntimeShadowRunner.ts`
-- `src/core/chat/ContextClassifier.ts`
-- `src/core/chat/ContextPlanDiagnostics.ts`
-- `src/core/chat/ContextRoutingSignals.ts`
 - `src/core/chat/LegacyOrchestratorDeprecation.ts`
-- `src/core/chat/ProjectContextPlanner.ts`
 - `src/core/chat/ReleaseCutoverOrchestrator.ts`
 - `src/core/chat/WhyThisAnswerService.ts`
 - `src/core/chrono/ClaimVerifier.ts`
@@ -129,7 +120,6 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/evals/DatasetAbEvaluator.ts`
 - `src/core/evals/GoldenConversationRunner.ts`
 - `src/core/evals/GroundingEscalationFlow.ts`
-- `src/core/evals/GroundingEvaluator.ts`
 - `src/core/evals/ReleaseThresholdFramework.ts`
 - `src/core/evals/ResponseWordingPolicy.ts`
 - `src/core/evals/RetrievalWeightTuner.ts`
@@ -155,6 +145,7 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/governance/BacklogReconciliationOrchestrator.ts`
 - `src/core/governance/CIGatesOrchestrator.ts`
 - `src/core/governance/CanonicalCliRegistry.ts`
+- `src/core/governance/CanonicalCommandOperations.ts`
 - `src/core/governance/CanonicalProgramCompletionOrchestrator.ts`
 - `src/core/governance/DocumentationDeliverablesAuditor.ts`
 - `src/core/governance/HandoffAdditionsBuilder.ts`
@@ -318,10 +309,6 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/security/threat-model/CapabilityThreatModel.ts`
 - `src/core/security/web/WebSecurityBoundaryGuard.ts`
 - `src/core/state/ConversationContextSelector.ts`
-- `src/core/state/ConversationStateReducer.ts`
-- `src/core/state/ConversationStateRepository.ts`
-- `src/core/state/ConversationStateService.ts`
-- `src/core/state/ConversationVariableExtractor.ts`
 - `src/core/state/MemoryKnowledgeArbiter.ts`
 - `src/core/testing/CanonicalTestingOrchestrator.ts`
 - `src/core/tools/CodingTruthBridge.ts`
@@ -330,20 +317,12 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/tools/ToolLanguageTruthfulness.ts`
 - `src/core/tools/market/ValuationTool.ts`
 - `src/core/ui/ThinkingUI.ts`
-- `src/core/validation/CodingResponseValidator.ts`
-- `src/core/validation/CoreResponseValidators.ts`
-- `src/core/validation/GroundedResponseValidator.ts`
-- `src/core/validation/ResponseQualityGate.ts`
-- `src/core/validation/ResponseRetryPolicy.ts`
 - `src/core/voice/VoiceAgent.ts`
 - `src/core/website/WebsiteWorkspaceService.ts`
 - `src/core/website/index.ts`
 - `src/core/workflow/ToolApprovalBinding.ts`
 - `src/core/workflow/WorkflowEngine.ts`
-- `src/core/workflow/WorkflowResolver.ts`
 - `src/core/workflow/WorkflowStateRepository.ts`
-- `src/core/workflow/definitions/CodingBuildWorkflow.ts`
-- `src/core/workflow/definitions/DebugWorkflow.ts`
 - `src/mesh/CircuitBreaker.ts`
 - `src/mesh/LoadBalancer.ts`
 - `src/middleware/apiKeyAuth.ts`
@@ -359,12 +338,9 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/types/backlog-reconciliation.ts`
 - `src/types/bot-profile.ts`
 - `src/types/chat-diagnostics.ts`
-- `src/types/chat-runtime.ts`
 - `src/types/ci-gates.ts`
 - `src/types/cli-scripts.ts`
 - `src/types/coding-retrieval-policy.ts`
-- `src/types/context-plan.ts`
-- `src/types/conversation-state.ts`
 - `src/types/dataset-fixtures.ts`
 - `src/types/dependency-graph.ts`
 - `src/types/developer-qa.ts`
@@ -375,7 +351,6 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/types/general-knowledge.ts`
 - `src/types/general-retrieval-policy.ts`
 - `src/types/golden-eval.ts`
-- `src/types/grounding-eval.ts`
 - `src/types/input-adapters.ts`
 - `src/types/knowledge-datasets.ts`
 - `src/types/knowledge-maintenance.ts`
@@ -388,7 +363,6 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/types/program-completion.ts`
 - `src/types/prompt-assembler.ts`
 - `src/types/research-math-packs.ts`
-- `src/types/response-quality.ts`
 - `src/types/retrieval-scoring.ts`
 - `src/types/rollback-recovery.ts`
 - `src/types/rollout-migration.ts`
@@ -397,7 +371,6 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/types/storage-planning.ts`
 - `src/types/testing-strategy.ts`
 - `src/types/tool-truth.ts`
-- `src/types/workflow.ts`
 - `src/utils/memoize.ts`
 
 ## Static-analysis limitations

@@ -1,3 +1,4 @@
+import { apiFetch } from '../api/http';
 import { useEffect, useMemo, useState } from 'react';
 import './FLStudioControlPanel.css';
 
@@ -93,8 +94,8 @@ export default function FLStudioControlPanel({ onSendCommand }: FLStudioControlP
   const refreshStatus = async () => {
     try {
       const [statusResponse, toolsResponse] = await Promise.all([
-        fetch('/api/flstudio/status'),
-        fetch('/api/flstudio/tools')
+        apiFetch('/api/flstudio/status'),
+        apiFetch('/api/flstudio/tools')
       ]);
 
       if (statusResponse.ok) {
@@ -114,7 +115,7 @@ export default function FLStudioControlPanel({ onSendCommand }: FLStudioControlP
   };
 
   const postJson = async (url: string, body: Record<string, any>) => {
-    const response = await fetch(url, {
+    const response = await apiFetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
@@ -158,7 +159,7 @@ export default function FLStudioControlPanel({ onSendCommand }: FLStudioControlP
   const disconnect = async () => {
     setBusy(true);
     try {
-      await fetch('/api/flstudio/disconnect', { method: 'POST' });
+      await apiFetch('/api/flstudio/disconnect', { method: 'POST' });
       setTools([]);
       await refreshStatus();
       setMessage('Disconnected from the FL Studio MCP bridge.');

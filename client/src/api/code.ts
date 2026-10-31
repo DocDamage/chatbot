@@ -1,3 +1,4 @@
+import { apiFetch } from './http';
 import { throwApiError } from './errors';
 
 export interface CodeSearchResult {
@@ -15,7 +16,7 @@ export interface StructuredCodeOperation {
 }
 
 export async function askCodeAgent(message: string, runVerification = false) {
-  const response = await fetch('/api/code/ask', {
+  const response = await apiFetch('/api/code/ask', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message, runVerification }),
@@ -25,7 +26,7 @@ export async function askCodeAgent(message: string, runVerification = false) {
 }
 
 export async function planCodeWork(message: string) {
-  const response = await fetch('/api/code/plan', {
+  const response = await apiFetch('/api/code/plan', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message }),
@@ -36,7 +37,7 @@ export async function planCodeWork(message: string) {
 
 export async function searchCodeFiles(q: string, signal?: AbortSignal): Promise<CodeSearchResult[]> {
   const params = new URLSearchParams({ q });
-  const response = await fetch(`/api/code/files/search?${params.toString()}`, { signal });
+  const response = await apiFetch(`/api/code/files/search?${params.toString()}`, { signal });
   if (!response.ok) await throwApiError(response, 'Unable to search code files');
   const data = await response.json();
   return data.results || [];
@@ -44,14 +45,14 @@ export async function searchCodeFiles(q: string, signal?: AbortSignal): Promise<
 
 export async function getCodeSymbols(file: string) {
   const params = new URLSearchParams({ file });
-  const response = await fetch(`/api/code/symbols?${params.toString()}`);
+  const response = await apiFetch(`/api/code/symbols?${params.toString()}`);
   if (!response.ok) await throwApiError(response, 'Unable to load code symbols');
   const data = await response.json();
   return data.symbols || [];
 }
 
 export async function createCodePatch(message: string, mode: string) {
-  const response = await fetch('/api/code/patch', {
+  const response = await apiFetch('/api/code/patch', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message, mode }),
@@ -61,7 +62,7 @@ export async function createCodePatch(message: string, mode: string) {
 }
 
 export async function reviewCodeDiff(diff: string, focus: string[] = []) {
-  const response = await fetch('/api/code/review', {
+  const response = await apiFetch('/api/code/review', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ diff, focus }),
@@ -71,7 +72,7 @@ export async function reviewCodeDiff(diff: string, focus: string[] = []) {
 }
 
 export async function verifyCode(commands: string[], mode: string) {
-  const response = await fetch('/api/code/verify', {
+  const response = await apiFetch('/api/code/verify', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ commands, mode }),
@@ -81,13 +82,13 @@ export async function verifyCode(commands: string[], mode: string) {
 }
 
 export async function getCodeRepository(mode: string) {
-  const response = await fetch('/api/code/repository', { headers: { 'x-work-mode': mode } });
+  const response = await apiFetch('/api/code/repository', { headers: { 'x-work-mode': mode } });
   if (!response.ok) await throwApiError(response, 'Unable to inspect repository');
   return response.json();
 }
 
 export async function retrieveCodeEvidence(query: string, mode: string) {
-  const response = await fetch('/api/code/retrieve', {
+  const response = await apiFetch('/api/code/retrieve', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-work-mode': mode },
     body: JSON.stringify({ query }),
@@ -97,7 +98,7 @@ export async function retrieveCodeEvidence(query: string, mode: string) {
 }
 
 export async function createStructuredCodePatch(message: string, mode: string) {
-  const response = await fetch('/api/code/patch/structured', {
+  const response = await apiFetch('/api/code/patch/structured', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-work-mode': mode },
     body: JSON.stringify({ message, mode }),
@@ -107,7 +108,7 @@ export async function createStructuredCodePatch(message: string, mode: string) {
 }
 
 export async function applyStructuredCodePatch(operations: StructuredCodeOperation[], mode: string) {
-  const response = await fetch('/api/code/patch/apply', {
+  const response = await apiFetch('/api/code/patch/apply', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-work-mode': mode },
     body: JSON.stringify({ operations: operations.map(operation => ({ ...operation, authorized: true })), mode, approved: true }),
@@ -117,7 +118,7 @@ export async function applyStructuredCodePatch(operations: StructuredCodeOperati
 }
 
 export async function verifyNativeCode(mode: string, run = true) {
-  const response = await fetch('/api/code/verify/native', {
+  const response = await apiFetch('/api/code/verify/native', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-work-mode': mode },
     body: JSON.stringify({ mode, run }),
@@ -127,7 +128,7 @@ export async function verifyNativeCode(mode: string, run = true) {
 }
 
 export async function repairCode(operations: StructuredCodeOperation[], mode: string, maxIterations = 3) {
-  const response = await fetch('/api/code/repair', {
+  const response = await apiFetch('/api/code/repair', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-work-mode': mode },
     body: JSON.stringify({ operations: operations.map(operation => ({ ...operation, authorized: true })), mode, approved: true, maxIterations }),

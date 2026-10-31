@@ -84,6 +84,7 @@ export class ChatRequestNormalizer {
     const clientCapabilities = this.normalizeClientCapabilities(input.clientCapabilities);
     const requestedModelPolicy = this.cleanString(input.requestedModelPolicy, 100);
     const metadata = this.sanitizeMetadata(input.metadata);
+    if (typeof input.useRAG === 'boolean') metadata.useRAG = input.useRAG;
 
     const draft = {
       requestId,

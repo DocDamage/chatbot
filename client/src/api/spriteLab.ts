@@ -1,3 +1,4 @@
+import { apiFetch } from './http';
 import { throwApiError } from './errors';
 import { LocalRunOutputFile, listLocalRunFiles, localRunFileUrl } from './localRunApprovals';
 
@@ -44,7 +45,7 @@ export interface PlannedExternalSpriteRun {
 }
 
 async function postJson<T>(url: string, body: unknown, errorMessage: string): Promise<T> {
-  const response = await fetch(url, {
+  const response = await apiFetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
@@ -54,7 +55,7 @@ async function postJson<T>(url: string, body: unknown, errorMessage: string): Pr
 }
 
 export async function getSpriteLabStatus(): Promise<SpriteLabStatus> {
-  const response = await fetch('/api/sprite-lab/status');
+  const response = await apiFetch('/api/sprite-lab/status');
   if (!response.ok) await throwApiError(response, 'Unable to load Sprite Lab status');
   return response.json();
 }

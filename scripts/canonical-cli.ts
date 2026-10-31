@@ -2,6 +2,7 @@
  * Entrypoint for Canonical Chat Runtime CLI commands.
  */
 import { CanonicalCliRegistry } from '../src/core/governance/CanonicalCliRegistry';
+import 'dotenv/config';
 import { CanonicalCliCommandName, CanonicalCliCommandNameSchema } from '../src/types/cli-scripts';
 
 async function main() {

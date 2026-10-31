@@ -12,7 +12,7 @@ import { logger } from '../../core/observability/logger';
 export async function streamChat(
   req: Request,
   res: Response,
-  orchestrator: EnhancedOrchestrator
+  orchestrator: { processRequest: EnhancedOrchestrator['processRequest'] }
 ): Promise<void> {
   const { message, sessionId, userId } = req.body;
 
@@ -29,9 +29,10 @@ export async function streamChat(
     // For now, we'll simulate streaming by chunking the response
     // In a real implementation, the orchestrator would support streaming
     const response = await orchestrator.processRequest({
+      ...req.body,
       message,
       sessionId,
-      userId,
+      userId: req.user?.userId || userId,
     });
 
     // Split response into chunks and stream
@@ -48,8 +49,7 @@ export async function streamChat(
         accumulated,
       })}\n\n`);
 
-      // Small delay to simulate streaming
-      await new Promise(resolve => setTimeout(resolve, 50));
+      if (res.destroyed) return;
     }
 
     // Send completion message
@@ -57,6 +57,9 @@ export async function streamChat(
       type: 'complete',
       response: response.response,
       sessionId,
+      model: response.model,
+      sources: (response as any).sources,
+      citations: (response as any).citations,
     })}\n\n`);
 
     res.end();

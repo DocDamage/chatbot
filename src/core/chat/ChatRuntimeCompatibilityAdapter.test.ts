@@ -96,7 +96,7 @@ describe('ChatRuntimeCompatibilityAdapter (CRK-P01-T05)', () => {
   });
 
   it('creates an operational orchestrator bridge that executes legacy requests on ChatRuntime', async () => {
-    const runtime = ChatRuntimeFactory.create();
+    const runtime = ChatRuntimeFactory.create({ llmAdapter: { generate: async () => ({ content: 'Test provider answer.' }) } });
     const bridge = ChatRuntimeCompatibilityAdapter.createOrchestratorBridge(runtime);
 
     const legacyResponse = await bridge.processRequest(legacyRequest);

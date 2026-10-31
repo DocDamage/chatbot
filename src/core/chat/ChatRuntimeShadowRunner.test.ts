@@ -45,6 +45,7 @@ describe('ChatRuntimeShadowRunner (CRK-P01-T06)', () => {
   it('runs shadow evaluation without mutating primary response and emits comparison', async () => {
     const shadowRuntime = ChatRuntimeFactory.create({
       fallbackModel: 'gpt-4o',
+      llmAdapter: { generate: async () => ({ content: 'A shadow provider answer.' }) },
     });
 
     let emittedComparison: ShadowComparisonResult | undefined;

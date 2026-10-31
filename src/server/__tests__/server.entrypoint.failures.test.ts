@@ -33,9 +33,9 @@ describe('Server Entrypoint Startup Failure & Missing Services Matrix', () => {
       },
     }));
 
-    jest.isolateModules(() => {
+    expect(() => jest.isolateModules(() => {
       require('../index');
-    });
+    })).toThrow('Invalid config schema');
 
     expect(exitSpy).toHaveBeenCalledWith(1);
     exitSpy.mockRestore();

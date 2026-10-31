@@ -105,9 +105,10 @@ describe('KnowledgeSecurityPolicy (Section 33 Compliance)', () => {
 
   describe('33.8: Diagnostics Privacy & Redaction', () => {
     it('redacts sensitive API keys and tokens from diagnostics logs', () => {
-      const raw = 'Diagnostics info: OPENAI_API_KEY=sk-abcdefghijklmnopqrstuvwxyz123456 and token: Bearer mySecretToken123!';
+      const fixtureKey = ['sk', 'x'.repeat(32)].join('-');
+      const raw = `Diagnostics info: OPENAI_API_KEY=${fixtureKey} and token: Bearer mySecretToken123!`;
       const redacted = KnowledgeSecurityPolicy.redactDiagnostics(raw);
-      expect(redacted).not.toContain('sk-abcdefghijklmnopqrstuvwxyz123456');
+      expect(redacted).not.toContain(fixtureKey);
       expect(redacted).toContain('[REDACTED_KEY]');
     });
 

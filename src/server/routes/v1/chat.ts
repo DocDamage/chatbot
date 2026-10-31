@@ -20,9 +20,10 @@ export function createChatRouter(orchestrator: any) {
       const sanitizedMessage = sanitizeInput(message);
 
       const request: ChatRequest = {
+        ...req.body,
         message: sanitizedMessage,
         sessionId,
-        userId,
+        userId: req.user?.userId || userId,
       };
 
       const response = await orchestrator.processRequest(request);

@@ -38,6 +38,7 @@ export class RAGService {
   private citationTracker: CitationTracker;
   private llmAdapter: LLMAdapter;
   private embeddingService?: EmbeddingService;
+  private databaseRetrieval?: RAGDocumentStore;
 
   constructor(
     llmAdapter: LLMAdapter,
@@ -46,6 +47,7 @@ export class RAGService {
   ) {
     this.llmAdapter = llmAdapter;
     this.embeddingService = embeddingService;
+    this.databaseRetrieval = options.retrievalMode === 'database' ? options.documentStore : undefined;
     this.retriever = new HybridRetriever(
       embeddingService,
       options.documentStore,
@@ -215,6 +217,13 @@ Answer:`;
    */
   getRetriever(): HybridRetriever {
     return this.retriever;
+  }
+
+  /** Retrieve evidence without making extra model calls or generating a second answer. */
+  async retrieveContext(query: string, limit = 5): Promise<DocumentChunk[]> {
+    if (this.databaseRetrieval && (await this.databaseRetrieval.getStats()).chunks === 0) return [];
+    const results = await this.retriever.retrieve(query, limit);
+    return results.filter(result => result.score > 0).map(result => result.chunk);
   }
 }
 

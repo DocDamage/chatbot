@@ -81,6 +81,8 @@ import { SafeDatabaseQuestionAgent } from '../database/SafeDatabaseQuestionAgent
 import { GovernanceEvidenceService } from '../governance/GovernanceEvidenceService';
 import { GitHubRepoKnowledgeImporter } from '../importers/GitHubRepoKnowledgeImporter';
 import { ConversationManager } from '../conversation/ConversationManager';
+import { ChatRuntimeFactory } from '../chat/ChatRuntimeFactory';
+import { DailyChatService } from '../chat/DailyChatService';
 import { resolveDeploymentMode } from '../config/EnvironmentDefinitions';
 import { PyScrappyService } from '../research/PyScrappyService';
 import * as fs from 'fs';
@@ -88,6 +90,7 @@ import * as path from 'path';
 
 export interface InitializedServices {
   orchestrator: EnhancedOrchestrator;
+  dailyChat?: DailyChatService;
   ragService?: RAGService;
   documentManager?: DocumentManager;
   modelRouter?: ModelRouter;
@@ -295,7 +298,17 @@ export class ServiceInitializer {
     // 11. Initialize Analytics Service
     const analytics = new AnalyticsService();
     logger.info('Analytics service initialized');
-    const conversationManager = new ConversationManager(database);
+    const conversationManager = new ConversationManager(database, Boolean(database));
+    const dailyChat = process.env.CHAT_RUNTIME_ENABLED === 'false' ? undefined : new DailyChatService(
+      ChatRuntimeFactory.create({
+        database, conversationManager, llmAdapter: primaryAdapter, ragService,
+        enableRAG: process.env.ENABLE_RAG !== 'false',
+        enableTools: false,
+        maxContextTokens: Number(process.env.OLLAMA_CONTEXT_TOKENS || 8192),
+      }),
+      conversationManager,
+      orchestrator,
+    );
 
     const mathGeniusAgent = new MathGeniusAgent();
     const marketGeniusAgent = new MarketGeniusAgent();
@@ -367,6 +380,7 @@ export class ServiceInitializer {
     return {
       initialization,
       orchestrator,
+      dailyChat,
       ragService,
       documentManager,
       modelRouter,
@@ -451,10 +465,10 @@ export class ServiceInitializer {
 
       // Check availability
       const { available } = await ollamaAdapter.checkAvailability();
-      if (available) {
+      if (available || process.env.LLM_PROVIDER === 'ollama' || process.env.USE_OLLAMA === 'true') {
         adapters[ModelProvider.OLLAMA] = ollamaAdapter;
         primary = primary || ollamaAdapter;
-        logger.info('Ollama adapter ready', { model: ollamaModel });
+        logger.info('Ollama adapter configured', { model: ollamaModel, available });
       } else {
         logger.warn('Ollama not available, skipping');
       }

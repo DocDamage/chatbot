@@ -255,7 +255,7 @@ describe('B75-05: Providers Deep Decision Matrix', () => {
         expect.objectContaining({
           model: 'llama3:8b',
           prompt: 'You are a math tutor.\n\nUser: Calculate 10+10\nAssistant:',
-          options: { temperature: 0.5, num_predict: 500 },
+          options: { temperature: 0.5, num_predict: 500, num_ctx: 8192 },
         })
       );
     });

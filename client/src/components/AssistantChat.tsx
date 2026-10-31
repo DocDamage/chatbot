@@ -1,3 +1,4 @@
+import { apiFetch } from '../api/http';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActionBarPrimitive,
@@ -22,6 +23,7 @@ import LoadedFilesBar from './LoadedFilesBar';
 import AudioPreviewBrowser from './AudioPreviewBrowser';
 import CodeWorkflowPanel from './CodeWorkflowPanel';
 import ConversationToolsPanel from './ConversationToolsPanel';
+import ConversationHistory from './ConversationHistory';
 import CreativeComposerPanel, { buildCreativeRequestPayload, defaultCreativeComposerState } from './CreativeComposerPanel';
 import KnowledgeMissPrompt from './KnowledgeMissPrompt';
 import PlanActionBar from './PlanActionBar';
@@ -55,6 +57,7 @@ type ChatMessage = {
   status?: 'running' | 'complete' | 'error';
   sourcesDrawerData?: SourcesDrawerData;
   diagnostics?: WhyThisAnswerDiagnostics;
+  warnings?: string[];
 };
 
 type ConnectionState = 'connected' | 'degraded' | 'connecting' | 'disconnected';
@@ -228,6 +231,7 @@ const convertMessage = (message: ChatMessage): ThreadMessageLike => {
         createdAt: message.createdAt,
         sourcesDrawerData: message.sourcesDrawerData,
         diagnostics: message.diagnostics,
+        warnings: message.warnings,
       }
     }
   };
@@ -258,7 +262,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [mode, setMode] = useState<ChatMode>('ask');
   const [contextOpen, setContextOpen] = useState(false);
-  const [sessionId] = useState(() => uuidv4());
+  const [sessionId, setSessionId] = useState(() => uuidv4());
   const [isRunning, setIsRunning] = useState(false);
   const [loadedFiles, setLoadedFiles] = useState<LoadedFileContext[]>([]);
   const [loadedAudio, setLoadedAudio] = useState<AudioFileContext[]>([]);
@@ -284,7 +288,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
 
     const checkHealth = async () => {
       try {
-        const response = await fetch('/health/ready', { cache: 'no-store' });
+        const response = await apiFetch('/health/ready', { cache: 'no-store' });
         if (!active) return;
         setConnectionState(response.ok ? 'connected' : 'degraded');
       } catch {
@@ -322,7 +326,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
     ]);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -367,6 +371,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
             status: 'complete',
             sourcesDrawerData: data.sourcesDrawerData,
             diagnostics: data.diagnostics,
+            warnings: data.warnings,
           }
         : message
       ));
@@ -446,14 +451,33 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
   };
 
   const loadConversation = (conversation: ConversationDetail) => {
+    if (isRunning) return;
+    setSessionId(conversation.sessionId);
+    setLoadedFiles([]);
+    setLoadedAudio([]);
+    setPlanAction(null);
     setMessages(conversation.messages.map(message => ({
       id: message.id,
       role: message.role,
       content: message.content,
       mode: (message.metadata?.mode as ChatMode | undefined) || mode,
       createdAt: message.timestamp,
-      status: 'complete'
+      status: 'complete',
+      sourcesDrawerData: message.metadata?.sourcesDrawerData as SourcesDrawerData | undefined,
+      warnings: message.metadata?.warnings as string[] | undefined,
     })));
+  };
+
+  const newConversation = () => {
+    if (isRunning) return;
+    setSessionId(uuidv4());
+    setMessages([]);
+    setLoadedFiles([]);
+    setLoadedAudio([]);
+    setPlanAction(null);
+    setKnowledgeMiss(null);
+    setKnowledgePreview(null);
+    setTaskArtifacts([]);
   };
 
   const runOnlineSearch = async () => {
@@ -485,7 +509,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
 
   const openPlan = async (planId: string) => {
     try {
-      const response = await fetch(`/api/plans/${encodeURIComponent(planId)}`);
+      const response = await apiFetch(`/api/plans/${encodeURIComponent(planId)}`);
       if (!response.ok) {
         await throwApiError(response, 'Unable to open plan');
       }
@@ -570,6 +594,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
             </div>
             <span className="assistant-mode-hint">{advancedOpen ? modeHints[mode] : 'Focused chat'}</span>
           </div>
+          {!isStaticPagesBuild && <ConversationHistory disabled={isRunning} onLoad={loadConversation} onNew={newConversation} />}
           {showBackendPanels && <KnowledgeOSPanel />}
           {showGamingPlaybooks && <GamingPlaybookPanel />}
           {showKnowledgeOnlinePanel && <KnowledgeOnlinePanel />}
@@ -747,7 +772,7 @@ function ChatBubble({ role }: { role: 'user' | 'assistant' }) {
     comment?: string;
   }) => {
     try {
-      await fetch('/api/feedback', {
+      await apiFetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -768,6 +793,7 @@ function ChatBubble({ role }: { role: 'user' | 'assistant' }) {
         <MessagePrimitive.Parts components={{ Text: TextPart }} />
         {role === 'assistant' && (
           <>
+            {custom.warnings?.length > 0 && <div role="status">{custom.warnings.join(' ')}</div>}
             {custom.sourcesDrawerData && (
               <SourcesDrawer data={custom.sourcesDrawerData} />
             )}

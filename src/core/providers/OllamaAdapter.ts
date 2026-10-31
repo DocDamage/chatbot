@@ -42,6 +42,7 @@ export class OllamaAdapter implements LLMAdapter {
         options: {
           temperature: options.temperature ?? 0.7,
           num_predict: options.maxTokens ?? 1000,
+          num_ctx: Number(process.env.OLLAMA_CONTEXT_TOKENS || 8192),
         }
       });
 

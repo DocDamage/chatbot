@@ -1,3 +1,4 @@
+import { apiFetch } from './http';
 import { throwApiError } from './errors';
 
 export type GamingPlaybookKind = 'engine_selection' | 'asset_pipeline' | 'design_review' | 'modding_safety' | 'prompt_pack';
@@ -28,7 +29,7 @@ export async function createGamingPlaybook(input: {
   genre?: string;
   targetPlatform?: string;
 }): Promise<GamingPlaybookResult> {
-  const response = await fetch('/api/gaming/playbook', {
+  const response = await apiFetch('/api/gaming/playbook', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input)
@@ -43,7 +44,7 @@ export async function runLatticeSimulation(input: {
   seed?: number;
   enemyCount?: number;
 } = {}): Promise<LatticeSimulationResult> {
-  const response = await fetch('/api/gaming/lattice', {
+  const response = await apiFetch('/api/gaming/lattice', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input)

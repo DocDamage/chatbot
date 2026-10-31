@@ -1,3 +1,4 @@
+import { apiFetch } from '../api/http';
 import { useState } from 'react';
 
 const starter = { name: 'My local site', theme: { background: '#171717', foreground: '#f5f5f5', accent: '#a3a3a3' }, pages: [{ slug: 'home', title: 'A simple page', blocks: [{ type: 'hero', title: 'Build something clear.', body: 'A small, safe website workspace for prototypes and knowledge projects.' }, { type: 'features', items: ['Fast local iteration', 'Simple content blocks', 'Exportable HTML'] }, { type: 'cta', title: 'Continue exploring', body: 'Open the chatbot', href: '#' }] }] };
@@ -11,7 +12,7 @@ export default function WebsiteWorkspacePanel() {
   const save = async () => {
     try {
       const project = JSON.parse(source);
-      const response = await fetch('/api/website-workspace/project', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(project) });
+      const response = await apiFetch('/api/website-workspace/project', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(project) });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.error || `Save failed (HTTP ${response.status})`);
       setSource(JSON.stringify(data.project, null, 2)); setPreview(data.html); setMessage('Saved locally and rendered in the sandbox.');

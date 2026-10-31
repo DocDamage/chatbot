@@ -11,6 +11,7 @@ import { ChatRequestDto } from '../../types/chat';
 import { ChatResponse } from '../orchestrator/Orchestrator';
 import { ChatRequestNormalizer, ChatServerContext } from './ChatRequestNormalizer';
 import { ChatRuntime } from './ChatRuntime';
+import { SourcesDrawerData } from '../../types/citation';
 
 export interface V2ChatResponse {
   id: string;
@@ -46,7 +47,7 @@ export class ChatRuntimeCompatibilityAdapter {
   public static toLegacyResponse(
     result: ChatRuntimeResult,
     contractVersion: string = '1.0.0'
-  ): ChatResponse {
+  ): ChatResponse & { sources: string[]; citations: ChatRuntimeResult['citations']; traceId: string; grounding: ChatRuntimeResult['grounding']; sourcesDrawerData: SourcesDrawerData } {
     const isKnowledgeMiss = result.grounding.attempted && !result.grounding.sufficient;
 
     return {
@@ -55,6 +56,23 @@ export class ChatRuntimeCompatibilityAdapter {
       contractVersion,
       latency: result.latencyMs,
       model: result.model.model,
+      sources: [...new Set(result.citations.map(citation => citation.sourceUrl || citation.path || citation.title))],
+      citations: result.citations,
+      traceId: result.traceId,
+      grounding: result.grounding,
+      sourcesDrawerData: {
+        totalSources: result.citations.length,
+        compactLabel: `${result.citations.length} cited source${result.citations.length === 1 ? '' : 's'}`,
+        unresolvedCitations: [],
+        cards: result.citations.map(citation => ({
+          id: citation.id, title: citation.title, category: 'other', categoryLabel: 'Reference',
+          path: citation.path, sourceUrl: citation.sourceUrl,
+          snippet: citation.path, badges: [],
+          action: citation.sourceUrl
+            ? { type: 'open_url', target: citation.sourceUrl, label: 'Open source' }
+            : { type: 'none', label: 'Local reference' },
+        })),
+      },
       warnings: result.warnings.length > 0 ? result.warnings : undefined,
       knowledgeMiss: isKnowledgeMiss ? true : undefined,
       canSearchOnline: isKnowledgeMiss ? true : undefined,

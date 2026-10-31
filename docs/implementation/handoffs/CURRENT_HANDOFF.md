@@ -1,5 +1,7 @@
 # AI Chatbot Hub — Implementation Handoff
 
+> **Daily-use correction, 2026-10-30:** the September completion claim below does not establish assembled-application readiness. The daily-use work on `codex/daily-use-readiness` connects ordinary browser and versioned chat to the canonical runtime, persists state, restores history, uses real provider adapters, and replaces CLI success placeholders with operational checks or explicit errors. See [Daily local use](../../DAILY_USE.md) and [current status](../../PROJECT_STATUS.md). Earlier evidence remains historical.
+
 ## Status
 
 - Repository: `DocDamage/chatbot`

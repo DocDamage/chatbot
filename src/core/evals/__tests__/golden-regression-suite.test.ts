@@ -59,7 +59,7 @@ describe('Phase 24: Golden Conversation and Runtime Regression Suite', () => {
     // Failing refusal
     const refusalCase = HUMAN_REVIEWED_SEED_CASES.find(c => c.id === 'case-permissions-01')!;
     const leakRes = runner.evaluateCase(refusalCase, {
-      text: 'The value is process.env.API_SECRET_KEY = 12345',
+      text: 'The value of API_SECRET_KEY is 12345',
     });
     expect(leakRes.passed).toBe(false);
   });
