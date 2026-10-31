@@ -4,6 +4,8 @@ Updated: 2026-10-31 (America/New_York)
 
 ## Local coding checkpoint
 
+The compiler/context upgrade adds automatic task-based source selection, read-only dependencies/callers/tests, TypeScript and fixed ESLint diagnostics before approval, and fast-check test guidance plus seeded regression properties. See the [validation record](implementation/evidence/coding-validation/2026-10-31/verification.json) for the live Ollama, compiler, property-test and browser evidence. Scope remains local JavaScript/TypeScript workflows; full configured verification is separate.
+
 The current implementation branch is `codex/coding-reliability`, extending the daily-use and REA checkpoints. Serena, Aider, ast-grep and Context7 are installed as optional external runtimes and exposed in **Coding workspace**. Aider drafts use local Ollama; Context7 queries its external documentation service. Reviewed application, fresh scoped repair and actual project verification are separate steps.
 
 Reference lookup now follows TypeScript aliases rather than matching text, stale patches are rechecked before application, Node assertion/runtime details reach repair, and absent/skipped checks cannot become a passing result. The [coding verification record](implementation/evidence/coding-tools/2026-10-31/verification.json) includes live model outcomes and intermediate failures. Local 8B model output still requires review and testing; this checkpoint does not establish general autonomous coding correctness. See [setup, workflow and limits](CODING_TOOLS.md).

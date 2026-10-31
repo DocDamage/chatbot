@@ -2,6 +2,8 @@
 
 ## Coding tools addition (2026-10-31)
 
+`CODE-TOOLS-002` is `LOCAL_ONLY_EXPERIMENTAL`: automatic source selection/read-only context, TypeScript baseline compiler diagnostics, isolated fixed ESLint checks, and fast-check test-authoring guidance extend the existing coding tool routes and panel. New files and patch application still require explicit paths/review. Diagnostics compare captured snapshots and do not certify the complete repository. Evidence: [coding validation](evidence/coding-validation/2026-10-31/verification.json).
+
 `CODE-TOOLS-001` is `LOCAL_ONLY_EXPERIMENTAL`: the Coding workspace panel and `/api/code/tools/*` provide Serena symbol references, Aider/Ollama private-copy drafts, ast-grep search/rewrite previews and Context7 documentation. The existing developer/admin, local-only code route policy applies. Explicit reviewed application and real project verification remain separate; repair uses fresh diagnostics and the same approved edit scope. Optional runtimes, retained source/logs and Context7's external documentation service are described in [coding setup and boundaries](../CODING_TOOLS.md). This entry does not change historical baseline counts or certify hosted support.
 
 > Authoritative Phase 0 classification of the currently discovered product surface. This file records what is reachable or present; it does **not** certify production readiness.

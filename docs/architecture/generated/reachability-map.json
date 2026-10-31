@@ -331,10 +331,16 @@
     "src/core/coding/index/TypeScriptReferences.ts",
     "src/core/coding/integrations/AiderAdapter.ts",
     "src/core/coding/integrations/AstGrepAdapter.ts",
+    "src/core/coding/integrations/AutomaticContext.ts",
     "src/core/coding/integrations/CodingToolConfig.ts",
     "src/core/coding/integrations/CodingToolsService.ts",
+    "src/core/coding/integrations/CompilerChecks.ts",
+    "src/core/coding/integrations/CompilerSettings.ts",
     "src/core/coding/integrations/Context7Adapter.ts",
     "src/core/coding/integrations/DraftChecks.ts",
+    "src/core/coding/integrations/DraftDiagnostics.ts",
+    "src/core/coding/integrations/FastCheckGuidance.ts",
+    "src/core/coding/integrations/PatchDraftValidator.ts",
     "src/core/coding/integrations/SerenaAdapter.ts",
     "src/core/coding/integrations/ToolProcess.ts",
     "src/core/coding/integrations/ToolWorkspace.ts",
@@ -1235,10 +1241,16 @@
     "src/core/coding/index/TypeScriptReferences.ts",
     "src/core/coding/integrations/AiderAdapter.ts",
     "src/core/coding/integrations/AstGrepAdapter.ts",
+    "src/core/coding/integrations/AutomaticContext.ts",
     "src/core/coding/integrations/CodingToolConfig.ts",
     "src/core/coding/integrations/CodingToolsService.ts",
+    "src/core/coding/integrations/CompilerChecks.ts",
+    "src/core/coding/integrations/CompilerSettings.ts",
     "src/core/coding/integrations/Context7Adapter.ts",
     "src/core/coding/integrations/DraftChecks.ts",
+    "src/core/coding/integrations/DraftDiagnostics.ts",
+    "src/core/coding/integrations/FastCheckGuidance.ts",
+    "src/core/coding/integrations/PatchDraftValidator.ts",
     "src/core/coding/integrations/SerenaAdapter.ts",
     "src/core/coding/integrations/ToolProcess.ts",
     "src/core/coding/integrations/ToolWorkspace.ts",
@@ -2384,6 +2396,10 @@
     },
     {
       "importer": "scripts/coding/verify.ts",
+      "specifier": "./build/format.js"
+    },
+    {
+      "importer": "scripts/coding/verify.ts",
       "specifier": "./calc"
     },
     {
@@ -2392,11 +2408,19 @@
     },
     {
       "importer": "scripts/coding/verify.ts",
+      "specifier": "./format"
+    },
+    {
+      "importer": "scripts/coding/verify.ts",
       "specifier": "./format.cjs"
     },
     {
       "importer": "scripts/coding/verify.ts",
       "specifier": "./greeter.cjs"
+    },
+    {
+      "importer": "scripts/coding/verify.ts",
+      "specifier": "./round"
     },
     {
       "importer": "scripts/release/__tests__/phase2-scanners.test.mjs",
@@ -2465,6 +2489,18 @@
     {
       "importer": "src/core/coding/index/TypeScriptReferences.test.ts",
       "specifier": "./calc"
+    },
+    {
+      "importer": "src/core/coding/integrations/AutomaticContext.test.ts",
+      "specifier": "./suffix"
+    },
+    {
+      "importer": "src/core/coding/integrations/AutomaticContext.test.ts",
+      "specifier": "./value"
+    },
+    {
+      "importer": "src/core/coding/integrations/DraftChecks.test.ts",
+      "specifier": "./value"
     },
     {
       "importer": "src/core/coding/verification/ModelRepairProposal.test.ts",
@@ -3084,12 +3120,15 @@
     ],
     "scripts/certification/http-load.mjs": [],
     "scripts/certification/production-like.mjs": [],
+    "scripts/coding/lint-worker.cjs": [],
     "scripts/coding/setup.mjs": [],
     "scripts/coding/verify.ts": [
       "src/core/agents/CodingAgent.ts",
       "src/core/coding/editing/StructuredEditEngine.ts",
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/integrations/CodingToolsService.ts",
+      "src/core/coding/integrations/PatchDraftValidator.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts",
       "src/core/coding/verification/VerificationOrchestrator.ts",
       "src/core/providers/OllamaAdapter.ts"
     ],
@@ -4757,6 +4796,7 @@
     "src/core/coding/integrations/AiderAdapter.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/integrations/DraftChecks.ts",
+      "src/core/coding/integrations/FastCheckGuidance.ts",
       "src/core/coding/integrations/ToolProcess.ts",
       "src/core/coding/integrations/ToolWorkspace.ts",
       "src/core/coding/types.ts"
@@ -4766,6 +4806,20 @@
       "src/core/coding/integrations/ToolProcess.ts",
       "src/core/coding/integrations/ToolWorkspace.ts",
       "src/core/coding/types.ts"
+    ],
+    "src/core/coding/integrations/AutomaticContext.test.ts": [
+      "src/core/coding/integrations/AutomaticContext.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts"
+    ],
+    "src/core/coding/integrations/AutomaticContext.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts"
+    ],
+    "src/core/coding/integrations/CodingProperties.test.ts": [
+      "src/core/coding/editing/StructuredEditEngine.ts",
+      "src/core/coding/integrations/AutomaticContext.ts",
+      "src/core/coding/integrations/DraftDiagnostics.ts"
     ],
     "src/core/coding/integrations/CodingToolConfig.ts": [
       "src/core/config/EnvironmentDefinitions.ts",
@@ -4781,19 +4835,48 @@
       "src/core/coding/editing/StructuredEditEngine.ts",
       "src/core/coding/integrations/AiderAdapter.ts",
       "src/core/coding/integrations/AstGrepAdapter.ts",
+      "src/core/coding/integrations/AutomaticContext.ts",
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/integrations/Context7Adapter.ts",
+      "src/core/coding/integrations/PatchDraftValidator.ts",
       "src/core/coding/integrations/SerenaAdapter.ts",
       "src/core/coding/integrations/ToolWorkspace.ts"
+    ],
+    "src/core/coding/integrations/CompilerChecks.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/CompilerSettings.ts",
+      "src/core/coding/integrations/DraftDiagnostics.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts",
+      "src/core/coding/security/WorkspacePathPolicy.ts"
+    ],
+    "src/core/coding/integrations/CompilerSettings.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts"
     ],
     "src/core/coding/integrations/Context7Adapter.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/integrations/ToolProcess.ts"
     ],
+    "src/core/coding/integrations/DraftChecks.test.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/DraftChecks.ts",
+      "src/core/coding/integrations/DraftDiagnostics.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts"
+    ],
     "src/core/coding/integrations/DraftChecks.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/CompilerChecks.ts",
+      "src/core/coding/integrations/DraftDiagnostics.ts",
       "src/core/coding/integrations/ToolProcess.ts",
       "src/core/coding/integrations/ToolWorkspace.ts"
+    ],
+    "src/core/coding/integrations/DraftDiagnostics.ts": [],
+    "src/core/coding/integrations/FastCheckGuidance.ts": [],
+    "src/core/coding/integrations/PatchDraftValidator.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/DraftChecks.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts",
+      "src/core/coding/types.ts"
     ],
     "src/core/coding/integrations/SerenaAdapter.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
@@ -4974,6 +5057,8 @@
       "src/core/coding/verification/ModelRepairProposal.ts"
     ],
     "src/core/coding/verification/ModelRepairProposal.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/PatchDraftValidator.ts",
       "src/core/coding/security/ApprovedRepositoryGateway.ts",
       "src/core/coding/types.ts",
       "src/core/providers/LLMAdapter.ts"
@@ -10262,5 +10347,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1965
+  "sourceRecordCount": 1975
 }

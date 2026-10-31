@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1965,
-    "productionSourceFiles": 1259,
-    "reachableProductionFiles": 902,
+    "sourceFiles": 1975,
+    "productionSourceFiles": 1265,
+    "reachableProductionFiles": 908,
     "unreachableProductionFiles": 357,
     "routes": 532,
     "environmentVariables": 243,

@@ -12,6 +12,7 @@ const noticesPath = path.join(root, 'THIRD_PARTY_NOTICES.md');
 const allowedModes = new Set([
   'NATIVE_ADAPTATION',
   'EXTERNAL_SERVICE_ADAPTER',
+  'PACKAGE_DEPENDENCY',
   'CLEAN_ROOM_IMPLEMENTATION',
   'REFERENCE_ONLY',
   'REJECTED',
@@ -34,6 +35,14 @@ function fail(msg) {
 
 function clean(value) {
   return value.trim().replace(/^`|`$/g, '');
+}
+
+export function checkPackageDependency({ name, license, revision, notices }) {
+  const issues = [];
+  if (!/^(?:MIT|Apache-2\.0|BSD-2-Clause|BSD-3-Clause|ISC|0BSD|Unlicense)$/.test(license)) issues.push(`${name}: Package API dependencies require an explicitly reviewed permissive license`);
+  if (!/\b[a-f0-9]{40}\b/i.test(revision)) issues.push(`${name}: Package dependencies require an immutable reviewed source revision`);
+  if (!notices || !/LICENSE|NOTICE/i.test(notices)) issues.push(`${name}: Package dependencies require retained license/notice attribution`);
+  return issues;
 }
 
 export function checkSourceIntegrity() {
@@ -90,6 +99,7 @@ export function checkSourceIntegrity() {
       if (blockedFromNative.has(name) && m === 'NATIVE_ADAPTATION') {
         fail(`${name}: Prohibited from NATIVE_ADAPTATION due to licensing/terms constraint`);
       }
+      if (m === 'PACKAGE_DEPENDENCY') errors.push(...checkPackageDependency({ name, license, revision, notices: cols[4] }));
     }
   }
 

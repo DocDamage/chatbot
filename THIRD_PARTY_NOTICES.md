@@ -1,5 +1,9 @@
 # Third-Party Software Notices and Attribution
 
+## Compiler, linter and property-test dependencies (2026-10-31)
+
+`fast-check@4.10.2` is a root development dependency (MIT, copyright 2017 Nicolas DUBIEN), included in the core dependency SBOM. Its full notice is retained in [LICENSE.fast-check](services/coding-tools/LICENSE.fast-check). The optional coding environment additionally pins ESLint 10.14.0 (MIT, OpenJS Foundation and other contributors), typescript-eslint/parser 8.59.4 (MIT, copyright 2019 typescript-eslint and other contributors), TypeScript 5.9.3 (Apache-2.0) and globals 17.13.0 (MIT, Sindre Sorhus). Their full notices are retained in [LICENSE.eslint](services/coding-tools/LICENSE.eslint), [LICENSE.typescript-eslint](services/coding-tools/LICENSE.typescript-eslint), [LICENSE.typescript](services/coding-tools/LICENSE.typescript), and [LICENSE.globals](services/coding-tools/LICENSE.globals). These unmodified optional packages and their transitive notices remain separate from the base runtime SBOM; TypeScript is also an existing core dependency.
+
 ## Optional coding runtimes (2026-10-31)
 
 These packages run in separate optional environments; project-owned adapters communicate through stdio MCP/CLI and local Ollama. No upstream application source is incorporated into the core. Their lockfiles, integrity hashes and complete upstream license texts are under `services/coding-tools`; transitive package notices remain in the installed environments and are outside the base application SBOM.

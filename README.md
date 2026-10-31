@@ -10,13 +10,15 @@ Optional [REA reverse engineering](docs/REA.md) adds local artifact analysis, na
 
 Optional [coding tools with local Ollama](docs/CODING_TOOLS.md) add Serena references, Aider drafts, ast-grep rewrites and Context7 documentation. Run `npm run setup:coding-tools`, rebuild/restart, then open **Coding workspace** to review, apply and verify changes.
 
+Coding drafts now gather bounded read-only context automatically, compare TypeScript/compiler and ESLint diagnostics before approval, and offer fast-check property-test guidance. Full project verification remains a separate required step after applying.
+
 The implementation is active and suitable for local development, evaluation, and trusted internal use. It includes the complete **Capability Fusion (CF-01 through CF-10)** stack with persistent disk observability, process supervisors, native Git worktrees, Playwright browser drivers, media localization, Lattice game development tools, and multi-domain canary certification.
 
 - Canonical branch: `main`.
 - Current local implementation branch: `codex/coding-reliability`, extending the daily-use checkpoint with local REA and coding integrations.
 - Coding and desktop/local filesystem capabilities are gated via explicit RBAC and exact-scope confirmation.
 - Server regression: over 2,900 tests exercised; corrected fixture failures passed their complete suite reruns. See the [verification record](docs/implementation/evidence/daily-use/2026-10-30/verification.json).
-- Client Vitest suite: 61 files / 202 tests passed; built-server browser regression: 7 tests passed; browser accessibility: 6 tests passed.
+- Client Vitest suite: 61 files / 203 tests passed; built-server browser regression: 7 tests passed; browser accessibility: 6 tests passed.
 - Production server & client build and packaging smoke checks pass.
 
 For release decisions, use the [current project status](docs/PROJECT_STATUS.md), [production feature manifest](docs/implementation/PRODUCTION_FEATURE_MANIFEST.md), [master completion tracker](docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md), and [release evidence index](docs/implementation/RELEASE_EVIDENCE_INDEX.md). Historical documents are retained for audit context and do not override those sources.

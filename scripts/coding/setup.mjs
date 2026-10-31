@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const tools = path.join(root, 'services/coding-tools');
+const [nodeMajor, nodeMinor] = process.versions.node.split('.').map(Number);
+if (nodeMajor < 22 || nodeMajor === 22 && nodeMinor < 13) throw new Error('Optional draft linting needs Node 22.13+ or Node 24. Use a compatible Node executable for setup.');
 function run(command, args) {
   const result = spawnSync(command, args, { cwd: root, stdio: 'inherit', windowsHide: true, shell: false });
   if (result.error) throw result.error;
@@ -22,7 +24,7 @@ for (const name of ['serena', 'aider']) {
   runtimes[name] = name === 'serena' ? path.join(directory, process.platform === 'win32' ? 'Scripts/serena.exe' : 'bin/serena') : python;
 }
 fs.writeFileSync(path.join(tools, 'runtime.json'), JSON.stringify({ node: process.execPath, serena: runtimes.serena, aiderPython: runtimes.aider,
-  versions: { serena: '2.1.0', aider: '0.86.2', astGrep: '0.51.0', context7: '4.4.4' } }, null, 2) + '\n');
+  versions: { serena: '2.1.0', aider: '0.86.2', astGrep: '0.51.0', context7: '4.4.4', eslint: '10.14.0', typescriptParser: '8.59.4' } }, null, 2) + '\n');
 const envPath = path.join(root, '.env'); let env = fs.existsSync(envPath) ? fs.readFileSync(envPath, 'utf8') : '';
 env = /^CODING_TOOLS_ENABLED=.*$/m.test(env) ? env.replace(/^CODING_TOOLS_ENABLED=.*$/m, 'CODING_TOOLS_ENABLED=true') : env.trimEnd() + '\nCODING_TOOLS_ENABLED=true\n';
 fs.writeFileSync(envPath, env);

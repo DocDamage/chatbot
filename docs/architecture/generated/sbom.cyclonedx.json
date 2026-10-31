@@ -1,7 +1,7 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:0ba29d60b3c88908c20a2947587d520e",
+  "serialNumber": "urn:uuid:80ac85997502eef15c33db6d3dbf7f36",
   "version": 1,
   "metadata": {
     "component": {
@@ -208,6 +208,12 @@
       "name": "express",
       "version": "^4.18.2",
       "purl": "pkg:npm/express@%5E4.18.2"
+    },
+    {
+      "type": "library",
+      "name": "fast-check",
+      "version": "4.10.2",
+      "purl": "pkg:npm/fast-check@4.10.2"
     },
     {
       "type": "library",

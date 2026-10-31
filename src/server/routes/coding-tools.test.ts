@@ -36,4 +36,9 @@ describe('coding integrations HTTP boundaries', () => {
     await request(app).post('/api/code/tools/documentation').auth(token('developer'), { type: 'bearer' }).send({ library: '/microsoft/typescript', query: 'Compiler API' }).expect(200);
     await request(app).post('/api/code/tools/call').auth(token('developer'), { type: 'bearer' }).send({ tool: 'execute_shell_command' }).expect(404);
   });
+  it('accepts task-based context and property guidance while validating their flags', async () => {
+    await request(app).post('/api/code/tools/propose').auth(token('developer'), { type: 'bearer' }).send({ files: [], message: 'Fix src/math.ts', automaticContext: true, propertyTests: true }).expect(200);
+    expect(tools.propose).toHaveBeenCalledWith('alice', expect.objectContaining({ files: [], automaticContext: true, propertyTests: true }), expect.any(AbortSignal));
+    await request(app).post('/api/code/tools/propose').auth(token('developer'), { type: 'bearer' }).send({ files: [], message: 'Fix src/math.ts', automaticContext: 'yes' }).expect(400);
+  });
 });

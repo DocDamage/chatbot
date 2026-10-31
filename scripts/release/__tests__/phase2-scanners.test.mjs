@@ -54,3 +54,12 @@ test('source integrity verification passes with complete capability source regis
   assert.equal(result.ok, true, `Source integrity errors: ${result.errors.join(', ')}`);
   assert.ok(result.parsedCount >= 25);
 });
+
+test('package API dependencies retain license, immutable provenance and attribution gates', async () => {
+  const { checkPackageDependency } = await import('../check-source-integrity.mjs');
+  const row = { name: 'fixture', license: 'MIT', revision: 'a'.repeat(40), notices: 'Retained LICENSE.fixture' };
+  assert.deepEqual(checkPackageDependency(row), []);
+  assert.ok(checkPackageDependency({ ...row, license: 'GPL-3.0-or-later' }).some(issue => issue.includes('permissive')));
+  assert.ok(checkPackageDependency({ ...row, revision: 'main' }).some(issue => issue.includes('immutable')));
+  assert.ok(checkPackageDependency({ ...row, notices: '' }).some(issue => issue.includes('attribution')));
+});

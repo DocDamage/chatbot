@@ -13,7 +13,8 @@ def main():
     request = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
     root = Path.cwd().resolve()
     allowed = {(root / name).resolve() for name in request["files"]}
-    if any(not file.is_relative_to(root) for file in allowed):
+    read_only = {(root / name).resolve() for name in request.get("readOnly", [])}
+    if any(not file.is_relative_to(root) for file in allowed | read_only) or allowed & read_only:
         raise ValueError("Aider input escaped its snapshot")
 
     class ScopedIO(InputOutput):
@@ -24,7 +25,7 @@ def main():
             raise RuntimeError("Interactive prompts are disabled")
 
         def read_text(self, filename, *args, **kwargs):
-            if Path(filename).resolve() not in allowed:
+            if Path(filename).resolve() not in allowed | read_only:
                 raise ValueError("Aider may read only the selected snapshot files")
             return super().read_text(filename, *args, **kwargs)
 
@@ -47,6 +48,7 @@ def main():
     model.weak_model = model
     model.info = {**(model.info or {}), "max_input_tokens": request["contextTokens"], "max_output_tokens": 4096}
     coder = ScopedCoder(main_model=model, io=io, fnames=[str(file) for file in allowed],
+                        read_only_fnames=[str(file) for file in read_only],
                         use_git=False, auto_commits=False, dirty_commits=False,
                         auto_lint=False, auto_test=False, suggest_shell_commands=False,
                         stream=False, map_tokens=0)

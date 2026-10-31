@@ -40,4 +40,26 @@ describe('fresh model-driven repairs', () => {
     expect(generate.mock.calls[0][0].prompt).toContain('READ ONLY');
     expect(generate.mock.calls[0][0].jsonSchema.properties.operations.items.properties.path.enum).toEqual(['calc.cjs']);
   });
+  it('feeds static errors back before an invalid repair can touch repository files', async () => {
+    const previous = process.env.CODING_TOOLS_ENABLED; process.env.CODING_TOOLS_ENABLED = 'true';
+    try {
+      const generate = jest.fn().mockResolvedValueOnce({ content: JSON.stringify({ operations: [{ operation: 'modify', path: 'calc.cjs', content: 'module.exports = value => missing(value);' }] }), model: 'fixture' })
+        .mockImplementationOnce(async () => {
+          expect(fs.readFileSync(path.join(root, 'calc.cjs'), 'utf8')).toContain('a-b');
+          return { content: JSON.stringify({ operations: [{ operation: 'modify', path: 'calc.cjs', content: 'module.exports = (a,b) => a+b;' }] }), model: 'fixture' };
+        });
+      const result = await proposeModelRepair(adapter(generate), root, ['calc.cjs'], [], 2, 'Fix addition');
+      expect(generate).toHaveBeenCalledTimes(2); expect(generate.mock.calls[1][0].prompt).toContain('no-undef');
+      expect(result.operations[0].content).toContain('a+b'); expect(fs.readFileSync(path.join(root, 'calc.cjs'), 'utf8')).toContain('a-b');
+    } finally { if (previous === undefined) delete process.env.CODING_TOOLS_ENABLED; else process.env.CODING_TOOLS_ENABLED = previous; }
+  }, 20000);
+  it('retries malformed model JSON with a larger bounded output budget', async () => {
+    const generate = jest.fn().mockResolvedValueOnce({ content: '{"operations":[', model: 'fixture' }).mockResolvedValueOnce({
+      content: JSON.stringify({ operations: [{ operation: 'modify', path: 'calc.cjs', content: 'module.exports = (a,b) => a+b;' }] }), model: 'fixture',
+    });
+    const result = await proposeModelRepair(adapter(generate), root, ['calc.cjs'], [], 2);
+    expect(result.operations).toHaveLength(1); expect(generate.mock.calls[1][0].prompt).toContain('invalid or incomplete JSON');
+    expect(generate.mock.calls[1][0].maxTokens).toBe(6144);
+    expect(fs.readFileSync(path.join(root, 'calc.cjs'), 'utf8')).toContain('a-b');
+  });
 });
