@@ -22,6 +22,49 @@ describe('automatic supporting context', () => {
     expect(result.summary.every(item => !item.path.includes('private') && !item.path.startsWith('.env'))).toBe(true);
     expect(result.summary.filter(item => item.role === 'editable')).toHaveLength(1);
   });
+  it('follows exact and wildcard TypeScript path aliases for dependencies and importing callers', () => {
+    write('tsconfig.json', JSON.stringify({ compilerOptions: {
+      baseUrl: '.', paths: { '@value': ['src/value'], '@src/*': ['src/*'] }
+    } }));
+    write('src/value.ts', "import { suffix } from '@src/suffix'; export function value(name: string) { return name + suffix; }\n");
+    write('src/caller.ts', "import { value as label } from '@value'; export const title = label('Ada');\n");
+    write('src/value.test.ts', "import { value } from '@value'; export const sample = value('');\n");
+
+    const result = selectAutomaticContext(root, captureFiles(root, ['src/value.ts']), [], 'Fix the label');
+
+    expect(result.readOnly.map(file => file.path)).toEqual(expect.arrayContaining(['src/suffix.ts', 'src/caller.ts', 'src/value.test.ts']));
+  });
+  it('uses the nearest nested config and preserves an inherited path mapping base origin', () => {
+    write('configs/base.json', JSON.stringify({ compilerOptions: {
+      baseUrl: './base', paths: { '@shared/*': ['shared/*'] }
+    } }));
+    write('apps/web/tsconfig.json', JSON.stringify({
+      extends: '../../configs/base.json', compilerOptions: { baseUrl: './src' }
+    }));
+    write('configs/base/shared/value.ts', 'export const shared = true;\n');
+    write('apps/web/src/page.ts', "import { shared } from '@shared/value'; export const page = shared;\n");
+    write('apps/web/src/shared/value.ts', 'export const wrong = true;\n');
+
+    const result = selectAutomaticContext(root, captureFiles(root, ['apps/web/src/page.ts']), [], 'Fix page');
+
+    expect(result.readOnly.map(file => file.path)).toContain('configs/base/shared/value.ts');
+    expect(result.readOnly.map(file => file.path)).not.toContain('apps/web/src/shared/value.ts');
+  });
+  it('falls back to relative imports and reports unsafe or invalid alias configuration', () => {
+    write('tsconfig.json', '{');
+    const invalid = selectAutomaticContext(root, captureFiles(root, ['src/value.ts']), [], 'Fix value');
+    expect(invalid.readOnly.map(file => file.path)).toContain('src/suffix.ts');
+    expect(invalid.limitations.some(note => note.includes('TypeScript alias configuration'))).toBe(true);
+
+    write('tsconfig.json', JSON.stringify({ compilerOptions: {
+      baseUrl: '.', paths: { '@private/*': ['data/private/*'], '@outside/*': ['../outside/*'] }
+    } }));
+    write('src/value.ts', "import { suffix } from './suffix'; import '@private/secret'; import '@outside/value'; export const value = suffix;\n");
+    const blocked = selectAutomaticContext(root, captureFiles(root, ['src/value.ts']), [], 'Fix value');
+    expect(blocked.readOnly.map(file => file.path)).toContain('src/suffix.ts');
+    expect(blocked.summary.some(file => file.path.includes('private') || file.path.startsWith('../'))).toBe(false);
+    expect(blocked.limitations.some(note => note.includes('path alias'))).toBe(true);
+  });
   it('selects implementation files from named tasks and rejects ungrounded guesses', () => {
     expect(selectAutomaticContext(root, [], [], 'Fix src/value.ts so empty names work').editable.map(file => file.path)).toEqual(['src/value.ts']);
     expect(selectAutomaticContext(root, [], [], 'Fix the value function').editable.map(file => file.path)).toEqual(['src/value.ts']);
