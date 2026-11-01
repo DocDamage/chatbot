@@ -1,0 +1,84 @@
+FAIL src/core/coding/integrations/AutomaticContext.test.ts
+  automatic supporting context
+    √ follows imports, importing callers and related tests without expanding edit permissions (30 ms)
+    × follows exact and wildcard TypeScript path aliases for dependencies and importing callers (16 ms)
+    × uses the nearest nested config and applies its baseUrl to inherited path mappings (21 ms)
+    × keeps inherited path mappings relative to their declaring config without an effective baseUrl (21 ms)
+    × falls back to relative imports and reports unsafe or invalid alias configuration (16 ms)
+    √ selects implementation files from named tasks and rejects ungrounded guesses (36 ms)
+    √ keeps explicitly named new test files editable and discovers their implementation as read-only context (16 ms)
+    √ reports budget omissions and skips symlinks, oversized context and disabled auto selection (15 ms)
+
+  ● automatic supporting context › follows exact and wildcard TypeScript path aliases for dependencies and importing callers
+
+    expect(received).toEqual(expected) // deep equality
+
+    Expected: ArrayContaining ["src/suffix.ts", "src/caller.ts", "src/value.test.ts"]
+    Received: ["src/value.test.ts"]
+
+      33 |     const result = selectAutomaticContext(root, captureFiles(root, ['src/value.ts']), [], 'Fix the label');
+      34 |
+    > 35 |     expect(result.readOnly.map(file => file.path)).toEqual(expect.arrayContaining(['src/suffix.ts', 'src/caller.ts', 'src/value.test.ts']));
+         |                                                    ^
+      36 |   });
+      37 |   it('uses the nearest nested config and applies its baseUrl to inherited path mappings', () => {
+      38 |     write('configs/base.json', JSON.stringify({ compilerOptions: {
+
+      at Object.<anonymous> (src/core/coding/integrations/AutomaticContext.test.ts:35:52)
+
+  ● automatic supporting context › uses the nearest nested config and applies its baseUrl to inherited path mappings
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected value: "apps/web/src/shared/value.ts"
+    Received array: []
+
+      48 |     const result = selectAutomaticContext(root, captureFiles(root, ['apps/web/src/page.ts']), [], 'Fix page');
+      49 |
+    > 50 |     expect(result.readOnly.map(file => file.path)).toContain('apps/web/src/shared/value.ts');
+         |                                                    ^
+      51 |     expect(result.readOnly.map(file => file.path)).not.toContain('configs/base/shared/value.ts');
+      52 |   });
+      53 |   it('keeps inherited path mappings relative to their declaring config without an effective baseUrl', () => {
+
+      at Object.<anonymous> (src/core/coding/integrations/AutomaticContext.test.ts:50:52)
+
+  ● automatic supporting context › keeps inherited path mappings relative to their declaring config without an effective baseUrl
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected value: "configs/shared/value.ts"
+    Received array: []
+
+      60 |     const result = selectAutomaticContext(root, captureFiles(root, ['apps/no-base/src/page.ts']), [], 'Fix page');
+      61 |
+    > 62 |     expect(result.readOnly.map(file => file.path)).toContain('configs/shared/value.ts');
+         |                                                    ^
+      63 |     expect(result.readOnly.map(file => file.path)).not.toContain('apps/no-base/shared/value.ts');
+      64 |   });
+      65 |   it('falls back to relative imports and reports unsafe or invalid alias configuration', () => {
+
+      at Object.<anonymous> (src/core/coding/integrations/AutomaticContext.test.ts:62:52)
+
+  ● automatic supporting context › falls back to relative imports and reports unsafe or invalid alias configuration
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      67 |     const invalid = selectAutomaticContext(root, captureFiles(root, ['src/value.ts']), [], 'Fix value');
+      68 |     expect(invalid.readOnly.map(file => file.path)).toContain('src/suffix.ts');
+    > 69 |     expect(invalid.limitations.some(note => note.includes('TypeScript alias configuration'))).toBe(true);
+         |                                                                                               ^
+      70 |
+      71 |     write('tsconfig.json', JSON.stringify({ compilerOptions: {
+      72 |       baseUrl: '.', paths: { '@private/*': ['data/private/*'], '@outside/*': ['../outside/*'] }
+
+      at Object.<anonymous> (src/core/coding/integrations/AutomaticContext.test.ts:69:95)
+
+Test Suites: 1 failed, 1 total
+Tests:       4 failed, 4 passed, 8 total
+Snapshots:   0 total
+Time:        3.952 s, estimated 4 s
+Ran all test suites matching /src\\core\\coding\\integrations\\AutomaticContext.test.ts/i.

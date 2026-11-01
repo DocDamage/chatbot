@@ -16,7 +16,7 @@
       "command": "npx jest src/core/coding/integrations/AutomaticContext.test.ts --runInBand",
       "failed": 4,
       "passed": 4,
-      "log": "red.log"
+      "log": "red.txt"
     },
     "focused": {
       "command": "npx jest --runTestsByPath src/core/coding/integrations/ContextAliases.test.ts src/core/coding/integrations/AutomaticContext.test.ts src/core/coding/integrations/CodingProperties.test.ts --runInBand --coverage --collectCoverageFrom=src/core/coding/integrations/ContextAliases.ts --collectCoverageFrom=src/core/coding/integrations/AutomaticContext.ts --coverageDirectory=temp/coding-alias-coverage",
@@ -54,12 +54,12 @@
           "pct": "Unknown"
         }
       },
-      "log": "focused.log"
+      "log": "focused.txt"
     },
     "lint": {
       "command": "npm run lint:server",
       "exitCode": 0,
-      "log": "lint.log"
+      "log": "lint.txt"
     },
     "review": {
       "scope": "Changed production code, containment, config inheritance, alias precedence and fallback",
@@ -68,12 +68,12 @@
     "build": {
       "command": "npm run build:server",
       "exitCode": 0,
-      "log": "build.log"
+      "log": "build.txt"
     },
     "testTypes": {
       "command": "npm run type-check:tests",
       "exitCode": 0,
-      "log": "test-types.log"
+      "log": "test-types.txt"
     },
     "related": {
       "command": "npx jest --runTestsByPath src/core/coding/integrations/CodingToolsService.test.ts src/core/coding/integrations/DraftChecks.test.ts src/core/coding/verification/ModelRepairProposal.test.ts src/server/routes/coding-tools.test.ts src/core/coding/security/ApprovedRepositoryGateway.test.ts --runInBand",
@@ -83,14 +83,14 @@
       "testsPassed": 23,
       "testsFailed": 2,
       "failure": "Two ModelRepairProposal tests exceeded their existing time limits; complete failed suite passed in isolated rerun.",
-      "log": "related-initial.log"
+      "log": "related-initial.txt"
     },
     "repairRetry": {
       "command": "npx jest --runTestsByPath src/core/coding/verification/ModelRepairProposal.test.ts --runInBand",
       "exitCode": 0,
       "suitesPassed": 1,
       "testsPassed": 5,
-      "log": "repair-retry.log"
+      "log": "repair-retry.txt"
     }
   },
   "dependencyAudit": {
@@ -116,5 +116,6 @@
     "src/core/coding/integrations/ContextAliases.ts": "869de3a65e9204ee676fb23543afe69020934fdc31031b696e30298462e7ae80",
     "src/core/coding/integrations/ContextAliases.test.ts": "0686ca071bfdc262dbf233eeacff4a64e1dc5a5715e9976264c56f3599f08cad"
   },
-  "uniqueTargetedTestsPassingAfterRetry": 45
+  "uniqueTargetedTestsPassingAfterRetry": 45,
+  "logFormatting": "Captured output with LF line endings and trailing whitespace/blank EOF lines removed."
 }

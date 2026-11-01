@@ -1,0 +1,41 @@
+PASS src/core/coding/integrations/ContextAliases.test.ts (12.686 s)
+  static context alias boundaries
+    √ resolves baseUrl imports and only the most specific alias with ordered target fallbacks (24 ms)
+    √ merges relative multiple inheritance and anchors child paths to the child config (18 ms)
+    √ isolates invalid nearest config { (7 ms)
+    √ isolates invalid nearest config null (5 ms)
+    √ isolates invalid nearest config [] (5 ms)
+    √ isolates invalid nearest config {"compilerOptions":{"paths":"invalid"}} (13 ms)
+    √ rejects private and escaping aliases even when supplied in a known-path set (7 ms)
+    √ does not read package or linked config inheritance (11 ms)
+    √ reports cyclic, oversized and excessive mapping configurations instead of expanding reads (9 ms)
+
+PASS src/core/coding/integrations/AutomaticContext.test.ts
+  automatic supporting context
+    √ follows imports, importing callers and related tests without expanding edit permissions (26 ms)
+    √ follows exact and wildcard TypeScript path aliases for dependencies and importing callers (16 ms)
+    √ uses the nearest nested config and applies its baseUrl to inherited path mappings (28 ms)
+    √ keeps inherited path mappings relative to their declaring config without an effective baseUrl (35 ms)
+    √ falls back to relative imports and reports unsafe or invalid alias configuration (21 ms)
+    √ selects implementation files from named tasks and rejects ungrounded guesses (50 ms)
+    √ keeps explicitly named new test files editable and discovers their implementation as read-only context (13 ms)
+    √ reports budget omissions and skips symlinks, oversized context and disabled auto selection (21 ms)
+
+PASS src/core/coding/integrations/CodingProperties.test.ts
+  coding invariants with fast-check
+    √ preserves arbitrary Unicode text and rejects stale reviewed modifications (1478 ms)
+    √ resolves local imports only to known in-repository source paths (94 ms)
+    √ counts new diagnostics independently of line shifts and duplicate messages (26 ms)
+
+---------------------|---------|----------|---------|---------|-------------------
+File                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+---------------------|---------|----------|---------|---------|-------------------
+All files            |   92.83 |    90.38 |   90.38 |   97.72 |
+ AutomaticContext.ts |   92.41 |    87.77 |   93.33 |   98.76 | 89
+ ContextAliases.ts   |   93.28 |    93.93 |   86.36 |   96.84 | 81,103,105
+---------------------|---------|----------|---------|---------|-------------------
+Test Suites: 3 passed, 3 total
+Tests:       20 passed, 20 total
+Snapshots:   0 total
+Time:        17.912 s
+Ran all test suites within paths "src/core/coding/integrations/ContextAliases.test.ts", "src/core/coding/integrations/AutomaticContext.test.ts", "src/core/coding/integrations/CodingProperties.test.ts".

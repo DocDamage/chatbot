@@ -1,0 +1,13 @@
+PASS src/core/coding/verification/ModelRepairProposal.test.ts (66.805 s)
+  fresh model-driven repairs
+    √ anchors fresh proposals to source captured before generation and rejects expansion of approved scope (47 ms)
+    √ generates a new fix from the actual file and diagnostics after an initial proposal fails (2962 ms)
+    √ supplies unchanged implementation context without expanding edit permission (8 ms)
+    √ feeds static errors back before an invalid repair can touch repository files (14146 ms)
+    √ retries malformed model JSON with a larger bounded output budget (5 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        69.295 s
+Ran all test suites within paths "src/core/coding/verification/ModelRepairProposal.test.ts".
