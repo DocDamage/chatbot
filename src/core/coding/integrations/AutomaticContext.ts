@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import { ApprovedRepositoryGateway } from '../security/ApprovedRepositoryGateway';
 import { allowedToolPath, captureFiles, ToolFile } from './ToolWorkspace';
 import { CodingToolError } from './CodingToolConfig';
+import { createContextAliasResolver } from './ContextAliases';
 
 const code = /\.(?:[cm]?[jt]sx?|py|rs|go|java|cs|cpp|c|h|gd)$/i;
 const typedCode = /\.[cm]?[jt]sx?$/i;
@@ -25,6 +26,7 @@ export function resolveContextImport(file: string, specifier: string, known: Set
 
 export function selectAutomaticContext(root: string, selected: ToolFile[], newFiles: ToolFile[], message: string, automatic = true): ContextSelection {
   const gateway = new ApprovedRepositoryGateway(root, { maxFiles: 5000, maxReadBytes: 32000 });
+  const aliasLimitations = new Set<string>();
   const hints = [...selected, ...newFiles].map(file => file.path);
   for (const match of message.matchAll(/[\w./-]+\.[cm]?[jt]sx?\b/g)) {
     try { hints.push(gateway.describePath(match[0], 'file').path); } catch { /* Hints never bypass repository policy. */ }
@@ -73,8 +75,9 @@ export function selectAutomaticContext(root: string, selected: ToolFile[], newFi
   if (bytes > 16000) throw new CodingToolError('Selected source exceeds the 16 KB coding context budget.', 413);
   const edges = new Map<string, string[]>();
   const virtualKnown = new Set([...known, ...newFiles.map(file => file.path)]);
+  const resolveAlias = automatic ? createContextAliasResolver(root, gateway, virtualKnown, aliasLimitations) : () => undefined;
   for (const record of records.values()) if (typedCode.test(record.path)) {
-    edges.set(record.path, ts.preProcessFile(record.content, true, true).importedFiles.map(item => resolveContextImport(record.path, item.fileName, virtualKnown)).filter((file): file is string => !!file));
+    edges.set(record.path, ts.preProcessFile(record.content, true, true).importedFiles.map(item => resolveAlias(record.path, item.fileName) || resolveContextImport(record.path, item.fileName, virtualKnown)).filter((file): file is string => !!file));
   }
   const add = (file: string, reason: string) => {
     if (editable.some(item => item.path === file) || readOnly.some(item => item.path === file)) return;
@@ -97,5 +100,5 @@ export function selectAutomaticContext(root: string, selected: ToolFile[], newFi
   }
   return { editable, readOnly, summary: [...editable, ...readOnly].map(file => ({ path: file.path,
     role: editable.includes(file) ? 'editable' : 'read_only', reason: file.exists === false ? 'Explicitly named new file' : reasons.get(file.path) || 'Selected source', bytes: Buffer.byteLength(file.content) })),
-    scannedFiles, scannedBytes, omitted, limitations: automatic ? ['Context selection is bounded to 400 source files / 512 KB scanned, 12 captured files / 16 KB. Relative JavaScript/TypeScript imports, importing callers and related tests are followed; package aliases and other language imports may require explicit files.'] : ['Automatic context selection was disabled.'] };
+    scannedFiles, scannedBytes, omitted, limitations: automatic ? ['Context selection is bounded to 400 source files / 512 KB scanned, 12 captured files / 16 KB. Relative JavaScript/TypeScript imports, static TypeScript path aliases, importing callers and related tests are followed; package imports and other language imports may require explicit files.', ...aliasLimitations] : ['Automatic context selection was disabled.'] };
 }
