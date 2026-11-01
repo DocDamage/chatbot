@@ -1,0 +1,120 @@
+{
+  "status": "verified_local_alias_context_with_existing_dependency_audit_failure",
+  "date": "2026-11-01",
+  "classification": "LOCAL_ONLY_EXPERIMENTAL",
+  "branch": "codex/coding-alias-context",
+  "baseline": "9241c4f",
+  "redCheckpoints": [
+    "808e5f2",
+    "05f3e8e",
+    "bcd5ad2"
+  ],
+  "greenCheckpoint": "f2756ee",
+  "scope": "Static tsconfig path-alias and baseUrl resolution for bounded, read-only coding context. No model generation or hosted production certification.",
+  "checks": {
+    "red": {
+      "command": "npx jest src/core/coding/integrations/AutomaticContext.test.ts --runInBand",
+      "failed": 4,
+      "passed": 4,
+      "log": "red.log"
+    },
+    "focused": {
+      "command": "npx jest --runTestsByPath src/core/coding/integrations/ContextAliases.test.ts src/core/coding/integrations/AutomaticContext.test.ts src/core/coding/integrations/CodingProperties.test.ts --runInBand --coverage --collectCoverageFrom=src/core/coding/integrations/ContextAliases.ts --collectCoverageFrom=src/core/coding/integrations/AutomaticContext.ts --coverageDirectory=temp/coding-alias-coverage",
+      "suitesPassed": 3,
+      "testsPassed": 20,
+      "coverage": {
+        "lines": {
+          "total": 176,
+          "covered": 172,
+          "skipped": 0,
+          "pct": 97.72
+        },
+        "statements": {
+          "total": 279,
+          "covered": 259,
+          "skipped": 0,
+          "pct": 92.83
+        },
+        "functions": {
+          "total": 52,
+          "covered": 47,
+          "skipped": 0,
+          "pct": 90.38
+        },
+        "branches": {
+          "total": 156,
+          "covered": 141,
+          "skipped": 0,
+          "pct": 90.38
+        },
+        "branchesTrue": {
+          "total": 0,
+          "covered": 0,
+          "skipped": 0,
+          "pct": "Unknown"
+        }
+      },
+      "log": "focused.log"
+    },
+    "lint": {
+      "command": "npm run lint:server",
+      "exitCode": 0,
+      "log": "lint.log"
+    },
+    "review": {
+      "scope": "Changed production code, containment, config inheritance, alias precedence and fallback",
+      "result": "No actionable findings"
+    },
+    "build": {
+      "command": "npm run build:server",
+      "exitCode": 0,
+      "log": "build.log"
+    },
+    "testTypes": {
+      "command": "npm run type-check:tests",
+      "exitCode": 0,
+      "log": "test-types.log"
+    },
+    "related": {
+      "command": "npx jest --runTestsByPath src/core/coding/integrations/CodingToolsService.test.ts src/core/coding/integrations/DraftChecks.test.ts src/core/coding/verification/ModelRepairProposal.test.ts src/server/routes/coding-tools.test.ts src/core/coding/security/ApprovedRepositoryGateway.test.ts --runInBand",
+      "exitCode": 1,
+      "suitesPassed": 4,
+      "suitesFailed": 1,
+      "testsPassed": 23,
+      "testsFailed": 2,
+      "failure": "Two ModelRepairProposal tests exceeded their existing time limits; complete failed suite passed in isolated rerun.",
+      "log": "related-initial.log"
+    },
+    "repairRetry": {
+      "command": "npx jest --runTestsByPath src/core/coding/verification/ModelRepairProposal.test.ts --runInBand",
+      "exitCode": 0,
+      "suitesPassed": 1,
+      "testsPassed": 5,
+      "log": "repair-retry.log"
+    }
+  },
+  "dependencyAudit": {
+    "command": "npm audit --json",
+    "exitCode": 1,
+    "findings": {
+      "low": 4,
+      "moderate": 30,
+      "high": 15,
+      "critical": 3,
+      "total": 52
+    },
+    "note": "Existing dependency findings; dependency manifests and lockfile were not changed."
+  },
+  "limits": [
+    "No live Ollama or external coding tool evaluation was rerun for this deterministic context change.",
+    "No client or full release gate was run.",
+    "Package config inheritance and undiscovered targets remain unavailable."
+  ],
+  "sourceHashes": {
+    "src/core/coding/integrations/AutomaticContext.ts": "856ead3f0d58697263f0e48bc79fcb66d659803efcc8100103758541734139ae",
+    "src/core/coding/integrations/AutomaticContext.test.ts": "ed879e72f015d64a8d1393fdddc6b612e540a56a3320a94909192b3ab7c50d4b",
+    "src/core/coding/integrations/ContextAliases.ts": "869de3a65e9204ee676fb23543afe69020934fdc31031b696e30298462e7ae80",
+    "src/core/coding/integrations/ContextAliases.test.ts": "0686ca071bfdc262dbf233eeacff4a64e1dc5a5715e9976264c56f3599f08cad"
+  },
+  "uniqueTargetedTestsPassingAfterRetry": 45
+}

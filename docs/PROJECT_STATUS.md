@@ -1,12 +1,16 @@
 # AI Chatbot Hub — Current Project Status
 
-Updated: 2026-10-31 (America/New_York)
+Updated: 2026-11-01 (America/New_York)
 
 ## Local coding checkpoint
 
+The alias-context follow-up is on `codex/coding-alias-context`. Automatic JavaScript/TypeScript context selection follows static `tsconfig.json` path aliases and base URLs for dependencies and importing callers/tests. Supporting files remain read-only, and repository access restrictions and context budgets still apply. This is a local coding-context improvement; it does not promote the coding feature to production-supported status.
+
+The server build, test type check, server lint and 45 targeted tests passed. Two repair tests timed out during the initial broader run; the complete repair suite passed in an isolated rerun. Focused coverage is 97.72% lines / 90.38% branches across context selection and alias resolution. See the [alias-context verification record](implementation/evidence/coding-alias-context/2026-11-01/verification.json) for commands, logs, hashes and scope. The dependency audit still fails with 52 existing findings, including 3 critical findings. The next bounded item is to triage those critical findings against actual runtime usage and select a tested remediation; full release certification remains separate.
+
 The compiler/context upgrade adds automatic task-based source selection, read-only dependencies/callers/tests, TypeScript and fixed ESLint diagnostics before approval, and fast-check test guidance plus seeded regression properties. See the [validation record](implementation/evidence/coding-validation/2026-10-31/verification.json) for the live Ollama, compiler, property-test and browser evidence. Scope remains local JavaScript/TypeScript workflows; full configured verification is separate.
 
-The current implementation branch is `codex/coding-reliability`, extending the daily-use and REA checkpoints. Serena, Aider, ast-grep and Context7 are installed as optional external runtimes and exposed in **Coding workspace**. Aider drafts use local Ollama; Context7 queries its external documentation service. Reviewed application, fresh scoped repair and actual project verification are separate steps.
+The compiler/context checkpoint originated on `codex/coding-reliability`, extending the daily-use and REA checkpoints. Serena, Aider, ast-grep and Context7 are installed as optional external runtimes and exposed in **Coding workspace**. Aider drafts use local Ollama; Context7 queries its external documentation service. Reviewed application, fresh scoped repair and actual project verification are separate steps.
 
 Reference lookup now follows TypeScript aliases rather than matching text, stale patches are rechecked before application, Node assertion/runtime details reach repair, and absent/skipped checks cannot become a passing result. The [coding verification record](implementation/evidence/coding-tools/2026-10-31/verification.json) includes live model outcomes and intermediate failures. Local 8B model output still requires review and testing; this checkpoint does not establish general autonomous coding correctness. See [setup, workflow and limits](CODING_TOOLS.md).
 
