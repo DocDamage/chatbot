@@ -34,21 +34,21 @@ describe('automatic supporting context', () => {
 
     expect(result.readOnly.map(file => file.path)).toEqual(expect.arrayContaining(['src/suffix.ts', 'src/caller.ts', 'src/value.test.ts']));
   });
-  it('uses the nearest nested config and preserves an inherited path mapping base origin', () => {
+  it('uses the nearest nested config and applies its baseUrl to inherited path mappings', () => {
     write('configs/base.json', JSON.stringify({ compilerOptions: {
       baseUrl: './base', paths: { '@shared/*': ['shared/*'] }
     } }));
     write('apps/web/tsconfig.json', JSON.stringify({
       extends: '../../configs/base.json', compilerOptions: { baseUrl: './src' }
     }));
-    write('configs/base/shared/value.ts', 'export const shared = true;\n');
+    write('configs/base/shared/value.ts', 'export const inherited = true;\n');
     write('apps/web/src/page.ts', "import { shared } from '@shared/value'; export const page = shared;\n");
     write('apps/web/src/shared/value.ts', 'export const wrong = true;\n');
 
     const result = selectAutomaticContext(root, captureFiles(root, ['apps/web/src/page.ts']), [], 'Fix page');
 
-    expect(result.readOnly.map(file => file.path)).toContain('configs/base/shared/value.ts');
-    expect(result.readOnly.map(file => file.path)).not.toContain('apps/web/src/shared/value.ts');
+    expect(result.readOnly.map(file => file.path)).toContain('apps/web/src/shared/value.ts');
+    expect(result.readOnly.map(file => file.path)).not.toContain('configs/base/shared/value.ts');
   });
   it('falls back to relative imports and reports unsafe or invalid alias configuration', () => {
     write('tsconfig.json', '{');
