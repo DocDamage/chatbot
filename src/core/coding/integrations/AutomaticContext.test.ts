@@ -50,6 +50,18 @@ describe('automatic supporting context', () => {
     expect(result.readOnly.map(file => file.path)).toContain('apps/web/src/shared/value.ts');
     expect(result.readOnly.map(file => file.path)).not.toContain('configs/base/shared/value.ts');
   });
+  it('keeps inherited path mappings relative to their declaring config without an effective baseUrl', () => {
+    write('configs/origin.json', JSON.stringify({ compilerOptions: { paths: { '@origin/*': ['shared/*'] } } }));
+    write('apps/no-base/tsconfig.json', JSON.stringify({ extends: '../../configs/origin.json' }));
+    write('configs/shared/value.ts', 'export const origin = true;\n');
+    write('apps/no-base/src/page.ts', "import { origin } from '@origin/value'; export const page = origin;\n");
+    write('apps/no-base/shared/value.ts', 'export const wrong = true;\n');
+
+    const result = selectAutomaticContext(root, captureFiles(root, ['apps/no-base/src/page.ts']), [], 'Fix page');
+
+    expect(result.readOnly.map(file => file.path)).toContain('configs/shared/value.ts');
+    expect(result.readOnly.map(file => file.path)).not.toContain('apps/no-base/shared/value.ts');
+  });
   it('falls back to relative imports and reports unsafe or invalid alias configuration', () => {
     write('tsconfig.json', '{');
     const invalid = selectAutomaticContext(root, captureFiles(root, ['src/value.ts']), [], 'Fix value');
