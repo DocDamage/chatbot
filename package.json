@@ -102,7 +102,7 @@
     "import:general": "tsx scripts/import-wikipedia-general-corpus.ts",
     "import:books": "tsx scripts/import-books.ts",
     "export:skill": "tsx scripts/export-skill.ts",
-    "kb:backup": "tsx scripts/backup-knowledge-db.ts",
+    "kb:backup": "node scripts/local/backup.mjs",
     "chat:runtime:smoke": "tsx scripts/canonical-cli.ts chat:runtime:smoke",
     "chat:runtime:golden": "tsx scripts/canonical-cli.ts chat:runtime:golden",
     "chat:runtime:shadow-report": "tsx scripts/canonical-cli.ts chat:runtime:shadow-report",
@@ -163,7 +163,13 @@
     "verify:fast": "npm run type-check:server && npm run type-check:tests && npm run lint:server && npx jest src/core/coding/architecture/ArchitectureRelationshipsCoverage.test.ts src/core/coding/retrieval/GatewayLexicalRetrievalProvider.test.ts --runInBand",
     "verify:capability-fusion": "npm run verify:fast && npx jest src/core/coding/security/ApprovedRepositoryGateway.test.ts src/core/coding/architecture src/core/coding/retrieval src/core/agents/CodingAgent.test.ts --runInBand",
     "verify:milestone": "npm run verify:capability-fusion && npm run type-check:client && npm run lint:client && npm run test:release && npm run test:coverage -- --runInBand && npm run inventory:generate && git diff --exit-code -- docs/architecture/generated/",
-    "verify:release": "npm run release:check && npm run check:phase2 && npm run check:dependencies && npm run check:secrets"
+    "verify:release": "npm run release:check && npm run check:phase2 && npm run check:dependencies && npm run check:secrets",
+    "kb:backup:verify": "node scripts/local/backup.mjs --verify",
+    "setup:daily": "powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File scripts/local/windows-tasks.ps1 -Action Install",
+    "automation:status": "powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File scripts/local/windows-tasks.ps1 -Action Status",
+    "automation:remove": "powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File scripts/local/windows-tasks.ps1 -Action Uninstall",
+    "compare:coding-models": "node scripts/coding/compare-models.mjs",
+    "test:local-tools": "node --test scripts/local/__tests__/*.test.mjs"
   },
   "keywords": [
     "ai",

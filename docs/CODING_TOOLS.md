@@ -64,7 +64,9 @@ Run `npm run verify:coding-tools` for an explicit live evaluation against instal
 
 See the [original integration record](implementation/evidence/coding-tools/2026-10-31/verification.json) and [compiler/context/property-test record](implementation/evidence/coding-validation/2026-10-31/verification.json). The small local model can produce wrong first drafts and can exhaust the bounded repair loop. These fixtures establish the tested workflows, not arbitrary repository or language correctness. Keep tasks small, include relevant implementation/tests, use current API documentation and require passing project checks before accepting changes. Use `-- --case=substring` with the live evaluation command for a targeted development run; a final complete run should omit the filter.
 
-Per-run snapshots, prompts, logs and results remain under ignored `data/coding-tools/jobs`. They may contain private source. There is no automatic retention cleanup or download/history UI yet. After work finishes, close the app before removing old job/evaluation directories. Keep `runtime` if you want to retain installed Python environments. Never commit `.env`, `runtime.json`, model data or job directories.
+Per-run snapshots, prompts, logs and results remain under ignored `data/coding-tools/jobs`. They may contain private source. Owner-scoped job history and JSON downloads are available in the panel; completed jobs have seven-day retention cleanup. Keep the separate `runtime` directory to retain installed Python environments. Never commit `.env`, `runtime.json`, model data or job directories.
+
+Context7 retries a timed-out MCP initialization once within the configured coding deadline, before sending a documentation tool call. The result records `startupRetries`; rate limits, tool errors and repeated failures still surface. See [daily use](DAILY_USE.md) for the two-model comparison command, Windows startup and verified database backups.
 
 ## Upstream licensing
 

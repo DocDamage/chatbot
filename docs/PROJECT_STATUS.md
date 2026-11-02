@@ -1,6 +1,22 @@
 # AI Chatbot Hub â€” Current Project Status
 
-Updated: 2026-11-01 (America/New_York)
+Updated: 2026-11-02 (America/New_York)
+
+## Daily-use automation checkpoint — November 2
+
+Consolidation PR #172 merged into main and obsolete branches were pruned. The daily-use
+follow-up adds current-user Windows sign-in startup, daily/sign-in online SQLite backups,
+bounded retention, integrity/restore verification and doctor checks. A real restored
+backup was reopened by the application and preserved conversation history, document
+answers and citations. Windows task stop now owns and terminates the full Node tree.
+
+On the recorded i5-14600K / 48 GB / RTX 3060 12 GB machine, the full local coding comparison
+passed 9/9 cases with Qwen3-Coder 30B and 8/9 with qwen3:8b. The selected coding model is
+30B; ordinary chat stays on 8B. Idle median decode rates were 21.14 and 59.81 tokens/s.
+Review and project verification remain required. See the [daily-use evidence](implementation/evidence/daily-use/2026-11-02/README.md).
+
+The sections below preserve earlier checkpoints. Their old branch names and deferred
+evaluation statements describe those dates; the November 2 evidence supersedes them.
 
 ## Remaining-work checkpoint
 
@@ -12,7 +28,7 @@ The previous follow-up checkpoint passed 3,215 server tests (five skipped), 89.1
 
 Native-PDF geometry and bounded ink crops recover the previously missed equation and produce correct LaTeX for three separate display-math equations. Both tables survive and prose/code controls produce no false positives. Docling conversion runs once per book, with a multi-shard replanning regression. Independent review accepted the renderer/crop fixes. REA passes all eight real isolated API workflows on the existing Node 24.22.1 runtime, including managed analysis, native inventory, actual decompiler output, evidence export, and the chat command. Validation does not change the user's `.env` or private REA job storage. See the [follow-up record](implementation/evidence/remaining-work/2026-11-01/follow-up/README.md).
 
-Live Ollama evaluation is explicitly deferred at the user's request: Ollama is on their other PC, and this step must wait until they are at that PC. Do not treat local connection failures as a model-evaluation result or claim that live evaluation passed.
+The earlier deferral of live Ollama evaluation ended with the November 2 daily-use request. That run is recorded separately in the daily-use evidence above.
 
 Current milestone: published-book Docling validation and CPU training integration. Seven selected pages from two published books pass eight target equations, four headings, and two upright table checks; two sideways tables fail. A native-angle warning lowers confidence and blocks their default unreviewed training export; an explicit rotation diagnostic recovers both. All 346 Python tests pass (one skipped). CPU optimization/evaluation and inactive registration pass on explicit fixtures; the actual bridge/review/exporter codepath also runs with a mocked sentence-copying generator, which is protocol proof rather than non-heuristic data-generation proof. Independent review fixes protect candidate identity, rollback, promotion eligibility and base-model provenance. Final packaging/smoke, server/test type checks and lint pass. The isolated full server run passes 3,243 tests (five skipped), 89.1329% lines, 76.3025% branches and all 19 critical-file checks. Native assertions run in a clean Node process. Tracing the HTTP failures found 12.7 seconds of unrelated lazy-router construction; prefix-scoped dispatch fixes the production cold path and passes 90 focused server tests without raising request deadlines. Final repository gates, 24 release-tool tests and the secret scan pass. No useful domain model is claimed. See the [current evidence](implementation/evidence/dabook-validation/2026-11-01/README.md).
 

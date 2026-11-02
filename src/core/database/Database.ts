@@ -80,6 +80,8 @@ export class Database {
       await this.runMigrations();
     } catch (error: any) {
       this.initialized = false;
+      if (this.config.type === 'sqlite' && this.db?.open) this.db.close();
+      this.preparedStatements.clear();
       logger.error('Database initialization failed', { error: error.message });
       throw error;
     }
@@ -525,7 +527,13 @@ export class Database {
       ...getDatasetMigrations(this.config.type),
     ];
 
-    for (const migration of migrations) {
+    if (this.config.type === 'sqlite') {
+      // One durable schema commit avoids a disk sync for every CREATE on first startup.
+      // SQLite DDL is transactional: any migration failure must roll back the whole batch.
+      this.db.transaction(() => {
+        for (const migration of migrations) this.db.prepare(migration).run();
+      })();
+    } else for (const migration of migrations) {
       try {
         await this.query(migration);
       } catch (error: any) {

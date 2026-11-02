@@ -4,7 +4,7 @@ AI Chatbot Hub is a TypeScript/React chatbot workspace with provider adapters, s
 
 ## Current status
 
-Daily local use now has a dedicated setup and verification path: see [Daily local use](docs/DAILY_USE.md). Run `npm run start:local` to start the built app with an installed Ollama model, then open <http://127.0.0.1:3001>. Ordinary chat uses the persistent canonical runtime; History reopens the original conversation. This personal-use checkpoint does not establish hosted production support.
+Daily local use now has a dedicated setup and verification path: see [Daily local use](docs/DAILY_USE.md). Run `npm run start:local` to start the built app with an installed Ollama model, then open <http://127.0.0.1:3001>. On Windows, `npm run setup:daily` installs current-user sign-in startup and daily verified database backups after the first build. Ordinary chat uses the persistent canonical runtime; History reopens the original conversation. This personal-use checkpoint does not establish hosted production support.
 
 Optional [REA reverse engineering](docs/REA.md) adds local artifact analysis, native function inspection, saved evidence bundles, and `/rea` chat commands. Run `npm run setup:rea`, restart, and open the REA panel in chat.
 
@@ -15,7 +15,7 @@ Coding drafts now gather bounded read-only context automatically, compare TypeSc
 The implementation is active and suitable for local development, evaluation, and trusted internal use. It includes the complete **Capability Fusion (CF-01 through CF-10)** stack with persistent disk observability, process supervisors, native Git worktrees, Playwright browser drivers, media localization, Lattice game development tools, and multi-domain canary certification.
 
 - Canonical branch: `main`.
-- Current local implementation branch: `codex/coding-alias-context`, including the daily-use, REA, coding, alias and document-ingestion work. See the [branch consolidation plan](docs/BRANCH_RECONCILIATION_2026-11-02.md); older branches are retained until review.
+- The consolidated daily-use, REA, coding, alias and document-ingestion work is merged into `main`. Obsolete development branches were pruned after review; original CF history remains archived as a tag. The [branch reconciliation](docs/BRANCH_RECONCILIATION_2026-11-02.md) records the pre-merge audit.
 - Coding and desktop/local filesystem capabilities are gated via explicit RBAC and exact-scope confirmation.
 - Server regression: over 2,900 tests exercised; corrected fixture failures passed their complete suite reruns. See the [verification record](docs/implementation/evidence/daily-use/2026-10-30/verification.json).
 - Client Vitest suite: 61 files / 203 tests passed; built-server browser regression: 7 tests passed; browser accessibility: 6 tests passed.

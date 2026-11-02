@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1999,
+    "sourceFiles": 2005,
     "productionSourceFiles": 1273,
     "reachableProductionFiles": 913,
     "unreachableProductionFiles": 360,
@@ -6128,6 +6128,12 @@
       ]
     },
     {
+      "file": "scripts/coding/compare-models.mjs",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
       "file": "scripts/import-wikipedia-general-corpus.ts",
       "signals": [
         "timer"
@@ -6879,6 +6885,10 @@
       "file": "scripts/certification/production-like.mjs"
     },
     {
+      "binary": "taskkill.exe",
+      "file": "scripts/coding/compare-models.mjs"
+    },
+    {
       "binary": "npm",
       "file": "scripts/release/build-release-artifact.mjs"
     },
@@ -7078,7 +7088,7 @@
     },
     {
       "file": "src/core/database/Database.ts",
-      "lines": 554
+      "lines": 562
     },
     {
       "file": "src/core/database/ExpansionMigrations.ts",
