@@ -1,6 +1,5 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -8,7 +7,8 @@ const sourceRegisterPath = path.join(root, 'docs/implementation/CAPABILITY_SOURC
 const outputPath = path.join(root, 'THIRD_PARTY_NOTICES.md');
 
 function clean(value) {
-  return value.trim().replace(/^`|`$/g, '');
+  const trimmed = value.trim();
+  return /^`[^`]*`$/.test(trimmed) ? trimmed.slice(1, -1) : trimmed;
 }
 
 function parseSourceRegister() {
@@ -41,13 +41,14 @@ function parseSourceRegister() {
 
 export function generateNotices() {
   const sources = parseSourceRegister();
-  const date = execFileSync('git', ['log', '-1', '--format=%cs', '--', sourceRegisterPath], {
-    cwd: root,
-    encoding: 'utf8',
-  }).trim();
+  const date = fs.readFileSync(sourceRegisterPath, 'utf8').match(/\*\*Date:\*\* (\d{4}-\d{2}-\d{2})/)?.[1];
+  if (!date) throw new Error('Source register must declare its review date.');
+  const optionalNotices = fs.readFileSync(path.join(root, 'docs/legal/OPTIONAL_RUNTIME_NOTICES.md'), 'utf8')
+    .trim().replaceAll('](../../services/', '](services/');
 
   let output = `# Third-Party Software Notices and Attribution\n\n`;
-  output += `**Generated:** ${date}\n\n`;
+  output += `**Source register review date:** ${date}\n\n`;
+  output += `${optionalNotices}\n\n`;
   output += `**Governing Document:** [CAPABILITY_SOURCE_REGISTER.md](docs/implementation/CAPABILITY_SOURCE_REGISTER.md)\n\n`;
   output += `This document lists external software, reference algorithms, and capability pack sources utilized, adapted, or referenced by AI Chatbot Hub.\n\n`;
   output += `All native adaptations retain upstream copyright and license notices in accordance with their respective permissive licenses (MIT, Apache-2.0, BSD).\n\n`;
@@ -57,7 +58,8 @@ export function generateNotices() {
   output += `|---|---|---|---|---|\n`;
 
   for (const s of sources) {
-    output += `| ${s.name} | \`${s.upstream}\` | ${s.license} | \`${s.mode}\` | ${s.notices} |\n`;
+    const mode = s.mode.includes('`') ? s.mode : `\`${s.mode}\``;
+    output += `| ${s.name} | \`${s.upstream}\` | ${s.license} | ${mode} | ${s.notices} |\n`;
   }
 
   output += `\n---\n\n`;

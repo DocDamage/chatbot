@@ -6,8 +6,8 @@ import { managedPdfOcr } from '../ManagedPdfOcr';
 jest.mock('../ManagedPdfOcr', () => ({ managedPdfOcr: jest.fn().mockRejectedValue(new Error('Unavailable in legacy rasterizer tests')) }));
 
 jest.mock('pdf-parse', () => {
-  return jest.fn().mockImplementation(async (buffer: Buffer) => {
-    const str = buffer.toString('utf8');
+  return jest.fn().mockImplementation(async (buffer: Uint8Array) => {
+    const str = Buffer.from(buffer).toString('utf8');
     if (str.includes('THROW_PARSE_ERROR')) {
       throw new Error('Corrupted PDF header');
     }

@@ -2588,6 +2588,10 @@
       "specifier": "../../cache/SemanticCache"
     },
     {
+      "importer": "src/core/rag/ingestion/__tests__/DabookPdfExtractor.integration.test.ts",
+      "specifier": "./src/core/rag/ingestion/PdfExtractor.ts"
+    },
+    {
       "importer": "src/core/sprite-lab/SpriteExternalToolAdapter.ts",
       "specifier": "../local-tools/LocalToolService"
     },
@@ -2618,18 +2622,6 @@
     {
       "importer": "src/types/source-code-pack.test.ts",
       "specifier": "./math"
-    },
-    {
-      "importer": "temp/build-followup-evidence.cjs",
-      "specifier": "../node_modules/eslint/package.json"
-    },
-    {
-      "importer": "temp/build-followup-evidence.cjs",
-      "specifier": "../node_modules/jest/package.json"
-    },
-    {
-      "importer": "temp/rea-live-isolated.mjs",
-      "specifier": "../dist/core/rea/ReaService.js"
     }
   ],
   "importGraph": {
@@ -10474,33 +10466,7 @@
     "src/utils/memoize.ts": [],
     "src/utils/retry.ts": [
       "src/core/observability/logger.ts"
-    ],
-    "temp/build-dabook-current-evidence.cjs": [],
-    "temp/build-followup-evidence.cjs": [],
-    "temp/build-remaining-evidence.cjs": [],
-    "temp/coding-alias-coverage/block-navigation.js": [],
-    "temp/coding-alias-coverage/lcov-report/block-navigation.js": [],
-    "temp/coding-alias-coverage/lcov-report/prettify.js": [],
-    "temp/coding-alias-coverage/lcov-report/sorter.js": [],
-    "temp/coding-alias-coverage/prettify.js": [],
-    "temp/coding-alias-coverage/sorter.js": [],
-    "temp/dabook-real-export-cpu-20261101/run-export.ts": [
-      "src/core/dabook/DabookBridge.ts",
-      "src/core/dabook/__tests__/pdfFixture.ts",
-      "src/core/dabook/training/EvaluationCorpus.ts",
-      "src/core/dabook/training/TrainingExporter.ts",
-      "src/core/dabook/training/TrainingPlan.ts"
-    ],
-    "temp/rea-api-isolated.mjs": [],
-    "temp/rea-live-isolated.mjs": [],
-    "temp/rea-validation-a5RkFD/jobs/1c4b0a48-c18d-42ee-b2b5-9aa134ace36b/input/inert.js": [],
-    "temp/release-coverage-evaluation/lcov-report/block-navigation.js": [],
-    "temp/release-coverage-evaluation/lcov-report/prettify.js": [],
-    "temp/release-coverage-evaluation/lcov-report/sorter.js": [],
-    "temp/release-coverage-worker/lcov-report/block-navigation.js": [],
-    "temp/release-coverage-worker/lcov-report/prettify.js": [],
-    "temp/release-coverage-worker/lcov-report/sorter.js": [],
-    "temp/trace-built-server-import.cjs": []
+    ]
   },
-  "sourceRecordCount": 2019
+  "sourceRecordCount": 1999
 }

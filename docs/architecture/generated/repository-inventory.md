@@ -6,7 +6,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 2019 |
+| Source files | 1999 |
 | Production source files | 1273 |
 | Reachable production files | 913 |
 | Unreachable production files | 360 |
@@ -840,7 +840,6 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `npm` — `scripts/release/build-release-artifact.mjs`
 - `npm` — `scripts/release/check-dependency-vulnerabilities.mjs`
 - `git` — `scripts/release/check-secrets.mjs`
-- `git` — `scripts/release/generate-third-party-notices.mjs`
 - `git` — `scripts/release/run-comprehensive-audit.mjs`
 - `git` — `scripts/run-coding-evals.ts`
 - `taskkill.exe` — `src/core/coding/integrations/ToolProcess.ts`
@@ -850,9 +849,6 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `taskkill.exe` — `src/core/mcp/McpClientService.ts`
 - `git` — `src/core/project/ProjectIntelligenceService.ts`
 - `git` — `src/core/tools/RepoTools.ts`
-- `git` — `temp/build-dabook-current-evidence.cjs`
-- `git` — `temp/build-followup-evidence.cjs`
-- `git` — `temp/build-remaining-evidence.cjs`
 
 ## Files above 300 lines
 

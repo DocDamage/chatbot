@@ -33,14 +33,18 @@ test('source analysis inventories routes, env, classes, tables, and binaries', (
   assert.deepEqual(result.externalBinaries, ['ffmpeg']);
 });
 
-test('repository scanning excludes installed Python environments while retaining sidecar source', () => {
+test('repository scanning excludes installed environments and scratch reports while retaining sidecar source', () => {
   const root = fixture({ 'services/dabook/.venv/Lib/site-packages/runtime.js': 'export const bundled = true;',
-    'services/dabook/src/bridge.js': 'export const source = true;' });
+    'services/dabook/src/bridge.js': 'export const source = true;',
+    'temp/coverage/prettify.js': 'export const temporary = true;',
+    'output/report/runtime.js': 'export const generated = true;' });
   try {
     const scan = scanRepository(root);
     const serialized = JSON.stringify(scan);
     assert.ok(serialized.includes('services/dabook/src/bridge.js'));
     assert.ok(!serialized.includes('.venv/'));
+    assert.ok(!serialized.includes('temp/'));
+    assert.ok(!serialized.includes('output/'));
   } finally {
     assert.ok(root.startsWith(path.resolve(os.tmpdir()) + path.sep));
     fs.rmSync(root, { recursive: true, force: true });

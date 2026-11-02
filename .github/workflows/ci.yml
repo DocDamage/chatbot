@@ -367,6 +367,8 @@ jobs:
         run: npm ci
       - name: Install client dependencies
         run: npm --prefix client ci
+      - name: Install coding lint runtime
+        run: npm --prefix services/coding-tools ci
       - name: Enforce server coverage
         run: npm run test:coverage -- --runInBand
       - name: Enforce client coverage

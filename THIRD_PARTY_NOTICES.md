@@ -1,5 +1,7 @@
 # Third-Party Software Notices and Attribution
 
+**Source register review date:** 2026-08-25
+
 ## Compiler, linter and property-test dependencies (2026-10-31)
 
 `fast-check@4.10.2` is a root development dependency (MIT, copyright 2017 Nicolas DUBIEN), included in the core dependency SBOM. Its full notice is retained in [LICENSE.fast-check](services/coding-tools/LICENSE.fast-check). The optional coding environment additionally pins ESLint 10.14.0 (MIT, OpenJS Foundation and other contributors), typescript-eslint/parser 8.59.4 (MIT, copyright 2019 typescript-eslint and other contributors), TypeScript 5.9.3 (Apache-2.0) and globals 17.13.0 (MIT, Sindre Sorhus). Their full notices are retained in [LICENSE.eslint](services/coding-tools/LICENSE.eslint), [LICENSE.typescript-eslint](services/coding-tools/LICENSE.typescript-eslint), [LICENSE.typescript](services/coding-tools/LICENSE.typescript), and [LICENSE.globals](services/coding-tools/LICENSE.globals). These unmodified optional packages and their transitive notices remain separate from the base runtime SBOM; TypeScript is also an existing core dependency.
@@ -21,8 +23,6 @@ Context7's remote service and model weights have separate terms. Redistribution 
 
 The optional adapter uses `rea-agents@6.8.0` (MIT), installed separately under `services/rea`. Source reference: [DocDamage/rea](https://github.com/DocDamage/rea), reviewed at `d48e472fa6a664cacbb400560e673533005795ce`; the npm package identifies [morluto/rea](https://github.com/morluto/rea) as upstream. Copyright (c) 2026 morluto. The full notice is retained in [services/rea/LICENSE.rea](services/rea/LICENSE.rea). Its separately locked transitive dependencies retain their package notices and are outside the base application SBOM.
 
-**Generated:** 2026-08-25
-
 **Governing Document:** [CAPABILITY_SOURCE_REGISTER.md](docs/implementation/CAPABILITY_SOURCE_REGISTER.md)
 
 This document lists external software, reference algorithms, and capability pack sources utilized, adapted, or referenced by AI Chatbot Hub.
@@ -35,6 +35,15 @@ All native adaptations retain upstream copyright and license notices in accordan
 
 | Source Name | Upstream Repository | License | Integration Mode | Attribution Notice |
 |---|---|---|---|---|
+| fast-check | `dubzzz/fast-check` | MIT | `PACKAGE_DEPENDENCY` | Copyright 2017 Nicolas DUBIEN; full license in `services/coding-tools/LICENSE.fast-check`; root development dependency/SBOM |
+| ESLint draft runtime | `eslint/eslint` | MIT | `EXTERNAL_SERVICE_ADAPTER` | OpenJS Foundation and other contributors; full license in `services/coding-tools/LICENSE.eslint` |
+| TypeScript compiler API | `microsoft/TypeScript` | Apache-2.0 | `PACKAGE_DEPENDENCY` | Full license in `services/coding-tools/LICENSE.typescript`; existing core API dependency plus isolated parser dependency |
+| typescript-eslint parser | `typescript-eslint/typescript-eslint` | MIT | `PACKAGE_DEPENDENCY` | Copyright 2019 typescript-eslint and other contributors; full license in `services/coding-tools/LICENSE.typescript-eslint` |
+| Serena | `oraios/serena` | GPL-3.0-or-later application / MIT SolidLSP | `EXTERNAL_SERVICE_ADAPTER` | Full component policy and both licenses retained under `services/coding-tools` |
+| Aider | `Aider-AI/aider` | Apache-2.0 | `EXTERNAL_SERVICE_ADAPTER` | Full license retained; hash-locked Python dependencies separate |
+| ast-grep | `ast-grep/ast-grep` | MIT | `EXTERNAL_SERVICE_ADAPTER` | Full copyright/license retained; npm integrity lock |
+| Context7 | `upstash/context7` | MIT | `EXTERNAL_SERVICE_ADAPTER` | Full copyright/license retained; remote service terms separate |
+| REA | ``DocDamage/rea` / `morluto/rea`` | MIT | `EXTERNAL_SERVICE_ADAPTER` | Copyright (c) 2026 morluto; full notice in `services/rea/LICENSE.rea`; separately locked dependencies |
 | Headroom | `DocDamage/Headroom` | Apache-2.0 | `NATIVE_ADAPTATION` / `EXTERNAL_SERVICE_ADAPTER` | NOTICE file present; ML models separate |
 | Graft | `DocDamage/graft` | MIT | `NATIVE_ADAPTATION` | Copyright (c) 2026 Graft authors |
 | Basemind | `DocDamage/basemind` | MIT | `NATIVE_ADAPTATION` | Standard MIT notice |
@@ -67,7 +76,7 @@ All native adaptations retain upstream copyright and license notices in accordan
 | Picchio | `DocDamage/picchio` | MIT / Model-specific | `EXTERNAL_SERVICE_ADAPTER` | Checkpoint weights separate |
 | Capsule | `DocDamage/capsule` | MIT | `NATIVE_ADAPTATION` | Standard MIT notice |
 | Book-to-Skill | `DocDamage/book-to-skill` | MIT | `NATIVE_ADAPTATION` | Standard MIT notice |
-| RepoDNA | `DocDamage/RepoDNA` | MIT | `NATIVE_ADAPTATION` | Covered by `CF-01_REPODNA_NOTICE.md |
+| RepoDNA | `DocDamage/RepoDNA` | MIT | `NATIVE_ADAPTATION` | Covered by `CF-01_REPODNA_NOTICE.md` |
 | RepoRelay | `DocDamage/RepoRelay` | MIT | `NATIVE_ADAPTATION` | Standard MIT notice |
 | SearchEngineSuite | `DocDamage/SearchEngineSuite` | MIT | `CLEAN_ROOM_IMPLEMENTATION` | Standard MIT notice |
 | GitGalaxy | `DocDamage/GitGalaxy` | MIT | `NATIVE_ADAPTATION` | Standard MIT notice |

@@ -4,7 +4,7 @@ import path from 'node:path';
 const DEFAULT_IGNORED_DIRECTORIES = new Set([
   '.git', '.next', '.playwright-cli', '.remembrandt', '.venv', 'cache', 'coverage', 'data', 'dist',
   'knowledge-base', 'knowledge-base-public', 'local-tools', 'node_modules', '.venv-pyscrappy',
-  'private-tools', 'tmp', 'vendor'
+  'private-tools', 'temp', 'tmp', 'output', 'vendor'
 ]);
 
 export function toPosix(filePath) {

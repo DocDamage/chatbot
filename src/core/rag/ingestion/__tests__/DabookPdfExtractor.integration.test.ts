@@ -11,6 +11,7 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
+import { execFileSync } from 'child_process';
 import { DabookBridge } from '../../../dabook';
 import { managedVenvPython } from '../../../dabook/DabookConfig';
 import { resetDabookBridgeForTests } from '../../../dabook';
@@ -24,6 +25,32 @@ describe('DabookPdfExtractor against a real PDF (no Python needed)', () => {
   let dir: string;
   beforeEach(() => { dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dabook-fallback-')); });
   afterEach(() => { fs.rmSync(dir, { recursive: true, force: true }); });
+
+  it('extracts a PDF read into an offset Buffer outside the Jest runtime', () => {
+    const pdf = path.join(dir, 'pooled.pdf');
+    fs.writeFileSync(pdf, sampleHandbookPdf());
+    // Jest's VM can convert Buffers across realms, hiding PDF.js's byteOffset bug. Exercise
+    // the production module in Node with a deterministic pooled-buffer-shaped input.
+    const script = `
+      const fs = require('node:fs');
+      const { PdfExtractor } = require('./src/core/rag/ingestion/PdfExtractor.ts');
+      const filename = process.argv[1];
+      const original = fs.readFileSync;
+      const bytes = original(filename);
+      const pool = Buffer.alloc(bytes.length + 73);
+      bytes.copy(pool, 37);
+      fs.readFileSync = (name, ...options) => name === filename
+        ? pool.subarray(37, 37 + bytes.length) : original(name, ...options);
+      new PdfExtractor().extract(filename, { enablePdfOcr: false }).then(doc => {
+        process.stdout.write(JSON.stringify({ text: doc.text, pages: doc.metadata.pages }));
+      }).catch(error => { console.error(error); process.exitCode = 1; });
+    `;
+    const result = JSON.parse(execFileSync(process.execPath,
+      ['--require', require.resolve('tsx/cjs'), '--eval', script, pdf],
+      { cwd: path.resolve(__dirname, '../../../../..'), encoding: 'utf8', timeout: 30_000 }));
+    expect(result.pages).toBe(2);
+    expect(result.text).toContain('recovery tool scans the partition table');
+  }, 35_000);
 
   it('falls back to real pdf-parse extraction with a visible warning when the interpreter is missing', async () => {
     const pdf = path.join(dir, 'handbook.pdf');

@@ -10,6 +10,8 @@ RUN apt-get update \
 COPY package.json package-lock.json ./
 COPY client/package.json client/package-lock.json ./client/
 COPY .npmrc ./
+COPY scripts/dependencies/ ./scripts/dependencies/
+COPY patches/ ./patches/
 RUN npm ci \
   && npm --prefix client ci
 
@@ -24,6 +26,8 @@ RUN apt-get update \
 
 COPY package.json package-lock.json ./
 COPY .npmrc ./
+COPY scripts/dependencies/ ./scripts/dependencies/
+COPY patches/ ./patches/
 RUN npm ci --omit=dev
 
 FROM build-dependencies AS build

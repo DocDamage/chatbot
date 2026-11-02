@@ -261,7 +261,9 @@ class Supervisor:
 
         from dabook.core.runtime.worker import worker_main
 
-        p = multiprocessing.Process(
+        # Own workers directly on every platform, including Python 3.14 where Linux defaults
+        # to forkserver. Parent-death detection and supervisor cleanup require this relationship.
+        p = multiprocessing.get_context("spawn").Process(
             target=worker_main,
             args=(self.db_path, self.workspace, worker_id, lane),
             kwargs={"gpu_index": gpu_index, "log_dir": self.workspace / "logs" / "workers"},

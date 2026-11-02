@@ -27,7 +27,9 @@ export class PdfExtractor implements FileExtractor {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const pdfParse = require('pdf-parse');
       const dataBuffer = fs.readFileSync(filePath);
-      const pdfData = await pdfParse(dataBuffer);
+      // The bundled PDF.js creates substreams from bytes.buffer without honoring a Buffer's
+      // byteOffset. Small fs reads can be pooled, so give it an independent, exact-sized array.
+      const pdfData = await pdfParse(Uint8Array.from(dataBuffer));
       const text = pdfData.text || '';
       const warnings: string[] = [];
       const metadata: Record<string, any> = {

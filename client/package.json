@@ -28,7 +28,8 @@
     "@assistant-ui/react": "0.14.5",
     "radix-ui": "^1.8.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "zod": "^4.6.7"
   },
   "overrides": {
     "@assistant-ui/core": "0.2.2",

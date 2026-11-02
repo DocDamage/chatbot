@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 2019,
+    "sourceFiles": 1999,
     "productionSourceFiles": 1273,
     "reachableProductionFiles": 913,
     "unreachableProductionFiles": 360,
@@ -6604,48 +6604,6 @@
       "signals": [
         "timer"
       ]
-    },
-    {
-      "file": "temp/coding-alias-coverage/lcov-report/prettify.js",
-      "signals": [
-        "timer"
-      ]
-    },
-    {
-      "file": "temp/coding-alias-coverage/prettify.js",
-      "signals": [
-        "timer"
-      ]
-    },
-    {
-      "file": "temp/rea-api-isolated.mjs",
-      "signals": [
-        "timer"
-      ]
-    },
-    {
-      "file": "temp/rea-live-isolated.mjs",
-      "signals": [
-        "timer"
-      ]
-    },
-    {
-      "file": "temp/release-coverage-evaluation/lcov-report/prettify.js",
-      "signals": [
-        "timer"
-      ]
-    },
-    {
-      "file": "temp/release-coverage-worker/lcov-report/prettify.js",
-      "signals": [
-        "timer"
-      ]
-    },
-    {
-      "file": "temp/trace-built-server-import.cjs",
-      "signals": [
-        "timer"
-      ]
     }
   ],
   "environmentVariables": [
@@ -6934,10 +6892,6 @@
     },
     {
       "binary": "git",
-      "file": "scripts/release/generate-third-party-notices.mjs"
-    },
-    {
-      "binary": "git",
       "file": "scripts/release/run-comprehensive-audit.mjs"
     },
     {
@@ -6971,18 +6925,6 @@
     {
       "binary": "git",
       "file": "src/core/tools/RepoTools.ts"
-    },
-    {
-      "binary": "git",
-      "file": "temp/build-dabook-current-evidence.cjs"
-    },
-    {
-      "binary": "git",
-      "file": "temp/build-followup-evidence.cjs"
-    },
-    {
-      "binary": "git",
-      "file": "temp/build-remaining-evidence.cjs"
     }
   ],
   "oversizedFiles": [
