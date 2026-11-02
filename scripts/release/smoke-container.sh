@@ -20,6 +20,7 @@ docker run --detach \
   --env NODE_ENV=test \
   --env DEPLOYMENT_MODE=test \
   --env PORT=3001 \
+  --env HOST=0.0.0.0 \
   --env JWT_SECRET=ci-container-smoke-jwt-secret-32-characters-minimum \
   --env LLM_PROVIDER=template \
   --env USE_OLLAMA=false \
