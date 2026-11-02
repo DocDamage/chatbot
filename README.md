@@ -15,7 +15,7 @@ Coding drafts now gather bounded read-only context automatically, compare TypeSc
 The implementation is active and suitable for local development, evaluation, and trusted internal use. It includes the complete **Capability Fusion (CF-01 through CF-10)** stack with persistent disk observability, process supervisors, native Git worktrees, Playwright browser drivers, media localization, Lattice game development tools, and multi-domain canary certification.
 
 - Canonical branch: `main`.
-- Current local implementation branch: `codex/coding-reliability`, extending the daily-use checkpoint with local REA and coding integrations.
+- Current local implementation branch: `codex/coding-alias-context`, including the daily-use, REA, coding, alias and document-ingestion work. See the [branch consolidation plan](docs/BRANCH_RECONCILIATION_2026-11-02.md); older branches are retained until review.
 - Coding and desktop/local filesystem capabilities are gated via explicit RBAC and exact-scope confirmation.
 - Server regression: over 2,900 tests exercised; corrected fixture failures passed their complete suite reruns. See the [verification record](docs/implementation/evidence/daily-use/2026-10-30/verification.json).
 - Client Vitest suite: 61 files / 203 tests passed; built-server browser regression: 7 tests passed; browser accessibility: 6 tests passed.
