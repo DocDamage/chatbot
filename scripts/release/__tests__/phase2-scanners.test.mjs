@@ -33,6 +33,24 @@ test('source analysis inventories routes, env, classes, tables, and binaries', (
   assert.deepEqual(result.externalBinaries, ['ffmpeg']);
 });
 
+test('repository scanning excludes installed environments and scratch reports while retaining sidecar source', () => {
+  const root = fixture({ 'services/dabook/.venv/Lib/site-packages/runtime.js': 'export const bundled = true;',
+    'services/dabook/src/bridge.js': 'export const source = true;',
+    'temp/coverage/prettify.js': 'export const temporary = true;',
+    'output/report/runtime.js': 'export const generated = true;' });
+  try {
+    const scan = scanRepository(root);
+    const serialized = JSON.stringify(scan);
+    assert.ok(serialized.includes('services/dabook/src/bridge.js'));
+    assert.ok(!serialized.includes('.venv/'));
+    assert.ok(!serialized.includes('temp/'));
+    assert.ok(!serialized.includes('output/'));
+  } finally {
+    assert.ok(root.startsWith(path.resolve(os.tmpdir()) + path.sep));
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('reachability follows literal relative imports and leaves dormant code isolated', () => {
   const root = fixture({
     'src/server/index.ts': `import './live';`,
@@ -46,4 +64,20 @@ test('reachability follows literal relative imports and leaves dormant code isol
   assert.ok(reachability.reachableProduction.includes('src/server/live.ts'));
   assert.ok(reachability.unreachable.includes('src/server/dormant.ts'));
   assert.equal(reachability.missingEntrypoints.length, 0);
+});
+
+test('source integrity verification passes with complete capability source register', async () => {
+  const { checkSourceIntegrity } = await import('../check-source-integrity.mjs');
+  const result = checkSourceIntegrity();
+  assert.equal(result.ok, true, `Source integrity errors: ${result.errors.join(', ')}`);
+  assert.ok(result.parsedCount >= 25);
+});
+
+test('package API dependencies retain license, immutable provenance and attribution gates', async () => {
+  const { checkPackageDependency } = await import('../check-source-integrity.mjs');
+  const row = { name: 'fixture', license: 'MIT', revision: 'a'.repeat(40), notices: 'Retained LICENSE.fixture' };
+  assert.deepEqual(checkPackageDependency(row), []);
+  assert.ok(checkPackageDependency({ ...row, license: 'GPL-3.0-or-later' }).some(issue => issue.includes('permissive')));
+  assert.ok(checkPackageDependency({ ...row, revision: 'main' }).some(issue => issue.includes('immutable')));
+  assert.ok(checkPackageDependency({ ...row, notices: '' }).some(issue => issue.includes('attribution')));
 });

@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "expected_equations": 3,
+  "detected_equations": 3,
+  "matches": [
+    {
+      "id": "energy",
+      "text": "E = m c ^ { 2 }",
+      "correct_latex": true,
+      "detection": "docling_layout"
+    },
+    {
+      "id": "speed",
+      "text": "v = \\frac { d } { t }",
+      "correct_latex": true,
+      "detection": "docling_layout"
+    },
+    {
+      "id": "quadratic",
+      "text": "x = \\frac { - b \\, \\pm \\, \\sqrt { b ^ { 2 } - 4 a c } } { 2 a }",
+      "correct_latex": true,
+      "detection": "docling_layout"
+    }
+  ],
+  "missing": [],
+  "false_positives": [],
+  "table_rows_preserved": true,
+  "scope": "generated display-math fixture; not a population accuracy estimate"
+}

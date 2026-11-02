@@ -49,13 +49,24 @@ export class StructuredEditEngine {
 
   apply(patch: StructuredPatch): StructuredPatch {
     if (patch.conflicts.length) throw new Error(`Cannot apply conflicted patch: ${patch.conflicts.map(conflict => `${conflict.path}: ${conflict.reason}`).join('; ')}`);
-    for (const operation of patch.operations) {
+    const fresh = this.createPatch(patch.operations, { requireAuthorization: false });
+    if (fresh.conflicts.length) throw new Error(`Patch preconditions changed: ${fresh.conflicts.map(conflict => `${conflict.path}: ${conflict.reason}`).join('; ')}`);
+    const originals = patch.operations.map(operation => {
       const absolute = this.conflicts.safe(operation.path);
-      if (operation.operation === 'delete') fs.unlinkSync(absolute);
-      else {
-        fs.mkdirSync(path.dirname(absolute), { recursive: true });
-        fs.writeFileSync(absolute, operation.content || '', 'utf8');
+      return { absolute, content: fs.existsSync(absolute) ? fs.readFileSync(absolute) : undefined };
+    });
+    try {
+      for (const operation of patch.operations) {
+        const absolute = this.conflicts.safe(operation.path);
+        if (operation.operation === 'delete') fs.unlinkSync(absolute);
+        else { fs.mkdirSync(path.dirname(absolute), { recursive: true }); fs.writeFileSync(absolute, operation.content || '', 'utf8'); }
       }
+    } catch (error) {
+      for (const original of originals) {
+        if (original.content !== undefined) fs.writeFileSync(original.absolute, original.content);
+        else if (fs.existsSync(original.absolute)) fs.unlinkSync(original.absolute);
+      }
+      throw error;
     }
     return { ...patch, applied: true };
   }
@@ -65,10 +76,14 @@ export class StructuredEditEngine {
     return operations.map(operation => {
       const oldContent = operation.operation === 'create' ? '' : operation.expectedContent || '';
       const newContent = operation.operation === 'delete' ? '' : operation.content || '';
-      const oldLines = oldContent.split(/\r?\n/); const newLines = newContent.split(/\r?\n/);
+      const lines = (content: string) => content ? content.replace(/\r?\n$/, '').split(/\r?\n/) : [];
+      const oldLines = lines(oldContent), newLines = lines(newContent);
       const oldPath = operation.operation === 'create' ? '/dev/null' : `a/${operation.path}`;
       const newPath = operation.operation === 'delete' ? '/dev/null' : `b/${operation.path}`;
-      return [`diff --git a/${operation.path} b/${operation.path}`, `--- ${oldPath}`, `+++ ${newPath}`, `@@ -1,${Math.max(1, oldLines.length)} +1,${Math.max(1, newLines.length)} @@`, ...oldLines.filter(Boolean).map(line => `-${line}`), ...newLines.filter(Boolean).map(line => `+${line}`), ''].join('\n');
+      return [`diff --git a/${operation.path} b/${operation.path}`, `--- ${oldPath}`, `+++ ${newPath}`,
+        `@@ -${oldLines.length ? 1 : 0},${oldLines.length} +${newLines.length ? 1 : 0},${newLines.length} @@`,
+        ...oldLines.map(line => `-${line}`), ...(oldContent && !oldContent.endsWith('\n') ? ['\\ No newline at end of file'] : []),
+        ...newLines.map(line => `+${line}`), ...(newContent && !newContent.endsWith('\n') ? ['\\ No newline at end of file'] : []), ''].join('\n');
     }).join('');
   }
 }

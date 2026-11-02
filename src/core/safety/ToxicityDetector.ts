@@ -4,7 +4,6 @@
  */
 
 import { logger } from '../observability/logger';
-import natural from 'natural';
 
 export interface ToxicityResult {
   toxic: boolean;

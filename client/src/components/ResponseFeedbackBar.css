@@ -1,0 +1,125 @@
+.feedback-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 0.8rem;
+}
+
+.feedback-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.feedback-btn {
+  background: transparent;
+  border: 1px solid var(--border-subtle, #334155);
+  border-radius: 4px;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.feedback-btn:hover {
+  background: var(--bg-hover, #1e293b);
+  border-color: var(--border-default, #475569);
+}
+
+.feedback-btn.active {
+  background: var(--primary-accent-bg, rgba(56, 189, 248, 0.2));
+  border-color: var(--primary-accent, #38bdf8);
+}
+
+.feedback-thanks {
+  font-size: 0.75rem;
+  color: var(--text-muted, #94a3b8);
+  margin-left: 6px;
+}
+
+.feedback-followup {
+  background: var(--bg-card, #0f172a);
+  border: 1px solid var(--border-subtle, #334155);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 480px;
+}
+
+.feedback-followup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+  color: var(--text-primary, #f1f5f9);
+}
+
+.feedback-skip-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted, #94a3b8);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.feedback-skip-btn:hover {
+  color: #fff;
+}
+
+.feedback-category-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.feedback-chip {
+  background: var(--bg-surface, #1e293b);
+  border: 1px solid var(--border-subtle, #334155);
+  border-radius: 12px;
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  color: var(--text-secondary, #94a3b8);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.feedback-chip:hover {
+  background: var(--bg-hover, #334155);
+  color: #fff;
+}
+
+.feedback-chip.selected {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #fca5a5;
+  font-weight: 500;
+}
+
+.feedback-comment-input {
+  background: var(--bg-input, #1e293b);
+  border: 1px solid var(--border-subtle, #334155);
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: #fff;
+  font-size: 0.78rem;
+  resize: vertical;
+}
+
+.feedback-followup-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.feedback-submit-details-btn {
+  background: var(--primary-accent, #38bdf8);
+  color: #0f172a;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}

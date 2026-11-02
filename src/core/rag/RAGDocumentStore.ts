@@ -440,13 +440,31 @@ export class RAGDocumentStore {
       [ftsQuery, topK]
     );
 
-    const ftsMatches = rows.rows
+    let ftsMatches = rows.rows
       .map(row => ({
         chunk: this.rowToChunk(row),
         score: this.keywordScore(queryTokens, this.tokenize(row.content)),
         retrievalMethod: 'keyword'
       }))
       .filter(result => result.score > 0 && this.matchesFilters(result.chunk, filters));
+
+    // Natural questions contain framing words absent from their source. Keep exact
+    // matches first, then rank a bounded union rather than returning a false miss.
+    if (ftsTokens.length > 1 && ftsMatches.length === 0 && titleMatches.length === 0) {
+      const fallback = await this.database.query(
+        `SELECT dc.id, dc.content, dc.metadata, dc.parent_id, ce.embedding_json
+         FROM document_chunks_fts
+         JOIN document_chunks dc ON dc.rowid = document_chunks_fts.rowid
+         LEFT JOIN chunk_embeddings ce ON ce.chunk_id = dc.id
+         WHERE document_chunks_fts MATCH ? ORDER BY bm25(document_chunks_fts) LIMIT ?`,
+        [ftsTokens.map(token => `"${token}"`).join(' OR '), Math.min(topK * 4, 400)]
+      );
+      ftsMatches = fallback.rows.map(row => ({
+        chunk: this.rowToChunk(row),
+        score: this.keywordScore(queryTokens, this.tokenize(row.content)),
+        retrievalMethod: 'keyword',
+      })).filter(result => result.score >= Math.min(0.5, 2 / ftsTokens.length) && this.matchesFilters(result.chunk, filters));
+    }
 
     return this.mergeKeywordResults([...titleMatches, ...ftsMatches], topK);
   }

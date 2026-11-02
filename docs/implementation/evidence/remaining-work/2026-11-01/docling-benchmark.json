@@ -1,0 +1,23 @@
+{
+  "source": "D:\\dev\\Chatbot\\temp\\tables-equations.pdf",
+  "results": [
+    {
+      "backend": "pdfium_pdfminer",
+      "pages": 1,
+      "chars": 152,
+      "tables": 0,
+      "equations": 0,
+      "text": "Orbital measurements\nThe following table records the observatory measurements.\nQuantity Value Distance 42 km Period 7 days\nEnergy equation\n2\nE = mc",
+      "seconds": 0.125
+    },
+    {
+      "backend": "docling",
+      "pages": 1,
+      "chars": 199,
+      "tables": 1,
+      "equations": 0,
+      "text": "Orbital measurements\nThe following table records the observatory measurements.\n| Quantity   | Value   |\n|------------|---------|\n| Distance   | 42 km   |\n| Period     | 7 days  |\nEnergy equation\nE = mc 2",
+      "seconds": 183.188
+    }
+  ]
+}

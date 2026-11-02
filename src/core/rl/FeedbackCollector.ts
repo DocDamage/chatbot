@@ -1,6 +1,8 @@
 /**
- * Feedback Collector - User feedback collection
+ * Feedback Collector - User feedback collection (Legacy)
  * Research: Stanford CS224N, RLHF
+ *
+ * @deprecated Use CanonicalFeedbackService (CRK-P16) for all new feedback ingestion.
  */
 
 import { FeedbackData } from './RewardModel';
@@ -12,6 +14,9 @@ export interface FeedbackEvent {
   data: FeedbackData;
 }
 
+/**
+ * @deprecated Use CanonicalFeedbackService from src/core/feedback/CanonicalFeedbackService
+ */
 export class FeedbackCollector {
   private feedbackQueue: FeedbackEvent[] = [];
   private batchSize: number = 10;

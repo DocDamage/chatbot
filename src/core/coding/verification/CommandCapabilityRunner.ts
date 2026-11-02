@@ -12,7 +12,8 @@ export class CommandCapabilityRunner {
     if (!plan.supported) return { command: plan.executable, argv: plan.argv, exitCode: null, stdout: '', stderr: '', durationMs: 0, status: 'blocked', reason: plan.reason || 'Command is not authorized by detected project state' };
     return new Promise(resolve => {
       const invocation = this.resolveInvocation(plan.executable, plan.argv);
-      const child = spawn(invocation.executable, invocation.argv, { cwd: this.cwd, shell: false, windowsHide: true, env: process.env });
+      const isCmdOrBat = process.platform === 'win32' && /\.(cmd|bat)$/i.test(invocation.executable);
+      const child = spawn(invocation.executable, invocation.argv, { cwd: this.cwd, shell: isCmdOrBat, windowsHide: true, env: process.env });
       let stdout = ''; let stderr = ''; let settled = false;
       const append = (current: string, value: string) => { const next = current + value; return Buffer.byteLength(next) > this.maxOutputBytes ? next.slice(-this.maxOutputBytes) : next; };
       const finish = (result: CapabilityRun) => { if (settled) return; settled = true; clearTimeout(timeout); resolve(result); };
@@ -28,7 +29,18 @@ export class CommandCapabilityRunner {
 
   private resolveInvocation(executable: string, argv: string[]): { executable: string; argv: string[] } {
     if (process.platform === 'win32' && executable === 'npm') {
-      return { executable: process.execPath, argv: [process.env.npm_execpath || path.resolve(process.cwd(), 'node_modules/npm/bin/npm-cli.js'), ...argv] };
+      const nodeDirCli = path.join(path.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js');
+      const cliPath = process.env.npm_execpath && require('fs').existsSync(process.env.npm_execpath)
+        ? process.env.npm_execpath
+        : require('fs').existsSync(nodeDirCli)
+          ? nodeDirCli
+          : require('fs').existsSync(path.resolve(process.cwd(), 'node_modules/npm/bin/npm-cli.js'))
+            ? path.resolve(process.cwd(), 'node_modules/npm/bin/npm-cli.js')
+            : undefined;
+      if (cliPath) {
+        return { executable: process.execPath, argv: [cliPath, ...argv] };
+      }
+      return { executable: 'npm.cmd', argv };
     }
     return { executable: this.resolveExecutable(executable), argv };
   }

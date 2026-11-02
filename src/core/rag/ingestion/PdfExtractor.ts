@@ -8,6 +8,7 @@ import * as path from 'path';
 import { execFileSync, spawnSync } from 'child_process';
 import { logger } from '../../observability/logger';
 import { ExtractedDocument, FileExtractionOptions, FileExtractor } from './ExtractedDocument';
+import { managedPdfOcr } from './ManagedPdfOcr';
 
 interface PdfOcrAttempt {
   text: string;
@@ -26,7 +27,9 @@ export class PdfExtractor implements FileExtractor {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const pdfParse = require('pdf-parse');
       const dataBuffer = fs.readFileSync(filePath);
-      const pdfData = await pdfParse(dataBuffer);
+      // The bundled PDF.js creates substreams from bytes.buffer without honoring a Buffer's
+      // byteOffset. Small fs reads can be pooled, so give it an independent, exact-sized array.
+      const pdfData = await pdfParse(Uint8Array.from(dataBuffer));
       const text = pdfData.text || '';
       const warnings: string[] = [];
       const metadata: Record<string, any> = {
@@ -98,6 +101,13 @@ export class PdfExtractor implements FileExtractor {
     const warnings: string[] = [];
 
     try {
+      try {
+        if (!['eng', 'chi_sim', 'eng+chi_sim', 'chi_sim+eng'].includes(language)) throw new Error(`RapidOCR's bundled model supports English/Chinese; ${language} requires the legacy OCR route.`);
+        const result = await managedPdfOcr(filePath, maxPages, dpi);
+        return { text: result.text, warnings: result.warnings, metadata: { pdfOcrStatus: 'completed', pdfOcrRasterizer: 'pypdfium2', pdfOcrEngine: 'rapidocr', pdfOcrLanguage: 'chi_sim+eng', pdfOcrPagesAttempted: result.pages, pdfOcrTotalPages: result.totalPages, needsOcr: false } };
+      } catch (error) {
+        warnings.push(`Managed PDF OCR unavailable: ${error instanceof Error ? error.message : String(error)}`);
+      }
       const rasterizers = this.findRasterizers();
       if (rasterizers.length === 0) {
         return {
@@ -108,6 +118,7 @@ export class PdfExtractor implements FileExtractor {
             needsOcr: true
           },
           warnings: [
+            ...warnings,
             'PDF OCR requires Poppler pdftoppm, ImageMagick magick, or Ghostscript gs on PATH.'
           ]
         };
@@ -151,7 +162,7 @@ export class PdfExtractor implements FileExtractor {
         try {
           const result = await tesseract.recognize(imagePath, language);
           const text = result.data?.text || '';
-          pageTexts.push(`PDF OCR page ${index + 1}:\n${text.trim()}`);
+          if (text.trim()) pageTexts.push(`PDF OCR page ${index + 1}:\n${text.trim()}`);
           if (typeof result.data?.confidence === 'number') {
             confidences.push(result.data.confidence);
           }

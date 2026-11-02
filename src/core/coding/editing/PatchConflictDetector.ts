@@ -25,7 +25,8 @@ export class PatchConflictDetector {
     if (relative === '.git' || relative.startsWith(`.git${path.sep}`)) throw new Error('Git metadata cannot be edited');
     if (isSensitiveWorkspacePath(relative)) throw new Error('Sensitive credential paths cannot be edited');
     const rootReal = fs.realpathSync(root);
-    const existing = fs.existsSync(absolute) ? absolute : path.dirname(absolute);
+    let existing = absolute;
+    while (!fs.existsSync(existing) && existing !== path.dirname(existing)) existing = path.dirname(existing);
     const realTarget = fs.realpathSync(existing);
     if (realTarget !== rootReal && !realTarget.startsWith(`${rootReal}${path.sep}`)) throw new Error('Path resolves through a symlink outside the workspace');
     return absolute;

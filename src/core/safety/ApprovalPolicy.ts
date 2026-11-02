@@ -292,7 +292,8 @@ export class ApprovalPolicy {
      */
     private timeout(ms: number): Promise<never> {
         return new Promise((_, reject) => {
-            setTimeout(() => reject(new Error('Approval timeout')), ms);
+            const timer = setTimeout(() => reject(new Error('Approval timeout')), ms);
+            timer.unref?.();
         });
     }
 

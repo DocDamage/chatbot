@@ -4,7 +4,7 @@ import { Express, RequestHandler } from 'express';
 import { auditPrivilegedRequest } from '../../middleware/auth';
 import { asyncHandler } from '../../middleware/errorHandler';
 
-const ENV_PATH = path.join(process.cwd(), '.env');
+const envPath = () => path.resolve(process.env.DOTENV_CONFIG_PATH || '.env');
 const SETTINGS_KEYS = [
   'LLM_PROVIDER',
   'USE_OLLAMA',
@@ -41,7 +41,7 @@ interface RegisterSettingsRoutesDeps {
 
 export function registerSettingsRoutes(app: Express, deps: RegisterSettingsRoutesDeps): void {
   app.get('/api/settings', deps.adminOnly, auditPrivilegedRequest('settings:read'), asyncHandler(async (_req, res) => {
-    const envFile = parseEnvFile(ENV_PATH);
+    const envFile = parseEnvFile(envPath());
     const settings: Record<string, string> = {};
 
     for (const key of PUBLIC_SETTINGS_KEYS) {
@@ -63,7 +63,7 @@ export function registerSettingsRoutes(app: Express, deps: RegisterSettingsRoute
 
   app.put('/api/settings', deps.adminOnly, auditPrivilegedRequest('settings:update'), asyncHandler(async (req, res) => {
     const body = req.body || {};
-    const current = parseEnvFile(ENV_PATH);
+    const current = parseEnvFile(envPath());
     const updates: Record<string, string> = {};
     const selectedProvider = String(body.provider || 'template');
 

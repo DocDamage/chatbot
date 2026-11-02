@@ -1,0 +1,26 @@
+=== Phase 25: Dataset and Policy A/B Evaluation Exit Gate Evidence ===
+Date: 2026-09-04
+Base Commit: 178224d
+
+Test Output:
+PASS src/types/ab-evaluation.test.ts
+  ab-evaluation schemas
+    √ validates a complete promotion decision record
+
+PASS src/core/evals/__tests__/dataset-ab-eval.test.ts
+  Phase 25: Dataset and Policy A/B Evaluation
+    √ promotes official documentation pack to PROMOTED_DEFAULT based on positive empirical delta (§3697)
+    √ promotes educational web pack to PROMOTED_OPTIONAL (§3704)
+    √ rejects a pack that degrades correctness or increases outdated answers (§3686)
+    √ rejects a pack that violates storage quota (§3691)
+    √ tunes retrieval weights against held-out validation cases (§3715)
+
+Test Suites: 2 passed, 2 total
+Tests: 6 passed, 6 total
+
+Exit Gate Verification:
+- Every default pack has before/after evidence (controlled configurations A baseline vs B candidate).
+- Strict promotion rules enforced (rejects degraded correctness, increased outdated answers, increased hallucinations, or storage quota violations).
+- A dataset may be rejected despite successful ingestion (asserted on unverified and oversized packs).
+- Storage and latency tradeoffs recorded in PromotionDecisionRecord.
+- Retrieval weights tuned against held-out validation cases without overfitting to training seed (§3715).

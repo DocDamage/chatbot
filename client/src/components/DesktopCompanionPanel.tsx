@@ -1,3 +1,4 @@
+import { apiFetch } from '../api/http';
 import { useEffect, useState } from 'react';
 
 interface CompanionCapabilities { available: boolean; message: string; features: Record<string, boolean>; consent: Record<string, string>; }
@@ -8,10 +9,10 @@ export default function DesktopCompanionPanel() {
   const [context, setContext] = useState('');
   const [message, setMessage] = useState('');
 
-  useEffect(() => { if (open) void fetch('/api/desktop-companion/capabilities').then(response => response.json()).then(setCapabilities).catch(() => setMessage('Companion status is unavailable.')); }, [open]);
+  useEffect(() => { if (open) void apiFetch('/api/desktop-companion/capabilities').then(response => response.json()).then(setCapabilities).catch(() => setMessage('Companion status is unavailable.')); }, [open]);
 
   const saveContext = async () => {
-    const response = await fetch('/api/desktop-companion/context', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'transcript', content: context }) });
+    const response = await apiFetch('/api/desktop-companion/context', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind: 'transcript', content: context }) });
     const data = await response.json().catch(() => ({}));
     setMessage(response.ok ? 'Context accepted with explicit persistence.' : data.error || 'Context was not accepted.');
     if (response.ok) setContext('');

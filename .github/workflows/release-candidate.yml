@@ -1,0 +1,64 @@
+name: Release candidate artifact
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
+env:
+  NODE_VERSION: "24"
+
+jobs:
+  release-candidate:
+    name: Validate and package release candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout audited source and history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            client/package-lock.json
+      - name: Install locked dependencies
+        run: npm ci && npm --prefix client ci
+      - name: Run secrets and dependency gates
+        run: npm run check:secrets:history && npm run check:dependencies
+      - name: Run release validation suite
+        run: npm run release:check
+      - name: Validate repository policy
+        run: npm run check:phase2 && node scripts/release/verify-ci-graph.mjs
+      - name: Reproduce supply-chain records
+        run: npm run generate:sbom && npm run generate:notices
+      - name: Verify supply-chain records are committed
+        run: git diff --exit-code -- docs/architecture/generated/sbom.cyclonedx.json THIRD_PARTY_NOTICES.md
+      - name: Build, inspect, and hash release artifact
+        run: node scripts/release/build-release-artifact.mjs
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: release-artifacts/ai-chatbot-hub-*.tgz
+      - name: Upload artifact, checksum, and inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-chatbot-hub-${{ github.ref_name }}-${{ github.sha }}
+          path: |
+            release-artifacts/*.tgz
+            release-artifacts/checksums.sha256
+            release-artifacts/artifact-inventory.json
+            docs/architecture/generated/sbom.cyclonedx.json
+            THIRD_PARTY_NOTICES.md
+          if-no-files-found: error
+          retention-days: 30

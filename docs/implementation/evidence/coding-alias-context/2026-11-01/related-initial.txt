@@ -1,0 +1,77 @@
+FAIL src/core/coding/verification/ModelRepairProposal.test.ts (54.867 s)
+  fresh model-driven repairs
+    √ anchors fresh proposals to source captured before generation and rejects expansion of approved scope (47 ms)
+    √ generates a new fix from the actual file and diagnostics after an initial proposal fails (3725 ms)
+    √ supplies unchanged implementation context without expanding edit permission (12 ms)
+    × feeds static errors back before an invalid repair can touch repository files (20012 ms)
+    × retries malformed model JSON with a larger bounded output budget (10011 ms)
+
+  ● fresh model-driven repairs › feeds static errors back before an invalid repair can touch repository files
+
+    thrown: "Exceeded timeout of 20000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      41 |     expect(generate.mock.calls[0][0].jsonSchema.properties.operations.items.properties.path.enum).toEqual(['calc.cjs']);
+      42 |   });
+    > 43 |   it('feeds static errors back before an invalid repair can touch repository files', async () => {
+         |   ^
+      44 |     const previous = process.env.CODING_TOOLS_ENABLED; process.env.CODING_TOOLS_ENABLED = 'true';
+      45 |     try {
+      46 |       const generate = jest.fn().mockResolvedValueOnce({ content: JSON.stringify({ operations: [{ operation: 'modify', path: 'calc.cjs', content: 'module.exports = value => missing(value);' }] }), model: 'fixture' })
+
+      at src/core/coding/verification/ModelRepairProposal.test.ts:43:3
+      at Object.<anonymous> (src/core/coding/verification/ModelRepairProposal.test.ts:7:1)
+
+  ● fresh model-driven repairs › retries malformed model JSON with a larger bounded output budget
+
+    thrown: "Exceeded timeout of 10000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+      54 |     } finally { if (previous === undefined) delete process.env.CODING_TOOLS_ENABLED; else process.env.CODING_TOOLS_ENABLED = previous; }
+      55 |   }, 20000);
+    > 56 |   it('retries malformed model JSON with a larger bounded output budget', async () => {
+         |   ^
+      57 |     const generate = jest.fn().mockResolvedValueOnce({ content: '{"operations":[', model: 'fixture' }).mockResolvedValueOnce({
+      58 |       content: JSON.stringify({ operations: [{ operation: 'modify', path: 'calc.cjs', content: 'module.exports = (a,b) => a+b;' }] }), model: 'fixture',
+      59 |     });
+
+      at src/core/coding/verification/ModelRepairProposal.test.ts:56:3
+      at Object.<anonymous> (src/core/coding/verification/ModelRepairProposal.test.ts:7:1)
+
+PASS src/core/coding/integrations/DraftChecks.test.ts (12.862 s)
+  compiler and lint checks before proposal
+    √ detects TypeScript type errors and contracts broken in unchanged callers (2379 ms)
+    √ rejects new undefined JavaScript names and ignores inline lint suppression (1840 ms)
+    √ compares against baseline errors without treating old diagnostics as fixed (1913 ms)
+    √ checks new files and rejects adding TypeScript suppression directives (2051 ms)
+    √ rejects nonexistent named Node core imports before tests can execute (2085 ms)
+    √ honors static tsconfig paths and strict settings while rejecting escaping config inheritance (1987 ms)
+
+PASS src/core/coding/security/ApprovedRepositoryGateway.test.ts
+  ApprovedRepositoryGateway
+    √ lists only bounded, non-sensitive files below the approved root (42 ms)
+    √ rejects absolute paths, traversal, null bytes, and sensitive files (16 ms)
+    √ rejects symlink and junction traversal even when the target exists (15 ms)
+    √ bounds text reads and refuses binary content (19 ms)
+    √ returns bounded literal-search evidence and scan metadata (18 ms)
+    √ makes agent repository tools fail closed at the same boundary (19 ms)
+
+PASS src/server/routes/coding-tools.test.ts (88.305 s)
+  coding integrations HTTP boundaries
+    √ requires developer authentication and is excluded from hosted mounting (1023 ms)
+    √ validates tool inputs and takes the authenticated owner instead of a supplied user ID (822 ms)
+    √ serves explicit read-only tool calls without exposing arbitrary MCP dispatch (14 ms)
+    √ accepts task-based context and property guidance while validating their flags (9 ms)
+
+PASS src/core/coding/integrations/CodingToolsService.test.ts (8.75 s)
+  coding tool source and process boundaries
+    √ captures bounded source with hashes and rejects credentials, links and traversal (29 ms)
+    √ admits only explicit new source paths and does not overwrite existing files (6 ms)
+    √ blocks disabled integrations and unsupported requests before invoking external tools (6 ms)
+    √ terminates hung subprocesses and supports explicit cancellation (492 ms)
+
+Test Suites: 1 failed, 4 passed, 5 total
+Tests:       2 failed, 23 passed, 25 total
+Snapshots:   0 total
+Time:        166.321 s
+Ran all test suites within paths "src/core/coding/integrations/CodingToolsService.test.ts", "src/core/coding/integrations/DraftChecks.test.ts", "src/core/coding/verification/ModelRepairProposal.test.ts", "src/server/routes/coding-tools.test.ts", "src/core/coding/security/ApprovedRepositoryGateway.test.ts".

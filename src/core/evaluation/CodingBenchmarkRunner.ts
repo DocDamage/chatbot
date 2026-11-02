@@ -147,7 +147,20 @@ export class CodingBenchmarkRunner {
     if (normalized === 'dotnet test') return { executable: process.platform === 'win32' ? 'dotnet.exe' : 'dotnet', argv: ['test'] };
     if (normalized === 'dotnet run') return { executable: process.platform === 'win32' ? 'dotnet.exe' : 'dotnet', argv: ['run', '--no-restore'] };
     if (normalized === 'gradle test') return { executable: this.resolveExecutable('gradle'), argv: ['test'] };
-    if (normalized === 'npm test') return { executable: process.execPath, argv: [process.env.npm_execpath || path.resolve(process.cwd(), 'node_modules/npm/bin/npm-cli.js'), 'test'] };
+    if (normalized === 'npm test') {
+      const nodeDirCli = path.join(path.dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js');
+      const cliPath = process.env.npm_execpath && fs.existsSync(process.env.npm_execpath)
+        ? process.env.npm_execpath
+        : fs.existsSync(nodeDirCli)
+          ? nodeDirCli
+          : fs.existsSync(path.resolve(process.cwd(), 'node_modules/npm/bin/npm-cli.js'))
+            ? path.resolve(process.cwd(), 'node_modules/npm/bin/npm-cli.js')
+            : undefined;
+      if (cliPath) {
+        return { executable: process.execPath, argv: [cliPath, 'test'] };
+      }
+      return { executable: this.resolveExecutable('npm'), argv: ['test'] };
+    }
     if (normalized === 'shellcheck backup.sh') return { executable: this.resolveExecutable('shellcheck'), argv: ['backup.sh'] };
     if (normalized === 'cmake configure') return { executable: this.resolveExecutable('cmake'), argv: ['-S', '.', '-B', 'build'] };
     if (normalized === 'cmake build') return { executable: this.resolveExecutable('cmake'), argv: ['--build', 'build'] };

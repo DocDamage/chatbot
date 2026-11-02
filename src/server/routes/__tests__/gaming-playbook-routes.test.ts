@@ -58,6 +58,36 @@ describe('gaming playbook routes', () => {
     });
   });
 
+  it('runs the local-only deterministic Lattice workflow', async () => {
+    const app = makeApp();
+    const response = await request(app)
+      .post('/api/gaming/lattice')
+      .send({ width: 8, height: 8, seed: 42, enemyCount: 2 })
+      .expect(200);
+
+    expect(response.body.scenario.world.seed).toBe(42);
+    expect(response.body.simulation.totalTicks).toBe(50);
+    expect(response.body.asciiMap).toContain('#');
+
+    const normalized = await request(app)
+      .post('/api/gaming/lattice')
+      .send({ width: 'invalid', height: 999, enemyCount: -4 })
+      .expect(200);
+    expect(normalized.body.scenario.world.dimensions).toEqual({ width: 8, height: 32 });
+    expect(normalized.body.scenario.world.entities.filter((item: any) => item.archetype === 'enemy')).toHaveLength(0);
+  });
+
+  it('keeps Lattice simulation disabled in hosted mode', async () => {
+    const original = process.env.DEPLOYMENT_MODE;
+    process.env.DEPLOYMENT_MODE = 'hosted';
+    try {
+      await request(makeApp()).post('/api/gaming/lattice').send({ seed: 42 }).expect(403);
+    } finally {
+      if (original === undefined) delete process.env.DEPLOYMENT_MODE;
+      else process.env.DEPLOYMENT_MODE = original;
+    }
+  });
+
   it('rejects unsupported playbook kinds', async () => {
     const app = makeApp();
 

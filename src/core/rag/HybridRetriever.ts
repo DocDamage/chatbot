@@ -8,7 +8,9 @@ import { logger } from '../observability/logger';
 import { EmbeddingService } from '../embeddings/EmbeddingService';
 import { RAGDocumentStore } from './RAGDocumentStore';
 import { RAGInjectionScanner } from './RAGInjectionScanner';
-import natural from 'natural';
+import { applyStructureBoost } from './StructureBoost';
+import { TfIdf } from 'natural/lib/natural/tfidf';
+import { WordTokenizer } from 'natural/lib/natural/tokenizers';
 
 export type RetrievalMode = 'memory' | 'database' | 'hybrid';
 export interface RetrievalFilters {
@@ -21,9 +23,9 @@ export interface RetrievalFilters {
 
 export class HybridRetriever {
   private documents: DocumentChunk[] = [];
-  private bm25Index: natural.TfIdf | null = null;
+  private bm25Index: TfIdf | null = null;
   private embeddings: Map<string, number[]> = new Map();
-  private tokenizer = new natural.WordTokenizer();
+  private tokenizer = new WordTokenizer();
   private embeddingService?: EmbeddingService;
   private documentStore?: RAGDocumentStore;
   private retrievalMode: RetrievalMode;
@@ -85,7 +87,7 @@ export class HybridRetriever {
   ): Promise<RetrievalResult[]> {
     if (this.retrievalMode === 'database' && this.documentStore) {
       const queryEmbedding = await this.getQueryEmbedding(query);
-      return this.documentStore.hybridSearch(query, queryEmbedding || undefined, topK, filters);
+      return applyStructureBoost(query, await this.documentStore.hybridSearch(query, queryEmbedding || undefined, topK, filters));
     }
 
     if (this.retrievalMode === 'hybrid' && this.documentStore) {
@@ -94,10 +96,10 @@ export class HybridRetriever {
         this.getQueryEmbedding(query)
       ]);
       const databaseResults = await this.documentStore.hybridSearch(query, queryEmbedding || undefined, topK, filters);
-      return this.mergeResults([...memoryResults, ...databaseResults], topK);
+      return applyStructureBoost(query, this.mergeResults([...memoryResults, ...databaseResults], topK));
     }
 
-    return this.retrieveFromMemory(query, topK, weights, filters);
+    return applyStructureBoost(query, await this.retrieveFromMemory(query, topK, weights, filters));
   }
 
   private async retrieveFromMemory(
@@ -310,7 +312,7 @@ export class HybridRetriever {
    */
   private rebuildIndexes(): void {
     // Rebuild BM25 index
-    this.bm25Index = new natural.TfIdf();
+    this.bm25Index = new TfIdf();
     for (const doc of this.documents) {
       this.bm25Index.addDocument(doc.content);
     }

@@ -14,6 +14,10 @@ import { LLMAdapter } from '../providers/LLMAdapter';
 export class WikipediaSource implements KnowledgeSource {
   name = 'wikipedia';
   private baseUrl = 'https://en.wikipedia.org/api/rest_v1';
+  private readonly requestConfig = {
+    headers: { 'User-Agent': 'AIChatbotHub/1.0 (local knowledge assistant)' },
+    timeout: 10000
+  };
   private queryEnhancer?: QueryEnhancer;
   private resultRanker?: ResultRanker;
   private resultCache: Map<string, { results: KnowledgeResult[]; timestamp: number }> = new Map();
@@ -28,16 +32,16 @@ export class WikipediaSource implements KnowledgeSource {
 
   async isAvailable(): Promise<boolean> {
     try {
-      await axios.get(`${this.baseUrl}/page/summary/Test`, { timeout: 5000 });
+      await axios.get(`${this.baseUrl}/page/summary/Test`, this.requestConfig);
       return true;
     } catch {
       return false;
     }
   }
 
-  async search(query: string, options: { limit?: number } = {}): Promise<KnowledgeResult[]> {
+  async search(query: string, options: { limit?: number; includeDetails?: boolean } = {}): Promise<KnowledgeResult[]> {
     // Check cache
-    const cacheKey = query.toLowerCase();
+    const cacheKey = `${query.toLowerCase()}|details=${options.includeDetails === true}`;
     const cached = this.resultCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < this.CACHE_TTL) {
       logger.debug('Returning cached Wikipedia results', { query });
@@ -85,11 +89,11 @@ export class WikipediaSource implements KnowledgeSource {
   /**
    * Base search implementation
    */
-  private async searchBase(query: string, options: { limit?: number } = {}): Promise<KnowledgeResult[]> {
+  private async searchBase(query: string, options: { limit?: number; includeDetails?: boolean } = {}): Promise<KnowledgeResult[]> {
     try {
       // Search Wikipedia
       const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&srlimit=${options.limit || 5}`;
-      const searchResponse = await axios.get(searchUrl);
+      const searchResponse = await axios.get(searchUrl, this.requestConfig);
       const searchResults = searchResponse.data.query?.search || [];
 
       const results: KnowledgeResult[] = [];
@@ -98,13 +102,20 @@ export class WikipediaSource implements KnowledgeSource {
         try {
           // Get page summary
           const summaryUrl = `${this.baseUrl}/page/summary/${encodeURIComponent(item.title)}`;
-          const summaryResponse = await axios.get(summaryUrl);
+          const summaryResponse = await axios.get(summaryUrl, this.requestConfig);
           const summary = summaryResponse.data;
+          let content = summary.extract || summary.description || '';
+          if (options.includeDetails && content.length < 500) {
+            const detailedContent = await this.fetchDetailedContent(item.title);
+            if (detailedContent) {
+              content = detailedContent;
+            }
+          }
 
           results.push({
             id: `wiki_${item.pageid}`,
             title: summary.title,
-            content: summary.extract || summary.description || '',
+            content,
             source: 'wikipedia',
             url: summary.content_urls?.desktop?.page,
             metadata: {
@@ -130,7 +141,7 @@ export class WikipediaSource implements KnowledgeSource {
     try {
       const pageTitle = id.replace('wiki_', '');
       const url = `${this.baseUrl}/page/summary/${encodeURIComponent(pageTitle)}`;
-      const response = await axios.get(url);
+      const response = await axios.get(url, this.requestConfig);
       const data = response.data;
 
       return {
@@ -149,6 +160,38 @@ export class WikipediaSource implements KnowledgeSource {
       logger.warn('Failed to fetch Wikipedia page by ID', { id, error: error.message });
       return null;
     }
+  }
+
+  private async fetchDetailedContent(title: string): Promise<string> {
+    try {
+      const url = `https://en.wikipedia.org/w/api.php?action=parse&page=${encodeURIComponent(title)}&prop=wikitext&format=json&formatversion=2`;
+      const response = await axios.get(url, this.requestConfig);
+      const wikitext = String(response.data?.parse?.wikitext || '');
+      return this.cleanWikitext(wikitext).slice(0, 12000);
+    } catch (error: any) {
+      logger.warn('Failed to fetch detailed Wikipedia content', { title, error: error.message });
+      return '';
+    }
+  }
+
+  private cleanWikitext(value: string): string {
+    return value
+      .replace(/<ref\b[^>]*>[\s\S]*?<\/ref>/gi, '')
+      .replace(/<ref\b[^/>]*\/>/gi, '')
+      .replace(/\[\[(?:File|Image):[^\]]+\]\]/gi, '')
+      .replace(/\[\[[^\]|]+\|([^\]]+)\]\]/g, '$1')
+      .replace(/\[\[([^\]]+)\]\]/g, '$1')
+      .replace(/\[https?:\/\/\S+\s+([^\]]+)\]/g, '$1')
+      .replace(/\{\{[^{}]*\}\}/g, '')
+      .replace(/^\{\|.*$/gm, '')
+      .replace(/^\|\}.*$/gm, '')
+      .replace(/^\|-.*$/gm, '')
+      .replace(/^[|!]\s*/gm, '')
+      .replace(/\|\|/g, ' | ')
+      .replace(/'{2,3}/g, '')
+      .replace(/<[^>]+>/g, '')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
   }
 
   private deduplicateResults(results: KnowledgeResult[]): KnowledgeResult[] {

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { CreativeWritingAgent } from '../../core/creative/CreativeWritingAgent';
 import { creativeRequestSchema } from '../../core/creative/CreativeTypes';
 import { asyncHandler } from '../../middleware/errorHandler';

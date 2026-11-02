@@ -1,0 +1,10 @@
+src/types/context-plan.ts
+src/types/context-plan.test.ts
+src/types/chat-runtime.ts
+src/core/chat/ContextRoutingSignals.ts
+src/core/chat/ContextClassifier.ts
+src/core/chat/ProjectContextPlanner.ts
+src/core/chat/ContextPlanDiagnostics.ts
+src/core/chat/ChatContextPlanner.ts
+src/core/chat/ChatRuntimeFactory.ts
+src/core/chat/__tests__/context-planner-matrix.test.ts

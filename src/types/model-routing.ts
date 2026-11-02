@@ -7,6 +7,7 @@ export enum ModelProvider {
   ANTHROPIC = 'anthropic',
   GOOGLE = 'google',
   OLLAMA = 'ollama',
+  LOCAL = 'local',
   HUGGINGFACE = 'huggingface',
   TEMPLATE = 'template'
 }

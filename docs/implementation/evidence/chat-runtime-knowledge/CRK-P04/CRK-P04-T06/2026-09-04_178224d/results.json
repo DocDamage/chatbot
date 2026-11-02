@@ -1,0 +1,25 @@
+{
+  "taskId": "CRK-P04-T06",
+  "phase": "CRK PHASE 04",
+  "name": "Guided Workflow Engine Exit Gate",
+  "status": "VERIFIED",
+  "baseCommit": "178224d",
+  "date": "2026-09-04",
+  "verification": {
+    "typeCheck": "PASS",
+    "linter": "PASS",
+    "unitTests": {
+      "passed": 16,
+      "failed": 0,
+      "total": 16
+    },
+    "maxFileLineCount": 176,
+    "sourceSizeRuleSatisfied": true
+  },
+  "exitGate": {
+    "guidedWorkflowsExist": true,
+    "normalChatBypasses": true,
+    "escapeHatchWorks": true,
+    "toolApprovalExactAndAuditable": true
+  }
+}

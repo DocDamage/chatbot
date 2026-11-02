@@ -1,0 +1,8 @@
+{
+  "architecture": "tiny-byte-transformer-causal-lm",
+  "randomlyInitialized": true,
+  "domainModel": false,
+  "vocabSize": 259,
+  "sequenceLength": 256,
+  "seed": 20261101
+}

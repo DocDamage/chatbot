@@ -1,0 +1,171 @@
+{
+  "passed": false,
+  "scope": "Manually selected and visually checked pages; eight target equations, four tables, headings and one prose control. Additional mathematical regions are reported but not scored as false positives.",
+  "books": {
+    "calculus-made-easy": {
+      "passed": true,
+      "pages": 2,
+      "seconds": 139.265,
+      "target_equations": [
+        {
+          "id": "enlarged-square",
+          "page": 0,
+          "detected": true,
+          "correct": true,
+          "text": "y + d y = ( x + d x ) ^ { 2 } ."
+        },
+        {
+          "id": "expanded-square",
+          "page": 1,
+          "detected": true,
+          "correct": true,
+          "text": "y + d y = x ^ { 2 } + 2 x \\cdot d x + ( d x ) ^ { 2 } ."
+        },
+        {
+          "id": "discarded-second-order",
+          "page": 1,
+          "detected": true,
+          "correct": true,
+          "text": "y + d y = x ^ { 2 } + 2 x \\cdot d x ."
+        },
+        {
+          "id": "differential",
+          "page": 1,
+          "detected": true,
+          "correct": true,
+          "text": "d y = 2 x \\cdot d x ."
+        },
+        {
+          "id": "derivative",
+          "page": 1,
+          "detected": true,
+          "correct": true,
+          "text": "\\frac { d y } { d x } = 2 x ."
+        }
+      ],
+      "tables": [],
+      "headings": [
+        {
+          "page": 0,
+          "contains": "SIMPLEST CASES",
+          "preserved": true
+        }
+      ],
+      "prose_false_positives": [],
+      "additional_equation_regions": [],
+      "scope": "Selected page targets; additional math regions are unscored, not false positives. No population accuracy estimate.",
+      "table_review_guard": {
+        "mode": "production native-angle guard replayed on cached extraction; inference not repeated",
+        "warnings": []
+      }
+    },
+    "openintro-statistics": {
+      "passed": false,
+      "pages": 5,
+      "seconds": 213.438,
+      "target_equations": [
+        {
+          "id": "numeric-mean",
+          "page": 3,
+          "detected": true,
+          "correct": true,
+          "text": "\\bar { x } = \\frac { 1 0 . 9 0 \\% + 9 . 9 2 \\% + 2 6 . 3 0 \\% + \\cdots + 6 . 0 8 \\% } { 5 0 } = 1 1 . 5 7 \\%"
+        },
+        {
+          "id": "general-mean",
+          "page": 3,
+          "detected": true,
+          "correct": true,
+          "text": "\\bar { x } = \\frac { x _ { 1 } + x _ { 2 } + \\dots + x _ { n } } { n }"
+        },
+        {
+          "id": "standard-deviation",
+          "page": 4,
+          "detected": true,
+          "correct": true,
+          "text": "s = \\sqrt { 2 5 . 5 2 } = 5 . 0 5"
+        }
+      ],
+      "tables": [
+        {
+          "id": "loan-data",
+          "page": 0,
+          "rows_preserved": true
+        },
+        {
+          "id": "loan-variables",
+          "page": 0,
+          "rows_preserved": true
+        },
+        {
+          "id": "rotated-county-data",
+          "page": 1,
+          "rows_preserved": false
+        },
+        {
+          "id": "rotated-county-variables",
+          "page": 1,
+          "rows_preserved": false
+        }
+      ],
+      "headings": [
+        {
+          "page": 0,
+          "contains": "Data basics",
+          "preserved": true
+        },
+        {
+          "page": 2,
+          "contains": "Types of variables",
+          "preserved": true
+        },
+        {
+          "page": 4,
+          "contains": "Variance and standard deviation",
+          "preserved": true
+        }
+      ],
+      "prose_false_positives": [],
+      "additional_equation_regions": [
+        {
+          "page": 4,
+          "text": "x _ { 1 } - \\bar { x } & = 1 0 . 9 0 - 1 1 . 5 7 = - 0 . 6 7 \\\\ x _ { 2 } - \\bar { x } & = 9 . 9 2 - 1 1 . 5 7 = - 1 . 6 5 \\\\ x _ { 3 } - \\bar { x } & = 2 6 . 3 0 - 1 1 . 5 7 = 1 4 . 7 3 \\\\ & \\vdots \\\\ x _ { 5 0 } - \\bar { x } & = 6 . 0 8 - 1 1 . 5 7 = - 5 . 4 9"
+        },
+        {
+          "page": 4,
+          "text": "x _ { 5 0 } - \\bar { x }"
+        },
+        {
+          "page": 4,
+          "text": "s ^ { 2 } & = \\frac { ( - 0 . 6 7 ) ^ { 2 } + ( - 1 . 6 5 ) ^ { 2 } + ( 1 4 . 7 3 ) ^ { 2 } + \\cdots + ( - 5 . 4 9 ) ^ { 2 } } { 5 0 - 1 } \\\\ & = \\frac { 0 . 4 5 + 2 . 7 2 + 2 1 6 . 9 7 + \\cdots + 3 0 . 1 4 } { 4 9 } \\\\ & = 2 5 . 5 2"
+        }
+      ],
+      "scope": "Selected page targets; additional math regions are unscored, not false positives. No population accuracy estimate.",
+      "table_review_guard": {
+        "mode": "production native-angle guard replayed on cached extraction; inference not repeated",
+        "warnings": [
+          {
+            "page": 1,
+            "bbox": [
+              99.63948822021484,
+              74.1974105834961,
+              252.2271270751953,
+              727.5036010742188
+            ],
+            "warning": "rotated_table_requires_review"
+          },
+          {
+            "page": 1,
+            "bbox": [
+              301.7957458496094,
+              195.705322265625,
+              490.98614501953125,
+              605.8828735351562
+            ],
+            "warning": "rotated_table_requires_review"
+          }
+        ]
+      }
+    }
+  }
+}

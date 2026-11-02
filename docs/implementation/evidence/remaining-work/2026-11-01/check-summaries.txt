@@ -1,0 +1,84 @@
+Server coverage: PASS
+npm run test:coverage -- --maxWorkers=1 --workerIdleMemoryLimit=1GB --logHeapUsage --coverageReporters=lcovonly --coverageReporters=json-summary
+      √ blocks claims that tests passed when tests were never executed (1 ms)
+Test Suites: 2 skipped, 559 passed, 559 of 561 total
+Tests:       5 skipped, 3209 passed, 3214 total
+Time:        396.61 s, estimated 464 s
+Server coverage policy (enforce, branch-75): lines 89.1695% (39972/44827), branches 75.2183% (19210/25539).
+Tier A critical files evaluated: 19.
+Coverage policy report: coverage\server-coverage-policy-report.json
+Server coverage policy passed.
+
+Test types: PASS
+npm run type-check:tests
+
+
+Server lint: PASS
+npm run lint:server
+
+
+Client coverage and unit tests: PASS
+(working directory: client) node node_modules/vitest/vitest.mjs run --coverage --maxWorkers=1; node ../scripts/release/check-client-coverage.mjs
+ Test Files  61 passed (61)
+      Tests  206 passed (206)
+Client coverage policy (enforce, stage-3): lines 80.4131% (2258/2808), branches 74.3243% (1980/2664).
+Critical client files evaluated: 29.
+Coverage policy report: client\coverage\client-coverage-policy-report.json
+Client coverage policy passed.
+
+Accessibility: PASS
+npm --prefix client run a11y
+ Test Files  4 passed (4)
+      Tests  17 passed (17)
+  6 passed (15.5s)
+
+Built-server browser workflows: PASS
+node scripts/browser/prepare-browser-e2e.mjs --confirm-browser-e2e-reset; npm --prefix client run test:browser:e2e
+  8 passed (1.0m)
+
+Build and packaging: PASS
+npm run release:package
+Packaging smoke passed.
+
+Repository release gates: PASS
+npm run check:phase2
+Source integrity verified for 51 sources.
+Repository inventory is current (4 artifacts).
+Production boundary passed: 912 reachable and 359 isolated/classified production modules.
+File-size policy passed; 95 registered production files exceed 300 lines.
+Environment contract passed: 274 definitions, 250 variables used.
+Documentation validation passed for 11 release-critical documents.
+
+Final repository inventory: PASS
+npm run check:inventory
+Repository inventory is current (4 artifacts).
+
+Node runtime dependency audits: PASS
+node scripts/release/check-dependency-vulnerabilities.mjs
+server: critical=0, high=0, moderate=0, low=0
+client: critical=0, high=0, moderate=0, low=0
+desktop-companion: critical=0, high=0, moderate=0, low=0
+coding-tools: critical=0, high=0, moderate=0, low=0
+rea: critical=0, high=0, moderate=0, low=0
+Dependency vulnerability gate passed for all shipped Node runtime trees.
+
+Current-tree secret scan: PASS
+npm run check:secrets
+Secret scan passed for 3635 current file(s).
+
+Complete DABOOK suite: PASS
+services/dabook/.venv/Scripts/python.exe -m pytest services/dabook/tests -q
+319 passed, 1 skipped, 1 warning in 299.19s (0:04:59)
+
+Python dependency consistency: PASS
+uv pip check --python services/dabook/.venv/Scripts/python.exe
+Checked 125 packages in 9ms
+All installed packages are compatible
+
+Python dependency audit: PASS
+uvx pip-audit --path services/dabook/.venv/Lib/site-packages
+No known vulnerabilities found
+
+Live TypeScript managed OCR: PASS
+npx tsx (managedPdfOcr on scanned-ocr-live.pdf; isolated diagnostic)
+

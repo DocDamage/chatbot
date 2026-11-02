@@ -1,0 +1,53 @@
+{
+  "source": "display-math.pdf",
+  "equations": [
+    {
+      "id": "energy",
+      "page": 0,
+      "bbox": [
+        140,
+        125,
+        260,
+        165
+      ],
+      "pattern": "E=mc\\^(?:2|\\{2\\})"
+    },
+    {
+      "id": "speed",
+      "page": 0,
+      "bbox": [
+        140,
+        230,
+        240,
+        290
+      ],
+      "pattern": "v=\\\\(?:d?frac)\\{d\\}\\{t\\}"
+    },
+    {
+      "id": "quadratic",
+      "page": 0,
+      "bbox": [
+        90,
+        332,
+        325,
+        410
+      ],
+      "pattern": "x=\\\\(?:d?frac)\\{-b\\\\pm\\\\sqrt\\{b\\^(?:2|\\{2\\})-4ac\\}\\}\\{2a\\}"
+    }
+  ],
+  "negative_control_page": 1,
+  "table_rows": [
+    [
+      "Quantity",
+      "Value"
+    ],
+    [
+      "Distance",
+      "42 km"
+    ],
+    [
+      "Period",
+      "7 days"
+    ]
+  ]
+}

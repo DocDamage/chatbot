@@ -3,7 +3,19 @@ import { Diagnostic } from '../types';
 export class DiagnosticParser {
   parse(tool: string, output: string): Diagnostic[] {
     const diagnostics: Diagnostic[] = [];
-    for (const raw of output.split(/\r?\n/).map(line => line.trim()).filter(Boolean)) {
+    const lines = output.split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+    for (let index = 0; index < lines.length; index++) {
+      const raw = lines[index];
+      const runtime = raw.match(/^([A-Za-z]*Error)(?:\s+\[([^\]]+)\])?:\s*(.*)$/);
+      if (runtime) {
+        const block = lines.slice(index, index + 24);
+        const frame = block.map(line => line.match(/^at .+?\((.+):(\d+):(\d+)\)$/)).find(match => match && !match[1].startsWith('node:'));
+        diagnostics.push({ tool, severity: 'error', code: runtime[2] || runtime[1], message: `${runtime[1]}: ${runtime[3]}`,
+          file: frame?.[1], line: frame ? Number(frame[2]) : undefined, column: frame ? Number(frame[3]) : undefined, raw: block.join('\n').slice(0, 3500) });
+        continue;
+      }
+      // Stack locations are context for the preceding exception, not independent error causes.
+      if (/^(?:at\s|test at\s)/.test(raw)) continue;
       const parsed = this.parseLine(tool, raw);
       if (parsed) diagnostics.push(parsed);
     }

@@ -53,6 +53,7 @@ function policy(mode = 'audit') {
     globalMilestones: [
       { stage: 'stage-1-baseline', lines: 60, branches: 60 },
       { stage: 'final', lines: 75, branches: 65 },
+      { stage: 'branch-75', lines: 75, branches: 75 },
     ],
     tiers: {
       A: {
@@ -82,6 +83,16 @@ test('repository policy is locked in enforce mode', () => {
   const policyUrl = new URL('../../../config/server-coverage-policy.json', import.meta.url);
   const lockedPolicy = JSON.parse(fs.readFileSync(policyUrl, 'utf8'));
   assert.equal(lockedPolicy.mode, 'enforce');
+  assert.equal(lockedPolicy.activeStage, 'branch-75');
+  assert.deepEqual(
+    lockedPolicy.globalMilestones.find((milestone) => milestone.stage === 'branch-75'),
+    {
+      stage: 'branch-75',
+      description: 'Post-final global branch coverage ratchet',
+      lines: 75,
+      branches: 75,
+    },
+  );
   assert.equal(lockedPolicy.tiers.A.enforceFromStage, 'final');
   assert.ok(lockedPolicy.baseline.global.lines.total > 0);
   assert.ok(!lockedPolicy.coverageScope.collectCoverageFrom.includes('!src/**/index.ts'));
@@ -144,6 +155,51 @@ test('final stage enforces the Tier A 90/85 target', () => {
   const report = evaluateServerCoverage({
     root,
     policy: finalPolicy,
+    rawSummary: summary(80, 89),
+    featureManifest: manifest(),
+  });
+  assert.equal(report.passed, false);
+  assert.ok(report.violations.some((violation) => violation.includes('Tier A target not met')));
+});
+
+test('branch-75 stage rejects coverage below 75% and accepts the exact boundary', () => {
+  const branchPolicy = policy('enforce');
+  branchPolicy.activeStage = 'branch-75';
+  branchPolicy.baseline.global = metrics(7000, 10000);
+  branchPolicy.tiers.A.files[0].baseline = metrics(90);
+
+  const below = summary(95, 95);
+  below.total = metrics(8000, 10000);
+  below.total.branches = metric(7499, 10000);
+  const belowReport = evaluateServerCoverage({
+    root,
+    policy: branchPolicy,
+    rawSummary: below,
+    featureManifest: manifest(),
+  });
+  assert.equal(belowReport.passed, false);
+  assert.ok(belowReport.violations.some((violation) => violation.includes('Global branches target not met')));
+
+  const exact = summary(95, 95);
+  exact.total = metrics(8000, 10000);
+  exact.total.branches = metric(7500, 10000);
+  const exactReport = evaluateServerCoverage({
+    root,
+    policy: branchPolicy,
+    rawSummary: exact,
+    featureManifest: manifest(),
+  });
+  assert.equal(exactReport.passed, true);
+});
+
+test('branch-75 stage retains Tier A target enforcement', () => {
+  const branchPolicy = policy('enforce');
+  branchPolicy.activeStage = 'branch-75';
+  branchPolicy.baseline.global = metrics(80);
+  branchPolicy.tiers.A.files[0].baseline = metrics(80);
+  const report = evaluateServerCoverage({
+    root,
+    policy: branchPolicy,
     rawSummary: summary(80, 89),
     featureManifest: manifest(),
   });

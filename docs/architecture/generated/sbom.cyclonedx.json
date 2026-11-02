@@ -1,7 +1,7 @@
 {
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:43cfa2dd03630dfaea04b4c1d739771a",
+  "serialNumber": "urn:uuid:1162747669f09624024e8c7a86866c4e",
   "version": 1,
   "metadata": {
     "component": {
@@ -19,6 +19,12 @@
     },
     {
       "type": "library",
+      "name": "@eslint/js",
+      "version": "^10.0.1",
+      "purl": "pkg:npm/%40eslint%2Fjs@%5E10.0.1"
+    },
+    {
+      "type": "library",
       "name": "@google/generative-ai",
       "version": "^0.24.1",
       "purl": "pkg:npm/%40google%2Fgenerative-ai@%5E0.24.1"
@@ -26,14 +32,14 @@
     {
       "type": "library",
       "name": "@huggingface/transformers",
-      "version": "^4.2.0",
-      "purl": "pkg:npm/%40huggingface%2Ftransformers@%5E4.2.0"
+      "version": "^4.3.2",
+      "purl": "pkg:npm/%40huggingface%2Ftransformers@%5E4.3.2"
     },
     {
       "type": "library",
       "name": "@toon-format/toon",
-      "version": "^2.1.0",
-      "purl": "pkg:npm/%40toon-format%2Ftoon@%5E2.1.0"
+      "version": "^2.3.1",
+      "purl": "pkg:npm/%40toon-format%2Ftoon@%5E2.3.1"
     },
     {
       "type": "library",
@@ -62,8 +68,8 @@
     {
       "type": "library",
       "name": "@types/jest",
-      "version": "^29.5.12",
-      "purl": "pkg:npm/%40types%2Fjest@%5E29.5.12"
+      "version": "^30.0.0",
+      "purl": "pkg:npm/%40types%2Fjest@%5E30.0.0"
     },
     {
       "type": "library",
@@ -128,14 +134,14 @@
     {
       "type": "library",
       "name": "@typescript-eslint/eslint-plugin",
-      "version": "^8.59.4",
-      "purl": "pkg:npm/%40typescript-eslint%2Feslint-plugin@%5E8.59.4"
+      "version": "^8.72.1",
+      "purl": "pkg:npm/%40typescript-eslint%2Feslint-plugin@%5E8.72.1"
     },
     {
       "type": "library",
       "name": "@typescript-eslint/parser",
-      "version": "^8.59.4",
-      "purl": "pkg:npm/%40typescript-eslint%2Fparser@%5E8.59.4"
+      "version": "^8.72.1",
+      "purl": "pkg:npm/%40typescript-eslint%2Fparser@%5E8.72.1"
     },
     {
       "type": "library",
@@ -146,14 +152,14 @@
     {
       "type": "library",
       "name": "adm-zip",
-      "version": "^0.5.17",
-      "purl": "pkg:npm/adm-zip@%5E0.5.17"
+      "version": "^0.6.1",
+      "purl": "pkg:npm/adm-zip@%5E0.6.1"
     },
     {
       "type": "library",
       "name": "axios",
-      "version": "^1.13.2",
-      "purl": "pkg:npm/axios@%5E1.13.2"
+      "version": "^1.21.0",
+      "purl": "pkg:npm/axios@%5E1.21.0"
     },
     {
       "type": "library",
@@ -188,8 +194,8 @@
     {
       "type": "library",
       "name": "csv-parse",
-      "version": "^5.5.2",
-      "purl": "pkg:npm/csv-parse@%5E5.5.2"
+      "version": "^7.0.3",
+      "purl": "pkg:npm/csv-parse@%5E7.0.3"
     },
     {
       "type": "library",
@@ -200,14 +206,20 @@
     {
       "type": "library",
       "name": "eslint",
-      "version": "^8.56.0",
-      "purl": "pkg:npm/eslint@%5E8.56.0"
+      "version": "^10.14.0",
+      "purl": "pkg:npm/eslint@%5E10.14.0"
     },
     {
       "type": "library",
       "name": "express",
       "version": "^4.18.2",
       "purl": "pkg:npm/express@%5E4.18.2"
+    },
+    {
+      "type": "library",
+      "name": "fast-check",
+      "version": "4.10.2",
+      "purl": "pkg:npm/fast-check@4.10.2"
     },
     {
       "type": "library",
@@ -230,8 +242,8 @@
     {
       "type": "library",
       "name": "jest",
-      "version": "^29.7.0",
-      "purl": "pkg:npm/jest@%5E29.7.0"
+      "version": "^30.5.2",
+      "purl": "pkg:npm/jest@%5E30.5.2"
     },
     {
       "type": "library",
@@ -266,8 +278,8 @@
     {
       "type": "library",
       "name": "natural",
-      "version": "^6.12.0",
-      "purl": "pkg:npm/natural@%5E6.12.0"
+      "version": "^8.1.1",
+      "purl": "pkg:npm/natural@%5E8.1.1"
     },
     {
       "type": "library",
@@ -286,6 +298,12 @@
       "name": "openai",
       "version": "^4.20.1",
       "purl": "pkg:npm/openai@%5E4.20.1"
+    },
+    {
+      "type": "library",
+      "name": "patch-package",
+      "version": "^8.0.1",
+      "purl": "pkg:npm/patch-package@%5E8.0.1"
     },
     {
       "type": "library",
@@ -308,14 +326,14 @@
     {
       "type": "library",
       "name": "puppeteer",
-      "version": "^24.34.0",
-      "purl": "pkg:npm/puppeteer@%5E24.34.0"
+      "version": "^25.16.0",
+      "purl": "pkg:npm/puppeteer@%5E25.16.0"
     },
     {
       "type": "library",
       "name": "sharp",
-      "version": "^0.34.5",
-      "purl": "pkg:npm/sharp@%5E0.34.5"
+      "version": "^0.35.5",
+      "purl": "pkg:npm/sharp@%5E0.35.5"
     },
     {
       "type": "library",
@@ -398,8 +416,8 @@
     {
       "type": "library",
       "name": "ts-jest",
-      "version": "^29.1.2",
-      "purl": "pkg:npm/ts-jest@%5E29.1.2"
+      "version": "^29.4.15",
+      "purl": "pkg:npm/ts-jest@%5E29.4.15"
     },
     {
       "type": "library",
@@ -422,8 +440,8 @@
     {
       "type": "library",
       "name": "uuid",
-      "version": "^9.0.1",
-      "purl": "pkg:npm/uuid@%5E9.0.1"
+      "version": "^11.1.1",
+      "purl": "pkg:npm/uuid@%5E11.1.1"
     },
     {
       "type": "library",
@@ -446,9 +464,8 @@
     {
       "type": "library",
       "name": "zod",
-      "version": "^3.22.4",
-      "purl": "pkg:npm/zod@%5E3.22.4"
+      "version": "^4.6.7",
+      "purl": "pkg:npm/zod@%5E4.6.7"
     }
   ]
 }
-

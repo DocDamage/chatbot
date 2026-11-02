@@ -1,0 +1,48 @@
+PASS src/core/state/ConversationContextSelector.test.ts
+  ConversationContextSelector (CRK-P03-T06)
+    √ omits operatingSystem, repository, and frameworkVersion for poem/creative tasks (§1072) (9 ms)
+    √ includes operatingSystem, repository, and frameworkVersion for coding/debug tasks (§1078) (6 ms)
+    √ allows explicit key selection (2 ms)
+
+PASS src/core/state/ConversationStateService.test.ts
+  ConversationStateService (CRK-P03-T05)
+    √ loads fresh state and extracts variables from first turn (11 ms)
+    √ commits response and preserves variables into subsequent turn (1 ms)
+    √ deletes session state cleanly with zero memory leakage (1 ms)
+
+PASS src/core/state/__tests__/conversation-followup-regression.test.ts
+  CRK Phase 03 Exit Gate: Conversation Follow-up Regression Suite
+    √ Scenario 1: Retains framework and version across conversational turns (31 ms)
+    √ Scenario 2: Correctly updates repository when switching (1 ms)
+    √ Scenario 3: Temporary output format preference with expiry does not persist permanently (1 ms)
+    √ Scenario 4: High-confidence contradiction explicitly replaces variable (1 ms)
+    √ Scenario 5: Flags ambiguity without overwriting when ambiguous switch is detected
+    √ Scenario 6: Cleanly purges all session variables on session delete (1 ms)
+
+PASS src/core/state/ConversationStateReducer.test.ts
+  ConversationStateReducer (CRK-P03-T04)
+    √ updates framework and version deterministically (7 ms)
+    √ prevents low-confidence inference from overwriting high-confidence explicit fact
+    √ allows high-confidence explicit contradiction to update state (1 ms)
+    √ prunes expired variables
+
+PASS src/core/state/ConversationVariableExtractor.test.ts
+  ConversationVariableExtractor (CRK-P03-T03)
+    √ extracts framework and version from explicit statement "this is Godot 4.7" (7 ms)
+    √ extracts language and operating system (1 ms)
+    √ extracts structured metadata fields with highest priority (1 ms)
+    √ extracts project facts from loaded files
+    √ flags ambiguous repository switch when target repo is not specified (1 ms)
+
+PASS src/types/conversation-state.test.ts
+  conversation-state schemas
+    √ validates supported variable keys (10 ms)
+    √ validates a valid ConversationVariable (2 ms)
+    √ rejects invalid confidence range
+    √ validates UserMemory requires userApproved = true (1 ms)
+    √ validates full ConversationState hierarchy (1 ms)
+
+Test Suites: 6 passed, 6 total
+Tests:       26 passed, 26 total
+Snapshots:   0 total
+Time:        7.789 s

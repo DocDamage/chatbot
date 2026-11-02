@@ -32,27 +32,19 @@ A new exclusion must be added to both `collectCoverageFrom` and `allowedExclusio
 
 ## Active stage
 
-The active stage is `stage-1-baseline`.
+The active stage is `branch-75`.
 
-The baseline was measured on commit `42ef5cbeb832114cf2e393a6b21bc4840117c55e` in GitHub Actions run `31065400189` after expanding the source scope.
-
-| Metric | Covered | Total | Baseline |
-|---|---:|---:|---:|
-| Lines | 7,879 | 20,918 | 37.6661% |
-| Branches | 3,109 | 11,326 | 27.4501% |
-| Functions | 1,719 | 4,624 | 37.1756% |
-| Statements | 8,319 | 22,562 | 36.8717% |
-
-The active gate enforces no regression against all four global metrics and against every listed Tier A file. A change that increases uncovered production source without sufficient tests fails the coverage job.
+The policy records the locked baseline in `config/server-coverage-policy.json`. The active gate enforces no regression against all four global metrics, minimum 75% global line and branch coverage, and every listed Tier A file. A change that increases uncovered production source without sufficient tests fails the coverage job.
 
 ## Global progression
 
 | Stage | Minimum lines | Minimum branches | Enforcement |
 |---|---:|---:|---|
-| Stage 1 | Locked baseline | Locked baseline | Active |
-| Stage 2 | 55% | 45% | Future ratchet |
-| Stage 3 | 65% | 55% | Future ratchet |
-| Final | 75% | 65% | Release target |
+| Stage 1 | Locked historical baseline | Locked historical baseline | Passed |
+| Stage 2 | 55% | 45% | Passed |
+| Stage 3 | 65% | 55% | Passed |
+| Final | 75% | 65% | Passed |
+| Branch 75 | 75% | 75% | Active post-final ratchet |
 
 The active stage may move forward only after the candidate commit passes the next threshold. It must not move backward. Lowering a baseline or threshold to make CI pass is prohibited.
 
@@ -114,6 +106,12 @@ Validate an existing coverage report without rerunning Jest:
 
 ```bash
 npm run check:server-coverage
+```
+
+Generate uncovered branch report:
+
+```bash
+npm run report:server-branch-gaps
 ```
 
 Run policy unit tests:

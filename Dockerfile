@@ -1,4 +1,4 @@
-FROM node:24-bookworm-slim AS build
+FROM node:24-bookworm-slim AS build-dependencies
 
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 WORKDIR /app
@@ -10,12 +10,30 @@ RUN apt-get update \
 COPY package.json package-lock.json ./
 COPY client/package.json client/package-lock.json ./client/
 COPY .npmrc ./
+COPY scripts/dependencies/ ./scripts/dependencies/
+COPY patches/ ./patches/
 RUN npm ci \
   && npm --prefix client ci
 
+FROM node:24-bookworm-slim AS production-dependencies
+
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+WORKDIR /app
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends python3 make g++ \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY package.json package-lock.json ./
+COPY .npmrc ./
+COPY scripts/dependencies/ ./scripts/dependencies/
+COPY patches/ ./patches/
+RUN npm ci --omit=dev
+
+FROM build-dependencies AS build
+
 COPY . .
-RUN npm run build \
-  && npm prune --omit=dev
+RUN npm run build
 
 FROM node:24-bookworm-slim AS runtime
 
@@ -25,7 +43,7 @@ ENV NODE_ENV=production \
 WORKDIR /app
 
 COPY --from=build --chown=node:node /app/package.json /app/package-lock.json ./
-COPY --from=build --chown=node:node /app/node_modules ./node_modules
+COPY --from=production-dependencies --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/dist ./dist
 COPY --from=build --chown=node:node /app/client/dist ./client/dist
 COPY --from=build --chown=node:node /app/config ./config

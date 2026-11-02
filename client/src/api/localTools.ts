@@ -1,3 +1,4 @@
+import { apiFetch } from './http';
 import { throwApiError } from './errors';
 
 export interface LocalExecutableSummary {
@@ -26,13 +27,13 @@ export interface PlannedLocalRun {
 }
 
 export async function detectLocalTools(): Promise<{ detections: LocalExecutableSummary[] }> {
-  const response = await fetch('/api/local-tools/detect');
+  const response = await apiFetch('/api/local-tools/detect');
   if (!response.ok) await throwApiError(response, 'Unable to detect local tools');
   return response.json();
 }
 
 export async function listLocalExecutables(): Promise<{ executables: LocalExecutableSummary[] }> {
-  const response = await fetch('/api/local-tools/executables');
+  const response = await apiFetch('/api/local-tools/executables');
   if (!response.ok) await throwApiError(response, 'Unable to list local executables');
   return response.json();
 }
@@ -45,7 +46,7 @@ export async function registerLocalExecutable(input: {
   trustLevel?: string;
   approvalPolicy?: string;
 }): Promise<{ executable: LocalExecutableSummary }> {
-  const response = await fetch('/api/local-tools/executables', {
+  const response = await apiFetch('/api/local-tools/executables', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input)
@@ -62,7 +63,7 @@ export async function planLocalRun(input: {
   riskLevel?: string;
   approvedByUser?: boolean;
 }): Promise<PlannedLocalRun> {
-  const response = await fetch('/api/local-tools/run/plan', {
+  const response = await apiFetch('/api/local-tools/run/plan', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(input)

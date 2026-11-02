@@ -1,3 +1,4 @@
+import { apiFetch } from '../api/http';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActionBarPrimitive,
@@ -8,7 +9,8 @@ import {
   MessagePrimitive,
   ThreadMessageLike,
   ThreadPrimitive,
-  useExternalStoreRuntime
+  useExternalStoreRuntime,
+  useMessage,
 } from '@assistant-ui/react';
 import ModeSelector, { ChatMode } from './ModeSelector';
 import StatusBar from './StatusBar';
@@ -21,10 +23,17 @@ import LoadedFilesBar from './LoadedFilesBar';
 import AudioPreviewBrowser from './AudioPreviewBrowser';
 import CodeWorkflowPanel from './CodeWorkflowPanel';
 import ConversationToolsPanel from './ConversationToolsPanel';
+import ConversationHistory from './ConversationHistory';
+import ReaPanel from './ReaPanel';
+import CodingToolsPanel from './CodingToolsPanel';
 import CreativeComposerPanel, { buildCreativeRequestPayload, defaultCreativeComposerState } from './CreativeComposerPanel';
 import KnowledgeMissPrompt from './KnowledgeMissPrompt';
 import PlanActionBar from './PlanActionBar';
 import GISMapPanel from '../features/gis/GISMapPanel';
+import { SourcesDrawer } from './SourcesDrawer';
+import { WhyThisAnswerModal } from './WhyThisAnswerModal';
+import { ResponseFeedbackBar } from './ResponseFeedbackBar';
+import type { SourcesDrawerData, WhyThisAnswerDiagnostics } from '../../../src/types/citation';
 import { LoadedFileContext } from '../api/files';
 import { AudioFileContext } from '../api/audio';
 import type { ConversationDetail } from '../api/conversations';
@@ -48,6 +57,9 @@ type ChatMessage = {
   mode?: ChatMode;
   createdAt: string;
   status?: 'running' | 'complete' | 'error';
+  sourcesDrawerData?: SourcesDrawerData;
+  diagnostics?: WhyThisAnswerDiagnostics;
+  warnings?: string[];
 };
 
 type ConnectionState = 'connected' | 'degraded' | 'connecting' | 'disconnected';
@@ -112,6 +124,14 @@ const modeHints: Record<ChatMode, string> = {
   gis: 'GIS mapping mode',
   engineering: 'Engineering mode',
   knowledge_os: 'Knowledge OS mode'
+};
+
+type TaskArtifact = {
+  name: string;
+  path: string;
+  url: string;
+  mimeType: string;
+  kind: string;
 };
 
 const simpleModeOptions: Array<{ value: ChatMode; label: string }> = [
@@ -210,7 +230,10 @@ const convertMessage = (message: ChatMessage): ThreadMessageLike => {
       custom: {
         id: message.id,
         mode: message.mode,
-        createdAt: message.createdAt
+        createdAt: message.createdAt,
+        sourcesDrawerData: message.sourcesDrawerData,
+        diagnostics: message.diagnostics,
+        warnings: message.warnings,
       }
     }
   };
@@ -241,7 +264,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [mode, setMode] = useState<ChatMode>('ask');
   const [contextOpen, setContextOpen] = useState(false);
-  const [sessionId] = useState(() => uuidv4());
+  const [sessionId, setSessionId] = useState(() => uuidv4());
   const [isRunning, setIsRunning] = useState(false);
   const [loadedFiles, setLoadedFiles] = useState<LoadedFileContext[]>([]);
   const [loadedAudio, setLoadedAudio] = useState<AudioFileContext[]>([]);
@@ -251,6 +274,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
   const [knowledgeActionError, setKnowledgeActionError] = useState('');
   const [connectionState, setConnectionState] = useState<ConnectionState>('connecting');
   const [creativeConfig, setCreativeConfig] = useState(defaultCreativeComposerState);
+  const [taskArtifacts, setTaskArtifacts] = useState<TaskArtifact[]>([]);
   const abortRef = useRef<AbortController | null>(null);
   const showBackendPanels = !isStaticPagesBuild && advancedOpen;
   const showAudioBrowser = showBackendPanels && ['music', 'fl_studio', 'fl_studio_control', 'pro_tools', 'logic', 'mix_master'].includes(mode);
@@ -266,7 +290,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
 
     const checkHealth = async () => {
       try {
-        const response = await fetch('/health/ready', { cache: 'no-store' });
+        const response = await apiFetch('/health/ready', { cache: 'no-store' });
         if (!active) return;
         setConnectionState(response.ok ? 'connected' : 'degraded');
       } catch {
@@ -286,6 +310,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
   }, []);
 
   const sendToBackend = async (input: string, selectedMode: ChatMode) => {
+    setTaskArtifacts([]);
     const controller = new AbortController();
     abortRef.current = controller;
 
@@ -303,7 +328,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
     ]);
 
     try {
-      const response = await fetch('/api/chat', {
+      const response = await apiFetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -327,6 +352,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
       }
 
       const data = await response.json();
+      setTaskArtifacts(Array.isArray(data.artifacts) ? data.artifacts : []);
       if (data.planId && data.planPath) {
         setPlanAction({ planId: data.planId, planPath: data.planPath });
       }
@@ -344,7 +370,10 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
             ...message,
             id: data.artifactId || message.id,
             content: data.response || '',
-            status: 'complete'
+            status: 'complete',
+            sourcesDrawerData: data.sourcesDrawerData,
+            diagnostics: data.diagnostics,
+            warnings: data.warnings,
           }
         : message
       ));
@@ -357,6 +386,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
         ? { ...message, content, status: 'error' }
         : message
       ));
+      setTaskArtifacts([]);
     } finally {
       setIsRunning(false);
       abortRef.current = null;
@@ -423,14 +453,33 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
   };
 
   const loadConversation = (conversation: ConversationDetail) => {
+    if (isRunning) return;
+    setSessionId(conversation.sessionId);
+    setLoadedFiles([]);
+    setLoadedAudio([]);
+    setPlanAction(null);
     setMessages(conversation.messages.map(message => ({
       id: message.id,
       role: message.role,
       content: message.content,
       mode: (message.metadata?.mode as ChatMode | undefined) || mode,
       createdAt: message.timestamp,
-      status: 'complete'
+      status: 'complete',
+      sourcesDrawerData: message.metadata?.sourcesDrawerData as SourcesDrawerData | undefined,
+      warnings: message.metadata?.warnings as string[] | undefined,
     })));
+  };
+
+  const newConversation = () => {
+    if (isRunning) return;
+    setSessionId(uuidv4());
+    setMessages([]);
+    setLoadedFiles([]);
+    setLoadedAudio([]);
+    setPlanAction(null);
+    setKnowledgeMiss(null);
+    setKnowledgePreview(null);
+    setTaskArtifacts([]);
   };
 
   const runOnlineSearch = async () => {
@@ -462,7 +511,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
 
   const openPlan = async (planId: string) => {
     try {
-      const response = await fetch(`/api/plans/${encodeURIComponent(planId)}`);
+      const response = await apiFetch(`/api/plans/${encodeURIComponent(planId)}`);
       if (!response.ok) {
         await throwApiError(response, 'Unable to open plan');
       }
@@ -487,7 +536,7 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
     <AssistantRuntimeProvider runtime={runtime}>
       <div className="assistant-workspace">
         {showBackendPanels && <FileExplorerPanel onLoadFile={addLoadedFile} />}
-        <section className="assistant-chat" aria-label="AI chat">
+        <section className="assistant-chat" aria-label="AI chat" tabIndex={0}>
           <div className="assistant-toolbar">
             <div className="assistant-toolbar-controls">
               {advancedOpen ? (
@@ -547,6 +596,9 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
             </div>
             <span className="assistant-mode-hint">{advancedOpen ? modeHints[mode] : 'Focused chat'}</span>
           </div>
+          {!isStaticPagesBuild && <ConversationHistory disabled={isRunning} onLoad={loadConversation} onNew={newConversation} />}
+          {!isStaticPagesBuild && <ReaPanel />}
+          {!isStaticPagesBuild && <CodingToolsPanel mode={mode} />}
           {showBackendPanels && <KnowledgeOSPanel />}
           {showGamingPlaybooks && <GamingPlaybookPanel />}
           {showKnowledgeOnlinePanel && <KnowledgeOnlinePanel />}
@@ -635,6 +687,27 @@ function AssistantChat({ advancedOpen = true }: AssistantChatProps) {
               </div>
             </div>
           )}
+          {taskArtifacts.length > 0 && (
+            <div className="assistant-task-artifacts" role="region" aria-label="Created files">
+              <div>
+                <strong>Created files</strong>
+                <span>Open or download the artifacts produced by this chat task.</span>
+              </div>
+              <div className="assistant-task-artifact-links">
+                {taskArtifacts.map(artifact => (
+                  <a
+                    key={artifact.url}
+                    href={artifact.url}
+                    target={artifact.mimeType === 'text/html' || artifact.mimeType === 'image/svg+xml' ? '_blank' : undefined}
+                    rel="noreferrer"
+                    download={artifact.mimeType === 'text/csv' || artifact.mimeType === 'application/json' ? artifact.name : undefined}
+                  >
+                    {artifact.mimeType === 'text/html' ? 'Play' : artifact.mimeType === 'image/svg+xml' ? 'View' : 'Download'} {artifact.name}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
           <ThreadPrimitive.Root className="assistant-thread">
             <ThreadPrimitive.Viewport className="assistant-viewport" tabIndex={0} aria-label="Conversation messages">
               <ThreadPrimitive.Empty>
@@ -692,15 +765,69 @@ function AssistantBubble() {
 }
 
 function ChatBubble({ role }: { role: 'user' | 'assistant' }) {
+  const message = useMessage();
+  const custom = (message?.metadata?.custom as any) || {};
+  const [showDiagnostics, setShowDiagnostics] = useState(false);
+
+  const handleFeedbackSubmit = async (feedback: {
+    responseId: string;
+    thumbs: 'up' | 'down';
+    categories?: any[];
+    comment?: string;
+  }) => {
+    try {
+      await apiFetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messageId: feedback.responseId,
+          reaction: feedback.thumbs === 'up' ? 'like' : 'dislike',
+          categories: feedback.categories,
+          comment: feedback.comment,
+        }),
+      });
+    } catch {
+      // Non-blocking UI feedback error
+    }
+  };
+
   return (
     <MessagePrimitive.Root className={`assistant-message assistant-message-${role}`}>
       <div className="assistant-message-shell">
         <MessagePrimitive.Parts components={{ Text: TextPart }} />
         {role === 'assistant' && (
-          <ActionBarPrimitive.Root className="assistant-actions">
-            <ActionBarPrimitive.Copy className="assistant-action">Copy</ActionBarPrimitive.Copy>
-            <ActionBarPrimitive.Reload className="assistant-action">Retry</ActionBarPrimitive.Reload>
-          </ActionBarPrimitive.Root>
+          <>
+            {custom.warnings?.length > 0 && <div role="status">{custom.warnings.join(' ')}</div>}
+            {custom.sourcesDrawerData && (
+              <SourcesDrawer data={custom.sourcesDrawerData} />
+            )}
+            <div className="assistant-message-footer">
+              <ResponseFeedbackBar
+                responseId={custom.id || message.id}
+                onFeedbackSubmit={handleFeedbackSubmit}
+              />
+              {custom.diagnostics && (
+                <button
+                  type="button"
+                  className="assistant-why-answer-btn"
+                  onClick={() => setShowDiagnostics(true)}
+                  title="Why this answer?"
+                >
+                  🔍 Why this answer?
+                </button>
+              )}
+            </div>
+            {showDiagnostics && custom.diagnostics && (
+              <WhyThisAnswerModal
+                diagnostics={custom.diagnostics}
+                onClose={() => setShowDiagnostics(false)}
+              />
+            )}
+            <ActionBarPrimitive.Root className="assistant-actions">
+              <ActionBarPrimitive.Copy className="assistant-action">Copy</ActionBarPrimitive.Copy>
+              <ActionBarPrimitive.Reload className="assistant-action">Retry</ActionBarPrimitive.Reload>
+            </ActionBarPrimitive.Root>
+          </>
         )}
       </div>
     </MessagePrimitive.Root>

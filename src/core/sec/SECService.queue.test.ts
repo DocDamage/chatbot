@@ -103,4 +103,33 @@ describe('SECService queue', () => {
     expect(row.rows[0].status).toBe('queued');
     expect(row.rows[0].last_error).toContain('Recovered');
   });
+
+  it('covers getStatus, searchCompanies, planIngestion, parseAndStoreFiling, and validations', async () => {
+    // 1. getStatus
+    const status = await service.getStatus();
+    expect(status.supportedForms.length).toBeGreaterThan(0);
+    expect(status.companies).toBe(0);
+
+    // 2. planIngestion
+    const plan = await service.planIngestion({ runType: 'test', scope: 'sp500', forms: ['10-K'] });
+    expect(plan.status).toBe('planned');
+    expect(plan.forms).toEqual(['10-K']);
+
+    // 3. searchCompanies
+    await db.query(
+      `INSERT INTO sec_companies (id, cik, cik_padded, ticker, name, created_at, updated_at)
+       VALUES ('c-1', '320193', '0000320193', 'AAPL', 'Apple Inc.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
+    );
+    const searchRes = await service.searchCompanies('Apple');
+    expect(searchRes).toHaveLength(1);
+    expect(searchRes[0].ticker).toBe('AAPL');
+
+    // 4. parseAndStoreFiling validation
+    await expect(service.parseAndStoreFiling({ rawContent: 'test' })).rejects.toThrow('filingId or accessionNumber is required');
+
+    // 5. Validation errors on invalid forms, non-digit CIK, and empty queue request
+    await expect(service.queueBulkIngestion({ ciks: [], tickers: [] })).rejects.toThrow('At least one CIK or ticker is required');
+    await expect(service.queueBulkIngestion({ ciks: ['invalid-no-digits'] })).rejects.toThrow('CIK must contain digits');
+    await expect(service.planIngestion({ forms: ['INVALID_FORM_XYZ'] })).rejects.toThrow('Unsupported SEC form');
+  });
 });

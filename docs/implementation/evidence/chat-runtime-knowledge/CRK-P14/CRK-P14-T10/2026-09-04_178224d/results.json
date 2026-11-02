@@ -1,0 +1,22 @@
+{
+  "phase": "CRK-P14",
+  "task": "CRK-P14-T10",
+  "name": "Curated Source-Code Pack Exit Gate",
+  "status": "PASSED",
+  "timestamp": "2026-09-04T07:25:00.000Z",
+  "commit": "178224d",
+  "criteria": {
+    "structural_indexing_operational": "PASSED",
+    "generated_vendor_duplicate_controlled": "PASSED",
+    "provenance_complete": "PASSED",
+    "coding_benchmark_improved": "PASSED",
+    "no_execution_on_retrieval": "PASSED"
+  },
+  "tests": {
+    "total": 7,
+    "passed": 7,
+    "failed": 0
+  },
+  "typeCheck": "PASSED",
+  "lint": "PASSED"
+}

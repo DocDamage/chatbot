@@ -181,6 +181,73 @@ describe('LocalKnowledgeAnswerer', () => {
     expect(answer?.response).not.toContain('common year starting on Wednesday');
   });
 
+  it('attaches child events to standalone dates without merging the next date heading', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: '1979-structured-events',
+          content: [
+            '# 1979',
+            'Domain: general',
+            '## Events',
+            '- June 15',
+            '- A national restaurant chain introduced a new children\'s meal.',
+            '- A thriller film was released by a major studio.',
+            '- June 20 – A television news correspondent and his interpreter were killed; the news crew captured it on tape.',
+            '- June 22',
+            '- June 23 – A state premier opened a suburban railway.',
+            '## Births'
+          ].join('\n'),
+          metadata: {
+            source: 'fixtures/1979.md',
+            title: '1979.md'
+          }
+        },
+        score: 0.9,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answer = await new LocalKnowledgeAnswerer(store as any)
+      .answer('tell me some news about 1979', 'ask');
+
+    expect(answer?.response).toContain('June 20 – A television news correspondent');
+    expect(answer?.response).toContain('June 23 – A state premier');
+    expect(answer?.response).not.toMatch(/tape\.\s*[–-]\s*June 22/);
+    expect(answer?.response).not.toMatch(/June 22\s*[–-]\s*June 23/);
+  });
+
+  it('returns richer defaults while honoring explicit brief and detailed requests', async () => {
+    const eventLines = Array.from({ length: 16 }, (_, index) => {
+      const month = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ][index % 12];
+      return `- ${month} ${(index % 27) + 1} – Recorded event number ${index + 1} for the annual news timeline.`;
+    });
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: '1979-answer-depth',
+          content: ['# 1979', 'Domain: general', '## Events', ...eventLines, '## Births'].join('\n'),
+          metadata: { source: 'fixtures/1979-depth.md', title: '1979.md' }
+        },
+        score: 0.9,
+        retrievalMethod: 'keyword'
+      }])
+    };
+    const answerer = new LocalKnowledgeAnswerer(store as any);
+    const countItems = (response = '') => response.match(/^\d+\./gm)?.length || 0;
+
+    const standard = await answerer.answer('tell me some news about 1979', 'ask');
+    const brief = await answerer.answer('give me a brief news summary about 1979', 'ask');
+    const detailed = await answerer.answer('give me more detailed news about 1979', 'ask');
+
+    expect(countItems(standard?.response)).toBe(10);
+    expect(countItems(brief?.response)).toBe(5);
+    expect(countItems(detailed?.response)).toBe(14);
+  });
+
   it('does not answer an exact year query from unrelated chunks', async () => {
     const store = {
       searchKeyword: jest.fn().mockResolvedValue([{
@@ -317,9 +384,123 @@ describe('LocalKnowledgeAnswerer', () => {
 
     const answerer = new LocalKnowledgeAnswerer(store as any);
     const answer = await answerer.answer('tell me about the music industry in 1997', 'pop_culture');
+    expect(answer?.knowledgeMiss).toBe(true);
+    expect(answer?.response).toContain('local pop culture database');
+  });
+
+  it('rejects an unrelated year match for a multi-word subject', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: '1997-geopolitics-chunk-0',
+          content: '1997 edition. Hegemony of a New Type. The Eurasian Chessboard and the American global system.',
+          metadata: {
+            source: 'knowledge-base-public/general/geopolitics-1997.md',
+            title: 'The Grand Chessboard'
+          }
+        },
+        score: 0.95,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answer = await new LocalKnowledgeAnswerer(store as any)
+      .answer('what can you tell me about hip hop in 1997?', 'ask');
 
     expect(answer?.knowledgeMiss).toBe(true);
     expect(answer?.sources).toEqual([]);
-    expect(answer?.response).not.toContain('1997 was a common year');
+  });
+
+  it('requires a dated subject to appear near the requested year unless the source is year-specific', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: 'book-with-distant-year-and-topic',
+          content: `Published in 1997. ${'unrelated branding commentary '.repeat(45)} Hip hop influenced fashion and youth marketing.`,
+          metadata: {
+            source: 'books/branding-study.pdf',
+            title: 'A Study of Global Brands'
+          }
+        },
+        score: 0.95,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answer = await new LocalKnowledgeAnswerer(store as any)
+      .answer('what can you tell me about hip hop in 1997?', 'ask');
+
+    expect(answer?.knowledgeMiss).toBe(true);
+  });
+
+  it('rejects extracted dated-topic passages that omit the requested year', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: 'weak-dated-topic-answer',
+          content: 'Published in 1997. Hip hop influenced fashion, branding, and youth marketing at the end of the decade.',
+          metadata: {
+            source: 'books/branding-study.pdf',
+            title: 'A Study of Global Brands'
+          }
+        },
+        score: 0.95,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answer = await new LocalKnowledgeAnswerer(store as any)
+      .answer('what can you tell me about hip hop in 1997?', 'ask');
+
+    expect(answer?.knowledgeMiss).toBe(true);
+  });
+
+  it('rejects a year and subject that occur in separate factual entries', async () => {
+    const store = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: 'dictionary-entries-with-unrelated-date',
+          content: [
+            'The composer later used diatonic writing influenced by jazz and popular music.',
+            'Another musician studied at Juilliard from 1959 to 1962.',
+            'Ernest Bloch died in Portland in 1959.'
+          ].join('\n'),
+          metadata: {
+            source: 'books/Oxford Dictionary of Music.pdf',
+            title: 'Oxford Dictionary of Music'
+          }
+        },
+        score: 0.95,
+        retrievalMethod: 'keyword'
+      }])
+    };
+
+    const answer = await new LocalKnowledgeAnswerer(store as any)
+      .answer('what can you tell me about jazz in 1959?', 'ask');
+
+    expect(answer?.knowledgeMiss).toBe(true);
+    expect(answer?.sources).toEqual([]);
+  });
+
+  it('handles empty document store constructor and passage extraction edge cases', async () => {
+    const emptyAnswerer = new LocalKnowledgeAnswerer();
+    const answer = await emptyAnswerer.answer('any query', 'ask');
+    expect(answer?.knowledgeMiss).toBe(true);
+    expect(answer?.canSearchOnline).toBe(true);
+
+    const passageStore = {
+      searchKeyword: jest.fn().mockResolvedValue([{
+        chunk: {
+          id: 'long-passage-chunk-0',
+          content: '## Events\n- Event 1: Treaty signed.\n- Event 2: Battle ended.\n\n## Summary\nOverall peace was achieved across the continent.',
+          metadata: { source: 'history/treaty.md', title: 'Treaty of 1800' }
+        },
+        score: 0.9,
+        retrievalMethod: 'keyword'
+      }])
+    };
+    const answerer = new LocalKnowledgeAnswerer(passageStore as any);
+    const res = await answerer.answer('what events happened in 1800?', 'history');
+    expect(res?.response).toContain('Treaty signed');
   });
 });

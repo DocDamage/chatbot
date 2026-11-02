@@ -1,0 +1,21 @@
+{
+  "phase": "CRK-P15",
+  "task": "CRK-P15-T05",
+  "status": "VERIFIED_AND_CERTIFIED",
+  "date": "2026-09-04",
+  "baseCommit": "178224d",
+  "tests": {
+    "types": { "passed": 4, "total": 4 },
+    "backendIntegration": { "passed": 5, "total": 5 },
+    "clientComponents": { "passed": 4, "total": 4 }
+  },
+  "lineCount": {
+    "citationTypes": 113,
+    "claimAssociationService": 136,
+    "sourcesDrawerFormatter": 114,
+    "whyThisAnswerService": 91,
+    "citationResolverService": 95,
+    "sourcesDrawerClient": 83,
+    "whyThisAnswerModalClient": 98
+  }
+}

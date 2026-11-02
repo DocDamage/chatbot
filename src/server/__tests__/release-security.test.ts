@@ -1,5 +1,8 @@
 import express from 'express';
 import request from 'supertest';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import { ConfigValidator } from '../../core/config/ConfigValidator';
 import { AuthService } from '../../core/auth/AuthService';
 import { optionalAuth, requireAuth, requireRole } from '../../middleware/auth';
@@ -57,17 +60,21 @@ describe('release security controls', () => {
   });
 
   it('blocks anonymous workspace file access and allows developer tokens', async () => {
+    const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'release-file-auth-'));
+    fs.writeFileSync(path.join(workspace, 'note.txt'), 'Workspace access fixture');
     const app = express();
     app.use(express.json());
     app.use('/api/files', requireAuth, requireRole('admin', 'developer'));
-    app.use(createFilesRouter(process.cwd()));
+    app.use(createFilesRouter(workspace));
 
-    await request(app).get('/api/files/tree').expect(401);
-
-    await request(app)
-      .get('/api/files/tree')
-      .set('Authorization', `Bearer ${developerToken()}`)
-      .expect(200);
+    try {
+      await request(app).get('/api/files/tree').expect(401);
+      const result = await request(app)
+        .get('/api/files/tree')
+        .set('Authorization', `Bearer ${developerToken()}`)
+        .expect(200);
+      expect(JSON.stringify(result.body)).toContain('note.txt');
+    } finally { fs.rmSync(workspace, { recursive: true, force: true }); }
   });
 
   it('blocks anonymous command verification and allows developer verification', async () => {
@@ -97,7 +104,8 @@ describe('release security controls', () => {
   });
 
   it('protects high-risk file, audio, plan, code, and online-knowledge route groups', async () => {
-    const workspaceRoot = process.cwd();
+    const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'release-route-auth-'));
+    try {
     const routeGroups = [
       {
         mount: '/api/audio',
@@ -141,6 +149,7 @@ describe('release security controls', () => {
         .set('Authorization', `Bearer ${developerToken()}`)
         .expect(200);
     }
+    } finally { fs.rmSync(workspaceRoot, { recursive: true, force: true }); }
   });
 
   it('protects settings reads and writes with admin-only policy', async () => {
@@ -157,7 +166,7 @@ describe('release security controls', () => {
     await request(app)
       .get('/api/settings')
       .set('Authorization', `Bearer ${developerToken()}`)
-      .expect(401);
+      .expect(403);
 
     await request(app)
       .put('/api/settings')
@@ -184,7 +193,7 @@ describe('release security controls', () => {
     await request(app)
       .get('/api/knowledge-os/summary')
       .set('Authorization', `Bearer ${developerToken()}`)
-      .expect(401);
+      .expect(403);
 
     await request(app)
       .get('/api/knowledge-os/summary')

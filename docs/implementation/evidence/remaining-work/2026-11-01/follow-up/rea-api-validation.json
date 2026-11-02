@@ -1,0 +1,117 @@
+{
+  "verifiedAt": "2026-11-01T22:43:09.750Z",
+  "checks": [
+    {
+      "operation": "javascript",
+      "target": "rea-inert.js",
+      "id": "cf3b9065-6b87-439a-b1e5-459e20a99f86",
+      "status": "completed",
+      "tools": [
+        "analyze_javascript_application",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_7d59f21d935834e7eecb5aabd878251201bf25cc76570f87e6a9e85dc1b99389"
+      ],
+      "evidenceSha256": "7d76254d82c0788cc3534788006d91b66a3fde7c1a31557be4d98f3d0a68356a"
+    },
+    {
+      "operation": "archive",
+      "target": "rea-inert.zip",
+      "id": "e11f3055-925c-4c6e-8bf0-617fc8b3b6c1",
+      "status": "completed",
+      "tools": [
+        "open_binary",
+        "inspect_artifact",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_ccf43dd5122bedde808d94800cb826260a8fa7fd6af0d49ea3b516aaebfaee6c"
+      ],
+      "evidenceSha256": "e4f120c8dc44d2f72dafe836fa526a4fcce2123ea02dc810f273c858b09d012e"
+    },
+    {
+      "operation": "model",
+      "target": "rea-empty.gguf",
+      "id": "1c1c3383-b408-467a-8489-c19626a5414a",
+      "status": "completed",
+      "tools": [
+        "inspect_model_artifact",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_d4e2dcbf1e020e093f55fbf8a010aadbc18d4050c6e9ea65f089d74ada404848"
+      ],
+      "evidenceSha256": "8d99f9830f0847efdedf57ce2f269114c3129b911e9f29aa7db4dfa7ef2e4c08"
+    },
+    {
+      "operation": "pe",
+      "target": "where.exe",
+      "id": "59db4d56-cdd5-43c1-973f-f11c5327ca2a",
+      "status": "completed",
+      "tools": [
+        "inspect_pe_imports",
+        "inspect_pe_resources",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_642185553f4204498e048579dc8a0300cd746e2143e5a9363bb0398ec25b7569",
+        "ev_02b56ca02b9ed710a0c5b74117e12b3008cece2828499a118a03bd581085780a"
+      ],
+      "evidenceSha256": "13fc1abf1bba8b3a5ef7b6c9e51aa02ae224b294d3b28bd03ff14d656c890e97"
+    },
+    {
+      "operation": "managed",
+      "target": "System.Management.Automation.dll",
+      "id": "c766035e-3264-4ec4-85ec-6c28ba4cd3cc",
+      "status": "completed",
+      "tools": [
+        "inspect_managed_artifact",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_ae9036eab633443b8fd6d77bcfc933a486a27ff7c2d2b8c736abf056bab10044"
+      ],
+      "evidenceSha256": "053d0fe770eb5a5e37d882ba030ddfa258f50c564c74a2f08adce42fb60868e6"
+    },
+    {
+      "operation": "native",
+      "target": "where.exe",
+      "id": "f7d97274-3a41-4693-a52d-b451bda4c3b3",
+      "status": "completed",
+      "tools": [
+        "open_binary",
+        "binary_overview",
+        "list_procedures",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_cabb5fd1528cb386c5189b0ea554622be482dc45b20f1bf8d5daa94bd40fd1b0",
+        "ev_61d2ae6253683e701c15891423d602c9ffc2fd376919fe0303d89086303b7c08"
+      ],
+      "evidenceSha256": "81997d88097ec6a6d0153206c0bcbbfc717d878700c26494e6bea411f570b5b0"
+    },
+    {
+      "operation": "native",
+      "target": "where.exe",
+      "id": "bfb3a33d-545d-4087-9539-e638a59b3550",
+      "status": "completed",
+      "tools": [
+        "open_binary",
+        "binary_overview",
+        "analyze_function",
+        "export_evidence_bundle"
+      ],
+      "evidenceIds": [
+        "ev_cabb5fd1528cb386c5189b0ea554622be482dc45b20f1bf8d5daa94bd40fd1b0",
+        "ev_2aef7c5d8386d438ec775540bda33ffef1f43ad0fd812a7d2999524c00555ff3"
+      ],
+      "evidenceSha256": "59df9db7d286644f9d668f80805acb6d486625a0287d17f9b14efb554f8fe609",
+      "pseudocodeChars": 702
+    },
+    {
+      "operation": "chat-command",
+      "status": "completed"
+    }
+  ]
+}

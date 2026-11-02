@@ -6,7 +6,7 @@
 import { RetrievalResult, DocumentChunk } from '../../types/rag';
 import { logger } from '../observability/logger';
 import { LLMAdapter } from '../providers/LLMAdapter';
-import natural from 'natural';
+import { WordTokenizer } from 'natural/lib/natural/tokenizers';
 
 export type ReRankerMode = 'heuristic' | 'llm' | 'embedding' | 'cross_encoder';
 
@@ -16,7 +16,7 @@ export interface ReRankerOptions {
 }
 
 export class ReRanker {
-  private tokenizer = new natural.WordTokenizer();
+  private tokenizer = new WordTokenizer();
   private mode: ReRankerMode;
   private llmAdapter?: LLMAdapter;
 

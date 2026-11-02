@@ -4,6 +4,20 @@ import path from 'path';
 import { FileExplorerService } from './FileExplorerService';
 
 describe('FileExplorerService', () => {
+  it('keeps installed Python and browser dependencies out of workspace search', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'file-search-dependencies-'));
+    try {
+      for (const directory of ['.venv', '.a11y-tools']) {
+        fs.mkdirSync(path.join(root, directory));
+        fs.writeFileSync(path.join(root, directory, 'canary.txt'), 'dependency-only-canary');
+      }
+      fs.writeFileSync(path.join(root, 'app.txt'), 'project-canary');
+      const service = new FileExplorerService(root);
+      expect((await service.search('dependency-only-canary', 'content')).results).toEqual([]);
+      expect((await service.search('project-canary', 'content')).results).toEqual([expect.objectContaining({ path: 'app.txt' })]);
+      expect((await service.getTree()).children?.map(node => node.name)).toEqual(['app.txt']);
+    } finally { fs.rmSync(root, { recursive: true, force: true }); }
+  });
   it('lists, searches, reads, and blocks unsafe paths', async () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'file-explorer-'));
     fs.mkdirSync(path.join(root, 'src'));

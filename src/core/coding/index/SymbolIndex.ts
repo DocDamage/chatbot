@@ -3,6 +3,7 @@ import { FallbackParserProvider } from './FallbackParserProvider';
 import { IndexedSymbol, ParserProvider } from './ParserProvider';
 import { TreeSitterParserProvider } from './TreeSitterParserProvider';
 import { TypeScriptParserProvider } from './TypeScriptParserProvider';
+import { TypeScriptReferences } from './TypeScriptReferences';
 
 export interface SymbolIndexReport {
   parser: string;
@@ -13,12 +14,14 @@ export class SymbolIndex {
   private readonly providers: ParserProvider[];
   private readonly symbols = new Map<string, IndexedSymbol[]>();
   private readonly repository: ApprovedRepositoryGateway;
+  private readonly references: TypeScriptReferences;
 
   constructor(
     workspaceRoot: string,
     providers: ParserProvider[] = [],
     repository?: ApprovedRepositoryGateway
   ) {
+    this.references = new TypeScriptReferences(workspaceRoot);
     this.providers = [
       ...providers,
       new TypeScriptParserProvider(),
@@ -36,6 +39,7 @@ export class SymbolIndex {
 
   indexContentWithReport(file: string, content: string): SymbolIndexReport {
     const normalized = file.replace(/\\/g, '/').replace(/^\.\//, '');
+    this.references.set(normalized, content);
     for (const provider of this.providers) {
       if (!provider.supports(normalized)) continue;
       try {
@@ -81,7 +85,7 @@ export class SymbolIndex {
     return this.all().filter(symbol => symbol.name === name && !['import', 'export'].includes(symbol.kind));
   }
 
-  findReferences(name: string): IndexedSymbol[] {
-    return this.all().filter(symbol => symbol.name.includes(name));
+  findReferences(name: string, location?: { file: string; line: number; column: number }): IndexedSymbol[] {
+    return this.references.find(name, location);
   }
 }

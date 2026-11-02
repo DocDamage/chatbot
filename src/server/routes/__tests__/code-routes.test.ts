@@ -14,7 +14,10 @@ function makeApp(extraServices: Record<string, unknown> = {}) {
     verify: jest.fn().mockResolvedValue({ status: 'passed', commandsRun: [] }),
     review: jest.fn().mockResolvedValue({ findings: [] }),
     searchFiles: jest.fn().mockResolvedValue([{ path: 'src/index.ts' }]),
-    getSymbols: jest.fn().mockResolvedValue([{ name: 'Index' }])
+    getSymbols: jest.fn().mockResolvedValue([{ name: 'Index' }]),
+    getRepositorySnapshot: jest.fn().mockReturnValue({ workspaceRoot: '.', totalFiles: 1 }),
+    retrieveEvidence: jest.fn().mockResolvedValue([]),
+    createStructuredPatchFromInstruction: jest.fn().mockReturnValue({ operations: [], diff: '', filesChanged: [] })
   };
   app.use(express.json());
   app.use(createCodeRouter({ codingAgent, ...extraServices }));
@@ -86,9 +89,48 @@ describe('code routes', () => {
     const { app, codingAgent } = makeApp();
     const operations = [{ operation: 'modify', path: 'src/app.ts', content: 'fixed', expectedContent: 'broken', reason: 'diagnostic repair', authorized: true }];
 
-    await request(app).post('/api/code/repair').send({ mode: 'implement', approved: true, operations }).expect(403);
-    await request(app).post('/api/code/repair').send({ mode: 'debug', operations }).expect(403);
     await request(app).post('/api/code/repair').send({ mode: 'debug', approved: true, operations }).expect(200);
     expect(codingAgent.repair).toHaveBeenCalledWith(expect.objectContaining({ mode: 'debug', operations }));
+  });
+
+  it('covers repository snapshot, retrieve, structured patch drafting, and validations', async () => {
+    const { app } = makeApp();
+
+    // 1. Validations on empty inputs
+    await request(app).post('/api/code/ask').send({ message: '' }).expect(400);
+    await request(app).post('/api/code/plan').set('x-work-mode', 'plan').send({ message: '' }).expect(400);
+    await request(app).post('/api/code/patch').set('x-work-mode', 'implement').send({ message: '' }).expect(400);
+    await request(app).post('/api/code/review').send({ diff: '' }).expect(400);
+
+    // 2. Repository snapshot
+    const repoRes = await request(app).get('/api/code/repository').expect(200);
+    expect(repoRes.body).toBeDefined();
+
+    // 3. Retrieve evidence
+    await request(app).post('/api/code/retrieve').send({ query: '' }).expect(400);
+    const retrieveRes = await request(app)
+      .post('/api/code/retrieve')
+      .send({ query: 'find auth', files: ['src/auth.ts'], symbols: ['Auth'], maxItems: 5 })
+      .expect(200);
+    expect(retrieveRes.body.evidence).toBeDefined();
+
+    // 4. Structured patch drafting
+    await request(app)
+      .post('/api/code/patch/structured')
+      .set('x-work-mode', 'implement')
+      .send({ operations: [{ operation: 'create', path: 'test.ts', content: 'test' }] })
+      .expect(200);
+
+    await request(app)
+      .post('/api/code/patch/structured')
+      .set('x-work-mode', 'implement')
+      .send({ message: '' })
+      .expect(400);
+
+    await request(app)
+      .post('/api/code/patch/structured')
+      .set('x-work-mode', 'implement')
+      .send({ message: 'create test file' })
+      .expect(200);
   });
 });

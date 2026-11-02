@@ -1,3 +1,4 @@
+import { apiFetch } from '../api/http';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './SettingsMenu.css';
 
@@ -199,7 +200,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
     setMessage('');
 
     try {
-      const response = await fetch('/api/settings');
+      const response = await apiFetch('/api/settings');
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       const data: SettingsResponse = await response.json();
@@ -228,7 +229,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ advancedOpen = false, onAdv
     setMessage('');
 
     try {
-      const response = await fetch('/api/settings', {
+      const response = await apiFetch('/api/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

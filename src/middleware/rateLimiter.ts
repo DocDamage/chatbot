@@ -98,10 +98,9 @@ export class RateLimiter {
 
   middleware() {
     return async (req: Request, res: Response, next: NextFunction) => {
-      const key = this.getKey(req);
-      const now = Date.now();
-
       try {
+        const key = this.getKey(req);
+        const now = Date.now();
         let count: number;
         let resetTime: number;
 

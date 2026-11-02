@@ -51,4 +51,76 @@ describe('GISService', () => {
       data: 'name,lat,lng\n'
     })).toThrow('Layer import requires at least one feature.');
   });
+
+  it('covers searchPlaces, searchParcels, spatial analysis, sessions, and chat response', async () => {
+    const service = createService();
+
+    // 1. Places search
+    const places = await service.searchPlaces({ query: 'coffee', center: 'Times Square', radiusMeters: 500, limit: 5 });
+    expect(places.results).toBeDefined();
+
+    // 2. Parcels search
+    const parcels = await service.searchParcels({ query: '1600 Pennsylvania Ave', limit: 1 });
+    expect(parcels.results).toBeDefined();
+
+    // 3. Layer import & spatial analysis (buffer + nearest)
+    const imported = service.importLayer({
+      name: 'Points layer',
+      data: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            id: 'p1',
+            geometry: { type: 'Point', coordinates: [-74.006, 40.7128] },
+            properties: { name: 'P1' }
+          },
+          {
+            type: 'Feature',
+            id: 'p2',
+            geometry: { type: 'Point', coordinates: [-74.005, 40.7130] },
+            properties: { name: 'P2' }
+          }
+        ]
+      }
+    });
+
+    const bufferRes = await service.buffer({ coordinate: { lat: 40.7128, lng: -74.006 }, radiusMeters: 100 });
+    expect(bufferRes.layer).toBeDefined();
+
+    const nearestRes = await service.nearest({
+      layerId: imported.layer.id,
+      coordinate: { lat: 40.7129, lng: -74.0055 },
+      limit: 1
+    });
+    expect(nearestRes.results.length).toBeGreaterThan(0);
+
+    // 4. Session management
+    const session = service.saveSession({
+      title: 'Test Map Session',
+      center: { lat: 40.7128, lng: -74.006 },
+      zoom: 12,
+      layers: [imported.layer]
+    });
+    expect(session.id).toBeDefined();
+
+    const retrieved = service.getSession(session.id);
+    expect(retrieved?.title).toBe('Test Map Session');
+
+    const list = service.listSessions();
+    expect(list.length).toBeGreaterThan(0);
+
+    // 5. Ask router
+    const routeAsk = await service.ask('Directions from Times Square to Central Park');
+    expect(routeAsk.mode).toBe('route');
+
+    const parcelAsk = await service.ask('Look up property parcel zoning for 1600 Pennsylvania Ave');
+    expect(parcelAsk.mode).toBe('parcel');
+
+    const placeAsk = await service.ask('Find coffee shops nearby');
+    expect(placeAsk.mode).toBe('places');
+
+    const geocodeAsk = await service.ask('Where is Seattle?');
+    expect(geocodeAsk.mode).toBe('geocode');
+  });
 });

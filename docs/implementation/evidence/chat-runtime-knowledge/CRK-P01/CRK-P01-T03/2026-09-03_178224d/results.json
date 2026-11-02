@@ -1,0 +1,55 @@
+{
+  "taskId": "CRK-P01-T03",
+  "taskTitle": "Build ChatRuntime",
+  "phase": "CRK PHASE 01",
+  "branch": "codex/cf04-cf10-integration",
+  "commit": "178224d9c5b7891b78f52ddc781a319faeab64de",
+  "shortSha": "178224d",
+  "date": "2026-09-03",
+  "status": "VERIFIED",
+  "filesCreated": [
+    "src/core/chat/ChatRuntime.ts",
+    "src/core/chat/ChatRuntime.test.ts"
+  ],
+  "sourceLineCount": {
+    "src/core/chat/ChatRuntime.ts": 266,
+    "src/core/chat/ChatRuntime.test.ts": 266
+  },
+  "tests": {
+    "runtimeUnitTests": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "combinedSuiteTests": {
+      "total": 52,
+      "passed": 52,
+      "failed": 0
+    }
+  },
+  "verification": {
+    "typeCheckServer": 0,
+    "typeCheckTests": 0,
+    "typeCheckClient": 0,
+    "lintServer": 0
+  },
+  "stagesOrchestrated": [
+    "policyResolution",
+    "stateLoad",
+    "taskAnalysis",
+    "workflowResolution",
+    "contextPlanning",
+    "contextExecution",
+    "modelSelection",
+    "promptAssembly",
+    "generation",
+    "validationAndGrounding",
+    "stateCommit",
+    "traceRecording"
+  ],
+  "compliance": {
+    "noDirectEnvReads": true,
+    "sourceSizeUnder300Lines": true,
+    "schemaValidationEnforced": true
+  }
+}

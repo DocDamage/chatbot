@@ -21,4 +21,18 @@ describe('RepairController', () => {
     expect(result.status).toBe('failed');
     expect(result.attempts).toHaveLength(2);
   });
+  it.each(['blocked', 'skipped'] as const)('does not claim success for %s verification with no diagnostics', async status => {
+    const propose = jest.fn();
+    const result = await new RepairController().run({ verify: async () => [{ status, command: 'check', argv: [], exitCode: null, durationMs: 0, diagnostics: [], stdout: '', stderr: '' }], propose, apply: jest.fn() });
+    expect(result.status).toBe('blocked'); expect(propose).not.toHaveBeenCalled();
+  });
+  it('does not claim success when no verification ran', async () => {
+    const result = await new RepairController().run({ verify: async () => [], propose: jest.fn(), apply: jest.fn() });
+    expect(result.status).toBe('blocked');
+  });
+  it('reports model errors as blocked and preserves the actual verification outcome', async () => {
+    const verify = async () => [{ status: 'failed' as const, command: 'check', argv: [], exitCode: 1, durationMs: 0, diagnostics: [], stdout: '', stderr: 'test failed' }];
+    const result = await new RepairController().run({ verify, propose: async () => { throw new Error('Provider offline'); }, apply: jest.fn() });
+    expect(result.status).toBe('blocked'); expect(result.remainingRisks.join(' ')).toContain('Provider offline');
+  });
 });

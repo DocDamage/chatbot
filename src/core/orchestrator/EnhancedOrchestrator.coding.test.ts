@@ -57,4 +57,12 @@ describe('EnhancedOrchestrator coding delegation', () => {
     expect(codingAgent.handle).toHaveBeenCalledWith(expect.objectContaining({ generatePatch: true, modelAdapter: adapter }));
     expect(response.model).toBe('coding-agent:template/template');
   });
+  it('uses the configured local adapter when model routing is disabled', async () => {
+    const adapter = new TemplateAdapter(); jest.spyOn(adapter, 'getModelName').mockReturnValue('ollama:qwen3:8b');
+    const codingAgent = { handle: jest.fn().mockResolvedValue({ summary: 'draft', filesInspected: [], plan: { steps: [], requiredEvidence: [] },
+      patch: { diff: '', filesChanged: [] }, commandsRun: [], verification: { status: 'not_run', commandsRun: [], results: [], remainingRisks: [] }, review: { findings: [], summary: '' }, risks: [] }) };
+    await new EnhancedOrchestrator(adapter, undefined, { useRAG: false, useModelRouting: false, useSafetyPipeline: false, useSemanticCache: false, codingAgent: codingAgent as any })
+      .processRequest({ message: 'implement a TypeScript function', sessionId: 'local-coding' });
+    expect(codingAgent.handle).toHaveBeenCalledWith(expect.objectContaining({ modelAdapter: adapter, generatePatch: true, model: undefined }));
+  });
 });

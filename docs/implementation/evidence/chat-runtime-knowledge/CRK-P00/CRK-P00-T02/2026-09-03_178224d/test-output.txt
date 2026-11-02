@@ -1,0 +1,24 @@
+PASS src/server/routes/__tests__/route-legacy-chat-matrix.test.ts
+  HTTP route decision matrices - Legacy Chat Router
+    √ validates request payload and checks service readiness timeout (61 ms)
+    √ handles plan mode and mode switch policy requirements (25 ms)
+    √ routes creative_writing and roleplay specialist modes (12 ms)
+    √ routes coding mode with authorization and context bundle (13 ms)
+    √ routes knowledge_os mode (7 ms)
+    √ routes music production modes (suno, fl_studio, pro_tools, logic, mix_master, music) (21 ms)
+    √ routes pop_culture, history, and science modes with specialists and music industry check (11 ms)
+    √ routes specialist genius agents (legal, health, security, business, philosophy, language, geography, engineering, math, market, gamedev, gaming) (25 ms)
+    √ handles fallback orchestrator and message payload variations (4 ms)
+    √ routes knowledge_os, fl_studio_control, and music mix intent (7 ms)
+
+PASS src/server/routes/__tests__/versionedChat.test.ts
+  RT-CHAT-002: Versioned API Routes (v1 and v2) Suite
+    √ handles standard POST /api/v1/chat request (8 ms)
+    √ handles standard POST /api/v2/chat request (3 ms)
+    √ handles streaming POST /api/v2/chat/stream request (3 ms)
+
+Test Suites: 2 passed, 2 total
+Tests:       13 passed, 13 total
+Snapshots:   0 total
+Time:        3.557 s
+Ran all test suites matching /src\server\routes\__tests__\versionedChat.test.ts|src\server\routes\__tests__\route-legacy-chat-matrix.test.ts/i.

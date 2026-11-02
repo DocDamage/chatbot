@@ -1,0 +1,25 @@
+=== Phase 24: Golden Conversation and Runtime Regression Suite Exit Gate Evidence ===
+Date: 2026-09-04
+Base Commit: 178224d
+
+Test Output:
+PASS src/types/golden-eval.test.ts
+  golden-eval schemas
+    √ validates a structured golden case with deterministic assertions
+    √ validates baseline metrics record
+
+PASS src/core/evals/__tests__/golden-regression-suite.test.ts
+  Phase 24: Golden Conversation and Runtime Regression Suite
+    √ generates a full 500-case catalog with strict knowledge isolation (§3600)
+    √ evaluates seed cases with deterministic assertions
+    √ detects violations and assertion failures accurately
+    √ executes PR smoke tier of 50 deterministic cases and computes baseline metrics
+
+Test Suites: 2 passed, 2 total
+Tests: 6 passed, 6 total
+
+Exit Gate Verification:
+- At least 500 planned/seeded cases exist (generateFullGoldenSuite returns 500 cases adhering to §3545-3558 quotas).
+- Release-critical behaviors have deterministic assertions (route, tool state, variable retention, substring, refusal).
+- Eval corpus is strictly isolated from knowledge/training data (isolatedFromKnowledgeIndex = true on all cases).
+- Baseline metrics recorded (taskSuccessRate >= 0.95, toolTruthfulnessRate = 1.0, unsupportedClaimRate <= 0.05).

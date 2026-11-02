@@ -1,0 +1,24 @@
+=== TEST RUN: ChatRuntimeShadowRunner.test.ts ===
+> jest src/core/chat/ChatRuntimeShadowRunner.test.ts
+
+PASS src/core/chat/ChatRuntimeShadowRunner.test.ts
+  ChatRuntimeShadowRunner (CRK-P01-T06)
+    √ returns primary response unchanged when shadow mode is disabled (2 ms)
+    √ runs shadow evaluation without mutating primary response and emits comparison (4 ms)
+    √ never throws or interrupts primary response even if shadow execution fails
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+
+=== PHASE 01 REGRESSION SUITE (6 SUITES) ===
+PASS src/types/chat-runtime.test.ts (10 passed)
+PASS src/core/chat/ChatRequestNormalizer.test.ts (21 passed)
+PASS src/core/chat/ChatRuntime.test.ts (5 passed)
+PASS src/core/chat/ChatRuntimeFactory.test.ts (3 passed)
+PASS src/core/chat/ChatRuntimeCompatibilityAdapter.test.ts (5 passed)
+PASS src/core/chat/ChatRuntimeShadowRunner.test.ts (3 passed)
+
+Test Suites: 6 passed, 6 total
+Tests:       47 passed, 47 total
+Snapshots:   0 total

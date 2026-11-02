@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "pages": 1,
+  "seconds": 50.047,
+  "target_equations": [],
+  "tables": [
+    {
+      "id": "rotated-county-data",
+      "page": 0,
+      "rows_preserved": true
+    },
+    {
+      "id": "rotated-county-variables",
+      "page": 0,
+      "rows_preserved": true
+    }
+  ],
+  "headings": [],
+  "prose_false_positives": [],
+  "additional_equation_regions": [],
+  "scope": "Selected page targets; additional math regions are unscored, not false positives. No population accuracy estimate.",
+  "transform": "Explicit clockwise 90-degree PDF page rotation, original physical page16; diagnostic only, not automatic production correction",
+  "input_sha256": "c2aae9f3e0fbf8d3ff05e2b64ad1a481fb11a4b025d1ae0f49762362fb1cd84a"
+}

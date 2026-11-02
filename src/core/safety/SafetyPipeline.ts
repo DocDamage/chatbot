@@ -76,8 +76,7 @@ export class SafetyPipeline {
       selfCheckResult.safe &&
       constitutionalResult.compliant &&
       !toxicityResult.toxic &&
-      !biasResult.biased &&
-      (!factCheckResult || factCheckResult.verified);
+      !biasResult.biased;
 
     // Calculate overall confidence
     const confidences = [

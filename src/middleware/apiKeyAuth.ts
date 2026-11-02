@@ -4,7 +4,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { ApiKeyService } from '../core/auth/ApiKeyService';
-import { AuthenticationError } from '../utils/errors';
+import { AuthenticationError, AuthorizationError } from '../utils/errors';
 import { logger } from '../core/observability/logger';
 
 // Extend Express Request
@@ -13,6 +13,7 @@ declare global {
     interface Request {
       apiKey?: {
         id: string;
+        keyPrefix?: string;
         userId?: string;
         scopes: string[];
         rateLimit?: number;
@@ -21,7 +22,7 @@ declare global {
   }
 }
 
-const apiKeyService = new ApiKeyService();
+export const apiKeyService = new ApiKeyService();
 
 /**
  * Middleware to authenticate via API key
@@ -47,6 +48,7 @@ export const requireApiKey = (
     // Attach API key info to request
     req.apiKey = {
       id: validatedKey.id,
+      keyPrefix: validatedKey.keyPrefix,
       userId: validatedKey.userId,
       scopes: validatedKey.scopes,
       rateLimit: validatedKey.rateLimit,
@@ -71,15 +73,11 @@ export const requireScope = (...scopes: string[]) => {
       throw new AuthenticationError('API key required');
     }
 
-    const hasScope = scopes.some(scope => 
-      apiKeyService.hasScope(
-        apiKeyService.getKey(req.apiKey!.id.substring(0, 12))!,
-        scope
-      )
-    );
+    const keyScopes = req.apiKey.scopes || [];
+    const hasScope = scopes.some(scope => keyScopes.includes(scope) || keyScopes.includes('*'));
 
     if (!hasScope) {
-      throw new AuthenticationError('Insufficient API key scopes');
+      throw new AuthorizationError('Insufficient permissions');
     }
 
     next();

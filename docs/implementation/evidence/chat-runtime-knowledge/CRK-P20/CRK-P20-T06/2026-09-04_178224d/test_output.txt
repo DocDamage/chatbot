@@ -1,0 +1,35 @@
+=== CRK Phase 20 Test Run Evidence ===
+Date: 2026-09-04
+Base Commit: 178224d
+
+Command: npx jest src/core/knowledge/__tests__/research-math-packs-eval.test.ts src/types/research-math-packs.test.ts
+Output:
+PASS src/core/knowledge/__tests__/research-math-packs-eval.test.ts
+  Research and Math Packs (CRK Phase 20)
+    CRK-P20-T01: Academic License Policy
+      √ accepts permissive academic licenses (CC-BY-4.0, arXiv-non-exclusive, OpenAccess) (2 ms)
+      √ strictly rejects proprietary closed-access research papers (§3151) (1 ms)
+    CRK-P20-T02: Research Chunking & Bibliography Exclusion
+      √ preserves abstract and sections while excluding bibliography from retrieval chunks (§3179) (1 ms)
+    CRK-P20-T03: Research Freshness & Retraction Suppression
+      √ suppresses retracted research papers from retrieval results (§3185) (1 ms)
+      √ rejects paper with non-permissive license during ingestion (1 ms)
+    CRK-P20-T04 & T05: Math Structural Chunker & Pack
+      √ preserves LaTeX display and inline equations without corrupting delimiters (§3201-3203)
+      √ bonds theorem statement with proof to prevent arbitrary token boundary splitting (§3208-3215) (1 ms)
+      √ supports definition and theorem retrieval in MathPack (1 ms)
+    CRK-P20-T06 & Phase 20 Exit Gate Certification (§3232-3238)
+      √ certifies all Phase 20 exit criteria (1 ms)
+
+PASS src/types/research-math-packs.test.ts
+  Research and Math Packs Types & Schemas
+    √ validates ResearchPaper and ResearchChunk schemas (4 ms)
+    √ validates MathTheoremChunk and MathDocument schemas with LaTeX equations (1 ms)
+
+Test Suites: 2 passed, 2 total
+Tests:       11 passed, 11 total
+Snapshots:   0 total
+Time:        2.85 s
+
+Exit Code: 0
+Status: Phase 20 CERTIFIED

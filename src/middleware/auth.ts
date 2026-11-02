@@ -4,7 +4,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { AuthService } from '../core/auth/AuthService';
-import { AuthenticationError } from '../utils/errors';
+import { AuthenticationError, AuthorizationError } from '../utils/errors';
 import { logger } from '../core/observability/logger';
 
 // Extend Express Request to include user
@@ -18,6 +18,7 @@ declare global {
       };
       apiKey?: {
         id: string;
+        keyPrefix?: string;
         userId?: string;
         scopes: string[];
         rateLimit?: number;
@@ -121,7 +122,7 @@ export const requireRole = (...roles: string[]) => {
     const hasRole = roles.some(role => userRoles.includes(role));
 
     if (!hasRole) {
-      throw new AuthenticationError('Insufficient permissions');
+      throw new AuthorizationError('Insufficient permissions');
     }
 
     next();

@@ -9,6 +9,7 @@ process.env.LOG_LEVEL = 'error'; // Suppress logs during tests
 // Mock external services by default
 jest.mock('../core/providers/OllamaAdapter', () => ({
   OllamaAdapter: jest.fn().mockImplementation(() => ({
+    getModelName: jest.fn().mockReturnValue('ollama:test-model'),
     generate: jest.fn().mockResolvedValue({
       content: 'Test response',
       model: 'test-model',

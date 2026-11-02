@@ -141,4 +141,34 @@ describe('DocumentIngester', () => {
       path.join(nestedDir, 'ronin.md')
     ]));
   });
+
+  it('ingests raw text directly and generates embeddings in batches', async () => {
+    const mockEmbeddings: any = {
+      embedBatch: jest.fn().mockResolvedValue([
+        [0.1, 0.2, 0.3],
+        [0.4, 0.5, 0.6]
+      ])
+    };
+
+    const ingester = new DocumentIngester(mockEmbeddings);
+    const longText = 'Word '.repeat(200); // multiple chunks
+    const chunks = await ingester.ingestText(longText, { title: 'Raw Text' }, {
+      chunkSize: 100,
+      chunkOverlap: 20,
+      generateEmbeddings: true,
+      embeddingBatchSize: 1
+    });
+
+    expect(chunks.length).toBeGreaterThanOrEqual(2);
+    expect(chunks[0].embedding).toEqual([0.1, 0.2, 0.3]);
+    expect(mockEmbeddings.embedBatch).toHaveBeenCalled();
+  });
+
+  it('handles empty text fallback and directory read error gracefully', async () => {
+    const ingester = new DocumentIngester();
+    const emptyChunks = await ingester.ingestText('', { source: 'empty.txt', error: 'Custom error message' });
+    expect(emptyChunks).toHaveLength(1);
+    expect(emptyChunks[0].metadata.emptyExtraction).toBe(true);
+    expect(emptyChunks[0].content).toContain('Custom error message');
+  });
 });

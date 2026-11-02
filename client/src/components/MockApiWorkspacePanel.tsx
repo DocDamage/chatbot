@@ -1,3 +1,4 @@
+import { apiFetch } from '../api/http';
 import { useEffect, useState } from 'react';
 
 interface Collection { name: string; records: Array<Record<string, unknown>>; updatedAt: string; }
@@ -10,11 +11,11 @@ export default function MockApiWorkspacePanel() {
   const [saved, setSaved] = useState<Collection | null>(null);
   const [message, setMessage] = useState('');
 
-  useEffect(() => { if (open) void fetch('/api/mock-api/status').catch(() => undefined); }, [open]);
+  useEffect(() => { if (open) void apiFetch('/api/mock-api/status').catch(() => undefined); }, [open]);
 
   const importData = async () => {
     setMessage('');
-    const response = await fetch('/api/mock-api/import', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ collection, format, content }) });
+    const response = await apiFetch('/api/mock-api/import', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ collection, format, content }) });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) { setMessage(data.error || `Import failed (HTTP ${response.status})`); return; }
     setSaved(data.collection); setMessage(`Ready at ${data.endpoint}`);

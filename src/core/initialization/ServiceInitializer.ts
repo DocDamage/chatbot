@@ -4,6 +4,9 @@
 
 import { logger } from '../observability/logger';
 import { EmbeddingService } from '../embeddings/EmbeddingService';
+import { ReaService } from '../rea/ReaService';
+import { handleReaChat } from '../rea/ReaChat';
+import { CodingToolsService } from '../coding/integrations/CodingToolsService';
 import { RAGService } from '../rag/RAGService';
 import { DocumentManager } from '../rag/DocumentManager';
 import { Database } from '../database/Database';
@@ -13,6 +16,7 @@ import { ModelRouter, ModelProvider } from '../providers/ModelRouter';
 import { AnthropicAdapter, GeminiAdapter, OpenAIAdapter, OpenAICompatibleAdapter } from '../providers/LLMAdapter';
 import { OllamaAdapter } from '../providers/OllamaAdapter';
 import { HuggingFaceAdapter } from '../providers/HuggingFaceAdapter';
+import { ExternalLocalModelAdapter } from '../providers/local/ExternalLocalModelAdapter';
 import { EnsembleAdapter } from '../providers/EnsembleAdapter';
 import { SafetyPipeline } from '../safety/SafetyPipeline';
 import { SemanticCache } from '../cache/SemanticCache';
@@ -80,12 +84,19 @@ import { SafeDatabaseQuestionAgent } from '../database/SafeDatabaseQuestionAgent
 import { GovernanceEvidenceService } from '../governance/GovernanceEvidenceService';
 import { GitHubRepoKnowledgeImporter } from '../importers/GitHubRepoKnowledgeImporter';
 import { ConversationManager } from '../conversation/ConversationManager';
+import { ChatRuntimeFactory } from '../chat/ChatRuntimeFactory';
+import { DailyChatService } from '../chat/DailyChatService';
+import { resolveDeploymentMode } from '../config/EnvironmentDefinitions';
 import { PyScrappyService } from '../research/PyScrappyService';
 import * as fs from 'fs';
 import * as path from 'path';
 
 export interface InitializedServices {
   orchestrator: EnhancedOrchestrator;
+  dailyChat?: DailyChatService;
+  reaService?: ReaService;
+  codingTools?: CodingToolsService;
+  codingModelAdapter?: import('../providers/LLMAdapter').LLMAdapter;
   ragService?: RAGService;
   documentManager?: DocumentManager;
   modelRouter?: ModelRouter;
@@ -260,7 +271,8 @@ export class ServiceInitializer {
 
     // 9. Initialize Tools & Coding Knowledge
     const pyScrappyService = PyScrappyService.fromEnv();
-    const { toolRegistry, functionCaller, knowledgeLearner, codingAgent } = await this.initializeTools(embeddingService, initialization, pyScrappyService);
+    const codingTools = new CodingToolsService(process.env.CODING_WORKSPACE_ROOT || process.cwd());
+    const { toolRegistry, functionCaller, knowledgeLearner, codingAgent } = await this.initializeTools(embeddingService, initialization, pyScrappyService, codingTools.workspaceRoot);
     logger.info('Tools initialized', {
       toolsCount: toolRegistry.getStats().totalTools,
       learner: !!knowledgeLearner
@@ -293,7 +305,19 @@ export class ServiceInitializer {
     // 11. Initialize Analytics Service
     const analytics = new AnalyticsService();
     logger.info('Analytics service initialized');
-    const conversationManager = new ConversationManager(database);
+    const conversationManager = new ConversationManager(database, Boolean(database));
+    const reaService = new ReaService();
+    const dailyChat = process.env.CHAT_RUNTIME_ENABLED === 'false' ? undefined : new DailyChatService(
+      ChatRuntimeFactory.create({
+        database, conversationManager, llmAdapter: primaryAdapter, ragService,
+        enableRAG: process.env.ENABLE_RAG !== 'false',
+        enableTools: false,
+        maxContextTokens: Number(process.env.OLLAMA_CONTEXT_TOKENS || 8192),
+      }),
+      conversationManager,
+      orchestrator,
+      request => handleReaChat(reaService, request),
+    );
 
     const mathGeniusAgent = new MathGeniusAgent();
     const marketGeniusAgent = new MarketGeniusAgent();
@@ -365,6 +389,10 @@ export class ServiceInitializer {
     return {
       initialization,
       orchestrator,
+      dailyChat,
+      reaService,
+      codingTools,
+      codingModelAdapter: codingTools.config.enabled ? new OllamaAdapter(codingTools.config.ollamaUrl, codingTools.config.model) : primaryAdapter,
       ragService,
       documentManager,
       modelRouter,
@@ -444,15 +472,15 @@ export class ServiceInitializer {
     // Ollama (free, local) - default
     if (process.env.USE_OLLAMA !== 'false') {
       const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
-      const ollamaModel = process.env.OLLAMA_MODEL || 'llama2';
+      const ollamaModel = process.env.OLLAMA_MODEL || 'qwen3:8b';
       const ollamaAdapter = new OllamaAdapter(ollamaUrl, ollamaModel);
 
       // Check availability
       const { available } = await ollamaAdapter.checkAvailability();
-      if (available) {
+      if (available || process.env.LLM_PROVIDER === 'ollama' || process.env.USE_OLLAMA === 'true') {
         adapters[ModelProvider.OLLAMA] = ollamaAdapter;
         primary = primary || ollamaAdapter;
-        logger.info('Ollama adapter ready', { model: ollamaModel });
+        logger.info('Ollama adapter configured', { model: ollamaModel, available });
       } else {
         logger.warn('Ollama not available, skipping');
       }
@@ -475,7 +503,38 @@ export class ServiceInitializer {
       || (process.env.ANTHROPIC_API_KEY ? 'anthropic' : undefined)
       || (process.env.GEMINI_API_KEY ? 'gemini' : undefined)
       || (process.env.USE_HUGGINGFACE === 'true' ? 'huggingface' : undefined)
+      || (process.env.LOCAL_MODEL_ENABLED === 'true' ? 'local' : undefined)
       || (process.env.USE_OLLAMA !== 'false' ? 'ollama' : 'template');
+
+    // External local OpenAI-compatible endpoint (CF-04). This never starts or
+    // downloads a model server; it only connects to an explicitly configured,
+    // policy-approved endpoint in a non-hosted runtime profile.
+    if (process.env.LOCAL_MODEL_ENABLED === 'true') {
+      const localAdapter = new ExternalLocalModelAdapter({
+        providerName: process.env.LOCAL_MODEL_PROVIDER_NAME || 'local-openai',
+        baseUrl: process.env.LOCAL_MODEL_BASE_URL || 'http://127.0.0.1:8080/v1',
+        model: process.env.LOCAL_MODEL_NAME || 'llama3:8b',
+        apiKey: process.env.LOCAL_MODEL_API_KEY,
+        profile: resolveDeploymentMode(),
+        allowlist: (process.env.LOCAL_MODEL_ALLOWLIST || '127.0.0.1,localhost,::1')
+          .split(',')
+          .map(item => item.trim())
+          .filter(Boolean),
+        timeoutMs: Number(process.env.LOCAL_MODEL_TIMEOUT_MS || 60000),
+        resourceBudget: {
+          maxConcurrency: Number(process.env.LOCAL_MODEL_MAX_CONCURRENCY || 2),
+          maxQueueDepth: Number(process.env.LOCAL_MODEL_MAX_QUEUE_DEPTH || 8),
+          timeoutMs: Number(process.env.LOCAL_MODEL_TIMEOUT_MS || 60000)
+        }
+      });
+      adapters[ModelProvider.LOCAL] = localAdapter;
+      if (configuredProvider === 'local') primary = localAdapter;
+      logger.info('External local model adapter ready', {
+        provider: localAdapter.getProviderName(),
+        model: localAdapter.getModelName(),
+        baseUrl: localAdapter.getBaseUrl()
+      });
+    }
 
     if (configuredProvider === 'openai-compatible' && process.env.OPENAI_COMPATIBLE_API_KEY && process.env.OPENAI_COMPATIBLE_BASE_URL) {
       const compatibleAdapter = new OpenAICompatibleAdapter(
@@ -728,7 +787,7 @@ export class ServiceInitializer {
   /**
    * Initialize tools and coding knowledge
    */
-  private static async initializeTools(embeddingService: EmbeddingService, initialization?: InitializationStatus, pyScrappyService?: PyScrappyService): Promise<{
+  private static async initializeTools(embeddingService: EmbeddingService, initialization?: InitializationStatus, pyScrappyService?: PyScrappyService, workspaceRoot = process.cwd()): Promise<{
     toolRegistry: ToolRegistry;
     functionCaller: FunctionCaller;
     knowledgeLearner: KnowledgeLearner;
@@ -770,14 +829,14 @@ export class ServiceInitializer {
     }
 
     // 5. Repo-aware coding tools
-    const commandRunner = new CommandRunner(process.cwd());
-    for (const repoTool of createRepoTools(process.cwd(), commandRunner)) {
+    const commandRunner = new CommandRunner(workspaceRoot);
+    for (const repoTool of createRepoTools(workspaceRoot, commandRunner)) {
       registry.register(repoTool);
     }
 
     const functionCaller = new FunctionCaller(registry);
     const codingAgent = new CodingAgent({
-      workspaceRoot: process.cwd(),
+      workspaceRoot,
       toolRegistry: registry,
       functionCaller,
       verificationRunner: new VerificationRunner(commandRunner)

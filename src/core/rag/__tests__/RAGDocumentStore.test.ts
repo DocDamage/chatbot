@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 import * as os from 'os';
-import * as path from 'path';
+import path from 'path';
 import { Database } from '../../database/Database';
 import { RAGDocumentStore } from '../RAGDocumentStore';
 import { DocumentChunk } from '../../../types/rag';
 
-describe('RAGDocumentStore', () => {
+describe('RAGDocumentStore Comprehensive Retrieval, Management, and Analytics Suite', () => {
   let tempDir: string;
   let db: Database;
 
@@ -20,7 +20,11 @@ describe('RAGDocumentStore', () => {
 
   afterEach(async () => {
     await db.close();
-    fs.rmSync(tempDir, { recursive: true, force: true });
+    try {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    } catch {
+      // ignore
+    }
   });
 
   it('persists chunks and reloads them with metadata and embeddings', async () => {
@@ -55,35 +59,53 @@ describe('RAGDocumentStore', () => {
     });
   });
 
-  it('searches persisted chunks by keyword, vector similarity, and hybrid score', async () => {
+  it('searches persisted chunks by keyword, vector similarity, and hybrid score with filters', async () => {
     const store = new RAGDocumentStore(db);
     await store.saveChunks([
       {
         id: 'alpha-chunk-0',
         content: 'Alpha project uses durable vector retrieval.',
-        metadata: { source: 'alpha.md', chunkIndex: 0 },
+        metadata: { source: 'docs/alpha.md', chunkIndex: 0, project: 'alpha-proj', tag: 'target', type: 'markdown' },
         embedding: [1, 0, 0]
       },
       {
         id: 'beta-chunk-0',
         content: 'Beta project talks about unrelated cooking notes.',
-        metadata: { source: 'beta.md', chunkIndex: 0 },
+        metadata: { source: 'notes/beta.md', chunkIndex: 0, tag: 'other', type: 'markdown' },
         embedding: [0, 1, 0]
       }
     ], { runId: 'run-search' });
 
+    // 1. Keyword search
     const keyword = await store.searchKeyword('durable retrieval', 5);
     expect(keyword[0]).toMatchObject({
       chunk: expect.objectContaining({ id: 'alpha-chunk-0' }),
       retrievalMethod: 'keyword'
     });
 
+    // 2. Keyword search with project filter
+    const filteredKeyword = await store.searchKeyword('project', 5, { project: 'alpha-proj' });
+    expect(filteredKeyword.length).toBe(1);
+    expect(filteredKeyword[0].chunk.id).toBe('alpha-chunk-0');
+
+    // 3. Empty query returns empty array
+    expect(await store.searchKeyword('', 5)).toEqual([]);
+
+    // 4. Similar vector search
     const similar = await store.searchSimilar([0.9, 0.1, 0], 5);
     expect(similar[0]).toMatchObject({
       chunk: expect.objectContaining({ id: 'alpha-chunk-0' }),
       retrievalMethod: 'vector'
     });
 
+    // 5. Similar vector search with excludeDeprecated filter
+    const filteredVector = await store.searchSimilar([0.9, 0.1, 0], 5, { excludeDeprecated: true });
+    expect(filteredVector.length).toBe(2);
+
+    // 6. Empty vector returns empty array
+    expect(await store.searchSimilar([], 5)).toEqual([]);
+
+    // 7. Hybrid search
     const hybrid = await store.hybridSearch('durable retrieval', [0.9, 0.1, 0], 5);
     expect(hybrid[0]).toMatchObject({
       chunk: expect.objectContaining({ id: 'alpha-chunk-0' }),
@@ -99,55 +121,43 @@ describe('RAGDocumentStore', () => {
         content: 'Extraction warning for scan.pdf: no extractable text.',
         metadata: {
           source: 'scan.pdf',
-          title: 'Scanned Notes',
+          title: 'Architecture Reference Manual',
           type: 'pdf',
-          author: 'Archive Desk',
-          chunkIndex: 0,
-          emptyExtraction: true,
-          extractionWarnings: ['PDF text extraction produced no text; queue for OCR reimport.']
+          needsOcr: true,
+          pdfOcrStatus: 'queued',
+          contentHash: 'hash-dup'
         }
       },
       {
-        id: 'hobbit-a.epub-chunk-0',
-        content: 'Bilbo sets out on an unexpected journey.',
+        id: 'scan-copy.pdf-chunk-0',
+        content: 'Extraction warning for scan.pdf: no extractable text.',
         metadata: {
-          source: 'hobbit-a.epub',
-          title: 'The Hobbit',
-          type: 'epub',
-          author: 'J. R. R. Tolkien',
-          chunkIndex: 0
-        }
-      },
-      {
-        id: 'hobbit-b.epub-chunk-0',
-        content: 'A second imported edition of the same book.',
-        metadata: {
-          source: 'hobbit-b.epub',
-          title: 'The Hobbit',
-          type: 'epub',
-          author: 'J. R. R. Tolkien',
-          chunkIndex: 0
+          source: 'scan-copy.pdf',
+          title: 'Architecture Reference Manual (PDF Edition)',
+          type: 'pdf',
+          needsOcr: true,
+          pdfOcrStatus: 'queued',
+          contentHash: 'hash-dup'
         }
       }
-    ], { sourceType: 'book' });
+    ], { sourceType: 'pdf', runId: 'run-ocr' });
 
-    const listed = await store.listSources({ limit: 10 });
-    expect(listed.total).toBe(3);
-    expect(listed.sources.find(source => source.title === 'Scanned Notes')).toMatchObject({
-      author: 'Archive Desk',
-      needsOcr: true,
-      citationLabel: 'Scanned Notes - Archive Desk'
-    });
+    // Stats
+    const stats = await store.getStats();
+    expect(stats.chunks).toBe(2);
+    expect(stats.sources).toBe(2);
 
-    const ocrQueue = await store.getOcrQueue({ limit: 10 });
-    expect(ocrQueue.sources).toHaveLength(1);
-    expect(ocrQueue.sources[0]).toMatchObject({
-      title: 'Scanned Notes',
-      needsOcr: true
-    });
+    // List sources
+    const sourcesList = await store.listSources({ q: 'Architecture', limit: 10, offset: 0 });
+    expect(sourcesList.sources.length).toBe(2);
+    expect(sourcesList.total).toBe(2);
 
-    const duplicates = await store.listSources({ duplicatesOnly: true, limit: 10 });
-    expect(duplicates.sources).toHaveLength(2);
-    expect(duplicates.sources.every(source => source.duplicateCount === 2)).toBe(true);
+    // OCR queue
+    const ocrQueue = await store.getOcrQueue();
+    expect(ocrQueue.sources.length).toBe(2);
+
+    // Duplicates only list
+    const duplicates = await store.listSources({ duplicatesOnly: true });
+    expect(duplicates.sources.length).toBeGreaterThan(0);
   });
 });

@@ -1,5 +1,5 @@
 /** Central startup configuration validation and sanitized diagnostics. */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { logger } from '../observability/logger';
 import {
   ENVIRONMENT_DEFINITIONS,
@@ -18,6 +18,19 @@ const configSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   DEPLOYMENT_MODE: z.enum(['development', 'test', 'local', 'hosted']).optional(),
   PORT: z.string().regex(/^\d+$/).transform(Number).default('3001'),
+  HOST: z.string().optional(),
+  CHAT_RUNTIME_ENABLED: booleanText,
+  REA_ENABLED: booleanText,
+  CODING_TOOLS_ENABLED: booleanText,
+  CODING_WORKSPACE_ROOT: z.string().optional(),
+  CODING_OLLAMA_MODEL: z.string().optional(),
+  CODING_TOOL_TIMEOUT_MS: z.string().regex(/^\d+$/).transform(Number).refine(value => value >= 1000 && value <= 900000).optional(),
+  CODING_CONTEXT_TOKENS: z.string().regex(/^\d+$/).transform(Number).refine(value => value >= 8192 && value <= 32768).optional(),
+  CONTEXT7_API_KEY: z.string().optional(),
+  REA_NODE_PATH: z.string().optional(),
+  REA_ALLOWED_ROOTS: z.string().optional(),
+  REA_TIMEOUT_MS: z.string().regex(/^\d+$/).transform(Number).refine(value => value >= 1000 && value <= 1800000).optional(),
+  REA_MAX_INPUT_BYTES: z.string().regex(/^\d+$/).transform(Number).refine(value => value >= 1024 && value <= 536870912).optional(),
   BASE_URL: optionalUrl,
   STARTUP_TIMEOUT_MS: integerText,
   REQUEST_READY_TIMEOUT_MS: integerText,
@@ -30,7 +43,9 @@ const configSchema = z.object({
   LLM_PROVIDER: z.string().optional(),
   USE_OLLAMA: booleanText,
   OLLAMA_URL: optionalUrl,
+  OLLAMA_BASE_URL: optionalUrl,
   OLLAMA_MODEL: z.string().optional(),
+  OLLAMA_CONTEXT_TOKENS: z.string().regex(/^\d+$/).transform(Number).refine(value => value >= 4096 && value <= 131072, 'must be between 4096 and 131072').optional(),
   USE_HUGGINGFACE: booleanText,
   HUGGINGFACE_MODEL: z.string().optional(),
   HUGGINGFACE_API_KEY: z.string().optional(),
@@ -40,6 +55,36 @@ const configSchema = z.object({
   OPENAI_COMPATIBLE_BASE_URL: optionalUrl,
   OPENAI_COMPATIBLE_MODEL: z.string().optional(),
   OPENAI_COMPATIBLE_PROVIDER_NAME: z.string().optional(),
+  LOCAL_MODEL_ENABLED: booleanText,
+  LOCAL_MODEL_BASE_URL: optionalUrl,
+  LOCAL_MODEL_PROVIDER_NAME: z.string().optional(),
+  LOCAL_MODEL_NAME: z.string().optional(),
+  LOCAL_MODEL_API_KEY: z.string().optional(),
+  LOCAL_MODEL_ALLOWLIST: z.string().optional(),
+  LOCAL_MODEL_MAX_CONCURRENCY: integerText,
+  LOCAL_MODEL_MAX_QUEUE_DEPTH: integerText,
+  LOCAL_MODEL_TIMEOUT_MS: integerText,
+  LOCAL_MODEL_ROUTING_PRIVACY_MODE: z.enum(['strict_local', 'prefer_local', 'cloud_allowed', 'local_disabled']).optional(),
+  CHATBOT_NATIVE_PYTHON: z.string().optional(),
+  DABOOK_PYTHON: z.string().optional(),
+  DABOOK_ENABLED: booleanText,
+  DABOOK_WORKSPACE: z.string().optional(),
+  DABOOK_PROFILE: z.enum(['fast', 'balanced', 'accurate', 'lowram']).optional(),
+  DABOOK_TIMEOUT_MS: integerText,
+  DABOOK_DASHBOARD: booleanText,
+  DABOOK_LIVE_TEST: z.enum(['0', '1']).optional(),
+  TRAINING_EXPORT_DIR: z.string().optional(),
+  DABOOK_EVALS_DIR: z.string().optional(),
+  FFMPEG_PATH: z.string().optional(),
+  FFPROBE_PATH: z.string().optional(),
+  FFMPEG_SHARED_DLL_DIR: z.string().optional(),
+  DEMUCS_PATH: z.string().optional(),
+  GODOT_PATH: z.string().optional(),
+  UNITY_EDITOR_PATH: z.string().optional(),
+  UNREAL_EDITOR_PATH: z.string().optional(),
+  CF_ACCESSIBILITY_CERTIFIED: booleanText,
+  CF_RELEASE_CERTIFIED: booleanText,
+  CAPABILITY_ALERT_WEBHOOK_URL: optionalUrl,
   ANTHROPIC_API_KEY: z.string().optional(),
   ANTHROPIC_MODEL: z.string().optional(),
   GEMINI_API_KEY: z.string().optional(),
@@ -127,7 +172,7 @@ function isPlaceholderSecret(value: string): boolean {
 function validateUrlPolicy(name: string, value: string | undefined, profile: RuntimeProfile, errors: string[]): void {
   if (!value) return;
   const url = new URL(value);
-  const localHost = ['localhost', '127.0.0.1', '::1'].includes(url.hostname);
+  const localHost = ['localhost', '127.0.0.1', '::1'].includes(url.hostname) || !url.hostname.includes('.');
   if (profile === 'hosted' && url.protocol !== 'https:' && !localHost) {
     errors.push(`${name}: hosted mode requires HTTPS for non-local endpoints`);
   }
@@ -172,10 +217,12 @@ export class ConfigValidator {
       if (!config.CORS_ORIGIN || config.CORS_ORIGIN === '*') errors.push('CORS_ORIGIN: hosted mode requires an explicit origin');
       if (config.CORS_ORIGIN?.includes(',')) warnings.push('CORS_ORIGIN: verify each configured origin is intentional');
       if (localExecution) errors.push('LOCAL_EXECUTION_ENABLED: hosted mode forbids local execution and desktop bridges');
+      if (enabled(config.LOCAL_MODEL_ENABLED)) errors.push('LOCAL_MODEL_ENABLED: hosted mode forbids local model endpoints and process management');
       if (!config.API_KEY_ENCRYPTION_SECRET) warnings.push('API_KEY_ENCRYPTION_SECRET: required before persistent provider-key storage is production supported');
     }
     validateUrlPolicy('OLLAMA_URL', config.OLLAMA_URL, profile, errors);
     validateUrlPolicy('OPENAI_COMPATIBLE_BASE_URL', config.OPENAI_COMPATIBLE_BASE_URL, profile, errors);
+    validateUrlPolicy('LOCAL_MODEL_BASE_URL', config.LOCAL_MODEL_BASE_URL, profile, errors);
     validateUrlPolicy('REDIS_URL', config.REDIS_URL, profile, errors);
   }
 
@@ -202,14 +249,14 @@ export class ConfigValidator {
     config: ValidatedConfig = this.getValidatedConfig(),
     profile: RuntimeProfile = resolveDeploymentMode()
   ): SanitizedConfigurationSummary {
-    const credentialNames = ['OPENAI_API_KEY', 'OPENAI_COMPATIBLE_API_KEY', 'ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'HUGGINGFACE_API_KEY']
+    const credentialNames = ['OPENAI_API_KEY', 'OPENAI_COMPATIBLE_API_KEY', 'LOCAL_MODEL_API_KEY', 'ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'HUGGINGFACE_API_KEY']
       .filter(name => Boolean(config[name]));
     return {
       environment: config.NODE_ENV,
       deploymentMode: profile,
       port: config.PORT,
       corsOrigin: config.CORS_ORIGIN ?? null,
-      provider: String(config.LLM_PROVIDER ?? (enabled(config.USE_OLLAMA) ? 'ollama' : 'template')),
+      provider: String(config.LLM_PROVIDER ?? (enabled(config.USE_OLLAMA) ? 'ollama' : enabled(config.LOCAL_MODEL_ENABLED) ? (config.LOCAL_MODEL_PROVIDER_NAME || 'local') : 'template')),
       configuredProviderCredentials: credentialNames,
       database: config.DATABASE_URL || config.RAG_DATABASE_URL ? 'postgresql' : config.RAG_SQLITE_PATH ? 'sqlite' : 'memory-or-unspecified',
       redisConfigured: Boolean(config.REDIS_URL),

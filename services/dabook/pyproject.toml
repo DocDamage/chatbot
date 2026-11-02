@@ -1,0 +1,50 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dabook"
+version = "1.1.0"
+description = "Compile PDF books into structure-aware RAG chunks and ML-ready training datasets."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.6",
+    "typer>=0.12",
+    "rich>=13.7",
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "python-multipart>=0.0.9",
+    "pypdfium2>=4.28",
+    "ftfy>=6.2",
+    "portalocker>=2.8",
+    "psutil>=5.9",
+    "tomli_w>=1.0",
+    "certifi>=2026.10.18",
+    "opentelemetry-api>=1.45.1",
+    "pillow>=13.0.0,<14",
+    "defusedxml>=0.7.1,<1",
+]
+
+[project.optional-dependencies]
+gpu = ["pynvml>=11.5"]
+tokens = ["tiktoken>=0.7"]
+dev = ["pytest>=8", "ruff>=0.5", "reportlab>=4", "httpx>=0.27", "jsonschema>=4", "pyarrow>=15", "numpy>=1.26"]
+export = ["pyarrow>=15"]
+ocr = ["rapidocr-onnxruntime>=1.4.4,<2"]
+docling = ["docling>=2.145,<3"]
+
+[project.scripts]
+dabook = "dabook.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dabook"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["slow: slower integration/chaos tests"]
+addopts = "-p no:cacheprovider --strict-markers"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

@@ -1,0 +1,37 @@
+DABOOK final HTTP harness diagnosis - 2026-11-01
+
+Diagnostic command:
+  node node_modules/jest/bin/jest.js --runTestsByPath src/server/__tests__/index.routes.test.ts --runInBand --testNamePattern "gets feedback with authentication"
+
+Temporary test-only middleware tracing recorded enter/next timestamps for the Express app stack. On the first unrelated GET /api/feedback/msg-123, five mounted absolute-path route factories synchronously blocked the event loop before the feedback route:
+
+  app layer 122  desktop-companion      2755 ms
+  app layer 152  writing-studio         2172 ms
+  app layer 189  game-studio            2648 ms
+  app layer 195  music-studio           2236 ms
+  app layer 201  media-accessibility    2878 ms
+                                      --------
+                                      12689 ms
+
+The trace entered the real /api/feedback/:messageId bound-dispatch at 12737 ms. The response timeout could not fire at 9000 ms because these factories blocked the event loop synchronously. Mapping was verified from routeManifest registration order and the actual Express layer indexes.
+
+Cause:
+  For a manifest entry with a declared mount but legacy absolute paths inside its router, registerManifestRoutes applied auth/audit at the prefix and then mounted the lazy router handler globally. Every unrelated first post-manifest request therefore constructed all such factories.
+
+Fix:
+  routeManifest now guards each mounted absolute router by the declared app-relative path boundary before invoking readiness/lazy router middleware. It preserves req.url for the router's absolute paths, query strings, nested app base URLs, Express case-sensitivity settings, prefix auth/audit, and lookalike rejection.
+
+Focused verification:
+  routeManifest.test.ts: 4 passed
+  routeManifest.comprehensive.test.ts: 5 passed
+  index.routes failing cases: 2 passed
+  lifecycle no-file Content-Length:0 case: 1 passed
+
+Final combined command:
+  node node_modules/jest/bin/jest.js --runTestsByPath src/server/routeManifest.test.ts src/server/routeManifest.boundary.test.ts src/server/__tests__/routeManifest.comprehensive.test.ts src/server/__tests__/index.routes.test.ts src/server/__tests__/server.entrypoint.lifecycle.test.ts --runInBand --silent
+
+Final combined result:
+  Test Suites: 5 passed, 5 total
+  Tests:       90 passed, 90 total
+  Snapshots:   0 total
+  Time:        37.529 s

@@ -35,4 +35,5 @@ export * from './findings/RepositoryFindings';
 export * from './findings/SarifAdapter';
 export * from './findings/CycloneDxSbom';
 export * from './findings/RepositoryOverlayData';
-
+export * from '../providers/local';
+export * from './teams';

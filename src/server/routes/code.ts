@@ -4,9 +4,11 @@ import { sanitizeInput } from '../../middleware/validator';
 import { isDebugLikeCommand } from '../../core/modes/ModePolicy';
 import { assertActionAllowed, modeFromRequest } from '../../core/modes/ExecutionModePolicy';
 import { CodingAuthorization } from '../../core/coding/authorization/CodingAuthorization';
+import { createCodingToolsRouter } from './coding-tools';
 
 export function createCodeRouter(services: any): Router {
   const router = Router();
+  router.use('/api/code/tools', createCodingToolsRouter(services?.codingTools));
 
   const getAgent = () => {
     if (!services?.codingAgent) {
@@ -173,7 +175,16 @@ export function createCodeRouter(services: any): Router {
     }
     if (!Array.isArray(req.body.operations)) return res.status(400).json({ error: 'operations are required' });
     if (!req.body.operations.every((operation: any) => operation && operation.authorized === true)) return res.status(403).json({ error: 'each operation requires explicit authorization' });
-    res.json(await getAgent().repair({ operations: req.body.operations, mode, maxIterations: Number.isFinite(req.body.maxIterations) ? Number(req.body.maxIterations) : undefined }));
+    const documentation = req.body.documentation;
+    if (req.body.contextFiles !== undefined && (!Array.isArray(req.body.contextFiles) || req.body.contextFiles.length > 12 || req.body.contextFiles.some((file: unknown) => typeof file !== 'string'))) return res.status(400).json({ error: 'contextFiles must contain at most twelve source paths' });
+    if (documentation && (typeof documentation.library !== 'string' || typeof documentation.query !== 'string')) return res.status(400).json({ error: 'documentation library and query are required' });
+    const reference = documentation && services?.codingTools ? await services.codingTools.documentation(req.user!.userId, documentation.query, documentation.library) : undefined;
+    res.json(await getAgent().repair({ operations: req.body.operations, mode, modelAdapter: configuredCodingAdapter(),
+      alreadyApplied: req.body.alreadyApplied === true,
+      referenceContext: reference?.content,
+      contextFiles: req.body.contextFiles,
+      message: typeof req.body.message === 'string' ? sanitizeInput(req.body.message) : undefined,
+      maxIterations: Number.isFinite(req.body.maxIterations) ? Number(req.body.maxIterations) : undefined }));
   }));
 
   router.get('/api/code/files/search', asyncHandler(async (req, res) => {

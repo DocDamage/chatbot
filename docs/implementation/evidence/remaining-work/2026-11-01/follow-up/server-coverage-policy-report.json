@@ -1,0 +1,1224 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-02T00:04:29.149Z",
+  "mode": "enforce",
+  "activeStage": "branch-75",
+  "baselineCommit": "55dbcd0a2af1bd4c26f1f28aae7b3e3d6823f7f2",
+  "global": {
+    "current": {
+      "lines": {
+        "total": 44827,
+        "covered": 39971,
+        "skipped": 0,
+        "pct": 89.1672
+      },
+      "branches": {
+        "total": 31618,
+        "covered": 24120,
+        "skipped": 0,
+        "pct": 76.2857
+      },
+      "functions": {
+        "total": 9083,
+        "covered": 7841,
+        "skipped": 0,
+        "pct": 86.3261
+      },
+      "statements": {
+        "total": 49250,
+        "covered": 43168,
+        "skipped": 0,
+        "pct": 87.6508
+      }
+    },
+    "baseline": {
+      "lines": {
+        "total": 36775,
+        "covered": 22406,
+        "skipped": 0,
+        "pct": 60.9273
+      },
+      "branches": {
+        "total": 19953,
+        "covered": 9731,
+        "skipped": 0,
+        "pct": 48.7696
+      },
+      "functions": {
+        "total": 7634,
+        "covered": 4366,
+        "skipped": 0,
+        "pct": 57.1915
+      },
+      "statements": {
+        "total": 40017,
+        "covered": 24035,
+        "skipped": 0,
+        "pct": 60.062
+      }
+    },
+    "activeTarget": {
+      "stage": "branch-75",
+      "description": "Post-final global branch coverage ratchet",
+      "lines": 75,
+      "branches": 75
+    },
+    "milestones": [
+      {
+        "stage": "stage-1-baseline",
+        "description": "Honest expanded baseline plus no-regression enforcement",
+        "lines": null,
+        "branches": null
+      },
+      {
+        "stage": "stage-2",
+        "lines": 55,
+        "branches": 45
+      },
+      {
+        "stage": "stage-3",
+        "lines": 65,
+        "branches": 55
+      },
+      {
+        "stage": "final",
+        "lines": 75,
+        "branches": 65
+      },
+      {
+        "stage": "branch-75",
+        "description": "Post-final global branch coverage ratchet",
+        "lines": 75,
+        "branches": 75
+      }
+    ]
+  },
+  "productionSupportedFeatureIds": [],
+  "tiers": {
+    "A": {
+      "description": "Critical security, authorization, execution, data-guardrail, redaction, and deployment controls",
+      "target": {
+        "lines": 90,
+        "branches": 85
+      },
+      "enforceTarget": true,
+      "enforceFromStage": "final",
+      "files": [
+        {
+          "path": "src/middleware/auth.ts",
+          "control": "Authentication, RBAC, CSRF, and privileged-request audit",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 57,
+              "covered": 54,
+              "skipped": 0,
+              "pct": 94.7368
+            },
+            "branches": {
+              "total": 24,
+              "covered": 22,
+              "skipped": 0,
+              "pct": 91.6667
+            },
+            "functions": {
+              "total": 9,
+              "covered": 9,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 64,
+              "covered": 61,
+              "skipped": 0,
+              "pct": 95.3125
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 57,
+              "covered": 48,
+              "skipped": 0,
+              "pct": 84.2105
+            },
+            "branches": {
+              "total": 15,
+              "covered": 9,
+              "skipped": 0,
+              "pct": 60
+            },
+            "functions": {
+              "total": 9,
+              "covered": 9,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 64,
+              "covered": 55,
+              "skipped": 0,
+              "pct": 85.9375
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/middleware/apiKeyAuth.ts",
+          "control": "API-key authentication",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 27,
+              "covered": 25,
+              "skipped": 0,
+              "pct": 92.5926
+            },
+            "branches": {
+              "total": 16,
+              "covered": 14,
+              "skipped": 0,
+              "pct": 87.5
+            },
+            "functions": {
+              "total": 4,
+              "covered": 4,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 30,
+              "covered": 28,
+              "skipped": 0,
+              "pct": 93.3333
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 27,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "branches": {
+              "total": 7,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "functions": {
+              "total": 4,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "statements": {
+              "total": 29,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/core/auth/AuthService.ts",
+          "control": "Authentication and session service",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 24,
+              "covered": 24,
+              "skipped": 0,
+              "pct": 100
+            },
+            "branches": {
+              "total": 15,
+              "covered": 14,
+              "skipped": 0,
+              "pct": 93.3333
+            },
+            "functions": {
+              "total": 5,
+              "covered": 5,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 26,
+              "covered": 26,
+              "skipped": 0,
+              "pct": 100
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 24,
+              "covered": 20,
+              "skipped": 0,
+              "pct": 83.3333
+            },
+            "branches": {
+              "total": 11,
+              "covered": 8,
+              "skipped": 0,
+              "pct": 72.7273
+            },
+            "functions": {
+              "total": 5,
+              "covered": 4,
+              "skipped": 0,
+              "pct": 80
+            },
+            "statements": {
+              "total": 26,
+              "covered": 21,
+              "skipped": 0,
+              "pct": 80.7692
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/middleware/security.ts",
+          "control": "CORS and browser security headers",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 4,
+              "covered": 4,
+              "skipped": 0,
+              "pct": 100
+            },
+            "branches": {
+              "total": 4,
+              "covered": 4,
+              "skipped": 0,
+              "pct": 100
+            },
+            "functions": {
+              "total": 1,
+              "covered": 1,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 4,
+              "covered": 4,
+              "skipped": 0,
+              "pct": 100
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 4,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "branches": {
+              "total": 4,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "functions": {
+              "total": 1,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "statements": {
+              "total": 4,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/middleware/rateLimiter.ts",
+          "control": "Rate limiting",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 79,
+              "covered": 76,
+              "skipped": 0,
+              "pct": 96.2025
+            },
+            "branches": {
+              "total": 44,
+              "covered": 40,
+              "skipped": 0,
+              "pct": 90.9091
+            },
+            "functions": {
+              "total": 9,
+              "covered": 8,
+              "skipped": 0,
+              "pct": 88.8889
+            },
+            "statements": {
+              "total": 80,
+              "covered": 76,
+              "skipped": 0,
+              "pct": 95
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 79,
+              "covered": 46,
+              "skipped": 0,
+              "pct": 58.2278
+            },
+            "branches": {
+              "total": 33,
+              "covered": 16,
+              "skipped": 0,
+              "pct": 48.4848
+            },
+            "functions": {
+              "total": 9,
+              "covered": 5,
+              "skipped": 0,
+              "pct": 55.5556
+            },
+            "statements": {
+              "total": 80,
+              "covered": 46,
+              "skipped": 0,
+              "pct": 57.5
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/core/config/APIKeyManager.ts",
+          "control": "API-key encryption and secret lifecycle",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 153,
+              "covered": 151,
+              "skipped": 0,
+              "pct": 98.6928
+            },
+            "branches": {
+              "total": 62,
+              "covered": 58,
+              "skipped": 0,
+              "pct": 93.5484
+            },
+            "functions": {
+              "total": 29,
+              "covered": 29,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 160,
+              "covered": 158,
+              "skipped": 0,
+              "pct": 98.75
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 150,
+              "covered": 58,
+              "skipped": 0,
+              "pct": 38.6667
+            },
+            "branches": {
+              "total": 42,
+              "covered": 11,
+              "skipped": 0,
+              "pct": 26.1905
+            },
+            "functions": {
+              "total": 29,
+              "covered": 15,
+              "skipped": 0,
+              "pct": 51.7241
+            },
+            "statements": {
+              "total": 157,
+              "covered": 60,
+              "skipped": 0,
+              "pct": 38.2166
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/core/files/FileExplorerService.ts",
+          "control": "Workspace path validation",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 95,
+              "covered": 95,
+              "skipped": 0,
+              "pct": 100
+            },
+            "branches": {
+              "total": 103,
+              "covered": 91,
+              "skipped": 0,
+              "pct": 88.3495
+            },
+            "functions": {
+              "total": 22,
+              "covered": 20,
+              "skipped": 0,
+              "pct": 90.9091
+            },
+            "statements": {
+              "total": 115,
+              "covered": 107,
+              "skipped": 0,
+              "pct": 93.0435
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 95,
+              "covered": 93,
+              "skipped": 0,
+              "pct": 97.8947
+            },
+            "branches": {
+              "total": 82,
+              "covered": 62,
+              "skipped": 0,
+              "pct": 75.6098
+            },
+            "functions": {
+              "total": 22,
+              "covered": 20,
+              "skipped": 0,
+              "pct": 90.9091
+            },
+            "statements": {
+              "total": 115,
+              "covered": 103,
+              "skipped": 0,
+              "pct": 89.5652
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/core/upload/FileProcessor.ts",
+          "control": "Upload and parser validation",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 68,
+              "covered": 64,
+              "skipped": 0,
+              "pct": 94.1176
+            },
+            "branches": {
+              "total": 19,
+              "covered": 18,
+              "skipped": 0,
+              "pct": 94.7368
+            },
+            "functions": {
+              "total": 12,
+              "covered": 12,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 69,
+              "covered": 65,
+              "skipped": 0,
+              "pct": 94.2029
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 68,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "branches": {
+              "total": 14,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "functions": {
+              "total": 12,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "statements": {
+              "total": 69,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/core/local-tools/LocalToolPolicy.ts",
+          "control": "Local command policy",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 9,
+              "covered": 9,
+              "skipped": 0,
+              "pct": 100
+            },
+            "branches": {
+              "total": 8,
+              "covered": 8,
+              "skipped": 0,
+              "pct": 100
+            },
+            "functions": {
+              "total": 1,
+              "covered": 1,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 11,
+              "covered": 11,
+              "skipped": 0,
+              "pct": 100
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 9,
+              "covered": 9,
+              "skipped": 0,
+              "pct": 100
+            },
+            "branches": {
+              "total": 5,
+              "covered": 5,
+              "skipped": 0,
+              "pct": 100
+            },
+            "functions": {
+              "total": 1,
+              "covered": 1,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 11,
+              "covered": 11,
+              "skipped": 0,
+              "pct": 100
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/core/local-tools/LocalRunApprovalService.ts",
+          "control": "Exact local-run approval binding",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 17,
+              "covered": 17,
+              "skipped": 0,
+              "pct": 100
+            },
+            "branches": {
+              "total": 29,
+              "covered": 29,
+              "skipped": 0,
+              "pct": 100
+            },
+            "functions": {
+              "total": 5,
+              "covered": 5,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 18,
+              "covered": 18,
+              "skipped": 0,
+              "pct": 100
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 17,
+              "covered": 15,
+              "skipped": 0,
+              "pct": 88.2353
+            },
+            "branches": {
+              "total": 27,
+              "covered": 20,
+              "skipped": 0,
+              "pct": 74.0741
+            },
+            "functions": {
+              "total": 5,
+              "covered": 5,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 18,
+              "covered": 16,
+              "skipped": 0,
+              "pct": 88.8889
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/core/local-tools/LocalToolRunner.ts",
+          "control": "Local command execution",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 80,
+              "covered": 74,
+              "skipped": 0,
+              "pct": 92.5
+            },
+            "branches": {
+              "total": 39,
+              "covered": 35,
+              "skipped": 0,
+              "pct": 89.7436
+            },
+            "functions": {
+              "total": 18,
+              "covered": 16,
+              "skipped": 0,
+              "pct": 88.8889
+            },
+            "statements": {
+              "total": 84,
+              "covered": 78,
+              "skipped": 0,
+              "pct": 92.8571
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 80,
+              "covered": 58,
+              "skipped": 0,
+              "pct": 72.5
+            },
+            "branches": {
+              "total": 27,
+              "covered": 12,
+              "skipped": 0,
+              "pct": 44.4444
+            },
+            "functions": {
+              "total": 18,
+              "covered": 14,
+              "skipped": 0,
+              "pct": 77.7778
+            },
+            "statements": {
+              "total": 84,
+              "covered": 60,
+              "skipped": 0,
+              "pct": 71.4286
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/core/local-tools/LocalToolService.ts",
+          "control": "Local execution orchestration",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 122,
+              "covered": 122,
+              "skipped": 0,
+              "pct": 100
+            },
+            "branches": {
+              "total": 139,
+              "covered": 130,
+              "skipped": 0,
+              "pct": 93.5252
+            },
+            "functions": {
+              "total": 18,
+              "covered": 18,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 133,
+              "covered": 131,
+              "skipped": 0,
+              "pct": 98.4962
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 122,
+              "covered": 53,
+              "skipped": 0,
+              "pct": 43.4426
+            },
+            "branches": {
+              "total": 116,
+              "covered": 38,
+              "skipped": 0,
+              "pct": 32.7586
+            },
+            "functions": {
+              "total": 18,
+              "covered": 9,
+              "skipped": 0,
+              "pct": 50
+            },
+            "statements": {
+              "total": 133,
+              "covered": 54,
+              "skipped": 0,
+              "pct": 40.6015
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/server/security/webhookUrl.ts",
+          "control": "Webhook URL and SSRF validation",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 14,
+              "covered": 13,
+              "skipped": 0,
+              "pct": 92.8571
+            },
+            "branches": {
+              "total": 10,
+              "covered": 10,
+              "skipped": 0,
+              "pct": 100
+            },
+            "functions": {
+              "total": 1,
+              "covered": 1,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 14,
+              "covered": 13,
+              "skipped": 0,
+              "pct": 92.8571
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 14,
+              "covered": 13,
+              "skipped": 0,
+              "pct": 92.8571
+            },
+            "branches": {
+              "total": 7,
+              "covered": 7,
+              "skipped": 0,
+              "pct": 100
+            },
+            "functions": {
+              "total": 1,
+              "covered": 1,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 14,
+              "covered": 13,
+              "skipped": 0,
+              "pct": 92.8571
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/core/database/SafeDatabaseQuestionAgent.ts",
+          "control": "Read-only database guardrails",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 54,
+              "covered": 54,
+              "skipped": 0,
+              "pct": 100
+            },
+            "branches": {
+              "total": 43,
+              "covered": 41,
+              "skipped": 0,
+              "pct": 95.3488
+            },
+            "functions": {
+              "total": 13,
+              "covered": 13,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 58,
+              "covered": 58,
+              "skipped": 0,
+              "pct": 100
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 54,
+              "covered": 44,
+              "skipped": 0,
+              "pct": 81.4815
+            },
+            "branches": {
+              "total": 33,
+              "covered": 14,
+              "skipped": 0,
+              "pct": 42.4242
+            },
+            "functions": {
+              "total": 13,
+              "covered": 12,
+              "skipped": 0,
+              "pct": 92.3077
+            },
+            "statements": {
+              "total": 58,
+              "covered": 46,
+              "skipped": 0,
+              "pct": 79.3103
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/core/audit/AuditLogger.ts",
+          "control": "Audit logging and redaction",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 38,
+              "covered": 35,
+              "skipped": 0,
+              "pct": 92.1053
+            },
+            "branches": {
+              "total": 44,
+              "covered": 39,
+              "skipped": 0,
+              "pct": 88.6364
+            },
+            "functions": {
+              "total": 11,
+              "covered": 9,
+              "skipped": 0,
+              "pct": 81.8182
+            },
+            "statements": {
+              "total": 46,
+              "covered": 41,
+              "skipped": 0,
+              "pct": 89.1304
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 38,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "branches": {
+              "total": 35,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "functions": {
+              "total": 11,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "statements": {
+              "total": 46,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/server/routes/admin.ts",
+          "control": "Administrative log redaction",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 114,
+              "covered": 113,
+              "skipped": 0,
+              "pct": 99.1228
+            },
+            "branches": {
+              "total": 62,
+              "covered": 55,
+              "skipped": 0,
+              "pct": 88.7097
+            },
+            "functions": {
+              "total": 19,
+              "covered": 19,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 118,
+              "covered": 117,
+              "skipped": 0,
+              "pct": 99.1525
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 116,
+              "covered": 78,
+              "skipped": 0,
+              "pct": 67.2414
+            },
+            "branches": {
+              "total": 49,
+              "covered": 23,
+              "skipped": 0,
+              "pct": 46.9388
+            },
+            "functions": {
+              "total": 19,
+              "covered": 16,
+              "skipped": 0,
+              "pct": 84.2105
+            },
+            "statements": {
+              "total": 120,
+              "covered": 82,
+              "skipped": 0,
+              "pct": 68.3333
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/core/config/ConfigValidator.ts",
+          "control": "Deployment configuration validation",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 68,
+              "covered": 68,
+              "skipped": 0,
+              "pct": 100
+            },
+            "branches": {
+              "total": 97,
+              "covered": 92,
+              "skipped": 0,
+              "pct": 94.8454
+            },
+            "functions": {
+              "total": 19,
+              "covered": 18,
+              "skipped": 0,
+              "pct": 94.7368
+            },
+            "statements": {
+              "total": 85,
+              "covered": 85,
+              "skipped": 0,
+              "pct": 100
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 61,
+              "covered": 45,
+              "skipped": 0,
+              "pct": 73.7705
+            },
+            "branches": {
+              "total": 62,
+              "covered": 27,
+              "skipped": 0,
+              "pct": 43.5484
+            },
+            "functions": {
+              "total": 14,
+              "covered": 12,
+              "skipped": 0,
+              "pct": 85.7143
+            },
+            "statements": {
+              "total": 77,
+              "covered": 53,
+              "skipped": 0,
+              "pct": 68.8312
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/core/config/EnvironmentDefinitions.ts",
+          "control": "Typed environment and secret redaction rules",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 15,
+              "covered": 15,
+              "skipped": 0,
+              "pct": 100
+            },
+            "branches": {
+              "total": 12,
+              "covered": 11,
+              "skipped": 0,
+              "pct": 91.6667
+            },
+            "functions": {
+              "total": 7,
+              "covered": 7,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 22,
+              "covered": 22,
+              "skipped": 0,
+              "pct": 100
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 15,
+              "covered": 13,
+              "skipped": 0,
+              "pct": 86.6667
+            },
+            "branches": {
+              "total": 9,
+              "covered": 6,
+              "skipped": 0,
+              "pct": 66.6667
+            },
+            "functions": {
+              "total": 7,
+              "covered": 6,
+              "skipped": 0,
+              "pct": 85.7143
+            },
+            "statements": {
+              "total": 22,
+              "covered": 19,
+              "skipped": 0,
+              "pct": 86.3636
+            }
+          },
+          "gaps": []
+        },
+        {
+          "path": "src/core/config/ProfileManager.ts",
+          "control": "Hosted/local/test profile enforcement",
+          "featureIds": [],
+          "current": {
+            "lines": {
+              "total": 112,
+              "covered": 106,
+              "skipped": 0,
+              "pct": 94.6429
+            },
+            "branches": {
+              "total": 56,
+              "covered": 50,
+              "skipped": 0,
+              "pct": 89.2857
+            },
+            "functions": {
+              "total": 24,
+              "covered": 24,
+              "skipped": 0,
+              "pct": 100
+            },
+            "statements": {
+              "total": 118,
+              "covered": 112,
+              "skipped": 0,
+              "pct": 94.9153
+            }
+          },
+          "baseline": {
+            "lines": {
+              "total": 112,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "branches": {
+              "total": 37,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "functions": {
+              "total": 24,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            },
+            "statements": {
+              "total": 118,
+              "covered": 0,
+              "skipped": 0,
+              "pct": 0
+            }
+          },
+          "gaps": []
+        }
+      ]
+    },
+    "B": {
+      "description": "Files backing features classified PRODUCTION_SUPPORTED in the production feature manifest",
+      "target": {
+        "lines": 80,
+        "branches": 70
+      },
+      "enforceTarget": true,
+      "enforceFromStage": null,
+      "files": []
+    }
+  },
+  "violations": [],
+  "passed": true
+}

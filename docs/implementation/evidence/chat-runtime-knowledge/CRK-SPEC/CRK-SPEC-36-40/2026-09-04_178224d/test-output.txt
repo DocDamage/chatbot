@@ -1,0 +1,70 @@
+======================================================================
+TEST OUTPUT: Sections 36-40 Implementation & Certification Suite
+Timestamp: 2026-09-04T13:00:54-04:00
+======================================================================
+
+PASS src/core/testing/__tests__/canonical-testing-orchestrator.test.ts
+  CanonicalTestingOrchestrator (Section 36 Testing Strategy)
+    √ reports uncertified when tiers or services are missing (9 ms)
+    √ certifies when all 6 tiers, 17 unit services, and 9 security vectors pass (1 ms)
+    √ fails certification if any test in any tier fails (1 ms)
+    √ verifies chat runtime and knowledge ingestion integration pipelines (2 ms)
+
+PASS src/types/testing-strategy.test.ts
+  Testing Strategy Schemas (Section 36)
+    √ validates test tiers correctly (31 ms)
+    √ validates required unit services (1 ms)
+    √ validates test suite result and compliance summary (4 ms)
+
+PASS src/core/governance/__tests__/parallel-work-coordinator.test.ts
+  ParallelWorkCoordinator (Section 40 Parallel Work Rules)
+    √ allocates task successfully with valid branch naming and distinct files (10 ms)
+    √ rejects invalid branch naming conventions (1 ms)
+    √ detects concurrent file edit conflicts between lanes (1 ms)
+    √ releases allocated tasks cleanly
+    √ verifies pack promotion prerequisites against core readiness (2 ms)
+
+PASS src/types/dependency-graph.test.ts
+  Dependency Graph & Governance Schemas (Sections 38-40)
+    √ validates CRK phases and milestones (1 ms)
+    √ validates dependency node schema (2 ms)
+    √ validates lane task allocation schema (6 ms)
+
+PASS src/types/eval-thresholds.test.ts
+  Evaluation Metrics & Release Thresholds Schemas (Section 37)
+    √ validates canonical evaluation metrics report (26 ms)
+    √ validates evaluation gate result (1 ms)
+
+PASS src/core/evals/__tests__/release-threshold-framework.test.ts
+  ReleaseThresholdFramework (Section 37 Evaluation Metrics & Release Thresholds)
+    √ passes when candidate meets all 6 categories release thresholds (9 ms)
+    √ blocks release if tool truthfulness drops below 100% (1 ms)
+    √ blocks release if regression rate exceeds threshold
+    √ blocks release if memory leakage rate is non-zero (1 ms)
+    √ detects significant baseline degradation and adds blocker (1 ms)
+
+PASS src/core/governance/__tests__/implementation-dependency-graph.test.ts
+  ImplementationDependencyGraph (Section 38 Dependency Graph)
+    √ contains all 27 CRK phases (P00-P26) (5 ms)
+    √ confirms no circular dependencies in canonical graph (1 ms)
+    √ produces a valid topological order respecting dependencies (1 ms)
+    √ evaluates phase readiness correctly based on satisfied prerequisites (1 ms)
+    √ queries downstream dependents accurately
+
+PASS src/core/governance/__tests__/milestone-manager.test.ts
+  MilestoneManager (Section 39 Recommended Milestones)
+    √ contains all 7 canonical milestones (A through G) (4 ms)
+    √ evaluates Milestone A complete when P00-P05 are completed
+    √ detects missing phases for incomplete milestones (1 ms)
+    √ certifies all milestones complete when all CRK phases are completed
+
+Test Suites: 8 passed, 8 total
+Tests:       31 passed, 31 total
+Snapshots:   0 total
+Time:        8.969 s
+
+--- Type Check & Linters ---
+Type check: 0 errors
+Server linter: 0 errors, 0 warnings
+Client linter: 0 errors, 0 warnings
+All production source files: <= 230 lines (strictly compliant with 300-line ceiling)

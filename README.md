@@ -4,31 +4,43 @@ AI Chatbot Hub is a TypeScript/React chatbot workspace with provider adapters, s
 
 ## Current status
 
-The implementation is active and suitable for local development, evaluation, and trusted internal use. It is not yet certified for public production or commercial launch.
+Daily local use now has a dedicated setup and verification path: see [Daily local use](docs/DAILY_USE.md). Run `npm run start:local` to start the built app with an installed Ollama model, then open <http://127.0.0.1:3001>. Ordinary chat uses the persistent canonical runtime; History reopens the original conversation. This personal-use checkpoint does not establish hosted production support.
+
+Optional [REA reverse engineering](docs/REA.md) adds local artifact analysis, native function inspection, saved evidence bundles, and `/rea` chat commands. Run `npm run setup:rea`, restart, and open the REA panel in chat.
+
+Optional [coding tools with local Ollama](docs/CODING_TOOLS.md) add Serena references, Aider drafts, ast-grep rewrites and Context7 documentation. Run `npm run setup:coding-tools`, rebuild/restart, then open **Coding workspace** to review, apply and verify changes.
+
+Coding drafts now gather bounded read-only context automatically, compare TypeScript/compiler and ESLint diagnostics before approval, and offer fast-check property-test guidance. Full project verification remains a separate required step after applying.
+
+The implementation is active and suitable for local development, evaluation, and trusted internal use. It includes the complete **Capability Fusion (CF-01 through CF-10)** stack with persistent disk observability, process supervisors, native Git worktrees, Playwright browser drivers, media localization, Lattice game development tools, and multi-domain canary certification.
 
 - Canonical branch: `main`.
-- Latest implementation line: polyglot repository-aware coding, structural retrieval, safe structured edits, verification, bounded repair, and review.
-- Coding and desktop/local filesystem capabilities remain `LOCAL_ONLY_EXPERIMENTAL`.
-- Full automated Jest suite: 149 suites passed, 463 tests passed, 2 skipped.
-- Build and Phase 2 release checks pass.
-- The full release gate remains open because of existing uncovered-count thresholds, incomplete hosted certification, unsupported native toolchains on the Windows runner, and provider quota limits.
+- Current local implementation branch: `codex/coding-alias-context`, including the daily-use, REA, coding, alias and document-ingestion work. See the [branch consolidation plan](docs/BRANCH_RECONCILIATION_2026-11-02.md); older branches are retained until review.
+- Coding and desktop/local filesystem capabilities are gated via explicit RBAC and exact-scope confirmation.
+- Server regression: over 2,900 tests exercised; corrected fixture failures passed their complete suite reruns. See the [verification record](docs/implementation/evidence/daily-use/2026-10-30/verification.json).
+- Client Vitest suite: 61 files / 203 tests passed; built-server browser regression: 7 tests passed; browser accessibility: 6 tests passed.
+- Production server & client build and packaging smoke checks pass.
 
 For release decisions, use the [current project status](docs/PROJECT_STATUS.md), [production feature manifest](docs/implementation/PRODUCTION_FEATURE_MANIFEST.md), [master completion tracker](docs/implementation/MASTER_PRODUCTION_COMPLETION_TRACKER.md), and [release evidence index](docs/implementation/RELEASE_EVIDENCE_INDEX.md). Historical documents are retained for audit context and do not override those sources.
 
 ## Capabilities
 
-- Conversation-first chat with Ask, Plan, Build, Debug, and Explain modes.
-- OpenAI-compatible, Anthropic, Gemini, DeepSeek, Ollama, and other provider adapters.
-- Specialist workflows for creative writing, gaming, GIS, research, Knowledge OS, engineering, health, and more.
-- Memory, RAG, provenance, source-grounded research, document review, and local knowledge workspaces.
-- Local-only file, audio, project-intelligence, mock API, website workspace, Sprite Lab, and desktop-companion features.
-- Repository-aware coding with polyglot capability detection, manifests, instructions, symbol/relationship indexing, structural retrieval, adaptive context allocation, preconditioned multi-file patches, diagnostics, verification, repair, and review.
+- **Conversation & Specialist Modes**: Conversation-first chat with Ask, Plan, Build, Debug, and Explain modes, plus specialist workflows for creative writing, gaming, GIS, research, Knowledge OS, engineering, and health.
+- **Provider Abstraction (CF-04)**: OpenAI-compatible, Anthropic, Gemini, DeepSeek, Ollama, HuggingFace, and dynamic local model endpoint adapters (`ExternalLocalModelAdapter`) with VRAM/RAM leases, SSRF guards, and fallback routing.
+- **Typed Agent Teams & Isolated Worktrees (CF-05)**: Multi-agent coordination with cryptographic task envelopes, authority matrices, native Git worktree sandboxing, and bounded child-process tree supervisors (`ProcessTreeSupervisor`).
+- **Transparent Browser Jobs (CF-06)**: Playwright-powered browser automation (`PlaywrightBrowserDriver`) with origin allowlists, state-changing cryptographic approval gates, automated trace `.zip` recordings, and video/HAR logging.
+- **Consent-Aware Video Localization (CF-07)**: Staged 12-step media localization pipeline with cryptographic consent verification (`MediaConsentRecord`), voice cloning authorization gates, disk-budgeted sandboxing, and production FFmpeg adapters (`ProductionMediaEngineAdapter`).
+- **Deterministic Lattice Game Development (CF-08)**: Deterministic Mulberry32 PRNG simulation engine with collision resolution, turn replays, non-visual ASCII/Markdown matrices, isometric SVG renderers, and specialist agent tool definitions (`simulate_lattice_game`, `render_lattice_scenario`).
+- **Unified Capability Hub & Governance (CF-09)**: Real-time capability inventory, maturity stages, exact-scope confirmation dialogs with WCAG 2.1 AA focus containment, and authenticated JWT Bearer API communication.
+- **Persistent Observability & Promotion Gates (CF-10)**: Append-only disk persistence (`CapabilityPersistenceStore`), live SLO monitoring, error budget tracking, webhook alerting (`AlertNotificationDispatcher`), and automated degradation rollbacks.
+- **Multi-Domain Canary Certification Suite**: Automated end-to-end certification harness verifying hardware probing, worktree/process isolation, browser execution, media processing, gaming simulation, authorization, and persistent observability.
+- **Repository-Aware Coding**: Polyglot capability detection, manifests, instructions, symbol/relationship indexing, structural retrieval, adaptive context allocation, preconditioned multi-file patches, diagnostics, verification, repair, and review.
 
 ## Local development
 
 ### Prerequisites
 
-- Node.js 20 or newer.
+- Node.js 22.12 or newer (Node.js 22 and 24 LTS are supported).
 - npm.
 - Ollama for local models, or credentials for a supported remote provider.
 - Optional native tools only for the local features that need them.
@@ -104,9 +116,10 @@ npm run test:security
 npm run test:e2e:services
 npm run check:phase2
 npm run release:check
+npm run audit:release
 ```
 
-`release:check` is the final release gate. Do not lower or bypass its thresholds to claim readiness.
+`release:check` is the automated behavioral gate. `audit:release` orchestrates all 18 handbook groups, packages the artifact, and records the explicit release decision. Do not lower or bypass thresholds or set lifecycle attestation variables without their supporting evidence.
 
 ## Deployment boundaries
 
@@ -129,6 +142,7 @@ See [Deployment Modes](docs/DEPLOYMENT_MODES.md).
 - [Polyglot coding plan](docs/implementation/POLYGLOT_CODING_CAPABILITY_UPGRADE_PLAN.md)
 - [Coding benchmark evidence](docs/implementation/evidence/coding-upgrade/)
 - [Architecture](docs/architecture/ARCHITECTURE.md)
+- [Release audit automation](docs/RELEASE_AUDIT_AUTOMATION.md)
 
 ## Contributing
 

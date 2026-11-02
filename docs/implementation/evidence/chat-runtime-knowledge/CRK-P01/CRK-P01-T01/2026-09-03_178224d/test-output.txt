@@ -1,0 +1,53 @@
+=== JEST UNIT TESTS (src/types/chat-runtime.test.ts) ===
+PASS src/types/chat-runtime.test.ts
+  Canonical ChatRuntime Schemas (CRK-P01-T01)
+    normalizedChatRequestSchema
+      √ parses a minimal valid chat request and applies canonical defaults (4 ms)
+      √ parses a fully populated request with files, audio, plan, and client capabilities (1 ms)
+      √ rejects invalid inputs such as empty message or blank request ID (10 ms)
+    chatRuntimeResultSchema
+      √ validates a complete ChatRuntimeResult with citations, tools, and grounding (1 ms)
+      √ enforces privacy: does not declare internal chain-of-thought or reasoning fields
+      √ rejects invalid latency and unapproved tool statuses (1 ms)
+    citationRefSchema and toolResultSummarySchema
+      √ validates citation references with authority bounds
+      √ supports required approval status for tools
+    chatContextPlanSchema and taskClassificationResultSchema
+      √ validates a complete context plan with classified task and strategies
+    chatTraceContextSchema
+      √ tracks diagnostic stage timings and metadata (2 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       10 passed, 10 total
+Snapshots:   0 total
+Time:        2.914 s
+Ran all test suites matching /src\\types\\chat-runtime.test.ts/i.
+
+=== COMBINED VERIFICATION (chat-runtime + chat + baseline harness) ===
+PASS src/types/chat-runtime.test.ts
+PASS src/types/chat.test.ts
+PASS src/core/evals/__tests__/ChatBehaviorBaselineHarness.test.ts
+Test Suites: 3 passed, 3 total
+Tests:       27 passed, 27 total
+Snapshots:   0 total
+
+=== TYPE CHECK (npm run type-check) ===
+> ai-chatbot-hub@1.0.0 type-check
+> npm run type-check:server && npm run type-check:tests && npm run type-check:client
+
+> ai-chatbot-hub@1.0.0 type-check:server
+> tsc --noEmit
+
+> ai-chatbot-hub@1.0.0 type-check:tests
+> tsc --noEmit -p tsconfig.tests.json
+
+> ai-chatbot-hub@1.0.0 type-check:client
+> cd client && npm run type-check
+
+> ai-chatbot-client@1.0.0 type-check
+> tsc --noEmit
+
+=== ESLINT (npm run lint:server) ===
+> ai-chatbot-hub@1.0.0 lint:server
+> eslint src
+(exit code 0, 0 warnings, 0 errors)

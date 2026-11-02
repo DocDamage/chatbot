@@ -1,0 +1,12 @@
+src/types/workflow.ts
+src/types/workflow.test.ts
+src/core/workflow/WorkflowStateRepository.ts
+src/core/workflow/WorkflowStateRepository.test.ts
+src/core/workflow/definitions/CodingBuildWorkflow.ts
+src/core/workflow/definitions/DebugWorkflow.ts
+src/core/workflow/WorkflowEngine.ts
+src/core/workflow/WorkflowResolver.ts
+src/core/workflow/ToolApprovalBinding.ts
+src/core/workflow/ToolApprovalBinding.test.ts
+src/core/workflow/__tests__/workflow-engine-integration.test.ts
+src/core/chat/ChatRuntimeFactory.ts

@@ -41,6 +41,11 @@ module.exports = [
   js.configs.recommended,
   {
     files: ['src/**/*.ts', 'e2e/**/*.ts'],
+    linterOptions: {
+      // Preserve the ESLint 8 baseline while the newly recommended v10 rules
+      // are evaluated as a separate code-quality migration.
+      reportUnusedDisableDirectives: false,
+    },
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -62,15 +67,20 @@ module.exports = [
       '@typescript-eslint/no-var-requires': 'off',
       '@typescript-eslint/ban-types': 'off',
       'no-console': 'off',
+      'no-useless-assignment': 'off',
       'no-undef': 'off',
       'no-unused-vars': 'off',
       'no-useless-escape': 'off',
       'no-var': 'off',
       'prefer-const': 'off',
+      'preserve-caught-error': 'off',
     },
   },
   {
     files: ['client/src/**/*.ts', 'client/src/**/*.tsx'],
+    linterOptions: {
+      reportUnusedDisableDirectives: false,
+    },
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -90,8 +100,10 @@ module.exports = [
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
       'no-console': 'warn',
+      'no-useless-assignment': 'off',
       'no-undef': 'off',
       'no-unused-vars': 'off',
+      'preserve-caught-error': 'off',
     },
   },
 ];

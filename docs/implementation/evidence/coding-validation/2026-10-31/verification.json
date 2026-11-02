@@ -1,0 +1,661 @@
+{
+  "status": "verified_local_coding_workflows_with_existing_dependency_audit_failure",
+  "recordedAt": "2026-10-31T05:36:12.6481449Z",
+  "implementation": "The commit containing this record; LF-normalized source hashes bind the evaluated implementation.",
+  "classification": "LOCAL_ONLY_EXPERIMENTAL",
+  "environment": {
+    "os": "Microsoft Windows 11 Pro",
+    "node": "24.14.1",
+    "python": "3.12.10",
+    "gpu": "NVIDIA GeForce RTX 3060",
+    "vramMiB": 12288,
+    "model": "qwen3:8b",
+    "codingContextTokens": 16384,
+    "ordinaryChatContextTokens": 8192,
+    "typescript": "5.9.3",
+    "eslint": "10.14.0",
+    "typescriptParser": "8.59.4",
+    "globals": "17.13.0",
+    "fastCheck": "4.10.2",
+    "propertySeed": 20261031,
+    "context7KeyConfigured": false
+  },
+  "liveEvaluation": {
+    "command": "npm run verify:coding-tools",
+    "caseFilter": null,
+    "report": "data/coding-tools/evaluation-jH7TId/verification.json",
+    "reportSha256": "a97c9e1bbac85679fe969db26371700ad2719f34a4a3beebf0a04d5d0357ce52",
+    "verifiedAt": "2026-10-31T05:30:44.436Z",
+    "passed": 9,
+    "failed": 0,
+    "checks": [
+      {
+        "name": "Serena follows a TypeScript import alias",
+        "status": "passed",
+        "durationMs": 4144,
+        "evidence": {
+          "runId": "15af2105-b88f-4a23-89db-2a39bc0a4eb4",
+          "provider": "Serena LSP",
+          "references": "{\"use.ts\": {\"File\": [{\"name_path\": \"use\", \"body_location\": {\"start_line\": 0, \"end_line\": 3}, \"content_around_reference\": \"  >   0:import { add as sum } from './calc';\\n...   1:export function total() { return sum(2, 3); }\"}, {\"name_path\": \"use\", \"body_location\": {\"start_line\": 0, \"end_line\": 3}, \"content_around_reference\": \"  >   0:import { add as sum } from './calc';\\n...   1:export function total() { return sum(2, 3); }\"}, {\"name_path\": \"use\", \"body_location\": {\"start_line\": 0, \"end_line\": 3}, \"content_around_reference\": \"...   0:import { add as sum } from './calc';\\n  >   1:export function total() { return sum(2, 3); }\\n...   2:\"}]}}"
+        }
+      },
+      {
+        "name": "ast-grep previews and applies a structural repair",
+        "status": "passed",
+        "durationMs": 1667,
+        "evidence": {
+          "runId": "95d797de-48ea-49a5-901f-8cd73dffb3a3",
+          "commands": [
+            {
+              "command": "npm test",
+              "exitCode": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "Context7 returns actual source-linked documentation",
+        "status": "passed",
+        "durationMs": 1976,
+        "evidence": {
+          "runId": "79902491-02cd-4e57-ac4b-1688e3616d05",
+          "sourcePreview": "### node:assert/strict\n\nSource: https://github.com/nodejs/node/blob/main/doc/api/assert.md\n\nStrict assertion mode causes non-strict assertion methods to behave like strict methods and displays error diffs for objects.\n\n```APIDOC\n## Strict Assertion Mode (`node:assert/strict`)\n\n### Description\nIn strict assertion mode, non-strict methods behave like their corresponding strict methods (for example, `assert.deepEqual()` behaves like `assert.deepStrictEqual()`). Error messages for failed object assertions display a visual diff.\n\n### Import\n\n```js\n// ES Module\nimport assert from 'node:assert/strict';\n// or\nimport { strict as assert } from 'node:assert';\n\n// CommonJS\nconst assert = require('node:assert/strict');\n// or\nconst assert = require('node:assert').strict;\n```\n\n### Message Parameter Semantics\nFor assertion methods accepting an optional `message` argument:\n- **string**: Used as-is. Additional arguments are treated as printf-like substitutions via `util.format()`.\n- **Error**: The error instance is thrown directly instead of an `AssertionError`.\n- **function**: A callback of the form `(actual, expected) => string` invoked only on assertion failure.\n\n### Example\n\n```js\nimport assert from 'node:assert/strict';\n\nassert.deepEqual([[[1, 2, 3]], 4, 5], [[[1, 2, '3']], 4, 5]);\n// Throws AssertionError with input diff\n```\n```\n\n--------------------------------\n\n### Import strict assertion mode from node:assert\n\nSource: https://github.com/nodejs/node/blob/main/doc/api/assert.md\n\nImports"
+        }
+      },
+      {
+        "name": "Aider and Ollama fix a real arithmetic bug",
+        "status": "passed",
+        "durationMs": 12821,
+        "evidence": {
+          "runId": "2f5f34f1-672b-4d6d-a1d3-9105cbf97fec",
+          "model": "ollama:qwen3:8b",
+          "changedFiles": [
+            "calc.cjs"
+          ],
+          "firstVerification": "passed",
+          "repairRounds": 0,
+          "draftChecks": {
+            "status": "passed",
+            "scope": "Snapshot JavaScript syntax/imports, TypeScript compiler diagnostics and fixed ESLint correctness rules; new errors compared to baseline",
+            "repairRounds": 0,
+            "errors": [],
+            "diagnostics": [],
+            "compiler": {
+              "status": "passed",
+              "baselineErrors": 0,
+              "currentErrors": 0,
+              "configurations": []
+            },
+            "linter": {
+              "status": "passed",
+              "version": "10.14.0",
+              "baselineErrors": 0,
+              "currentErrors": 0
+            },
+            "limitations": [
+              "Checks detect newly introduced errors within the captured JavaScript/TypeScript source and read-only context, using available project declarations. Baseline snapshot diagnostics are counted, not silently claimed fixed; they can include unresolved imports from omitted dependencies rather than actual project defects.",
+              "The fixed ESLint correctness profile does not load project plugins or JavaScript configuration. Run full project verification after applying. Other languages do not receive these compiler/linter checks."
+            ]
+          },
+          "selection": {
+            "files": [
+              {
+                "path": "calc.cjs",
+                "role": "editable",
+                "reason": "Explicitly selected for editing",
+                "bytes": 34
+              },
+              {
+                "path": "check.cjs",
+                "role": "read_only",
+                "reason": "Imports an editable file (caller or test)",
+                "bytes": 204
+              }
+            ],
+            "scannedFiles": 1,
+            "scannedBytes": 204,
+            "omitted": 0,
+            "limitations": [
+              "Context selection is bounded to 400 source files / 512 KB scanned, 12 captured files / 16 KB. Relative JavaScript/TypeScript imports, importing callers and related tests are followed; package aliases and other language imports may require explicit files."
+            ]
+          },
+          "propertyMutations": [],
+          "commands": [
+            {
+              "command": "npm test",
+              "exitCode": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "Aider and Ollama implement a feature across existing and new files",
+        "status": "passed",
+        "durationMs": 81242,
+        "evidence": {
+          "runId": "343230ea-4bfb-48cf-a1d1-3c23e6f50f2a",
+          "model": "ollama:qwen3:8b",
+          "changedFiles": [
+            "greeter.cjs",
+            "format.cjs"
+          ],
+          "firstVerification": "failed",
+          "repairRounds": 1,
+          "draftChecks": {
+            "status": "passed",
+            "scope": "Snapshot JavaScript syntax/imports, TypeScript compiler diagnostics and fixed ESLint correctness rules; new errors compared to baseline",
+            "repairRounds": 0,
+            "errors": [],
+            "diagnostics": [],
+            "compiler": {
+              "status": "passed",
+              "baselineErrors": 0,
+              "currentErrors": 0,
+              "configurations": []
+            },
+            "linter": {
+              "status": "passed",
+              "version": "10.14.0",
+              "baselineErrors": 0,
+              "currentErrors": 0
+            },
+            "limitations": [
+              "Checks detect newly introduced errors within the captured JavaScript/TypeScript source and read-only context, using available project declarations. Baseline snapshot diagnostics are counted, not silently claimed fixed; they can include unresolved imports from omitted dependencies rather than actual project defects.",
+              "The fixed ESLint correctness profile does not load project plugins or JavaScript configuration. Run full project verification after applying. Other languages do not receive these compiler/linter checks."
+            ]
+          },
+          "selection": {
+            "files": [
+              {
+                "path": "greeter.cjs",
+                "role": "editable",
+                "reason": "Explicitly selected for editing",
+                "bytes": 43
+              },
+              {
+                "path": "format.cjs",
+                "role": "editable",
+                "reason": "Explicitly named new file",
+                "bytes": 0
+              },
+              {
+                "path": "check.cjs",
+                "role": "read_only",
+                "reason": "Imports an editable file (caller or test)",
+                "bytes": 305
+              }
+            ],
+            "scannedFiles": 2,
+            "scannedBytes": 305,
+            "omitted": 1,
+            "limitations": [
+              "Context selection is bounded to 400 source files / 512 KB scanned, 12 captured files / 16 KB. Relative JavaScript/TypeScript imports, importing callers and related tests are followed; package aliases and other language imports may require explicit files."
+            ]
+          },
+          "propertyMutations": [],
+          "commands": [
+            {
+              "command": "npm test",
+              "exitCode": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "Aider and Ollama add executable tests",
+        "status": "passed",
+        "durationMs": 27356,
+        "evidence": {
+          "runId": "e64f8375-cb5a-48c3-b681-d2696bf5bc82",
+          "model": "ollama:qwen3:8b",
+          "changedFiles": [
+            "clamp.test.cjs"
+          ],
+          "firstVerification": "passed",
+          "repairRounds": 0,
+          "draftChecks": {
+            "status": "passed",
+            "scope": "Snapshot JavaScript syntax/imports, TypeScript compiler diagnostics and fixed ESLint correctness rules; new errors compared to baseline",
+            "repairRounds": 0,
+            "errors": [],
+            "diagnostics": [],
+            "compiler": {
+              "status": "passed",
+              "baselineErrors": 0,
+              "currentErrors": 0,
+              "configurations": []
+            },
+            "linter": {
+              "status": "passed",
+              "version": "10.14.0",
+              "baselineErrors": 0,
+              "currentErrors": 0
+            },
+            "limitations": [
+              "Checks detect newly introduced errors within the captured JavaScript/TypeScript source and read-only context, using available project declarations. Baseline snapshot diagnostics are counted, not silently claimed fixed; they can include unresolved imports from omitted dependencies rather than actual project defects.",
+              "The fixed ESLint correctness profile does not load project plugins or JavaScript configuration. Run full project verification after applying. Other languages do not receive these compiler/linter checks."
+            ]
+          },
+          "selection": {
+            "files": [
+              {
+                "path": "clamp.cjs",
+                "role": "editable",
+                "reason": "Explicitly selected for editing",
+                "bytes": 75
+              },
+              {
+                "path": "clamp.test.cjs",
+                "role": "editable",
+                "reason": "Explicitly named new file",
+                "bytes": 0
+              }
+            ],
+            "scannedFiles": 1,
+            "scannedBytes": 0,
+            "omitted": 1,
+            "limitations": [
+              "Context selection is bounded to 400 source files / 512 KB scanned, 12 captured files / 16 KB. Relative JavaScript/TypeScript imports, importing callers and related tests are followed; package aliases and other language imports may require explicit files."
+            ]
+          },
+          "propertyMutations": [],
+          "mutationDetected": true,
+          "commands": [
+            {
+              "command": "npm test",
+              "exitCode": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "Ollama uses automatic TypeScript context and compiler/linter checks",
+        "status": "passed",
+        "durationMs": 27236,
+        "evidence": {
+          "runId": "b02d849d-f9c4-4285-8f85-05882026ec4f",
+          "model": "ollama:qwen3:8b",
+          "changedFiles": [
+            "format.ts"
+          ],
+          "firstVerification": "passed",
+          "repairRounds": 0,
+          "draftChecks": {
+            "status": "passed",
+            "scope": "Snapshot JavaScript syntax/imports, TypeScript compiler diagnostics and fixed ESLint correctness rules; new errors compared to baseline",
+            "repairRounds": 0,
+            "errors": [],
+            "diagnostics": [],
+            "compiler": {
+              "status": "passed",
+              "baselineErrors": 0,
+              "currentErrors": 0,
+              "configurations": [
+                "tsconfig.json"
+              ]
+            },
+            "linter": {
+              "status": "passed",
+              "version": "10.14.0",
+              "baselineErrors": 0,
+              "currentErrors": 0
+            },
+            "limitations": [
+              "Checks detect newly introduced errors within the captured JavaScript/TypeScript source and read-only context, using available project declarations. Baseline snapshot diagnostics are counted, not silently claimed fixed; they can include unresolved imports from omitted dependencies rather than actual project defects.",
+              "The fixed ESLint correctness profile does not load project plugins or JavaScript configuration. Run full project verification after applying. Other languages do not receive these compiler/linter checks."
+            ]
+          },
+          "selection": {
+            "files": [
+              {
+                "path": "format.ts",
+                "role": "editable",
+                "reason": "Task matched this file or declared symbol",
+                "bytes": 118
+              },
+              {
+                "path": "round.ts",
+                "role": "read_only",
+                "reason": "Imported by format.ts",
+                "bytes": 87
+              },
+              {
+                "path": "use.ts",
+                "role": "read_only",
+                "reason": "Imports an editable file (caller or test)",
+                "bytes": 106
+              }
+            ],
+            "scannedFiles": 4,
+            "scannedBytes": 584,
+            "omitted": 0,
+            "limitations": [
+              "Context selection is bounded to 400 source files / 512 KB scanned, 12 captured files / 16 KB. Relative JavaScript/TypeScript imports, importing callers and related tests are followed; package aliases and other language imports may require explicit files."
+            ]
+          },
+          "negativeValidation": {
+            "typeErrorRejected": true,
+            "undefinedNameRejected": true
+          },
+          "propertyMutations": [],
+          "commands": [
+            {
+              "command": "npm test",
+              "exitCode": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "Ollama writes fast-check properties that detect real implementation mutations",
+        "status": "passed",
+        "durationMs": 32804,
+        "evidence": {
+          "runId": "8bbb986e-9803-4a01-8824-890d5d9fd187",
+          "model": "ollama:qwen3:8b",
+          "changedFiles": [
+            "reverse.property.test.cjs"
+          ],
+          "firstVerification": "passed",
+          "repairRounds": 0,
+          "draftChecks": {
+            "status": "passed",
+            "scope": "Snapshot JavaScript syntax/imports, TypeScript compiler diagnostics and fixed ESLint correctness rules; new errors compared to baseline",
+            "repairRounds": 0,
+            "errors": [],
+            "diagnostics": [],
+            "compiler": {
+              "status": "passed",
+              "baselineErrors": 0,
+              "currentErrors": 0,
+              "configurations": []
+            },
+            "linter": {
+              "status": "passed",
+              "version": "10.14.0",
+              "baselineErrors": 0,
+              "currentErrors": 0
+            },
+            "limitations": [
+              "Checks detect newly introduced errors within the captured JavaScript/TypeScript source and read-only context, using available project declarations. Baseline snapshot diagnostics are counted, not silently claimed fixed; they can include unresolved imports from omitted dependencies rather than actual project defects.",
+              "The fixed ESLint correctness profile does not load project plugins or JavaScript configuration. Run full project verification after applying. Other languages do not receive these compiler/linter checks."
+            ]
+          },
+          "selection": {
+            "files": [
+              {
+                "path": "reverse.property.test.cjs",
+                "role": "editable",
+                "reason": "Explicitly named new file",
+                "bytes": 0
+              },
+              {
+                "path": "reverse.cjs",
+                "role": "read_only",
+                "reason": "Task names this supporting source file",
+                "bytes": 50
+              }
+            ],
+            "scannedFiles": 2,
+            "scannedBytes": 50,
+            "omitted": 1,
+            "limitations": [
+              "Context selection is bounded to 400 source files / 512 KB scanned, 12 captured files / 16 KB. Relative JavaScript/TypeScript imports, importing callers and related tests are followed; package aliases and other language imports may require explicit files."
+            ]
+          },
+          "propertyMutations": [
+            "identity",
+            "mutates input",
+            "empty output"
+          ],
+          "commands": [
+            {
+              "command": "npm test",
+              "exitCode": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "Fresh Ollama repair fixes remaining failures after an insufficient initial patch",
+        "status": "passed",
+        "durationMs": 11754,
+        "evidence": {
+          "attempts": [
+            {
+              "iteration": 1,
+              "hypothesis": "Apply the approved repair proposal after 2 diagnostic(s).",
+              "diagnostics": {
+                "before": 2,
+                "after": 2,
+                "resolved": 0,
+                "introduced": 0
+              }
+            },
+            {
+              "iteration": 2,
+              "hypothesis": "The exported function was incorrectly using multiplication instead of addition, leading to incorrect results in tests.",
+              "diagnostics": {
+                "before": 2,
+                "after": 0,
+                "resolved": 2,
+                "introduced": 0
+              }
+            }
+          ],
+          "commands": [
+            {
+              "command": "npm test",
+              "exitCode": 0
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "developmentRuns": [
+    {
+      "run": "evaluation-EesO7l",
+      "verifiedAt": "2026-10-31T05:14:29.369Z",
+      "passed": 1,
+      "failed": 0,
+      "failedCases": [],
+      "reportSha256": "dee34fdafbb081d81b005454bab9d8e12f898085f0765601dd406fc92ab4f414"
+    },
+    {
+      "run": "evaluation-xHlt8Y",
+      "verifiedAt": "2026-10-31T05:15:52.738Z",
+      "passed": 1,
+      "failed": 0,
+      "failedCases": [],
+      "reportSha256": "3f90d41df2348f1164f00b5cbe4bb97f2826b3b0497e65170dc90cb216382680"
+    },
+    {
+      "run": "evaluation-D8HR2P",
+      "verifiedAt": "2026-10-31T05:21:54.173Z",
+      "passed": 8,
+      "failed": 1,
+      "failedCases": [
+        "Ollama writes fast-check properties that detect real implementation mutations"
+      ],
+      "reportSha256": "606356ec4ee0238b77c7e8d8e5ce4ecae70120076d3eb2318b66c5f3b4e66f15"
+    },
+    {
+      "run": "evaluation-UT5yim",
+      "verifiedAt": "2026-10-31T05:26:12.4Z",
+      "passed": 1,
+      "failed": 0,
+      "failedCases": [],
+      "reportSha256": "95d3ca4ee87f8ebe9faea2ee64a8b337635dc86155b8b4caa747395976f89bf6"
+    }
+  ],
+  "developmentNotes": [
+    "An initial TypeScript fixture attempted to execute extensionless TypeScript imports directly in Node; it was stopped and corrected to compile before running tests. No successful case was claimed for that aborted run.",
+    "The first complete development run passed 8/9. The generated property test destructured a nonexistent Node assert export and native repair returned malformed JSON. A fixed Node core export lint rule, explicit guidance and a bounded JSON retry were added, then the complete nine-case run passed.",
+    "Development runs represent intermediate implementations and settings. They are not aggregated into a final-code pass-rate claim. The final multi-file feature still needed one semantic repair round."
+  ],
+  "automated": {
+    "server": {
+      "suites": 43,
+      "tests": 193,
+      "status": "passed",
+      "report": "temp/coding-quality-release-server-results.json"
+    },
+    "propertyTests": {
+      "seed": 20261031,
+      "cases": 500,
+      "status": "passed",
+      "invariants": [
+        "Unicode patch fidelity and stale-source rejection",
+        "Contained known-file import resolution",
+        "Diagnostic count handling under line shifts"
+      ]
+    },
+    "client": {
+      "files": 61,
+      "tests": 203,
+      "status": "passed",
+      "finalFocusedTests": 3
+    },
+    "browser": {
+      "tests": 7,
+      "flaky": 0,
+      "status": "passed"
+    },
+    "accessibility": {
+      "tests": 6,
+      "status": "passed",
+      "expandedCodingPanelViolations": 0
+    },
+    "typeChecks": "server, test and client checks passed",
+    "lint": "server and client checks passed",
+    "build": "production server and client passed",
+    "phase2": "passed, including package dependency provenance/license guard tests",
+    "secretScan": "passed"
+  },
+  "dependencyAudit": {
+    "baseApplicationGate": "failed",
+    "server": {
+      "critical": 1,
+      "high": 13,
+      "moderate": 3,
+      "low": 0
+    },
+    "client": {
+      "critical": 0,
+      "high": 1,
+      "moderate": 0,
+      "low": 0
+    },
+    "productionGraph": {
+      "productionGraphUnchanged": true,
+      "productionEntries": 453,
+      "added": [
+        {
+          "path": "node_modules/fast-check",
+          "version": "4.10.2",
+          "dev": true
+        },
+        {
+          "path": "node_modules/fast-check/node_modules/pure-rand",
+          "version": "8.4.2",
+          "dev": true
+        }
+      ]
+    },
+    "clientManifestsUnchanged": true,
+    "optionalNpmTooling": {
+      "info": 0,
+      "low": 0,
+      "moderate": 7,
+      "high": 0,
+      "critical": 0,
+      "total": 7
+    },
+    "note": "The base production dependency audit remains an outstanding release gate. Root production package versions/integrities are unchanged; only fast-check and its nested pure-rand dependency were added as development packages. Optional npm tooling has no high/critical findings but has moderate findings. Python runtime dependencies were not newly audited in this task."
+  },
+  "manualBrowser": {
+    "taskOnlyDraft": "Actual HTTP/UI Aider request with an empty existing-file list selected calc.cjs as editable and check.cjs as read-only context; compiler/lint comparisons passed with zero baseline diagnostics.",
+    "review": "Fixture source stayed unchanged until Build-mode approval. The reviewed patch was applied, actual npm test passed and the panel displayed Applied; verification passed.",
+    "negativeRewrite": "An ast-grep preview introducing missingName(...) produced a no-undef conflict; application remained disabled in Build mode and fixture source stayed unchanged.",
+    "expandedPanelAxeViolations": 0,
+    "screenshot": "output/playwright/coding-validation.png",
+    "ordinaryChat": "Actual compiled server chat returned ready using ollama:qwen3:8b against the isolated test database.",
+    "mainApplicationReadiness": "ready at http://127.0.0.1:3001"
+  },
+  "sourceHashes": [
+    {
+      "path": "scripts/coding/verify.ts",
+      "sha256LfNormalized": "f6728b6d95911ce2af2175a98057a0910b34a7190dd6818563221d60ed67c4b8"
+    },
+    {
+      "path": "scripts/coding/aider_worker.py",
+      "sha256LfNormalized": "945aad5d22e9f352fc0e62176edeabeb84e9208f19845a7084c34a7338f2fa53"
+    },
+    {
+      "path": "scripts/coding/lint-worker.cjs",
+      "sha256LfNormalized": "3b2439c9fde2c34a29ed12cf9615362bde328a69b4a6faa4bab1ed126ab86154"
+    },
+    {
+      "path": "src/core/coding/integrations/AutomaticContext.ts",
+      "sha256LfNormalized": "d617cf348471d007130283c26aaa4f1046a1c95f0aec983ebc207ad51ec87aa4"
+    },
+    {
+      "path": "src/core/coding/integrations/CompilerSettings.ts",
+      "sha256LfNormalized": "ec7cd3dc94f90ecb7441d1a651dc0f1d9b71fc5a02515ae493dfc4b8f0b45b5e"
+    },
+    {
+      "path": "src/core/coding/integrations/CompilerChecks.ts",
+      "sha256LfNormalized": "cc4ee0af1f00cf947eb694d6d683ffd75802c7c70b6f0811859cd52f80e01ca7"
+    },
+    {
+      "path": "src/core/coding/integrations/DraftChecks.ts",
+      "sha256LfNormalized": "18ed3068d6995890358ce849f8fb7374b0fa245b74acf7ec3d765181c477e585"
+    },
+    {
+      "path": "src/core/coding/integrations/DraftDiagnostics.ts",
+      "sha256LfNormalized": "ee8af8ba16d1cb95af50fca9a2b86007582ea674072d69dc65769d0f3acaf267"
+    },
+    {
+      "path": "src/core/coding/integrations/PatchDraftValidator.ts",
+      "sha256LfNormalized": "8b6fc144a87d1772c751018748a93dfe126a6d9aab403feda6eb967e9686b22e"
+    },
+    {
+      "path": "src/core/coding/integrations/FastCheckGuidance.ts",
+      "sha256LfNormalized": "e17e7c786a879d5c078e71f6bb73ff18bb5ed8796a2f6361a6879fc558fae090"
+    },
+    {
+      "path": "src/core/coding/integrations/AiderAdapter.ts",
+      "sha256LfNormalized": "1e6c9dc9a26fb9311ccf4423b72c10a25a1ed747b2e4d17275e60ed17acd18f9"
+    },
+    {
+      "path": "src/core/coding/integrations/CodingToolsService.ts",
+      "sha256LfNormalized": "7ac00e086a1f2df0f61d5c22e08f116adad4c166ed7c6749cd919b0afb3d32b2"
+    },
+    {
+      "path": "src/core/coding/verification/ModelRepairProposal.ts",
+      "sha256LfNormalized": "bdd775cba8daf2e161a790dfb9a8248dc332ac4ec6c32f376c5d7f1369f7d133"
+    },
+    {
+      "path": "client/src/components/CodingToolsPanel.tsx",
+      "sha256LfNormalized": "e228c5790f84cc2f5cea59504f16155eb6dd07c68f542269b90f7cfad3088498"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256LfNormalized": "017e4f2e4cc8e6fdc32be5ff6e492d09e58b4185946f2a5cc4b216fe0c45c820"
+    },
+    {
+      "path": "services/coding-tools/package-lock.json",
+      "sha256LfNormalized": "3ad7324cef66f8252db580f8b67693764d612c6bb6b9a560ea6d49f90116d7fe"
+    }
+  ],
+  "limitations": [
+    "Live workflows cover small JavaScript/TypeScript fixtures on the recorded Windows/Ollama setup, not arbitrary repositories or other language toolchains.",
+    "Compiler/lint comparisons cover captured sources and available declarations; baseline snapshot diagnostics can include missing unselected context. Full configured project verification remains necessary.",
+    "Automatic context is bounded to 400 source files / 512 KB scanned and 12 captured files / 16 KB. Relative JS/TS imports, callers and related tests are followed; aliases and other languages may require explicit files.",
+    "The fixed lint profile runs no project executable configuration/plugins. Python and other languages receive not_applicable compiler/linter results.",
+    "Model drafts can be wrong and repairs can exhaust budgets. Fast-check tests detect the recorded mutations without establishing complete coverage.",
+    "The full global server coverage gate and hosted production certification were not established. The existing production dependency audit remains failed.",
+    "Context7 queries an external documentation service. Job sources/prompts/results remain under ignored data/coding-tools without automatic retention cleanup."
+  ]
+}

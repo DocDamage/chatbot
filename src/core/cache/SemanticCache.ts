@@ -5,10 +5,11 @@
 
 import { CacheManager } from '../../utils/cache';
 import { logger } from '../observability/logger';
-import natural from 'natural';
+import { WordTokenizer } from 'natural/lib/natural/tokenizers';
 
 export interface SemanticCacheEntry<T> {
   key: string;
+  namespace: string;
   value: T;
   embedding?: number[];
   timestamp: number;
@@ -19,7 +20,7 @@ export class SemanticCache<T> {
   private cache: Map<string, SemanticCacheEntry<T>> = new Map();
   private cacheManager: CacheManager;
   private similarityThreshold: number;
-  private tokenizer = new natural.WordTokenizer();
+  private tokenizer = new WordTokenizer();
 
   constructor(
     ttlSeconds: number = 3600,
@@ -32,9 +33,9 @@ export class SemanticCache<T> {
   /**
    * Get value by semantic similarity
    */
-  get(query: string): T | undefined {
+  get(query: string, namespace: string = 'default'): T | undefined {
     // First try exact match
-    const exactKey = this.generateKey(query);
+    const exactKey = this.generateKey(query, namespace);
     const exact = this.cache.get(exactKey);
     if (exact) {
       exact.accessCount++;
@@ -42,7 +43,7 @@ export class SemanticCache<T> {
     }
 
     // Try semantic match
-    const semanticMatch = this.findSemanticMatch(query);
+    const semanticMatch = this.findSemanticMatch(query, namespace);
     if (semanticMatch) {
       semanticMatch.accessCount++;
       logger.debug('Semantic cache hit', {
@@ -59,10 +60,11 @@ export class SemanticCache<T> {
   /**
    * Set value with semantic key
    */
-  set(query: string, value: T, ttl?: number): void {
-    const key = this.generateKey(query);
+  set(query: string, value: T, ttl?: number, namespace: string = 'default'): void {
+    const key = this.generateKey(query, namespace);
     const entry: SemanticCacheEntry<T> = {
       key,
+      namespace,
       value,
       timestamp: Date.now(),
       accessCount: 0
@@ -80,7 +82,7 @@ export class SemanticCache<T> {
   /**
    * Find semantically similar entry
    */
-  private findSemanticMatch(query: string): (SemanticCacheEntry<T> & { similarity: number }) | null {
+  private findSemanticMatch(query: string, namespace: string): (SemanticCacheEntry<T> & { similarity: number }) | null {
     const queryTokens = new Set(
       this.tokenizer.tokenize(query.toLowerCase()) || []
     );
@@ -89,6 +91,10 @@ export class SemanticCache<T> {
     let bestSimilarity = 0;
 
     for (const [key, entry] of this.cache.entries()) {
+      if (entry.namespace !== namespace) {
+        continue;
+      }
+
       // Extract original query from key (if stored) or use key
       const keyTokens = new Set(
         this.tokenizer.tokenize(key.toLowerCase()) || []
@@ -112,7 +118,7 @@ export class SemanticCache<T> {
   /**
    * Generate cache key from query
    */
-  private generateKey(query: string): string {
+  private generateKey(query: string, namespace: string): string {
     // Normalize query: lowercase, remove extra spaces, sort words
     const normalized = query
       .toLowerCase()
@@ -120,7 +126,7 @@ export class SemanticCache<T> {
       .replace(/\s+/g, ' ');
     
     // For semantic caching, we could also include a semantic hash
-    return normalized;
+    return namespace === 'default' ? normalized : `${namespace}\u0000${normalized}`;
   }
 
   /**

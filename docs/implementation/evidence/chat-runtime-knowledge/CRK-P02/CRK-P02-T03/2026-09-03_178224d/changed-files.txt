@@ -1,0 +1,10 @@
+A  src/core/profiles/DefaultBotProfile.ts
+A  src/core/profiles/DefaultBotProfile.test.ts
+A  docs/implementation/evidence/chat-runtime-knowledge/CRK-P02/CRK-P02-T03/2026-09-03_178224d/summary.md
+A  docs/implementation/evidence/chat-runtime-knowledge/CRK-P02/CRK-P02-T03/2026-09-03_178224d/commands.md
+A  docs/implementation/evidence/chat-runtime-knowledge/CRK-P02/CRK-P02-T03/2026-09-03_178224d/results.json
+A  docs/implementation/evidence/chat-runtime-knowledge/CRK-P02/CRK-P02-T03/2026-09-03_178224d/changed-files.txt
+A  docs/implementation/evidence/chat-runtime-knowledge/CRK-P02/CRK-P02-T03/2026-09-03_178224d/test-output.txt
+A  docs/implementation/evidence/chat-runtime-knowledge/CRK-P02/CRK-P02-T03/2026-09-03_178224d/runtime-checklist.md
+A  docs/implementation/handoffs/archive/CRK-P02-T03_HANDOFF.md
+M  docs/implementation/handoffs/CURRENT_HANDOFF.md

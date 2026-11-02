@@ -1,0 +1,22 @@
+{
+  "phase": "CRK-P17",
+  "task": "CRK-P17-T05",
+  "name": "Response Quality Gate",
+  "status": "CERTIFIED",
+  "timestamp": "2026-09-04T14:24:00Z",
+  "baseCommit": "178224d",
+  "metrics": {
+    "typeCheck": "PASS",
+    "lint": "PASS",
+    "testsPassed": 15,
+    "testsFailed": 0,
+    "testSuites": 2
+  },
+  "invariants": {
+    "noOverclaiming": true,
+    "reasonSpecificRetries": true,
+    "selectedContextCitations": true,
+    "exactVerificationStates": true,
+    "sourceSizeRuleMaxLines": 251
+  }
+}

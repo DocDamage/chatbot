@@ -41,4 +41,31 @@ describe('StructuredEditEngine', () => {
     const patch = new StructuredEditEngine(root).createPatch([{ operation: 'create', path: 'a.ts', content: 'new\n', reason: 'Fix', authorized: false }]);
     expect(patch.conflicts.map(conflict => conflict.reason)).toContain('Operation requires explicit authorization');
   });
+  it('rechecks a reviewed patch after another editor changes its source', () => {
+    const file = path.join(root, 'a.ts'); fs.writeFileSync(file, 'original');
+    const engine = new StructuredEditEngine(root);
+    const patch = engine.createPatch([{ operation: 'modify', path: 'a.ts', expectedContent: 'original', content: 'model', reason: 'fix', authorized: true }]);
+    fs.writeFileSync(file, 'user edit');
+    expect(() => engine.apply(patch)).toThrow(/preconditions changed/);
+    expect(fs.readFileSync(file, 'utf8')).toBe('user edit');
+  });
+  it('creates explicitly approved nested paths and rolls back earlier writes after an I/O failure', () => {
+    fs.writeFileSync(path.join(root, 'a.ts'), 'before'); fs.writeFileSync(path.join(root, 'b.ts'), 'before');
+    const engine = new StructuredEditEngine(root);
+    const patch = engine.createPatch([
+      { operation: 'modify', path: 'a.ts', expectedContent: 'before', content: 'after', reason: 'fix', authorized: true },
+      { operation: 'modify', path: 'b.ts', expectedContent: 'before', content: 'after', reason: 'fix', authorized: true },
+    ]);
+    const original = fs.writeFileSync;
+    const write = jest.spyOn(fs, 'writeFileSync').mockImplementation((file: any, content: any, options: any) => {
+      if (String(file) === path.join(root, 'b.ts') && content === 'after') throw new Error('Simulated disk failure');
+      return original(file, content, options);
+    });
+    try { expect(() => engine.apply(patch)).toThrow(/disk failure/); }
+    finally { write.mockRestore(); }
+    expect(fs.readFileSync(path.join(root, 'a.ts'), 'utf8')).toBe('before');
+    const nested = engine.createPatch([{ operation: 'create', path: 'new/nested/module.ts', content: 'export {}', reason: 'new module', authorized: true }]);
+    expect(nested.conflicts).toEqual([]); engine.apply(nested);
+    expect(fs.existsSync(path.join(root, 'new/nested/module.ts'))).toBe(true);
+  });
 });

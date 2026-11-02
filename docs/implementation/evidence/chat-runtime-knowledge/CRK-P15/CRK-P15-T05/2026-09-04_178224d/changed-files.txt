@@ -1,0 +1,13 @@
+src/types/citation.ts
+src/types/citation.test.ts
+src/core/knowledge/ClaimAssociationService.ts
+src/core/knowledge/SourcesDrawerFormatter.ts
+src/core/chat/WhyThisAnswerService.ts
+src/core/knowledge/CitationResolverService.ts
+src/core/knowledge/__tests__/citation-provenance-integration.test.ts
+client/src/components/SourcesDrawer.tsx
+client/src/components/SourcesDrawer.css
+client/src/components/SourcesDrawer.test.tsx
+client/src/components/WhyThisAnswerModal.tsx
+client/src/components/WhyThisAnswerModal.css
+client/src/components/WhyThisAnswerModal.test.tsx

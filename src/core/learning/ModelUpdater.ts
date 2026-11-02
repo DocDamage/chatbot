@@ -3,6 +3,7 @@
  * Research: MIT Online Learning, Model Fine-tuning
  */
 
+import { randomUUID } from 'node:crypto';
 import { logger } from '../observability/logger';
 import { FeedbackCollector, FeedbackData, FeedbackStats } from './FeedbackCollector';
 
@@ -10,7 +11,7 @@ export interface ModelVersion {
   id: string;
   version: string;
   createdAt: Date;
-  performance: {
+  performance?: {
     accuracy: number;
     latency: number;
     cost: number;
@@ -22,7 +23,26 @@ export interface ModelVersion {
     avgRating: number;
     trend: 'improving' | 'stable' | 'declining';
   };
+  trainingEvaluation?: TrainingCandidateEvidence;
 }
+
+/** Evaluation evidence for a trained artifact. Loss/perplexity are not accuracy. */
+export interface TrainingCandidateEvidence {
+  engine: 'cpu-smoke' | 'axolotl';
+  purpose: string;
+  resultManifest: string;
+  artifactSha256: string;
+  planSourceSha256: string;
+  planConfigSha256: string;
+  trainSha256: string;
+  heldOutTestSha256: string;
+  heldOutLoss: number;
+  heldOutPerplexity: number;
+  heldOutExamples: number;
+  trainingSteps: number;
+}
+
+type OnlinePerformance = NonNullable<ModelVersion['performance']>;
 
 export interface FeedbackTrend {
   period: 'day' | 'week' | 'month';
@@ -43,6 +63,7 @@ export interface UpdateRecommendation {
 export class ModelUpdater {
   private feedbackCollector: FeedbackCollector;
   private versions: ModelVersion[] = [];
+  private trainingCandidates = new WeakSet<ModelVersion>();
   private currentVersion: ModelVersion | null = null;
   private feedbackHistory: Array<{ timestamp: Date; rating: number }> = [];
   private updateThresholds = {
@@ -242,13 +263,13 @@ export class ModelUpdater {
   /**
    * Create new model version
    */
-  createVersion(performance: ModelVersion['performance']): ModelVersion {
+  createVersion(performance: OnlinePerformance): ModelVersion {
     const stats = this.feedbackCollector.getStats();
     const trends = this.analyzeTrends();
     const weeklyTrend = trends.find(t => t.period === 'week');
 
     const version: ModelVersion = {
-      id: `model-${Date.now()}`,
+      id: `model-${randomUUID()}`,
       version: `v${this.versions.length + 1}`,
       createdAt: new Date(),
       performance: {
@@ -267,38 +288,81 @@ export class ModelUpdater {
     logger.info('Model version created', {
       versionId: version.id,
       version: version.version,
-      satisfactionScore: version.performance.satisfactionScore
+      satisfactionScore: version.performance?.satisfactionScore
     });
 
     return version;
   }
 
   /**
+   * Register a training artifact for later review. This deliberately neither invents an
+   * accuracy score nor activates the candidate.
+   */
+  createTrainingCandidate(evidence: TrainingCandidateEvidence): ModelVersion {
+    const finiteMetrics = [evidence.heldOutLoss, evidence.heldOutPerplexity];
+    if (
+      !finiteMetrics.every(value => Number.isFinite(value) && value >= 0) ||
+      !Number.isSafeInteger(evidence.heldOutExamples) ||
+      evidence.heldOutExamples <= 0 ||
+      !Number.isSafeInteger(evidence.trainingSteps) ||
+      evidence.trainingSteps <= 0 ||
+      ![
+        evidence.artifactSha256,
+        evidence.planSourceSha256,
+        evidence.planConfigSha256,
+        evidence.trainSha256,
+        evidence.heldOutTestSha256,
+      ].every(hash => /^[0-9a-f]{64}$/i.test(hash))
+    ) {
+      throw new Error('Training candidate evidence is invalid.');
+    }
+
+    const version: ModelVersion = {
+      id: `model-${randomUUID()}`,
+      version: `v${this.versions.length + 1}`,
+      createdAt: new Date(),
+      active: false,
+      trainingEvaluation: { ...evidence },
+    };
+    this.versions.push(version);
+    this.trainingCandidates.add(version);
+    logger.info('Inactive training candidate registered', {
+      versionId: version.id,
+      version: version.version,
+      engine: evidence.engine,
+      heldOutLoss: evidence.heldOutLoss,
+    });
+    return structuredClone(version);
+  }
+
+  /**
    * Activate model version
    */
   activateVersion(versionId: string): void {
-    if (this.currentVersion) {
-      this.currentVersion.active = false;
-    }
-
     const version = this.versions.find(v => v.id === versionId);
-    if (version) {
-      version.active = true;
-      this.currentVersion = version;
-      logger.info('Model version activated', { versionId, version: version.version });
-    }
+    if (!version) return;
+    if (this.trainingCandidates.has(version))
+      throw new Error('Training candidates require an explicit promotion review before activation.');
+    if (this.currentVersion) this.currentVersion.active = false;
+    version.active = true;
+    this.currentVersion = version;
+    logger.info('Model version activated', { versionId, version: version.version });
   }
 
   /**
    * Rollback to previous version
    */
   rollback(): ModelVersion | null {
-    if (this.versions.length < 2) {
-      logger.warn('Cannot rollback: only one version exists');
+    const eligible = this.versions.filter(version => !this.trainingCandidates.has(version));
+    const currentIndex = this.currentVersion
+      ? eligible.findIndex(version => version.id === this.currentVersion?.id)
+      : eligible.length - 1;
+    if (currentIndex < 1) {
+      logger.warn('Cannot rollback: no earlier conventional model version exists');
       return null;
     }
 
-    const previous = this.versions[this.versions.length - 2];
+    const previous = eligible[currentIndex - 1];
     this.activateVersion(previous.id);
 
     logger.info('Rolled back to previous version', { versionId: previous.id });
@@ -316,7 +380,7 @@ export class ModelUpdater {
    * Get version history
    */
   getVersions(): ModelVersion[] {
-    return [...this.versions];
+    return this.versions.map(version => structuredClone(version));
   }
 
   /**

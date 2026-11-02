@@ -2,10 +2,16 @@
  * Unit tests for LLM Adapters
  */
 
-import { OpenAIAdapter, TemplateAdapter } from '../../../core/providers/LLMAdapter';
+import {
+  OpenAIAdapter,
+  OpenAICompatibleAdapter,
+  TemplateAdapter,
+  AnthropicAdapter,
+  GeminiAdapter
+} from '../../../core/providers/LLMAdapter';
 import { MockLLMAdapter } from '../../utils/test-helpers';
 
-describe('LLM Adapters', () => {
+describe('RT-LLM-002: LLM Adapters Suite', () => {
   describe('TemplateAdapter', () => {
     let adapter: TemplateAdapter;
 
@@ -21,6 +27,7 @@ describe('LLM Adapters', () => {
       expect(response.content).toContain('Hello');
       expect(response.model).toBe('template');
       expect(response.cost).toBe(0);
+      expect(adapter.getModelName()).toBe('template');
     });
 
     it('should return fallback response for unknown prompts', async () => {
@@ -59,6 +66,89 @@ describe('LLM Adapters', () => {
     });
   });
 
+  describe('OpenAIAdapter & OpenAICompatibleAdapter', () => {
+    it('creates adapter instances and estimates cost', () => {
+      const openai = new OpenAIAdapter('test-key', 'gpt-4');
+      expect(openai.getModelName()).toBe('gpt-4');
+      expect(openai.estimateCost({ prompt: 'hello world', model: 'gpt-4' })).toBeGreaterThan(0);
+      expect(openai.estimateCost({ prompt: 'hello world', model: 'gpt-3.5-turbo' })).toBeGreaterThan(0);
+      expect(openai.estimateCost({ prompt: 'hello world', model: 'other' })).toBeGreaterThan(0);
+
+      const compatible = new OpenAICompatibleAdapter('custom-provider', 'test-key', 'http://localhost:8000', 'llama-3');
+      expect(compatible.getModelName()).toBe('custom-provider:llama-3');
+    });
+
+    it('generates completions and handles fallback retry on error', async () => {
+      const openai = new OpenAIAdapter('test-key', 'gpt-4');
+      const createMock = jest.fn()
+        .mockResolvedValueOnce({
+          choices: [{ message: { content: 'Generated text' } }],
+          usage: { total_tokens: 42 }
+        });
+      (openai as any).client = {
+        chat: { completions: { create: createMock } }
+      };
+
+      const res = await openai.generate({ prompt: 'test prompt', systemPrompt: 'you are helpful' });
+      expect(res.content).toBe('Generated text');
+      expect(res.tokensUsed).toBe(42);
+
+      // Test fallback model on failure
+      const failingMock = jest.fn()
+        .mockRejectedValueOnce(new Error('Rate limit'))
+        .mockResolvedValueOnce({
+          choices: [{ message: { content: 'Fallback text' } }],
+          usage: { total_tokens: 20 }
+        });
+      (openai as any).client = {
+        chat: { completions: { create: failingMock } }
+      };
+
+      const fallbackRes = await openai.generate({ prompt: 'test fallback', model: 'gpt-4' });
+      expect(fallbackRes.content).toBe('Fallback text');
+    });
+  });
+
+  describe('AnthropicAdapter', () => {
+    it('creates anthropic adapter, estimates cost, and generates completions', async () => {
+      const claude = new AnthropicAdapter('test-key', 'claude-3-5-sonnet-20241022');
+      expect(claude.getModelName()).toBe('claude-3-5-sonnet-20241022');
+      expect(claude.estimateCost({ prompt: 'explain quantum physics' })).toBeGreaterThan(0);
+
+      (claude as any).client = {
+        messages: {
+          create: jest.fn().mockResolvedValue({
+            content: [{ type: 'text', text: 'Claude explanation' }],
+            usage: { input_tokens: 10, output_tokens: 20 }
+          })
+        }
+      };
+
+      const res = await claude.generate({ prompt: 'Explain gravity', systemPrompt: 'physics bot' });
+      expect(res.content).toBe('Claude explanation');
+      expect(res.tokensUsed).toBe(30);
+    });
+  });
+
+  describe('GeminiAdapter', () => {
+    it('creates gemini adapter, estimates cost, and generates completions', async () => {
+      const gemini = new GeminiAdapter('test-key', 'gemini-3.6-flash');
+      expect(gemini.getModelName()).toBe('gemini-3.6-flash');
+      expect(gemini.estimateCost({ prompt: 'explain general relativity' })).toBeGreaterThan(0);
+
+      (gemini as any).client = {
+        getGenerativeModel: jest.fn().mockReturnValue({
+          generateContent: jest.fn().mockResolvedValue({
+            response: { text: () => 'Gemini response text' }
+          })
+        })
+      };
+
+      const res = await gemini.generate({ prompt: 'Explain orbits', systemPrompt: 'astronomy bot' });
+      expect(res.content).toBe('Gemini response text');
+    });
+  });
+
   describe('MockLLMAdapter', () => {
     let adapter: MockLLMAdapter;
 
@@ -87,4 +177,3 @@ describe('LLM Adapters', () => {
     });
   });
 });
-

@@ -1,0 +1,93 @@
+{
+  "schema": "dabook.export.v1",
+  "dabook_version": "1.1.0",
+  "modes": [
+    "sft"
+  ],
+  "formats": [
+    "jsonl"
+  ],
+  "books": [
+    {
+      "book_id": 1,
+      "sha256": "06814ecbfffe3b6055883a9ba7e9a030561f86ada8070d5f05d5aa8f94ada7d0",
+      "title": "codex-owned-mini-book",
+      "license_status": "owned",
+      "review_status": "approved",
+      "quality_score": 1,
+      "source_path": "D:\\dev\\Chatbot\\temp\\dabook-real-export-cpu-20261101\\codex-owned-mini-book.pdf",
+      "records": {
+        "sft": {
+          "train": 6,
+          "val": 1,
+          "test": 5
+        }
+      }
+    }
+  ],
+  "skipped_books": {},
+  "counts": {
+    "sft": {
+      "train": 6,
+      "val": 1,
+      "test": 5
+    }
+  },
+  "generators": {
+    "assist:openai:codex-authored-local": 12
+  },
+  "excluded_heuristic_records": 0,
+  "files": [
+    "sft/test.jsonl",
+    "sft/train.jsonl",
+    "sft/val.jsonl"
+  ],
+  "created_at": 1793582195.2673774,
+  "workspace": "D:\\dev\\Chatbot\\temp\\dabook-real-export-cpu-20261101\\workspace",
+  "splits": true,
+  "allow_heuristic": false,
+  "dedup": {
+    "settings": {
+      "exact": true,
+      "near": true,
+      "jaccard": 0.8
+    },
+    "stats": {
+      "sft": {
+        "input": 12,
+        "exact_removed": 0,
+        "near_removed": 0,
+        "kept": 12
+      }
+    }
+  },
+  "artifactHashes": {
+    "sft/test.jsonl": "277e2842ab12d92f946594a0e021373413c305f293c5e00a6b036220c7f298cb",
+    "sft/train.jsonl": "715ba7be29c1d88a201499bc84f7ac002dd777ee94365f82bc480df14a22b0a2",
+    "sft/val.jsonl": "ebc01c4839982e73150373cf8ae49263b4beaca7de4a855986ced60de39c0f97"
+  },
+  "governance": {
+    "checkedAt": "2026-11-02T01:16:32.809Z",
+    "contaminated": false,
+    "audit": {
+      "evaluationOverlapsWithTraining": 0,
+      "evaluationOverlapsWithRag": 0,
+      "trainingOverlapsWithRag": 0,
+      "registrationConflicts": 0
+    },
+    "embeddedEvaluationScan": {
+      "scannedRecords": 12,
+      "scannedEvaluationItems": 1,
+      "skippedShortEvaluationItems": 0,
+      "matches": 0
+    },
+    "evaluation": {
+      "directory": "D:\\dev\\Chatbot\\temp\\dabook-real-export-cpu-20261101\\evals",
+      "files": 1,
+      "items": 1,
+      "registered": 1
+    },
+    "trainingRecordsAudited": 12,
+    "generatedBy": "chatbot-training-exporter"
+  }
+}

@@ -25,9 +25,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@assistant-ui/react": "^0.14.5",
+    "@assistant-ui/react": "0.14.5",
+    "radix-ui": "^1.8.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "zod": "^4.6.7"
+  },
+  "overrides": {
+    "@assistant-ui/core": "0.2.2",
+    "@assistant-ui/store": "0.2.10",
+    "@assistant-ui/tap": "0.5.11"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

@@ -1,0 +1,72 @@
+{
+  "scope": "Selected published-book pages; not a full-book accuracy estimate",
+  "sources": [
+    {
+      "id": "calculus-made-easy",
+      "title": "Calculus Made Easy, second edition",
+      "authors": "Silvanus P. Thompson",
+      "url": "https://www.gutenberg.org/files/33283/33283-pdf.pdf",
+      "license": "Public domain in the USA; Project Gutenberg distribution terms apply",
+      "license_url": "https://www.gutenberg.org/ebooks/33283/",
+      "sha256": "0a6957ae86625bbabcb71e070ef32e5dc7197cebb8bf90f0275caab45e71baf6",
+      "pdf_pages": [
+        28,
+        29
+      ],
+      "source_pages": 292,
+      "excerpt_file": "calculus-made-easy-excerpt.pdf",
+      "excerpt_sha256": "f5013211432f68df4356bfb766814082e3c462758baa452243bc1286669d4cbc",
+      "images": [
+        {
+          "pdf_page": 28,
+          "file": "calculus-made-easy-28.png"
+        },
+        {
+          "pdf_page": 29,
+          "file": "calculus-made-easy-29.png"
+        }
+      ]
+    },
+    {
+      "id": "openintro-statistics",
+      "title": "OpenIntro Statistics, fourth edition, screen reader version (2022-10-21)",
+      "authors": "David M. Diez, Mine Cetinkaya-Rundel, Christopher D. Barr",
+      "url": "https://www.openintro.org/go?id=os4_for_screen_reader&referrer=%2Fbook%2Fos%2Findex.php",
+      "license": "CC BY-SA 3.0; source attribution, exceptions and branding terms apply",
+      "license_url": "https://www.openintro.org/license/",
+      "sha256": "63323c3afc9d68c84ef130bdfa99e3828f080240251f5b7657480db3e355b3eb",
+      "pdf_pages": [
+        14,
+        16,
+        17,
+        47,
+        54
+      ],
+      "source_pages": 465,
+      "excerpt_file": "openintro-statistics-excerpt.pdf",
+      "excerpt_sha256": "584fe34fd0b0f59922c48594e84e68d59b4473a3bcb4ad2af1dd10b5940f7bf4",
+      "images": [
+        {
+          "pdf_page": 14,
+          "file": "openintro-statistics-14.png"
+        },
+        {
+          "pdf_page": 16,
+          "file": "openintro-statistics-16.png"
+        },
+        {
+          "pdf_page": 17,
+          "file": "openintro-statistics-17.png"
+        },
+        {
+          "pdf_page": 47,
+          "file": "openintro-statistics-47.png"
+        },
+        {
+          "pdf_page": 54,
+          "file": "openintro-statistics-54.png"
+        }
+      ]
+    }
+  ]
+}

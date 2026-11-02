@@ -1,0 +1,368 @@
+{
+  "status": "verified_local_workflows",
+  "recordedAt": "2026-10-31T04:49:37.5675805Z",
+  "classification": "LOCAL_ONLY_EXPERIMENTAL",
+  "implementation": "The commit containing this record; source hashes identify the evaluated adapters.",
+  "environment": {
+    "os": "Windows 11",
+    "node": "24.14.1",
+    "python": "3.12.10",
+    "gpu": "NVIDIA GeForce RTX 3060",
+    "vramMiB": 12288,
+    "model": "qwen3:8b",
+    "codingContextTokens": 16384,
+    "ordinaryChatContextTokens": 8192,
+    "codingReasoning": "Enabled for qwen3: model requests",
+    "tools": {
+      "serena": "2.1.0",
+      "aider": "0.86.2",
+      "astGrep": "0.51.0",
+      "context7": "4.4.4"
+    },
+    "context7KeyConfigured": false
+  },
+  "liveEvaluation": {
+    "report": "data/coding-tools/evaluation-0f2kAT/verification.json",
+    "reportSha256": "a8ce23926222f4fc85a3e5b2221aa47736506637142c1762e832c195c5c81bc8",
+    "verifiedAt": "2026-10-31T04:46:37.911Z",
+    "passed": 7,
+    "failed": 0,
+    "checks": [
+      {
+        "name": "Serena follows a TypeScript import alias",
+        "status": "passed",
+        "durationMs": 5390,
+        "evidence": {
+          "runId": "53d878dd-d6f1-46a3-aec1-dcea5438af7b",
+          "provider": "Serena LSP",
+          "references": "{\"use.ts\": {\"File\": [{\"name_path\": \"use\", \"body_location\": {\"start_line\": 0, \"end_line\": 3}, \"content_around_reference\": \"  >   0:import { add as sum } from './calc';\\n...   1:export function total() { return sum(2, 3); }\"}, {\"name_path\": \"use\", \"body_location\": {\"start_line\": 0, \"end_line\": 3}, \"content_around_reference\": \"  >   0:import { add as sum } from './calc';\\n...   1:export function total() { return sum(2, 3); }\"}, {\"name_path\": \"use\", \"body_location\": {\"start_line\": 0, \"end_line\": 3}, \"content_around_reference\": \"...   0:import { add as sum } from './calc';\\n  >   1:export function total() { return sum(2, 3); }\\n...   2:\"}]}}"
+        }
+      },
+      {
+        "name": "ast-grep previews and applies a structural repair",
+        "status": "passed",
+        "durationMs": 861,
+        "evidence": {
+          "runId": "2954ef98-85c2-4c34-a6f2-a8a57aba2f3e",
+          "commands": [
+            {
+              "command": "npm test",
+              "exitCode": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "Context7 returns actual source-linked documentation",
+        "status": "passed",
+        "durationMs": 2325,
+        "evidence": {
+          "runId": "8caef570-4de1-44cd-a2ad-1b39871a479f",
+          "sourcePreview": "### node:assert/strict\n\nSource: https://github.com/nodejs/node/blob/main/doc/api/assert.md\n\nStrict assertion mode causes non-strict assertion methods to behave like strict methods and displays error diffs for objects.\n\n```APIDOC\n## Strict Assertion Mode (`node:assert/strict`)\n\n### Description\nIn strict assertion mode, non-strict methods behave like their corresponding strict methods (for example, `assert.deepEqual()` behaves like `assert.deepStrictEqual()`). Error messages for failed object assertions display a visual diff.\n\n### Import\n\n```js\n// ES Module\nimport assert from 'node:assert/strict';\n// or\nimport { strict as assert } from 'node:assert';\n\n// CommonJS\nconst assert = require('node:assert/strict');\n// or\nconst assert = require('node:assert').strict;\n```\n\n### Message Parameter Semantics\nFor assertion methods accepting an optional `message` argument:\n- **string**: Used as-is. Additional arguments are treated as printf-like substitutions via `util.format()`.\n- **Error**: The error instance is thrown directly instead of an `AssertionError`.\n- **function**: A callback of the form `(actual, expected) => string` invoked only on assertion failure.\n\n### Example\n\n```js\nimport assert from 'node:assert/strict';\n\nassert.deepEqual([[[1, 2, 3]], 4, 5], [[[1, 2, '3']], 4, 5]);\n// Throws AssertionError with input diff\n```\n```\n\n--------------------------------\n\n### Import strict assertion mode from node:assert\n\nSource: https://github.com/nodejs/node/blob/main/doc/api/assert.md\n\nImports"
+        }
+      },
+      {
+        "name": "Aider and Ollama fix a real arithmetic bug",
+        "status": "passed",
+        "durationMs": 15577,
+        "evidence": {
+          "runId": "89391ada-8c51-40a3-a101-86bd857410d7",
+          "model": "ollama:qwen3:8b",
+          "changedFiles": [
+            "calc.cjs"
+          ],
+          "firstVerification": "passed",
+          "repairRounds": 0,
+          "draftChecks": {
+            "status": "passed",
+            "scope": "Changed JavaScript syntax and new literal relative CommonJS imports only",
+            "repairRounds": 0
+          },
+          "commands": [
+            {
+              "command": "npm test",
+              "exitCode": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "Aider and Ollama implement a feature across existing and new files",
+        "status": "passed",
+        "durationMs": 49987,
+        "evidence": {
+          "runId": "697f0836-516b-415c-a67d-fe850c590277",
+          "model": "ollama:qwen3:8b",
+          "changedFiles": [
+            "greeter.cjs",
+            "format.cjs"
+          ],
+          "firstVerification": "failed",
+          "repairRounds": 2,
+          "draftChecks": {
+            "status": "passed",
+            "scope": "Changed JavaScript syntax and new literal relative CommonJS imports only",
+            "repairRounds": 0
+          },
+          "commands": [
+            {
+              "command": "npm test",
+              "exitCode": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "Aider and Ollama add executable tests",
+        "status": "passed",
+        "durationMs": 41148,
+        "evidence": {
+          "runId": "de470463-ba65-4bf9-a8b3-e5361f9b80e6",
+          "model": "ollama:qwen3:8b",
+          "changedFiles": [
+            "clamp.test.cjs"
+          ],
+          "firstVerification": "failed",
+          "repairRounds": 1,
+          "draftChecks": {
+            "status": "passed",
+            "scope": "Changed JavaScript syntax and new literal relative CommonJS imports only",
+            "repairRounds": 0
+          },
+          "mutationDetected": true,
+          "commands": [
+            {
+              "command": "npm test",
+              "exitCode": 0
+            }
+          ]
+        }
+      },
+      {
+        "name": "Fresh Ollama repair fixes remaining failures after an insufficient initial patch",
+        "status": "passed",
+        "durationMs": 7381,
+        "evidence": {
+          "attempts": [
+            {
+              "iteration": 1,
+              "hypothesis": "Apply the approved repair proposal after 2 diagnostic(s).",
+              "diagnostics": {
+                "before": 2,
+                "after": 2,
+                "resolved": 0,
+                "introduced": 0
+              }
+            },
+            {
+              "iteration": 2,
+              "hypothesis": "The exported function was using multiplication instead of addition, leading to incorrect results.",
+              "diagnostics": {
+                "before": 2,
+                "after": 0,
+                "resolved": 2,
+                "introduced": 0
+              }
+            }
+          ],
+          "commands": [
+            {
+              "command": "npm test",
+              "exitCode": 0
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "developmentRuns": [
+    {
+      "run": "evaluation-gWWRq7",
+      "verifiedAt": "2026-10-31T04:09:20.984Z",
+      "passed": 3,
+      "failed": 4,
+      "failedCases": [
+        "ast-grep previews and applies a structural repair",
+        "Context7 returns actual source-linked documentation",
+        "Aider and Ollama implement a feature across existing and new files",
+        "Aider and Ollama add executable tests"
+      ],
+      "reportSha256": "a54f467c1b159376a7fbefb530e462b4eb3bac5b79bca5d7ce9ccd07486dc038"
+    },
+    {
+      "run": "evaluation-792LgP",
+      "verifiedAt": "2026-10-31T04:12:27.152Z",
+      "passed": 6,
+      "failed": 1,
+      "failedCases": [
+        "Aider and Ollama add executable tests"
+      ],
+      "reportSha256": "399fd075497545235754d4cea98c494591fac3f5d22f5d1beb1e6902fd918268"
+    },
+    {
+      "run": "evaluation-kn29Ua",
+      "verifiedAt": "2026-10-31T04:16:37.135Z",
+      "passed": 5,
+      "failed": 2,
+      "failedCases": [
+        "Aider and Ollama implement a feature across existing and new files",
+        "Aider and Ollama add executable tests"
+      ],
+      "reportSha256": "f492cbe1472f81590f4145d257f08155e8e6acda49565c46b6d6efd717399d50"
+    },
+    {
+      "run": "evaluation-ebNUfL",
+      "verifiedAt": "2026-10-31T04:20:23.862Z",
+      "passed": 6,
+      "failed": 1,
+      "failedCases": [
+        "Aider and Ollama add executable tests"
+      ],
+      "reportSha256": "5ba6b7fac3ee64c612d1bd66cf1dea58d610465555a396aa3d7e2bf98f59b65b"
+    },
+    {
+      "run": "evaluation-ptFRql",
+      "verifiedAt": "2026-10-31T04:24:25.912Z",
+      "passed": 7,
+      "failed": 0,
+      "failedCases": [],
+      "reportSha256": "ef42c1302089f9ad335de4aad2933f12899b4c2f5084c10651aa766b06d1a498"
+    },
+    {
+      "run": "evaluation-dlxUJE",
+      "verifiedAt": "2026-10-31T04:32:13.526Z",
+      "passed": 6,
+      "failed": 1,
+      "failedCases": [
+        "Aider and Ollama add executable tests"
+      ],
+      "reportSha256": "5be85feef4411ab0e29e433fa03b970d69e778ae951e653844e58d91a1fa6061"
+    },
+    {
+      "run": "evaluation-WHURyr",
+      "verifiedAt": "2026-10-31T04:35:10.087Z",
+      "passed": 6,
+      "failed": 1,
+      "failedCases": [
+        "Aider and Ollama implement a feature across existing and new files"
+      ],
+      "reportSha256": "7aec567d2cc6f04a436a497e30fa4a1b818aad66b3003eeeeb3aa804d1de4bdb"
+    },
+    {
+      "run": "evaluation-vqvzAi",
+      "verifiedAt": "2026-10-31T04:38:08.662Z",
+      "passed": 7,
+      "failed": 0,
+      "failedCases": [],
+      "reportSha256": "b0ddfa025d7f1d9dbda760b2d30ae59d7e1e5207dce10dfacedeb912622add01"
+    },
+    {
+      "run": "evaluation-hk5cqg",
+      "verifiedAt": "2026-10-31T04:39:51.121Z",
+      "passed": 6,
+      "failed": 1,
+      "failedCases": [
+        "Aider and Ollama implement a feature across existing and new files"
+      ],
+      "reportSha256": "d843bca422d82e9d0457108e88a6cd127fcace87067796d828c521fa624633d9"
+    },
+    {
+      "run": "evaluation-7S2qAl",
+      "verifiedAt": "2026-10-31T04:44:12.851Z",
+      "passed": 7,
+      "failed": 0,
+      "failedCases": [],
+      "reportSha256": "4d10b6dd2a9dafde2eee7637952c9238e8733ea75a67e00294d33c3763607dbe"
+    }
+  ],
+  "developmentRunNote": "These runs exercised intermediate implementations and settings. Failures are retained; they are not claimed as passing final-code evaluations. The final release run used the frozen source hashes below. A second reasoning-enabled development run also passed all seven checks. Initial drafts may fail and require bounded repairs.",
+  "sourceHashes": [
+    {
+      "path": "scripts/coding/aider_worker.py",
+      "sha256": "5180b20389eab3bebf70d9723ebcae16182df684a3abdf4579189b2fa3741efe"
+    },
+    {
+      "path": "scripts/coding/verify.ts",
+      "sha256": "df51d2e7c575dc33d17e692e6ab19a43272bc3fc957b2eb799089d315b8a910d"
+    },
+    {
+      "path": "src/core/coding/integrations/AiderAdapter.ts",
+      "sha256": "af7e083f63225d2fbd5b72753e4d78cf547c5b84173f0bc5e04ce8c34af09229"
+    },
+    {
+      "path": "src/core/coding/integrations/SerenaAdapter.ts",
+      "sha256": "1f2ade6f6090d496377ea7424d81dd46735d5be70ef2a9dd409b5d47b3c73730"
+    },
+    {
+      "path": "src/core/coding/verification/ModelRepairProposal.ts",
+      "sha256": "9ea4a892b83cea5928775b69ac58a0d7c2eda53e36167c751cd0583a93aae55d"
+    },
+    {
+      "path": "src/core/coding/verification/VerificationOrchestrator.ts",
+      "sha256": "6e950dcf5aa90263da416d62f9149b1d9abc2722e8b5ff83c55a15c31dc2d712"
+    },
+    {
+      "path": "src/core/providers/OllamaAdapter.ts",
+      "sha256": "f31029a313d01b365663e90d186040bde0b0772a1f7390c78e2d008ec8714c32"
+    },
+    {
+      "path": "client/src/components/CodingToolsPanel.tsx",
+      "sha256": "a6c99df98f829d8f2373fdeef0a85c5a5e8bb013e9b9edf9640e4d1c34981c93"
+    }
+  ],
+  "automated": {
+    "codingServer": {
+      "suites": 40,
+      "tests": 177,
+      "passed": true,
+      "log": "temp/coding-final-server.log"
+    },
+    "finalFocused": {
+      "suites": 4,
+      "tests": 29,
+      "passed": true,
+      "log": "temp/coding-frozen-unit.log",
+      "note": "Subset rerun after final adapter changes; not additional independent test count."
+    },
+    "client": {
+      "files": 61,
+      "tests": 202,
+      "passed": true
+    },
+    "browser": {
+      "passed": 7,
+      "flaky": 0
+    },
+    "accessibility": {
+      "passed": 6
+    },
+    "typeChecks": "server, client and tests passed",
+    "lint": "server and client passed",
+    "build": "production server and client passed",
+    "policy": "Phase 2 inventory, reachability, file size, environment and documentation checks passed; secret scan passed."
+  },
+  "manualBrowser": {
+    "structuralPreview": "Unauthorized preview in Ask; Build applies the reviewed patch to an isolated fixture; actual npm test passed.",
+    "serena": "Live panel followed codingToolConfig references in the actual repository using a generated snapshot-only TypeScript config.",
+    "context7": "Live panel returned source-linked Node documentation without an API key.",
+    "expandedPanelAxeViolations": 0,
+    "ordinaryChat": "Restarted daily server returned ready through actual ollama:qwen3:8b generation.",
+    "aider": "Actual HTTP/UI Aider draft with qwen3:8b: source remained unchanged and apply was disabled in Ask; switched to Build, applied reviewed patch, actual npm test passed and UI displayed Applied; verification passed."
+  },
+  "runtime": {
+    "url": "http://127.0.0.1:3001",
+    "readiness": "ready",
+    "integrationsEnabled": true,
+    "allFourInstalled": true,
+    "workspace": "G:/dev/Chatbot"
+  },
+  "limitations": [
+    "Live generation covers small Node/TypeScript fixtures, not arbitrary repositories or all supported languages.",
+    "Wrong first drafts and bounded repair failures occurred during development; no general autonomous correctness claim.",
+    "Full repository coverage, hosted release certification and all external toolchains were not rerun or established.",
+    "Aider drafts do not execute source; approved project verification does execute trusted repository commands on the host.",
+    "Context7 uses an external documentation service and is subject to its availability and limits.",
+    "Selected snapshots omit unselected dependencies; references are incomplete outside that scope.",
+    "Job snapshots and logs retain source under ignored data/coding-tools/jobs; no automatic retention cleanup."
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "verifiedAt": "2026-10-31T02:20:38.834Z",
+  "provider": "ollama",
+  "checks": [
+    {
+      "check": "real local generation",
+      "passed": true,
+      "latencyMs": 4215
+    },
+    {
+      "check": "multi-turn recall",
+      "passed": true,
+      "latencyMs": 279
+    },
+    {
+      "check": "upload, retrieval and citations",
+      "passed": true,
+      "latencyMs": 357
+    },
+    {
+      "check": "real process restart, v1/v2 routes, history and document persistence",
+      "passed": true
+    },
+    {
+      "check": "provider failure and degraded readiness",
+      "passed": true
+    }
+  ],
+  "localDate": "2026-10-30",
+  "branch": "codex/daily-use-readiness",
+  "baseCommit": "e19cfea00701cb4f020c8d8a27141d45a0cfc718",
+  "scope": "Personal local daily-use beta; no hosted production promotion",
+  "verification": {
+    "serverTypes": "passed",
+    "testTypes": "passed",
+    "clientTypes": "passed",
+    "serverLint": "passed",
+    "clientLint": "passed",
+    "client": {
+      "filesPassed": 59,
+      "testsPassed": 198
+    },
+    "browserRegression": {
+      "testsPassed": 7
+    },
+    "browserAccessibility": {
+      "testsPassed": 6
+    },
+    "serverFullRun": {
+      "suitesPassed": 539,
+      "suitesFailed": 2,
+      "suitesSkipped": 2,
+      "testsPassed": 2957,
+      "testsFailed": 2,
+      "testsSkipped": 5
+    },
+    "correctedFailureRerun": {
+      "suitesPassed": 2,
+      "testsPassed": 25,
+      "detectOpenHandles": true,
+      "exitCode": 0,
+      "corrections": [
+        "Use a real SQLite database in the initializer fixture and close it afterwards",
+        "Assert the configured Ollama context window in the provider request fixture"
+      ]
+    },
+    "additionalOperationalChecks": {
+      "suitesPassed": 1,
+      "testsPassed": 2
+    },
+    "canonicalCliSmoke": {
+      "suitesPassed": 5,
+      "testsPassed": 23
+    },
+    "packagingSmoke": "passed",
+    "repositoryPolicy": "passed",
+    "sqliteBackup": "passed",
+    "manualBrowser": "Reopened the saved Copper Finch conversation after a main-server restart; the next model reply recalled the project name; New chat cleared the active view.",
+    "secretScan": {
+      "status": "passed",
+      "scannedFiles": 3525,
+      "note": "Two synthetic credential redaction fixtures now construct their test values at runtime; scanner thresholds and allowlists were not changed."
+    },
+    "redactionFixtureRegression": {
+      "suitesPassed": 2,
+      "testsPassed": 20
+    }
+  }
+}

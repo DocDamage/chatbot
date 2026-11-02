@@ -4,7 +4,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { ValidationError } from '../utils/errors';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { chatRequestSchema } from '../types/chat';
 
 export const validateChatRequest = (

@@ -1,0 +1,7 @@
+src/types/developer-qa.ts
+src/types/developer-qa.test.ts
+src/core/knowledge/DeveloperQAQualityFilter.ts
+src/core/knowledge/DeveloperQAVersionExtractor.ts
+src/core/knowledge/DeveloperQAPack.ts
+src/core/knowledge/DeveloperQARefreshService.ts
+src/core/knowledge/__tests__/developer-qa-eval.test.ts

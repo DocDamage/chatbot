@@ -1,0 +1,30 @@
+=== Phase 21: Filtered Educational Web and Multilingual Packs Exit Gate Evidence ===
+Date: 2026-09-04
+Base Commit: 178224d
+
+Test Output:
+PASS src/types/educational-multilingual.test.ts
+  educational-multilingual schemas
+    √ validates a correct educational document
+    √ validates multilingual document and embedding compatibility
+
+PASS src/core/knowledge/__tests__/educational-multilingual-pack.test.ts
+  Phase 21: Educational Web & Multilingual Packs
+    FineWebEduSourcePolicy
+      √ accepts high quality structured educational content
+      √ rejects short text, prohibited spam, and off-topic text
+      √ rejects duplicate text
+    EducationalWebPack
+      √ manages staging index and promotes documents to live querying
+    MultilingualPack
+      √ installs by selected language and rejects uninstalled languages
+      √ enforces embedding model compatibility for multilingual packs
+
+Test Suites: 2 passed, 2 total
+Tests: 8 passed, 8 total
+
+Exit Gate Verification:
+- Broad web data remains optional (EducationalWebPack authority 0.70, staging capability).
+- Ingestion is topic-filtered (software, science, engineering, history, general_education).
+- Multilingual data installs by selected language (ISO 639-1 subset, prevents 1000+ unneeded installs).
+- Embedding compatibility verified (dimension, version, multilingual flag).

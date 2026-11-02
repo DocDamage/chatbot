@@ -1,35 +1,36 @@
 {
   "schemaVersion": 1,
   "mode": "enforce",
-  "activeStage": "stage-1-baseline",
+  "activeStage": "branch-75",
   "baseline": {
-    "commit": "42ef5cbeb832114cf2e393a6b21bc4840117c55e",
-    "ciRun": 31065400189,
-    "recordedAt": "2026-08-06T02:23:26Z",
+    "commit": "55dbcd0a2af1bd4c26f1f28aae7b3e3d6823f7f2",
+    "ciRun": "local-profile-expansion-candidate",
+    "recordedAt": "2026-08-25T22:10:11Z",
+    "sourceState": "Profile-expansion candidate working tree based on the recorded commit; replace with the final candidate commit SHA when committed.",
     "global": {
       "lines": {
-        "total": 20918,
-        "covered": 7879,
+        "total": 36775,
+        "covered": 22406,
         "skipped": 0,
-        "pct": 37.6661
+        "pct": 60.9273
       },
       "branches": {
-        "total": 11326,
-        "covered": 3109,
+        "total": 19953,
+        "covered": 9731,
         "skipped": 0,
-        "pct": 27.4501
+        "pct": 48.7696
       },
       "functions": {
-        "total": 4624,
-        "covered": 1719,
+        "total": 7634,
+        "covered": 4366,
         "skipped": 0,
-        "pct": 37.1756
+        "pct": 57.1915
       },
       "statements": {
-        "total": 22562,
-        "covered": 8319,
+        "total": 40017,
+        "covered": 24035,
         "skipped": 0,
-        "pct": 36.8717
+        "pct": 60.062
       }
     }
   },
@@ -69,6 +70,12 @@
       "stage": "final",
       "lines": 75,
       "branches": 65
+    },
+    {
+      "stage": "branch-75",
+      "description": "Post-final global branch coverage ratchet",
+      "lines": 75,
+      "branches": 75
     }
   ],
   "tiers": {

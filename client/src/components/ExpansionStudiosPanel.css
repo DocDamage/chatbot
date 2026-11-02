@@ -1,0 +1,17 @@
+.expansion-studios { grid-column: 1 / -1; padding: 20px 24px; color: #ededed; }
+.expansion-studios header h3 { margin: 0; font-size: 17px; }
+.expansion-studios header p, .expansion-studio-form > p, .expansion-studio-output p { color: #aaa; font-size: 12px; line-height: 1.5; }
+.expansion-studio-tabs { display: flex; gap: 6px; overflow-x: auto; margin: 16px 0; padding-bottom: 4px; }
+.expansion-studio-tabs button, .expansion-studio-actions button { border: 1px solid #414141; border-radius: 7px; background: #222; color: #d4d4d4; cursor: pointer; padding: 7px 10px; font: inherit; font-size: 11px; }
+.expansion-studio-tabs button[aria-selected="true"] { border-color: #a7d6ff; background: #17324a; color: #d9eeff; }
+.expansion-studio-tabs button:focus-visible, .expansion-studio-actions button:focus-visible { outline: 2px solid #a7d6ff; outline-offset: 2px; }
+.expansion-studio-actions button:disabled { cursor: not-allowed; opacity: .45; }
+.expansion-studio-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr); gap: 16px; }
+.expansion-studio-form, .expansion-studio-output { min-width: 0; border: 1px solid #353535; border-radius: 10px; background: #181818; padding: 14px; }
+.expansion-studio-form h4 { margin: 0; }
+.expansion-studio-form label { display: grid; gap: 5px; margin-top: 10px; color: #bbb; font-size: 11px; font-weight: 700; }
+.expansion-studio-form input, .expansion-studio-form textarea { width: 100%; box-sizing: border-box; border: 1px solid #444; border-radius: 6px; background: #101010; color: #f3f3f3; padding: 8px; font: inherit; }
+.expansion-studio-form textarea { min-height: 110px; resize: vertical; }
+.expansion-studio-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+.expansion-studio-output pre { max-height: 260px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; border-radius: 7px; background: #0c0c0c; padding: 10px; color: #bde3c8; font-size: 10px; }
+@media (max-width: 760px) { .expansion-studios { padding: 16px; } .expansion-studio-body { grid-template-columns: 1fr; } }

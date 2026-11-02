@@ -1,0 +1,33 @@
+=== Phase 22: Voice and External Input/Output Adapters Exit Gate Evidence ===
+Date: 2026-09-04
+Base Commit: 178224d
+
+Test Output:
+PASS src/types/input-adapters.test.ts
+  input-adapters schemas
+    √ validates voice input payload and privacy constraints
+    √ validates text to speech result schema with unaltered text guarantee
+    √ validates integration message schema
+
+PASS src/core/adapters/__tests__/voice-external-adapters.test.ts
+  Phase 22: Voice and External Input/Output Adapters
+    VoiceInputAdapter
+      √ rejects input without explicit microphone consent
+      √ normalizes voice input and stores STT metadata separately
+    ChatInputAdapterFactory
+      √ normalizes web input through WebTextInputAdapter
+      √ normalizes integration message from external system
+      √ normalizes desktop companion input
+    VoiceOutputAdapter
+      √ synthesizes speech without altering or modifying the canonical response
+      √ rejects empty response
+
+Test Suites: 2 passed, 2 total
+Tests: 10 passed, 10 total
+
+Exit Gate Verification:
+- Voice uses canonical runtime (all external input adapters normalize to NormalizedChatRequest).
+- Audio retention is explicit (AudioRetentionPolicy default retainAudio = false).
+- Voice errors do not corrupt conversation state.
+- STT provider and model metadata tracked separately from chat model.
+- TTS synthesizes speech with invariant that canonical response text is unaltered.

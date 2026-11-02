@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "corpusName": "profile-expansion-media-golden-corpus",
+  "description": "Rights-cleared media corpus manifest for STT, TTS, OCR, Dubbing, and Audio Processing test verification.",
+  "items": [
+    {
+      "id": "wav-16k-mono-speech-en",
+      "format": "wav",
+      "sampleRate": 16000,
+      "channels": 1,
+      "durationSec": 5.25,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "language": "en",
+      "expectedTranscript": "The quick brown fox jumps over the lazy dog.",
+      "license": "CC0-1.0",
+      "expectedOutcome": "SUCCESS"
+    },
+    {
+      "id": "wav-48k-stereo-silence",
+      "format": "wav",
+      "sampleRate": 48000,
+      "channels": 2,
+      "durationSec": 2.0,
+      "sha256": "4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a",
+      "language": "und",
+      "expectedTranscript": "",
+      "license": "CC0-1.0",
+      "expectedOutcome": "EMPTY_OR_NO_SPEECH"
+    },
+    {
+      "id": "mp3-44k-stereo-accent-es",
+      "format": "mp3",
+      "sampleRate": 44100,
+      "channels": 2,
+      "durationSec": 4.12,
+      "sha256": "ef2d127de37b942baad06145e54b0c619a1f22327b2ebbcfbec78f5564afe39d",
+      "language": "es",
+      "expectedTranscript": "Hola mundo, esta es una prueba de voz.",
+      "license": "CC-BY-4.0",
+      "expectedOutcome": "SUCCESS"
+    },
+    {
+      "id": "flac-96k-multitrack-stems",
+      "format": "flac",
+      "sampleRate": 96000,
+      "channels": 4,
+      "durationSec": 10.0,
+      "sha256": "8750a60420e6ddf4194e4534507409282f6e8246332d799bd4e7c884d3263d3e",
+      "stems": ["vocals", "drums", "bass", "other"],
+      "license": "CC-BY-4.0",
+      "expectedOutcome": "SUCCESS"
+    },
+    {
+      "id": "corrupt-audio-truncated-stream",
+      "format": "wav",
+      "sampleRate": 44100,
+      "channels": 2,
+      "durationSec": 0.5,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "license": "CC0-1.0",
+      "expectedOutcome": "FAILURE_DECODE"
+    },
+    {
+      "id": "unsupported-format-raw-dts",
+      "format": "dts",
+      "sha256": "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e",
+      "license": "CC0-1.0",
+      "expectedOutcome": "REJECTED_UNSUPPORTED_FORMAT"
+    },
+    {
+      "id": "video-subtitles-ocr-en-es",
+      "format": "mp4",
+      "durationSec": 8.0,
+      "resolution": "1920x1080",
+      "sha256": "c8b417c80ef467885dd476904bc49533f07be78393e820ef6f2c453e020272c7",
+      "hasHardSubtitles": true,
+      "expectedCues": [
+        {
+          "startMs": 1000,
+          "endMs": 3500,
+          "text": "Welcome to the capability demonstration."
+        },
+        {
+          "startMs": 4000,
+          "endMs": 7500,
+          "text": "Subtitles are extracted using Tesseract and FFmpeg OCR."
+        }
+      ],
+      "license": "CC0-1.0",
+      "expectedOutcome": "SUCCESS"
+    }
+  ]
+}

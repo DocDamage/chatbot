@@ -1,0 +1,10 @@
+# Repository-wide fallback ownership. Replace with a team alias if the project moves to an organization team.
+* @DocDamage
+
+# Security, release policy, CI, and supply-chain controls require owner review.
+/.github/ @DocDamage
+/SECURITY.md @DocDamage
+/scripts/release/ @DocDamage
+/docs/implementation/ @DocDamage
+/package.json @DocDamage
+/package-lock.json @DocDamage

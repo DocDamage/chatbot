@@ -1,0 +1,51 @@
+{
+  "taskId": "CRK-P01-T02",
+  "taskTitle": "Build ChatRequestNormalizer",
+  "phase": "CRK PHASE 01",
+  "branch": "codex/cf04-cf10-integration",
+  "commit": "178224d9c5b7891b78f52ddc781a319faeab64de",
+  "shortSha": "178224d",
+  "date": "2026-09-03",
+  "status": "VERIFIED",
+  "filesCreated": [
+    "src/core/chat/ChatRequestNormalizer.ts",
+    "src/core/chat/ChatRequestNormalizer.test.ts"
+  ],
+  "sourceLineCount": {
+    "src/core/chat/ChatRequestNormalizer.ts": 279,
+    "src/core/chat/ChatRequestNormalizer.test.ts": 257
+  },
+  "tests": {
+    "normalizerUnitTests": {
+      "total": 21,
+      "passed": 21,
+      "failed": 0
+    },
+    "combinedSuiteTests": {
+      "total": 47,
+      "passed": 47,
+      "failed": 0
+    }
+  },
+  "verification": {
+    "typeCheckServer": 0,
+    "typeCheckTests": 0,
+    "typeCheckClient": 0,
+    "lintServer": 0
+  },
+  "featuresImplemented": [
+    "messageLengthValidation",
+    "sessionIdValidation",
+    "requestIdAssignment",
+    "serverAuthoritativeAuthIdentity",
+    "botProfileIdResolution",
+    "modeNormalization",
+    "loadedFilesDeduplicationAndBounds",
+    "loadedAudioDeduplicationAndBounds",
+    "activePlanResolutionAndValidation",
+    "clientCapabilitiesNormalization",
+    "prototypePollutionPrevention",
+    "metadataSanitization",
+    "normalizedChatRequestSchemaConformance"
+  ]
+}

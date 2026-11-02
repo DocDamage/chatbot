@@ -1,0 +1,29 @@
+{
+  "taskId": "CRK-P02-T03",
+  "taskTitle": "Create Default Profile",
+  "phase": "CRK PHASE 02",
+  "branch": "codex/cf04-cf10-integration",
+  "commit": "178224d9c5b7891b78f52ddc781a319faeab64de",
+  "shortSha": "178224d",
+  "date": "2026-09-03",
+  "status": "VERIFIED",
+  "filesCreated": [
+    "src/core/profiles/DefaultBotProfile.ts",
+    "src/core/profiles/DefaultBotProfile.test.ts"
+  ],
+  "sourceLineCount": {
+    "src/core/profiles/DefaultBotProfile.ts": 93,
+    "src/core/profiles/DefaultBotProfile.test.ts": 40
+  },
+  "tests": {
+    "defaultProfileUnitTests": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    }
+  },
+  "compliance": {
+    "promptAssetsDecoupled": true,
+    "sourceSizeUnder300Lines": true
+  }
+}

@@ -1,5 +1,7 @@
+import { apiFetch } from '../api/http';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { isStaticPagesBuild } from '../api/runtime';
+import { TrainingLanePanel } from './TrainingLanePanel';
 import './KnowledgeOSPanel.css';
 
 type Summary = {
@@ -33,10 +35,17 @@ type LibrarySource = {
   warnings: string[];
   needsOcr: boolean;
   duplicateCount: number;
+  /** First chunk's metadata, as persisted. Structured (DABOOK) PDFs record `extractor: 'dabook'`. */
+  metadata?: {
+    type?: string;
+    extractor?: string;
+    qualityScore?: number;
+    dabookFallbackReason?: string;
+  };
   latestRun?: { status?: string; completedAt?: string };
 };
 type LibrarySourceResponse = { sources: LibrarySource[]; total: number; limit: number; offset: number };
-type Tab = 'overview' | 'library' | 'entities' | 'graph' | 'wiki' | 'memory' | 'evidence' | 'imports';
+type Tab = 'overview' | 'library' | 'training' | 'entities' | 'graph' | 'wiki' | 'memory' | 'evidence' | 'imports';
 
 type ActionState = {
   label: string;
@@ -74,7 +83,7 @@ function KnowledgeOSPanel() {
     }
     setLoading(true);
     try {
-      const response = await fetch('/api/knowledge-os/summary');
+      const response = await apiFetch('/api/knowledge-os/summary');
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (mountedRef.current) {
@@ -102,7 +111,7 @@ function KnowledgeOSPanel() {
     if (isStaticPagesBuild) {
       throw new Error('Knowledge OS APIs require the local backend.');
     }
-    const response = await fetch(url, {
+    const response = await apiFetch(url, {
       headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
       ...options
     });
@@ -213,7 +222,7 @@ function KnowledgeOSPanel() {
       {open && (
         <div className="knowledge-os-body">
           <nav className="knowledge-os-tabs" aria-label="Knowledge OS screens">
-            {(['overview', 'library', 'entities', 'graph', 'wiki', 'memory', 'evidence', 'imports'] as Tab[]).map(tab => (
+            {(['overview', 'library', 'training', 'entities', 'graph', 'wiki', 'memory', 'evidence', 'imports'] as Tab[]).map(tab => (
               <button key={tab} type="button" className={activeTab === tab ? 'active' : ''} onClick={() => setActiveTab(tab)}>
                 {tab}
               </button>
@@ -269,6 +278,7 @@ function KnowledgeOSPanel() {
                     <div className="knowledge-os-badges">
                       <Badge>{formatNumber(source.chunks)} chunks</Badge>
                       <Badge>{formatNumber(source.embeddings)} embeddings</Badge>
+                      {pdfExtractionBadges(source)}
                       {source.needsOcr && <Badge tone="warn">OCR</Badge>}
                       {source.duplicateCount > 1 && <Badge tone="info">{source.duplicateCount} copies</Badge>}
                       {source.warnings.length > 0 && <Badge tone="warn">{source.warnings.length} warnings</Badge>}
@@ -278,6 +288,10 @@ function KnowledgeOSPanel() {
               </div>
             </Screen>
           )}
+
+          {activeTab === 'training' && (isStaticPagesBuild
+            ? <Screen title="Training data lane"><span className="knowledge-os-empty">Requires the local backend.</span></Screen>
+            : <TrainingLanePanel />)}
 
           {activeTab === 'entities' && (
             <Screen title="Entity Search">
@@ -396,6 +410,31 @@ function Stat({ label, value, sub }: { label: string; value: string | number; su
 
 function Badge({ children, tone = 'default' }: { children: ReactNode; tone?: 'default' | 'warn' | 'info' }) {
   return <span className={`knowledge-os-badge ${tone}`}>{children}</span>;
+}
+
+/**
+ * Which extractor produced a PDF source: "Structured (DABOOK)" carries page and chapter
+ * citations; "Flat (pdf-parse)" does not. A DABOOK fallback is called out with its reason.
+ */
+function pdfExtractionBadges(source: LibrarySource): ReactNode {
+  const isPdf = source.fileExtension?.toLowerCase() === '.pdf' || source.metadata?.type === 'pdf';
+  if (!isPdf) return null;
+  if (source.metadata?.extractor === 'dabook') {
+    const quality = source.metadata.qualityScore;
+    return (
+      <>
+        <Badge tone="info">Structured (DABOOK)</Badge>
+        {typeof quality === 'number' && <Badge>{`quality ${quality.toFixed(2)}`}</Badge>}
+      </>
+    );
+  }
+  const reason = source.metadata?.dabookFallbackReason;
+  return (
+    <>
+      <Badge>Flat (pdf-parse)</Badge>
+      {reason && reason !== 'disabled' && <Badge tone="warn">{`DABOOK fallback: ${reason}`}</Badge>}
+    </>
+  );
 }
 
 function formatNumber(value: number): string {

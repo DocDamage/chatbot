@@ -1,0 +1,47 @@
+=== TEST RUN: ChatRequestNormalizer.test.ts ===
+> jest src/core/chat/ChatRequestNormalizer.test.ts
+
+PASS src/core/chat/ChatRequestNormalizer.test.ts
+  ChatRequestNormalizer (CRK-P01-T02)
+    valid requests and defaults
+      √ normalizes a minimal valid chat payload with canonical defaults (4 ms)
+      √ works both via static method and instantiated normalizer (1 ms)
+      √ preserves valid requestedModelPolicy and botProfileId
+    message validation
+      √ rejects empty message or whitespace-only message (11 ms)
+      √ rejects non-string message
+      √ rejects overlong message exceeding maximum allowed length
+      √ preserves full Unicode, astral plane emojis, and international characters
+    session validation
+      √ rejects missing or empty sessionId
+    server context and security boundaries
+      √ preserves auth identity from server context over client claims
+      √ falls back to sanitized client userId when server context has no userId
+      √ uses serverContext.requestId when provided
+      √ uses serverContext.defaultBotProfileId when botProfileId is not specified (1 ms)
+    context attachment deduplication and bounds
+      √ deduplicates loadedFiles by path and preserves file properties
+      √ deduplicates loadedAudio by path (1 ms)
+      √ applies file and audio limits and content truncation for large context
+    activePlan resolution and validation
+      √ normalizes valid structured activePlan
+      √ normalizes legacy activePlanId and activePlanContent
+      √ rejects invalid activePlan structure with empty id or non-string content
+    security: prototype pollution and malicious metadata
+      √ strips prototype pollution keys from metadata
+      √ rejects malformed metadata that is not an object (1 ms)
+      √ rejects non-object root payload (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       21 passed, 21 total
+Snapshots:   0 total
+
+=== COMBINED REGRESSION SUITE ===
+PASS src/types/chat-runtime.test.ts (10 passed)
+PASS src/core/chat/ChatRequestNormalizer.test.ts (21 passed)
+PASS src/server/__tests__/chat.test.ts (2 passed)
+PASS src/core/evals/__tests__/ChatBehaviorBaselineHarness.test.ts (14 passed)
+
+Test Suites: 4 passed, 4 total
+Tests:       47 passed, 47 total
+Snapshots:   0 total

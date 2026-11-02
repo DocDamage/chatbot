@@ -1,0 +1,22 @@
+{
+  "phase": "CRK-P18",
+  "task": "CRK-P18-T05",
+  "name": "Tool Result Truthfulness and Side-Effect Ledger",
+  "status": "CERTIFIED",
+  "timestamp": "2026-09-04T14:24:30Z",
+  "baseCommit": "178224d",
+  "metrics": {
+    "typeCheck": "PASS",
+    "lint": "PASS",
+    "testsPassed": 11,
+    "testsFailed": 0,
+    "testSuites": 2
+  },
+  "invariants": {
+    "structuredToolTruth": true,
+    "sideEffectLedgerAuditable": true,
+    "partialAndFailureStatesPreserved": true,
+    "codingPathNoOverclaiming": true,
+    "sourceSizeRuleMaxLines": 172
+  }
+}

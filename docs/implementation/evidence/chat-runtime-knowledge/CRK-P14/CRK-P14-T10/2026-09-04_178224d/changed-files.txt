@@ -1,0 +1,7 @@
+src/types/source-code-pack.ts
+src/types/source-code-pack.test.ts
+src/core/knowledge/SourceCodeFileFilter.ts
+src/core/knowledge/SourceCodeDeduplicator.ts
+src/core/knowledge/SourceCodeStructuralChunker.ts
+src/core/knowledge/SourceCodePack.ts
+src/core/knowledge/__tests__/source-code-retrieval-benchmark.test.ts

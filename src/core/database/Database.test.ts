@@ -49,10 +49,11 @@ describe('Database migrations', () => {
     await db.initialize();
 
     const result = await db.query(
-      "SELECT indexname FROM pg_indexes WHERE tablename = 'chunk_embeddings' AND indexname = 'idx_chunk_embeddings_vector'"
+      "SELECT udt_name FROM information_schema.columns WHERE table_name = 'chunk_embeddings' AND column_name = 'embedding_vector'"
     );
 
     expect(result.rowCount).toBe(1);
+    expect(result.rows[0].udt_name).toBe('vector');
 
     await db.close();
   });

@@ -1,0 +1,12 @@
+src/types/knowledge-datasets.ts
+src/types/knowledge-datasets.test.ts
+src/types/knowledge-packs.ts
+src/types/knowledge-packs.test.ts
+src/core/database/DatasetMigrations.ts
+src/core/database/Database.ts
+src/core/knowledge/DatasetRegistry.ts
+src/core/knowledge/DatasetLicensePolicy.ts
+src/core/knowledge/DatasetStorageQuota.ts
+src/core/knowledge/KnowledgePackManager.ts
+src/core/knowledge/DatasetManager.ts
+src/core/knowledge/__tests__/knowledge-infrastructure-integration.test.ts

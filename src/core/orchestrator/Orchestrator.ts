@@ -123,7 +123,7 @@ export class Orchestrator {
         const llmOptions: LLMGenerateOptions = {
           prompt: userPrompt,
           systemPrompt,
-          temperature: 0.7,
+          temperature: request.temperature ?? 0.7,
           maxTokens: 1000
         };
 
@@ -146,7 +146,7 @@ export class Orchestrator {
             response,
             contract,
             llmResponse.model,
-            { temperature: 0.7, maxTokens: 1000 },
+            { temperature: request.temperature ?? 0.7, maxTokens: 1000 },
             'system'
           );
 

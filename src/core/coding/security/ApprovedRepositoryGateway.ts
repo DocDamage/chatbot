@@ -51,7 +51,7 @@ export class RepositoryAccessError extends Error {
 const DEFAULT_IGNORED_DIRECTORIES = new Set([
   '.git', '.gradle', '.idea', '.mypy_cache', '.next', '.pytest_cache', '.ruff_cache', '.venv',
   '.vscode', '__pycache__', 'bin', 'build', 'coverage', 'dist', 'logs', 'node_modules', 'obj',
-  'target', 'vendor'
+  'target', 'vendor', 'data', 'temp', 'output', '.capabilities', '.worktrees'
 ]);
 
 const TEXT_EXTENSIONS = new Set([

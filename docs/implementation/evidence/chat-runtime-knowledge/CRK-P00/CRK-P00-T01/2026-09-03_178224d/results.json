@@ -1,0 +1,22 @@
+{
+  "task": "CRK-P00-T01",
+  "phase": "CRK-P00",
+  "timestamp": "2026-09-03T22:56:00Z",
+  "commit": "178224d9c5b7891b78f52ddc781a319faeab64de",
+  "status": "VERIFIED",
+  "criteria": {
+    "everyProductionCandidateChatEntryPointRepresented": true,
+    "orchestratorAndEnhancedOrchestratorCallSitesIdentified": true,
+    "compatibilityApisDistinguishedFromCanonicalUiTraffic": true,
+    "noKnownChatRouteOmitted": true
+  },
+  "counts": {
+    "totalChatExecutionRoutesInventoried": 27,
+    "primaryUIRoutes": 1,
+    "streamingRoutes": 2,
+    "compatibilityVersionedRoutes": 2,
+    "specialistAndCodingRoutes": 22,
+    "orchestratorProductionCallSites": 4,
+    "orchestratorTestCallSites": 5
+  }
+}

@@ -1,3 +1,4 @@
+import { apiFetch } from './http';
 import { throwApiError } from './errors';
 
 export interface AudioFileContext {
@@ -32,13 +33,13 @@ export async function listAudioFiles(
     limit: String(options.limit || 50)
   });
   if (options.offset) params.set('offset', String(options.offset));
-  const response = await fetch(`/api/audio/files?${params.toString()}`, { signal: options.signal });
+  const response = await apiFetch(`/api/audio/files?${params.toString()}`, { signal: options.signal });
   if (!response.ok) await throwApiError(response, 'Unable to load audio files');
   return response.json();
 }
 
 export async function loadAudioMetadata(path: string): Promise<AudioFileContext> {
-  const response = await fetch(`/api/audio/metadata?path=${encodeURIComponent(path)}`);
+  const response = await apiFetch(`/api/audio/metadata?path=${encodeURIComponent(path)}`);
   if (!response.ok) await throwApiError(response, 'Unable to load audio metadata');
   return response.json();
 }

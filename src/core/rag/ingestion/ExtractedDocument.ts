@@ -17,10 +17,25 @@ export type ExtractedDocumentType =
   | 'gif'
   | 'unknown';
 
+/**
+ * A section an extractor has already split into retrieval-sized chunks. When an
+ * `ExtractedDocument` carries sections, the ingester maps them straight to chunks and skips its
+ * own word-window chunker (structure-aware extractors such as DABOOK know better where to cut).
+ */
+export interface PreChunkedSection {
+  id: string;
+  content: string;
+  /** Merged over the document metadata (page, section, breadcrumbs, ...). */
+  metadata: Record<string, any>;
+  parentId?: string;
+}
+
 export interface ExtractedDocument {
   text: string;
   metadata: Record<string, any>;
   warnings?: string[];
+  /** Pre-chunked content; when present it replaces generic chunking of `text`. */
+  sections?: PreChunkedSection[];
 }
 
 export interface FileExtractionOptions {
@@ -31,6 +46,11 @@ export interface FileExtractionOptions {
   enablePdfOcr?: boolean;
   pdfOcrMaxPages?: number;
   pdfOcrDpi?: number;
+  /**
+   * Use the structure-aware PDF pipeline (DABOOK) when it is enabled. Set to `false` to force the
+   * flat `pdf-parse` extractor for one call.
+   */
+  preferStructuredPdf?: boolean;
 }
 
 export interface FileExtractor {

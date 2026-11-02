@@ -1,0 +1,12 @@
+=== TEST RUN: BotProfileRepository.test.ts ===
+> jest src/core/profiles/BotProfileRepository.test.ts
+
+PASS src/core/profiles/BotProfileRepository.test.ts
+  BotProfileRepository (CRK-P02-T02)
+    √ saves an initial profile at version 1 with audit history (5 ms)
+    √ increments version and records changed fields diff on update (2 ms)
+    √ supports rollback to an earlier version with audit tracking (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total

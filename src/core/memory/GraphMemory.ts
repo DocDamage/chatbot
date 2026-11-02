@@ -92,6 +92,7 @@ export class GraphMemory {
 
         if (this.config.autoSave) {
             this.saveTimer = setInterval(() => this.save(), this.config.autoSaveInterval);
+            this.saveTimer?.unref?.();
         }
 
         logger.info('Graph memory initialized', {

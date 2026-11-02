@@ -1,0 +1,77 @@
+======================================================================
+TEST OUTPUT: Sections 31-35 Implementation & Certification Suite
+Timestamp: 2026-09-04T12:33:50-04:00
+======================================================================
+
+--- Backend Jest Tests (Sections 32-35) ---
+PASS src/core/knowledge/__tests__/failure-mode-matrix.test.ts
+  FailureModeMatrixHandler (Section 35 Compliance)
+    √ covers every one of the 19 canonical failure modes defined in Section 35 table (4 ms)
+    √ handles PACK_NOT_INSTALLED with alternatives or honest unavailable notice
+    √ handles DATASET_UPDATE_FAILED by preserving previous READY version
+    √ handles HALF_INDEXED_VERSION by refusing to route to non-ready versions (1 ms)
+    √ handles VECTOR_SEARCH_FAILED with graceful lexical fallback
+    √ handles MODEL_UNAVAILABLE by routing to compatible fallback
+    √ handles PROJECT_UNAVAILABLE by abstaining rather than inventing false code
+    √ handles MALICIOUS_RETRIEVED_INSTRUCTIONS by enforcing inert boundary
+
+PASS src/core/config/__tests__/canonical-runtime-config.test.ts
+  CanonicalRuntimeConfig
+    √ provides safe production defaults when env is empty (2 ms)
+    √ parses customized environment overrides correctly
+    √ rejects invalid enum values gracefully via schema safeParse
+    √ generates a clean sanitized summary without secrets (1 ms)
+
+PASS src/core/security/__tests__/knowledge-security-policy.test.ts
+  KnowledgeSecurityPolicy (Section 33 Compliance)
+    33.1: Prompt Injection Boundary & Detection
+      √ wraps retrieved evidence with structural delimiters (3 ms)
+      √ detects adversarial prompt injection attempts in retrieved texts (1 ms)
+    33.2: Dataset Poisoning & Integrity Verification
+      √ verifies correct sha256 checksums (1 ms)
+      √ flags hash mismatches when dataset content is corrupted or tampered with
+    33.3: Cross-User Knowledge Isolation
+      √ filters out other users private documents before retrieval ranking (2 ms)
+    33.4: SSRF Protection
+      √ blocks internal cloud metadata IPs
+      √ blocks localhost in hosted mode
+      √ allows valid public HTTPS documentation endpoints (1 ms)
+    33.5: Parser Safety Bounds
+      √ rejects oversized files (1 ms)
+      √ rejects excessive recursion depth
+      √ accepts compliant file payloads within limits (1 ms)
+    33.6 & 33.7: Code Safety & License Compliance
+      √ marks code snippets as inert non-executable evidence
+      √ validates open source distributable licenses (1 ms)
+    33.8: Diagnostics Privacy & Redaction
+      √ redacts sensitive API keys and tokens from diagnostics logs
+      √ redacts internal chain-of-thought blocks
+
+PASS src/core/knowledge/__tests__/capacity-performance.test.ts
+  CapacityPerformanceTracker & ResourceGuardrails (Section 34 Compliance)
+    34.1: Chat Latency Budget Tracking
+      √ records and aggregates latency stages for no-retrieval requests (1 ms)
+      √ records latency when retrieval is active without distorting no-retrieval stats
+    34.2 & 34.3: Query Benchmarking & Storage Breakdown
+      √ tracks detailed index size breakdown in bytes
+      √ calculates embedding throughput and cost projections (1 ms)
+    34.5: Resource Guardrails
+      √ allows dataset jobs to proceed when all metrics are healthy
+      √ pauses dataset jobs when disk space falls below safety threshold (1 ms)
+      √ pauses dataset jobs when database or embedding provider health probe fails
+
+Test Suites: 4 passed, 4 total
+Tests:       34 passed, 34 total
+Snapshots:   0 total
+Time:        3.411 s
+
+--- Client Vitest Tests (Section 31) ---
+RUN v4.1.7 C:/dev/Chatbot/client
+✓ src/components/__tests__/client-ux-spec.test.tsx (5 tests) 88ms
+Test Files  1 passed (1)
+Tests       5 passed (5)
+
+--- Type Check & Linters ---
+Type check: 0 errors
+Server linter: 0 errors, 0 warnings
+Client linter: 0 errors, 0 warnings

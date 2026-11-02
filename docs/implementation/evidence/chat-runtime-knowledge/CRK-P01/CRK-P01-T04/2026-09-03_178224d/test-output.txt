@@ -1,0 +1,12 @@
+=== TEST RUN: ChatRuntimeFactory.test.ts ===
+> jest src/core/chat/ChatRuntimeFactory.test.ts
+
+PASS src/core/chat/ChatRuntimeFactory.test.ts
+  ChatRuntimeFactory (CRK-P01-T04)
+    √ creates an operational ChatRuntime instance with default configuration (4 ms)
+    √ wires custom adapters and RAG service correctly (3 ms)
+    √ creates a ChatRuntime instance from environment variables without direct runtime env access
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total

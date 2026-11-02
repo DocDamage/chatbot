@@ -1,3 +1,4 @@
+import { apiFetch } from '../api/http';
 import { useState } from 'react';
 import { isStaticPagesBuild } from '../api/runtime';
 
@@ -14,7 +15,7 @@ export default function DocumentWorkspacePanel() {
   if (isStaticPagesBuild) return null;
 
   const request = async (url: string, options: RequestInit) => {
-    const response = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...options });
+    const response = await apiFetch(url, { headers: { 'Content-Type': 'application/json' }, ...options });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
     return data;

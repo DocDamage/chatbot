@@ -21,6 +21,7 @@ for (const target of cleanupTargets) {
 
 await rm(fixtureRoot, { recursive: true, force: true });
 await mkdir(fixtureRoot, { recursive: true });
+await writeFile(join(fixtureRoot, '.env'), '', 'utf8');
 await writeFile(
   join(fixtureRoot, 'browser-e2e-note.txt'),
   'P03-T05 built-server browser E2E fixture.\nThis file is loaded into chat context by Playwright.\n',

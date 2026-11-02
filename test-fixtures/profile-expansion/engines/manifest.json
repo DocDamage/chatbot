@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": "1.0.0",
+  "corpusName": "profile-expansion-engine-fixture-manifest",
+  "description": "Minimal engine project corpus for Godot, Unity, Unreal, and AssetCooker verification.",
+  "projects": [
+    {
+      "engine": "godot",
+      "supportedVersions": ["4.2", "4.3"],
+      "projectFile": "project.godot",
+      "sampleScenes": ["scenes/main.tscn", "scenes/level1.tscn"],
+      "assertionBridgeContract": "godot-assertion-v1",
+      "expectedCleanHash": "3f79bb7b435b05321651daefd374cdc681dc06faa65e374e38337b88ca046dea"
+    },
+    {
+      "engine": "unity",
+      "supportedVersions": ["2022.3 LTS", "6000.0"],
+      "projectFile": "ProjectSettings/ProjectSettings.asset",
+      "licensingRequired": true,
+      "licenseExitCodeWhenMissing": 198,
+      "assertionBridgeContract": "unity-assertion-v1",
+      "expectedCleanHash": "fae2e8b2b73bc34407ab3a699c2794eb88ca298f26038167f4c39cfffa6eb5ee"
+    },
+    {
+      "engine": "unreal",
+      "supportedVersions": ["5.5", "5.8"],
+      "projectFile": "TestGame.uproject",
+      "primaryTargetInstall": "D:\\Unreal\\UE_5.8",
+      "assertionBridgeContract": "unreal-automation-v1",
+      "expectedCleanHash": "544974f07a78a6fffa8dd577fa6574f88ca4d2e8b991cf8e9c4501a3fa45a3be"
+    },
+    {
+      "engine": "asset-cooker",
+      "supportedTypes": ["texture", "sprite", "audio", "model"],
+      "projectFile": "cooker.config.json",
+      "confinementRoot": "cooker-output",
+      "expectedCleanHash": "9b12e3e5f187a5525a74d284f1816e88ca8725f18816c52a0a256df16e91f11a"
+    }
+  ]
+}

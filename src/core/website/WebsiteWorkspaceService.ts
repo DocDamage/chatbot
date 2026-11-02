@@ -1,5 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { WebStudioService } from './WebStudioService';
+import { WebsiteProjectModel, LegacyV1WebsiteProject } from './WebsiteProjectModel';
+import { ResponsivePreviewRenderer } from './ResponsivePreviewRenderer';
 
 export interface WebsiteBlock {
   type: 'hero' | 'text' | 'features' | 'cta';
@@ -16,23 +19,59 @@ export interface WebsiteProject {
 }
 
 export class WebsiteWorkspaceService {
-  private readonly filePath: string;
+  private studioService: WebStudioService;
+  private filePath: string;
+  private renderer = new ResponsivePreviewRenderer();
 
   constructor(workspaceRoot = process.cwd()) {
     const root = path.join(workspaceRoot, 'data', 'website-workspace');
     fs.mkdirSync(root, { recursive: true });
     this.filePath = path.join(root, 'project.json');
+    this.studioService = new WebStudioService(workspaceRoot);
   }
 
   load(): WebsiteProject | null {
     if (!fs.existsSync(this.filePath)) return null;
-    try { return JSON.parse(fs.readFileSync(this.filePath, 'utf8')) as WebsiteProject; } catch { return null; }
+    try {
+      const raw = JSON.parse(fs.readFileSync(this.filePath, 'utf8'));
+      if (raw.schemaVersion === '2.0.0') {
+        return {
+          name: raw.name,
+          theme: {
+            background: raw.theme?.colors?.background,
+            foreground: raw.theme?.colors?.foreground,
+            accent: raw.theme?.colors?.accent
+          },
+          pages: raw.pages.map((p: any) => ({
+            slug: p.slug,
+            title: p.title,
+            blocks: p.blocks.map((b: any) => ({
+              type: (['hero', 'text', 'features', 'cta'].includes(b.type) ? b.type : 'text') as any,
+              title: b.title,
+              body: b.body,
+              items: b.items?.map((it: any) => it.title || it),
+              href: b.ctaHref
+            }))
+          }))
+        };
+      }
+      return raw as WebsiteProject;
+    } catch {
+      return null;
+    }
   }
 
   save(project: WebsiteProject): { project: WebsiteProject; html: string } {
     const normalized = this.normalize(project);
-    fs.writeFileSync(this.filePath, `${JSON.stringify(normalized, null, 2)}\n`, 'utf8');
-    return { project: normalized, html: this.render(normalized, normalized.pages[0]?.slug) };
+    const model = new WebsiteProjectModel(normalized as LegacyV1WebsiteProject);
+    const v2Project = model.getProject();
+    fs.writeFileSync(this.filePath, `${JSON.stringify(v2Project, null, 2)}\n`, 'utf8');
+
+    const html = this.render(normalized, normalized.pages[0]?.slug);
+    return {
+      project: normalized,
+      html
+    };
   }
 
   render(project: WebsiteProject, slug?: string): string {
@@ -50,12 +89,26 @@ export class WebsiteWorkspaceService {
     return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(page.title)}</title><style>:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:${background};color:${foreground};font:16px/1.6 system-ui,sans-serif}main{max-width:960px;margin:0 auto;padding:12vh 24px}.hero,.copy,.features,.cta{margin:0 0 48px}.hero h1{font-size:clamp(42px,8vw,84px);line-height:1.02;margin:8px 0 20px}.eyebrow{color:${accent};letter-spacing:.14em;text-transform:uppercase;font-size:12px}.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}.features article{border:1px solid #404040;border-radius:14px;padding:20px;background:#202020}.cta{border:1px solid #666;border-radius:16px;padding:24px}.cta a{color:${foreground};display:inline-block;margin-top:8px}</style></head><body><main>${blocks}</main></body></html>`;
   }
 
+  public getStudio(): WebStudioService {
+    return this.studioService;
+  }
+
   private normalize(project: WebsiteProject): WebsiteProject {
     if (!project || !Array.isArray(project.pages) || project.pages.length === 0) throw new Error('website project needs at least one page');
     return {
       name: String(project.name || 'Untitled site').slice(0, 100),
       theme: project.theme || {},
-      pages: project.pages.slice(0, 20).map(page => ({ slug: String(page.slug || 'home').toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, '') || 'home', title: String(page.title || 'Untitled page').slice(0, 100), blocks: Array.isArray(page.blocks) ? page.blocks.slice(0, 50).map(block => ({ type: block.type, title: block.title, body: block.body, items: block.items?.slice(0, 20), href: block.href })) : [] }))
+      pages: project.pages.slice(0, 20).map(page => ({
+        slug: String(page.slug || 'home').toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-|-$/g, '') || 'home',
+        title: String(page.title || 'Untitled page').slice(0, 100),
+        blocks: Array.isArray(page.blocks) ? page.blocks.slice(0, 50).map(block => ({
+          type: block.type,
+          title: block.title,
+          body: block.body,
+          items: block.items?.slice(0, 20),
+          href: block.href
+        })) : []
+      }))
     };
   }
 

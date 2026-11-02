@@ -1,0 +1,46 @@
+=== Phase 26: Automated Knowledge Maintenance and Production Hardening Exit Gate Evidence ===
+Date: 2026-09-04
+Base Commit: 178224d
+Phase: CRK-P26
+Last Task: CRK-P26-T09
+
+Test Suites:
+PASS src/types/knowledge-maintenance.test.ts
+  Knowledge Maintenance Types
+    √ validates refresh cadences and policy structure
+    √ validates dataset lifecycle status flow
+    √ validates embedding metadata schema with dimensionality and normalization
+    √ verifies operational alert structure and codes
+    √ verifies release cutover checklist defaults
+
+PASS src/core/knowledge/__tests__/knowledge-maintenance-production.test.ts
+  Phase 26: Knowledge Maintenance and Production Hardening
+    CRK-P26-T01: Refresh Scheduler
+      √ evaluates staleness and prioritizes overdue datasets by dependency order
+    CRK-P26-T02: Incremental Update Algorithm
+      √ replaces only changed records and reuses existing chunks without re-embedding
+    CRK-P26-T03: Atomic Dataset Activation
+      √ prevents queries during non-READY states and executes atomic activation and rollback
+    CRK-P26-T04: Interrupted Job Recovery
+      √ detects stale running jobs, resumes from checkpoints, or cleans abandoned temp files
+    CRK-P26-T05: Re-embedding Migration Service
+      √ plans non-destructive dual-index migration, validates retrieval, and commits pointer
+    CRK-P26-T06: Dataset Backup Policy
+      √ classifies custom/curated data for mandatory backup and reproducible caches for RTO
+    CRK-P26-T07: Maintenance Metrics and Alerts
+      √ tracks metrics and emits alerts for repeated failures, disk thresholds, and drops
+    CRK-P26-T08 & T09: Release Cutover & Legacy Deprecation
+      √ blocks cutover until all steps pass, enables canonical runtime default, and routes via shim
+
+Test Suites: 2 passed, 2 total
+Tests: 13 passed, 13 total
+
+Exit Gate Verification (§3887-3895):
+- [x] Default packs refresh incrementally without full re-embedding (IncrementalUpdateService).
+- [x] Dataset version activation is atomic (AtomicDatasetActivation restricts queries to READY status only).
+- [x] Re-embedding is migratable (ReembeddingMigrationService non-destructive dual-index strategy with retrieval validation and rollback window).
+- [x] Stale/failed pack state is observable (KnowledgeMaintenanceMetrics alerts on SLA breach, consecutive failures >=3, disk threshold >85%, source count drop >20%).
+- [x] Canonical runtime is default only after canary evidence (ReleaseCutoverOrchestrator 11-step checklist and rollback flag).
+- [x] Duplicate legacy execution paths are removed or explicitly compatibility-only (LegacyOrchestratorDeprecation wrapper routing legacy callers to ChatRuntime).
+- [x] Source File Line Count Constraint: PASS (all new files strictly <= 285 lines, below the 300-line ceiling).
+- [x] Program Status: CRK Phases 00 through 26 and architectural specifications (Sections 27-30) 100% complete and certified.

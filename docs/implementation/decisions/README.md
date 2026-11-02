@@ -21,6 +21,16 @@ Each ADR identifies status, date, decision owners, context, decision, alternativ
 | [ADR-0009](ADR-0009-experimental-module-support-policy.md) | Manifest categories control registration and support promotion | Accepted |
 | [ADR-0010](ADR-0010-telemetry-and-privacy-policy.md) | Data-minimized operational telemetry; no content analytics by default | Accepted |
 | [ADR-0011](ADR-0011-external-capability-integration-boundaries.md) | Integrate external capabilities through licensed, bounded native modules or isolated adapters | Accepted |
+| [ADR-0012](ADR-0012-clean-room-lexical-retrieval.md) | Clean-room BM25 lexical retrieval and hybrid rank fusion | Accepted |
+| [ADR-0013](ADR-0013-repository-findings-and-sbom.md) | Standardized SARIF findings and CycloneDX SBOM generation | Accepted |
+| [ADR-0014](ADR-0014-local-model-and-resource-adapter.md) | Local model discovery, telemetry routing, and resource management | Accepted |
+| [ADR-0015](ADR-0015-typed-agent-teams-and-worktrees.md) | Typed agent roles, team coordination, and isolated worktree claims | Accepted |
+| [ADR-0016](ADR-0016-transparent-browser-jobs.md) | Transparent browser automation, state-change confirmation, and origin security | Accepted |
+| [ADR-0017](ADR-0017-consent-aware-video-localization.md) | Consent-governed video dubbing, subtitle translation, and voice cloning protection | Accepted |
+| [ADR-0018](ADR-0018-lattice-game-development-capability.md) | Lattice game development simulation, scene generation, and deterministic verification | Accepted |
+| [ADR-0019](ADR-0019-unified-capability-hub-ui.md) | Unified Capability Hub UI dashboard with status gauges and job management | Accepted |
+| [ADR-0020](ADR-0020-evaluation-observability-and-promotion-gates.md) | Capability evaluation suites, SLO observability, and promotion/rollback engine | Accepted |
+| [ADR-0021](ADR-0021-profile-wide-capability-expansion.md) | Profile-wide capability expansion architecture, governance, and release trains | Accepted |
 
 ## Governance
 

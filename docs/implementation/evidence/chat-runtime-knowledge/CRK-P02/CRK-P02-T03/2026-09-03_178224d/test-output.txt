@@ -1,0 +1,12 @@
+=== TEST RUN: DefaultBotProfile.test.ts ===
+> jest src/core/profiles/DefaultBotProfile.test.ts
+
+PASS src/core/profiles/DefaultBotProfile.test.ts
+  DefaultBotProfile (CRK-P02-T03)
+    √ defines a valid DEFAULT_BOT_PROFILE that passes schema validation (2 ms)
+    √ provides specialized builtin profiles for coding and research (1 ms)
+    √ resolves system prompt assets without embedding massive literals in DB schemas
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
