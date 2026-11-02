@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "definitionCount": 272,
-  "templateCount": 272,
-  "usageCount": 248,
+  "definitionCount": 274,
+  "templateCount": 274,
+  "usageCount": 250,
   "duplicateDefinitions": [],
   "duplicateTemplateEntries": [],
   "missingFromTemplate": [],
@@ -147,6 +147,12 @@
     "CHAT_RUNTIME_V2_SHADOW": [
       "src/core/chat/ChatRuntimeShadowRunner.ts"
     ],
+    "CHAT_SHADOW_REPORT_PATH": [
+      "src/core/chat/ChatRuntimeShadowRunner.test.ts",
+      "src/core/chat/ChatRuntimeShadowRunner.ts",
+      "src/core/governance/ShadowReport.ts",
+      "src/core/governance/__tests__/knowledge-operations.test.ts"
+    ],
     "CHATBOT_NATIVE_PYTHON": [
       "src/core/native-runtime/RuntimeDiscovery.ts",
       "src/server/routes/__tests__/knowledge-base-dabook.test.ts"
@@ -186,7 +192,9 @@
       "src/core/coding/integrations/CodingToolConfig.ts"
     ],
     "CODING_TOOLS_ENABLED": [
-      "src/core/coding/integrations/CodingToolConfig.ts"
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/verification/ModelRepairProposal.test.ts",
+      "src/core/coding/verification/ModelRepairProposal.ts"
     ],
     "CODING_WORKSPACE_ROOT": [
       "src/core/initialization/ServiceInitializer.ts"
@@ -202,6 +210,7 @@
       "src/core/knowledge/__tests__/entertainment-source-deep-matrix.test.ts"
     ],
     "CONTEXT7_API_KEY": [
+      "src/core/coding/integrations/AiderAdapter.test.ts",
       "src/core/coding/integrations/CodingToolsService.ts",
       "src/core/coding/integrations/Context7Adapter.ts"
     ],
@@ -214,7 +223,6 @@
       "src/middleware/auth.ts",
       "src/server/__tests__/auth-middleware.security.test.ts",
       "src/server/__tests__/index.test.ts",
-      "src/server/__tests__/server.entrypoint.failures.test.ts",
       "src/server/__tests__/server.entrypoint.lifecycle.test.ts",
       "src/server/routes/setup.test.ts"
     ],
@@ -239,6 +247,7 @@
     "DABOOK_PYTHON": [
       "scripts/dabook/setup.mjs",
       "src/core/native-runtime/__tests__/RuntimeDiscovery.dabook.test.ts",
+      "src/core/rag/ingestion/ManagedPdfOcr.ts",
       "src/server/routes/__tests__/knowledge-base-dabook.test.ts"
     ],
     "DABOOK_WORKSPACE": [
@@ -250,7 +259,9 @@
       "scripts/import-books.ts",
       "scripts/ocr-queue.ts",
       "src/core/governance/CanonicalCommandOperations.ts",
+      "src/core/governance/KnowledgeBundleOperations.ts",
       "src/core/governance/__tests__/canonical-operations.test.ts",
+      "src/core/governance/__tests__/knowledge-operations.test.ts",
       "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
@@ -286,6 +297,10 @@
     ],
     "DISK_CACHE_DIR": [
       "src/core/initialization/ServiceInitializer.ts"
+    ],
+    "DOTENV_CONFIG_PATH": [
+      "src/server/routes/__tests__/settings-routes.test.ts",
+      "src/server/routes/settings.ts"
     ],
     "EAGER_CODING_KNOWLEDGE_LOAD": [
       "src/core/initialization/ServiceInitializer.ts"
@@ -364,7 +379,6 @@
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "ENABLE_WEBSOCKET": [
-      "src/server/__tests__/server.entrypoint.failures.test.ts",
       "src/server/__tests__/server.entrypoint.lifecycle.test.ts",
       "src/server/index.ts"
     ],
@@ -536,11 +550,9 @@
       "src/core/auth/AuthService.ts",
       "src/core/auth/__tests__/AuthService.test.ts",
       "src/server/__tests__/auth-middleware.security.test.ts",
-      "src/server/__tests__/index.routes.test.ts",
       "src/server/__tests__/index.test.ts",
       "src/server/__tests__/permission-profile-matrix.test.ts",
       "src/server/__tests__/release-security.test.ts",
-      "src/server/__tests__/server.entrypoint.failures.test.ts",
       "src/server/__tests__/server.entrypoint.lifecycle.test.ts",
       "src/server/__tests__/server.index.test.ts",
       "src/server/routes/__tests__/admin.security.test.ts",
@@ -744,6 +756,7 @@
       "scripts/ocr-queue.ts",
       "scripts/run-coding-evals.ts",
       "src/core/agents/MultiAgentOrchestrator.ts",
+      "src/core/coding/integrations/AiderAdapter.test.ts",
       "src/core/config/APIKeyManager.test.ts",
       "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts",
@@ -797,6 +810,7 @@
       "src/core/rag/ingestion/PdfExtractor.ts"
     ],
     "PDF_OCR_ENABLED": [
+      "src/core/dabook/DabookBridge.ts",
       "src/core/rag/ingestion/PdfExtractor.ts"
     ],
     "PDF_OCR_LANGUAGE": [
@@ -871,7 +885,9 @@
       "scripts/import-books.ts",
       "scripts/ocr-queue.ts",
       "src/core/governance/CanonicalCommandOperations.ts",
+      "src/core/governance/KnowledgeBundleOperations.ts",
       "src/core/governance/__tests__/canonical-operations.test.ts",
+      "src/core/governance/__tests__/knowledge-operations.test.ts",
       "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
@@ -920,7 +936,9 @@
       "scripts/local/doctor.mjs",
       "scripts/ocr-queue.ts",
       "src/core/governance/CanonicalCommandOperations.ts",
+      "src/core/governance/KnowledgeBundleOperations.ts",
       "src/core/governance/__tests__/canonical-operations.test.ts",
+      "src/core/governance/__tests__/knowledge-operations.test.ts",
       "src/core/initialization/ServiceInitializer.test.ts",
       "src/core/initialization/ServiceInitializer.ts"
     ],
@@ -960,7 +978,6 @@
       "src/server/healthRoutes.ts"
     ],
     "REQUEST_READY_TIMEOUT_MS": [
-      "src/server/__tests__/server.entrypoint.failures.test.ts",
       "src/server/index.ts",
       "src/server/routes/legacy-chat.ts"
     ],

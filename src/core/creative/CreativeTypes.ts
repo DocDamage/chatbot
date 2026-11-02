@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import type { CreativeCapabilityReport } from './CreativeCapabilityDetector';
 import type { CreativeQualityReview } from './CreativeQualityReviewer';
 

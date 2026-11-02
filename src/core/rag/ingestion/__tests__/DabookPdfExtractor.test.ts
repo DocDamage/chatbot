@@ -55,10 +55,10 @@ function fakeFallback(doc: Partial<ExtractedDocument> = {}): FileExtractor & { e
 }
 
 describe('DabookPdfExtractor', () => {
-  it('only handles PDFs', () => {
+  it('handles PDF and structured EPUB inputs', () => {
     const extractor = new DabookPdfExtractor(fakeBridge(), fakeFallback());
     expect(extractor.canExtract('.pdf')).toBe(true);
-    expect(extractor.canExtract('.epub')).toBe(false);
+    expect(extractor.canExtract('.epub')).toBe(true);
   });
 
   it('returns pre-chunked sections with citation metadata and no fallback warning', async () => {

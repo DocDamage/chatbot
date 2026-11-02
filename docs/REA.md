@@ -8,7 +8,7 @@ Run `npm run setup:rea`, then restart the chatbot. Setup installs the isolated l
 
 Open **REA · Reverse engineering** below the chat history controls. Select a local file/directory or upload an artifact, choose an analysis type, and start it. Results include evidence IDs, limitations, and a download of the complete evidence bundle. Recent analyses survive restarts. Cancel work or delete saved analyses from the panel.
 
-Chat commands work with Ollama without requiring model tool calling:
+REA chat commands run locally without requiring language-model inference or model tool calling:
 
 ```text
 /rea status
@@ -20,6 +20,16 @@ Chat commands work with Ollama without requiring model tool calling:
 Commands queue analysis and report its actual status. Use the panel for explicit operations and optional native function names or provider-returned addresses.
 
 With the local app running, `npm run verify:rea` performs live JavaScript, archive, model, Windows PE and .NET checks where applicable. Add `-- --native` to verify a native catalog and decompile a provider-returned internal function. Results are written to ignored `temp/rea-live-verification.json`.
+
+For an isolated app port or a nonstandard managed runtime location:
+
+```powershell
+npm run verify:rea -- --base-url http://127.0.0.1:4310 --native --managed-fixture "C:/path/to/managed.dll" --output temp/rea-verification.json
+```
+
+The verifier accepts only an HTTP loopback origin. On Windows it discovers the standard PowerShell, Codex-bundled PowerShell, or .NET Framework assembly; `--managed-fixture` selects another local assembly explicitly. A missing managed fixture is a failed prerequisite rather than a silently skipped check.
+
+On November 1, 2026, all eight live verification workflows passed against an isolated template-provider app using the already installed Node 24.22.1 runtime: JavaScript, ZIP, GGUF, PE, managed assembly, native procedure catalog, native function decompilation, and `/rea status`. The function returned 702 characters of actual decompiler pseudocode. Evidence records and their hashes were checked. This run used an empty dotenv file and private temporary job storage; it did not change the user's `.env` or existing analyses, and did not evaluate Ollama. See the [validation evidence](implementation/evidence/remaining-work/2026-11-01/follow-up/README.md).
 
 ## Workflows
 

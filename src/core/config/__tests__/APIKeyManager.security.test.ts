@@ -28,15 +28,17 @@ describe('RT-PLAT-004 / RT-CONF-001: APIKeyManager Encryption and Lifecycle Suit
   let tempDir: string;
   let configPath: string;
   const validSecret = 'a-very-secure-encryption-secret-of-32-bytes!';
+  const originalEnv = { ...process.env };
 
   beforeEach(() => {
+    for (const provider of LLM_PROVIDERS) delete process.env[provider.envVar];
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'api-key-test-'));
     configPath = path.join(tempDir, 'api_keys.json');
     process.env.API_KEY_ENCRYPTION_SECRET = validSecret;
   });
 
   afterEach(() => {
-    delete process.env.API_KEY_ENCRYPTION_SECRET;
+    process.env = { ...originalEnv };
     try {
       fs.rmSync(tempDir, { recursive: true, force: true });
     } catch {

@@ -28,8 +28,8 @@ from dabook.core.store.db import write_txn
 from dabook.core.store.tasks import log_event
 
 SCANNED_MESSAGE = (
-    "Scanned PDF: no usable text layer was found. OCR is not implemented yet (planned: "
-    "Phase 5), so no datasets were produced."
+    "Scanned PDF: no usable text layer was found. Enable OCR with extract.routing.scanned='ocr' "
+    "and install dabook[ocr] to produce datasets."
 )
 
 
@@ -106,7 +106,9 @@ def settle_book(con: sqlite3.Connection, book_id: int, workspace: Path) -> str |
         return None
     now = time.time()
 
-    if snap.doc_type == "scanned":
+    params = _book_params(workspace, book["sha256"])
+    ocr_requested = params.get("routing", {}).get("scanned") == "ocr" or params.get("backend") == "docling"
+    if snap.doc_type == "scanned" and not ocr_requested:
         with write_txn(con):
             con.execute(
                 "UPDATE tasks SET state='cancelled' WHERE book_id=? AND state='pending'", (book_id,)
@@ -133,6 +135,14 @@ def settle_book(con: sqlite3.Connection, book_id: int, workspace: Path) -> str |
         and score is not None
         and score < float(params.get("quality_review", 0.70))
     )
+    # Never certify an empty OCR result, including per-page extraction failures.
+    if snap.doc_type == "scanned":
+        key = _complete_task_key(con, book_id, "s11_validate")
+        validation = read_artifact(workspace, book["sha256"], "s11_validate", key, "validation.json") if key else None
+        if not validation or not validation.get("content_chars"):
+            with write_txn(con):
+                con.execute("UPDATE books SET state='needs_input', error=?, finished_at=? WHERE id=?", ("OCR produced no usable content; check engine availability and page warnings.", now, book_id))
+            return "needs_input"
     new_state = "review" if gated else "done"
     with write_txn(con):
         con.execute(

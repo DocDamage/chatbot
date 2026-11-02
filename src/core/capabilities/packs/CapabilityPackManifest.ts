@@ -4,7 +4,7 @@
  * tools, agents, connectors, health checks, tests, and rollback definitions.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export type IntegrationMode = 'native' | 'external_service' | 'clean_room';
 export type PackMaturity = 'disabled' | 'experimental' | 'preview' | 'supported';

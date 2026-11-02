@@ -1,0 +1,370 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-11-01T22:20:17.282Z",
+  "scope": "Local remaining-work implementation and component release checks",
+  "source": {
+    "branch": "codex/coding-alias-context",
+    "baseCommit": "287cd03d53494eee400ccc1a11da95accc7193da",
+    "uncommitted": true,
+    "files": [
+      {
+        "file": "package-lock.json",
+        "sha256": "483c8ea0f0c36aa7a44cb22bb960cefe8518bbca6bd0040737c59a78c9c7c13b"
+      },
+      {
+        "file": "client/package-lock.json",
+        "sha256": "40fb29397c39a8b869eb7e323a4dcc9644ba5044c27370b7a788a1e59be762f4"
+      },
+      {
+        "file": "desktop-companion/package-lock.json",
+        "sha256": "624d859e9744a8f516d17714dc3c046913c6c230d75519cce3e44933beaba1c7"
+      },
+      {
+        "file": "services/coding-tools/package-lock.json",
+        "sha256": "2599a02789ca691fd086fff5b60831beab0eceac6f13519a9aee5f2de1065ed9"
+      },
+      {
+        "file": "services/rea/package-lock.json",
+        "sha256": "4b248f1e5ca02abbe595e6f92162777a6491c9b887fc8b7ea03db1bd8f17b6ad"
+      },
+      {
+        "file": "services/dabook/uv.lock",
+        "sha256": "09977283266677fddf35e3a5d1a0e38ac39f33dc48b6c6789e00cdb3c459e81e"
+      },
+      {
+        "file": "services/dabook/pyproject.toml",
+        "sha256": "fb772941061c1a4247c47b8af2191d64d1f2a919ca471265a4ce87e6292a4059"
+      },
+      {
+        "file": "src/core/governance/KnowledgeBundleOperations.ts",
+        "sha256": "654673e155d370f8df9188423b9ba8d3c9ab9b2e4b9bbdb176589404fe46eeae"
+      },
+      {
+        "file": "src/core/governance/ShadowReport.ts",
+        "sha256": "d6d4c3aef1fab85992bf37e473e7d48edee12455698658f210213f3930a73374"
+      },
+      {
+        "file": "src/core/chat/ChatRuntimeShadowRunner.ts",
+        "sha256": "7263e3e4e14aa41ef27ba3df48da6f63c621d37f99acc33bc36c4342016b1884"
+      },
+      {
+        "file": "src/core/coding/integrations/CodingJobHistory.ts",
+        "sha256": "f05fd4b5ebef497f42ef069fbee2c283dc7b335ac129e5bc2c9c7b9dc8f7963e"
+      },
+      {
+        "file": "src/core/coding/integrations/CodingToolsService.ts",
+        "sha256": "68e2b226c2e2edd93f474f570589daee0ea90eb23a17eba501bb4739702508d5"
+      },
+      {
+        "file": "src/server/routes/coding-tools.ts",
+        "sha256": "ce7d032f84ba268b973a0cb188dc049c53f10bf61ab3ac3364edbf6e8e65f5d7"
+      },
+      {
+        "file": "client/src/components/CodingToolsPanel.tsx",
+        "sha256": "f84fc33f069ed1686eea0504eb84d80655b27269d4ac2730efc21665fbfc8ddf"
+      },
+      {
+        "file": "src/core/dabook/training/TrainingPlan.ts",
+        "sha256": "57179c88f9268262982747bc38dd6d0f6629ab46a279a0ccd2be2e26874411ad"
+      },
+      {
+        "file": "src/core/dabook/training/TrainingExporter.ts",
+        "sha256": "e9d298bc7f51cabff5543c0d19adb6a5d746680a79013ea8f04dd250e06a7d5a"
+      },
+      {
+        "file": "src/core/rag/ingestion/ManagedPdfOcr.ts",
+        "sha256": "e2f313206426b0e8bf3dd81e2763b86e19aea8ea97317177acd1ae3e25cd8680"
+      },
+      {
+        "file": "src/core/rag/ingestion/PdfExtractor.ts",
+        "sha256": "bd53b3c54ff666621086b781429daf19b97654e22202717124254da7bb5d6894"
+      },
+      {
+        "file": "src/core/rag/ingestion/DabookPdfExtractor.ts",
+        "sha256": "86533fa18071e026146a75d2ba2d8056a29085d28a87a4f33267f067505d146b"
+      },
+      {
+        "file": "services/dabook/src/dabook/backends/structured.py",
+        "sha256": "7c995e4f365c9c95aaeb22f28aff32b20b1ebb6ffb957d5efd82ff1b29e83ebc"
+      },
+      {
+        "file": "services/dabook/src/dabook/ocr.py",
+        "sha256": "e0bfff0013df17e5cd2c33ef646590b2b0bb0d1b1b10dab4290c6ec19c9d7e50"
+      },
+      {
+        "file": "src/server/routes/settings.ts",
+        "sha256": "5aa81f52dd76087746a83b632f2804d69462f55931296a92e387ff40acbb89be"
+      },
+      {
+        "file": "src/core/files/FileExplorerService.ts",
+        "sha256": "d7a7ed22c543b6b90b6ef186b2203a6aa73fe38e832678b6a5533bf0098d5bef"
+      }
+    ]
+  },
+  "runtime": {
+    "node": "v24.15.0",
+    "python": "3.12.12",
+    "os": "win32"
+  },
+  "aggregateCommand": "verify:release was initially interrupted by discovered failures. Its component checks were completed separately with equivalent JSON/LCOV coverage reports and one test worker. An in-band Jest run later exited with native Windows status 0xc0000409 before completing; the final server run uses one recyclable worker with a 1 GiB idle memory bound. No coverage policy was lowered.",
+  "checks": [
+    {
+      "name": "Server coverage",
+      "command": "npm run test:coverage -- --maxWorkers=1 --workerIdleMemoryLimit=1GB --logHeapUsage --coverageReporters=lcovonly --coverageReporters=json-summary",
+      "result": "PASS",
+      "log": "temp/remaining-server-coverage-accepted.log",
+      "logSha256": "84fec7e794e321b37a77ee9d5890d947bfda669bc3aab88b503604a6667bdddc",
+      "summary": [
+        "      √ blocks claims that tests passed when tests were never executed (1 ms)",
+        "Test Suites: 2 skipped, 559 passed, 559 of 561 total",
+        "Tests:       5 skipped, 3209 passed, 3214 total",
+        "Time:        396.61 s, estimated 464 s",
+        "Server coverage policy (enforce, branch-75): lines 89.1695% (39972/44827), branches 75.2183% (19210/25539).",
+        "Tier A critical files evaluated: 19.",
+        "Coverage policy report: coverage\\server-coverage-policy-report.json",
+        "Server coverage policy passed."
+      ]
+    },
+    {
+      "name": "Test types",
+      "command": "npm run type-check:tests",
+      "result": "PASS",
+      "log": "temp/remaining-types-final.log",
+      "logSha256": "769c8e6af9da93212cc554503e1f4d7d744a7df953abf4b201372c4ffbb38eb7",
+      "summary": []
+    },
+    {
+      "name": "Server lint",
+      "command": "npm run lint:server",
+      "result": "PASS",
+      "log": "temp/remaining-lint-accepted.log",
+      "logSha256": "44a286b105c730974001d34e9c0bbefb3e0c5b5c603a65e6b81281f77aa0be8f",
+      "summary": []
+    },
+    {
+      "name": "Client coverage and unit tests",
+      "command": "(working directory: client) node node_modules/vitest/vitest.mjs run --coverage --maxWorkers=1; node ../scripts/release/check-client-coverage.mjs",
+      "result": "PASS",
+      "log": "temp/remaining-client-coverage-accepted.log",
+      "logSha256": "9625b06dd2e71298ad043b949a7525b9b778f6897f9dcf47314b77bb7f0c6625",
+      "summary": [
+        " Test Files  61 passed (61)",
+        "      Tests  206 passed (206)",
+        "Client coverage policy (enforce, stage-3): lines 80.4131% (2258/2808), branches 74.3243% (1980/2664).",
+        "Critical client files evaluated: 29.",
+        "Coverage policy report: client\\coverage\\client-coverage-policy-report.json",
+        "Client coverage policy passed."
+      ]
+    },
+    {
+      "name": "Accessibility",
+      "command": "npm --prefix client run a11y",
+      "result": "PASS",
+      "log": "temp/remaining-accessibility.log",
+      "logSha256": "54af996085fd25fbc67ad7f5d0fcaa4816285a598721baf3ec422b0f8491b4fa",
+      "summary": [
+        " Test Files  4 passed (4)",
+        "      Tests  17 passed (17)",
+        "  6 passed (15.5s)"
+      ]
+    },
+    {
+      "name": "Built-server browser workflows",
+      "command": "node scripts/browser/prepare-browser-e2e.mjs --confirm-browser-e2e-reset; npm --prefix client run test:browser:e2e",
+      "result": "PASS",
+      "log": "temp/remaining-browser-accepted.log",
+      "logSha256": "1fe395f37fd77e4d78581dcdfbc87409629e56f260069e240b13fcc9f31f5514",
+      "summary": [
+        "  8 passed (1.0m)"
+      ]
+    },
+    {
+      "name": "Build and packaging",
+      "command": "npm run release:package",
+      "result": "PASS",
+      "log": "temp/remaining-package-accepted.log",
+      "logSha256": "03754e87fc975df287a8eb936fd568d90d4cf94d42e5b57315c803b3e7df700f",
+      "summary": [
+        "Packaging smoke passed."
+      ]
+    },
+    {
+      "name": "Repository release gates",
+      "command": "npm run check:phase2",
+      "result": "PASS",
+      "log": "temp/remaining-phase2-accepted.log",
+      "logSha256": "cccc7e4275ec8f56f1e77f8253af8b4a944745367d5c090963911fef7f40ea59",
+      "summary": [
+        "Source integrity verified for 51 sources.",
+        "Repository inventory is current (4 artifacts).",
+        "Production boundary passed: 912 reachable and 359 isolated/classified production modules.",
+        "File-size policy passed; 95 registered production files exceed 300 lines.",
+        "Environment contract passed: 274 definitions, 250 variables used.",
+        "Documentation validation passed for 11 release-critical documents."
+      ]
+    },
+    {
+      "name": "Final repository inventory",
+      "command": "npm run check:inventory",
+      "result": "PASS",
+      "log": "temp/remaining-inventory-accepted.log",
+      "logSha256": "5965413930cd9e828652a6fbf8b0c6039c3ffd2e755b4db9da82047eb9ef4601",
+      "summary": [
+        "Repository inventory is current (4 artifacts)."
+      ]
+    },
+    {
+      "name": "Node runtime dependency audits",
+      "command": "node scripts/release/check-dependency-vulnerabilities.mjs",
+      "result": "PASS",
+      "log": "temp/remaining-dependency-accepted.log",
+      "logSha256": "77d5f17b66d09fad1c4f88c7d80c07d578d26e20ce58f4960547ed66788167be",
+      "summary": [
+        "server: critical=0, high=0, moderate=0, low=0",
+        "client: critical=0, high=0, moderate=0, low=0",
+        "desktop-companion: critical=0, high=0, moderate=0, low=0",
+        "coding-tools: critical=0, high=0, moderate=0, low=0",
+        "rea: critical=0, high=0, moderate=0, low=0",
+        "Dependency vulnerability gate passed for all shipped Node runtime trees."
+      ]
+    },
+    {
+      "name": "Current-tree secret scan",
+      "command": "npm run check:secrets",
+      "result": "PASS",
+      "log": "temp/remaining-secrets-accepted.log",
+      "logSha256": "e73311f300f0363225888c37e032457810f6af2ef4659234b6500ea5502a9d19",
+      "summary": [
+        "Secret scan passed for 3635 current file(s)."
+      ]
+    },
+    {
+      "name": "Complete DABOOK suite",
+      "command": "services/dabook/.venv/Scripts/python.exe -m pytest services/dabook/tests -q",
+      "result": "PASS",
+      "log": "temp/dabook-suite-accepted.log",
+      "logSha256": "65f63c8a86cba0429c90f888a0b8f1dcfc2b8d6872e395c7f29a43cee34aa855",
+      "summary": [
+        "319 passed, 1 skipped, 1 warning in 299.19s (0:04:59)"
+      ]
+    },
+    {
+      "name": "Python dependency consistency",
+      "command": "uv pip check --python services/dabook/.venv/Scripts/python.exe",
+      "result": "PASS",
+      "log": "temp/dabook-consistency-final.log",
+      "logSha256": "3d7d4bd773190c24bf81c98b9d753997f83db4597cca7a53626a5dccea19022a",
+      "summary": [
+        "Checked 125 packages in 9ms",
+        "All installed packages are compatible"
+      ]
+    },
+    {
+      "name": "Python dependency audit",
+      "command": "uvx pip-audit --path services/dabook/.venv/Lib/site-packages",
+      "result": "PASS",
+      "log": "temp/dabook-audit-accepted.log",
+      "logSha256": "4e4757ff226a44b5c448b1c4624619419c22d5272463dc19510b4754871a72f9",
+      "summary": [
+        "No known vulnerabilities found"
+      ]
+    },
+    {
+      "name": "Live TypeScript managed OCR",
+      "command": "npx tsx (managedPdfOcr on scanned-ocr-live.pdf; isolated diagnostic)",
+      "result": "PASS",
+      "log": "temp/managed-ocr-live.log",
+      "logSha256": "dd6d546c17bc2f07dd4a07e7d92a900251f68d49dc4864fa974f9c22d44964f7",
+      "summary": []
+    }
+  ],
+  "coverage": {
+    "server": {
+      "lines": {
+        "total": 44827,
+        "covered": 39972,
+        "skipped": 0,
+        "pct": 89.16
+      },
+      "statements": {
+        "total": 49250,
+        "covered": 43168,
+        "skipped": 0,
+        "pct": 87.65
+      },
+      "functions": {
+        "total": 9083,
+        "covered": 7840,
+        "skipped": 0,
+        "pct": 86.31
+      },
+      "branches": {
+        "total": 25539,
+        "covered": 19210,
+        "skipped": 0,
+        "pct": 75.21
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 100
+      }
+    },
+    "client": {
+      "lines": {
+        "total": 2808,
+        "covered": 2258,
+        "skipped": 0,
+        "pct": 80.41
+      },
+      "statements": {
+        "total": 3274,
+        "covered": 2566,
+        "skipped": 0,
+        "pct": 78.37
+      },
+      "functions": {
+        "total": 1091,
+        "covered": 800,
+        "skipped": 0,
+        "pct": 73.32
+      },
+      "branches": {
+        "total": 2664,
+        "covered": 1980,
+        "skipped": 0,
+        "pct": 74.32
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 100
+      }
+    }
+  },
+  "liveExtraction": {
+    "scannedOcr": "Python and TypeScript returned Aurora observatory opens Thursday from an image-only PDF.",
+    "docling": "Live one-page extraction recovered the full table grid; displayed E=mc² was retained as text and was not detected as an equation.",
+    "fixtures": [
+      {
+        "file": "scanned-ocr.pdf",
+        "sha256": "554348169b392532f0e16eb55f1bcae58eb4876b4d3059bc3f7d80e433690424"
+      },
+      {
+        "file": "tables-equations.pdf",
+        "sha256": "89f15018c811e893b780a06ae3a98885dfbce23036ae91fb4677fe1408b34b94"
+      }
+    ],
+    "benchmark": "docling-benchmark.json"
+  },
+  "remaining": [
+    "Live Ollama evaluation deferred at the user request: installation is on their other PC.",
+    "Docling remains opt-in; broader equation detection and multi-document quality acceptance are incomplete.",
+    "Actual training, held-out trained-model evaluation, and ModelUpdater registration remain future integration; only the governed local training handoff is implemented.",
+    "REA runtime needs its supported Node release; this host uses Node 24.15.0. Its dependency audit passes.",
+    "Root development tooling retains 27 moderate and 4 low findings; all five shipped Node runtime trees and the installed DABOOK environment audit clean.",
+    "Clean-machine installation/upgrade/uninstallation and hosted-production certification are outside these local component checks."
+  ]
+}

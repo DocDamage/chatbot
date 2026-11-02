@@ -10,12 +10,23 @@ import { AiderAdapter } from './AiderAdapter';
 import { StructuredEditEngine } from '../editing/StructuredEditEngine';
 import { selectAutomaticContext } from './AutomaticContext';
 import { validatePatchDraft } from './PatchDraftValidator';
+import { CodingJobHistory } from './CodingJobHistory';
 
 export class CodingToolsService {
   private readonly active = new Set<AbortController>();
   private aiderBusy = false;
   private stopped = false;
-  constructor(readonly workspaceRoot = process.cwd(), readonly config: CodingToolConfig = codingToolConfig()) {}
+  private readonly history: CodingJobHistory;
+  private readonly cleanupTimer?: NodeJS.Timeout;
+  constructor(readonly workspaceRoot = process.cwd(), readonly config: CodingToolConfig = codingToolConfig()) {
+    this.history = new CodingJobHistory(config.dataRoot);
+    if (config.enabled) {
+      this.history.cleanup();
+      this.cleanupTimer = setInterval(() => this.history.cleanup(), 3600000); this.cleanupTimer.unref();
+    }
+  }
+  listJobs(owner: string) { return this.history.list(owner); }
+  getJob(owner: string, id: string) { return this.history.read(owner, id); }
   status() {
     const tools = { serena: fs.existsSync(this.config.serena), aider: fs.existsSync(this.config.aiderPython),
       astGrep: fs.existsSync(this.config.astGrep), context7: fs.existsSync(this.config.context7),
@@ -33,18 +44,20 @@ export class CodingToolsService {
     const id = crypto.randomUUID(), directory = path.join(this.config.dataRoot, id);
     fs.mkdirSync(directory, { recursive: true });
     const record = { id, owner, tool, startedAt: new Date().toISOString() };
+    this.history.active.add(id);
+    fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify({ ...record, status: 'running' }));
     let timedOut = false;
     const timer = setTimeout(() => { timedOut = true; controller.abort(); }, this.config.timeoutMs);
     try {
       if (signal?.aborted) controller.abort();
       const result = await work(directory, controller.signal);
       if (controller.signal.aborted) throw new CodingToolError('Coding tool cancelled.', 409);
-      fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify({ ...record, status: 'completed', result }, null, 2));
+      fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify({ ...record, completedAt: new Date().toISOString(), status: 'completed', result }, null, 2));
       return { ...result, runId: id };
     } catch (error: any) {
       const failure = timedOut ? new CodingToolError('Coding tool exceeded its total time budget.', 504, 'CODING_TOOL_TIMEOUT') : error;
       fs.writeFileSync(path.join(directory, 'result.json'), JSON.stringify({ ...record, status: controller.signal.aborted ? 'cancelled' : 'failed', error: failure.message })); throw failure;
-    } finally { clearTimeout(timer); signal?.removeEventListener('abort', abort); this.active.delete(controller); }
+    } finally { clearTimeout(timer); signal?.removeEventListener('abort', abort); this.active.delete(controller); this.history.active.delete(id); this.history.cleanup(); }
   }
   references(owner: string, input: { files: string[]; file: string; symbol: string }, signal?: AbortSignal) {
     if (!input.symbol?.trim() || input.symbol.length > 200 || !input.files.includes(input.file)) throw new CodingToolError('Select the definition file and a bounded symbol name.');
@@ -79,5 +92,5 @@ export class CodingToolsService {
       }, signal);
     } finally { this.aiderBusy = false; }
   }
-  shutdown(): void { this.stopped = true; for (const controller of this.active) controller.abort(); }
+  shutdown(): void { this.stopped = true; clearInterval(this.cleanupTimer); for (const controller of this.active) controller.abort(); }
 }

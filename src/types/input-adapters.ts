@@ -5,7 +5,7 @@
  * ensuring all channels normalize into the canonical NormalizedChatRequest with explicit privacy controls.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { NormalizedChatRequest } from './chat-runtime';
 
 export interface ChatInputAdapter {

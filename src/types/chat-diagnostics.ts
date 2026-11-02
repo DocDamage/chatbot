@@ -6,7 +6,7 @@
  * are never stored in these records.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const chatRunStatusSchema = z.enum(['success', 'failed', 'blocked', 'cancelled']);
 export type ChatRunStatus = z.infer<typeof chatRunStatusSchema>;

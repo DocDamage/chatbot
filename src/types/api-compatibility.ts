@@ -2,7 +2,7 @@
  * Section 42: API and Type Compatibility Strategy
  * Types and schemas governing legacy bridge mapping, client versioning, and deprecation lifecycle.
  */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { NormalizedChatRequest, ChatRuntimeResult } from './chat-runtime';
 
 export type ApiClientVersion = 'v1_legacy' | 'v2_canonical' | 'v2_canary';

@@ -1,12 +1,92 @@
 import request from 'supertest';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import { AuthService } from '../../core/auth/AuthService';
+import { ServiceInitializer } from '../../core/initialization/ServiceInitializer';
 
 const strongSecret = 'super-strong-secret-key-32-chars-minimum-for-testing';
-const originalSecret = process.env.JWT_SECRET;
-process.env.JWT_SECRET = strongSecret;
+const environmentRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'index-routes-env-'));
+const emptyDotenv = path.join(environmentRoot, '.env');
+fs.writeFileSync(emptyDotenv, '');
+for (const directory of ['knowledge-base', 'knowledge-base-public', 'workspace']) {
+  fs.mkdirSync(path.join(environmentRoot, directory), { recursive: true });
+}
+
+const isolatedEnvironment: Record<string, string | undefined> = {
+  DOTENV_CONFIG_PATH: emptyDotenv,
+  NODE_ENV: 'test',
+  DEPLOYMENT_MODE: 'test',
+  HOST: '127.0.0.1',
+  PORT: '31992',
+  JWT_SECRET: strongSecret,
+  CSRF_TOKEN: 'index-routes-csrf-token',
+  LLM_PROVIDER: 'template',
+  RAG_PERSISTENCE: 'false',
+  RAG_RETRIEVAL_MODE: 'memory',
+  RAG_GENERATE_EMBEDDINGS: 'false',
+  EAGER_KNOWLEDGE_LOAD: 'false',
+  BACKGROUND_KNOWLEDGE_LOAD: 'false',
+  EAGER_CODING_KNOWLEDGE_LOAD: 'false',
+  BACKGROUND_CODING_KNOWLEDGE_LOAD: 'false',
+  CODING_TOOLS_ENABLED: 'false',
+  CODING_WORKSPACE_ROOT: path.join(environmentRoot, 'workspace'),
+  REA_ENABLED: 'false',
+  ENABLE_RAG: 'false',
+  ENABLE_MODEL_ROUTING: 'false',
+  ENABLE_SAFETY_PIPELINE: 'false',
+  ENABLE_SEMANTIC_CACHE: 'false',
+  ENABLE_ENSEMBLE: 'false',
+  ENABLE_BASH_EXECUTOR: 'false',
+  ENABLE_LOCAL_TOOLS: 'false',
+  LOCAL_EXECUTION_ENABLED: 'false',
+  ENABLE_FL_STUDIO_MCP: 'false',
+  ENABLE_WEBSOCKET: 'false',
+  ENABLE_REDIS_CACHE: 'false',
+  ENABLE_DISK_CACHE: 'false',
+  DABOOK_ENABLED: 'false',
+  PYSCRAPPY_ENABLED: 'false',
+  USE_OLLAMA: 'false',
+  USE_HUGGINGFACE: 'false',
+  USE_LLAVA: 'false',
+  USE_GEMINI_VISION: 'false',
+  USE_GPT4V: 'false',
+  LOCAL_MODEL_ENABLED: 'false',
+  KNOWLEDGE_BASE_DIR: path.join(environmentRoot, 'knowledge-base'),
+  PUBLIC_KNOWLEDGE_BASE_DIR: path.join(environmentRoot, 'knowledge-base-public'),
+  OPENAI_API_KEY: undefined,
+  ANTHROPIC_API_KEY: undefined,
+  GEMINI_API_KEY: undefined,
+  HUGGINGFACE_API_KEY: undefined,
+  OPENAI_COMPATIBLE_API_KEY: undefined,
+  OPENAI_COMPATIBLE_BASE_URL: undefined,
+  DATABASE_URL: undefined,
+  RAG_DATABASE_URL: undefined,
+  RAG_SQLITE_PATH: undefined,
+  REDIS_URL: undefined,
+  OLLAMA_URL: undefined,
+  OLLAMA_MODEL: undefined,
+  CODING_OLLAMA_MODEL: undefined,
+};
+const originalEnvironment = new Map<string, string | undefined>();
+for (const [name, value] of Object.entries(isolatedEnvironment)) {
+  originalEnvironment.set(name, process.env[name]);
+  if (value === undefined) delete process.env[name];
+  else process.env[name] = value;
+}
 
 // Load the server only after its required import-time configuration is present.
-const { app } = require('../index') as typeof import('../index');
+const initializeSpy = jest.spyOn(ServiceInitializer, 'initialize').mockResolvedValue({
+  orchestrator: {
+    processRequest: jest.fn().mockResolvedValue({ response: 'ok', sessionId: 'index-routes' }),
+  },
+  documentManager: {
+    addDirectory: jest.fn().mockResolvedValue([]),
+  },
+} as any);
+const { app, waitForReady } = require('../index') as typeof import('../index');
+// The feedback routes intentionally lazy-load this service; compile it before request timing begins.
+require('../../core/feedback/FeedbackService');
 
 function generateAuthHeader(userId = 'test-user', roles: string[] = ['developer']): string {
   const auth = new AuthService(strongSecret);
@@ -15,12 +95,18 @@ function generateAuthHeader(userId = 'test-user', roles: string[] = ['developer'
 }
 
 describe('Server Index Core Routes Suite', () => {
+  beforeAll(async () => {
+    // Stabilize the service identity before cached routers are exercised by timed requests.
+    await waitForReady(5000);
+  });
+
   afterAll(() => {
-    if (originalSecret) {
-      process.env.JWT_SECRET = originalSecret;
-    } else {
-      delete process.env.JWT_SECRET;
+    initializeSpy.mockRestore();
+    for (const [name, value] of originalEnvironment) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
     }
+    fs.rmSync(environmentRoot, { recursive: true, force: true });
   });
 
   it('serves free models catalog', async () => {
@@ -46,21 +132,22 @@ describe('Server Index Core Routes Suite', () => {
     expect(liveRes.body.status).toBe('alive');
   });
 
-  it('handles feedback endpoints with and without auth', async () => {
-    // 1. Get feedback with auth
+  it('gets feedback with authentication', async () => {
     const getRes = await request(app)
       .get('/api/feedback/msg-123')
       .set('Authorization', generateAuthHeader());
     expect(getRes.status).toBe(200);
     expect(getRes.body.stats).toBeDefined();
+  });
 
-    // 2. Submit feedback without auth (401)
+  it('rejects feedback submission without authentication', async () => {
     await request(app)
       .post('/api/feedback')
       .send({ messageId: 'msg-1', reaction: 'like' })
       .expect(401);
+  });
 
-    // 3. Submit feedback with auth (200)
+  it('submits feedback with authentication', async () => {
     const submitRes = await request(app)
       .post('/api/feedback')
       .set('Authorization', generateAuthHeader())

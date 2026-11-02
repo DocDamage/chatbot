@@ -2,7 +2,7 @@
  * Section 41: Proposed Repository File Map Types & Schemas
  * Governs the target structural layout of the canonical chatbot codebase.
  */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export type CanonicalModuleCategory =
   | 'chat'

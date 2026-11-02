@@ -33,6 +33,20 @@ test('source analysis inventories routes, env, classes, tables, and binaries', (
   assert.deepEqual(result.externalBinaries, ['ffmpeg']);
 });
 
+test('repository scanning excludes installed Python environments while retaining sidecar source', () => {
+  const root = fixture({ 'services/dabook/.venv/Lib/site-packages/runtime.js': 'export const bundled = true;',
+    'services/dabook/src/bridge.js': 'export const source = true;' });
+  try {
+    const scan = scanRepository(root);
+    const serialized = JSON.stringify(scan);
+    assert.ok(serialized.includes('services/dabook/src/bridge.js'));
+    assert.ok(!serialized.includes('.venv/'));
+  } finally {
+    assert.ok(root.startsWith(path.resolve(os.tmpdir()) + path.sep));
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
 test('reachability follows literal relative imports and leaves dormant code isolated', () => {
   const root = fixture({
     'src/server/index.ts': `import './live';`,

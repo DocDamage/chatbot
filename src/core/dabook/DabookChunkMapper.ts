@@ -46,8 +46,8 @@ export function mapRagRecordToChunk(
     metadata: {
       source: context.sourcePath,
       title,
-      type: 'pdf',
-      originalExtension: '.pdf',
+      type: context.sourcePath.toLowerCase().endsWith('.epub') ? 'epub' : 'pdf',
+      originalExtension: context.sourcePath.toLowerCase().endsWith('.epub') ? '.epub' : '.pdf',
       extractor: 'dabook',
       structured: true,
       page: record.page_start,

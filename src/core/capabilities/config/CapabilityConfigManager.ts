@@ -4,7 +4,7 @@
  * user, project, and administrator scopes, and audits all modifications.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export interface ConfigAuditEntry {
   capabilityId: string;

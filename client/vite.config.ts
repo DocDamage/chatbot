@@ -33,6 +33,7 @@ export default defineConfig({
   },
   test: {
     environment: 'jsdom',
+    maxWorkers: 2,
     coverage: {
       provider: 'v8',
       include: clientCoveragePolicy.coverageScope.include,

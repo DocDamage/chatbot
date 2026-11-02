@@ -1,5 +1,6 @@
 import request from 'supertest';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { ServiceInitializer } from '../../core/initialization/ServiceInitializer';
 import { AuthService } from '../../core/auth/AuthService';
@@ -115,66 +116,116 @@ jest.mock('../../core/knowledge/WebScraperSource', () => ({
   WebScraperSource: jest.fn().mockImplementation(() => ({ search: jest.fn().mockResolvedValue([{ title: 'WebScraper result' }]) })),
 }));
 
+const secret = 'super-secret-key-32-chars-long-for-testing-lifecycle';
+const lifecycleEnvironmentRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'server-lifecycle-env-'));
+const lifecycleDotenv = path.join(lifecycleEnvironmentRoot, '.env');
+fs.writeFileSync(lifecycleDotenv, '');
+for (const directory of ['knowledge-base', 'knowledge-base-public', 'workspace'])
+  fs.mkdirSync(path.join(lifecycleEnvironmentRoot, directory), { recursive: true });
+const isolatedLifecycleEnvironment: Record<string, string | undefined> = {
+  DOTENV_CONFIG_PATH: lifecycleDotenv,
+  NODE_ENV: 'test',
+  DEPLOYMENT_MODE: 'test',
+  JWT_SECRET: secret,
+  CSRF_TOKEN: 'expected-csrf-12345',
+  LLM_PROVIDER: 'template',
+  RAG_PERSISTENCE: 'false',
+  RAG_RETRIEVAL_MODE: 'memory',
+  RAG_GENERATE_EMBEDDINGS: 'false',
+  EAGER_KNOWLEDGE_LOAD: 'false',
+  BACKGROUND_KNOWLEDGE_LOAD: 'false',
+  EAGER_CODING_KNOWLEDGE_LOAD: 'false',
+  BACKGROUND_CODING_KNOWLEDGE_LOAD: 'false',
+  CODING_TOOLS_ENABLED: 'false',
+  CODING_WORKSPACE_ROOT: path.join(lifecycleEnvironmentRoot, 'workspace'),
+  REA_ENABLED: 'false',
+  ENABLE_RAG: 'false',
+  ENABLE_MODEL_ROUTING: 'false',
+  ENABLE_SAFETY_PIPELINE: 'false',
+  ENABLE_SEMANTIC_CACHE: 'false',
+  ENABLE_ENSEMBLE: 'false',
+  ENABLE_BASH_EXECUTOR: 'false',
+  ENABLE_LOCAL_TOOLS: 'false',
+  LOCAL_EXECUTION_ENABLED: 'false',
+  ENABLE_WEBSOCKET: 'false',
+  ENABLE_REDIS_CACHE: 'false',
+  ENABLE_DISK_CACHE: 'false',
+  DABOOK_ENABLED: 'false',
+  PYSCRAPPY_ENABLED: 'false',
+  USE_OLLAMA: 'false',
+  USE_HUGGINGFACE: 'false',
+  USE_LLAVA: 'false',
+  USE_GEMINI_VISION: 'false',
+  USE_GPT4V: 'false',
+  LOCAL_MODEL_ENABLED: 'false',
+  KNOWLEDGE_BASE_DIR: path.join(lifecycleEnvironmentRoot, 'knowledge-base'),
+  PUBLIC_KNOWLEDGE_BASE_DIR: path.join(lifecycleEnvironmentRoot, 'knowledge-base-public'),
+  OPENAI_API_KEY: undefined,
+  ANTHROPIC_API_KEY: undefined,
+  GEMINI_API_KEY: undefined,
+  HUGGINGFACE_API_KEY: undefined,
+  DATABASE_URL: undefined,
+  RAG_DATABASE_URL: undefined,
+  REDIS_URL: undefined,
+  OLLAMA_URL: undefined,
+};
+const originalLifecycleEnvironment = new Map<string, string | undefined>();
+for (const [name, value] of Object.entries(isolatedLifecycleEnvironment)) {
+  originalLifecycleEnvironment.set(name, process.env[name]);
+  if (value === undefined) delete process.env[name];
+  else process.env[name] = value;
+}
+const mockServices = {
+  database: {
+    query: jest.fn().mockResolvedValue({ rows: [], rowCount: 0 }),
+  },
+  orchestrator: {
+    llmAdapter: {
+      generate: jest.fn().mockResolvedValue('adapter generated text'),
+      complete: jest.fn().mockResolvedValue({ text: 'mock text' }),
+    },
+    processRequest: jest.fn().mockResolvedValue({ response: 'ok', sessionId: 's1' }),
+  },
+  documentManager: {
+    addText: jest.fn().mockResolvedValue([{ id: 'c1', content: 'test chunk' }]),
+    addFile: jest.fn().mockResolvedValue([{ id: 'f1', content: 'file chunk' }]),
+    addDirectory: jest.fn().mockResolvedValue([{ id: 'd1', content: 'dir chunk' }]),
+    getStats: jest.fn().mockReturnValue({ chunks: 1 }),
+    query: jest.fn().mockResolvedValue([]),
+  },
+  toolRegistry: {
+    getAll: jest.fn().mockReturnValue([
+      { id: 't1', name: 'Tool 1', description: 'Desc 1', category: 'general' },
+    ]),
+    getStats: jest.fn().mockReturnValue({ total: 1 }),
+  },
+  embeddingService: {
+    generateEmbedding: jest.fn().mockResolvedValue(new Array(128).fill(0.1)),
+  },
+  conversationManager: {
+    listConversations: jest.fn().mockResolvedValue([{ id: 's1', title: 'Conversation 1' }]),
+    getConversation: jest.fn().mockImplementation((async (id: any) => {
+      if (id === 'nonexistent-session') return null;
+      return { id, messages: [{ role: 'user', content: 'hello' }] };
+    }) as any),
+    deleteConversation: jest.fn().mockResolvedValue(true),
+  },
+};
+const initializeSpy = jest.spyOn(ServiceInitializer, 'initialize').mockResolvedValue(mockServices as any);
+const indexModule = require('../index');
+const app = indexModule.app;
+const server = indexModule.server;
+require('../routes/v1/chat');
+require('../routes/v2/chat');
+
 describe('Server Entrypoint Lifecycle & Full Branch Coverage Suite', () => {
-  const secret = 'super-secret-key-32-chars-long-for-testing-lifecycle';
   let adminToken: string;
   let devToken: string;
-  let app: any;
-  let server: any;
-  let indexModule: any;
-  let mockServices: any;
 
   beforeAll(async () => {
-    process.env.JWT_SECRET = secret;
-    process.env.CSRF_TOKEN = 'expected-csrf-12345';
-    process.env.ENABLE_WEBSOCKET = 'true';
-
     const auth = new AuthService(secret);
     adminToken = auth.generateToken({ id: 'admin-1', email: 'admin@test.com', roles: ['admin', 'developer'] });
     devToken = auth.generateToken({ id: 'dev-1', email: 'dev@test.com', roles: ['developer'] });
-
-    mockServices = {
-      database: {
-        query: jest.fn().mockResolvedValue({ rows: [], rowCount: 0 }),
-      },
-      orchestrator: {
-        llmAdapter: {
-          generate: jest.fn().mockResolvedValue('adapter generated text'),
-          complete: jest.fn().mockResolvedValue({ text: 'mock text' }),
-        },
-        processRequest: jest.fn().mockResolvedValue({ response: 'ok', sessionId: 's1' }),
-      },
-      documentManager: {
-        addText: jest.fn().mockResolvedValue([{ id: 'c1', content: 'test chunk' }]),
-        addFile: jest.fn().mockResolvedValue([{ id: 'f1', content: 'file chunk' }]),
-        addDirectory: jest.fn().mockResolvedValue([{ id: 'd1', content: 'dir chunk' }]),
-        getStats: jest.fn().mockReturnValue({ chunks: 1 }),
-        query: jest.fn().mockResolvedValue([]),
-      },
-      toolRegistry: {
-        getAll: jest.fn().mockReturnValue([
-          { id: 't1', name: 'Tool 1', description: 'Desc 1', category: 'general' },
-        ]),
-        getStats: jest.fn().mockReturnValue({ total: 1 }),
-      },
-      embeddingService: {
-        generateEmbedding: jest.fn().mockResolvedValue(new Array(128).fill(0.1)),
-      },
-      conversationManager: {
-        listConversations: jest.fn().mockResolvedValue([{ id: 's1', title: 'Conversation 1' }]),
-        getConversation: jest.fn().mockImplementation((async (id: any) => {
-          if (id === 'nonexistent-session') return null;
-          return { id, messages: [{ role: 'user', content: 'hello' }] };
-        }) as any),
-        deleteConversation: jest.fn().mockResolvedValue(true),
-      },
-    };
-
-    jest.spyOn(ServiceInitializer, 'initialize').mockResolvedValue(mockServices as any);
-
-    indexModule = require('../index');
-    app = indexModule.app;
-    server = indexModule.server;
     await indexModule.waitForReady(5000);
   });
 
@@ -182,6 +233,12 @@ describe('Server Entrypoint Lifecycle & Full Branch Coverage Suite', () => {
     if (server && server.listening) {
       await new Promise<void>((resolve) => server.close(() => resolve()));
     }
+    initializeSpy.mockRestore();
+    for (const [name, value] of originalLifecycleEnvironment) {
+      if (value === undefined) delete process.env[name];
+      else process.env[name] = value;
+    }
+    fs.rmSync(lifecycleEnvironmentRoot, { recursive: true, force: true });
   });
 
   describe('getApiVersion and helper coverage', () => {
@@ -211,18 +268,22 @@ describe('Server Entrypoint Lifecycle & Full Branch Coverage Suite', () => {
       await expect(indexModule.waitForReady(1000)).resolves.toBeUndefined();
     });
 
-    it('routes /api/v1 and /api/v2 chat endpoints with orchestrator', async () => {
+    it('routes /api/v1 chat endpoints with orchestrator', async () => {
       const v1Res = await request(app)
-        .post('/api/v1')
+        .post('/api/v1/chat')
         .set('Authorization', `Bearer ${devToken}`)
-        .send({ message: 'Hello v1' });
-      expect([200, 404, 503]).toContain(v1Res.status);
+        .send({ message: 'Hello v1', sessionId: 'lifecycle-v1' });
+      expect(v1Res.status).toBe(200);
+      expect(v1Res.body.response).toBe('ok');
+    });
 
+    it('routes /api/v2 chat endpoints with orchestrator', async () => {
       const v2Res = await request(app)
-        .post('/api/v2')
+        .post('/api/v2/chat')
         .set('Authorization', `Bearer ${devToken}`)
-        .send({ message: 'Hello v2' });
-      expect([200, 404, 503]).toContain(v2Res.status);
+        .send({ message: 'Hello v2', sessionId: 'lifecycle-v2' });
+      expect(v2Res.status).toBe(200);
+      expect(v2Res.body.response).toBe('ok');
     });
   });
 
@@ -319,7 +380,8 @@ describe('Server Entrypoint Lifecycle & Full Branch Coverage Suite', () => {
     it('rejects /api/upload when no file uploaded', async () => {
       const res = await request(app)
         .post('/api/upload')
-        .set('Authorization', `Bearer ${devToken}`);
+        .set('Authorization', `Bearer ${devToken}`)
+        .set('Content-Length', '0');
       expect(res.status).toBe(400);
       const errMsg = res.body.error?.message || res.body.error;
       expect(errMsg).toBe('No file uploaded');

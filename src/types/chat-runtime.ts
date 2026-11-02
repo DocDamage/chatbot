@@ -9,7 +9,7 @@
  * chain-of-thought and private model reasoning are never exposed in these contracts.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { contextPlanSchema, ContextPlan } from './context-plan';
 
 // ============================================================================

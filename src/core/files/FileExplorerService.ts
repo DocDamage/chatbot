@@ -29,7 +29,7 @@ export interface FileReadResult {
   modifiedTime: string;
 }
 
-const ignoredDirs = new Set(['.git', 'node_modules', 'dist', 'coverage', '.next', 'build', '.worktrees']);
+const ignoredDirs = new Set(['.git', 'node_modules', '.venv', '.a11y-tools', 'dist', 'coverage', '.next', 'build', '.worktrees']);
 const secretNames = new Set(['.env', '.env.local', '.env.development', '.env.production']);
 const previewExtensions = new Set(['.ts', '.tsx', '.js', '.jsx', '.json', '.md', '.txt', '.css', '.html', '.yml', '.yaml']);
 

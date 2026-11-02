@@ -5,7 +5,7 @@
  * contamination isolation flags, and baseline metrics tracking.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const goldenSuiteCategorySchema = z.enum([
   'conversation_followup',

@@ -65,4 +65,52 @@ describe('ConversationVariableExtractor (CRK-P03-T03)', () => {
     expect(res.ambiguities.length).toBeGreaterThan(0);
     expect(res.ambiguities[0]).toContain('Ambiguous repository switch');
   });
+
+  it.each(['React', 'Vue', 'Angular', 'Next.js', 'Svelte', 'FastAPI', 'Django', 'Flask', 'Express'])('normalizes explicit %s framework names', framework => {
+    const result = extractor.extract(makeReq(`using ${framework} 4.2`));
+    expect(result.variables.framework.value).toBe(framework);
+    expect(result.variables.frameworkVersion.value).toBe('4.2');
+  });
+
+  it.each([
+    ['ts', 'TypeScript'], ['js', 'JavaScript'], ['javascript', 'JavaScript'],
+    ['py', 'Python'], ['python', 'Python'], ['rs', 'Rust'], ['rust', 'Rust'],
+    ['go', 'Go'], ['golang', 'Go'], ['gd', 'GDScript'], ['gdscript', 'GDScript'],
+    ['cpp', 'C++'], ['cs', 'C#'], ['csharp', 'C#'], ['Kotlin', 'Kotlin'],
+  ])('normalizes language %s to %s', (name, expected) => {
+    expect(extractor.extract(makeReq(`language is ${name}`)).variables.programmingLanguage.value).toBe(expected);
+  });
+
+  it('extracts goals, output format, target and explicit repository switches', () => {
+    const result = extractor.extract(makeReq('I want to ship an app. targeting Android, as JSON, switch to repo acme/app'));
+    expect(result.variables.userGoal.value).toBe('ship an app');
+    expect(result.variables.targetPlatform.value).toBe('Android');
+    expect(result.variables.requestedOutput.value).toBe('json');
+    expect(result.variables.repository.value).toBe('acme/app');
+    expect(result.ambiguities).toEqual([]);
+  });
+
+  it('keeps explicit choices when loaded project files suggest a weaker inference', () => {
+    const result = extractor.extract(makeReq('using React, language is Python', {
+      metadata: { currentProject: 'orbit', programmingLanguage: 'Python' },
+      loadedFiles: [{ path: 'project.godot' }, { path: 'cargo.toml' }, { path: 'package.json' }, { path: 'view.tsx' }],
+    }));
+    expect(result.variables.framework).toMatchObject({ value: 'React', confidence: 1 });
+    expect(result.variables.programmingLanguage).toMatchObject({ value: 'Python', confidence: 1 });
+    expect(result.variables.currentProject.value).toBe('orbit');
+    expect(result.variables.runtimeVersion.value).toBe('node');
+  });
+
+  it.each([['main.ts', 'TypeScript'], ['view.tsx', 'TypeScript'], ['main.py', 'Python']])('infers a language from %s after ignoring unknown files', (file, language) => {
+    const result = extractor.extract(makeReq('help', { loadedFiles: [{ path: 'README.md' }, { path: file }] }));
+    expect(result.variables.programmingLanguage).toMatchObject({ value: language, confidence: 0.75, source: 'inferred' });
+  });
+
+  it('ignores empty or wrongly typed metadata and leaves unsupported files unset', () => {
+    const result = extractor.extract(makeReq('help with another task', {
+      metadata: { repository: '', workspaceRoot: 42, currentProject: false, programmingLanguage: null },
+      loadedFiles: [{ path: 'README.md' }],
+    }));
+    expect(result.variables).toEqual({});
+  });
 });

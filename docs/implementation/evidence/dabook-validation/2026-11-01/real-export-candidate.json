@@ -1,0 +1,25 @@
+{
+  "schema": "dabook.inactive-candidate-registration.v1",
+  "registeredAt": "2026-11-02T01:17:00.610Z",
+  "candidate": {
+    "id": "model-3960c632-7d58-4573-bb92-c3d5b75560d2",
+    "version": "v1",
+    "active": false,
+    "trainingEvaluation": {
+      "engine": "cpu-smoke",
+      "purpose": "lifecycle-smoke-not-domain-model",
+      "resultManifest": "D:\\dev\\Chatbot\\temp\\dabook-real-export-cpu-20261101\\cpu-run\\result-manifest.json",
+      "artifactSha256": "cc5638f0d17f121f27020bbebd68d9d6ab5cc5ab39c35b87f3f66aaaa6897d2f",
+      "planSourceSha256": "83087920f40111163e2ab529ee2e3d7923c350ba4c11e61e48baaaac930dc0bf",
+      "planConfigSha256": "9ffbc3634b9f7f35ec571474b5d71208cb5e4af26ca1ca9a90deb34e77465727",
+      "trainSha256": "9e4b5fa80c87afe8fb8a5d6463b42295d3a53f9923fd43b254bcdf3f28091e8e",
+      "heldOutTestSha256": "5d24d77e481484bc7a0899424a5fc1e759f14717f5d2c6c2761a0e6996c701fd",
+      "heldOutLoss": 3.9327527046203614,
+      "heldOutPerplexity": 51.047302589760704,
+      "heldOutExamples": 5,
+      "trainingSteps": 12
+    }
+  },
+  "activationAttempted": false,
+  "registryDurability": "evidence-file-plus-process-local-model-updater"
+}

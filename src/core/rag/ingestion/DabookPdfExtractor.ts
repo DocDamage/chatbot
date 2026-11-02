@@ -13,6 +13,7 @@ import { DabookBridge, DabookError, getDabookBridge } from '../../dabook';
 import { dabookBookKey, mapRagRecords } from '../../dabook/DabookChunkMapper';
 import { ExtractedDocument, FileExtractionOptions, FileExtractor, PreChunkedSection } from './ExtractedDocument';
 import { PdfExtractor } from './PdfExtractor';
+import { EpubExtractor } from './EpubExtractor';
 
 export class DabookPdfExtractor implements FileExtractor {
   constructor(
@@ -21,19 +22,19 @@ export class DabookPdfExtractor implements FileExtractor {
   ) {}
 
   canExtract(ext: string): boolean {
-    return ext === '.pdf';
+    return ext === '.pdf' || ext === '.epub';
   }
 
   async extract(filePath: string, options: FileExtractionOptions = {}): Promise<ExtractedDocument> {
     if (options.preferStructuredPdf === false) {
-      return this.fallback.extract(filePath, options);
+      return (filePath.toLowerCase().endsWith('.epub') ? new EpubExtractor() : this.fallback).extract(filePath, options);
     }
     if (!this.bridge.isEnabled()) {
       return this.fallbackWith(filePath, options, 'disabled', 'DABOOK is disabled');
     }
 
     try {
-      const result = await this.bridge.ingest(filePath);
+      const result = options.enablePdfOcr === undefined ? await this.bridge.ingest(filePath) : await this.bridge.ingest(filePath, { ocr: options.enablePdfOcr });
       const records = await this.bridge.readRagRecords(result);
       if (records.length === 0) {
         throw new DabookError('bad_output', 'DABOOK produced no retrieval chunks for this PDF', { report: result.report });
@@ -65,8 +66,8 @@ export class DabookPdfExtractor implements FileExtractor {
         metadata: {
           source: filePath,
           title: result.book.title || undefined,
-          type: 'pdf',
-          originalExtension: '.pdf',
+          type: filePath.toLowerCase().endsWith('.epub') ? 'epub' : 'pdf',
+          originalExtension: filePath.toLowerCase().endsWith('.epub') ? '.epub' : '.pdf',
           extractor: 'dabook',
           structured: true,
           pages: result.book.pages ?? undefined,
@@ -94,11 +95,12 @@ export class DabookPdfExtractor implements FileExtractor {
     reason: string,
     message: string
   ): Promise<ExtractedDocument> {
-    const document = await this.fallback.extract(filePath, options);
+    const epub = filePath.toLowerCase().endsWith('.epub');
+    const document = await (epub ? new EpubExtractor() : this.fallback).extract(filePath, options);
     document.warnings = [...(document.warnings ?? []), `dabook-fallback: ${reason}: ${message}`];
     document.metadata = {
       ...document.metadata,
-      extractor: 'pdf-parse',
+      extractor: epub ? 'epub' : 'pdf-parse',
       structured: false,
       dabookFallbackReason: reason
     };

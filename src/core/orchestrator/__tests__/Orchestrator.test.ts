@@ -4,13 +4,13 @@ import { Orchestrator } from '../Orchestrator';
 describe('RT-ORCH-001: Orchestrator Pipeline and Contract Flow Suite', () => {
   it('processes chat requests end-to-end through router, contract gate, and LLM adapter', async () => {
     const mockLLM = {
-      generate: jest.fn<any>().mockResolvedValue({
+      generate: jest.fn<(...args: any[]) => any>().mockResolvedValue({
         content: 'This is a high quality AI response.',
         model: 'mock-llm',
         usage: { promptTokens: 10, completionTokens: 20, totalTokens: 30 }
       }),
-      estimateCost: jest.fn<any>().mockReturnValue(0.001),
-      isAvailable: jest.fn<any>().mockResolvedValue(true)
+      estimateCost: jest.fn<(...args: any[]) => any>().mockReturnValue(0.001),
+      isAvailable: jest.fn<(...args: any[]) => any>().mockResolvedValue(true)
     };
 
     const orchestrator = new Orchestrator(mockLLM as any);
@@ -35,23 +35,23 @@ describe('RT-ORCH-001: Orchestrator Pipeline and Contract Flow Suite', () => {
 
   it('handles image generation requests when image adapter is configured', async () => {
     const mockLLM = {
-      generate: jest.fn<any>().mockResolvedValue({
+      generate: jest.fn<(...args: any[]) => any>().mockResolvedValue({
         content: 'A futuristic city skyline with glowing neon lights',
         model: 'mock-llm',
         usage: { promptTokens: 5, completionTokens: 15, totalTokens: 20 }
       }),
-      estimateCost: jest.fn<any>().mockReturnValue(0.001),
-      isAvailable: jest.fn<any>().mockResolvedValue(true)
+      estimateCost: jest.fn<(...args: any[]) => any>().mockReturnValue(0.001),
+      isAvailable: jest.fn<(...args: any[]) => any>().mockResolvedValue(true)
     };
 
     const mockImageAdapter = {
-      generate: jest.fn<any>().mockResolvedValue({
+      generate: jest.fn<(...args: any[]) => any>().mockResolvedValue({
         image: 'base64-image-data',
         imageUrl: 'https://example.com/image.png',
         model: 'stable-diffusion-xl',
         latency: 120
       }),
-      isAvailable: jest.fn<any>().mockResolvedValue(true)
+      isAvailable: jest.fn<(...args: any[]) => any>().mockResolvedValue(true)
     };
 
     const orchestrator = new Orchestrator(mockLLM as any, mockImageAdapter as any);
@@ -67,9 +67,9 @@ describe('RT-ORCH-001: Orchestrator Pipeline and Contract Flow Suite', () => {
 
   it('falls back gracefully when LLM generation fails after max retries', async () => {
     const failingLLM = {
-      generate: jest.fn<any>().mockRejectedValue(new Error('LLM provider error: quota exhausted')),
-      estimateCost: jest.fn<any>().mockReturnValue(0.001),
-      isAvailable: jest.fn<any>().mockResolvedValue(true)
+      generate: jest.fn<(...args: any[]) => any>().mockRejectedValue(new Error('LLM provider error: quota exhausted')),
+      estimateCost: jest.fn<(...args: any[]) => any>().mockReturnValue(0.001),
+      isAvailable: jest.fn<(...args: any[]) => any>().mockResolvedValue(true)
     };
 
     const orchestrator = new Orchestrator(failingLLM as any);

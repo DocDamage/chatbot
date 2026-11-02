@@ -10,7 +10,7 @@
 import { execFile } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { logger } from '../observability/logger';
 import { NativeCommandOptions, NativeCommandResult, runNativeCommand } from '../native-runtime/NativeCommandRunner';
 import {
@@ -80,6 +80,7 @@ export interface DabookBridgeOptions {
 }
 
 export interface DabookIngestOptions {
+  ocr?: boolean;
   profile?: DabookConfig['profile'];
   modes?: string[];
   timeoutMs?: number;
@@ -335,8 +336,8 @@ export class DabookBridge {
       throw new DabookError('disabled', 'DABOOK is disabled (set DABOOK_ENABLED=true)');
     }
     const absolute = path.resolve(pdfPath);
-    if (path.extname(absolute).toLowerCase() !== '.pdf') {
-      throw new DabookError('bad_args', `DABOOK only ingests .pdf files: ${path.basename(absolute)}`);
+    if (!['.pdf', '.epub'].includes(path.extname(absolute).toLowerCase())) {
+      throw new DabookError('bad_args', `DABOOK only ingests .pdf or .epub files: ${path.basename(absolute)}`);
     }
     const python = await this.resolveInterpreter();
     if (!python) {
@@ -355,6 +356,7 @@ export class DabookBridge {
       '--timeout-s', String(Math.max(1, Math.floor(timeoutMs / 1000) - TIMEOUT_MARGIN_S)),
       '--lock-wait-s', '30',
       ...(options.licenseStatus ? ['--license', options.licenseStatus] : []),
+      ...((options.ocr ?? process.env.PDF_OCR_ENABLED === 'true') ? ['--ocr'] : []),
       '--',
       absolute
     ];

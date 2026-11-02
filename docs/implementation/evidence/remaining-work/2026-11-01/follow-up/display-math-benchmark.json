@@ -1,0 +1,384 @@
+{
+  "source": "D:\\dev\\Chatbot\\temp\\docling-quality\\display-math.pdf",
+  "results": [
+    {
+      "backend": "pdfium_pdfminer",
+      "pages": 2,
+      "chars": 507,
+      "tables": 0,
+      "equations": 0,
+      "text": "Physics and algebra reference\nThe following displayed equations define familiar physical relationships.\n2\nE = mc\nd v = t\n2\n-b \u00b1 b - 4ac x = 2a\nThese equations should retain powers and fraction structure in the output.\nText, code, and table controls\nSet mode = safe before startup; this sentence is explanatory prose. The expression a = b appears inside a sentence, not as a displayed formula.\ndef energy(m, c):\nresult = m * c ** 2\nreturn result\nQuantity Value Distance 42 km Period 7 days",
+      "blocks": [
+        {
+          "page": 0,
+          "bbox": [
+            61.46,
+            37.44,
+            348.28,
+            56.18
+          ],
+          "type": "heading",
+          "text": "Physics and algebra reference",
+          "metadata": {}
+        },
+        {
+          "page": 0,
+          "bbox": [
+            60.36,
+            75.67,
+            409.78,
+            86.58
+          ],
+          "type": "paragraph",
+          "text": "The following displayed equations define familiar physical relationships.",
+          "metadata": {}
+        },
+        {
+          "page": 0,
+          "bbox": [
+            215.24,
+            132.54,
+            221.36,
+            142.0
+          ],
+          "type": "paragraph",
+          "text": "2",
+          "metadata": {}
+        },
+        {
+          "page": 0,
+          "bbox": [
+            149.54,
+            137.44,
+            214.55,
+            152.24
+          ],
+          "type": "paragraph",
+          "text": "E = mc",
+          "metadata": {}
+        },
+        {
+          "page": 0,
+          "bbox": [
+            150.46,
+            232.73,
+            219.4,
+            281.24
+          ],
+          "type": "paragraph",
+          "text": "d v = t",
+          "metadata": {}
+        },
+        {
+          "page": 0,
+          "bbox": [
+            229.29,
+            345.54,
+            235.41,
+            355.0
+          ],
+          "type": "paragraph",
+          "text": "2",
+          "metadata": {}
+        },
+        {
+          "page": 0,
+          "bbox": [
+            99.25,
+            350.73,
+            284.2,
+            403.24
+          ],
+          "type": "list_item",
+          "text": "-b \u00b1 b - 4ac x = 2a",
+          "metadata": {}
+        },
+        {
+          "page": 0,
+          "bbox": [
+            60.36,
+            453.67,
+            412.09,
+            464.56
+          ],
+          "type": "paragraph",
+          "text": "These equations should retain powers and fraction structure in the output.",
+          "metadata": {}
+        },
+        {
+          "page": 1,
+          "bbox": [
+            60.42,
+            37.68,
+            341.34,
+            55.18
+          ],
+          "type": "heading",
+          "text": "Text, code, and table controls",
+          "metadata": {}
+        },
+        {
+          "page": 1,
+          "bbox": [
+            60.36,
+            83.67,
+            418.84,
+            116.58
+          ],
+          "type": "paragraph",
+          "text": "Set mode = safe before startup; this sentence is explanatory prose. The expression a = b appears inside a sentence, not as a displayed formula.",
+          "metadata": {}
+        },
+        {
+          "page": 1,
+          "bbox": [
+            70.0,
+            174.64,
+            234.16,
+            222.18
+          ],
+          "type": "code",
+          "text": "def energy(m, c):\nresult = m * c ** 2\nreturn result",
+          "metadata": {}
+        },
+        {
+          "page": 1,
+          "bbox": [
+            78.52,
+            307.25,
+            286.88,
+            370.51
+          ],
+          "type": "paragraph",
+          "text": "Quantity Value Distance 42 km Period 7 days",
+          "metadata": {}
+        }
+      ],
+      "seconds": 0.016
+    },
+    {
+      "backend": "docling",
+      "pages": 2,
+      "chars": 597,
+      "tables": 1,
+      "equations": 3,
+      "text": "Physics and algebra reference\nThe following displayed equations define familiar physical relationships.\nE = m c ^ { 2 }\nv = \\frac { d } { t }\nx = \\frac { - b \\, \\pm \\, \\sqrt { b ^ { 2 } - 4 a c } } { 2 a }\nThese equations should retain powers and fraction structure in the output.\nText, code, and table controls\nSet mode = safe before startup; this sentence is explanatory prose.\nThe expression a = b appears inside a sentence, not as a displayed formula.\ndef energy(m, c): result = m * c ** 2 return result\n| Quantity   | Value   |\n|------------|---------|\n| Distance   | 42 km   |\n| Period     | 7 days  |",
+      "blocks": [
+        {
+          "page": 0,
+          "bbox": [
+            60.0,
+            37.639999999999986,
+            349.02,
+            56.139999999999986
+          ],
+          "type": "heading",
+          "text": "Physics and algebra reference",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0
+          }
+        },
+        {
+          "page": 0,
+          "bbox": [
+            60.0,
+            76.05600000000004,
+            410.628,
+            86.5239355783309
+          ],
+          "type": "paragraph",
+          "text": "The following displayed equations define familiar physical relationships.",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0
+          }
+        },
+        {
+          "page": 0,
+          "bbox": [
+            149.53799438476562,
+            132.5360107421875,
+            221.3560028076172,
+            152.24200439453125
+          ],
+          "type": "equation",
+          "text": "E = m c ^ { 2 }",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0,
+            "formula_detection": "docling_layout",
+            "formula_geometry": "script_geometry",
+            "original_text": "",
+            "native_text": "E = mc2\r\n",
+            "formula_crop": "native_ink"
+          }
+        },
+        {
+          "page": 0,
+          "bbox": [
+            150.46200561523438,
+            232.73199462890625,
+            219.40199279785156,
+            281.24200439453125
+          ],
+          "type": "equation",
+          "text": "v = \\frac { d } { t }",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0,
+            "formula_detection": "docling_layout",
+            "formula_geometry": "stacked_geometry",
+            "original_text": "",
+            "native_text": "v =\r\nd\r\nt\r\n",
+            "formula_crop": "native_ink"
+          }
+        },
+        {
+          "page": 0,
+          "bbox": [
+            99.25199890136719,
+            345.5360107421875,
+            284.197998046875,
+            403.24200439453125
+          ],
+          "type": "equation",
+          "text": "x = \\frac { - b \\, \\pm \\, \\sqrt { b ^ { 2 } - 4 a c } } { 2 a }",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0,
+            "formula_detection": "docling_layout",
+            "formula_geometry": "math_operator",
+            "original_text": "",
+            "native_text": "x =\r\n-b \u00b1 b\r\n2\r\n- 4ac\r\n2a\r\n",
+            "formula_crop": "native_ink"
+          }
+        },
+        {
+          "page": 0,
+          "bbox": [
+            60.0,
+            454.056,
+            412.94399999999996,
+            464.5239355783309
+          ],
+          "type": "paragraph",
+          "text": "These equations should retain powers and fraction structure in the output.",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0
+          }
+        },
+        {
+          "page": 1,
+          "bbox": [
+            60.0,
+            37.639999999999986,
+            342.3,
+            56.139999999999986
+          ],
+          "type": "heading",
+          "text": "Text, code, and table controls",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0
+          }
+        },
+        {
+          "page": 1,
+          "bbox": [
+            60.0,
+            84.05600000000004,
+            377.04,
+            94.5239355783309
+          ],
+          "type": "paragraph",
+          "text": "Set mode = safe before startup; this sentence is explanatory prose.",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0
+          }
+        },
+        {
+          "page": 1,
+          "bbox": [
+            60.0,
+            106.05600000000004,
+            419.68799999999993,
+            116.5239355783309
+          ],
+          "type": "paragraph",
+          "text": "The expression a = b appears inside a sentence, not as a displayed formula.",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0
+          }
+        },
+        {
+          "page": 1,
+          "bbox": [
+            70.0,
+            175.25599999999997,
+            235.59999999999985,
+            223.68331955484894
+          ],
+          "type": "code",
+          "text": "def energy(m, c): result = m * c ** 2 return result",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0
+          }
+        },
+        {
+          "page": 1,
+          "bbox": [
+            67.07829284667969,
+            296.35491943359375,
+            370.3604431152344,
+            376.22320556640625
+          ],
+          "type": "table",
+          "text": "| Quantity   | Value   |\n|------------|---------|\n| Distance   | 42 km   |\n| Period     | 7 days  |",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0
+          }
+        }
+      ],
+      "seconds": 90.078
+    }
+  ]
+}

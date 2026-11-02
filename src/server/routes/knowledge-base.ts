@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { asyncHandler } from '../../middleware/errorHandler';
 import {
   DABOOK_EXPORT_FORMATS,

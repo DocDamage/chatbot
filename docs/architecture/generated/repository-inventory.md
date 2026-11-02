@@ -6,12 +6,12 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1975 |
-| Production source files | 1265 |
-| Reachable production files | 908 |
-| Unreachable production files | 357 |
-| Discovered route calls | 532 |
-| Environment variables | 243 |
+| Source files | 2019 |
+| Production source files | 1273 |
+| Reachable production files | 913 |
+| Unreachable production files | 360 |
+| Discovered route calls | 535 |
+| Environment variables | 245 |
 | Feature flags | 18 |
 | Files above 300 lines | 100 |
 
@@ -165,6 +165,9 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | GET | `/api/code/files/search` | `src/server/routes/code.ts:190` |
 | GET | `/api/code/symbols` | `src/server/routes/code.ts:198` |
 | GET | `/status` | `src/server/routes/coding-tools.ts:12` |
+| GET | `/jobs` | `src/server/routes/coding-tools.ts:13` |
+| GET | `/jobs/:id` | `src/server/routes/coding-tools.ts:14` |
+| GET | `/jobs/:id/download` | `src/server/routes/coding-tools.ts:15` |
 | POST | `/compress` | `src/server/routes/context-economy/contextInspectorRoutes.ts:22` |
 | GET | `/retrieve/:key` | `src/server/routes/context-economy/contextInspectorRoutes.ts:48` |
 | POST | `/benchmark` | `src/server/routes/context-economy/contextInspectorRoutes.ts:71` |
@@ -617,6 +620,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `CHATBOT_NATIVE_PYTHON`
 - `CHAT_RUNTIME_ENABLED`
 - `CHAT_RUNTIME_V2_SHADOW`
+- `CHAT_SHADOW_REPORT_PATH`
 - `CI`
 - `CLAUDE_MODEL`
 - `CODE_EXECUTOR_SANDBOX`
@@ -647,6 +651,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `DEMUCS_PATH`
 - `DEPLOYMENT_MODE`
 - `DISK_CACHE_DIR`
+- `DOTENV_CONFIG_PATH`
 - `EAGER_CODING_KNOWLEDGE_LOAD`
 - `EAGER_KNOWLEDGE_LOAD`
 - `ELEVENLABS_API_KEY`
@@ -845,6 +850,9 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 - `taskkill.exe` — `src/core/mcp/McpClientService.ts`
 - `git` — `src/core/project/ProjectIntelligenceService.ts`
 - `git` — `src/core/tools/RepoTools.ts`
+- `git` — `temp/build-dabook-current-evidence.cjs`
+- `git` — `temp/build-followup-evidence.cjs`
+- `git` — `temp/build-remaining-evidence.cjs`
 
 ## Files above 300 lines
 
@@ -882,11 +890,11 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/coding/teams/AgentTeamCoordinator.ts` | 394 |
 | `src/core/coding/teams/WorktreeLifecycleService.ts` | 390 |
 | `src/core/config/APIKeyManager.ts` | 648 |
-| `src/core/config/EnvironmentDefinitions.ts` | 317 |
+| `src/core/config/EnvironmentDefinitions.ts` | 319 |
 | `src/core/config/ProfileManager.ts` | 434 |
 | `src/core/contracts/UniversalContract.ts` | 321 |
 | `src/core/creative/CreativeWritingAgent.ts` | 345 |
-| `src/core/dabook/DabookBridge.ts` | 606 |
+| `src/core/dabook/DabookBridge.ts` | 608 |
 | `src/core/database/Database.ts` | 554 |
 | `src/core/database/ExpansionMigrations.ts` | 383 |
 | `src/core/developer/MockApiEngine.ts` | 450 |
@@ -900,7 +908,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/knowledge/OnlineKnowledgeIngestionService.ts` | 554 |
 | `src/core/knowledge/QueryEnhancer.ts` | 440 |
 | `src/core/knowledge/ScientificPapersSource.ts` | 325 |
-| `src/core/learning/ModelUpdater.ts` | 339 |
+| `src/core/learning/ModelUpdater.ts` | 403 |
 | `src/core/mcp/McpClientService.ts` | 314 |
 | `src/core/memory/GraphMemory.ts` | 581 |
 | `src/core/memory/ProjectContext.ts` | 536 |

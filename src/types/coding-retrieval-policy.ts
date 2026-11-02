@@ -1,7 +1,7 @@
 /**
  * Section 50: Coding-Specific Retrieval Policy Types & Schemas
  */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const CodingProjectEvidenceSchema = z.object({
   language: z.string().optional(),

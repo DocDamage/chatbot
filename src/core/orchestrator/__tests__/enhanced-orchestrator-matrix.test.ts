@@ -1,6 +1,9 @@
 import { EnhancedOrchestrator } from '../EnhancedOrchestrator';
 import { TemplateAdapter } from '../../providers/LLMAdapter';
 import { CodingAgent } from '../../agents/CodingAgent';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 
 describe('B75-08: EnhancedOrchestrator Decision Branches Matrix', () => {
   let adapter: TemplateAdapter;
@@ -10,20 +13,22 @@ describe('B75-08: EnhancedOrchestrator Decision Branches Matrix', () => {
   });
 
   it('handles coding intent through coding agent pipeline', async () => {
-    const codingAgent = new CodingAgent({ workspaceRoot: process.cwd() });
+    const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'orchestrator-coding-'));
+    const codingAgent = new CodingAgent({ workspaceRoot: workspace });
     const orchestrator = new EnhancedOrchestrator(adapter, undefined, {
       useToolCalling: true,
       codingAgent,
       useRAG: false
     });
 
-    const res = await orchestrator.processRequest({
-      message: 'Write a typescript function to parse JSON safely',
-      sessionId: 'sess-code-1'
-    });
-
-    expect(res.response).toBeDefined();
-    expect(res.model).toContain('coding-agent');
+    try {
+      const res = await orchestrator.processRequest({
+        message: 'Write a typescript function to parse JSON safely',
+        sessionId: 'sess-code-1'
+      });
+      expect(res.response).toBeDefined();
+      expect(res.model).toContain('coding-agent');
+    } finally { fs.rmSync(workspace, { recursive: true, force: true }); }
   });
 
   it('handles image generation intent with and without image adapter', async () => {

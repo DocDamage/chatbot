@@ -119,6 +119,25 @@ describe('CodeWorkflowPanel', () => {
     await waitFor(() => expect(fetch).toHaveBeenCalledWith('/api/code/patch/apply', expect.objectContaining({ method: 'POST' })));
   });
 
+  it('shows an already-applied structured patch when optional metadata is omitted', async () => {
+    const user = userEvent.setup();
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        operations: [{ operation: 'modify', path: 'src/app.ts', content: 'export const fixed = true;', reason: 'repair', authorized: true }],
+        applied: true,
+      }),
+    } as Response);
+
+    render(<CodeWorkflowPanel mode="implement" />);
+    await user.type(screen.getByLabelText(/code prompt/i), 'repair src/app.ts');
+    await user.click(screen.getByRole('button', { name: /draft safe patch/i }));
+
+    await waitFor(() => expect(screen.getByText(/applied structured patch/i)).toBeTruthy());
+    expect(screen.getByText('0 file(s) affected')).toBeTruthy();
+    expect(screen.getByRole('button', { name: /apply approved patch/i }).hasAttribute('disabled')).toBe(true);
+  });
+
   it('exposes bounded repair only in debug mode', async () => {
     const user = userEvent.setup();
     globalThis.fetch = vi.fn().mockResolvedValue({
@@ -132,5 +151,16 @@ describe('CodeWorkflowPanel', () => {
     await waitFor(() => expect(screen.getByRole('button', { name: /run bounded repair/i })).toBeTruthy());
     await user.click(screen.getByRole('button', { name: /run bounded repair/i }));
     await waitFor(() => expect(fetch).toHaveBeenCalledWith('/api/code/repair', expect.objectContaining({ method: 'POST' })));
+  });
+
+  it('uses a safe default when a workflow task fails without an error message', async () => {
+    const user = userEvent.setup();
+    globalThis.fetch = vi.fn().mockRejectedValue({});
+
+    render(<CodeWorkflowPanel mode="implement" />);
+    await user.type(screen.getByPlaceholderText(/search code files/i), 'App');
+    await user.click(screen.getByRole('button', { name: /^search$/i }));
+
+    await waitFor(() => expect(screen.getByText('Code workflow failed')).toBeTruthy());
   });
 });

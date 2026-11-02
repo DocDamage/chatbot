@@ -13,7 +13,7 @@ describe('Program Completion Types', () => {
       id: 'test:chat-runtime',
       description: 'Executes core chat runtime unit and integration tests',
       category: 'unit_integration',
-      commandLine: 'jest --testPathPattern=src/core/chat',
+      commandLine: 'jest --testPathPatterns=src/core/chat',
       isFakeOrMockProhibited: true,
     };
     expect(config.id).toBe('test:chat-runtime');

@@ -34,6 +34,9 @@ class EnqueueResult:
 def count_pages(pdf_path: Path) -> int | None:
     """Page count, or ``None`` when the file cannot be opened as a PDF."""
     try:
+        if pdf_path.suffix.lower() == ".epub":
+            from dabook.backends.structured import EpubExtractor
+            return EpubExtractor(pdf_path).page_count()
         import pypdfium2 as pdfium
 
         doc = pdfium.PdfDocument(str(pdf_path))

@@ -1,7 +1,7 @@
 /**
  * Section 49: Dataset Fixtures Strategy Specification & Types
  */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const DatasetFixtureCategorySchema = z.enum([
   'official_docs',

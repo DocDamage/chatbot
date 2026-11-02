@@ -9,14 +9,14 @@ export class VerificationCommandsOrchestrator {
       id: 'test:chat-runtime',
       description: 'Executes Canonical Chat Runtime and compatibility adapter tests',
       category: 'unit_integration',
-      commandLine: 'jest --testPathPattern=src/core/chat --runInBand',
+      commandLine: 'jest --testPathPatterns=src/core/chat --runInBand',
       isFakeOrMockProhibited: true,
     },
     {
       id: 'test:conversation-state',
       description: 'Executes conversation variables and state reducer tests',
       category: 'unit_integration',
-      commandLine: 'jest --testPathPattern=src/core/state --runInBand',
+      commandLine: 'jest --testPathPatterns=src/core/state --runInBand',
       isFakeOrMockProhibited: true,
     },
     {
@@ -30,7 +30,7 @@ export class VerificationCommandsOrchestrator {
       id: 'test:knowledge',
       description: 'Executes knowledge pack infrastructure, packs, and policies tests',
       category: 'unit_integration',
-      commandLine: 'jest --testPathPattern=src/core/knowledge --runInBand',
+      commandLine: 'jest --testPathPatterns=src/core/knowledge --runInBand',
       isFakeOrMockProhibited: true,
     },
     {

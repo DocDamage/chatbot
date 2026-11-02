@@ -8,6 +8,7 @@ interface Status { enabled: boolean; installed: Record<string, boolean>; model: 
 interface Patch { operations: StructuredCodeOperation[]; diff: string; conflicts: { path: string; reason: string }[]; applied?: boolean }
 interface Selection { files: { path: string; role: string; reason: string }[]; omitted: number; limitations: string[] }
 interface DraftCheckSummary { compiler?: { status: string; baselineErrors: number }; linter?: { status: string; baselineErrors: number } }
+interface Job { id: string; tool: string; startedAt: string; status: string; error?: string }
 const paths = (text: string) => text.split(/\r?\n/).map(value => value.trim()).filter(Boolean);
 async function request<T>(route: string, input?: unknown, signal?: AbortSignal): Promise<T> {
   const response = await apiFetch(`/api/code/tools/${route}`, input === undefined ? { signal } : {
@@ -30,6 +31,7 @@ export default function CodingToolsPanel({ mode }: { mode: ChatMode }) {
   const [cancellable, setCancellable] = useState(true);
   const [output, setOutput] = useState(''), [patch, setPatch] = useState<Patch | null>(null), [applied, setApplied] = useState(false);
   const [verification, setVerification] = useState('not_run');
+  const [jobs, setJobs] = useState<Job[] | null>(null);
   const abort = useRef<AbortController | null>(null);
   useEffect(() => {
     if (!open) return;
@@ -108,6 +110,18 @@ export default function CodingToolsPanel({ mode }: { mode: ChatMode }) {
       </form>
       {busy && <><p role="status">Working… local coding tasks can take several minutes.</p>{cancellable && <button type="button" onClick={() => abort.current?.abort()}>Cancel coding request</button>}</>}
       {error && <p role="alert">{error}</p>}
+      <details><summary>Coding job history</summary>
+        <p>Results and captured source expire automatically after seven days. Downloads contain the saved tool result.</p>
+        <button type="button" disabled={busy} onClick={() => void run(async () => { const result = await request<{ jobs: Job[] }>('jobs'); setJobs(result.jobs); return result; }, false)}>Refresh job history</button>
+        {jobs && (jobs.length ? <ul>{jobs.map(job => <li key={job.id}>{job.tool} · {job.status} · {new Date(job.startedAt).toLocaleString()}{job.error && <span> · {job.error}</span>}
+          <button type="button" disabled={busy} onClick={() => void run(async () => {
+            const response = await apiFetch(`/api/code/tools/jobs/${encodeURIComponent(job.id)}/download`);
+            if (!response.ok) throw new Error('Unable to download this coding job.');
+            const url = URL.createObjectURL(await response.blob()); const link = document.createElement('a');
+            link.href = url; link.download = `coding-job-${job.id}.json`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+            return { content: 'Coding job downloaded.' };
+          }, false)}>Download {job.tool} result</button></li>)}</ul> : <p>No saved coding jobs.</p>)}
+      </details>
       {patch && <article aria-label="Proposed code changes"><h3>Review proposed changes</h3>
         <p>{patch.operations.length} file change(s). {applied ? verification === 'not_run' ? 'Applied; verification is still required.' : `Applied; verification ${verification}.` : 'Repository files have not been changed.'}</p>
         {selection && <details><summary>Files selected for this draft</summary><ul>{selection.files.map(file => <li key={file.path}>{file.path} · {file.role === 'editable' ? 'editable' : 'read-only context'} · {file.reason}</li>)}</ul>

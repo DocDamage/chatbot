@@ -9,7 +9,7 @@
  * model fine-tuning or automatic weights updates.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const feedbackCategorySchema = z.enum([
   'incorrect',

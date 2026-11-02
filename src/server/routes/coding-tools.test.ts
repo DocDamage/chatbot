@@ -41,4 +41,15 @@ describe('coding integrations HTTP boundaries', () => {
     expect(tools.propose).toHaveBeenCalledWith('alice', expect.objectContaining({ files: [], automaticContext: true, propertyTests: true }), expect.any(AbortSignal));
     await request(app).post('/api/code/tools/propose').auth(token('developer'), { type: 'bearer' }).send({ files: [], message: 'Fix src/math.ts', automaticContext: 'yes' }).expect(400);
   });
+  it('scopes history and downloads to the authenticated owner', async () => {
+    tools.listJobs = jest.fn(() => [{ id: 'run', tool: 'aider', status: 'completed' }]);
+    tools.getJob = jest.fn((owner, id) => ({ id, owner, tool: 'aider', status: 'completed' }));
+    await request(app).get('/api/code/tools/jobs').expect(401);
+    const list = await request(app).get('/api/code/tools/jobs').auth(token('developer'), { type: 'bearer' }).expect(200);
+    expect(list.body.jobs).toHaveLength(1); expect(tools.listJobs).toHaveBeenCalledWith('alice');
+    expect(list.headers['cache-control']).toBe('no-store');
+    const download = await request(app).get('/api/code/tools/jobs/run/download').auth(token('developer'), { type: 'bearer' }).expect(200);
+    expect(download.headers['content-disposition']).toContain('attachment');
+    expect(tools.getJob).toHaveBeenCalledWith('alice', 'run');
+  });
 });

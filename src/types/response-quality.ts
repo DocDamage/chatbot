@@ -7,7 +7,7 @@
  * - ResponseValidationContext: contextual signals required by validators
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import {
   citationRefSchema,
   CitationRef,

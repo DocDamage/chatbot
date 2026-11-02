@@ -2,7 +2,7 @@
  * Section 44: Rollback Strategy Types & Invariants
  * Governs coordinated multi-domain rollbacks while strictly preserving data integrity.
  */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export type RollbackDomain =
   | 'runtime'

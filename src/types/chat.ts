@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { AIContract } from './contract';
 import { creativeRequestSchema } from '../core/creative/CreativeTypes';
 

@@ -1,10 +1,10 @@
 # DABOOK Integration Plan
 
-**Status:** Approved, implemented through Phase 4 (see Implementation status) · **Date:** 2026-10-05 · **Source under review:** `F:\book2ml\Dabook` (DABOOK v1.0.22)
+**Status:** Phases 0–4 implemented; Phase 5 local implementation and validation in progress · **Updated:** 2026-11-01 · **Source under review:** `F:\book2ml\Dabook` (DABOOK v1.0.22)
 
 ## Implementation status
 
-Last updated 2026-10-05, on branch `feat/dabook-integration`. Phases 0 to 4 are implemented and covered by tests (DABOOK: 300+ pytest tests; Chatbot: Jest and Vitest suites, with live end-to-end tests behind `DABOOK_LIVE_TEST=1`). Phase 5 is not started.
+Phases 0 to 4 originated on `feat/dabook-integration`. Phase 5 is being validated locally on `codex/coding-alias-context`. Optional engine quality benchmarks and an actual training run remain separate acceptance gates; generated training configuration does not establish a trained model.
 
 | Phase | Status | Notes |
 | --- | --- | --- |
@@ -13,13 +13,13 @@ Last updated 2026-10-05, on branch `feat/dabook-integration`. Phases 0 to 4 are 
 | 2 Headless contract | Done | `dabook ingest --json` (`dabook.ingest.v1`), schema in `services/dabook/schemas/` |
 | 3 Chatbot integration | Done | `src/core/dabook/*`, `DabookPdfExtractor`, health endpoint, capability entry, client badges |
 | 4 Training lane | Done | Assisted SFT, dedup, splits, Parquet/HF, provenance, license/review/contamination gates, export endpoint, review UI |
-| 5 Capability upgrades | Not started | OCR, Docling, typography headings, EPUB, fine-tuning hookup |
+| 5 Capability upgrades | Local implementation | RapidOCR with PDFium rendering, optional Docling tables/formulas, typography headings, EPUB Book Graph, governed trainer handoff; see [operations guide](../DOCUMENT_INGESTION.md) |
 
 ### Deviations from this plan
 
 - **Chunks have no `parentId`.** `document_chunks.parent_id` is a foreign key to another chunk, so a book-level `dabook:<sha12>` broke inserts. Chunks are grouped by `metadata.bookKey` instead.
 - **Stage names.** The assisted stage runs *before* compile, so the stages are `s13_assist_sft` and `s14_compile` (compile was `s13_compile`).
-- **Unimplemented config fails loudly.** `extract.backend`, `extract.routing`, `ocr_engine`, `toc_mode: toc_page|typography`, `clean.ocr_repair|quotes_policy`, `license.allow_distribution` are rejected at validation until Phase 5. Config sections reject unknown keys.
+- **Unimplemented config fails loudly.** Docling, RapidOCR, scanned OCR routing, and typography headings are now accepted. Marker/MinerU/OlmOCR, Tesseract in DABOOK, TOC-page inference, `clean.ocr_repair|quotes_policy`, and `license.allow_distribution` remain rejected. Config sections reject unknown keys.
 - **Contamination audit.** `TrainingSeparationCoordinator` only detects whole-record hash equality, so an exact-duplicate check is complemented by a containment scan (an evaluation question embedded anywhere in a training record). Training-vs-RAG overlap is reported but does not block; overlap with held-out evaluation does.
 - **`needsOcr` for scanned PDFs** is set on the fallback only when `pdf-parse` also recovered no text.
 - **Governance lives in DABOOK too.** `dabook export` enforces the license and review gates itself, so a copyrighted book cannot be exported through any client.
@@ -259,13 +259,15 @@ The current SFT output is templated and not fit to train on (§2.4). So this pha
 - Jest: importer license refusal, contamination block, and export manifest contents.
 - **Exit criteria:** On 3 owned or public-domain fixture books, the export produces deduplicated train/val/test bundles in JSONL and Parquet with full provenance. Zero heuristic-template pairs are exported. A spot-check of 50 assisted pairs is at least 90% grounded. A `copyrighted` book can't be exported, through any path.
 
-### Phase 5: Capability upgrades (later, prioritized)
+### Phase 5: Local implementation and remaining acceptance gates
 
-1. **OCR route for scanned PDFs.** Implement `extract.routing.scanned = ocr` with RapidOCR (pure-pip, CPU) by rasterizing with pypdfium2, which is already a dependency, so no Poppler is needed. This also replaces the Chatbot's fragile Poppler/ImageMagick/Ghostscript plus tesseract.js OCR path for PDFs.
-2. **Optional Docling backend** for tables and equations (`extract.backend = docling`, extra `[docling]`). Benchmark it against pdfium on the fixture set before enabling it by default.
-3. **Typography-based heading detection** (font-size clustering) for PDFs without an outline. Today, books without bookmarks lose most of their structure, which also weakens the chapter-level train/val/test splits in Phase 4. Consider pulling this forward if your library has many books without bookmarks.
-4. **EPUB input.** The Chatbot already extracts EPUB, but structure-aware EPUB → Book Graph would follow the same contract.
-5. **Fine-tuning hookup.** Feed the Phase 4 bundles into an actual training run (for example, an Unsloth or Axolotl config generated from the bundle manifest), with the result registered through `src/core/learning/ModelUpdater.ts`. This is out of scope until the export lane is proven.
+1. **OCR route for scanned PDFs — implemented.** `extract.routing.scanned = ocr` uses PDFium rasterization and optional CPU RapidOCR. Real image-only PDF extraction passes through Python and the TypeScript managed fallback without Poppler. The bundled recognizer supports Chinese/English; other requested languages retain the existing OCR fallback. Empty extraction still produces `needs_input`.
+2. **Optional Docling backend — implemented, bounded quality validation.** `extract.backend = docling` uses the `[docling]` extra (Docling >=2.145,<3). Native glyph geometry and bounded ink crops recover the original missed equation. Generated fixtures pass, and seven selected published-book pages pass eight target equations, four headings and two upright table checks. Two sideways tables fail; a native-angle warning caps confidence and blocks default unreviewed training export. An explicit page-rotation diagnostic recovers both tables; automatic correction with source-coordinate mapping remains future work. CPU inference uses float32. Full-book conversion runs once, with a multi-shard replanning regression. The backend remains opt-in; these samples do not establish general book accuracy. See the [published-book evidence](evidence/dabook-validation/2026-11-01/README.md).
+3. **Typography headings — implemented.** Relative font-size clustering supplies heading hierarchy when a PDF lacks an outline; structured backend headings retain their semantic levels.
+4. **Structured EPUB — implemented.** Package metadata and spine order feed the same Book Graph contract, preserving headings, tables, MathML, and code. XML entities, unsafe member paths, duplicate names, and oversized archives are rejected.
+5. **Training handoff and CPU lifecycle — implemented locally.** Governed exports carry artifact hashes; preparation writes normalized splits and an Axolotl configuration. The source-only CPU runner now proves actual optimization, held-out loss evaluation, result integrity and inactive registration through `ModelUpdater` using a tiny randomly initialized model and explicitly opted-in synthetic data. Launch/import recheck source declarations, bytes, split wiring and separation; source fields are trusted-local declarations, not authenticated signatures. Useful-model fine-tuning, external Axolotl execution, persistent serving registration and explicit promotion remain integration gates. See [operations and limitations](../DOCUMENT_INGESTION.md).
+
+See [document ingestion](../DOCUMENT_INGESTION.md) and the [local verification record](evidence/remaining-work/2026-11-01/verification.json).
 
 LLM-assisted SFT generation and the Parquet/HF formats moved into Phase 4.
 

@@ -18,7 +18,7 @@ describe('RT-RAG-005: VideoRAG Frame Analysis and Multimodal Indexing Suite', ()
     fs.writeFileSync(sampleVideoFile, Buffer.from('ftypmp42....moov'));
 
     mockVoiceAgent = {
-      transcribe: jest.fn<any>().mockResolvedValue({
+      transcribe: jest.fn<(...args: any[]) => any>().mockResolvedValue({
         text: 'This video demonstrates assembling custom pixel art character animations.',
         duration: 60,
         words: []
@@ -26,11 +26,11 @@ describe('RT-RAG-005: VideoRAG Frame Analysis and Multimodal Indexing Suite', ()
     };
 
     mockEmbeddingService = {
-      embed: jest.fn<any>().mockResolvedValue([0.2, 0.4, 0.6])
+      embed: jest.fn<(...args: any[]) => any>().mockResolvedValue([0.2, 0.4, 0.6])
     };
 
     mockVisionService = {
-      describe: jest.fn<any>().mockResolvedValue('A pixel art character walk cycle sheet')
+      describe: jest.fn<(...args: any[]) => any>().mockResolvedValue('A pixel art character walk cycle sheet')
     };
 
     videoRag = new VideoRAG(mockVoiceAgent, mockEmbeddingService, mockVisionService, {
@@ -77,7 +77,7 @@ describe('RT-RAG-005: VideoRAG Frame Analysis and Multimodal Indexing Suite', ()
     expect(videoRag.getDocument('unknown-id')).toBeUndefined();
 
     // Query answering
-    const mockLlm = jest.fn<any>().mockResolvedValue('The video shows a character animation sheet.');
+    const mockLlm = jest.fn<(...args: any[]) => any>().mockResolvedValue('The video shows a character animation sheet.');
     const queryRes = await videoRag.query('what does the video show?', mockLlm);
     expect(queryRes.answer).toContain('character animation sheet');
     expect(queryRes.sources.length).toBeGreaterThan(0);

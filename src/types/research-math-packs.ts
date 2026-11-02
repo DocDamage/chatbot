@@ -5,7 +5,7 @@
  * structural research chunks, and mathematical theorem/proof/LaTeX chunks.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const academicLicenseSchema = z.enum([
   'CC-BY-4.0',

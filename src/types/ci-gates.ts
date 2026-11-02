@@ -1,7 +1,7 @@
 /**
  * Section 48: Required CI Gates Specification & Types
  */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const CIGateScopeSchema = z.enum(['pr', 'release_only']);
 export type CIGateScope = z.infer<typeof CIGateScopeSchema>;

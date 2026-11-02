@@ -64,14 +64,13 @@ class ExtractConfig(StrictModel):
     ocr_dpi: int = Field(default=300, ge=72, le=600)
     layout_model: str = "default"
     render_dpi_assets: int = Field(default=170, ge=72, le=400)
-    # Only the pdfium route exists. Scanned documents finish as ``needs_input`` (see S01)
-    # instead of being routed to an OCR engine, so there is nothing to route yet.
+    # OCR is opt-in; an unavailable optional engine is reported in page warnings.
     routing: dict[str, str] = Field(default_factory=dict)
 
     @field_validator("backend")
     @classmethod
     def _backend_implemented(cls, v: str) -> str:
-        if v not in ("auto", "pdfium_pdfminer"):
+        if v not in ("auto", "pdfium_pdfminer", "docling"):
             raise _not_implemented(
                 "extract.backend", v, "planned: Phase 5", "Use 'auto' or 'pdfium_pdfminer'."
             )
@@ -80,7 +79,7 @@ class ExtractConfig(StrictModel):
     @field_validator("ocr_engine")
     @classmethod
     def _ocr_engine_implemented(cls, v: str) -> str:
-        if v != "auto":
+        if v not in ("auto", "rapidocr"):
             raise _not_implemented("extract.ocr_engine", v, "planned: Phase 5", "Use 'auto'.")
         return v
 
@@ -88,7 +87,7 @@ class ExtractConfig(StrictModel):
     @classmethod
     def _routing_implemented(cls, v: dict[str, str]) -> dict[str, str]:
         for kind, route in v.items():
-            if route not in ("pdfium", "needs_input"):
+            if kind != "scanned" or route not in ("pdfium", "needs_input", "ocr"):
                 raise _not_implemented(
                     f"extract.routing.{kind}",
                     route,
@@ -105,7 +104,7 @@ class StructureConfig(StrictModel):
     @field_validator("toc_mode")
     @classmethod
     def _toc_mode_implemented(cls, v: str) -> str:
-        if v in ("toc_page", "typography"):
+        if v == "toc_page":
             raise _not_implemented(
                 "structure.toc_mode", v, "planned: Phase 5", "Use 'auto', 'outline' or 'off'."
             )
@@ -341,6 +340,7 @@ class DabookConfig(StrictModel):
             "backend": self.extract.backend,
             "ocr_engine": self.extract.ocr_engine,
             "ocr_dpi": self.extract.ocr_dpi,
+            "routing": self.extract.routing,
             "layout_model": self.extract.layout_model,
             "render_dpi_assets": self.extract.render_dpi_assets,
             "toc_mode": self.structure.toc_mode,

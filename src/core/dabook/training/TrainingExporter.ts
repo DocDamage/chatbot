@@ -20,6 +20,7 @@ import { ContaminationScanResult, scanForContamination } from './ContaminationSc
 import { EvaluationCorpus, loadEvaluationCorpus } from './EvaluationCorpus';
 import { BlockedEntry, TrainingCorpusImporter, TrainingRecord, trainingEligibility } from './TrainingCorpusImporter';
 import { ContaminationAuditResult } from '../../../types/training-separation';
+import { artifactHash } from './TrainingPlan';
 
 export type TrainingExportErrorCode = 'unknown_book' | 'blocked' | 'no_books' | 'contaminated';
 
@@ -157,7 +158,13 @@ export class TrainingExporter {
       splits: request.splits
     });
 
-    const merged = { ...manifest, governance: { ...governance, generatedBy: 'chatbot-training-exporter' } };
+    const artifactHashes: Record<string, string> = {};
+    for (const relative of manifest.files) {
+      const file = path.resolve(bundleDir, relative);
+      if (!file.startsWith(path.resolve(bundleDir) + path.sep)) throw new Error('Training export contains an unsafe artifact path.');
+      if (fs.existsSync(file)) artifactHashes[relative] = artifactHash(file);
+    }
+    const merged = { ...manifest, artifactHashes, governance: { ...governance, generatedBy: 'chatbot-training-exporter' } };
     const manifestPath = path.join(bundleDir, 'manifest.json');
     const tmp = `${manifestPath}.tmp`;
     fs.writeFileSync(tmp, JSON.stringify(merged, null, 2), 'utf8');

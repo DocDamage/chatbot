@@ -9,9 +9,9 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 
 ## Counts
 
-- Reachable production files: 908
-- Unreachable production files: 357
-- Unresolved relative imports: 84
+- Reachable production files: 913
+- Unreachable production files: 360
+- Unresolved relative imports: 87
 
 ## Unreachable production modules
 
@@ -113,6 +113,7 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/creative/PromptPackLibrary.ts`
 - `src/core/creative/RoleplaySessionEngine.ts`
 - `src/core/creative/StoryBibleStore.ts`
+- `src/core/dabook/training/TrainingResult.ts`
 - `src/core/developer/index.ts`
 - `src/core/diagnostics/ChatDiagnosticsService.ts`
 - `src/core/diagnostics/ChatRunRepository.ts`
@@ -151,12 +152,14 @@ Generated from static relative imports and literal `require()`/dynamic-import ca
 - `src/core/governance/HandoffAdditionsBuilder.ts`
 - `src/core/governance/ImplementationDependencyGraph.ts`
 - `src/core/governance/ImplementationPromptTemplate.ts`
+- `src/core/governance/KnowledgeBundleOperations.ts`
 - `src/core/governance/KnowledgePackEvidenceValidator.ts`
 - `src/core/governance/MilestoneManager.ts`
 - `src/core/governance/ParallelWorkCoordinator.ts`
 - `src/core/governance/ProhibitedShortcutsDetector.ts`
 - `src/core/governance/RepositoryFileMapAuditor.ts`
 - `src/core/governance/RuntimeDefinitionOfDoneEvaluator.ts`
+- `src/core/governance/ShadowReport.ts`
 - `src/core/governance/TaskDefinitionOfDoneAuditor.ts`
 - `src/core/governance/VerificationCommandsOrchestrator.ts`
 - `src/core/index.ts`

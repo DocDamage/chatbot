@@ -10,7 +10,7 @@
  * Strictly adheres to the < 300 lines per file rule (§494).
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const toolExecutionStatusSchema = z.enum([
   'success',

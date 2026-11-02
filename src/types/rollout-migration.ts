@@ -2,7 +2,7 @@
  * Section 43: Migration and Rollout Strategy Types & Schemas
  * Governs the 8 canonical migration stages, prerequisite validation, and traffic routing.
  */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export type RolloutStage =
   | '1_instrumentation'

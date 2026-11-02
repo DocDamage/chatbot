@@ -367,6 +367,8 @@ def ingest(
         None, "--assist", help="LLM provider for assisted SFT pairs: ollama:<model> | openai:<model>"
     ),
     formats: str = typer.Option("jsonl", "--formats", help="jsonl,parquet,hf (comma-separated)"),
+    ocr: bool = typer.Option(False, "--ocr", help="OCR scanned pages with optional RapidOCR"),
+    backend: str | None = typer.Option(None, "--backend", help="Extraction backend: auto, pdfium_pdfminer, docling"),
 ) -> None:
     """
     Ingest PDFs one-shot and exit: register, plan, process, report. No UI, no browser.
@@ -406,6 +408,10 @@ def ingest(
         overrides = _overrides(workspace, profile, _split(modes), _split(formats), None, None, None, 8765)
         if assist:
             overrides["assist"] = {"provider": assist}
+        if ocr:
+            overrides.setdefault("extract", {}).update({"routing": {"scanned": "ocr"}, "ocr_engine": "rapidocr"})
+        if backend:
+            overrides.setdefault("extract", {})["backend"] = backend
         cfg = _load_cfg(overrides, workspace, fail_code=EXIT_BAD_ARGS)
     except typer.Exit as exc:
         raise bail("bad_args", "Invalid configuration (see stderr).", exc.exit_code) from None
@@ -1199,10 +1205,10 @@ def _collect_pdfs(paths: list[Path]) -> list[Path]:
         if not p.exists():
             err_console.print(f"[yellow]⚠ Not found: {p}[/yellow]")
             continue
-        if p.is_file() and p.suffix.lower() == ".pdf":
+        if p.is_file() and p.suffix.lower() in (".pdf", ".epub"):
             result.append(p)
         elif p.is_dir():
-            result.extend(p.rglob("*.pdf"))
+            result.extend(f for f in p.rglob("*") if f.is_file() and f.suffix.lower() in (".pdf", ".epub"))
     return sorted(set(result))
 
 

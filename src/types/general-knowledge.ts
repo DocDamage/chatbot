@@ -5,7 +5,7 @@
  * entity linking results, and versioned snapshot metadata.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const wikipediaNamespaceSchema = z.enum([
   'main',

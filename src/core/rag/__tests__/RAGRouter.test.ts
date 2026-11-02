@@ -3,8 +3,8 @@ import { RAGRouter } from '../RAGRouter';
 
 describe('RT-RAG-001: RAGRouter Intent Classification and Multi-Route Suite', () => {
   it('classifies SQL aggregations and routes to SQL handler', async () => {
-    const mockRag = jest.fn<any>().mockResolvedValue({ documents: [] });
-    const mockSql = jest.fn<any>().mockResolvedValue({ rows: [{ count: 42 }] });
+    const mockRag = jest.fn<(...args: any[]) => any>().mockResolvedValue({ documents: [] });
+    const mockSql = jest.fn<(...args: any[]) => any>().mockResolvedValue({ rows: [{ count: 42 }] });
 
     const router = new RAGRouter(mockRag, mockSql, undefined, {
       enableSQLRoute: true,
@@ -20,8 +20,8 @@ describe('RT-RAG-001: RAGRouter Intent Classification and Multi-Route Suite', ()
   });
 
   it('classifies conceptual questions and routes to RAG handler', async () => {
-    const mockRag = jest.fn<any>().mockResolvedValue({ documents: ['Doc 1'] });
-    const mockSql = jest.fn<any>().mockResolvedValue({ rows: [] });
+    const mockRag = jest.fn<(...args: any[]) => any>().mockResolvedValue({ documents: ['Doc 1'] });
+    const mockSql = jest.fn<(...args: any[]) => any>().mockResolvedValue({ rows: [] });
 
     const router = new RAGRouter(mockRag, mockSql);
 
@@ -34,9 +34,9 @@ describe('RT-RAG-001: RAGRouter Intent Classification and Multi-Route Suite', ()
   });
 
   it('uses LLM classifier when provided', async () => {
-    const mockRag = jest.fn<any>().mockResolvedValue({ documents: [] });
-    const mockSql = jest.fn<any>().mockResolvedValue({ rows: [] });
-    const mockLLM = jest.fn<any>().mockResolvedValue(JSON.stringify({
+    const mockRag = jest.fn<(...args: any[]) => any>().mockResolvedValue({ documents: [] });
+    const mockSql = jest.fn<(...args: any[]) => any>().mockResolvedValue({ rows: [] });
+    const mockLLM = jest.fn<(...args: any[]) => any>().mockResolvedValue(JSON.stringify({
       type: 'hybrid',
       confidence: 0.9,
       reasoning: 'Requires both structured metrics and unstructured docs'

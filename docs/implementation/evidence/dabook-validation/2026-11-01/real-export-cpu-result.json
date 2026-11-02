@@ -1,0 +1,54 @@
+{
+  "schema": "dabook.training-result.v1",
+  "status": "completed",
+  "createdAt": "2026-11-02T01:16:59.623731Z",
+  "engine": "cpu-smoke",
+  "purpose": "lifecycle-smoke-not-domain-model",
+  "baseModel": {
+    "name": "cpu-smoke/random-init",
+    "kind": "randomly-initialized-untrained"
+  },
+  "plan": {
+    "sourceManifestSha256": "83087920f40111163e2ab529ee2e3d7923c350ba4c11e61e48baaaac930dc0bf",
+    "configSha256": "9ffbc3634b9f7f35ec571474b5d71208cb5e4af26ca1ca9a90deb34e77465727"
+  },
+  "datasets": {
+    "optimizer": [
+      {
+        "split": "train",
+        "relativePath": "training-plan/train.jsonl",
+        "sha256": "9e4b5fa80c87afe8fb8a5d6463b42295d3a53f9923fd43b254bcdf3f28091e8e",
+        "records": 6
+      }
+    ],
+    "heldOutTest": {
+      "split": "test",
+      "relativePath": "training-plan/test.jsonl",
+      "sha256": "5d24d77e481484bc7a0899424a5fc1e759f14717f5d2c6c2761a0e6996c701fd",
+      "records": 5
+    },
+    "validation": {
+      "split": "validation",
+      "relativePath": "training-plan/val.jsonl",
+      "sha256": "a7aefaf5cd2705684537c47b28aa5a9b60af1f6d05affc0674242c94dc9e5a83",
+      "records": 1
+    }
+  },
+  "metrics": {
+    "initialHeldOutLoss": 5.667351531982422,
+    "finalTrainingLoss": 4.091052055358887,
+    "heldOutLoss": 3.9327527046203614,
+    "heldOutPerplexity": 51.047302589760704,
+    "trainingSteps": 12
+  },
+  "artifacts": [
+    {
+      "relativePath": "model.pt",
+      "sha256": "cc5638f0d17f121f27020bbebd68d9d6ab5cc5ab39c35b87f3f66aaaa6897d2f"
+    },
+    {
+      "relativePath": "model-config.json",
+      "sha256": "6d2b4e7661748943d8058f17f35402262acc4e7cf36fb1fd6f9056e29be064ae"
+    }
+  ]
+}

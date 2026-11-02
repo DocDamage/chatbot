@@ -6,7 +6,7 @@ describe('RT-RAG-003: CorrectiveRetriever CRAG Self-Correction Suite', () => {
     const crag = new CorrectiveRetriever({ confidenceThreshold: 0.6 });
 
     const mockRetriever = {
-      retrieve: jest.fn<any>().mockResolvedValue([
+      retrieve: jest.fn<(...args: any[]) => any>().mockResolvedValue([
         { id: '1', content: 'Explain topic with detailed information and comprehensive architecture guide', score: 0.9 },
         { id: '2', content: 'Explain topic with secondary information and practical implementation patterns', score: 0.85 },
         { id: '3', content: 'Explain topic with third information and testing best practice examples', score: 0.8 }
@@ -31,7 +31,7 @@ describe('RT-RAG-003: CorrectiveRetriever CRAG Self-Correction Suite', () => {
 
     let callCount = 0;
     const mockRetriever = {
-      retrieve: jest.fn<any>().mockImplementation(async (_q: string) => {
+      retrieve: jest.fn<(...args: any[]) => any>().mockImplementation(async (_q: string) => {
         callCount++;
         if (callCount === 1) {
           return [{ id: '1', content: 'Irrelevant snippet without keywords', score: 0.2 }];
@@ -57,7 +57,7 @@ describe('RT-RAG-003: CorrectiveRetriever CRAG Self-Correction Suite', () => {
     };
 
     const mockLLM = {
-      process: jest.fn<any>().mockResolvedValue({
+      process: jest.fn<(...args: any[]) => any>().mockResolvedValue({
         content: 'Rewritten specific query with expanded terms'
       })
     };
@@ -79,14 +79,14 @@ describe('RT-RAG-003: CorrectiveRetriever CRAG Self-Correction Suite', () => {
     });
 
     const mockRetriever = {
-      retrieve: jest.fn<any>().mockResolvedValue([])
+      retrieve: jest.fn<(...args: any[]) => any>().mockResolvedValue([])
     };
 
     crag.setRetriever(mockRetriever as any);
 
     // Mock webSearcher
     const mockWebSearcher = {
-      search: jest.fn<any>().mockResolvedValue({
+      search: jest.fn<(...args: any[]) => any>().mockResolvedValue({
         success: true,
         data: {
           results: [{ title: 'Web Result', snippet: 'Web snippet content', url: 'https://example.com/web' }]
@@ -111,12 +111,12 @@ describe('RT-RAG-003: CorrectiveRetriever CRAG Self-Correction Suite', () => {
 
     const cragWithReranker = new CorrectiveRetriever({ confidenceThreshold: 0.5 });
     const mockRetriever = {
-      retrieve: jest.fn<any>().mockResolvedValue([
+      retrieve: jest.fn<(...args: any[]) => any>().mockResolvedValue([
         { id: 'd1', content: 'Doc one content for reranking', score: 0.7 }
       ])
     };
     const mockReranker = {
-      rerank: jest.fn<any>().mockResolvedValue([
+      rerank: jest.fn<(...args: any[]) => any>().mockResolvedValue([
         { id: 'd1', content: 'Doc one content for reranking', score: 0.95 }
       ])
     };

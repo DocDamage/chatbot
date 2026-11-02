@@ -17,7 +17,7 @@ describe('RT-RAG-004: AudioRAG Transcription and Time-Aligned Retrieval Suite', 
     fs.writeFileSync(sampleAudioFile, Buffer.from('RIFF....WAVEfmt '));
 
     mockVoiceAgent = {
-      transcribe: jest.fn<any>().mockResolvedValue({
+      transcribe: jest.fn<(...args: any[]) => any>().mockResolvedValue({
         text: 'Welcome to the podcast. Today we talk about game engine development and shaders.',
         duration: 120,
         words: [
@@ -29,7 +29,7 @@ describe('RT-RAG-004: AudioRAG Transcription and Time-Aligned Retrieval Suite', 
     };
 
     mockEmbeddingService = {
-      embed: jest.fn<any>().mockResolvedValue([0.1, 0.2, 0.3])
+      embed: jest.fn<(...args: any[]) => any>().mockResolvedValue([0.1, 0.2, 0.3])
     };
 
     audioRag = new AudioRAG(mockVoiceAgent, mockEmbeddingService, {
@@ -72,7 +72,7 @@ describe('RT-RAG-004: AudioRAG Transcription and Time-Aligned Retrieval Suite', 
     expect(audioRag.getDocument(doc.id)).toBeDefined();
 
     // Query answering
-    const mockLlm = jest.fn<any>().mockResolvedValue('The podcast discusses game engines and shaders.');
+    const mockLlm = jest.fn<(...args: any[]) => any>().mockResolvedValue('The podcast discusses game engines and shaders.');
     const queryRes = await audioRag.query('what is discussed?', mockLlm);
     expect(queryRes.answer).toContain('game engines and shaders');
     expect(queryRes.sources.length).toBeGreaterThan(0);

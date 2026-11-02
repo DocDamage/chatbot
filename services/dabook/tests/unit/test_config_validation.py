@@ -12,12 +12,9 @@ from dabook.config.models import PROFILES, DabookConfig
 @pytest.mark.parametrize(
     ("overrides", "needle"),
     [
-        ({"extract": {"backend": "docling"}}, "extract.backend"),
         ({"extract": {"backend": "marker"}}, "not yet implemented"),
         ({"extract": {"ocr_engine": "tesseract"}}, "extract.ocr_engine"),
-        ({"extract": {"routing": {"scanned": "ocr"}}}, "extract.routing.scanned"),
         ({"license": {"allow_distribution": True}}, "license.allow_distribution"),
-        ({"structure": {"toc_mode": "typography"}}, "structure.toc_mode"),
         ({"structure": {"detect_regions": True}}, "structure.detect_regions"),
         ({"clean": {"ocr_repair": "apply"}}, "clean.ocr_repair"),
         ({"clean": {"quotes_policy": "normalize"}}, "clean.quotes_policy"),

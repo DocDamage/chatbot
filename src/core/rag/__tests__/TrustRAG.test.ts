@@ -4,13 +4,13 @@ import { TrustRAG } from '../TrustRAG';
 describe('RT-RAG-002: TrustRAG Confidence Scoring and Fallback Suite', () => {
   it('computes trust score and returns answer when confidence exceeds threshold', async () => {
     const mockRetriever = {
-      search: jest.fn<any>().mockResolvedValue([
+      search: jest.fn<(...args: any[]) => any>().mockResolvedValue([
         { content: 'What is Node.js? Node.js runtime built on V8 architecture', source: 'docs/node.md', score: 0.95 },
         { content: 'What is Node.js? Node.js uses an event-driven architecture', source: 'docs/arch.md', score: 0.90 }
       ])
     };
 
-    const mockLLM = jest.fn<any>().mockResolvedValue('Node.js is an event-driven JavaScript runtime built on Chrome V8.');
+    const mockLLM = jest.fn<(...args: any[]) => any>().mockResolvedValue('Node.js is an event-driven JavaScript runtime built on Chrome V8.');
 
     const trustRag = new TrustRAG(mockRetriever, mockLLM, undefined, {
       minConfidence: 0.7,
@@ -25,17 +25,17 @@ describe('RT-RAG-002: TrustRAG Confidence Scoring and Fallback Suite', () => {
 
   it('triggers web fallback when primary retriever yields low confidence or insufficient sources', async () => {
     const mockRetriever = {
-      search: jest.fn<any>().mockResolvedValue([
+      search: jest.fn<(...args: any[]) => any>().mockResolvedValue([
         { content: 'Vague text', source: 'unknown.txt', score: 0.2 }
       ])
     };
 
-    const mockWebSearch = jest.fn<any>().mockResolvedValue([
+    const mockWebSearch = jest.fn<(...args: any[]) => any>().mockResolvedValue([
       { content: 'Authoritative web result from verified source', source: 'https://official.org', score: 0.95 },
       { content: 'Secondary web confirmation', source: 'https://reliable.edu', score: 0.90 }
     ]);
 
-    const mockLLM = jest.fn<any>().mockResolvedValue('Answer generated from web fallback.');
+    const mockLLM = jest.fn<(...args: any[]) => any>().mockResolvedValue('Answer generated from web fallback.');
 
     const trustRag = new TrustRAG(mockRetriever, mockLLM, mockWebSearch, {
       minConfidence: 0.8,
@@ -49,7 +49,7 @@ describe('RT-RAG-002: TrustRAG Confidence Scoring and Fallback Suite', () => {
 
   it('handles source validation failures, recency metadata, and generates warnings', async () => {
     const mockRetriever = {
-      search: jest.fn<any>().mockResolvedValue([
+      search: jest.fn<(...args: any[]) => any>().mockResolvedValue([
         {
           content: 'Outdated document about legacy API version 1.0',
           source: 'docs/legacy.md',
@@ -70,7 +70,7 @@ describe('RT-RAG-002: TrustRAG Confidence Scoring and Fallback Suite', () => {
       ])
     };
 
-    const mockLLM = jest.fn<any>().mockResolvedValue('Answer with source citations.');
+    const mockLLM = jest.fn<(...args: any[]) => any>().mockResolvedValue('Answer with source citations.');
 
     const trustRag = new TrustRAG(mockRetriever, mockLLM, undefined, {
       minConfidence: 0.9,
@@ -87,10 +87,10 @@ describe('RT-RAG-002: TrustRAG Confidence Scoring and Fallback Suite', () => {
 
   it('handles retriever and webSearcher failures gracefully', async () => {
     const failingRetriever = {
-      search: jest.fn<any>().mockRejectedValue(new Error('Retriever database disconnected'))
+      search: jest.fn<(...args: any[]) => any>().mockRejectedValue(new Error('Retriever database disconnected'))
     };
-    const failingWebSearch = jest.fn<any>().mockRejectedValue(new Error('Web search rate limited'));
-    const mockLLM = jest.fn<any>().mockResolvedValue('Fallback LLM output.');
+    const failingWebSearch = jest.fn<(...args: any[]) => any>().mockRejectedValue(new Error('Web search rate limited'));
+    const mockLLM = jest.fn<(...args: any[]) => any>().mockResolvedValue('Fallback LLM output.');
 
     const trustRag = new TrustRAG(failingRetriever, mockLLM, failingWebSearch, {
       minConfidence: 0.8,

@@ -13,7 +13,7 @@
  * - CanonicalKnowledge: source-of-truth reference documents/data
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const variableSourceSchema = z.enum(['explicit', 'inferred', 'tool', 'project']);
 export type VariableSource = z.infer<typeof variableSourceSchema>;

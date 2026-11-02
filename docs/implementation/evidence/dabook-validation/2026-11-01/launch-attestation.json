@@ -1,0 +1,9 @@
+{
+  "schema": "dabook.cpu-smoke-launch.v1",
+  "purpose": "lifecycle-smoke-not-domain-model",
+  "fixtureOptIn": true,
+  "sourceManifestSha256": "b4196785031d737a6d3e0dce1509a7b8eeccc61f0f4de2f4771c60be2f4a7206",
+  "configSha256": "8ee2ea70d08f5ef3245e75fcd3b5caaaf9ef91ec8b0d45333b600b448ac5c6f5",
+  "trainSha256": "2d2d9eac33ae9f018249b0a0ad2c8b59b56ae0c5abd8ffe5cd93e9e640d7bc5b",
+  "heldOutTestSha256": "44d9b0c541212f68c2eb5e66c00fde40e7118b1553838a6eaaf4aa453905638d"
+}

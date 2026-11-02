@@ -2,6 +2,8 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { PdfExtractor } from '../PdfExtractor';
+import { managedPdfOcr } from '../ManagedPdfOcr';
+jest.mock('../ManagedPdfOcr', () => ({ managedPdfOcr: jest.fn().mockRejectedValue(new Error('Unavailable in legacy rasterizer tests')) }));
 
 jest.mock('pdf-parse', () => {
   return jest.fn().mockImplementation(async (buffer: Buffer) => {
@@ -58,6 +60,33 @@ describe('RT-RAG-002: PdfExtractor Text Ingestion and OCR Pipeline Suite', () =>
     expect(extractor.canExtract('.PDF')).toBe(false);
     expect(extractor.canExtract('.docx')).toBe(false);
     expect(extractor.canExtract('.txt')).toBe(false);
+  });
+
+  it('uses managed OCR before legacy rasterizers for a scanned PDF', async () => {
+    const file = path.join(tempDir, 'managed.pdf'); fs.writeFileSync(file, 'EMPTY_TEXT_PDF');
+    jest.mocked(managedPdfOcr).mockResolvedValueOnce({ text: 'Recovered observatory instructions.', pages: 1, totalPages: 2, warnings: ['Only the first page was processed.'] });
+    const rasterizers = jest.spyOn(extractor as any, 'findRasterizers');
+    const result = await extractor.extract(file, { enablePdfOcr: true, imageOcrLanguage: 'eng' });
+    expect(result.text).toBe('Recovered observatory instructions.');
+    expect(result.metadata).toMatchObject({ needsOcr: false, pdfOcrEngine: 'rapidocr', pdfOcrRasterizer: 'pypdfium2' });
+    expect(result.warnings).toContain('Only the first page was processed.'); expect(rasterizers).not.toHaveBeenCalled();
+  });
+
+  it('preserves requests for languages outside the bundled managed model', async () => {
+    const file = path.join(tempDir, 'french.pdf'); fs.writeFileSync(file, 'EMPTY_TEXT_PDF');
+    jest.mocked(managedPdfOcr).mockClear(); jest.spyOn(extractor as any, 'findRasterizers').mockReturnValue([]);
+    const result = await extractor.extract(file, { enablePdfOcr: true, imageOcrLanguage: 'fra' });
+    expect(managedPdfOcr).not.toHaveBeenCalled(); expect(result.metadata.needsOcr).toBe(true);
+    expect(result.warnings?.join(' ')).toContain('fra requires the legacy OCR route');
+  });
+
+  it('keeps an empty recognition result queued instead of treating page labels as text', async () => {
+    const file = path.join(tempDir, 'no-words.pdf'); fs.writeFileSync(file, 'EMPTY_TEXT_PDF');
+    jest.spyOn(extractor as any, 'findRasterizers').mockReturnValue(['fixture']);
+    jest.spyOn(extractor as any, 'rasterizePdf').mockReturnValue([path.join(tempDir, 'empty.png')]);
+    const tesseract = require('tesseract.js'); tesseract.recognize.mockResolvedValueOnce({ data: { text: '  ', confidence: 0 } });
+    const result = await extractor.extract(file, { enablePdfOcr: true, imageOcrLanguage: 'eng' });
+    expect(result.text).toBe(''); expect(result.metadata).toMatchObject({ needsOcr: true, pdfOcrStatus: 'failed' });
   });
 
   it('extracts normal PDF text and populates metadata and page count', async () => {

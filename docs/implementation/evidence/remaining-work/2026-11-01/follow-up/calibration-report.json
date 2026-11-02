@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "expected_equations": 1,
+  "detected_equations": 1,
+  "matches": [
+    {
+      "id": "energy",
+      "text": "E = m c ^ { 2 }",
+      "correct_latex": true,
+      "detection": "native_geometry"
+    }
+  ],
+  "missing": [],
+  "false_positives": [],
+  "table_rows_preserved": true,
+  "scope": "generated display-math fixture; not a population accuracy estimate"
+}

@@ -5,7 +5,7 @@
  * and candidate pack configurations (B), comparative metrics, promotion rules, and decision records.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const packPromotionDecisionStatusSchema = z.enum([
   'PROMOTED_DEFAULT',

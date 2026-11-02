@@ -5,7 +5,7 @@
  * user/product-level groupings of one or more datasets with precedence routing.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const knowledgePackCategorySchema = z.enum([
   'coding',

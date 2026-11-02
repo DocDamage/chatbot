@@ -5,7 +5,7 @@
  * readiness handling, and telemetry structures for the knowledge subsystem.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const ROUTING_DOMAINS = [
   'coding',

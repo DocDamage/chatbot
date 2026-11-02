@@ -20,7 +20,7 @@ from typing import Any
 
 import ftfy
 
-from dabook.backends.pdfium import PdfiumExtractor
+from dabook.backends.structured import open_source, typography_levels
 from dabook.core.atomic import StageCommit, write_json
 from dabook.core.codedetect import classify_code
 from dabook.ir.models import BookNode, PageData
@@ -141,12 +141,12 @@ def classify_doc_type(text_pages: int, sampled: int) -> str:
     return "native" if ratio >= NATIVE_AT_LEAST else "mixed"
 
 
-@stage("s01_inspect", "0.2.0")
+@stage("s01_inspect", "0.3.0")
 def stage_s01_inspect(ctx: StageContext) -> None:
     pdf = _require_pdf(ctx)
     ctx.progress(0, "Inspecting PDF and extracting bookmarks…")
     toc_mode = ctx.param("toc_mode", "auto")
-    with PdfiumExtractor(pdf) as ext:
+    with open_source(pdf, ctx.params, inspect=True) as ext:
         page_count = ext.page_count()
         if page_count == 0:
             raise ValueError("PDF is invalid: it has no pages")
@@ -155,7 +155,9 @@ def stage_s01_inspect(ctx: StageContext) -> None:
         sampled = _sample_pages(page_count)
         text_pages = sum(1 for idx in sampled if ext.page_char_count(idx) >= TEXT_PAGE_MIN_CHARS)
 
-    doc_type = classify_doc_type(text_pages, len(sampled))
+    doc_type = (
+        "epub" if pdf.suffix.lower() == ".epub" else classify_doc_type(text_pages, len(sampled))
+    )
     write_json(
         ctx.out_dir / "inspection.json",
         {
@@ -175,21 +177,21 @@ def stage_s01_inspect(ctx: StageContext) -> None:
 # ---------------------------------------------------------------------------
 # S02 Extract (sharded)
 # ---------------------------------------------------------------------------
-@stage("s02_extract", "0.2.0")
+@stage("s02_extract", "0.5.0")
 def stage_s02_extract(ctx: StageContext) -> None:
     pdf = _require_pdf(ctx)
     page_start = ctx.task.get("page_start") or 0
     page_end = ctx.task.get("page_end") or (page_start + 1)
 
     extracted: list[dict[str, Any]] = []
-    with PdfiumExtractor(pdf) as ext:
+    with open_source(pdf, ctx.params) as ext:
         total = ext.page_count()
         for done, p_num in enumerate(range(page_start, min(page_end, total)), start=1):
             if ctx.should_abort():
                 raise RuntimeError("Aborted")
             try:
                 page = ext.extract_page(p_num)
-            except Exception as exc:  # one bad page must not sink the book; S11 scores it
+            except Exception as exc:  # noqa: BLE001 - isolate extractor failures; S11 scores them
                 logger.warning("Page %d failed to extract: %s", p_num, exc)
                 page = PageData(page_idx=p_num, width=612.0, height=792.0, error=str(exc)[:300])
             extracted.append(page.model_dump())
@@ -377,18 +379,26 @@ def stage_s05_reading_order(ctx: StageContext) -> None:
 _CHAPTER_RE = re.compile(r"^(Chapter\s+\d+|Appendix\s+\w+|Part\s+\w+|Index)$", re.IGNORECASE)
 
 
-@stage("s06_structure", "0.2.0")
+@stage("s06_structure", "0.3.0")
 def stage_s06_structure(ctx: StageContext) -> None:
     pages_data = ctx.read_json("s05_reading_order", "ordered_pages.json")["pages"]
     toc: list[dict[str, Any]] = []
     if ctx.param("toc_mode", "auto") != "off":
         toc = ctx.read_json("s01_inspect", "inspection.json").get("toc", [])
+    levels = (
+        typography_levels(pages_data)
+        if ctx.param("toc_mode", "auto") == "typography"
+        or (ctx.param("toc_mode", "auto") == "auto" and not toc)
+        else {}
+    )
 
     for page in pages_data:
         entries = [t for t in toc if t.get("page_idx") == page["page_idx"]]
         used: set[int] = set()
 
         for block in page["blocks"]:
+            if block.get("metadata", {}).get("structured_type"):
+                continue
             if block["block_type"] in ("toc", "furniture", "code"):
                 continue
             txt = block["raw_text"].strip()
@@ -399,12 +409,27 @@ def stage_s06_structure(ctx: StageContext) -> None:
             matched: dict[str, Any] | None = None
             for i, t in enumerate(entries):
                 t_norm = _norm(t["title"])
-                if i not in used and len(t_norm) >= 3 and t_norm in norm and len(norm) <= len(t_norm) + 10:
+                if (
+                    i not in used
+                    and len(t_norm) >= 3
+                    and t_norm in norm
+                    and len(norm) <= len(t_norm) + 10
+                ):
                     matched = t
                     used.add(i)
                     break
 
-            if matched:
+            size_level = levels.get(round(float(block.get("font_size", 10))))
+            if (
+                size_level is not None
+                and 0 < len(txt) < 140
+                and len(block.get("lines", [])) <= 2
+                and not txt.endswith((".", ";", ","))
+            ):
+                block["block_type"] = "heading"
+                block["metadata"]["level"] = size_level
+                block["metadata"]["heading_method"] = "typography"
+            elif matched:
                 block["block_type"] = "heading"
                 block["metadata"]["level"] = matched["level"]
                 block["metadata"]["title"] = matched["title"]
@@ -456,7 +481,7 @@ def stage_s08_typed_content(ctx: StageContext) -> None:
     for page in pages_data:
         for block in page["blocks"]:
             b_type = block["block_type"]
-            if b_type in ("heading", "toc", "furniture"):
+            if b_type in ("heading", "toc", "furniture", "table", "equation"):
                 continue
             txt = block["raw_text"]
             is_mono = bool(block.get("is_mono")) or b_type == "code"
@@ -567,7 +592,9 @@ def stage_s10_clean(ctx: StageContext) -> None:
 
         if fix_spaced:
             text = re.sub(r"\bC\s+H\s+A\s+P\s+T\s+E\s+R\b", "CHAPTER", text, flags=re.IGNORECASE)
-            text = re.sub(r"\bA\s+P\s+P\s+E\s+N\s+D\s+I\s+X\b", "APPENDIX", text, flags=re.IGNORECASE)
+            text = re.sub(
+                r"\bA\s+P\s+P\s+E\s+N\s+D\s+I\s+X\b", "APPENDIX", text, flags=re.IGNORECASE
+            )
             text = re.sub(r"\bI\s+N\s+D\s+E\s+X\b", "INDEX", text, flags=re.IGNORECASE)
 
         text = text.replace("\xad", "").replace("\x02", "").replace("�", "")
@@ -592,6 +619,7 @@ def score_quality(
     chars: int,
     empty_pages: int,
     failed_pages: int,
+    review_regions: int = 0,
 ) -> tuple[float, list[str]]:
     """Heuristic 0..1 confidence that the extraction is usable, with the reasons for deductions."""
     score = 1.0
@@ -612,10 +640,15 @@ def score_quality(
     if pages and empty_pages / pages > 0.5:
         score -= 0.2
         reasons.append("more than half the pages have no text")
+    if review_regions:
+        score = min(score, 0.69)
+        reasons.append(
+            f"{review_regions} structured region(s) require review; table orientation is unreliable"
+        )
     return round(max(0.0, min(1.0, score)), 3), reasons
 
 
-@stage("s11_validate", "0.2.0")
+@stage("s11_validate", "0.3.0")
 def stage_s11_validate(ctx: StageContext) -> None:
     nodes = ctx.read_json("s10_clean", "clean_graph.json")["nodes"]
     inspection = ctx.read_json("s01_inspect", "inspection.json")
@@ -631,6 +664,14 @@ def stage_s11_validate(ctx: StageContext) -> None:
 
     merged = ctx.read_json("s03_merge", "merged_pages.json")["pages"]
     failed_pages = sum(1 for p in merged if p.get("error"))
+    # Extraction warnings remain relevant even if later furniture/TOC filters
+    # remove a region from the cleaned graph.
+    review_regions = sum(
+        1
+        for page in merged
+        for block in page.get("blocks", [])
+        if block.get("metadata", {}).get("quality_warning")
+    )
 
     quality, reasons = score_quality(
         pages=pages_total,
@@ -640,6 +681,7 @@ def stage_s11_validate(ctx: StageContext) -> None:
         chars=chars,
         empty_pages=pages_total - len(pages_with_text),
         failed_pages=failed_pages,
+        review_regions=review_regions,
     )
     write_json(
         ctx.out_dir / "validation.json",
@@ -648,13 +690,18 @@ def stage_s11_validate(ctx: StageContext) -> None:
             "quality_reasons": reasons,
             "total_nodes": len(nodes),
             "total_words": total_words,
+            "content_chars": chars,
             "code_blocks": code_blocks,
             "headings": headings,
             "failed_pages": failed_pages,
+            "review_regions": review_regions,
+            "review_required": bool(review_regions),
             "status": "passed",
         },
     )
-    ctx.progress(1, f"Validation: quality {quality}, {total_words} words, {code_blocks} code blocks.")
+    ctx.progress(
+        1, f"Validation: quality {quality}, {total_words} words, {code_blocks} code blocks."
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -682,5 +729,5 @@ def stage_s12_semantic(ctx: StageContext) -> None:
 
 
 # S13 (assist) and S14 (compile) register themselves on import.
-from dabook.stages import assist as _assist  # noqa: E402,F401
-from dabook.stages import compile as _compile  # noqa: E402,F401
+from dabook.stages import assist as _assist  # noqa: F401
+from dabook.stages import compile as _compile  # noqa: F401

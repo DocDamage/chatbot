@@ -6,5 +6,9 @@
   "dependencies": {
     "@ast-grep/cli": "0.51.0", "@upstash/context7-mcp": "4.4.4",
     "eslint": "10.14.0", "@typescript-eslint/parser": "8.59.4", "globals": "17.13.0", "typescript": "5.9.3"
+  },
+  "overrides": {
+    "@hono/node-server": "2.1.5",
+    "minimatch": "11.0.3"
   }
 }

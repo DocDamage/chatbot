@@ -6,7 +6,7 @@
  * never store API secrets, keys, or credentials (§907).
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const responseStyleSchema = z.enum(['adaptive', 'concise', 'detailed']);
 export type ResponseStyle = z.infer<typeof responseStyleSchema>;

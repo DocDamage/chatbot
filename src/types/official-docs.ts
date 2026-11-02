@@ -5,7 +5,7 @@
  * semantic chunks, and version compatibility indexing.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const SUPPORTED_DOC_LANGUAGES = [
   'python',

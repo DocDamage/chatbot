@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 1975,
-    "productionSourceFiles": 1265,
-    "reachableProductionFiles": 908,
-    "unreachableProductionFiles": 357,
-    "routes": 532,
-    "environmentVariables": 243,
+    "sourceFiles": 2019,
+    "productionSourceFiles": 1273,
+    "reachableProductionFiles": 913,
+    "unreachableProductionFiles": 360,
+    "routes": 535,
+    "environmentVariables": 245,
     "featureFlags": 18,
     "oversizedProductionFiles": 100
   },
@@ -1031,6 +1031,27 @@
       "method": "GET",
       "path": "/status",
       "line": 12,
+      "file": "src/server/routes/coding-tools.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/jobs",
+      "line": 13,
+      "file": "src/server/routes/coding-tools.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/jobs/:id",
+      "line": 14,
+      "file": "src/server/routes/coding-tools.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/jobs/:id/download",
+      "line": 15,
       "file": "src/server/routes/coding-tools.ts"
     },
     {
@@ -6069,6 +6090,13 @@
       ]
     },
     {
+      "file": "client/src/components/CodingToolsPanel.tsx",
+      "signals": [
+        "queue-or-worker",
+        "timer"
+      ]
+    },
+    {
       "file": "client/src/components/ExactScopeConfirmModal.tsx",
       "signals": [
         "timer"
@@ -6576,6 +6604,48 @@
       "signals": [
         "timer"
       ]
+    },
+    {
+      "file": "temp/coding-alias-coverage/lcov-report/prettify.js",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "temp/coding-alias-coverage/prettify.js",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "temp/rea-api-isolated.mjs",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "temp/rea-live-isolated.mjs",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "temp/release-coverage-evaluation/lcov-report/prettify.js",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "temp/release-coverage-worker/lcov-report/prettify.js",
+      "signals": [
+        "timer"
+      ]
+    },
+    {
+      "file": "temp/trace-built-server-import.cjs",
+      "signals": [
+        "timer"
+      ]
     }
   ],
   "environmentVariables": [
@@ -6611,6 +6681,7 @@
     "CHATBOT_NATIVE_PYTHON",
     "CHAT_RUNTIME_ENABLED",
     "CHAT_RUNTIME_V2_SHADOW",
+    "CHAT_SHADOW_REPORT_PATH",
     "CI",
     "CLAUDE_MODEL",
     "CODE_EXECUTOR_SANDBOX",
@@ -6641,6 +6712,7 @@
     "DEMUCS_PATH",
     "DEPLOYMENT_MODE",
     "DISK_CACHE_DIR",
+    "DOTENV_CONFIG_PATH",
     "EAGER_CODING_KNOWLEDGE_LOAD",
     "EAGER_KNOWLEDGE_LOAD",
     "ELEVENLABS_API_KEY",
@@ -6899,6 +6971,18 @@
     {
       "binary": "git",
       "file": "src/core/tools/RepoTools.ts"
+    },
+    {
+      "binary": "git",
+      "file": "temp/build-dabook-current-evidence.cjs"
+    },
+    {
+      "binary": "git",
+      "file": "temp/build-followup-evidence.cjs"
+    },
+    {
+      "binary": "git",
+      "file": "temp/build-remaining-evidence.cjs"
     }
   ],
   "oversizedFiles": [
@@ -7032,7 +7116,7 @@
     },
     {
       "file": "src/core/config/EnvironmentDefinitions.ts",
-      "lines": 317
+      "lines": 319
     },
     {
       "file": "src/core/config/ProfileManager.ts",
@@ -7048,7 +7132,7 @@
     },
     {
       "file": "src/core/dabook/DabookBridge.ts",
-      "lines": 606
+      "lines": 608
     },
     {
       "file": "src/core/database/Database.ts",
@@ -7104,7 +7188,7 @@
     },
     {
       "file": "src/core/learning/ModelUpdater.ts",
-      "lines": 339
+      "lines": 403
     },
     {
       "file": "src/core/mcp/McpClientService.ts",

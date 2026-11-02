@@ -8,6 +8,14 @@ afterEach(() => { cleanup(); vi.resetAllMocks(); });
 const response = (data: unknown, ok = true) => ({ ok, json: async () => data }) as Response;
 const status = { enabled: true, installed: { serena: true, aider: true, astGrep: true, context7: true }, workspaceRoot: 'C:/project', model: 'qwen3:8b' };
 describe('coding tools workspace', () => {
+  it('loads owner-scoped saved job history', async () => {
+    vi.mocked(apiFetch).mockImplementation(async url => response(url.endsWith('/status') ? status : { jobs: [{ id: 'one', tool: 'aider', status: 'completed', startedAt: '2026-11-01T10:00:00Z' }] }));
+    render(<CodingToolsPanel mode="ask" />); fireEvent.click(screen.getByRole('button', { name: 'Coding workspace' }));
+    await screen.findByText(/aider: installed/);
+    fireEvent.click(screen.getByRole('button', { name: 'Refresh job history' }));
+    expect(await screen.findByRole('button', { name: 'Download aider result' })).toBeTruthy();
+    expect(apiFetch).toHaveBeenCalledWith('/api/code/tools/jobs', expect.any(Object));
+  });
   it('creates a reviewable proposal without applying it and gates application by mode', async () => {
     const patch = { operations: [{ operation: 'modify', path: 'app.ts', content: 'fixed', expectedContent: 'old', reason: 'fix', authorized: false }], conflicts: [], diff: '-old\n+fixed' };
     vi.mocked(apiFetch).mockImplementation(async url => response(url.endsWith('/status') ? status : { patch }));

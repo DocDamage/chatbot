@@ -3,11 +3,23 @@ import os from 'os';
 import path from 'path';
 import { proposeModelRepair } from './ModelRepairProposal';
 import { CodingAgent } from '../../agents/CodingAgent';
+import * as ToolProcess from '../integrations/ToolProcess';
 
 describe('fresh model-driven repairs', () => {
   let root: string;
-  beforeEach(() => { root = fs.mkdtempSync(path.join(os.tmpdir(), 'model-repair-')); fs.writeFileSync(path.join(root, 'calc.cjs'), 'module.exports = (a,b) => a-b;\n'); });
-  afterEach(() => fs.rmSync(root, { recursive: true, force: true }));
+  let previousCodingToolsEnabled: string | undefined;
+  beforeEach(() => {
+    previousCodingToolsEnabled = process.env.CODING_TOOLS_ENABLED;
+    process.env.CODING_TOOLS_ENABLED = 'false';
+    root = fs.mkdtempSync(path.join(os.tmpdir(), 'model-repair-'));
+    fs.writeFileSync(path.join(root, 'calc.cjs'), 'module.exports = (a,b) => a-b;\n');
+  });
+  afterEach(() => {
+    fs.rmSync(root, { recursive: true, force: true });
+    if (previousCodingToolsEnabled === undefined) delete process.env.CODING_TOOLS_ENABLED;
+    else process.env.CODING_TOOLS_ENABLED = previousCodingToolsEnabled;
+    jest.restoreAllMocks();
+  });
   const adapter = (generate: jest.Mock) => ({ generate, getModelName: () => 'fixture', estimateCost: () => 0 });
   it('anchors fresh proposals to source captured before generation and rejects expansion of approved scope', async () => {
     const generate = jest.fn(async () => {
@@ -41,18 +53,20 @@ describe('fresh model-driven repairs', () => {
     expect(generate.mock.calls[0][0].jsonSchema.properties.operations.items.properties.path.enum).toEqual(['calc.cjs']);
   });
   it('feeds static errors back before an invalid repair can touch repository files', async () => {
-    const previous = process.env.CODING_TOOLS_ENABLED; process.env.CODING_TOOLS_ENABLED = 'true';
-    try {
-      const generate = jest.fn().mockResolvedValueOnce({ content: JSON.stringify({ operations: [{ operation: 'modify', path: 'calc.cjs', content: 'module.exports = value => missing(value);' }] }), model: 'fixture' })
-        .mockImplementationOnce(async () => {
-          expect(fs.readFileSync(path.join(root, 'calc.cjs'), 'utf8')).toContain('a-b');
-          return { content: JSON.stringify({ operations: [{ operation: 'modify', path: 'calc.cjs', content: 'module.exports = (a,b) => a+b;' }] }), model: 'fixture' };
-        });
-      const result = await proposeModelRepair(adapter(generate), root, ['calc.cjs'], [], 2, 'Fix addition');
-      expect(generate).toHaveBeenCalledTimes(2); expect(generate.mock.calls[1][0].prompt).toContain('no-undef');
-      expect(result.operations[0].content).toContain('a+b'); expect(fs.readFileSync(path.join(root, 'calc.cjs'), 'utf8')).toContain('a-b');
-    } finally { if (previous === undefined) delete process.env.CODING_TOOLS_ENABLED; else process.env.CODING_TOOLS_ENABLED = previous; }
-  }, 20000);
+    process.env.CODING_TOOLS_ENABLED = 'true';
+    const runTool = ToolProcess.runTool;
+    jest.spyOn(ToolProcess, 'runTool').mockImplementation((command, args, cwd, timeoutMs, env, signal) =>
+      runTool(command, args, cwd, args.some(argument => argument.endsWith('lint-worker.cjs')) ? 60000 : timeoutMs, env, signal));
+    const generate = jest.fn().mockResolvedValueOnce({ content: JSON.stringify({ operations: [{ operation: 'modify', path: 'calc.cjs', content: 'module.exports = value => missing(value);' }] }), model: 'fixture' })
+      .mockImplementationOnce(async () => {
+        expect(fs.readFileSync(path.join(root, 'calc.cjs'), 'utf8')).toContain('a-b');
+        return { content: JSON.stringify({ operations: [{ operation: 'modify', path: 'calc.cjs', content: 'module.exports = (a,b) => a+b;' }] }), model: 'fixture' };
+      });
+    const result = await proposeModelRepair(adapter(generate), root, ['calc.cjs'], [], 2, 'Fix addition');
+    expect(generate).toHaveBeenCalledTimes(2); expect(generate.mock.calls[1][0].prompt).toContain('no-undef');
+    expect(result.operations[0].content).toContain('a+b'); expect(fs.readFileSync(path.join(root, 'calc.cjs'), 'utf8')).toContain('a-b');
+    // This intentionally exercises the real compiler and lint worker, whose cold startup is host-I/O bound.
+  }, 75000);
   it('retries malformed model JSON with a larger bounded output budget', async () => {
     const generate = jest.fn().mockResolvedValueOnce({ content: '{"operations":[', model: 'fixture' }).mockResolvedValueOnce({
       content: JSON.stringify({ operations: [{ operation: 'modify', path: 'calc.cjs', content: 'module.exports = (a,b) => a+b;' }] }), model: 'fixture',

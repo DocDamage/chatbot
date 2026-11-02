@@ -1,7 +1,7 @@
 /**
  * Section 38, 39, 40: Dependency Graph, Milestones, and Concurrency Schemas
  */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const CRKPhaseIdSchema = z.enum([
   'P00', 'P01', 'P02', 'P03', 'P04', 'P05', 'P06', 'P07', 'P08', 'P09',

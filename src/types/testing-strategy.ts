@@ -1,7 +1,7 @@
 /**
  * Section 36: Testing Strategy Schemas and Contracts
  */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const TestTierSchema = z.enum([
   'UNIT',

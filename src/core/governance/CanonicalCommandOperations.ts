@@ -4,6 +4,8 @@ import { CanonicalCliCommandName, CliExecutionContext } from '../../types/cli-sc
 import { datasetManifestSchema } from '../../types/knowledge-datasets';
 import { DatasetRegistry } from '../knowledge/DatasetRegistry';
 import { DatasetLicensePolicy } from '../knowledge/DatasetLicensePolicy';
+import { installKnowledgeBundle } from './KnowledgeBundleOperations';
+import { shadowReport } from './ShadowReport';
 
 export interface CommandOutput { success: boolean; stdout: string; stderr?: string; exitCode?: number }
 export interface CanonicalOperations { run(name: CanonicalCliCommandName, context: CliExecutionContext): Promise<CommandOutput> }
@@ -24,7 +26,10 @@ export class CanonicalCommandOperations implements CanonicalOperations {
     const pattern = verification[name];
     if (pattern) return this.runTests(name, pattern);
     if (['knowledge:install', 'knowledge:update', 'chat:runtime:shadow-report'].includes(name)) {
-      return { success: false, exitCode: 2, stdout: '', stderr: `${name} is not connected to an operational handler. No installation, update, or shadow comparison was performed.` };
+      try {
+        const result = name === 'chat:runtime:shadow-report' ? shadowReport(context.args) : await installKnowledgeBundle(context.args, name === 'knowledge:update');
+        return { success: true, stdout: JSON.stringify(result, null, 2) };
+      } catch (error) { return { success: false, exitCode: 2, stdout: '', stderr: error instanceof Error ? error.message : String(error) }; }
     }
     if (context.args.length > 0) return { success: false, exitCode: 2, stdout: '', stderr: `${name} does not accept arguments.` };
     if (process.env.DATABASE_URL || process.env.RAG_DATABASE_URL) {
@@ -72,7 +77,7 @@ export class CanonicalCommandOperations implements CanonicalOperations {
 
   private runTests(name: string, pattern: string): Promise<CommandOutput> {
     return new Promise(resolve => {
-      const child = spawn(process.execPath, [require.resolve('jest/bin/jest'), '--runInBand', '--testPathPattern', pattern], { cwd: process.cwd(), windowsHide: true, shell: false });
+      const child = spawn(process.execPath, [require.resolve('jest/bin/jest'), '--runInBand', '--testPathPatterns', pattern], { cwd: process.cwd(), windowsHide: true, shell: false });
       let stdout = `Offline verification for ${name}\n`;
       let stderr = '';
       child.stdout.on('data', data => { stdout = (stdout + data.toString()).slice(-2000000); });

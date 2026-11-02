@@ -1,3 +1,5 @@
+import express, { RequestHandler } from 'express';
+import request from 'supertest';
 import { registerManifestRoutes, routeManifest } from './routeManifest';
 
 describe('routeManifest', () => {
@@ -52,5 +54,78 @@ describe('routeManifest', () => {
 
     const projectMount = registrations.find(args => args[0] === '/api/project-intelligence');
     expect(projectMount?.some(handler => handler.marker === 'router')).toBe(false);
+  });
+
+  it('does not construct mounted absolute routers for unrelated or lookalike paths', async () => {
+    const registrations: any[][] = [];
+    const factoryConstructed = jest.fn();
+    const observedUrls: string[] = [];
+    const developerGuard = jest.fn((req: any, res: any, next: any) => {
+      if (req.headers['x-test-developer'] !== 'allow') {
+        res.sendStatus(401);
+        return;
+      }
+      next();
+    });
+    const readinessGuard = jest.fn((_: any, __: any, next: any) => next());
+
+    registerManifestRoutes({
+      app: { use: (...handlers: any[]) => registrations.push(handlers) },
+      getServices: () => ({}),
+      workspaceRoot: process.cwd(),
+      adminOnly: [],
+      developerOnly: [developerGuard],
+      requireReady: () => readinessGuard,
+      mountServiceRouter: () => {
+        let router: RequestHandler | undefined;
+        return (req, res, next) => {
+          if (!router) {
+            factoryConstructed();
+            router = (request, response) => {
+              observedUrls.push(request.url);
+              response.status(204).end();
+            };
+          }
+          return router(req, res, next);
+        };
+      },
+    });
+
+    const prefixIndex = registrations.findIndex(args => args[0] === '/api/desktop-companion');
+    expect(prefixIndex).toBeGreaterThanOrEqual(0);
+    const mountedGuards = registrations[prefixIndex];
+    const absoluteRouterGuard = registrations[prefixIndex + 1];
+    expect(absoluteRouterGuard).toHaveLength(1);
+
+    const nested = express();
+    nested.use(...mountedGuards);
+    nested.use(...absoluteRouterGuard);
+    nested.use((_req, res) => res.sendStatus(404));
+    const app = express();
+    app.use('/root', nested);
+
+    await request(app).get('/root/api/feedback').expect(404);
+    await request(app).get('/root/api/desktop-companionary').expect(404);
+    expect(factoryConstructed).not.toHaveBeenCalled();
+    expect(developerGuard).not.toHaveBeenCalled();
+    expect(readinessGuard).not.toHaveBeenCalled();
+
+    await request(app).get('/root/api/desktop-companion').expect(401);
+    expect(factoryConstructed).not.toHaveBeenCalled();
+    expect(readinessGuard).not.toHaveBeenCalled();
+
+    await request(app).get('/root/api/desktop-companion').set('x-test-developer', 'allow').expect(204);
+    await request(app).get('/root/api/desktop-companion?mode=compact').set('x-test-developer', 'allow').expect(204);
+    await request(app).get('/root/api/desktop-companion/capabilities?mode=full').set('x-test-developer', 'allow').expect(204);
+    await request(app).get('/root/API/DESKTOP-COMPANION?mode=mixed').set('x-test-developer', 'allow').expect(204);
+    expect(factoryConstructed).toHaveBeenCalledTimes(1);
+    expect(observedUrls).toEqual([
+      '/api/desktop-companion',
+      '/api/desktop-companion?mode=compact',
+      '/api/desktop-companion/capabilities?mode=full',
+      '/API/DESKTOP-COMPANION?mode=mixed',
+    ]);
+    expect(developerGuard).toHaveBeenCalledTimes(5);
+    expect(readinessGuard).toHaveBeenCalledTimes(4);
   });
 });

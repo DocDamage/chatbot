@@ -13,7 +13,7 @@ describe('RT-SCHED-001: TaskScheduler Cron Automation Suite', () => {
   });
 
   it('schedules tasks, runs on-demand, and captures execution metrics', async () => {
-    const mockAction = jest.fn<any>().mockResolvedValue(undefined);
+    const mockAction = jest.fn<(...args: any[]) => any>().mockResolvedValue(undefined);
 
     const taskId = await scheduler.addTask({
       name: 'Daily cleanup',
@@ -39,7 +39,7 @@ describe('RT-SCHED-001: TaskScheduler Cron Automation Suite', () => {
   });
 
   it('enables, disables, and removes tasks', async () => {
-    const mockAction = jest.fn<any>().mockResolvedValue(undefined);
+    const mockAction = jest.fn<(...args: any[]) => any>().mockResolvedValue(undefined);
 
     const taskId = await scheduler.addTask({
       name: 'Heartbeat',

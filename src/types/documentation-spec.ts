@@ -1,7 +1,7 @@
 /**
  * Section 47: Documentation Deliverables Specification Types
  */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const DocumentationCategorySchema = z.enum([
   'architecture',

@@ -2,7 +2,7 @@
  * Section 45: Observability Specification Types & Schemas
  * Defines the 27 canonical telemetry metrics, labels, and cardinality guardrails.
  */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const CANONICAL_METRIC_NAMES = [
   'chat_requests_total',

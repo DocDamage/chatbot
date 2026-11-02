@@ -62,14 +62,16 @@ STAGE_DAG: list[StageSpec] = [
         "s02_extract",
         2,
         "cpu",
-        ["backend", "ocr_engine", "ocr_dpi", "layout_model", "render_dpi_assets"],
+        ["backend", "ocr_engine", "ocr_dpi", "routing", "layout_model", "render_dpi_assets"],
         sharded=True,
         deps=["s01_inspect"],
     ),
     StageSpec("s03_merge", 3, "cpu", [], deps=["s02_extract"]),
     StageSpec("s04_furniture", 4, "cpu", [], deps=["s03_merge"]),
     StageSpec("s05_reading_order", 5, "cpu", [], deps=["s04_furniture"]),
-    StageSpec("s06_structure", 6, "cpu", ["toc_mode", "detect_regions"], deps=["s05_reading_order"]),
+    StageSpec(
+        "s06_structure", 6, "cpu", ["toc_mode", "detect_regions"], deps=["s05_reading_order"]
+    ),
     StageSpec(
         "s07_continuity",
         7,
@@ -158,7 +160,7 @@ def compute_stage_keys(
         upstream = [k for dep in spec.deps for k in keys[dep]]
         keys[spec.name] = [
             _key_for(spec, book_sha, shard_idx, shard, params, upstream)
-            for shard_idx, shard in enumerate(_build_shards(spec, page_count, shard_pages))
+            for shard_idx, shard in enumerate(_build_shards(spec, page_count, shard_pages, params))
         ]
     return keys
 
@@ -208,7 +210,7 @@ def plan_book(
     stage_tasks: dict[str, list[int]] = {}
 
     for spec in STAGE_DAG:
-        shards = _build_shards(spec, page_count, shard_pages)
+        shards = _build_shards(spec, page_count, shard_pages, params)
         upstream = [k for dep in spec.deps for k in keys[dep]]
         keys[spec.name] = []
         stage_dir = book_dir / "stages" / spec.name
@@ -352,10 +354,15 @@ def _build_shards(
     spec: StageSpec,
     page_count: int,
     shard_pages: int,
+    params: dict[str, Any] | None = None,
 ) -> list[tuple[int | None, int | None]]:
     """Return list of (page_start, page_end) tuples for the stage."""
     if not spec.sharded or page_count == 0:
         return [(None, None)]
+    # Docling converts a document at once; slicing its already converted pages
+    # into separate tasks would repeat full-book model inference for every shard.
+    if spec.name == "s02_extract" and (params or {}).get("backend") == "docling":
+        return [(0, page_count)]
     return [
         (start, min(start + shard_pages, page_count)) for start in range(0, page_count, shard_pages)
     ]

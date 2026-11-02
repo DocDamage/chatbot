@@ -1,5 +1,20 @@
-import { ModelUpdater } from '../ModelUpdater';
+import { ModelUpdater, TrainingCandidateEvidence } from '../ModelUpdater';
 import { FeedbackCollector } from '../FeedbackCollector';
+
+const trainingEvidence = (): TrainingCandidateEvidence => ({
+  engine: 'cpu-smoke',
+  purpose: 'lifecycle-smoke-not-domain-model',
+  resultManifest: 'C:/runs/result-manifest.json',
+  artifactSha256: 'a'.repeat(64),
+  planSourceSha256: 'b'.repeat(64),
+  planConfigSha256: 'c'.repeat(64),
+  trainSha256: 'd'.repeat(64),
+  heldOutTestSha256: 'e'.repeat(64),
+  heldOutLoss: 4.2,
+  heldOutPerplexity: Math.exp(4.2),
+  heldOutExamples: 2,
+  trainingSteps: 3,
+});
 
 describe('RT-LEARN-001: ModelUpdater Continuous Feedback & Version Rollback Suite', () => {
   let collector: FeedbackCollector;
@@ -21,7 +36,7 @@ describe('RT-LEARN-001: ModelUpdater Continuous Feedback & Version Rollback Suit
         userId: 'u1',
         sessionId: 's1',
         rating: 5,
-        timestamp: new Date(now - 1.5 * dayMs)
+        timestamp: new Date(now - 1.5 * dayMs),
       });
     }
 
@@ -32,7 +47,7 @@ describe('RT-LEARN-001: ModelUpdater Continuous Feedback & Version Rollback Suit
         userId: 'u1',
         sessionId: 's1',
         rating: 4.8,
-        timestamp: new Date(now - 0.2 * dayMs)
+        timestamp: new Date(now - 0.2 * dayMs),
       });
     }
 
@@ -54,7 +69,7 @@ describe('RT-LEARN-001: ModelUpdater Continuous Feedback & Version Rollback Suit
         userId: 'u1',
         sessionId: 's1',
         rating: 2.0,
-        timestamp: new Date()
+        timestamp: new Date(),
       });
     }
 
@@ -93,5 +108,74 @@ describe('RT-LEARN-001: ModelUpdater Continuous Feedback & Version Rollback Suit
     expect(status.currentVersion?.id).toBe(v1.id);
     expect(status.recommendation).toBeDefined();
     expect(status.feedbackStats).toBeDefined();
+  });
+
+  it('registers training evidence as an inactive candidate without claiming accuracy', () => {
+    const candidate = updater.createTrainingCandidate({
+      engine: 'cpu-smoke',
+      purpose: 'lifecycle-smoke-not-domain-model',
+      resultManifest: 'C:/runs/result-manifest.json',
+      artifactSha256: 'a'.repeat(64),
+      planSourceSha256: 'b'.repeat(64),
+      planConfigSha256: 'c'.repeat(64),
+      trainSha256: 'd'.repeat(64),
+      heldOutTestSha256: 'e'.repeat(64),
+      heldOutLoss: 4.2,
+      heldOutPerplexity: Math.exp(4.2),
+      heldOutExamples: 2,
+      trainingSteps: 3,
+    });
+
+    expect(candidate.active).toBe(false);
+    expect(candidate.performance).toBeUndefined();
+    expect(candidate.trainingEvaluation?.heldOutLoss).toBe(4.2);
+    expect(updater.getCurrentVersion()).toBeNull();
+    expect(() => updater.activateVersion(candidate.id)).toThrow(/promotion review/i);
+    expect(updater.getCurrentVersion()).toBeNull();
+  });
+
+  it.each([1, 2])('ignores %i trailing training candidates when rolling back', (count) => {
+    const first = updater.createVersion({ accuracy: 0.8, latency: 100, cost: 0 });
+    updater.activateVersion(first.id);
+    const second = updater.createVersion({ accuracy: 0.9, latency: 90, cost: 0 });
+    updater.activateVersion(second.id);
+    for (let index = 0; index < count; index++) updater.createTrainingCandidate(trainingEvidence());
+    expect(updater.rollback()?.id).toBe(first.id);
+    expect(updater.getCurrentVersion()?.id).toBe(first.id);
+    expect(updater.rollback()).toBeNull();
+  });
+
+  it.each([true, false])(
+    'keeps same-millisecond candidate IDs unique (candidate first: %s)',
+    (candidateFirst) => {
+      const clock = jest.spyOn(Date, 'now').mockReturnValue(123);
+      try {
+        const createOnline = () => updater.createVersion({ accuracy: 0.8, latency: 100, cost: 0 });
+        const candidate = candidateFirst
+          ? updater.createTrainingCandidate(trainingEvidence())
+          : undefined;
+        const online = createOnline();
+        const trained = candidate ?? updater.createTrainingCandidate(trainingEvidence());
+        expect(trained.id).not.toBe(online.id);
+        updater.activateVersion(online.id);
+        expect(() => updater.activateVersion(trained.id)).toThrow(/promotion review/i);
+        expect(updater.getCurrentVersion()?.id).toBe(online.id);
+      } finally {
+        clock.mockRestore();
+      }
+    }
+  );
+
+  it('keeps promotion eligibility private when callers mutate exposed metadata', () => {
+    const candidate = updater.createTrainingCandidate(trainingEvidence());
+    const originalId = candidate.id;
+    delete candidate.trainingEvaluation;
+    candidate.id = 'caller-mutated-id';
+    const history = updater.getVersions();
+    delete history[0].trainingEvaluation;
+    expect(updater.getVersions()[0].trainingEvaluation).toBeDefined();
+    expect(updater.getVersions()[0].id).toBe(originalId);
+    expect(() => updater.activateVersion(originalId)).toThrow(/promotion review/i);
+    expect(updater.getCurrentVersion()).toBeNull();
   });
 });

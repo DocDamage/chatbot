@@ -1,5 +1,8 @@
 import express from 'express';
 import request from 'supertest';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import { createCapabilityRouter } from '../capabilities';
 import { CapabilityRegistry } from '../../../core/capabilities/CapabilityRegistry';
 import { CapabilityObservabilityService } from '../../../core/capabilities/observability/CapabilityObservabilityService';
@@ -321,13 +324,31 @@ describe('Capability Evaluation, Promotion and Metrics API Routes (CF-10)', () =
   });
 
   it('clamps repository finding limits and handles non-numeric values', async () => {
+    const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'capability-findings-'));
+    fs.writeFileSync(path.join(workspace, 'a-route.ts'), 'router.get("/fixture", () => undefined);');
+    fs.writeFileSync(path.join(workspace, 'b-secret.ts'), 'const secret = "fixture-secret";');
     const tiny = express();
     tiny.use(express.json());
-    tiny.use('/api/capabilities', createCapabilityRouter(process.cwd()));
-    const low = await request(tiny).get('/api/capabilities/repository-findings?maxFiles=0');
-    expect(low.status).toBe(200);
-    const fallback = await request(tiny).get('/api/capabilities/repository-findings?maxFiles=not-a-number');
-    expect(fallback.status).toBe(200);
+    tiny.use('/api/capabilities', createCapabilityRouter(workspace));
+
+    try {
+      const low = await request(tiny).get('/api/capabilities/repository-findings?maxFiles=0');
+      expect(low.status).toBe(200);
+      expect(low.body.findings).toEqual(expect.arrayContaining([
+        expect.objectContaining({ ruleId: 'CF03-ROUTE-POLICY' }),
+      ]));
+      expect(low.body.findings).not.toEqual(expect.arrayContaining([
+        expect.objectContaining({ ruleId: 'CF03-HARDCODED-SECRET' }),
+      ]));
+
+      const fallback = await request(tiny).get('/api/capabilities/repository-findings?maxFiles=not-a-number');
+      expect(fallback.status).toBe(200);
+      expect(fallback.body.findings).toEqual(expect.arrayContaining([
+        expect.objectContaining({ ruleId: 'CF03-HARDCODED-SECRET' }),
+      ]));
+    } finally {
+      fs.rmSync(workspace, { recursive: true, force: true });
+    }
   });
 
   it('returns stable 500 responses when internal services throw', async () => {

@@ -26,6 +26,7 @@ const deprecated = (name: string, category: string, description: string, depreca
 
 export const ENVIRONMENT_DEFINITIONS: EnvironmentDefinition[] = [
   optional('NODE_ENV', 'runtime', 'Node runtime environment.', 'development'),
+  optional('DOTENV_CONFIG_PATH', 'runtime', 'Optional dotenv file path shared by startup and runtime settings inspection.'),
   optional('DEPLOYMENT_MODE', 'runtime', 'Runtime profile: development, test, local, or hosted.'),
   optional('PORT', 'runtime', 'HTTP listen port.', '3001'),
   optional('HOST', 'runtime', 'HTTP listen address. Defaults to loopback for local use.'),
@@ -42,6 +43,7 @@ export const ENVIRONMENT_DEFINITIONS: EnvironmentDefinition[] = [
   localOnly('CODING_CONTEXT_TOKENS', 'coding', 'Ollama context window reserved for Aider coding tasks; does not change ordinary chat.', '16384'),
   secret('CONTEXT7_API_KEY', 'coding', 'Optional Context7 API key for documentation service limits.'),
   optional('CHAT_RUNTIME_V2_SHADOW', 'runtime', 'Enable explicitly invoked shadow-runtime comparisons.', 'false'),
+  localOnly('CHAT_SHADOW_REPORT_PATH', 'runtime', 'Optional JSONL file for routing and latency summaries from explicitly invoked shadow comparisons.'),
   optional('DEFAULT_BOT_PROFILE_ID', 'runtime', 'Default profile for canonical CLI-created runtimes.', 'default'),
   optional('PRIMARY_LLM_MODEL', 'providers', 'Fallback label for explicitly configured canonical CLI adapters.'),
   secret('CANONICAL_CLI_AUTH_TOKEN', 'security', 'Authentication marker for protected operator CLI commands.'),

@@ -1,5 +1,5 @@
 /** Central startup configuration validation and sanitized diagnostics. */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { logger } from '../observability/logger';
 import {
   ENVIRONMENT_DEFINITIONS,

@@ -332,11 +332,13 @@
     "src/core/coding/integrations/AiderAdapter.ts",
     "src/core/coding/integrations/AstGrepAdapter.ts",
     "src/core/coding/integrations/AutomaticContext.ts",
+    "src/core/coding/integrations/CodingJobHistory.ts",
     "src/core/coding/integrations/CodingToolConfig.ts",
     "src/core/coding/integrations/CodingToolsService.ts",
     "src/core/coding/integrations/CompilerChecks.ts",
     "src/core/coding/integrations/CompilerSettings.ts",
     "src/core/coding/integrations/Context7Adapter.ts",
+    "src/core/coding/integrations/ContextAliases.ts",
     "src/core/coding/integrations/DraftChecks.ts",
     "src/core/coding/integrations/DraftDiagnostics.ts",
     "src/core/coding/integrations/FastCheckGuidance.ts",
@@ -403,6 +405,8 @@
     "src/core/dabook/training/EvaluationCorpus.ts",
     "src/core/dabook/training/TrainingCorpusImporter.ts",
     "src/core/dabook/training/TrainingExporter.ts",
+    "src/core/dabook/training/TrainingPlan.ts",
+    "src/core/dabook/training/TrainingPlanVerifier.ts",
     "src/core/database/Database.ts",
     "src/core/database/DatasetMigrations.ts",
     "src/core/database/ExpansionDatabase.ts",
@@ -630,6 +634,7 @@
     "src/core/rag/ingestion/FileTypeRouter.ts",
     "src/core/rag/ingestion/HtmlExtractor.ts",
     "src/core/rag/ingestion/ImageOcrExtractor.ts",
+    "src/core/rag/ingestion/ManagedPdfOcr.ts",
     "src/core/rag/ingestion/MobiExtractor.ts",
     "src/core/rag/ingestion/OfficeExtractor.ts",
     "src/core/rag/ingestion/PdfExtractor.ts",
@@ -1242,11 +1247,13 @@
     "src/core/coding/integrations/AiderAdapter.ts",
     "src/core/coding/integrations/AstGrepAdapter.ts",
     "src/core/coding/integrations/AutomaticContext.ts",
+    "src/core/coding/integrations/CodingJobHistory.ts",
     "src/core/coding/integrations/CodingToolConfig.ts",
     "src/core/coding/integrations/CodingToolsService.ts",
     "src/core/coding/integrations/CompilerChecks.ts",
     "src/core/coding/integrations/CompilerSettings.ts",
     "src/core/coding/integrations/Context7Adapter.ts",
+    "src/core/coding/integrations/ContextAliases.ts",
     "src/core/coding/integrations/DraftChecks.ts",
     "src/core/coding/integrations/DraftDiagnostics.ts",
     "src/core/coding/integrations/FastCheckGuidance.ts",
@@ -1313,6 +1320,8 @@
     "src/core/dabook/training/EvaluationCorpus.ts",
     "src/core/dabook/training/TrainingCorpusImporter.ts",
     "src/core/dabook/training/TrainingExporter.ts",
+    "src/core/dabook/training/TrainingPlan.ts",
+    "src/core/dabook/training/TrainingPlanVerifier.ts",
     "src/core/database/Database.ts",
     "src/core/database/DatasetMigrations.ts",
     "src/core/database/ExpansionDatabase.ts",
@@ -1540,6 +1549,7 @@
     "src/core/rag/ingestion/FileTypeRouter.ts",
     "src/core/rag/ingestion/HtmlExtractor.ts",
     "src/core/rag/ingestion/ImageOcrExtractor.ts",
+    "src/core/rag/ingestion/ManagedPdfOcr.ts",
     "src/core/rag/ingestion/MobiExtractor.ts",
     "src/core/rag/ingestion/OfficeExtractor.ts",
     "src/core/rag/ingestion/PdfExtractor.ts",
@@ -2009,6 +2019,7 @@
     "src/core/creative/PromptPackLibrary.ts",
     "src/core/creative/RoleplaySessionEngine.ts",
     "src/core/creative/StoryBibleStore.ts",
+    "src/core/dabook/training/TrainingResult.ts",
     "src/core/developer/index.ts",
     "src/core/diagnostics/ChatDiagnosticsService.ts",
     "src/core/diagnostics/ChatRunRepository.ts",
@@ -2047,12 +2058,14 @@
     "src/core/governance/HandoffAdditionsBuilder.ts",
     "src/core/governance/ImplementationDependencyGraph.ts",
     "src/core/governance/ImplementationPromptTemplate.ts",
+    "src/core/governance/KnowledgeBundleOperations.ts",
     "src/core/governance/KnowledgePackEvidenceValidator.ts",
     "src/core/governance/MilestoneManager.ts",
     "src/core/governance/ParallelWorkCoordinator.ts",
     "src/core/governance/ProhibitedShortcutsDetector.ts",
     "src/core/governance/RepositoryFileMapAuditor.ts",
     "src/core/governance/RuntimeDefinitionOfDoneEvaluator.ts",
+    "src/core/governance/ShadowReport.ts",
     "src/core/governance/TaskDefinitionOfDoneAuditor.ts",
     "src/core/governance/VerificationCommandsOrchestrator.ts",
     "src/core/index.ts",
@@ -2605,6 +2618,18 @@
     {
       "importer": "src/types/source-code-pack.test.ts",
       "specifier": "./math"
+    },
+    {
+      "importer": "temp/build-followup-evidence.cjs",
+      "specifier": "../node_modules/eslint/package.json"
+    },
+    {
+      "importer": "temp/build-followup-evidence.cjs",
+      "specifier": "../node_modules/jest/package.json"
+    },
+    {
+      "importer": "temp/rea-live-isolated.mjs",
+      "specifier": "../dist/core/rea/ReaService.js"
     }
   ],
   "importGraph": {
@@ -3063,6 +3088,9 @@
     "client/tests/browser/chat-and-auth.browser.pw.mjs": [
       "client/tests/browser/helpers.mjs"
     ],
+    "client/tests/browser/coding-history.browser.pw.mjs": [
+      "client/tests/browser/helpers.mjs"
+    ],
     "client/tests/browser/degraded.browser.pw.mjs": [
       "client/tests/browser/helpers.mjs"
     ],
@@ -3132,13 +3160,27 @@
       "src/core/coding/verification/VerificationOrchestrator.ts",
       "src/core/providers/OllamaAdapter.ts"
     ],
+    "scripts/dabook/create-training-smoke-fixture.ts": [
+      "src/core/dabook/training/TrainingPlan.ts"
+    ],
     "scripts/dabook/dabook-env.mjs": [],
+    "scripts/dabook/prepare-training.ts": [
+      "src/core/dabook/training/TrainingPlan.ts"
+    ],
+    "scripts/dabook/run-cpu-training.ts": [
+      "src/core/dabook/training/TrainingPlan.ts",
+      "src/core/dabook/training/TrainingResult.ts",
+      "src/core/learning/FeedbackCollector.ts",
+      "src/core/learning/ModelUpdater.ts"
+    ],
     "scripts/dabook/setup.mjs": [
       "scripts/dabook/dabook-env.mjs"
     ],
     "scripts/dabook/test.mjs": [
       "scripts/dabook/dabook-env.mjs"
     ],
+    "scripts/dependencies/__tests__/deepmerge-patch.test.mjs": [],
+    "scripts/dependencies/apply-dependency-patches.mjs": [],
     "scripts/export-skill.ts": [],
     "scripts/extract_encyclopedia.js": [],
     "scripts/extract_encyclopedia.ts": [],
@@ -3170,7 +3212,13 @@
       "src/types/rag.ts"
     ],
     "scripts/rea/setup.mjs": [],
-    "scripts/rea/verify.mjs": [],
+    "scripts/rea/verification-options.mjs": [],
+    "scripts/rea/verification-options.test.mjs": [
+      "scripts/rea/verification-options.mjs"
+    ],
+    "scripts/rea/verify.mjs": [
+      "scripts/rea/verification-options.mjs"
+    ],
     "scripts/release/__tests__/client-coverage-policy.test.mjs": [
       "scripts/release/lib/client-coverage-policy.mjs"
     ],
@@ -4793,6 +4841,13 @@
     "src/core/coding/index/TypeScriptReferences.ts": [
       "src/core/coding/index/ParserProvider.ts"
     ],
+    "src/core/coding/integrations/AiderAdapter.test.ts": [
+      "src/core/coding/integrations/AiderAdapter.ts",
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/DraftChecks.ts",
+      "src/core/coding/integrations/ToolProcess.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts"
+    ],
     "src/core/coding/integrations/AiderAdapter.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/integrations/DraftChecks.ts",
@@ -4813,8 +4868,15 @@
     ],
     "src/core/coding/integrations/AutomaticContext.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/ContextAliases.ts",
       "src/core/coding/integrations/ToolWorkspace.ts",
       "src/core/coding/security/ApprovedRepositoryGateway.ts"
+    ],
+    "src/core/coding/integrations/CodingJobHistory.test.ts": [
+      "src/core/coding/integrations/CodingJobHistory.ts"
+    ],
+    "src/core/coding/integrations/CodingJobHistory.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts"
     ],
     "src/core/coding/integrations/CodingProperties.test.ts": [
       "src/core/coding/editing/StructuredEditEngine.ts",
@@ -4826,8 +4888,12 @@
       "src/utils/errors.ts"
     ],
     "src/core/coding/integrations/CodingToolsService.test.ts": [
+      "src/core/coding/integrations/AiderAdapter.ts",
+      "src/core/coding/integrations/AstGrepAdapter.ts",
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/integrations/CodingToolsService.ts",
+      "src/core/coding/integrations/Context7Adapter.ts",
+      "src/core/coding/integrations/SerenaAdapter.ts",
       "src/core/coding/integrations/ToolProcess.ts",
       "src/core/coding/integrations/ToolWorkspace.ts"
     ],
@@ -4836,6 +4902,7 @@
       "src/core/coding/integrations/AiderAdapter.ts",
       "src/core/coding/integrations/AstGrepAdapter.ts",
       "src/core/coding/integrations/AutomaticContext.ts",
+      "src/core/coding/integrations/CodingJobHistory.ts",
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/integrations/Context7Adapter.ts",
       "src/core/coding/integrations/PatchDraftValidator.ts",
@@ -4856,6 +4923,14 @@
     "src/core/coding/integrations/Context7Adapter.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/integrations/ToolProcess.ts"
+    ],
+    "src/core/coding/integrations/ContextAliases.test.ts": [
+      "src/core/coding/integrations/ContextAliases.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts"
+    ],
+    "src/core/coding/integrations/ContextAliases.ts": [
+      "src/core/coding/integrations/ToolWorkspace.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts"
     ],
     "src/core/coding/integrations/DraftChecks.test.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
@@ -5054,6 +5129,7 @@
     ],
     "src/core/coding/verification/ModelRepairProposal.test.ts": [
       "src/core/agents/CodingAgent.ts",
+      "src/core/coding/integrations/ToolProcess.ts",
       "src/core/coding/verification/ModelRepairProposal.ts"
     ],
     "src/core/coding/verification/ModelRepairProposal.ts": [
@@ -5299,6 +5375,15 @@
       "src/core/dabook/training/EvaluationCorpus.ts",
       "src/core/dabook/training/TrainingExporter.ts"
     ],
+    "src/core/dabook/__tests__/TrainingPlan.test.ts": [
+      "src/core/dabook/training/TrainingPlan.ts"
+    ],
+    "src/core/dabook/__tests__/TrainingResult.test.ts": [
+      "src/core/dabook/training/TrainingPlan.ts",
+      "src/core/dabook/training/TrainingResult.ts",
+      "src/core/learning/FeedbackCollector.ts",
+      "src/core/learning/ModelUpdater.ts"
+    ],
     "src/core/dabook/DabookBridge.ts": [
       "src/core/dabook/DabookConfig.ts",
       "src/core/dabook/DabookContract.ts",
@@ -5344,8 +5429,17 @@
       "src/core/dabook/training/ContaminationScanner.ts",
       "src/core/dabook/training/EvaluationCorpus.ts",
       "src/core/dabook/training/TrainingCorpusImporter.ts",
+      "src/core/dabook/training/TrainingPlan.ts",
       "src/core/observability/logger.ts",
       "src/types/training-separation.ts"
+    ],
+    "src/core/dabook/training/TrainingPlan.ts": [
+      "src/core/dabook/training/TrainingPlanVerifier.ts"
+    ],
+    "src/core/dabook/training/TrainingPlanVerifier.ts": [],
+    "src/core/dabook/training/TrainingResult.ts": [
+      "src/core/dabook/training/TrainingPlan.ts",
+      "src/core/learning/ModelUpdater.ts"
     ],
     "src/core/database/__tests__/SafeDatabaseQuestionAgent.guardrails.test.ts": [
       "src/core/database/Database.ts",
@@ -5539,6 +5633,7 @@
       "src/core/evaluation/CodingBenchmarkRunner.ts"
     ],
     "src/core/evaluation/CodingBenchmarkRunner.test.ts": [
+      "src/core/agents/CodingAgent.ts",
       "src/core/evaluation/CodingBenchmarkRunner.ts",
       "src/core/providers/LLMAdapter.ts"
     ],
@@ -5926,6 +6021,10 @@
       "src/core/governance/ImplementationDependencyGraph.ts",
       "src/types/dependency-graph.ts"
     ],
+    "src/core/governance/__tests__/knowledge-operations.test.ts": [
+      "src/core/governance/CanonicalCliRegistry.ts",
+      "src/types/cli-scripts.ts"
+    ],
     "src/core/governance/__tests__/milestone-manager.test.ts": [
       "src/core/governance/MilestoneManager.ts",
       "src/types/dependency-graph.ts"
@@ -5965,6 +6064,8 @@
       "src/types/cli-scripts.ts"
     ],
     "src/core/governance/CanonicalCommandOperations.ts": [
+      "src/core/governance/KnowledgeBundleOperations.ts",
+      "src/core/governance/ShadowReport.ts",
       "src/core/knowledge/DatasetLicensePolicy.ts",
       "src/core/knowledge/DatasetRegistry.ts",
       "src/types/cli-scripts.ts",
@@ -5997,6 +6098,13 @@
     "src/core/governance/ImplementationPromptTemplate.ts": [
       "src/types/program-completion.ts"
     ],
+    "src/core/governance/KnowledgeBundleOperations.ts": [
+      "src/core/database/Database.ts",
+      "src/core/knowledge/DatasetLicensePolicy.ts",
+      "src/core/knowledge/DatasetRegistry.ts",
+      "src/types/knowledge-datasets.ts",
+      "src/types/knowledge-packs.ts"
+    ],
     "src/core/governance/KnowledgePackEvidenceValidator.ts": [
       "src/types/program-completion.ts"
     ],
@@ -6014,6 +6122,9 @@
     ],
     "src/core/governance/RuntimeDefinitionOfDoneEvaluator.ts": [
       "src/types/runtime-definition-of-done.ts"
+    ],
+    "src/core/governance/ShadowReport.ts": [
+      "src/core/governance/KnowledgeBundleOperations.ts"
     ],
     "src/core/governance/TaskDefinitionOfDoneAuditor.ts": [
       "src/types/program-completion.ts"
@@ -6818,6 +6929,10 @@
     "src/core/knowledge/SongwritingStyleSource.ts": [
       "src/core/knowledge/KnowledgeSource.ts",
       "src/core/observability/logger.ts"
+    ],
+    "src/core/knowledge/SourceAuthorityPolicy.test.ts": [
+      "src/core/knowledge/SourceAuthorityPolicy.ts",
+      "src/types/retrieval-scoring.ts"
     ],
     "src/core/knowledge/SourceAuthorityPolicy.ts": [
       "src/types/retrieval-scoring.ts"
@@ -7869,6 +7984,10 @@
     "src/core/rag/ingestion/__tests__/ImageOcrExtractor.test.ts": [
       "src/core/rag/ingestion/ImageOcrExtractor.ts"
     ],
+    "src/core/rag/ingestion/__tests__/ManagedPdfOcr.test.ts": [
+      "src/core/native-runtime/NativeCommandRunner.ts",
+      "src/core/rag/ingestion/ManagedPdfOcr.ts"
+    ],
     "src/core/rag/ingestion/__tests__/office-and-text-extractors.test.ts": [
       "src/core/rag/ingestion/HtmlExtractor.ts",
       "src/core/rag/ingestion/MobiExtractor.ts",
@@ -7877,12 +7996,14 @@
       "src/core/rag/ingestion/TextLikeExtractor.ts"
     ],
     "src/core/rag/ingestion/__tests__/PdfExtractor.test.ts": [
+      "src/core/rag/ingestion/ManagedPdfOcr.ts",
       "src/core/rag/ingestion/PdfExtractor.ts"
     ],
     "src/core/rag/ingestion/DabookPdfExtractor.ts": [
       "src/core/dabook/DabookChunkMapper.ts",
       "src/core/dabook/index.ts",
       "src/core/observability/logger.ts",
+      "src/core/rag/ingestion/EpubExtractor.ts",
       "src/core/rag/ingestion/ExtractedDocument.ts",
       "src/core/rag/ingestion/PdfExtractor.ts"
     ],
@@ -7911,6 +8032,9 @@
       "src/core/observability/logger.ts",
       "src/core/rag/ingestion/ExtractedDocument.ts"
     ],
+    "src/core/rag/ingestion/ManagedPdfOcr.ts": [
+      "src/core/native-runtime/NativeCommandRunner.ts"
+    ],
     "src/core/rag/ingestion/MobiExtractor.ts": [
       "src/core/observability/logger.ts",
       "src/core/rag/ingestion/ExtractedDocument.ts"
@@ -7921,7 +8045,8 @@
     ],
     "src/core/rag/ingestion/PdfExtractor.ts": [
       "src/core/observability/logger.ts",
-      "src/core/rag/ingestion/ExtractedDocument.ts"
+      "src/core/rag/ingestion/ExtractedDocument.ts",
+      "src/core/rag/ingestion/ManagedPdfOcr.ts"
     ],
     "src/core/rag/ingestion/RtfExtractor.ts": [
       "src/core/rag/ingestion/ExtractedDocument.ts"
@@ -9220,6 +9345,8 @@
     ],
     "src/server/__tests__/index.routes.test.ts": [
       "src/core/auth/AuthService.ts",
+      "src/core/feedback/FeedbackService.ts",
+      "src/core/initialization/ServiceInitializer.ts",
       "src/server/index.ts"
     ],
     "src/server/__tests__/index.test.ts": [
@@ -9283,7 +9410,9 @@
       "src/core/suggestions/QuickReplies.ts",
       "src/core/upload/FileProcessor.ts",
       "src/core/webhooks/WebhookService.ts",
-      "src/server/index.ts"
+      "src/server/index.ts",
+      "src/server/routes/v1/chat.ts",
+      "src/server/routes/v2/chat.ts"
     ],
     "src/server/__tests__/server.index.test.ts": [
       "src/core/auth/AuthService.ts",
@@ -10345,7 +10474,33 @@
     "src/utils/memoize.ts": [],
     "src/utils/retry.ts": [
       "src/core/observability/logger.ts"
-    ]
+    ],
+    "temp/build-dabook-current-evidence.cjs": [],
+    "temp/build-followup-evidence.cjs": [],
+    "temp/build-remaining-evidence.cjs": [],
+    "temp/coding-alias-coverage/block-navigation.js": [],
+    "temp/coding-alias-coverage/lcov-report/block-navigation.js": [],
+    "temp/coding-alias-coverage/lcov-report/prettify.js": [],
+    "temp/coding-alias-coverage/lcov-report/sorter.js": [],
+    "temp/coding-alias-coverage/prettify.js": [],
+    "temp/coding-alias-coverage/sorter.js": [],
+    "temp/dabook-real-export-cpu-20261101/run-export.ts": [
+      "src/core/dabook/DabookBridge.ts",
+      "src/core/dabook/__tests__/pdfFixture.ts",
+      "src/core/dabook/training/EvaluationCorpus.ts",
+      "src/core/dabook/training/TrainingExporter.ts",
+      "src/core/dabook/training/TrainingPlan.ts"
+    ],
+    "temp/rea-api-isolated.mjs": [],
+    "temp/rea-live-isolated.mjs": [],
+    "temp/rea-validation-a5RkFD/jobs/1c4b0a48-c18d-42ee-b2b5-9aa134ace36b/input/inert.js": [],
+    "temp/release-coverage-evaluation/lcov-report/block-navigation.js": [],
+    "temp/release-coverage-evaluation/lcov-report/prettify.js": [],
+    "temp/release-coverage-evaluation/lcov-report/sorter.js": [],
+    "temp/release-coverage-worker/lcov-report/block-navigation.js": [],
+    "temp/release-coverage-worker/lcov-report/prettify.js": [],
+    "temp/release-coverage-worker/lcov-report/sorter.js": [],
+    "temp/trace-built-server-import.cjs": []
   },
-  "sourceRecordCount": 1975
+  "sourceRecordCount": 2019
 }

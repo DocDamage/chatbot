@@ -8,7 +8,7 @@
  * are strictly excluded from these schemas.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const citationRefSchema = z.object({
   id: z.string().min(1),

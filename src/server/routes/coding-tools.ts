@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { z } from 'zod';
+import { z } from 'zod/v3';
 import { asyncHandler } from '../../middleware/errorHandler';
 import { CodingToolsService } from '../../core/coding/integrations/CodingToolsService';
 import { CodingToolError } from '../../core/coding/integrations/CodingToolConfig';
@@ -10,6 +10,14 @@ export function createCodingToolsRouter(service?: CodingToolsService): Router {
   const router = Router();
   const get = () => { if (!service) throw new CodingToolError('Coding integrations are unavailable.', 503); return service; };
   router.get('/status', (_req, res) => res.json(get().status()));
+  router.get('/jobs', (req, res) => res.set('Cache-Control', 'no-store').json({ jobs: get().listJobs(req.user!.userId) }));
+  router.get('/jobs/:id', (req, res) => res.set('Cache-Control', 'no-store').json(get().getJob(req.user!.userId, req.params.id)));
+  router.get('/jobs/:id/download', (req, res) => {
+    const record = get().getJob(req.user!.userId, req.params.id);
+    res.setHeader('Content-Disposition', `attachment; filename="coding-job-${record.id}.json"`);
+    res.setHeader('Cache-Control', 'no-store');
+    res.type('application/json').send(JSON.stringify(record, null, 2));
+  });
   const post = (route: string, schema: z.ZodTypeAny, work: (owner: string, input: any, signal: AbortSignal) => Promise<any>) => {
     router.post(route, asyncHandler(async (req, res) => {
       const parsed = schema.safeParse(req.body);

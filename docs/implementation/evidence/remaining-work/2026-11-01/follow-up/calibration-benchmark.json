@@ -1,0 +1,194 @@
+{
+  "source": "D:\\dev\\Chatbot\\temp\\tables-equations.pdf",
+  "results": [
+    {
+      "backend": "pdfium_pdfminer",
+      "pages": 1,
+      "chars": 152,
+      "tables": 0,
+      "equations": 0,
+      "text": "Orbital measurements\nThe following table records the observatory measurements.\nQuantity Value Distance 42 km Period 7 days\nEnergy equation\n2\nE = mc",
+      "blocks": [
+        {
+          "page": 0,
+          "bbox": [
+            78.77,
+            82.9,
+            267.2,
+            96.2
+          ],
+          "type": "heading",
+          "text": "Orbital measurements",
+          "metadata": {}
+        },
+        {
+          "page": 0,
+          "bbox": [
+            78.23,
+            108.72,
+            340.01,
+            118.09
+          ],
+          "type": "paragraph",
+          "text": "The following table records the observatory measurements.",
+          "metadata": {}
+        },
+        {
+          "page": 0,
+          "bbox": [
+            257.89,
+            143.71,
+            337.43,
+            189.09
+          ],
+          "type": "paragraph",
+          "text": "Quantity Value Distance 42 km Period 7 days",
+          "metadata": {}
+        },
+        {
+          "page": 0,
+          "bbox": [
+            79.02,
+            231.98,
+            186.74,
+            244.93
+          ],
+          "type": "heading",
+          "text": "Energy equation",
+          "metadata": {}
+        },
+        {
+          "page": 0,
+          "bbox": [
+            109.63,
+            251.25,
+            113.42,
+            257.0
+          ],
+          "type": "paragraph",
+          "text": "2",
+          "metadata": {}
+        },
+        {
+          "page": 0,
+          "bbox": [
+            78.79,
+            254.84,
+            109.31,
+            262.11
+          ],
+          "type": "paragraph",
+          "text": "E = mc",
+          "metadata": {}
+        }
+      ],
+      "seconds": 0.032
+    },
+    {
+      "backend": "docling",
+      "pages": 1,
+      "chars": 206,
+      "tables": 1,
+      "equations": 1,
+      "text": "Orbital measurements\nThe following table records the observatory measurements.\n| Quantity   | Value   |\n|------------|---------|\n| Distance   | 42 km   |\n| Period     | 7 days  |\nEnergy equation\nE = m c ^ { 2 }",
+      "blocks": [
+        {
+          "page": 0,
+          "bbox": [
+            78.0,
+            83.07600000000002,
+            268.062,
+            99.726
+          ],
+          "type": "heading",
+          "text": "Orbital measurements",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0
+          }
+        },
+        {
+          "page": 0,
+          "bbox": [
+            78.0,
+            108.82000000000005,
+            340.8800000000001,
+            118.07000000000005
+          ],
+          "type": "paragraph",
+          "text": "The following table records the observatory measurements.",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0
+          }
+        },
+        {
+          "page": 0,
+          "bbox": [
+            250.20853314873614,
+            137.08952318232298,
+            344.6909224143419,
+            193.29769615330645
+          ],
+          "type": "table",
+          "text": "| Quantity   | Value   |\n|------------|---------|\n| Distance   | 42 km   |\n| Period     | 7 days  |",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0
+          }
+        },
+        {
+          "page": 0,
+          "bbox": [
+            78.0,
+            231.94799999999998,
+            187.69,
+            244.89800000000002
+          ],
+          "type": "heading",
+          "text": "Energy equation",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0
+          }
+        },
+        {
+          "page": 0,
+          "bbox": [
+            78.79000091552734,
+            251.2480153320313,
+            113.42400360107422,
+            262.11001484375004
+          ],
+          "type": "equation",
+          "text": "E = m c ^ { 2 }",
+          "metadata": {
+            "backend": "docling",
+            "pdf_parser": "docling_parse",
+            "pdf_renderer": "docling_parse",
+            "structured_type": true,
+            "level": 0,
+            "formula_detection": "native_geometry",
+            "formula_geometry": "script_geometry",
+            "original_text": "E = mc 2",
+            "native_text": "E = mc2",
+            "formula_crop": "native_ink"
+          }
+        }
+      ],
+      "seconds": 25.656
+    }
+  ]
+}

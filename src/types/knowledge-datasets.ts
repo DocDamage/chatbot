@@ -4,7 +4,7 @@
  * Defines the schema for installable, versioned, governed dataset resources.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const datasetSourceTypeSchema = z.enum([
   'official-docs',

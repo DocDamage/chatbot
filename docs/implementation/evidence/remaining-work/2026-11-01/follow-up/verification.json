@@ -1,0 +1,461 @@
+{
+  "generatedAt": "2026-11-02T00:13:30.304Z",
+  "branch": "codex/coding-alias-context",
+  "baseCommit": "287cd03d53494eee400ccc1a11da95accc7193da",
+  "localChangesOnly": true,
+  "versions": {
+    "rootNode": "v24.15.0",
+    "reaNode": "24.22.1",
+    "python": "3.12.12",
+    "docling": "2.145.0",
+    "transformers": "5.22.1",
+    "torch": "2.15.0",
+    "jest": "30.5.2",
+    "eslint": "10.14.0"
+  },
+  "scope": "Docling equation/table fixtures, development-tool migration, REA live workflows; no Ollama or training run",
+  "commands": {
+    "server": "node scripts/release/run-server-coverage.mjs --maxWorkers=1 --workerIdleMemoryLimit=1GB --logHeapUsage --coverageReporters=lcovonly --coverageReporters=json-summary",
+    "python": "<frozen Python 3.12.12 environment>/Scripts/python.exe -m pytest services/dabook/tests -q (DABOOK_LIVE_TEST=0)",
+    "model": "python scripts/dabook/benchmark.py <fixture.pdf> --docling --out <benchmark.json> --timeout-s 600; both PDFs in one process for model reuse; HF_HUB_OFFLINE=1, OMP_NUM_THREADS=2, MKL_NUM_THREADS=2",
+    "semanticCheck": "scripts/dabook/check_quality.py <benchmark.json> <expected.json> --out <report.json>",
+    "fixtures": "python scripts/dabook/quality_fixtures.py <fixture-directory>",
+    "rea": "scripts/rea/verify.mjs --base-url <isolated HTTP loopback origin> --output <private temporary result> --native",
+    "release": [
+      "npm run release:package",
+      "npm run check:phase2",
+      "npm run check:dependencies",
+      "npm run check:secrets",
+      "git diff --check"
+    ],
+    "cleanInstall": [
+      "npm ci",
+      "npm ci --omit=dev"
+    ],
+    "pythonEnvironment": "uv sync --frozen --project services/dabook --python 3.12 --extra dev --extra docling --extra ocr; uv pip check; uvx pip-audit --path <site-packages>"
+  },
+  "server": {
+    "summaries": [
+      "Test Suites: 2 skipped, 559 passed, 559 of 561 total",
+      "Tests:       5 skipped, 3215 passed, 3220 total",
+      "Time:        688.751 s",
+      "Server coverage policy (enforce, branch-75): lines 89.1672% (39971/44827), branches 76.2857% (24120/31618).",
+      "Tier A critical files evaluated: 19.",
+      "Coverage policy report: coverage\\server-coverage-policy-report.json",
+      "Server coverage policy passed."
+    ],
+    "coverage": {
+      "lines": {
+        "total": 44827,
+        "covered": 39971,
+        "skipped": 0,
+        "pct": 89.16
+      },
+      "statements": {
+        "total": 49250,
+        "covered": 43168,
+        "skipped": 0,
+        "pct": 87.65
+      },
+      "functions": {
+        "total": 9083,
+        "covered": 7841,
+        "skipped": 0,
+        "pct": 86.32
+      },
+      "branches": {
+        "total": 31618,
+        "covered": 24120,
+        "skipped": 0,
+        "pct": 76.28
+      },
+      "branchesTrue": {
+        "total": 0,
+        "covered": 0,
+        "skipped": 0,
+        "pct": 100
+      }
+    }
+  },
+  "python": {
+    "summary": "338 passed, 1 skipped, 1 warning in 291.36s (0:04:51)",
+    "consistency": "Using Python 3.12.12 environment at: C:\\Users\\Doc\\AppData\\Local\\Temp\\chatbot-docling-validation-df2ec6a9381e4a75b1d9d640fa1a99eb\r\nChecked 125 packages in 14ms\r\nAll installed packages are compatible",
+    "audit": "No known vulnerabilities found\r\nName   Skip Reason\r\n------ ---------------------------------------------------------------------\r\ndabook Dependency not found on PyPI and could not be audited: dabook (1.1.0)",
+    "environmentRepair": "Sixteen cached distributions initially lacked metadata/files; refreshed/reinstalled the same frozen versions in the disposable environment before final acceptance. Original workspace environment was preserved.",
+    "localProjectNotOnPypi": "pip-audit skips the local editable dabook project; installed third-party packages have no known findings"
+  },
+  "docling": {
+    "displayMath": [
+      {
+        "backend": "pdfium_pdfminer",
+        "pages": 2,
+        "tables": 0,
+        "equations": 0,
+        "seconds": 0.016
+      },
+      {
+        "backend": "docling",
+        "pages": 2,
+        "tables": 1,
+        "equations": 3,
+        "seconds": 90.078
+      }
+    ],
+    "calibration": [
+      {
+        "backend": "pdfium_pdfminer",
+        "pages": 1,
+        "tables": 0,
+        "equations": 0,
+        "seconds": 0.032
+      },
+      {
+        "backend": "docling",
+        "pages": 1,
+        "tables": 1,
+        "equations": 1,
+        "seconds": 25.656
+      }
+    ],
+    "displayMathQuality": {
+      "passed": true,
+      "expected_equations": 3,
+      "detected_equations": 3,
+      "matches": [
+        {
+          "id": "energy",
+          "text": "E = m c ^ { 2 }",
+          "correct_latex": true,
+          "detection": "docling_layout"
+        },
+        {
+          "id": "speed",
+          "text": "v = \\frac { d } { t }",
+          "correct_latex": true,
+          "detection": "docling_layout"
+        },
+        {
+          "id": "quadratic",
+          "text": "x = \\frac { - b \\, \\pm \\, \\sqrt { b ^ { 2 } - 4 a c } } { 2 a }",
+          "correct_latex": true,
+          "detection": "docling_layout"
+        }
+      ],
+      "missing": [],
+      "false_positives": [],
+      "table_rows_preserved": true,
+      "scope": "generated display-math fixture; not a population accuracy estimate"
+    },
+    "calibrationQuality": {
+      "passed": true,
+      "expected_equations": 1,
+      "detected_equations": 1,
+      "matches": [
+        {
+          "id": "energy",
+          "text": "E = m c ^ { 2 }",
+          "correct_latex": true,
+          "detection": "native_geometry"
+        }
+      ],
+      "missing": [],
+      "false_positives": [],
+      "table_rows_preserved": true,
+      "scope": "generated display-math fixture; not a population accuracy estimate"
+    },
+    "populationAccuracyClaimed": false
+  },
+  "rea": {
+    "checks": 8,
+    "node": "24.22.1",
+    "nativePseudocodeChars": 702,
+    "isolatedStorage": true,
+    "userConfigModified": false
+  },
+  "dependencies": {
+    "rootFullAudit": {
+      "info": 0,
+      "low": 5,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 5
+    },
+    "runtimeTrees": 5,
+    "allRuntimeFindings": 0,
+    "residual": "One scanner-visible deepmerge advisory propagated to five low-severity development nodes; actual source and delivered CJS patched and exploit-tested",
+    "patchSha256": "47a55e000814774c262e0c8e810d87e2305012920269bb5f704d58b107cb04f0",
+    "cleanInstallEvidence": "../../../dependency-security/2026-11-01.md",
+    "cleanInstallLockSha256": "b5ffbb46aef97b08959ef056f316e28df617a8c9e5a5468509233001f4dec95a",
+    "currentLockSha256": "b5ffbb46aef97b08959ef056f316e28df617a8c9e5a5468509233001f4dec95a",
+    "npm11PeerMetadataCaveat": true
+  },
+  "review": {
+    "independent": true,
+    "resolved": [
+      "whole-book Docling conversion per shard",
+      "disabled native page renderer",
+      "unbounded inward ink crop"
+    ],
+    "remainingActionableFindings": 0
+  },
+  "deferred": [
+    "Live Ollama evaluation on user other PC",
+    "Actual training, held-out model evaluation, and model registration",
+    "Broader real-book Docling quality acceptance"
+  ],
+  "logs": {
+    "serverCoverage": {
+      "path": "temp/followup-server-coverage.log",
+      "sha256": "e9c8ce212010678e3eb4714d443513abaab26f0529ea0998c259c5e77d6bc31c",
+      "bytes": 174014
+    },
+    "pythonTests": {
+      "path": "temp/followup-dabook-full.log",
+      "sha256": "650b79f7227681f09767813a8f75c0f672804a6102717ab8f1f7c72a890a5b07",
+      "bytes": 1072
+    },
+    "pythonLint": {
+      "path": "temp/followup-python-lint.log",
+      "sha256": "a4443afdcfb6d7363adb285762515ccf7cf50473b1a05c20c1a50f6bed4d26b0",
+      "bytes": 20
+    },
+    "pythonRepair": {
+      "path": "temp/followup-python-repair.log",
+      "sha256": "08cae8e8db3f2c13761463019d5bb97912e29f5e6e79ae32729ce506f1e0a9e9",
+      "bytes": 421
+    },
+    "pythonConsistency": {
+      "path": "temp/followup-python-consistency-final.log",
+      "sha256": "f5f383eb3eaaea7a0658d2305ab3f01c0963b5ca890241f129f0d0e40ed69b05",
+      "bytes": 199
+    },
+    "pythonAudit": {
+      "path": "temp/followup-python-audit.log",
+      "sha256": "70f629f6f47d8e32b07bdd72d8b8c5d627e6d5cbc00c50363883c9956474509d",
+      "bytes": 208
+    },
+    "package": {
+      "path": "temp/followup-package.log",
+      "sha256": "b131aef3291d161eae76b1143f911d9af35ef0f065b0c3b333a3cca836c9719d",
+      "bytes": 1557
+    },
+    "phase2": {
+      "path": "temp/followup-phase2.log",
+      "sha256": "07005303b0ec09daf5f6449e49ae11821183b93db7dd0b8d1b3876cf73d44856",
+      "bytes": 3624
+    },
+    "finalDocumentation": {
+      "path": "temp/followup-docs-final.log",
+      "sha256": "7702e678a4828f6cdfce47174683172083d473de0eeaac7aa8c56d5762eb6a29",
+      "bytes": 146
+    },
+    "runtimeAudit": {
+      "path": "temp/followup-runtime-audits.log",
+      "sha256": "3544f225ec1cf5a4adad33d85bea24a8a3b09270ea7ef8294d5577306a4010d7",
+      "bytes": 502
+    },
+    "fullRootAudit": {
+      "path": "temp/followup-root-audit.json",
+      "sha256": "eb780d8d2f15a90144d32e67482b9739b7438fcd80c4df8590d3c151f9da8f0c",
+      "bytes": 2943
+    },
+    "reaOptions": {
+      "path": "temp/followup-rea-options-final.log",
+      "sha256": "8dca027e6054cb905f17e7756718d87a0d0001581ca67063802bf502988064e8",
+      "bytes": 427
+    },
+    "reaLive": {
+      "path": "temp/rea-api-validation.log",
+      "sha256": "c82dfe8bab7aa43014728d68cd071d79586a8661339e66340ffed88f766275f2",
+      "bytes": 522
+    },
+    "doclingModel": {
+      "path": "temp/docling-quality-final.log",
+      "sha256": "c259fdc415695b4a4d84ab7adcad8dcb7a3d4a163dc00efadad33ef39f2f070a",
+      "bytes": 3052
+    },
+    "doclingDisplayMath": {
+      "path": "temp/docling-quality-final-report.log",
+      "sha256": "ed4aadd542030a6eae3873d8f74972e948d328f10a7487ab31af878ed985956e",
+      "bytes": 587
+    },
+    "doclingCalibration": {
+      "path": "temp/docling-calibration-final-report.log",
+      "sha256": "84c5b54ec2fdad4b7e2b5ffe92e073f6c00588e2fa4795b991557de1d8b08c28",
+      "bytes": 328
+    },
+    "secrets": {
+      "path": "temp/followup-secrets.log",
+      "sha256": "8cd02473eb136869187ac2e45955f8592d72e1321395301d5e22053f6e47d4eb",
+      "bytes": 130
+    },
+    "diff": {
+      "path": "temp/followup-diff-check.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  },
+  "sourceSha256": {
+    ".env.example": "9c69eabcc1c19087b48dd2403cb84a232cc5a11c6bfe06788f146a9e81e07d52",
+    "client/package-lock.json": "40fb29397c39a8b869eb7e323a4dcc9644ba5044c27370b7a788a1e59be762f4",
+    "client/package.json": "43cd5dc7cde18e4dc60327d0021b7d00cdede78dc145076d1ad05b6673a1cdc0",
+    "client/playwright.browser.config.mjs": "6ffe7bf8b267da2dda776779af15b725810bfa15713da92eaca85776dbc7b2d8",
+    "client/src/components/CodeWorkflowPanel.test.tsx": "48129e3aa6b1c20606ce3a0c3feab9aca9f2a6654d61e252c018c4160b3b32d2",
+    "client/src/components/CodingToolsPanel.test.tsx": "bcb1444892417046f933790a2d59d41ea9cc582f569aafff9b35286521fce272",
+    "client/src/components/CodingToolsPanel.tsx": "f84fc33f069ed1686eea0504eb84d80655b27269d4ac2730efc21665fbfc8ddf",
+    "client/tests/browser/coding-history.browser.pw.mjs": "f503d0d355e7ad1680d1debdb4888cfb186308d417025d95b892d6b9d4b54ea7",
+    "client/vite.config.ts": "7edef8b9483e351deabc483ca96c4883ede5b91ccefe4b5e3b07e44f9e704281",
+    "desktop-companion/package-lock.json": "624d859e9744a8f516d17714dc3c046913c6c230d75519cce3e44933beaba1c7",
+    "desktop-companion/package.json": "ea16ba85156ae5885802b522484f32927fed4a42262d0def041372b2805ea556",
+    "eslint.config.js": "45c6d6c77a55beeeb289d00f61a9d5d6ace5442b5823ef71f723ea4524be1adb",
+    "package-lock.json": "b5ffbb46aef97b08959ef056f316e28df617a8c9e5a5468509233001f4dec95a",
+    "package.json": "a74da8fc78f09619f8e3aad8e0ca34f88e62dcd52b4cc1f67751aa50192643ab",
+    "patches/README.md": "634ddafafd06269486d8c89340b8734697601fe966c5f9bab76f07a8e4eba12a",
+    "patches/deepmerge+4.3.1.patch": "47a55e000814774c262e0c8e810d87e2305012920269bb5f704d58b107cb04f0",
+    "scripts/browser/prepare-browser-e2e.mjs": "114234973f8eed0e55f9a00fce34fbb924b077812ba994b9242f578be30b9b1a",
+    "scripts/dabook/benchmark.py": "78979e780f1a4b2149bb90dc59dc892f2b58d5ed5e967acf32ef7691c65b8fef",
+    "scripts/dabook/check_quality.py": "c6a78c7474b74643cd964c0fa936009461c277c2e7a68cc8c7cebf32ab889b1d",
+    "scripts/dabook/prepare-training.ts": "b87b00cca1a53bbf6bbd7eaffed4be66d5fd40efb51b06fa9846f7cecba43c41",
+    "scripts/dabook/quality_fixtures.py": "41d7939b373054a480d6a501cbd933bca5dca1d4983ca5083070a43f38b6f6b2",
+    "scripts/dabook/setup.mjs": "4bde0bdb02b2e638ad0c7bf8d9a001be771749b1ed8f48d331d4d9182b3d7bf6",
+    "scripts/dependencies/__tests__/deepmerge-patch.test.mjs": "200da64fbc5cbe2672b18e8b34840754470023d291ad24f5bcabf6fbe187310c",
+    "scripts/dependencies/apply-dependency-patches.mjs": "955fb57425164b7c37202f61f01e769eb7247af4c29ab26910f3717632495de9",
+    "scripts/rea/verification-options.mjs": "c68024440f1c54d270508c15cb3ed16ef6b408368e064f107900107b1ec864be",
+    "scripts/rea/verification-options.test.mjs": "5d08694b8465f7d2df7248b4304f627ca682ad5c9482a0cebe54aa5e382ae8df",
+    "scripts/rea/verify.mjs": "9d527917841637df16924244ec906a33c78253df78de7fcd4012253dcb74a57c",
+    "scripts/release/__tests__/phase2-scanners.test.mjs": "2ce4ce2c305ce3059dcd4ccf0452dc3eddd470a9095c45b2ca2dc977017912b1",
+    "scripts/release/check-dependency-vulnerabilities.mjs": "16eefb6cf81469e6c07fbc0e9e1549382916ef98ab4461b5af275f032b5cb48e",
+    "scripts/release/lib/files.mjs": "a8c68f2216db431e9dbd023080795e1b4ffe87649e99057afffd90b8483b8682",
+    "services/coding-tools/package-lock.json": "2599a02789ca691fd086fff5b60831beab0eceac6f13519a9aee5f2de1065ed9",
+    "services/coding-tools/package.json": "365fc82b8ca703fba9696a50db11776396d5acff5472336f7f55fed008b11f1c",
+    "services/dabook/pyproject.toml": "844f5d5b8bc98d4ac8ae4dc7ac4559755ca5362832f2585539f689314f0a521a",
+    "services/dabook/schemas/dabook.ingest.v1.schema.json": "dc3a2679eda8298e6f635d43e8a348961fa52970d9bffbc5404c9525cecdf5f1",
+    "services/dabook/src/dabook/backends/formulas.py": "bce82313053586a31040484d85f64d73e681f013d3914c8bb52f259ebfe28e67",
+    "services/dabook/src/dabook/backends/structured.py": "123dd89040bb8166d681848f6c4ab8fc8d365adbd8cc0109cb0b4505178de29a",
+    "services/dabook/src/dabook/cli.py": "303e7203ff2007c5f4b42f4ea45c82cc90e144c6fc97fca5d46da78a664612b4",
+    "services/dabook/src/dabook/config/models.py": "9f498be4fba28af4f21512f6cfaa46bb7f33fe12b501c305af7e90a358e11527",
+    "services/dabook/src/dabook/core/ingest.py": "12cf2260c49c693fa6b04e0f7bb0766761d3a05ee8206c1bb825a1c8c94fecf8",
+    "services/dabook/src/dabook/core/scheduler/outcomes.py": "da7467242e979051b09f444fe0c0a82c2fea35a68d31c51ab3a3de0117330d92",
+    "services/dabook/src/dabook/core/scheduler/planner.py": "16af80bf81806c620a89a5f399a6cc9b4d7aed343a2772433e8f64b12cd1b3ed",
+    "services/dabook/src/dabook/ocr.py": "e0bfff0013df17e5cd2c33ef646590b2b0bb0d1b1b10dab4290c6ec19c9d7e50",
+    "services/dabook/src/dabook/stages/runner.py": "70b66ecd47f124cf635bf699d5e67678badaa7b257c985726ac3d39e7dd9fb08",
+    "services/dabook/tests/integration/test_phase5.py": "4ce0cc87ad03cd07a4b5841ae1687085e98c839ddd39a758e6b8045af99e58aa",
+    "services/dabook/tests/unit/test_config_validation.py": "b16437bebbbf8082a9653bba8f8a3969cd01e29283b2ccf951ad2a85e522b2f7",
+    "services/dabook/tests/unit/test_formula_quality.py": "a34e35c51d4e2057829f98d97fbf77caa35f5d84696eba3a75453ab636769342",
+    "services/dabook/tests/unit/test_formula_recovery.py": "2c400540b9e5193e25d11226063f746ddd4006b1b032bf9e8cc0676e436f845b",
+    "services/dabook/uv.lock": "3c5f94d0326d29d610d944f5dbfd0a25526e596492dc83c94c68fb98b5807d2f",
+    "services/rea/package-lock.json": "4b248f1e5ca02abbe595e6f92162777a6491c9b887fc8b7ea03db1bd8f17b6ad",
+    "services/rea/package.json": "fea0fdb2aa97ab788fbcef0cd3e78b071adc530f0ad818d64109dc2e569b49c8",
+    "src/core/automation/__tests__/AutoDrive.test.ts": "c6f2f19ddb42d9acda17da3c442f78d44e522f39f515103accb57fe423d25e8e",
+    "src/core/capabilities/config/CapabilityConfigManager.ts": "aaf88bc6da89e7540193acc69b61dbfba7c8df7bce32e324b49cec455f727c83",
+    "src/core/capabilities/packs/CapabilityPackManifest.ts": "6c294aa4e6f604baaeacf3865331063a2dbe96d140f6d714cbf9c3e2bd5716d0",
+    "src/core/chat/ChatRuntimeShadowRunner.test.ts": "c865fac67bb874bf8b62859172bcd1d95f9c69b1672ad435263f25c08daabb7e",
+    "src/core/chat/ChatRuntimeShadowRunner.ts": "7263e3e4e14aa41ef27ba3df48da6f63c621d37f99acc33bc36c4342016b1884",
+    "src/core/coding/index/TreeSitterParserProvider.test.ts": "4a2280a4821f26a8ff9808cfce6bf0920599d5993d28698dc26ee01310029b71",
+    "src/core/coding/integrations/AiderAdapter.test.ts": "94518689c35c7726d99eec1c73f7631b67bd9743b87fba9263439c8cd2be1a1a",
+    "src/core/coding/integrations/CodingJobHistory.test.ts": "ddcae18e0be96ceb482027379bba298ce2dfd1a1f045fa01085fb4963a4b63bc",
+    "src/core/coding/integrations/CodingJobHistory.ts": "f05fd4b5ebef497f42ef069fbee2c283dc7b335ac129e5bc2c9c7b9dc8f7963e",
+    "src/core/coding/integrations/CodingToolsService.test.ts": "f3155e64bc00e393a11e96aea8113e4934a25a9d508d3e4946d8b9ff351cf733",
+    "src/core/coding/integrations/CodingToolsService.ts": "68e2b226c2e2edd93f474f570589daee0ea90eb23a17eba501bb4739702508d5",
+    "src/core/coding/verification/ModelRepairProposal.test.ts": "6e33c01118812276138d78ac53285858d9dc6ad7e06b550bf1fac907cd567447",
+    "src/core/config/CanonicalRuntimeConfig.ts": "994d987f859aa7b6f931b00a56cda3e9860f78f666a7775d4bc882d7b14144b6",
+    "src/core/config/ConfigValidator.test.ts": "fbb6cd182536b22e7ac818830370414f0dc50b134b721183963225aca10e8696",
+    "src/core/config/ConfigValidator.ts": "8d7efaafde48a637087af178b3869ee11a7b29505d66d997d50fde11d45edd32",
+    "src/core/config/EnvironmentDefinitions.ts": "43373adf596431d9b7dff48d7a1e6000aa655ca1d15cfbc97934b58469580908",
+    "src/core/config/__tests__/APIKeyManager.security.test.ts": "1ffd273950d6f558aad22f01ae48aede3544368a289fce0a9543db1270a474b3",
+    "src/core/creative/CreativeTypes.ts": "2ace989f2a0fcb126953b195d0ed2f881b1a71619c74159e2948253f6a95bd5f",
+    "src/core/dabook/DabookBridge.ts": "3aa6a680ece4a596d03d7b291bbc22e6d495b9db75e0c055a4e19174c736b68e",
+    "src/core/dabook/DabookChunkMapper.ts": "4aee51c07d5c1b27afa0e4d21f41871522ccb3402054952b5070e2e682e1bdbc",
+    "src/core/dabook/DabookContract.ts": "4e53ddf78c4521dccd11d9759df93e4cd3b0c9225f7499b0c7f7373aa2eb3b68",
+    "src/core/dabook/__tests__/TrainingPlan.test.ts": "7d94c5708450297ccefc612bcb5db3eda453934a75aa884a29b472d06e5fad4f",
+    "src/core/dabook/training/TrainingExporter.ts": "e9d298bc7f51cabff5543c0d19adb6a5d746680a79013ea8f04dd250e06a7d5a",
+    "src/core/dabook/training/TrainingPlan.ts": "57179c88f9268262982747bc38dd6d0f6629ab46a279a0ccd2be2e26874411ad",
+    "src/core/evaluation/CodingBenchmarkRunner.test.ts": "cda8941ccd7a26e3d750e3220f151f1e8b67496c553e14c071773f26baffbb53",
+    "src/core/files/FileExplorerService.test.ts": "46c3f0582c84fbbc189b4354aede19db7474bc2831f5ff9a15c88118923b0b1d",
+    "src/core/files/FileExplorerService.ts": "d7a7ed22c543b6b90b6ef186b2203a6aa73fe38e832678b6a5533bf0098d5bef",
+    "src/core/governance/CanonicalCommandOperations.ts": "ce2952036f52128bd105abcdfe01393a0ed9d83bcef06b6da3593380224732ac",
+    "src/core/governance/KnowledgeBundleOperations.ts": "654673e155d370f8df9188423b9ba8d3c9ab9b2e4b9bbdb176589404fe46eeae",
+    "src/core/governance/ShadowReport.ts": "d6d4c3aef1fab85992bf37e473e7d48edee12455698658f210213f3930a73374",
+    "src/core/governance/VerificationCommandsOrchestrator.ts": "ea11485e8987635d698937d88ea97798ba8a0bacd78ff943c7a6d807eabeb028",
+    "src/core/governance/__tests__/knowledge-operations.test.ts": "397293f8ff5822af61e6b871525bc806b6c41cb591694595c55af1fc17e65a76",
+    "src/core/knowledge/SourceAuthorityPolicy.test.ts": "aae1609e6aee6d85eafed13bfa645a21108adf79023cc1656fddc2742e6eac4f",
+    "src/core/orchestrator/__tests__/Orchestrator.test.ts": "3d067f187c49a7abd31a99f933bc7a81f63b3c65fb53d5b367afd6ce21310504",
+    "src/core/orchestrator/__tests__/enhanced-orchestrator-matrix.test.ts": "011b17c49121f79d35f903bbbfdc485c7c35fed2136ae0b1b15683c7b655bef9",
+    "src/core/quality/__tests__/AutoReview.test.ts": "0da9e7a8462f0015cbdf9f3942bb25e2359a7403841fa3ab17f6314a82defbbd",
+    "src/core/rag/__tests__/AudioRAG.test.ts": "7500ae88c62f64a81fb05079e765916487bd27e9ac9c45c74b94ca05470d8ada",
+    "src/core/rag/__tests__/CorrectiveRetriever.test.ts": "d0e6ee663e28c4979ed40dd55aac361944cebadedd31ab5f3ab862793bc7abe0",
+    "src/core/rag/__tests__/RAGRouter.test.ts": "ea944f5c745e0fbf5e3752e232a77fd5477b323a969f14b15f54c54427b1d84d",
+    "src/core/rag/__tests__/TrustRAG.test.ts": "9a01c3b1294a2a7ab9823a43c397a5631cf872a66aa5a5d9ea18668cc5526660",
+    "src/core/rag/__tests__/VideoRAG.test.ts": "ff3d11c96033c90e19e71ea267fbd7ce081c94105fef38cd37ca8b42ea765914",
+    "src/core/rag/ingestion/DabookPdfExtractor.ts": "86533fa18071e026146a75d2ba2d8056a29085d28a87a4f33267f067505d146b",
+    "src/core/rag/ingestion/ManagedPdfOcr.ts": "e2f313206426b0e8bf3dd81e2763b86e19aea8ea97317177acd1ae3e25cd8680",
+    "src/core/rag/ingestion/PdfExtractor.ts": "bd53b3c54ff666621086b781429daf19b97654e22202717124254da7bb5d6894",
+    "src/core/rag/ingestion/__tests__/DabookPdfExtractor.test.ts": "7f58f4fa380ca4b719ab6c2b3f33b509255d95476ad29ab0e782cb1c0c287d40",
+    "src/core/rag/ingestion/__tests__/ManagedPdfOcr.test.ts": "81c444b45f1b0c34176e2bd8264f8b3d685d39ec0f9915506323013482c4457a",
+    "src/core/rag/ingestion/__tests__/PdfExtractor.test.ts": "571088cb240421a23e3f73cc6c4177ec81dadb18a28b2b1ba62a26c0e1fb1118",
+    "src/core/scheduler/__tests__/TaskScheduler.test.ts": "5757086db79fe732ea5ea2fd3096251255bcb4b69046bd5802692140950e00ce",
+    "src/core/state/ConversationVariableExtractor.test.ts": "dac9af375c7b6e5173379f6ef4de78b32ad9a43cd2769c333da36cce5628cce5",
+    "src/middleware/validator.ts": "f7fe082ddc79723700e49090ee779b4598c491dea9feb95e26f1e5508c58881b",
+    "src/server/__tests__/index.routes.test.ts": "5f46dee27fdfbdc2afceb762f7f2019ed9462aa525e68eff37150cad7168a98f",
+    "src/server/__tests__/release-security.test.ts": "f215b1d1b200d68a36eec983d42e4591c2e38cbf1e55bfd53689a853a0cf128b",
+    "src/server/__tests__/server.entrypoint.failures.test.ts": "84ac6c8cd9988ffe237bc38a54c015c98b171275828218ef8672d20e83ef418c",
+    "src/server/__tests__/server.entrypoint.lifecycle.test.ts": "195f272d18c8380dade0830aa728948581bed40276e367a97bdb6ee67cd5a27a",
+    "src/server/routes/__tests__/capability-evaluations-routes.test.ts": "597aee6959902c92abec5bebdb2331eca09186bb7c7a844d935da9d295ceaabc",
+    "src/server/routes/__tests__/settings-routes.test.ts": "c764b767757abdcfe52993de08216b96f087169bb88c31d645bfddb728a96e66",
+    "src/server/routes/coding-tools.test.ts": "cee61ac67c38ecda852170b01c940d0b1e8d6349b98aaed101fc1b6e2fb5b506",
+    "src/server/routes/coding-tools.ts": "ce7d032f84ba268b973a0cb188dc049c53f10bf61ab3ac3364edbf6e8e65f5d7",
+    "src/server/routes/creative.ts": "67e5beb765ae8d9b581f3991defb42b778b932cfb950e29a701413b598df7c83",
+    "src/server/routes/knowledge-base.ts": "b2590fd39370e1e2d6f33764efdc74512ee819713d7e77fc6f074ad0b3818504",
+    "src/server/routes/settings.ts": "5aa81f52dd76087746a83b632f2804d69462f55931296a92e387ff40acbb89be",
+    "src/types/ab-evaluation.ts": "d34c537902a398626ab8048a44b4c907aa680e1bcdd28d6f89ff66c566a710e1",
+    "src/types/api-compatibility.ts": "6d308f695db2ae1fb6437e399ca7e73771d182d65974b9f2762e7f0ae5c3586e",
+    "src/types/bot-profile.ts": "15cdba334f2ec127f9198c31f9d1c25f47f99ae11ebaac1c9d2ac6f522a60ca1",
+    "src/types/chat-diagnostics.ts": "999d6d9873684fae6460ae12fe7ee9f696b86c8be53f6cbd5f06cfd50e58a75e",
+    "src/types/chat-runtime.ts": "85911f89b7fa91a67bdc78dac19baa03d72bbfb5a073e6bc52c515f625295284",
+    "src/types/chat.ts": "7fcfcc81b813c61aecbb928d5ddd7d0596a2b8202196bd66d4ff6d2253badc90",
+    "src/types/ci-gates.ts": "8e610e5f5b39fdb8230fb022f5c6b089789ec72c25354a51031b323b00f094d3",
+    "src/types/citation.ts": "106944213316c2a5b00124e85247b440fd58d73029435203562504d72980082b",
+    "src/types/cli-scripts.ts": "81fa4d5ca5ae84c5e41a2efc02b98604da986f080f79e419da87f4e71094da43",
+    "src/types/coding-retrieval-policy.ts": "548bdfffb00470eb74fc159d5bca8138153d5316bc6da5ca9ab5ac1858517e4e",
+    "src/types/context-plan.ts": "f9a135e6860b3490bb614094c4fc5ac3d7b65167fe60379b279799f9bbad8a50",
+    "src/types/conversation-state.ts": "09b8c23235af85d900a53745c5192cf714b600930dd866b3406f64f9324448b3",
+    "src/types/dataset-fixtures.ts": "4ec1af17063a6bf36afe493b2c45c4ae59f0b8165dbca905234808bb0df6b0b9",
+    "src/types/dependency-graph.ts": "181841491c8fa669ce2d3a67745b626844547f5927bcfa672735c1c375ca3ae2",
+    "src/types/documentation-spec.ts": "38772840a2344d701d5090615b5ba43bb9a3d2deec08489ff435c8d93da875ef",
+    "src/types/educational-multilingual.ts": "f64ebc6231bc2893f2d5de313ae6b9616bb30325e42409087db915dc6b68cb2b",
+    "src/types/eval-thresholds.ts": "f23714327f6da9c4b5f6ca392897fd0557446bba942c192eaafcbb2886e7645b",
+    "src/types/feedback.ts": "8bbb2ac954d75ca0d408ba20eb27d21f707419e18d5990b7b1445c6c78fbfff1",
+    "src/types/file-map.ts": "ced82c72e6dc89fe9cd018aa2122d65546bec72581ac45be3d3cb0d020a44236",
+    "src/types/general-knowledge.ts": "b4f5fccb753a586f5394e5c046ffdf89a19289cf9bcacb83c8a576089f707955",
+    "src/types/golden-eval.ts": "b99e0de4cc34052b9ed5ef7f39942550fe2556ee574504774c56522a4fa30680",
+    "src/types/input-adapters.ts": "b80edeedf1eae7cc8e04c4b0a0a009a22f9417f65866e391d39d8a07ca43b97c",
+    "src/types/knowledge-datasets.ts": "c1d98d25ee94595986ac9e4b1e6c2ea9e72f6493277b3625a2baed4050749617",
+    "src/types/knowledge-packs.ts": "0a85574432b14df055618197d3c32a488a8123624f64f4b816d48fbb875d04c3",
+    "src/types/knowledge-router.ts": "49d03a8141856ad013f9a8dbed59b3305a15c0e34238c13eba9ce9577c738c9b",
+    "src/types/model-registry.ts": "a171b5c0a7f2b9ea130d9a42469789a72baacb32e2111c0e7a4e1ee4fd751bfa",
+    "src/types/observability-spec.ts": "d8f0c7050332262d8cd1c8333254ad635dce97bb38f326a7d0315fdd7d3bca69",
+    "src/types/official-docs.ts": "537ab3ece4e981c1227db6e9fbf1b36d6c56cfb53d4c205d574a29bf0967e44a",
+    "src/types/program-completion.test.ts": "5a7752edad51ee066ef03d9533762427de6095ba6f1593114551d8eda1e4acc0",
+    "src/types/research-math-packs.ts": "8c5646005c56045a14f84876fec6b7d61766e73b5752ed54f619e5b77945463c",
+    "src/types/response-quality.ts": "69c307ba3fb5e30fb6e8aaf7b48439d60be63c07b7ea67cac99c7cc3d8f7d418",
+    "src/types/retrieval-scoring.ts": "40e0e7c7816a4f241ed959d31e0cf69eb734cc5004d5e1c3b2991a0c8bb21f53",
+    "src/types/rollback-recovery.ts": "709913f72abf5514dccb695cb5b27834194c517e65feb82b1778bc4b20fb9136",
+    "src/types/rollout-migration.ts": "e8cf938c7bab4a8c63759c8b1ee41f4b383545eb6c1db732f46b34db42bad088",
+    "src/types/testing-strategy.ts": "2ef15dcb102a5301d3d2f4c52ca2e53875d61b44e2620f9a6c7ec28569c53d1c",
+    "src/types/tool-truth.ts": "d461d36ff44250e90cb63649646f8ede55a9c7f24ac48b4546a96bc3cdf067d1",
+    "src/types/workflow.ts": "cf320cad310dfe4795f9c994f0b3d986905ca46b649f38da85aa71afe8fbb3ad"
+  },
+  "evidenceSha256": {
+    "README.md": "d635cc3ec917c2c9282972d570bef63a342dca411226d479584940e32bdb0edb",
+    "calibration-benchmark.json": "2298edaf4ba68a677f32f97f974eb71024388d9b3822376366bbe7a9c902c962",
+    "calibration-report.json": "a5b9682755979f92555b5c2b1239dac7bc205d732eb5a23c47006200eb9ec762",
+    "calibration.expected.json": "0ca036cca908661677c49f5c1c8519fa69d44e679bd5861847257d533eb79ca0",
+    "display-math-benchmark.json": "60f16f587afeae5a79bec11caf7e82b0a0886a5064fa1a437cae36af53a60330",
+    "display-math-report.json": "07a6ad1cc2897974d4b2c614712752a1f078559750cbfcc30c941a100c3d3491",
+    "display-math.expected.json": "c188eb734ec32f58c632c8f58009e849d8a71243d281e68a88d88b0a2b85f2c8",
+    "display-math.pdf": "2040c77a494c42c894dab0c0bdb052d2a613004d97e60f3e1b8fb17b44b4dfe3",
+    "rea-api-validation.json": "326edf3d117b212e2f308e4f6cf2b3b6ba2266b7c2676b8c9b908ee63a7f8a92",
+    "server-coverage-policy-report.json": "99099817b60241cf6fbf01ff56be5f6dd72087a8dcefb967847aa5afcab20992"
+  }
+}

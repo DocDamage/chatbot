@@ -1,0 +1,36 @@
+{
+  "scope": "Manually selected and visually checked pages; eight target equations, four tables, headings and one prose control. Additional mathematical regions are reported but not scored as false positives.",
+  "source_attribution": {
+    "calculus-made-easy": "Silvanus P. Thompson, Calculus Made Easy, second edition; public domain in the USA. https://www.gutenberg.org/ebooks/33283/",
+    "openintro-statistics": "Source-derived annotations: David M. Diez, Mine Cetinkaya-Rundel, Christopher D. Barr, OpenIntro Statistics, fourth edition. https://www.openintro.org/book/os/ ; CC BY-SA 3.0 https://creativecommons.org/licenses/by-sa/3.0/ . Independent validation, not endorsed by OpenIntro."
+  },
+  "sources": {
+    "calculus-made-easy": {
+      "equations": [
+        {"id":"enlarged-square","page":0,"bbox":[100,485,250,515],"pattern":"y\\+dy=\\(x\\+dx\\)\\^(?:2|\\{2\\})[.,]?"},
+        {"id":"expanded-square","page":1,"bbox":[105,62,280,85],"pattern":"y\\+dy=x\\^(?:2|\\{2\\})\\+2x(?:\\\\cdot|\\\\times|·)?dx\\+\\(dx\\)\\^(?:2|\\{2\\})[.,]?"},
+        {"id":"discarded-second-order","page":1,"bbox":[100,210,275,235],"pattern":"y\\+dy=x\\^(?:2|\\{2\\})\\+2x(?:\\\\cdot|\\\\times|·)?dx[.,]?"},
+        {"id":"differential","page":1,"bbox":[145,280,230,305],"pattern":"dy=2x(?:\\\\cdot|\\\\times|·)?dx[.,]?"},
+        {"id":"derivative","page":1,"bbox":[145,330,225,370],"pattern":"\\\\(?:d?frac)\\{dy\\}\\{dx\\}=2x[.,]?"}
+      ],
+      "headings": [{"page":0,"contains":"SIMPLEST CASES"}],
+      "tables": [],
+      "prose_control_pages": []
+    },
+    "openintro-statistics": {
+      "equations": [
+        {"id":"numeric-mean","page":3,"bbox":[175,307,435,338],"pattern":"(?:\\\\bar\\{x\\}|\\\\overline\\{x\\})=\\\\(?:d?frac)\\{10\\.90\\\\%\\+9\\.92\\\\%\\+26\\.30\\\\%\\+(?:\\\\cdots|\\\\ldots|\\\\dots)\\+6\\.08\\\\%\\}\\{50\\}=11\\.57\\\\%[.,]?"},
+        {"id":"general-mean","page":3,"bbox":[245,445,365,480],"pattern":"(?:\\\\bar\\{x\\}|\\\\overline\\{x\\})=\\\\(?:d?frac)\\{x_(?:1|\\{1\\})\\+x_(?:2|\\{2\\})\\+(?:\\\\cdots|\\\\ldots|\\\\dots)\\+x_(?:n|\\{n\\})\\}\\{n\\}[.,]?"},
+        {"id":"standard-deviation","page":4,"bbox":[260,453,355,480],"pattern":"s=\\\\sqrt\\{25\\.52\\}=5\\.05[.,]?"}
+      ],
+      "headings": [{"page":0,"contains":"Data basics"},{"page":2,"contains":"Types of variables"},{"page":4,"contains":"Variance and standard deviation"}],
+      "tables": [
+        {"id":"loan-data","page":0,"rows":[["1","22000","10.90","60.00","B","NJ","59000.00","rent"],["50","15000","6.08","36.00","A","TX","77500.00","mortgage"]]},
+        {"id":"loan-variables","page":0,"rows":[["loan_amount","Amount of the loan received, in US dollars."],["term","The length of the loan, which is always set as a whole number of months."]]},
+        {"id":"rotated-county-data","page":1,"rows":[["1","Autauga","Alabama","55504","1.48","13.7","77.5","7.2","3.86","yes","some_college","55317"]]},
+        {"id":"rotated-county-variables","page":1,"rows":[["pop","Population in 2017."]]}
+      ],
+      "prose_control_pages": [2]
+    }
+  }
+}

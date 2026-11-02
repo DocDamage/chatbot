@@ -6,7 +6,7 @@
  * fields) but strict about everything this integration relies on.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const DABOOK_SCHEMA_ID = 'dabook.ingest.v1';
 
@@ -35,7 +35,7 @@ export const dabookBookSchema = z.object({
   source_path: z.string(),
   title: z.string().nullable().optional(),
   pages: z.number().int().nonnegative().nullable().optional(),
-  doc_type: z.enum(['native', 'scanned', 'mixed']).nullable().optional(),
+  doc_type: z.enum(['native', 'scanned', 'mixed', 'epub']).nullable().optional(),
   state: z.enum(['queued', 'active', 'paused', 'needs_input', 'review', 'done', 'failed', 'removed']),
   quality_score: z.number().min(0).max(1).nullable().optional(),
   license_status: z.enum(DABOOK_LICENSE_STATUSES).nullable().optional(),

@@ -1,0 +1,145 @@
+import crypto from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import { buildPdf, PdfLine } from '../../src/core/dabook/__tests__/pdfFixture';
+import { DabookBridge } from '../../src/core/dabook/DabookBridge';
+import { TrainingExporter } from '../../src/core/dabook/training/TrainingExporter';
+import { loadEvaluationCorpus } from '../../src/core/dabook/training/EvaluationCorpus';
+import { prepareTrainingPlan } from '../../src/core/dabook/training/TrainingPlan';
+
+const [rootArg, pythonArg, portArg] = process.argv.slice(2);
+if (!rootArg || !pythonArg || !portArg) throw new Error('usage: run-export.ts <root> <python> <port>');
+const root = path.resolve(rootArg);
+const python = path.resolve(pythonArg);
+const port = Number(portArg);
+const workspace = path.join(root, 'workspace');
+const pdf = path.join(root, 'codex-owned-mini-book.pdf');
+const ingestLog = path.join(root, 'ingest.json');
+
+const pages: PdfLine[][] = Array.from({ length: 12 }, (_, index) => {
+  const number = String(index + 1).padStart(2, '0');
+  const lines = [
+    `Section ${number} explains that a bounded local training rehearsal uses isolated temporary files and never changes production settings.`,
+    `Every artifact in Section ${number} carries a digest so later checks can detect accidental or deliberate modification.`,
+    `The held out examples for Section ${number} remain separate from optimizer inputs throughout evaluation and registration.`,
+    `Human reviewers inspect the grounded answer for Section ${number} before approving the miniature owned source for export.`,
+    `The final candidate from Section ${number} stays inactive because lifecycle evidence is not proof of domain model quality.`,
+  ];
+  return [
+    { text: `Bounded Rehearsal Section ${number}`, font: 'F1', size: 16, x: 72, y: 710 },
+    ...lines.map((text, line) => ({
+      text,
+      font: 'F2' as const,
+      size: 10,
+      x: 54,
+      y: 675 - line * 24,
+    })),
+  ];
+});
+fs.writeFileSync(pdf, buildPdf(pages));
+const pdfSha256 = crypto.createHash('sha256').update(fs.readFileSync(pdf)).digest('hex');
+
+function assigned(seed: number, title: string): string {
+  const point = Number(BigInt(`0x${crypto.createHash('sha256').update(`${seed}|${pdfSha256}|${title}`).digest('hex').slice(0, 16)}`)) / 2 ** 64;
+  return point < 0.5 ? 'train' : point < 0.75 ? 'val' : 'test';
+}
+let seed = 1;
+for (; seed < 10000; seed++) {
+  const splits = new Set(pages.map((_, index) => assigned(seed, `Bounded Rehearsal Section ${String(index + 1).padStart(2, '0')}`)));
+  if (splits.size === 3) break;
+}
+
+fs.mkdirSync(workspace, { recursive: true });
+fs.writeFileSync(
+  path.join(workspace, 'dabook.toml'),
+  `[assist]\nbase_url = "http://127.0.0.1:${port}/v1"\nprice_per_1k_prompt_usd = 0.000001\nprice_per_1k_completion_usd = 0.000001\nmax_cost_usd = 1.0\nmax_pairs_per_section = 1\nmin_section_words = 20\nmax_section_words = 300\ngrounding_threshold = 0.6\n\n[dataset]\nsft_system_prompt = "Answer only from the source."\n\n[dataset.split]\nby = "chapter"\nratios = [0.5, 0.25, 0.25]\nseed = ${seed}\n`
+);
+
+const ingest = spawnSync(
+  python,
+  [
+    '-m', 'dabook', 'ingest', pdf, '-w', workspace, '--json', '--profile', 'fast',
+    '--modes', 'rag,sft', '--formats', 'jsonl', '--license', 'owned',
+    '--assist', 'openai:codex-authored-local', '--backend', 'pdfium_pdfminer',
+  ],
+  {
+    encoding: 'utf8',
+    windowsHide: true,
+    timeout: 5 * 60 * 1000,
+    maxBuffer: 4 * 1024 * 1024,
+    env: {
+      ...process.env,
+      PYTHONUTF8: '1',
+      DABOOK_ASSIST_API_KEY: 'isolated-local-endpoint-no-secret',
+      DABOOK_ASSIST_BACKOFF_S: '0',
+    },
+  }
+);
+fs.writeFileSync(ingestLog, JSON.stringify({ status: ingest.status, stdout: ingest.stdout, stderr: ingest.stderr }, null, 2));
+if (ingest.error || ingest.status !== 0) throw new Error(`ingest failed: ${ingest.error?.message ?? ingest.stderr.slice(-3000)}`);
+
+const bridge = new DabookBridge({
+  config: () => ({
+    enabled: true,
+    workspace,
+    profile: 'fast',
+    timeoutMs: 5 * 60 * 1000,
+    dashboard: false,
+    interpreterCandidates: [{ source: 'DABOOK_PYTHON', path: python }],
+    warnings: [],
+  }),
+});
+
+async function main(): Promise<void> {
+  const books = await bridge.listBooks();
+  if (books.books.length !== 1) throw new Error(`expected one book, found ${books.books.length}`);
+  const book = books.books[0];
+  const sample = await bridge.reviewSample(String(book.book_id), { count: 200, seed: 42 });
+  if (!sample.sample.length || sample.sample.length !== sample.total_pairs)
+    throw new Error(`review did not expose every pair: ${sample.sample.length}/${sample.total_pairs}`);
+  if (sample.sample.some(item => item.generator !== 'assist:openai:codex-authored-local'))
+    throw new Error('unexpected assisted-pair generator');
+  fs.writeFileSync(path.join(root, 'human-review-sample.json'), JSON.stringify(sample, null, 2));
+  for (const item of sample.sample)
+    await bridge.reviewDecision(String(book.book_id), item.pair_id, 'accept', 'Codex-authored local grounded lifecycle example reviewed');
+  await bridge.reviewBook(String(book.book_id), 'approved');
+  const recompiled = await bridge.recompile(String(book.book_id));
+  fs.writeFileSync(path.join(root, 'review-recompile.json'), JSON.stringify(recompiled, null, 2));
+
+  const evalsDir = path.join(root, 'evals');
+  fs.mkdirSync(evalsDir);
+  fs.writeFileSync(
+    path.join(evalsDir, 'held-out.json'),
+    JSON.stringify([{ id: 'unrelated-held-out', query: 'Which color identifies the unrelated observatory beacon?' }])
+  );
+  const exporter = new TrainingExporter({
+    bridge,
+    evalsDir,
+    exportRoot: path.join(root, 'exports'),
+    loadEvaluation: loadEvaluationCorpus,
+    now: () => new Date('2026-11-02T01:00:00.000Z'),
+  });
+  const exported = await exporter.export({
+    books: [String(book.book_id)],
+    modes: ['sft'],
+    formats: ['jsonl'],
+    splits: true,
+  });
+  const counts = exported.manifest.counts.sft;
+  if (!counts.train || !counts.val || !counts.test)
+    throw new Error(`real export did not produce all required splits: ${JSON.stringify(counts)}`);
+  if (exported.manifest.governance.generatedBy !== 'chatbot-training-exporter')
+    throw new Error('export did not carry real exporter authority');
+  const plan = prepareTrainingPlan(exported.bundleDir, 'cpu-smoke/random-init');
+  fs.writeFileSync(
+    path.join(root, 'export-summary.json'),
+    JSON.stringify({ pdfSha256, seed, book, reviewCount: sample.total_pairs, exported, plan }, null, 2)
+  );
+  console.log(JSON.stringify({ bundleDir: exported.bundleDir, counts, reviewCount: sample.total_pairs, plan }, null, 2));
+}
+
+main().catch(error => {
+  console.error(error);
+  process.exitCode = 1;
+});

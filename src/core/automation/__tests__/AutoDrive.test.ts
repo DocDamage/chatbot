@@ -9,12 +9,12 @@ describe('RT-AUTO-001: AutoDrive Task Planning and Self-Healing Suite', () => {
 
   beforeEach(() => {
     mockOrchestrator = {
-      runWorkflow: jest.fn<any>().mockResolvedValue({
+      runWorkflow: jest.fn<(...args: any[]) => any>().mockResolvedValue({
         success: true,
         finalDecision: 'Step completed successfully',
         confidence: 0.95
       }),
-      execute: jest.fn<any>().mockResolvedValue({
+      execute: jest.fn<(...args: any[]) => any>().mockResolvedValue({
         success: true,
         output: 'Step executed'
       })

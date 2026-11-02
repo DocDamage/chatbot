@@ -1,0 +1,30 @@
+{
+  "source": "tables-equations.pdf",
+  "equations": [
+    {
+      "id": "energy",
+      "page": 0,
+      "bbox": [
+        70,
+        240,
+        130,
+        280
+      ],
+      "pattern": "E=mc\\^(?:2|\\{2\\})"
+    }
+  ],
+  "table_rows": [
+    [
+      "Quantity",
+      "Value"
+    ],
+    [
+      "Distance",
+      "42 km"
+    ],
+    [
+      "Period",
+      "7 days"
+    ]
+  ]
+}

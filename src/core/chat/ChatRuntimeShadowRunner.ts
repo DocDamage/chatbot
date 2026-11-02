@@ -13,6 +13,8 @@ import { ChatRuntime } from './ChatRuntime';
 import { ChatRuntimeCompatibilityAdapter } from './ChatRuntimeCompatibilityAdapter';
 import { ChatRuntimeResult, ChatContextPlan } from '../../types/chat-runtime';
 import { ChatServerContext } from './ChatRequestNormalizer';
+import fs from 'fs';
+import path from 'path';
 
 export interface ShadowComparisonResult {
   requestId: string;
@@ -91,6 +93,13 @@ export class ChatRuntimeShadowRunner {
 
       if (options.onComparison) {
         options.onComparison(comparison);
+      }
+      if (process.env.CHAT_SHADOW_REPORT_PATH) {
+        const file = path.resolve(process.env.CHAT_SHADOW_REPORT_PATH);
+        fs.mkdirSync(path.dirname(file), { recursive: true });
+        // Retain routing/latency evidence only, never prompts or generated answers.
+        const { shadowResult: _result, shadowPlan: _plan, ...summary } = comparison;
+        fs.appendFileSync(file, JSON.stringify(summary) + '\n', { mode: 0o600 });
       }
     } catch {
       // Non-mutating shadow execution must never fail or modify the primary response

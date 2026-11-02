@@ -1,6 +1,8 @@
 import { existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { dabookRoot, SUPPORTED_PYTHONS, venvPython, venvRoot } from './dabook-env.mjs';
+const extras = ['dev', ...(process.argv.includes('--ocr') ? ['ocr'] : []), ...(process.argv.includes('--docling') ? ['docling'] : [])];
+const editable = `.[${extras.join(',')}]`;
 
 function run(command, args, options = {}) {
   const result = spawnSync(command, args, {
@@ -25,8 +27,8 @@ function createWithUv() {
   if (!succeeds('uv', ['--version'])) return false;
   for (const version of SUPPORTED_PYTHONS) {
     if (succeeds('uv', ['python', 'find', version])) {
-      run('uv', ['venv', '--python', version, venvRoot]);
-      run('uv', ['pip', 'install', '--python', venvPython, '-e', '.[dev]']);
+      run('uv', ['venv', '--python', version, '--allow-existing', venvRoot]);
+      run('uv', ['pip', 'install', '--python', venvPython, '-e', editable]);
       return true;
     }
   }
@@ -53,15 +55,15 @@ function createWithVenv() {
   const [command, ...args] = python;
   run(command, [...args, '-m', 'venv', venvRoot]);
   run(venvPython, ['-m', 'pip', 'install', '--upgrade', 'pip']);
-  run(venvPython, ['-m', 'pip', 'install', '-e', '.[dev]']);
+  run(venvPython, ['-m', 'pip', 'install', '-e', editable]);
 }
 
-if (existsSync(venvPython) && !process.argv.includes('--force')) {
+if (existsSync(venvPython) && succeeds(venvPython, ['-c', 'print("ready")']) && !process.argv.includes('--force')) {
   console.log(`Updating existing DABOOK venv at ${venvRoot} (pass --force to recreate).`);
   if (succeeds('uv', ['--version'])) {
-    run('uv', ['pip', 'install', '--python', venvPython, '-e', '.[dev]']);
+    run('uv', ['pip', 'install', '--python', venvPython, '-e', editable]);
   } else {
-    run(venvPython, ['-m', 'pip', 'install', '-e', '.[dev]']);
+    run(venvPython, ['-m', 'pip', 'install', '-e', editable]);
   }
 } else if (process.env.DABOOK_PYTHON || !createWithUv()) {
   createWithVenv();

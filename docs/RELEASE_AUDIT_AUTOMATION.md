@@ -56,7 +56,7 @@ The scanner covers current tracked/untracked non-ignored files and, in release/C
 
 ## Dependency policy
 
-`npm run check:dependencies` rejects critical and high production vulnerabilities in both server and client trees. The root `overrides` entries force patched `adm-zip` and `sharp` versions through the Hugging Face/ONNX dependency tree; removing an override requires a clean audit demonstrating that upstream constraints have become safe.
+`npm run check:dependencies` rejects critical and high vulnerabilities in every shipped Node runtime tree: server, client, desktop companion, coding tools, and REA. The desktop audit includes development dependencies because Electron is intentionally declared there even though it is the companion runtime. Scoped `overrides` keep vulnerable transitive packages on patched compatible releases while upstream ranges lag; removing an override requires a clean audit demonstrating that upstream constraints have become safe.
 
 ## Required human and lifecycle evidence
 

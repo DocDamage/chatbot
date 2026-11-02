@@ -5,7 +5,7 @@
  * specifying precisely what context resources a request requires.
  */
 
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const conversationRequirementSchema = z.object({
   type: z.literal('conversation'),

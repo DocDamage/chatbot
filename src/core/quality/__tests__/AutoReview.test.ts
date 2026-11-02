@@ -11,7 +11,7 @@ describe('RT-QUAL-001: AutoReview Automated Code Inspection Suite', () => {
 
   beforeEach(() => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'auto-review-test-'));
-    mockLLM = jest.fn<any>().mockResolvedValue(JSON.stringify({
+    mockLLM = jest.fn<(...args: any[]) => any>().mockResolvedValue(JSON.stringify({
       score: 92,
       issues: [
         { type: 'warning', line: 12, message: 'Unused local variable' }

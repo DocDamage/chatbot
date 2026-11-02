@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express';
+import { RequestHandler, Router } from 'express';
 import { auditPrivilegedRequest } from '../middleware/auth';
 import { resolveDeploymentMode, RuntimeProfile } from '../core/config/EnvironmentDefinitions';
 import { createAudioRouter } from './routes/audio';
@@ -221,14 +221,34 @@ export function registerManifestRoutes(deps: RegisterRouteDeps): void {
         deps.app.use(entry.mount, ...authHandlers, ...audit, ...routeHandlers);
       } else {
         // Legacy routers currently define absolute `/api/...` paths internally.
-        // Preserve that contract while still applying guards at the prefix.
+        // Preserve that contract while still applying guards at the prefix. Keep
+        // their lazy factories off unrelated requests: some perform substantial
+        // synchronous setup when first constructed.
         deps.app.use(entry.mount, ...authHandlers, ...audit);
-        deps.app.use(...routeHandlers);
+        deps.app.use(guardAbsoluteRouter(entry.mount, routeHandlers));
       }
     } else {
       deps.app.use(...routeHandlers);
     }
   }
+}
+
+function guardAbsoluteRouter(mount: string, handlers: RequestHandler[]): RequestHandler {
+  const router = Router();
+  router.use(...handlers);
+
+  return (req, res, next) => {
+    // `req.path` is query-free and relative to the current Express application,
+    // while invoking the router directly leaves req.url intact for its absolute paths.
+    const caseSensitive = req.app.enabled('case sensitive routing');
+    const requestPath = caseSensitive ? req.path : req.path.toLowerCase();
+    const mountPath = caseSensitive ? mount : mount.toLowerCase();
+    if (requestPath !== mountPath && !requestPath.startsWith(`${mountPath}/`)) {
+      next();
+      return;
+    }
+    router(req, res, next);
+  };
 }
 
 function createAdminRouter(services: any): RequestHandler {

@@ -1,7 +1,7 @@
 /**
  * Section 37: Evaluation Metrics and Release Threshold Framework Schemas
  */
-import { z } from 'zod';
+import { z } from 'zod/v3';
 
 export const RoutingMetricsSchema = z.object({
   taskClassificationAccuracy: z.number().min(0).max(1),
