@@ -1,0 +1,248 @@
+{
+  "status": "verified_local_daily_use_with_selected_coding_model",
+  "recordedAt": "2026-11-02T21:52:32.516422+00:00",
+  "hardware": {
+    "cpu": "Intel Core i5-14600K",
+    "ramGiB": 48,
+    "gpu": "NVIDIA GeForce RTX 3060",
+    "physicalVramMiB": 12288
+  },
+  "selected": {
+    "chatModel": "qwen3:8b",
+    "codingModel": "qwen3-coder:30b",
+    "codingContextTokens": 16384
+  },
+  "models": [
+    {
+      "model": "qwen3:8b",
+      "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+      "passed": 8,
+      "failed": 1,
+      "total": 9,
+      "integrationSeconds": 314.049,
+      "medianDecodeTokensPerSecond": 59.81,
+      "probeDecodeTokensPerSecond": [
+        59.51,
+        59.98,
+        59.81
+      ],
+      "checks": [
+        {
+          "name": "Serena follows a TypeScript import alias",
+          "status": "passed",
+          "durationMs": 73217
+        },
+        {
+          "name": "ast-grep previews and applies a structural repair",
+          "status": "passed",
+          "durationMs": 2109
+        },
+        {
+          "name": "Context7 returns actual source-linked documentation",
+          "status": "passed",
+          "durationMs": 1634
+        },
+        {
+          "name": "Aider and Ollama fix a real arithmetic bug",
+          "status": "passed",
+          "durationMs": 18384
+        },
+        {
+          "name": "Aider and Ollama implement a feature across existing and new files",
+          "status": "passed",
+          "durationMs": 47486
+        },
+        {
+          "name": "Aider and Ollama add executable tests",
+          "status": "passed",
+          "durationMs": 45800
+        },
+        {
+          "name": "Ollama uses automatic TypeScript context and compiler/linter checks",
+          "status": "passed",
+          "durationMs": 29732
+        },
+        {
+          "name": "Ollama writes fast-check properties that detect real implementation mutations",
+          "status": "failed",
+          "durationMs": 86484,
+          "error": "Aider produced no file changes. No successful patch is being claimed."
+        },
+        {
+          "name": "Fresh Ollama repair fixes remaining failures after an insufficient initial patch",
+          "status": "passed",
+          "durationMs": 7848
+        }
+      ]
+    },
+    {
+      "model": "qwen3-coder:30b",
+      "digest": "06c1097efce0431c2045fe7b2e5108366e43bee1b4603a7aded8f21689e90bca",
+      "passed": 9,
+      "failed": 0,
+      "total": 9,
+      "integrationSeconds": 242.425,
+      "medianDecodeTokensPerSecond": 21.14,
+      "probeDecodeTokensPerSecond": [
+        21.21,
+        21.14,
+        19.26
+      ],
+      "checks": [
+        {
+          "name": "Serena follows a TypeScript import alias",
+          "status": "passed",
+          "durationMs": 35936
+        },
+        {
+          "name": "ast-grep previews and applies a structural repair",
+          "status": "passed",
+          "durationMs": 20359
+        },
+        {
+          "name": "Context7 returns actual source-linked documentation",
+          "status": "passed",
+          "durationMs": 13127
+        },
+        {
+          "name": "Aider and Ollama fix a real arithmetic bug",
+          "status": "passed",
+          "durationMs": 43665
+        },
+        {
+          "name": "Aider and Ollama implement a feature across existing and new files",
+          "status": "passed",
+          "durationMs": 17999
+        },
+        {
+          "name": "Aider and Ollama add executable tests",
+          "status": "passed",
+          "durationMs": 50242
+        },
+        {
+          "name": "Ollama uses automatic TypeScript context and compiler/linter checks",
+          "status": "passed",
+          "durationMs": 16956
+        },
+        {
+          "name": "Ollama writes fast-check properties that detect real implementation mutations",
+          "status": "passed",
+          "durationMs": 26823
+        },
+        {
+          "name": "Fresh Ollama repair fixes remaining failures after an insufficient initial patch",
+          "status": "passed",
+          "durationMs": 10188
+        }
+      ]
+    }
+  ],
+  "dailyVerification": {
+    "status": "passed",
+    "verifiedAt": "2026-11-02T21:46:23.152Z",
+    "provider": "ollama",
+    "model": "qwen3:8b",
+    "startups": [
+      {
+        "failingProvider": false,
+        "readyMs": 5156
+      },
+      {
+        "failingProvider": false,
+        "readyMs": 2061
+      },
+      {
+        "failingProvider": true,
+        "readyMs": 3585
+      }
+    ],
+    "checks": [
+      {
+        "check": "real local generation",
+        "passed": true,
+        "latencyMs": 9535
+      },
+      {
+        "check": "multi-turn recall",
+        "passed": true,
+        "latencyMs": 115
+      },
+      {
+        "check": "upload, retrieval and citations",
+        "passed": true,
+        "latencyMs": 393
+      },
+      {
+        "check": "online backup restore, real process restart, v1/v2 routes, history and document persistence",
+        "passed": true
+      },
+      {
+        "check": "provider failure and degraded readiness",
+        "passed": true
+      }
+    ]
+  },
+  "automation": {
+    "startup": "Current-user interactive sign-in; hidden process job",
+    "backup": "Current-user sign-in and daily 20:00 Windows local time",
+    "timezone": "America/New_York",
+    "backupDestination": "%LOCALAPPDATA%/Chatbot/backups/<checkout-id>",
+    "retention": {
+      "days": 14,
+      "maximumCount": 30,
+      "alwaysKeepNewest": true
+    },
+    "retry": "Every five minutes, up to 144 retries",
+    "tested": [
+      "Registered task launch and restart",
+      "Stopping task terminates supervisor and app",
+      "Forced owner termination kills Node descendants",
+      "Scheduled backup completed with result 0",
+      "Production-database backup hash/integrity and temporary restore verified",
+      "Doctor all checks passed; live coding status reports qwen3-coder:30b"
+    ]
+  },
+  "sourceHashes": {
+    "scripts/local/backups.mjs": "f832ec0cc2c607ee77534c7c0b83ab6e62a1e7d98efdd5d6072d0b1c1fa81c9c",
+    "scripts/local/backup.mjs": "c2abe8f1fcdd89f2f7d92085a8fe5b6cfcc82d919c772c78b08d4184eb83f266",
+    "scripts/local/verify.mjs": "8773177a82f02c99077293b7b806ebfdd0bdc57248cdff11580eaee851053225",
+    "scripts/local/doctor.mjs": "6d8e874cfcf7085bc858d795734eb012ea637eeff7e44bcfd4b1950c363830d6",
+    "scripts/local/supervise.mjs": "9aea1f11a42b9cb47df14ddee41f73e0f593d970eba4430bba3d821276e95b43",
+    "scripts/local/run-task.ps1": "7b822ab3c0c227300c7a4b5199ebbc1afe8bd4ff793d16fdd54693bfaa7d496c",
+    "scripts/local/windows-tasks.ps1": "dd508e31872dac7383f74b44cd4624f30654f2da534f74289b1ceba6381ee125",
+    "scripts/local/TaskProcessJob.cs": "163c8afc5486352d080ab3820ba35b0d2d4a52718a2b371935cd0e8fcee17acb",
+    "scripts/local/test-task-job.ps1": "3af24e515b0f0ae4976e88446f99c325ce56a9b8403adea5172ccb3836798ac2",
+    "scripts/coding/verify.ts": "579959361f9b5d2c7f539bdbf1394b69e1780c8c44fefad8f3c1cb2a71e49bb7",
+    "scripts/coding/compare-models.mjs": "a59992743561560a6b5a191c3395803a2308e812d0b8746e2150aefeea7c648b",
+    "src/core/database/Database.ts": "2c45bc1bd835aa10441408a4f5f4f344c8c7e44e6d9eb9f28aaa6c2e8bdadd41",
+    "src/core/coding/integrations/Context7Adapter.ts": "4d51dd93e4ae434a143f7be0c93b940ccb76d0b5625e2492f505ba9201d9522e"
+  },
+  "limitations": [
+    "One complete integration comparison per model; not arbitrary-project certification.",
+    "qwen3:8b failed the fast-check generation case by producing no file changes; its failure remains recorded, and it is not selected for coding.",
+    "An earlier diagnostic run exposed Context7 initialization timeout and model test-generation failures; errors were preserved and the full comparison rerun after startup recovery was fixed.",
+    "Throughput-only probes ran after other tests and downloads finished, in reverse model order; each used 256 output-token ceilings, thinking disabled, temperature 0, seed 42 and 16384 context tokens.",
+    "Integration cases use existing per-model thinking behavior and include tool/network startup; end-to-end timings are not controlled performance rankings.",
+    "Server-reported VRAM allocations are not measurements of physical GPU usage.",
+    "Actual future Windows sign-in was not performed; the registered task entrypoint and forced termination behavior were tested directly.",
+    "Backups contain SQLite chat/state/indexed content, not original external files, model weights, source code or .env.",
+    "Required CI is checked separately for the pushed PR head."
+  ],
+  "runtime": {
+    "node": "24.14.1",
+    "ollama": "0.40.6",
+    "os": "Windows 11 Pro"
+  },
+  "localChecks": {
+    "backupAndRestoreTests": "5 passed",
+    "databaseMigrationTests": "4 passed, 1 optional PostgreSQL integration skipped",
+    "context7StartupRecoveryTests": "2 passed",
+    "serviceInitializerTests": "8 passed",
+    "nativeWindowsProcessTreeTest": "passed",
+    "build": "passed",
+    "serverAndTestTypeChecks": "passed",
+    "serverLint": "passed",
+    "repositoryPolicy": "passed",
+    "secretScan": "passed"
+  }
+}

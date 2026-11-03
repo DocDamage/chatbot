@@ -5,17 +5,21 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
+import { createBackup, validateBackup } from './backups.mjs';
 
 // Explicitly invoked live, local-only verification; never uses paid model providers.
 const root = path.resolve(import.meta.dirname, '../..');
 const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'chatbot-daily-'));
 const base = 'http://127.0.0.1:4317';
-const logPath = path.join(root, 'temp/daily-live-server.log');
+const reportDirectory = path.join(root, 'data/local-runtime/evaluations', `daily-${Date.now()}`);
+const logPath = path.join(reportDirectory, 'server.log');
 fs.mkdirSync(path.dirname(logPath), { recursive: true });
 let child;
 let token;
 const checks = [];
 const sessionId = `daily-${Date.now()}`;
+let databasePath = path.join(workspace, 'chatbot.db');
+const startups = [];
 
 async function stop() {
   if (!child || child.exitCode !== null) return;
@@ -26,6 +30,7 @@ async function stop() {
 }
 
 async function start(failingProvider = false) {
+  const started = Date.now();
   const output = fs.openSync(logPath, 'a');
   child = spawn(process.execPath, [path.join(root, 'dist/server/index.js')], {
     cwd: workspace, windowsHide: true, shell: false, stdio: ['ignore', output, output],
@@ -33,7 +38,7 @@ async function start(failingProvider = false) {
       LLM_PROVIDER: 'ollama', USE_OLLAMA: 'true', USE_HUGGINGFACE: 'false', CHAT_RUNTIME_ENABLED: 'true',
       OLLAMA_URL: failingProvider ? 'http://127.0.0.1:1' : process.env.OLLAMA_URL || 'http://127.0.0.1:11434',
       OLLAMA_MODEL: process.env.OLLAMA_MODEL || 'qwen3:8b',
-      RAG_SQLITE_PATH: path.join(workspace, 'chatbot.db'), DATABASE_URL: '', RAG_DATABASE_URL: '',
+      RAG_SQLITE_PATH: databasePath, DATABASE_URL: '', RAG_DATABASE_URL: '',
       RAG_PERSISTENCE: 'true', RAG_RETRIEVAL_MODE: 'database', DABOOK_ENABLED: 'false',
       KNOWLEDGE_BASE_DIR: path.join(workspace, 'empty'), PUBLIC_KNOWLEDGE_BASE_DIR: path.join(workspace, 'empty'),
       EAGER_KNOWLEDGE_LOAD: 'false', BACKGROUND_KNOWLEDGE_LOAD: 'false', EAGER_CODING_KNOWLEDGE_LOAD: 'false',
@@ -52,6 +57,7 @@ async function start(failingProvider = false) {
     await new Promise(resolve => setTimeout(resolve, 500));
   }
   assert(ready, 'The isolated application did not become ready.');
+  startups.push({ failingProvider, readyMs: Date.now() - started });
   const response = await fetch(`${base}/api/auth/local-session`, { method: 'POST' });
   assert.equal(response.status, 200, 'Local authentication must work.');
   token = (await response.json()).token;
@@ -88,7 +94,11 @@ try {
   assert(answer.citations.length > 0, 'A document answer must include verified source references.');
   checks.push({ check: 'upload, retrieval and citations', passed: true, latencyMs: answer.wallTimeMs });
 
+  const backup = await createBackup(databasePath, path.join(workspace, 'backups'));
   await stop();
+  const verified = validateBackup(backup.manifestPath);
+  databasePath = path.join(workspace, 'restored.db');
+  fs.copyFileSync(verified.backupPath, databasePath, fs.constants.COPYFILE_EXCL);
   await start();
   const restored = await chat('What is my project called? Reply with the name only.', '/api/v1/chat');
   assert.match(restored.response, /Copper Finch/i);
@@ -97,7 +107,7 @@ try {
   assert(documentAfterRestart.citations.length > 0);
   const history = await fetch(`${base}/api/conversations`, { headers: { Authorization: `Bearer ${token}` } });
   assert((await history.json()).conversations.some(conversation => conversation.sessionId === sessionId && conversation.messageCount === 10));
-  checks.push({ check: 'real process restart, v1/v2 routes, history and document persistence', passed: true });
+  checks.push({ check: 'online backup restore, real process restart, v1/v2 routes, history and document persistence', passed: true });
 
   await stop();
   await start(true);
@@ -107,7 +117,12 @@ try {
   assert.equal((await fetch(`${base}/health/ready`)).status, 503);
   checks.push({ check: 'provider failure and degraded readiness', passed: true });
   console.log(JSON.stringify({ provider: 'ollama', checks }, null, 2));
-  fs.writeFileSync(path.join(root, 'temp/daily-live-verification.json'), JSON.stringify({ verifiedAt: new Date().toISOString(), provider: 'ollama', checks }, null, 2));
+  const report = path.join(reportDirectory, 'verification.json');
+  fs.writeFileSync(report, JSON.stringify({ status: 'passed', verifiedAt: new Date().toISOString(), provider: 'ollama', model: process.env.OLLAMA_MODEL || 'qwen3:8b', startups, checks }, null, 2));
+  console.log(`Verification report: ${report}`);
+} catch (error) {
+  fs.writeFileSync(path.join(reportDirectory, 'verification.json'), JSON.stringify({ status: 'failed', verifiedAt: new Date().toISOString(), checks, startups, error: error.message }, null, 2));
+  throw error;
 } finally {
   await stop();
   const temporaryRoot = path.resolve(os.tmpdir()) + path.sep;

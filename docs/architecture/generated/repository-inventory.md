@@ -6,7 +6,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 
 | Category | Count |
 |---|---|
-| Source files | 1999 |
+| Source files | 2005 |
 | Production source files | 1273 |
 | Reachable production files | 913 |
 | Unreachable production files | 360 |
@@ -837,6 +837,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 ## External binaries
 
 - `docker` — `scripts/certification/production-like.mjs`
+- `taskkill.exe` — `scripts/coding/compare-models.mjs`
 - `npm` — `scripts/release/build-release-artifact.mjs`
 - `npm` — `scripts/release/check-dependency-vulnerabilities.mjs`
 - `git` — `scripts/release/check-secrets.mjs`
@@ -891,7 +892,7 @@ Generated deterministically by `scripts/release/generate-repository-inventory.mj
 | `src/core/contracts/UniversalContract.ts` | 321 |
 | `src/core/creative/CreativeWritingAgent.ts` | 345 |
 | `src/core/dabook/DabookBridge.ts` | 608 |
-| `src/core/database/Database.ts` | 554 |
+| `src/core/database/Database.ts` | 562 |
 | `src/core/database/ExpansionMigrations.ts` | 383 |
 | `src/core/developer/MockApiEngine.ts` | 450 |
 | `src/core/gaming/lattice/LatticeSimulationEngine.ts` | 387 |

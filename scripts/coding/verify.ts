@@ -17,6 +17,7 @@ const root = process.cwd(), config = codingToolConfig(root);
 const directory = fs.mkdtempSync(path.join(root, 'data/coding-tools/evaluation-'));
 const checks: any[] = [];
 const caseFilter = process.argv.find(argument => argument.startsWith('--case='))?.slice(7).toLowerCase();
+const reportPath = path.resolve(process.argv.find(argument => argument.startsWith('--report='))?.slice(9) || path.join(directory, 'verification.json'));
 const digest = (text: string) => crypto.createHash('sha256').update(text).digest('hex');
 function fixture(name: string, files: Record<string, string>) {
   const workspace = path.join(directory, name); fs.mkdirSync(workspace, { recursive: true });
@@ -28,7 +29,7 @@ async function check(name: string, work: () => Promise<unknown>) {
   const started = Date.now(); console.log(`Running ${name}`);
   try { const evidence = await work(); checks.push({ name, status: 'passed', durationMs: Date.now() - started, evidence }); console.log(`Passed ${name}`); }
   catch (error: any) { checks.push({ name, status: 'failed', durationMs: Date.now() - started, error: error.message }); console.error(`Failed ${name}: ${error.message.slice(0, 1000)}`); }
-  fs.writeFileSync(path.join(directory, 'verification.json'), JSON.stringify({ verifiedAt: new Date().toISOString(), model: config.model, workspace: directory, checks }, null, 2));
+  fs.writeFileSync(reportPath, JSON.stringify({ verifiedAt: new Date().toISOString(), model: config.model, workspace: directory, checks }, null, 2));
 }
 async function verify(workspace: string) {
   const result = await new VerificationOrchestrator(workspace).verify();
@@ -152,7 +153,7 @@ async function main() {
     assert.equal(result.status, 'passed', JSON.stringify(result)); assert.ok(result.attempts.length >= 2);
     return { attempts: result.attempts.map(attempt => ({ iteration: attempt.iteration, hypothesis: attempt.hypothesis, diagnostics: attempt.diagnosticDelta })), commands: await verify(workspace) };
   });
-  console.log(JSON.stringify({ report: path.join(directory, 'verification.json'), passed: checks.filter(check => check.status === 'passed').length, failed: checks.filter(check => check.status !== 'passed').length }));
+  console.log(JSON.stringify({ report: reportPath, passed: checks.filter(check => check.status === 'passed').length, failed: checks.filter(check => check.status !== 'passed').length }));
   if (!checks.length || checks.some(check => check.status !== 'passed')) process.exitCode = 1;
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

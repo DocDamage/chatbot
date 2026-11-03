@@ -3140,6 +3140,7 @@
     ],
     "scripts/certification/http-load.mjs": [],
     "scripts/certification/production-like.mjs": [],
+    "scripts/coding/compare-models.mjs": [],
     "scripts/coding/lint-worker.cjs": [],
     "scripts/coding/setup.mjs": [],
     "scripts/coding/verify.ts": [
@@ -3187,9 +3188,21 @@
     ],
     "scripts/import-wikidata-chrono.ts": [],
     "scripts/import-wikipedia-general-corpus.ts": [],
-    "scripts/local/doctor.mjs": [],
+    "scripts/local/__tests__/backups.test.mjs": [
+      "scripts/local/backups.mjs"
+    ],
+    "scripts/local/backup.mjs": [
+      "scripts/local/backups.mjs"
+    ],
+    "scripts/local/backups.mjs": [],
+    "scripts/local/doctor.mjs": [
+      "scripts/local/backups.mjs"
+    ],
     "scripts/local/setup.mjs": [],
-    "scripts/local/verify.mjs": [],
+    "scripts/local/supervise.mjs": [],
+    "scripts/local/verify.mjs": [
+      "scripts/local/backups.mjs"
+    ],
     "scripts/native/certify-game-editors.ts": [
       "src/core/native-runtime/NativeGameEditorBackends.ts",
       "src/core/native-runtime/RuntimeDiscovery.ts"
@@ -4911,6 +4924,11 @@
     "src/core/coding/integrations/CompilerSettings.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/security/ApprovedRepositoryGateway.ts"
+    ],
+    "src/core/coding/integrations/Context7Adapter.test.ts": [
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/Context7Adapter.ts",
+      "src/core/coding/integrations/ToolProcess.ts"
     ],
     "src/core/coding/integrations/Context7Adapter.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
@@ -10468,5 +10486,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 1999
+  "sourceRecordCount": 2005
 }

@@ -1,35 +1,37 @@
-# Current handoff â€” 2026-11-02
+# Current handoff — November 2, 2026
 
-The active checkout is `G:\dev\Chatbot`, branch `codex/coding-alias-context`.
-[Consolidation PR #172](https://github.com/DocDamage/chatbot/pull/172) targets `main`.
-The user requested one consolidation PR and retention of every branch until review.
-Main and the other branches have not been merged, deleted, or rewritten.
+Work is in `G:\dev\Chatbot`, branch `codex/daily-use-automation`, based on merged
+main `8357018`. The user authorized finishing daily-use setup, installing startup and
+backups, comparing the two Ollama models, fixing gaps, testing, committing and pushing.
 
-CI failed at `1931712fce2f2a21282177ec106ceb922ec71201`. This follow-up addresses
-clean-install dependencies, Docker post-install inputs, reproducible attribution and
-repository inventories, and PDF/process integration checks. Green CI is required
-before considering this consolidation ready to merge. Historical certification claims
-in the archived handoff do not certify the current consolidation.
+Current-user Windows tasks are installed: **Chatbot Local Startup** at sign-in and
+**Chatbot Local Backup** at sign-in plus 20:00 local time. Task stop kills the owned
+Node tree. Backups default to C: user data, separate from the removable project drive;
+retention is 14 days / at most 30 verified copies, always preserving the newest.
 
-Local Ollama remains the selected provider. Live Ollama testing was deferred by the
-user because Ollama is on another computer; CI does not substitute for that live check.
-Known published-book rotated-table quality limits also remain under review.
+Ordinary chat uses qwen3:8b. The ignored local `.env` selects qwen3-coder:30b for coding.
+The full comparison passed 8/9 and 9/9 cases respectively. The 8B property-test failure
+is recorded, not hidden. Core chat, restart, actual backup restoration and document
+answers passed. See [daily-use evidence](../evidence/daily-use/2026-11-02/README.md) and
+[daily-use setup](../../DAILY_USE.md). This remains local personal use; general autonomous
+coding, useful fine-tuning and hosted production certification are not claimed.
 
 ## Next authorized task
 
-Verify all required checks against the latest pushed PR head and finish any remaining
-CI remediation on the existing branch. Keep branches intact for review and leave
-merging to the user. See [branch reconciliation](../../BRANCH_RECONCILIATION_2026-11-02.md).
+Review the daily-use follow-up and its exact pushed-head CI. Fix any remaining CI
+failure before reporting completion. Leave main unmerged unless the user instructs
+otherwise. Do not delete the active follow-up branch before its review and merge.
 
 ## NEW THREAD START PROMPT
 
-Continue PR #172 in G:\dev\Chatbot on codex/coding-alias-context. Inspect the current
-head and GitHub checks before changing anything. Repair any remaining CI failures,
-retain all branches, and do not merge main. Honor the deferred live Ollama validation.
-Read the branch reconciliation report and the CI remediation evidence for current facts.
+Continue the daily-use automation work on codex/daily-use-automation in G:\dev\Chatbot.
+Read the November 2 evidence and inspect current PR checks before changing anything.
+Preserve the local configuration, running scheduled app and private backups. Model
+comparison is complete; 30B is selected for coding and 8B for ordinary chat. Finish
+remaining verification, commit/push work if needed, and report the actual check results.
 
 ## Thread closure
 
-The consolidation remains open for review. Do not mark it certified or merged while
-checks are pending or failing. The prior handoff is preserved in
-[the archive](archive/CURRENT_HANDOFF_before_2026-11-02.md).
+The local setup is installed and tested. Final review and exact-head CI remain separate
+from local evidence. Main merge is the user's decision. Earlier consolidation records
+are historical and do not replace the follow-up's validation.

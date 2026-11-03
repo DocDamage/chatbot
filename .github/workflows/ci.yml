@@ -232,6 +232,8 @@ jobs:
         run: npm run test:routes -- --runInBand
       - name: Run service tests
         run: npm run test:services -- --runInBand
+      - name: Test local backup and restore tooling
+        run: npm run test:local-tools
 
   dabook-tests:
     name: DABOOK Python tests (${{ matrix.os }})
@@ -250,6 +252,10 @@ jobs:
           node-version: ${{ env.PRIMARY_NODE_VERSION }}
       - name: Setup uv
         uses: astral-sh/setup-uv@v6
+      - name: Verify Windows task process ownership
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./scripts/local/test-task-job.ps1
       - name: Install DABOOK
         run: npm run setup:dabook
       - name: Run DABOOK tests
