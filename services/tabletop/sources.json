@@ -1,0 +1,55 @@
+{
+  "reviewedOn": "2026-11-02",
+  "sources": [
+    {
+      "repository": "https://github.com/DocDamage/open-game-master",
+      "revision": "281928336f8f88353d224d4293ef79c2422aa0fc",
+      "upstream": "Lebbitheplow/open-game-master",
+      "license": "MIT",
+      "mode": "NATIVE_ADAPTATION",
+      "files": [
+        {
+          "upstream": "src/lib/dice.ts",
+          "local": "src/core/campaign/vendor/openGameMasterDice.ts",
+          "changes": "Inline the type-only RollTag contract; rolling algorithm unchanged."
+        }
+      ],
+      "licenseFile": "services/tabletop/LICENSE.open-game-master"
+    },
+    {
+      "repository": "https://github.com/DocDamage/campfire",
+      "revision": "f0dd871f5d2ab0b949db8c8a15a90ec56d40d3dc",
+      "upstream": "AwsomeFox/campfire",
+      "license": "MIT",
+      "mode": "NATIVE_ADAPTATION",
+      "files": [
+        {
+          "upstream": "packages/schema/src/spell-slots.ts",
+          "local": "src/core/campaign/vendor/campfireSpellSlots.ts",
+          "changes": "Zod v3 import; rename schema constant to avoid lint name collision."
+        },
+        {
+          "upstream": "packages/schema/src/initiative-tiebreak.ts",
+          "local": "src/core/campaign/vendor/campfireInitiative.ts",
+          "changes": "Attribution header only."
+        }
+      ],
+      "licenseFile": "services/tabletop/LICENSE.campfire"
+    },
+    {
+      "repository": "https://github.com/DocDamage/dungeon-master-tool",
+      "license": "CC-BY-NC-4.0",
+      "mode": "CLEAN_ROOM_IMPLEMENTATION",
+      "copiedCode": false,
+      "contract": "format 1 .dmtz world archive: manifest.json + payload.json; world_name/worldName and entities with categorySlug, description and dmNotes",
+      "references": [
+        "flutter_app/lib/application/services/content_transfer/content_archive.dart",
+        "flutter_app/lib/application/services/content_transfer/content_item.dart",
+        "flutter_app/lib/domain/entities/entity.dart",
+        "flutter_app/lib/application/providers/campaign_provider.dart"
+      ],
+      "revision": "1b83468b3d28aef8e50ae68a91c32d13148309f5"
+    }
+  ],
+  "boundary": "Selected mechanics and portable data contracts are integrated; the upstream applications, media, full rules engines and bundled game content are not embedded. User campaign exports and books remain private local data."
+}

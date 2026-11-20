@@ -1,0 +1,6 @@
+
+> ai-chatbot-hub@1.0.0 eval:gamedev
+> tsx scripts/run-domain-evals.ts gamedev
+
+[gamedev] loaded 8 eval cases
+Domain eval metadata: 8/8 passed

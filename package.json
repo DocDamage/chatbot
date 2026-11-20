@@ -8,6 +8,7 @@
     "config/**",
     "patches/**",
     "scripts/dependencies/**",
+    "services/tabletop/**",
     "docs/architecture/generated/sbom.cyclonedx.json",
     ".env.example",
     "README.md",

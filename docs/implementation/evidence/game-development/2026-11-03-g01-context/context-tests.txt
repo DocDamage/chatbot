@@ -1,0 +1,5 @@
+Test Suites: 4 passed, 4 total
+Tests:       22 passed, 22 total
+Snapshots:   0 total
+Time:        5.368 s, estimated 7 s
+Ran all test suites within paths "src/core/gaming/project/GameProjectContext.test.ts", "src/core/gaming/project/ProjectFilePolicy.test.ts", "src/core/coding/integrations/ProjectDependencies.test.ts", "src/server/routes/__tests__/project-context-routes.test.ts".

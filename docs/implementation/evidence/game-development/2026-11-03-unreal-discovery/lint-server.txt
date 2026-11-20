@@ -1,0 +1,4 @@
+
+> ai-chatbot-hub@1.0.0 lint:server
+> eslint src
+

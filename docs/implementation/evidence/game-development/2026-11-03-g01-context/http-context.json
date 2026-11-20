@@ -1,0 +1,555 @@
+{
+  "recordedAt": "2026-11-03T23:24:39.949Z",
+  "scope": "Real host Godot identity, production HTTP source context and SQLite restart on synthetic fixtures only. No model generation, native gameplay, MZ execution or ROM tool claim.",
+  "runtime": {
+    "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+    "engine": "godot",
+    "exactVersion": "4.7.1.stable.official.a13da4feb",
+    "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+    "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+    "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+    "associations": [],
+    "observedAt": "2026-11-03T23:24:37.248Z",
+    "versionSource": "executable-stdout",
+    "versionOutput": "4.7.1.stable.official.a13da4feb"
+  },
+  "project": {
+    "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\game-context-native-gGkp63\\godot",
+    "filesystemIdentity": "ce9b495423ef22623221ab520f0c1dc2dc7edf758d4f1e1149ae5b1504695089",
+    "physicalKey": "e3590dec9d95ecc0f4a3b24dbd3e84d2134b2054d31907827264e0d007c04e49",
+    "ownerId": "context-fixture",
+    "tenantId": "local",
+    "projectId": "project-e3590dec9d95ecc0f4a3b24dbd3e84d2134b2054d31907827264e0d007c04e49",
+    "profile": {
+      "schemaVersion": 1,
+      "facts": {
+        "engine": "godot",
+        "descriptors": {
+          "project.godot": "74ea60b9915bec94361dd6a441c0295a1e60605df1eb6ad2eed5187ee4f6f2a1"
+        },
+        "projectVersion": null,
+        "association": null,
+        "features": [
+          "4.7"
+        ],
+        "language": "gdscript",
+        "renderer": null,
+        "languageEvidence": {
+          "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+          "confidence": "inferred"
+        },
+        "buildTarget": null,
+        "packages": {
+          "dotnet": [],
+          "plugins": []
+        },
+        "unknowns": [
+          "Export target/modules/templates are not qualified by enrollment.",
+          "No renderer setting was observed; no renderer was inferred."
+        ]
+      },
+      "runtime": {
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "engine": "godot",
+        "exactVersion": "4.7.1.stable.official.a13da4feb",
+        "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+        "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+        "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+        "associations": [],
+        "observedAt": "2026-11-03T23:24:38.820Z",
+        "versionSource": "executable-stdout",
+        "versionOutput": "4.7.1.stable.official.a13da4feb"
+      },
+      "selection": {
+        "selectedRuntimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+      },
+      "targetId": "a9107e8f9621ff7a7deabd99dba33e87f335d96334af446bac74179324446768",
+      "blockers": [],
+      "resolution": "resolved",
+      "profileDigest": "5b06216cc924eb468deb1d7ddc5652aadcf81313c76fc8d0bf4766669f2ca141",
+      "observedAt": "2026-11-03T23:24:38.821Z"
+    },
+    "revision": 1,
+    "createdAt": "2026-11-03T23:24:38.821Z",
+    "updatedAt": "2026-11-03T23:24:38.821Z"
+  },
+  "context": {
+    "editable": [],
+    "readOnly": [
+      {
+        "path": "Main.tscn",
+        "content": "[gd_scene format=3]\n[ext_resource type=\"Script\" path=\"res://Player.gd\" id=\"1\"]\n[node name=\"SOURCE_CONTEXT_CANARY\" type=\"Node\"]\nscript = ExtResource(\"1\")\n",
+        "sha256": "cc58e6df2ea2626528114f645077e711f3e8a523e66f245fdde2bea16f94ead4"
+      },
+      {
+        "path": "Player.gd",
+        "content": "﻿extends Node\r\nconst Scene = preload(\"res://Item.tres\")\r\n",
+        "sha256": "d9384393cdc0246cb548e0f55e6814bfe511349aca9476c4fb8a9de084a07652"
+      },
+      {
+        "path": "project.godot",
+        "content": "config_version=5\n[application]\nconfig/features=PackedStringArray(\"4.7\")\nrun/main_scene=\"res://Main.tscn\"\n",
+        "sha256": "74ea60b9915bec94361dd6a441c0295a1e60605df1eb6ad2eed5187ee4f6f2a1"
+      },
+      {
+        "path": "Item.tres",
+        "content": "[gd_resource type=\"Resource\" format=3]\n[resource]\n",
+        "sha256": "9c0a5d87537a5ea08214187ba438c39b3c5c7e42fe29bc47de0fccc4073e667f"
+      }
+    ],
+    "summary": [
+      {
+        "path": "Main.tscn",
+        "role": "read_only",
+        "fileRole": "editable-text",
+        "reason": "Explicitly selected read-only project context",
+        "bytes": 153
+      },
+      {
+        "path": "Player.gd",
+        "role": "read_only",
+        "fileRole": "editable-text",
+        "reason": "Referenced by Main.tscn",
+        "bytes": 59
+      },
+      {
+        "path": "project.godot",
+        "role": "read_only",
+        "fileRole": "read-only",
+        "reason": "References a selected file (caller or test)",
+        "bytes": 105
+      },
+      {
+        "path": "Item.tres",
+        "role": "read_only",
+        "fileRole": "editable-text",
+        "reason": "Dependency of context file Player.gd",
+        "bytes": 50
+      }
+    ],
+    "scannedFiles": 3,
+    "scannedBytes": 214,
+    "omitted": 0,
+    "omissions": [],
+    "dependencies": {
+      "edges": [
+        {
+          "from": "Main.tscn",
+          "reference": "res://Player.gd",
+          "kind": "godot-resource",
+          "to": "Player.gd"
+        },
+        {
+          "from": "Main.tscn",
+          "reference": "1",
+          "kind": "godot-local-reference",
+          "reason": "Scene-local resource/node identity; requires scene inspection, not a guessed file"
+        },
+        {
+          "from": "Player.gd",
+          "reference": "res://Item.tres",
+          "kind": "godot-resource",
+          "to": "Item.tres"
+        },
+        {
+          "from": "project.godot",
+          "reference": "res://Main.tscn",
+          "kind": "godot-resource",
+          "to": "Main.tscn"
+        }
+      ],
+      "limitations": [],
+      "omitted": 0
+    },
+    "limitations": [
+      "Context selection is bounded to 400 source files / 512 KB scanned, 12 captured files / 16 KB. Static source dependencies are followed; dynamic references and uncaptured metadata remain unresolved.",
+      "Read-only bounded source context; no edit approval, native verification, full project snapshot or retrieval corpus activation."
+    ],
+    "contextDigest": "6903f713a63815f51f187c8c1b492b04bca6513288cf5ccb131097e2c5c0953e",
+    "sourceHashes": {
+      "Item.tres": "9c0a5d87537a5ea08214187ba438c39b3c5c7e42fe29bc47de0fccc4073e667f",
+      "Main.tscn": "cc58e6df2ea2626528114f645077e711f3e8a523e66f245fdde2bea16f94ead4",
+      "Player.gd": "d9384393cdc0246cb548e0f55e6814bfe511349aca9476c4fb8a9de084a07652",
+      "project.godot": "74ea60b9915bec94361dd6a441c0295a1e60605df1eb6ad2eed5187ee4f6f2a1"
+    },
+    "projectScope": {
+      "projectId": "project-e3590dec9d95ecc0f4a3b24dbd3e84d2134b2054d31907827264e0d007c04e49",
+      "profileDigest": "5b06216cc924eb468deb1d7ddc5652aadcf81313c76fc8d0bf4766669f2ca141",
+      "profileRevision": 1,
+      "physicalKey": "e3590dec9d95ecc0f4a3b24dbd3e84d2134b2054d31907827264e0d007c04e49"
+    }
+  },
+  "sourceHash": "d9384393cdc0246cb548e0f55e6814bfe511349aca9476c4fb8a9de084a07652",
+  "search": {
+    "matches": [
+      {
+        "path": "Main.tscn",
+        "line": 3,
+        "text": "[node name=\"SOURCE_CONTEXT_CANARY\" type=\"Node\"]"
+      }
+    ],
+    "scannedFiles": 4,
+    "skippedFiles": 0,
+    "truncated": false,
+    "projectScope": {
+      "projectId": "project-e3590dec9d95ecc0f4a3b24dbd3e84d2134b2054d31907827264e0d007c04e49",
+      "profileDigest": "5b06216cc924eb468deb1d7ddc5652aadcf81313c76fc8d0bf4766669f2ca141",
+      "profileRevision": 1,
+      "physicalKey": "e3590dec9d95ecc0f4a3b24dbd3e84d2134b2054d31907827264e0d007c04e49"
+    }
+  },
+  "foreign": {
+    "success": false,
+    "error": {
+      "message": "Project enrollment not found for this owner.",
+      "code": "PROJECT_NOT_FOUND"
+    }
+  },
+  "mz": {
+    "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\game-context-native-gGkp63\\mz",
+    "filesystemIdentity": "f4304fd600a6bbfaee99e1d546b853e36b821bc7f530bdf3dc13ad281d7e32fd",
+    "physicalKey": "9f07b2ae13d1f8d4fc39b7922d4044c449939a2adc35ca3abad42377fdb897a6",
+    "ownerId": "context-fixture",
+    "tenantId": "local",
+    "projectId": "project-9f07b2ae13d1f8d4fc39b7922d4044c449939a2adc35ca3abad42377fdb897a6",
+    "profile": {
+      "schemaVersion": 1,
+      "facts": {
+        "engine": "rpg-maker-mz",
+        "descriptors": {
+          "Game.rmmzproject": "5bddd3d4a9bbdd505853b412332de5e92b8dce0a3d9c01deeabf16041c006aad",
+          "js/rmmz_core.js": "8f90d820d48b89273a10e3ba8b5a794fa8aacd8caa7095a5dac71384fdc1e3f0",
+          "js/plugins.js": "a6d7b519223eb108e58b20010022bbc268ce5d421a144840724c16c3d231765d"
+        },
+        "projectVersion": "1.9.0",
+        "association": null,
+        "features": [],
+        "language": "javascript",
+        "renderer": null,
+        "languageEvidence": {
+          "source": "Statically read js/rmmz_core.js and js/plugins.js JavaScript sources.",
+          "confidence": "observed"
+        },
+        "buildTarget": null,
+        "packages": {
+          "plugins": []
+        },
+        "unknowns": [
+          "Export target/modules/templates are not qualified by enrollment."
+        ]
+      },
+      "runtime": null,
+      "selection": {},
+      "targetId": null,
+      "blockers": [
+        {
+          "code": "MZ_RUNTIME_ENROLLMENT_NOT_QUALIFIED",
+          "message": "MZ metadata was read statically; its runtime enrollment adapter still needs native qualification."
+        }
+      ],
+      "resolution": "blocked",
+      "profileDigest": "57c23f7a94e10f1d0401a1743092b7ca90136a3331d7a20f9e433e25f0e19cb5",
+      "observedAt": "2026-11-03T23:24:38.883Z"
+    },
+    "revision": 1,
+    "createdAt": "2026-11-03T23:24:38.883Z",
+    "updatedAt": "2026-11-03T23:24:38.883Z"
+  },
+  "mzContext": {
+    "editable": [],
+    "readOnly": [
+      {
+        "path": "data/Actors.json",
+        "content": "[null,{\"id\":1,\"classId\":1}]",
+        "sha256": "20a092063dc9870ce9660ab5076c7bddc0058a07e0abcd74721b961df3065fea"
+      },
+      {
+        "path": "data/Classes.json",
+        "content": "[null,{\"id\":1}]",
+        "sha256": "b7b4ae3def3b601ff0e29051663c015bec21ef19e13781f1de856c7a7976eb94"
+      }
+    ],
+    "summary": [
+      {
+        "path": "data/Actors.json",
+        "role": "read_only",
+        "fileRole": "structured-data",
+        "reason": "Explicitly selected read-only project context",
+        "bytes": 27
+      },
+      {
+        "path": "data/Classes.json",
+        "role": "read_only",
+        "fileRole": "structured-data",
+        "reason": "Referenced by data/Actors.json",
+        "bytes": 15
+      }
+    ],
+    "scannedFiles": 4,
+    "scannedBytes": 103,
+    "omitted": 0,
+    "omissions": [],
+    "dependencies": {
+      "edges": [
+        {
+          "from": "data/Actors.json",
+          "reference": "data/Classes.json",
+          "kind": "mz-classId:1",
+          "to": "data/Classes.json"
+        }
+      ],
+      "limitations": [
+        "MZ references are static context only. Database/event edits require schema and cross-reference validators; plugin JavaScript is never evaluated."
+      ],
+      "omitted": 0
+    },
+    "limitations": [
+      "Context selection is bounded to 400 source files / 512 KB scanned, 12 captured files / 16 KB. Static source dependencies are followed; dynamic references and uncaptured metadata remain unresolved.",
+      "MZ references are static context only. Database/event edits require schema and cross-reference validators; plugin JavaScript is never evaluated.",
+      "Read-only bounded source context; no edit approval, native verification, full project snapshot or retrieval corpus activation."
+    ],
+    "contextDigest": "62001e115d3e083b410ed87191b5102c257fca8d0f9be042a396640d0da68af2",
+    "sourceHashes": {
+      "data/Actors.json": "20a092063dc9870ce9660ab5076c7bddc0058a07e0abcd74721b961df3065fea",
+      "data/Classes.json": "b7b4ae3def3b601ff0e29051663c015bec21ef19e13781f1de856c7a7976eb94"
+    },
+    "projectScope": {
+      "projectId": "project-9f07b2ae13d1f8d4fc39b7922d4044c449939a2adc35ca3abad42377fdb897a6",
+      "profileDigest": "57c23f7a94e10f1d0401a1743092b7ca90136a3331d7a20f9e433e25f0e19cb5",
+      "profileRevision": 1,
+      "physicalKey": "9f07b2ae13d1f8d4fc39b7922d4044c449939a2adc35ca3abad42377fdb897a6"
+    }
+  },
+  "restarted": {
+    "editable": [],
+    "readOnly": [
+      {
+        "path": "Main.tscn",
+        "content": "[gd_scene format=3]\n[ext_resource type=\"Script\" path=\"res://Player.gd\" id=\"1\"]\n[node name=\"SOURCE_CONTEXT_CANARY\" type=\"Node\"]\nscript = ExtResource(\"1\")\n",
+        "sha256": "cc58e6df2ea2626528114f645077e711f3e8a523e66f245fdde2bea16f94ead4"
+      },
+      {
+        "path": "Player.gd",
+        "content": "﻿extends Node\r\nconst Scene = preload(\"res://Item.tres\")\r\n",
+        "sha256": "d9384393cdc0246cb548e0f55e6814bfe511349aca9476c4fb8a9de084a07652"
+      },
+      {
+        "path": "project.godot",
+        "content": "config_version=5\n[application]\nconfig/features=PackedStringArray(\"4.7\")\nrun/main_scene=\"res://Main.tscn\"\n",
+        "sha256": "74ea60b9915bec94361dd6a441c0295a1e60605df1eb6ad2eed5187ee4f6f2a1"
+      },
+      {
+        "path": "Item.tres",
+        "content": "[gd_resource type=\"Resource\" format=3]\n[resource]\n",
+        "sha256": "9c0a5d87537a5ea08214187ba438c39b3c5c7e42fe29bc47de0fccc4073e667f"
+      }
+    ],
+    "summary": [
+      {
+        "path": "Main.tscn",
+        "role": "read_only",
+        "fileRole": "editable-text",
+        "reason": "Explicitly selected read-only project context",
+        "bytes": 153
+      },
+      {
+        "path": "Player.gd",
+        "role": "read_only",
+        "fileRole": "editable-text",
+        "reason": "Referenced by Main.tscn",
+        "bytes": 59
+      },
+      {
+        "path": "project.godot",
+        "role": "read_only",
+        "fileRole": "read-only",
+        "reason": "References a selected file (caller or test)",
+        "bytes": 105
+      },
+      {
+        "path": "Item.tres",
+        "role": "read_only",
+        "fileRole": "editable-text",
+        "reason": "Dependency of context file Player.gd",
+        "bytes": 50
+      }
+    ],
+    "scannedFiles": 3,
+    "scannedBytes": 214,
+    "omitted": 0,
+    "omissions": [],
+    "dependencies": {
+      "edges": [
+        {
+          "from": "Main.tscn",
+          "reference": "res://Player.gd",
+          "kind": "godot-resource",
+          "to": "Player.gd"
+        },
+        {
+          "from": "Main.tscn",
+          "reference": "1",
+          "kind": "godot-local-reference",
+          "reason": "Scene-local resource/node identity; requires scene inspection, not a guessed file"
+        },
+        {
+          "from": "Player.gd",
+          "reference": "res://Item.tres",
+          "kind": "godot-resource",
+          "to": "Item.tres"
+        },
+        {
+          "from": "project.godot",
+          "reference": "res://Main.tscn",
+          "kind": "godot-resource",
+          "to": "Main.tscn"
+        }
+      ],
+      "limitations": [],
+      "omitted": 0
+    },
+    "limitations": [
+      "Context selection is bounded to 400 source files / 512 KB scanned, 12 captured files / 16 KB. Static source dependencies are followed; dynamic references and uncaptured metadata remain unresolved.",
+      "Read-only bounded source context; no edit approval, native verification, full project snapshot or retrieval corpus activation."
+    ],
+    "contextDigest": "6903f713a63815f51f187c8c1b492b04bca6513288cf5ccb131097e2c5c0953e",
+    "sourceHashes": {
+      "Item.tres": "9c0a5d87537a5ea08214187ba438c39b3c5c7e42fe29bc47de0fccc4073e667f",
+      "Main.tscn": "cc58e6df2ea2626528114f645077e711f3e8a523e66f245fdde2bea16f94ead4",
+      "Player.gd": "d9384393cdc0246cb548e0f55e6814bfe511349aca9476c4fb8a9de084a07652",
+      "project.godot": "74ea60b9915bec94361dd6a441c0295a1e60605df1eb6ad2eed5187ee4f6f2a1"
+    },
+    "projectScope": {
+      "projectId": "project-e3590dec9d95ecc0f4a3b24dbd3e84d2134b2054d31907827264e0d007c04e49",
+      "profileDigest": "5b06216cc924eb468deb1d7ddc5652aadcf81313c76fc8d0bf4766669f2ca141",
+      "profileRevision": 1,
+      "physicalKey": "e3590dec9d95ecc0f4a3b24dbd3e84d2134b2054d31907827264e0d007c04e49"
+    }
+  },
+  "changed": {
+    "editable": [],
+    "readOnly": [
+      {
+        "path": "Main.tscn",
+        "content": "[gd_scene format=3]\n[ext_resource type=\"Script\" path=\"res://Player.gd\" id=\"1\"]\n[node name=\"SOURCE_CONTEXT_CANARY\" type=\"Node\"]\nscript = ExtResource(\"1\")\n",
+        "sha256": "cc58e6df2ea2626528114f645077e711f3e8a523e66f245fdde2bea16f94ead4"
+      },
+      {
+        "path": "Player.gd",
+        "content": "﻿extends Node\r\nconst Scene = preload(\"res://Item.tres\")\r\n# external source edit\n",
+        "sha256": "98dd7592336365ce444df980cb05e7abb05000c63212bc059e17064daf8a3779"
+      },
+      {
+        "path": "project.godot",
+        "content": "config_version=5\n[application]\nconfig/features=PackedStringArray(\"4.7\")\nrun/main_scene=\"res://Main.tscn\"\n",
+        "sha256": "74ea60b9915bec94361dd6a441c0295a1e60605df1eb6ad2eed5187ee4f6f2a1"
+      },
+      {
+        "path": "Item.tres",
+        "content": "[gd_resource type=\"Resource\" format=3]\n[resource]\n",
+        "sha256": "9c0a5d87537a5ea08214187ba438c39b3c5c7e42fe29bc47de0fccc4073e667f"
+      }
+    ],
+    "summary": [
+      {
+        "path": "Main.tscn",
+        "role": "read_only",
+        "fileRole": "editable-text",
+        "reason": "Explicitly selected read-only project context",
+        "bytes": 153
+      },
+      {
+        "path": "Player.gd",
+        "role": "read_only",
+        "fileRole": "editable-text",
+        "reason": "Referenced by Main.tscn",
+        "bytes": 82
+      },
+      {
+        "path": "project.godot",
+        "role": "read_only",
+        "fileRole": "read-only",
+        "reason": "References a selected file (caller or test)",
+        "bytes": 105
+      },
+      {
+        "path": "Item.tres",
+        "role": "read_only",
+        "fileRole": "editable-text",
+        "reason": "Dependency of context file Player.gd",
+        "bytes": 50
+      }
+    ],
+    "scannedFiles": 3,
+    "scannedBytes": 237,
+    "omitted": 0,
+    "omissions": [],
+    "dependencies": {
+      "edges": [
+        {
+          "from": "Main.tscn",
+          "reference": "res://Player.gd",
+          "kind": "godot-resource",
+          "to": "Player.gd"
+        },
+        {
+          "from": "Main.tscn",
+          "reference": "1",
+          "kind": "godot-local-reference",
+          "reason": "Scene-local resource/node identity; requires scene inspection, not a guessed file"
+        },
+        {
+          "from": "Player.gd",
+          "reference": "res://Item.tres",
+          "kind": "godot-resource",
+          "to": "Item.tres"
+        },
+        {
+          "from": "project.godot",
+          "reference": "res://Main.tscn",
+          "kind": "godot-resource",
+          "to": "Main.tscn"
+        }
+      ],
+      "limitations": [],
+      "omitted": 0
+    },
+    "limitations": [
+      "Context selection is bounded to 400 source files / 512 KB scanned, 12 captured files / 16 KB. Static source dependencies are followed; dynamic references and uncaptured metadata remain unresolved.",
+      "Read-only bounded source context; no edit approval, native verification, full project snapshot or retrieval corpus activation."
+    ],
+    "contextDigest": "7e88a84a466b9b96a37e002bb35948c1d0a71dbad81021e2d008bb25fc3f14cd",
+    "sourceHashes": {
+      "Item.tres": "9c0a5d87537a5ea08214187ba438c39b3c5c7e42fe29bc47de0fccc4073e667f",
+      "Main.tscn": "cc58e6df2ea2626528114f645077e711f3e8a523e66f245fdde2bea16f94ead4",
+      "Player.gd": "98dd7592336365ce444df980cb05e7abb05000c63212bc059e17064daf8a3779",
+      "project.godot": "74ea60b9915bec94361dd6a441c0295a1e60605df1eb6ad2eed5187ee4f6f2a1"
+    },
+    "projectScope": {
+      "projectId": "project-e3590dec9d95ecc0f4a3b24dbd3e84d2134b2054d31907827264e0d007c04e49",
+      "profileDigest": "5b06216cc924eb468deb1d7ddc5652aadcf81313c76fc8d0bf4766669f2ca141",
+      "profileRevision": 1,
+      "physicalKey": "e3590dec9d95ecc0f4a3b24dbd3e84d2134b2054d31907827264e0d007c04e49"
+    }
+  },
+  "stale": {
+    "success": false,
+    "error": {
+      "message": "Project configuration changed; refresh the profile using its current revision.",
+      "code": "PROJECT_PROFILE_STALE"
+    }
+  },
+  "gates": [
+    "exact host runtime/profile",
+    "scene/script/resource relationships",
+    "read-only permissions",
+    "lossless BOM/CRLF hashes",
+    "secret/cache exclusion",
+    "search shares policy",
+    "owner isolation",
+    "MZ structured-data context while native blocked",
+    "SQLite/server restart reproduces digest",
+    "source edits change context digest",
+    "profile drift rejects context"
+  ]
+}

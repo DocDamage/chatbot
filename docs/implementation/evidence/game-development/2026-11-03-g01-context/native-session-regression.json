@@ -1,0 +1,685 @@
+{
+  "recordedAt": "2026-11-03T23:27:03.553Z",
+  "scope": "Real headless Godot scene observations and HTTP source-write/session isolation on disposable projects; no gameplay, rendered output, export or licensed-editor execution.",
+  "runtime": {
+    "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+    "engine": "godot",
+    "exactVersion": "4.7.1.stable.official.a13da4feb",
+    "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+    "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+    "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+    "associations": [],
+    "observedAt": "2026-11-03T23:26:57.480Z",
+    "versionSource": "executable-stdout",
+    "versionOutput": "4.7.1.stable.official.a13da4feb"
+  },
+  "projects": [
+    {
+      "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-sessions-native-01iSU1\\one",
+      "filesystemIdentity": "501364a9778b7625fc759312fd1f6630b4aa2b4bd607ba1cb7db57bd14e4b30c",
+      "physicalKey": "5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+      "ownerId": "native-session-fixture",
+      "tenantId": "local",
+      "projectId": "project-5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+      "profile": {
+        "schemaVersion": 1,
+        "facts": {
+          "engine": "godot",
+          "descriptors": {
+            "project.godot": "f50fe8dba421d75881609915a4ffe59b4700446f0e7c2bcc9ebb5c60e9115a98"
+          },
+          "projectVersion": null,
+          "association": null,
+          "features": [
+            "4.7"
+          ],
+          "language": "gdscript",
+          "renderer": "gl_compatibility",
+          "languageEvidence": {
+            "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+            "confidence": "inferred"
+          },
+          "buildTarget": null,
+          "packages": {
+            "dotnet": [],
+            "plugins": []
+          },
+          "unknowns": [
+            "Export target/modules/templates are not qualified by enrollment."
+          ]
+        },
+        "runtime": {
+          "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+          "engine": "godot",
+          "exactVersion": "4.7.1.stable.official.a13da4feb",
+          "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+          "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+          "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+          "associations": [],
+          "observedAt": "2026-11-03T23:26:59.308Z",
+          "versionSource": "executable-stdout",
+          "versionOutput": "4.7.1.stable.official.a13da4feb"
+        },
+        "selection": {
+          "selectedRuntimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+        },
+        "targetId": "b1349a667af7232dc25d6f1ecc9520da426c93d1f0c7c22647a3ce29757c12b5",
+        "blockers": [],
+        "resolution": "resolved",
+        "profileDigest": "37ae56751049091e889701e5c4779876d489b6f6c1b3d5a265ff2a489bb3c556",
+        "observedAt": "2026-11-03T23:26:59.309Z"
+      },
+      "revision": 1,
+      "createdAt": "2026-11-03T23:26:59.309Z",
+      "updatedAt": "2026-11-03T23:26:59.309Z"
+    },
+    {
+      "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-sessions-native-01iSU1\\two",
+      "filesystemIdentity": "6e57fe4245606ff19b07c29f559c88a145200c75f23291797a817fac926eba13",
+      "physicalKey": "77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+      "ownerId": "native-session-fixture",
+      "tenantId": "local",
+      "projectId": "project-77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+      "profile": {
+        "schemaVersion": 1,
+        "facts": {
+          "engine": "godot",
+          "descriptors": {
+            "project.godot": "196e0d9c6d0436746011c74a89e3f1810cfd057e76aabd0fa0ba565de4cb1d57"
+          },
+          "projectVersion": null,
+          "association": null,
+          "features": [
+            "4.7"
+          ],
+          "language": "gdscript",
+          "renderer": "gl_compatibility",
+          "languageEvidence": {
+            "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+            "confidence": "inferred"
+          },
+          "buildTarget": null,
+          "packages": {
+            "dotnet": [],
+            "plugins": []
+          },
+          "unknowns": [
+            "Export target/modules/templates are not qualified by enrollment."
+          ]
+        },
+        "runtime": {
+          "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+          "engine": "godot",
+          "exactVersion": "4.7.1.stable.official.a13da4feb",
+          "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+          "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+          "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+          "associations": [],
+          "observedAt": "2026-11-03T23:27:01.251Z",
+          "versionSource": "executable-stdout",
+          "versionOutput": "4.7.1.stable.official.a13da4feb"
+        },
+        "selection": {
+          "selectedRuntimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+        },
+        "targetId": "b1349a667af7232dc25d6f1ecc9520da426c93d1f0c7c22647a3ce29757c12b5",
+        "blockers": [],
+        "resolution": "resolved",
+        "profileDigest": "664f74d8460f2e55ccf477857c174a2b7ae1eb013805fbe52f4ca34bdd70ad1d",
+        "observedAt": "2026-11-03T23:27:01.251Z"
+      },
+      "revision": 1,
+      "createdAt": "2026-11-03T23:27:01.251Z",
+      "updatedAt": "2026-11-03T23:27:01.251Z"
+    }
+  ],
+  "sessions": [
+    {
+      "engine": "godot",
+      "state": "connected",
+      "version": "4.7.1.stable.official.a13da4feb",
+      "projectPath": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-sessions-native-01iSU1\\one",
+      "projectName": "one",
+      "connectedAt": "2026-11-03T23:27:01.271Z",
+      "toolMode": "all",
+      "sessionId": "6b6ee55c-0222-4b7d-9140-a11697cdc896",
+      "projectId": "project-5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+      "profileDigest": "37ae56751049091e889701e5c4779876d489b6f6c1b3d5a265ff2a489bb3c556",
+      "profileRevision": 1,
+      "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+    },
+    {
+      "engine": "godot",
+      "state": "connected",
+      "version": "4.7.1.stable.official.a13da4feb",
+      "projectPath": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-sessions-native-01iSU1\\two",
+      "projectName": "two",
+      "connectedAt": "2026-11-03T23:27:01.276Z",
+      "toolMode": "all",
+      "sessionId": "ed4dad53-6898-4ad7-b585-526da93c6c37",
+      "projectId": "project-77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+      "profileDigest": "664f74d8460f2e55ccf477857c174a2b7ae1eb013805fbe52f4ca34bdd70ad1d",
+      "profileRevision": 1,
+      "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+    }
+  ],
+  "scenes": [
+    {
+      "path": "Main.tscn",
+      "name": "Main",
+      "rootNode": {
+        "id": "node-1",
+        "name": "Main",
+        "type": "Node",
+        "children": [
+          {
+            "id": "node-2",
+            "name": "Status",
+            "type": "Label",
+            "parentPath": ".",
+            "children": [],
+            "properties": {
+              "text": "\"one\""
+            }
+          }
+        ],
+        "properties": {}
+      },
+      "nodeCount": 2,
+      "dependencies": []
+    },
+    {
+      "path": "Main.tscn",
+      "name": "Main",
+      "rootNode": {
+        "id": "node-1",
+        "name": "Main",
+        "type": "Node",
+        "children": [
+          {
+            "id": "node-2",
+            "name": "Status",
+            "type": "Label",
+            "parentPath": ".",
+            "children": [],
+            "properties": {
+              "text": "\"two\""
+            }
+          }
+        ],
+        "properties": {}
+      },
+      "nodeCount": 2,
+      "dependencies": []
+    }
+  ],
+  "observations": [
+    {
+      "checkKind": "scene_observation",
+      "evidence": {
+        "runId": "65bd596d-7d58-483b-981c-fba0eb5187c2",
+        "engine": "godot",
+        "projectRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-sessions-native-01iSU1\\one",
+        "scenePath": "res://Main.tscn",
+        "requestDigest": "a92b6e843780903d7e30743688a12837baa7b366d9a4a718eb6a17f38f9b527f"
+      },
+      "scenarioName": "res://Main.tscn",
+      "passed": true,
+      "durationMs": 418,
+      "assertions": [
+        {
+          "expected": true,
+          "target": "Status",
+          "type": "node_exists",
+          "actual": true,
+          "passed": true
+        },
+        {
+          "expected": "one",
+          "target": "Status",
+          "type": "screen_text",
+          "actual": "one",
+          "passed": true
+        }
+      ],
+      "capturedLogs": [
+        "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org",
+        "CHATBOT_RUNTIME_JSON:{\"assertions\":[{\"actual\":true,\"assertionId\":0,\"expected\":true,\"passed\":true,\"target\":\"Status\",\"type\":\"node_exists\"},{\"actual\":\"one\",\"assertionId\":1,\"expected\":\"one\",\"passed\":true,\"target\":\"Status\",\"type\":\"screen_text\"}],\"evidence\":{\"engine\":\"godot\",\"projectRoot\":\"C:\\\\Users\\\\dferr\\\\AppData\\\\Local\\\\Temp\\\\godot-sessions-native-01iSU1\\\\one\",\"requestDigest\":\"a92b6e843780903d7e30743688a12837baa7b366d9a4a718eb6a17f38f9b527f\",\"runId\":\"65bd596d-7d58-483b-981c-fba0eb5187c2\",\"scenePath\":\"res://Main.tscn\"},\"mode\":\"scenario\",\"scene\":\"res://Main.tscn\"}"
+      ],
+      "projectScope": {
+        "physicalKey": "5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+        "profileDigest": "37ae56751049091e889701e5c4779876d489b6f6c1b3d5a265ff2a489bb3c556",
+        "profileRevision": 1,
+        "projectId": "project-5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "sessionId": "6b6ee55c-0222-4b7d-9140-a11697cdc896"
+      }
+    },
+    {
+      "checkKind": "scene_observation",
+      "evidence": {
+        "runId": "10b86428-ef6a-4c18-b32e-5e80874fcf96",
+        "engine": "godot",
+        "projectRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-sessions-native-01iSU1\\two",
+        "scenePath": "res://Main.tscn",
+        "requestDigest": "7d76167a898421012d3fe968ef4f4e6c781869a0690f5766db2327c01a6febfe"
+      },
+      "scenarioName": "res://Main.tscn",
+      "passed": true,
+      "durationMs": 387,
+      "assertions": [
+        {
+          "expected": true,
+          "target": "Status",
+          "type": "node_exists",
+          "actual": true,
+          "passed": true
+        },
+        {
+          "expected": "two",
+          "target": "Status",
+          "type": "screen_text",
+          "actual": "two",
+          "passed": true
+        }
+      ],
+      "capturedLogs": [
+        "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org",
+        "CHATBOT_RUNTIME_JSON:{\"assertions\":[{\"actual\":true,\"assertionId\":0,\"expected\":true,\"passed\":true,\"target\":\"Status\",\"type\":\"node_exists\"},{\"actual\":\"two\",\"assertionId\":1,\"expected\":\"two\",\"passed\":true,\"target\":\"Status\",\"type\":\"screen_text\"}],\"evidence\":{\"engine\":\"godot\",\"projectRoot\":\"C:\\\\Users\\\\dferr\\\\AppData\\\\Local\\\\Temp\\\\godot-sessions-native-01iSU1\\\\two\",\"requestDigest\":\"7d76167a898421012d3fe968ef4f4e6c781869a0690f5766db2327c01a6febfe\",\"runId\":\"10b86428-ef6a-4c18-b32e-5e80874fcf96\",\"scenePath\":\"res://Main.tscn\"},\"mode\":\"scenario\",\"scene\":\"res://Main.tscn\"}"
+      ],
+      "projectScope": {
+        "physicalKey": "77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+        "profileDigest": "664f74d8460f2e55ccf477857c174a2b7ae1eb013805fbe52f4ca34bdd70ad1d",
+        "profileRevision": 1,
+        "projectId": "project-77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "sessionId": "ed4dad53-6898-4ad7-b585-526da93c6c37"
+      }
+    }
+  ],
+  "repeated": {
+    "checkKind": "scene_observation",
+    "evidence": {
+      "runId": "edcfb11b-4cd5-4a01-bf35-ead5be8a5485",
+      "engine": "godot",
+      "projectRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-sessions-native-01iSU1\\one",
+      "scenePath": "res://Main.tscn",
+      "requestDigest": "f923d727bb40a165399a087c45acb88e62ed84aa260feb75e5c94c083cdf9e72"
+    },
+    "scenarioName": "res://Main.tscn",
+    "passed": true,
+    "durationMs": 253,
+    "assertions": [
+      {
+        "expected": "one",
+        "target": "Status",
+        "type": "screen_text",
+        "actual": "one",
+        "passed": true
+      }
+    ],
+    "capturedLogs": [
+      "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org",
+      "CHATBOT_RUNTIME_JSON:{\"assertions\":[{\"actual\":\"one\",\"assertionId\":0,\"expected\":\"one\",\"passed\":true,\"target\":\"Status\",\"type\":\"screen_text\"}],\"evidence\":{\"engine\":\"godot\",\"projectRoot\":\"C:\\\\Users\\\\dferr\\\\AppData\\\\Local\\\\Temp\\\\godot-sessions-native-01iSU1\\\\one\",\"requestDigest\":\"f923d727bb40a165399a087c45acb88e62ed84aa260feb75e5c94c083cdf9e72\",\"runId\":\"edcfb11b-4cd5-4a01-bf35-ead5be8a5485\",\"scenePath\":\"res://Main.tscn\"},\"mode\":\"scenario\",\"scene\":\"res://Main.tscn\"}"
+    ],
+    "projectScope": {
+      "physicalKey": "5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+      "profileDigest": "37ae56751049091e889701e5c4779876d489b6f6c1b3d5a265ff2a489bb3c556",
+      "profileRevision": 1,
+      "projectId": "project-5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+      "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+      "sessionId": "6b6ee55c-0222-4b7d-9140-a11697cdc896"
+    }
+  },
+  "proposals": [
+    {
+      "actions": [
+        {
+          "params": {
+            "content": "extends Node\n# scoped 0\n"
+          },
+          "targetPath": "Created.gd",
+          "type": "create_script"
+        }
+      ],
+      "capabilityVersion": "1.0.0",
+      "createdAt": "2026-11-03T23:27:02.027Z",
+      "description": "",
+      "engine": "godot",
+      "environment": "development",
+      "expectedOutputs": [
+        "Created.gd"
+      ],
+      "expiresAt": "2026-11-03T23:57:02.027Z",
+      "id": "godot-prop-551cf8c4-e6ed-4c2e-8d0f-1cd06646d22b",
+      "inputDigest": "e71ee0c41f8035f8ad74c5cbcb33b2436ac876dabb074e9fbe756f8fbbe6ca6e",
+      "inputFileHashes": {
+        "Created.gd": null
+      },
+      "projectId": "project-5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+      "projectScope": {
+        "physicalKey": "5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+        "profileDigest": "37ae56751049091e889701e5c4779876d489b6f6c1b3d5a265ff2a489bb3c556",
+        "profileRevision": 1,
+        "projectId": "project-5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "sessionId": "6b6ee55c-0222-4b7d-9140-a11697cdc896"
+      },
+      "requesterId": "native-session-fixture",
+      "risk": "medium",
+      "status": "proposed",
+      "tenantId": "local",
+      "title": "Native session isolation source fixture"
+    },
+    {
+      "actions": [
+        {
+          "params": {
+            "content": "extends Node\n# scoped 1\n"
+          },
+          "targetPath": "Created.gd",
+          "type": "create_script"
+        }
+      ],
+      "capabilityVersion": "1.0.0",
+      "createdAt": "2026-11-03T23:27:02.033Z",
+      "description": "",
+      "engine": "godot",
+      "environment": "development",
+      "expectedOutputs": [
+        "Created.gd"
+      ],
+      "expiresAt": "2026-11-03T23:57:02.033Z",
+      "id": "godot-prop-2197126c-9ccc-4a8c-a201-c2faf04dfd87",
+      "inputDigest": "444450b11d47500c486b08a1e15b860806b8f21279be8aa1bdbd60cd54bfcedb",
+      "inputFileHashes": {
+        "Created.gd": null
+      },
+      "projectId": "project-77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+      "projectScope": {
+        "physicalKey": "77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+        "profileDigest": "664f74d8460f2e55ccf477857c174a2b7ae1eb013805fbe52f4ca34bdd70ad1d",
+        "profileRevision": 1,
+        "projectId": "project-77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "sessionId": "ed4dad53-6898-4ad7-b585-526da93c6c37"
+      },
+      "requesterId": "native-session-fixture",
+      "risk": "medium",
+      "status": "proposed",
+      "tenantId": "local",
+      "title": "Native session isolation source fixture"
+    }
+  ],
+  "approvals": [
+    {
+      "actions": [
+        {
+          "params": {
+            "content": "extends Node\n# scoped 0\n"
+          },
+          "targetPath": "Created.gd",
+          "type": "create_script"
+        }
+      ],
+      "approvalDigest": "ecfa1bca504d0a6e13fdf11d49bb56fa419a53a1bc8d64852e872101a88d8469",
+      "approverId": "native-session-fixture",
+      "capabilityVersion": "1.0.0",
+      "createdAt": "2026-11-03T23:27:02.027Z",
+      "description": "",
+      "engine": "godot",
+      "environment": "development",
+      "expectedOutputs": [
+        "Created.gd"
+      ],
+      "expiresAt": "2026-11-03T23:57:02.027Z",
+      "id": "godot-prop-551cf8c4-e6ed-4c2e-8d0f-1cd06646d22b",
+      "inputDigest": "e71ee0c41f8035f8ad74c5cbcb33b2436ac876dabb074e9fbe756f8fbbe6ca6e",
+      "inputFileHashes": {
+        "Created.gd": null
+      },
+      "projectId": "project-5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+      "projectScope": {
+        "physicalKey": "5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+        "profileDigest": "37ae56751049091e889701e5c4779876d489b6f6c1b3d5a265ff2a489bb3c556",
+        "profileRevision": 1,
+        "projectId": "project-5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "sessionId": "6b6ee55c-0222-4b7d-9140-a11697cdc896"
+      },
+      "requesterId": "native-session-fixture",
+      "risk": "medium",
+      "status": "approved",
+      "tenantId": "local",
+      "title": "Native session isolation source fixture"
+    },
+    {
+      "actions": [
+        {
+          "params": {
+            "content": "extends Node\n# scoped 1\n"
+          },
+          "targetPath": "Created.gd",
+          "type": "create_script"
+        }
+      ],
+      "approvalDigest": "0fc00afdf0fe76cd2df18768231966244a38aaf38ca186da5f5b344e8fa46880",
+      "approverId": "native-session-fixture",
+      "capabilityVersion": "1.0.0",
+      "createdAt": "2026-11-03T23:27:02.033Z",
+      "description": "",
+      "engine": "godot",
+      "environment": "development",
+      "expectedOutputs": [
+        "Created.gd"
+      ],
+      "expiresAt": "2026-11-03T23:57:02.033Z",
+      "id": "godot-prop-2197126c-9ccc-4a8c-a201-c2faf04dfd87",
+      "inputDigest": "444450b11d47500c486b08a1e15b860806b8f21279be8aa1bdbd60cd54bfcedb",
+      "inputFileHashes": {
+        "Created.gd": null
+      },
+      "projectId": "project-77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+      "projectScope": {
+        "physicalKey": "77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+        "profileDigest": "664f74d8460f2e55ccf477857c174a2b7ae1eb013805fbe52f4ca34bdd70ad1d",
+        "profileRevision": 1,
+        "projectId": "project-77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "sessionId": "ed4dad53-6898-4ad7-b585-526da93c6c37"
+      },
+      "requesterId": "native-session-fixture",
+      "risk": "medium",
+      "status": "approved",
+      "tenantId": "local",
+      "title": "Native session isolation source fixture"
+    }
+  ],
+  "transactions": [
+    {
+      "actions": [
+        {
+          "params": {
+            "content": "extends Node\n# scoped 0\n"
+          },
+          "targetPath": "Created.gd",
+          "type": "create_script"
+        }
+      ],
+      "id": "godot-tx-3cb78283-9245-4c33-a456-acefd4db2db5",
+      "proposalId": "godot-prop-551cf8c4-e6ed-4c2e-8d0f-1cd06646d22b",
+      "rolledBack": false,
+      "snapshots": [
+        {
+          "path": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-sessions-native-01iSU1\\one\\Created.gd",
+          "previousContent": null
+        }
+      ],
+      "timestamp": "2026-11-03T23:27:02.088Z",
+      "projectScope": {
+        "physicalKey": "5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+        "profileDigest": "37ae56751049091e889701e5c4779876d489b6f6c1b3d5a265ff2a489bb3c556",
+        "profileRevision": 1,
+        "projectId": "project-5f250dd8e31c374101ce7c0d40cf8bde7bf93502644a7ac9abfb8338fcfdd11d",
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "sessionId": "6b6ee55c-0222-4b7d-9140-a11697cdc896"
+      }
+    },
+    {
+      "actions": [
+        {
+          "params": {
+            "content": "extends Node\n# scoped 1\n"
+          },
+          "targetPath": "Created.gd",
+          "type": "create_script"
+        }
+      ],
+      "id": "godot-tx-5bdfb172-17aa-40cc-9786-bf4148e3467b",
+      "proposalId": "godot-prop-2197126c-9ccc-4a8c-a201-c2faf04dfd87",
+      "rolledBack": false,
+      "snapshots": [
+        {
+          "path": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-sessions-native-01iSU1\\two\\Created.gd",
+          "previousContent": null
+        }
+      ],
+      "timestamp": "2026-11-03T23:27:02.096Z",
+      "projectScope": {
+        "physicalKey": "77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+        "profileDigest": "664f74d8460f2e55ccf477857c174a2b7ae1eb013805fbe52f4ca34bdd70ad1d",
+        "profileRevision": 1,
+        "projectId": "project-77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "sessionId": "ed4dad53-6898-4ad7-b585-526da93c6c37"
+      }
+    }
+  ],
+  "foreignGrant": {
+    "success": false,
+    "error": {
+      "message": "[SCENE_NOT_FOUND] Proposal not found: godot-prop-551cf8c4-e6ed-4c2e-8d0f-1cd06646d22b",
+      "code": "INTERNAL_ERROR"
+    }
+  },
+  "foreignOwner": {
+    "success": false,
+    "error": {
+      "message": "Session not found for this owner.",
+      "code": "PROJECT_SESSION_NOT_FOUND"
+    }
+  },
+  "foreignRollback": {
+    "success": false,
+    "transactionId": "godot-tx-3cb78283-9245-4c33-a456-acefd4db2db5",
+    "sessionId": "ed4dad53-6898-4ad7-b585-526da93c6c37"
+  },
+  "restored": {
+    "ownerId": "native-session-fixture",
+    "tenantId": "local",
+    "projectId": "project-77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+    "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-sessions-native-01iSU1\\two",
+    "physicalKey": "77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+    "filesystemIdentity": "6e57fe4245606ff19b07c29f559c88a145200c75f23291797a817fac926eba13",
+    "profile": {
+      "schemaVersion": 1,
+      "facts": {
+        "engine": "godot",
+        "descriptors": {
+          "project.godot": "196e0d9c6d0436746011c74a89e3f1810cfd057e76aabd0fa0ba565de4cb1d57"
+        },
+        "projectVersion": null,
+        "association": null,
+        "features": [
+          "4.7"
+        ],
+        "language": "gdscript",
+        "renderer": "gl_compatibility",
+        "languageEvidence": {
+          "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+          "confidence": "inferred"
+        },
+        "buildTarget": null,
+        "packages": {
+          "dotnet": [],
+          "plugins": []
+        },
+        "unknowns": [
+          "Export target/modules/templates are not qualified by enrollment."
+        ]
+      },
+      "runtime": {
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "engine": "godot",
+        "exactVersion": "4.7.1.stable.official.a13da4feb",
+        "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+        "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+        "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+        "associations": [],
+        "observedAt": "2026-11-03T23:27:01.251Z",
+        "versionSource": "executable-stdout",
+        "versionOutput": "4.7.1.stable.official.a13da4feb"
+      },
+      "selection": {
+        "selectedRuntimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+      },
+      "targetId": "b1349a667af7232dc25d6f1ecc9520da426c93d1f0c7c22647a3ce29757c12b5",
+      "blockers": [],
+      "resolution": "resolved",
+      "profileDigest": "664f74d8460f2e55ccf477857c174a2b7ae1eb013805fbe52f4ca34bdd70ad1d",
+      "observedAt": "2026-11-03T23:27:01.251Z"
+    },
+    "revision": 1,
+    "createdAt": "2026-11-03T23:27:01.251Z",
+    "updatedAt": "2026-11-03T23:27:01.251Z"
+  },
+  "oldSession": {
+    "success": false,
+    "error": {
+      "message": "Session not found for this owner.",
+      "code": "PROJECT_SESSION_NOT_FOUND"
+    }
+  },
+  "reconnected": {
+    "engine": "godot",
+    "state": "connected",
+    "version": "4.7.1.stable.official.a13da4feb",
+    "projectPath": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-sessions-native-01iSU1\\two",
+    "projectName": "two",
+    "connectedAt": "2026-11-03T23:27:03.535Z",
+    "toolMode": "all",
+    "sessionId": "1971c7d0-749e-4cb1-99b4-f8c4f12a309e",
+    "projectId": "project-77a4d5a3c314a2cf6b86ca1a9a23299efebb4ec7b207a3313908fd9f5e445ffb",
+    "profileDigest": "664f74d8460f2e55ccf477857c174a2b7ae1eb013805fbe52f4ca34bdd70ad1d",
+    "profileRevision": 1,
+    "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+  },
+  "oldGrant": {
+    "success": false,
+    "error": {
+      "message": "[SCENE_NOT_FOUND] Proposal not found: godot-prop-2197126c-9ccc-4a8c-a201-c2faf04dfd87",
+      "code": "INTERNAL_ERROR"
+    }
+  },
+  "stale": {
+    "success": false,
+    "error": {
+      "message": "Project configuration changed; refresh the profile using its current revision.",
+      "code": "PROJECT_PROFILE_STALE"
+    }
+  },
+  "gates": [
+    "exact enrolled executable/version",
+    "two concurrent same-engine sessions",
+    "native distinct scene observations",
+    "fresh run/request binding",
+    "independent source writes",
+    "foreign-session grant rejection",
+    "owner isolation",
+    "rollback isolation",
+    "SQLite/server restart keeps enrollment",
+    "restart discards sessions/grants",
+    "stale profile rejection",
+    "stale session disconnect"
+  ]
+}

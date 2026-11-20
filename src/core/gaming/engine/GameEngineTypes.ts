@@ -4,6 +4,7 @@
  * Defines unified interfaces for game engine inspection, scene manipulation,
  * script editing, transactions, profiling, and runtime execution.
  */
+import type { ProjectSessionBinding } from '../project/ProjectSessionTypes';
 
 export type EngineType = 'godot' | 'unity' | 'unreal' | 'custom';
 
@@ -105,6 +106,7 @@ export interface EngineMutationAction {
 }
 
 export interface EngineMutationProposal {
+  projectScope?: ProjectSessionBinding;
   id: string;
   engine: EngineType;
   projectId: string;
@@ -146,6 +148,8 @@ export interface EngineTransaction {
 }
 
 export interface EngineRuntimeOptions {
+  /** Server-owned per-attempt/session/profile binding, never accepted from a request body. */
+  scopeDigest?: string;
   scenePath?: string;
   headless?: boolean;
   debug?: boolean;
@@ -163,6 +167,9 @@ export interface EngineAssertion {
 }
 
 export interface EngineAssertionReport {
+  projectScope?: ProjectSessionBinding;
+  checkKind?: 'scene_observation' | 'editor_inspection' | 'gameplay_behavior';
+  evidence?: { runId: string; requestDigest: string; engine: EngineType; projectRoot: string; scenePath: string };
   scenarioName: string;
   passed: boolean;
   durationMs: number;

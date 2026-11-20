@@ -89,11 +89,25 @@ export function createGenerator(config: ChatRuntimeFactoryConfig): IChatGenerato
       try {
         const transcript = prompt.messages.map(message => `${message.role === 'assistant' ? 'Assistant' : message.role === 'system' ? 'System' : 'User'}: ${message.content}`).join('\n\n');
         const systemPrompt = [prompt.systemPrompt, ...prompt.contextDocuments].join('\n\n');
-        const result = adapter.generate
-          ? await adapter.generate({ prompt: transcript, systemPrompt, maxTokens: 1500, temperature: 0.3 })
-          : await adapter.generateText!(`${systemPrompt}\n\n${transcript}`);
-        const content = typeof result === 'string' ? result : result?.content || result?.text;
+        const generate = async (input: string, instructions = systemPrompt) => {
+          const result = adapter.generate
+            ? await adapter.generate({ prompt: input, systemPrompt: instructions, maxTokens: 1500, temperature: 0.3 })
+            : await adapter.generateText!(`${instructions}\n\n${input}`);
+          return typeof result === 'string' ? result : result?.content || result?.text;
+        };
+        let content = await generate(transcript);
         if (typeof content !== 'string' || !content.trim()) throw new Error('The model returned an empty answer.');
+        const evidenceIds = prompt.contextDocuments.flatMap(document => document.match(/^\[(\d+)\]/)?.[1] || []);
+        if (evidenceIds.length > 0 && !evidenceIds.some(id => content.includes(`[${id}]`))) {
+          // Ask the model to supply evidence rather than inventing citations in application code.
+          try {
+            const revised = await generate(
+              `${transcript}\n\nDraft answer to revise:\n${content}`,
+              `${systemPrompt}\nRevise the draft using only the supplied evidence. Cite document-specific facts with the actual [number] of the evidence used. If evidence is insufficient, say so. Do not invent references.`
+            );
+            if (typeof revised === 'string' && revised.trim() && evidenceIds.some(id => revised.includes(`[${id}]`))) content = revised;
+          } catch { /* Keep the original answer and its existing missing-citation warning if repair fails. */ }
+        }
         return { content: content.trim(), model: model.model, provider: model.provider, latencyMs: Date.now() - start };
       } catch (error) {
         if (error instanceof AppError) throw error;

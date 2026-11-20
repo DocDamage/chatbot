@@ -1,0 +1,533 @@
+{
+  "recordedAt": "2026-11-03T22:00:00.877Z",
+  "scope": "Native Godot --version, exact executable hash, HTTP enrollment and SQLite/server restart on synthetic projects only.",
+  "inventory": {
+    "runtimes": [
+      {
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "engine": "godot",
+        "exactVersion": "4.7.1.stable.official.a13da4feb",
+        "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+        "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+        "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+        "associations": [],
+        "observedAt": "2026-11-03T21:59:46.818Z",
+        "versionSource": "executable-stdout",
+        "versionOutput": "4.7.1.stable.official.a13da4feb"
+      }
+    ],
+    "blockers": []
+  },
+  "first": {
+    "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-lXsXvA\\one",
+    "filesystemIdentity": "cdff4416296abc81f66325f4fa4ea5ae99d22f42f54fec3b789d1df0e41739c7",
+    "physicalKey": "c2f0f59f9ab144259a38feef1f9039c74035806a27647b9b8bd00dd5695537ad",
+    "ownerId": "native-enrollment-fixture",
+    "tenantId": "local",
+    "projectId": "project-c2f0f59f9ab144259a38feef1f9039c74035806a27647b9b8bd00dd5695537ad",
+    "profile": {
+      "schemaVersion": 1,
+      "facts": {
+        "engine": "godot",
+        "descriptors": {
+          "project.godot": "2f9946eb83d4dadf9faefe8267bfe73292020ba9d8f6672c477b6c0343ce690b"
+        },
+        "projectVersion": null,
+        "association": null,
+        "features": [
+          "4.7"
+        ],
+        "language": "gdscript",
+        "renderer": null,
+        "languageEvidence": {
+          "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+          "confidence": "inferred"
+        },
+        "buildTarget": null,
+        "packages": {
+          "dotnet": [],
+          "plugins": []
+        },
+        "unknowns": [
+          "Export target/modules/templates are not qualified by enrollment.",
+          "No renderer setting was observed; no renderer was inferred."
+        ]
+      },
+      "runtime": {
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "engine": "godot",
+        "exactVersion": "4.7.1.stable.official.a13da4feb",
+        "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+        "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+        "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+        "associations": [],
+        "observedAt": "2026-11-03T21:59:49.242Z",
+        "versionSource": "executable-stdout",
+        "versionOutput": "4.7.1.stable.official.a13da4feb"
+      },
+      "selection": {
+        "selectedRuntimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+      },
+      "targetId": "a9107e8f9621ff7a7deabd99dba33e87f335d96334af446bac74179324446768",
+      "blockers": [],
+      "resolution": "resolved",
+      "profileDigest": "5a67aad38674694716f45f98456a8d535638f1191b96e758bc2ba05a36cbf187",
+      "observedAt": "2026-11-03T21:59:49.243Z"
+    },
+    "revision": 1,
+    "createdAt": "2026-11-03T21:59:49.243Z",
+    "updatedAt": "2026-11-03T21:59:49.243Z"
+  },
+  "second": {
+    "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-lXsXvA\\two",
+    "filesystemIdentity": "7004b004911182f8594750b0025bb7be9efc52ec2fa311aa409a58abfd9e30d3",
+    "physicalKey": "c1582e5dfae2901c68248e2d3e375ae1c490995fb508f2a4a7d8bf2665385bdd",
+    "ownerId": "native-enrollment-fixture",
+    "tenantId": "local",
+    "projectId": "project-c1582e5dfae2901c68248e2d3e375ae1c490995fb508f2a4a7d8bf2665385bdd",
+    "profile": {
+      "schemaVersion": 1,
+      "facts": {
+        "engine": "godot",
+        "descriptors": {
+          "project.godot": "2f9946eb83d4dadf9faefe8267bfe73292020ba9d8f6672c477b6c0343ce690b"
+        },
+        "projectVersion": null,
+        "association": null,
+        "features": [
+          "4.7"
+        ],
+        "language": "gdscript",
+        "renderer": null,
+        "languageEvidence": {
+          "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+          "confidence": "inferred"
+        },
+        "buildTarget": null,
+        "packages": {
+          "dotnet": [],
+          "plugins": []
+        },
+        "unknowns": [
+          "Export target/modules/templates are not qualified by enrollment.",
+          "No renderer setting was observed; no renderer was inferred."
+        ]
+      },
+      "runtime": {
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "engine": "godot",
+        "exactVersion": "4.7.1.stable.official.a13da4feb",
+        "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+        "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+        "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+        "associations": [],
+        "observedAt": "2026-11-03T21:59:50.828Z",
+        "versionSource": "executable-stdout",
+        "versionOutput": "4.7.1.stable.official.a13da4feb"
+      },
+      "selection": {
+        "selectedRuntimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+      },
+      "targetId": "a9107e8f9621ff7a7deabd99dba33e87f335d96334af446bac74179324446768",
+      "blockers": [],
+      "resolution": "resolved",
+      "profileDigest": "8f5d555b5ad6e08ab43e5e0a60a1e753bdb23e74c21d16574afa9c8133aea60a",
+      "observedAt": "2026-11-03T21:59:50.828Z"
+    },
+    "revision": 1,
+    "createdAt": "2026-11-03T21:59:50.828Z",
+    "updatedAt": "2026-11-03T21:59:50.828Z"
+  },
+  "wrong": {
+    "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-lXsXvA\\wrong",
+    "filesystemIdentity": "96f22149d405bbef44739136843c340107be8f2f42e19c1aba300c0b74428ea9",
+    "physicalKey": "50ae86832b7d01e9bf4d2d3a544844efdae0966e3769001de1d0e872915cdc4c",
+    "ownerId": "native-enrollment-fixture",
+    "tenantId": "local",
+    "projectId": "project-50ae86832b7d01e9bf4d2d3a544844efdae0966e3769001de1d0e872915cdc4c",
+    "profile": {
+      "schemaVersion": 1,
+      "facts": {
+        "engine": "godot",
+        "descriptors": {
+          "project.godot": "2f9946eb83d4dadf9faefe8267bfe73292020ba9d8f6672c477b6c0343ce690b"
+        },
+        "projectVersion": null,
+        "association": null,
+        "features": [
+          "4.7"
+        ],
+        "language": "gdscript",
+        "renderer": null,
+        "languageEvidence": {
+          "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+          "confidence": "inferred"
+        },
+        "buildTarget": null,
+        "packages": {
+          "dotnet": [],
+          "plugins": []
+        },
+        "unknowns": [
+          "Export target/modules/templates are not qualified by enrollment.",
+          "No renderer setting was observed; no renderer was inferred."
+        ]
+      },
+      "runtime": null,
+      "selection": {
+        "expectedVersion": "4.0.0.stable.official.fixture"
+      },
+      "targetId": null,
+      "blockers": [
+        {
+          "code": "PROJECT_RUNTIME_VERSION_MISMATCH",
+          "message": "The selected runtime conflicts with the project metadata. Select a compatible runtime; do not migrate the project implicitly."
+        }
+      ],
+      "resolution": "blocked",
+      "profileDigest": "6c927b6d107bfda242d73fe6d3c537ac3b93d9437af027c2389ec98340d81bfc",
+      "observedAt": "2026-11-03T21:59:52.133Z"
+    },
+    "revision": 1,
+    "createdAt": "2026-11-03T21:59:52.133Z",
+    "updatedAt": "2026-11-03T21:59:52.133Z"
+  },
+  "restored": {
+    "ownerId": "native-enrollment-fixture",
+    "tenantId": "local",
+    "projectId": "project-c2f0f59f9ab144259a38feef1f9039c74035806a27647b9b8bd00dd5695537ad",
+    "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-lXsXvA\\one",
+    "physicalKey": "c2f0f59f9ab144259a38feef1f9039c74035806a27647b9b8bd00dd5695537ad",
+    "filesystemIdentity": "cdff4416296abc81f66325f4fa4ea5ae99d22f42f54fec3b789d1df0e41739c7",
+    "profile": {
+      "schemaVersion": 1,
+      "facts": {
+        "engine": "godot",
+        "descriptors": {
+          "project.godot": "2f9946eb83d4dadf9faefe8267bfe73292020ba9d8f6672c477b6c0343ce690b"
+        },
+        "projectVersion": null,
+        "association": null,
+        "features": [
+          "4.7"
+        ],
+        "language": "gdscript",
+        "renderer": null,
+        "languageEvidence": {
+          "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+          "confidence": "inferred"
+        },
+        "buildTarget": null,
+        "packages": {
+          "dotnet": [],
+          "plugins": []
+        },
+        "unknowns": [
+          "Export target/modules/templates are not qualified by enrollment.",
+          "No renderer setting was observed; no renderer was inferred."
+        ]
+      },
+      "runtime": {
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "engine": "godot",
+        "exactVersion": "4.7.1.stable.official.a13da4feb",
+        "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+        "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+        "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+        "associations": [],
+        "observedAt": "2026-11-03T21:59:49.242Z",
+        "versionSource": "executable-stdout",
+        "versionOutput": "4.7.1.stable.official.a13da4feb"
+      },
+      "selection": {
+        "selectedRuntimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+      },
+      "targetId": "a9107e8f9621ff7a7deabd99dba33e87f335d96334af446bac74179324446768",
+      "blockers": [],
+      "resolution": "resolved",
+      "profileDigest": "5a67aad38674694716f45f98456a8d535638f1191b96e758bc2ba05a36cbf187",
+      "observedAt": "2026-11-03T21:59:49.243Z"
+    },
+    "revision": 1,
+    "createdAt": "2026-11-03T21:59:49.243Z",
+    "updatedAt": "2026-11-03T21:59:49.243Z"
+  },
+  "stale": {
+    "success": false,
+    "error": {
+      "message": "Project configuration changed; refresh the profile using its current revision.",
+      "code": "PROJECT_PROFILE_STALE"
+    }
+  },
+  "refreshed": {
+    "ownerId": "native-enrollment-fixture",
+    "tenantId": "local",
+    "projectId": "project-c2f0f59f9ab144259a38feef1f9039c74035806a27647b9b8bd00dd5695537ad",
+    "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-lXsXvA\\one",
+    "physicalKey": "c2f0f59f9ab144259a38feef1f9039c74035806a27647b9b8bd00dd5695537ad",
+    "filesystemIdentity": "cdff4416296abc81f66325f4fa4ea5ae99d22f42f54fec3b789d1df0e41739c7",
+    "profile": {
+      "schemaVersion": 1,
+      "facts": {
+        "engine": "godot",
+        "descriptors": {
+          "project.godot": "ad50d5637d23fe799484afde7abedf91fbae50ac3642822f85a153d09967e202"
+        },
+        "projectVersion": null,
+        "association": null,
+        "features": [
+          "4.7"
+        ],
+        "language": "gdscript",
+        "renderer": null,
+        "languageEvidence": {
+          "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+          "confidence": "inferred"
+        },
+        "buildTarget": null,
+        "packages": {
+          "dotnet": [],
+          "plugins": []
+        },
+        "unknowns": [
+          "Export target/modules/templates are not qualified by enrollment.",
+          "No renderer setting was observed; no renderer was inferred."
+        ]
+      },
+      "runtime": {
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "engine": "godot",
+        "exactVersion": "4.7.1.stable.official.a13da4feb",
+        "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+        "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+        "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+        "associations": [],
+        "observedAt": "2026-11-03T21:59:54.395Z",
+        "versionSource": "executable-stdout",
+        "versionOutput": "4.7.1.stable.official.a13da4feb"
+      },
+      "selection": {
+        "selectedRuntimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+      },
+      "targetId": "a9107e8f9621ff7a7deabd99dba33e87f335d96334af446bac74179324446768",
+      "blockers": [],
+      "resolution": "resolved",
+      "profileDigest": "c43afbf2c2ff8d3c9d82a172d178086e907340007d6ae037e1b3f29763cb6d5d",
+      "observedAt": "2026-11-03T21:59:54.395Z"
+    },
+    "revision": 2,
+    "createdAt": "2026-11-03T21:59:49.243Z",
+    "updatedAt": "2026-11-03T21:59:54.395Z"
+  },
+  "otherEditorMetadata": {
+    "unityInventory": {
+      "runtimes": [
+        {
+          "runtimeId": "4ef9fec6c3c0456177a6af276cb309ab574f67e0da62410517b45d3c4fb58bc2",
+          "engine": "unity",
+          "exactVersion": "6000.4.5f1",
+          "executableSha256": "9e1e4996c1478e395502702e2fd3834a20da24715755a1e35960a96815f83094",
+          "executablePath": "C:\\Program Files\\Unity\\Hub\\Editor\\6000.4.5f1\\Editor\\Unity.exe",
+          "evidenceId": "1900e7daf4e160a7a4e1be72a96142d03d0cabb6b17e813f28bb4fbf608b31ce",
+          "associations": [],
+          "observedAt": "2026-11-03T21:59:57.018Z",
+          "versionSource": "file-version-resource",
+          "versionOutput": "6000.4.5f1_cc83ebd631f8",
+          "buildIdentityDigest": "81b254dca81c1285f4d60c866246402f1ec38a02f8efeac69cc19121f157cd75"
+        }
+      ],
+      "blockers": []
+    },
+    "unrealInventory": {
+      "runtimes": [
+        {
+          "runtimeId": "61a2babd5f9e233ee0ad3e3ba1f5d023f4398302c4b39404825c02dcddb1eb8f",
+          "engine": "unreal",
+          "exactVersion": "5.8.4",
+          "executableSha256": "a423ab94410aa4f4cc34d99a2af75240c5d0e376a33d903a3e819fecf1177143",
+          "executablePath": "C:\\Program Files\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+          "evidenceId": "68390542324590f05d140083cc6b6cdcaeb015b6f56fc7b790681b41c4afb3b4",
+          "associations": [
+            "5.8"
+          ],
+          "observedAt": "2026-11-03T21:59:56.994Z",
+          "versionSource": "file-version-resource",
+          "versionOutput": "++UE5+Release-5.8-CL-58902052",
+          "buildIdentityDigest": "6f55b4fe7ba02a026b1b88d2f872d9b4f80aa727805d20eda46a0da978b93c61",
+          "buildMetadata": "{\"BranchName\":\"++UE5+Release-5.8\",\"Changelist\":58902052,\"CompatibleChangelist\":55116800,\"IsLicenseeVersion\":0,\"IsPromotedBuild\":1,\"MajorVersion\":5,\"MinorVersion\":8,\"PatchVersion\":4}",
+          "buildMetadataPath": "C:\\Program Files\\UE_5.8\\Engine\\Build\\Build.version",
+          "buildMetadataSha256": "80a6af0f427f373b43a1c373082acf2b3de07305d215a67c27f18272e6dff24f"
+        },
+        {
+          "runtimeId": "d17c978cdbf4cf9403899f7d906b85fa031ad125e2e6dc843bdeb0d8b721b2c1",
+          "engine": "unreal",
+          "exactVersion": "5.7.4",
+          "executableSha256": "46cfb8dc2f0ba04e970f169c335cce99545ede02b577e6666fe158ceef774bc9",
+          "executablePath": "I:\\Epic Games\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+          "evidenceId": "cfd00e875b6866c188301d8cc436af392268a7913fd78ae9d9b8179aebb27a99",
+          "associations": [
+            "5.7"
+          ],
+          "observedAt": "2026-11-03T21:59:57.335Z",
+          "versionSource": "file-version-resource",
+          "versionOutput": "++UE5+Release-5.7-CL-51494982",
+          "buildIdentityDigest": "178c6305e684c748890799866db465ad6b7cef890e4a808525c723b004c6aa3c",
+          "buildMetadata": "{\"BranchName\":\"++UE5+Release-5.7\",\"Changelist\":51494982,\"CompatibleChangelist\":47537391,\"IsLicenseeVersion\":0,\"IsPromotedBuild\":1,\"MajorVersion\":5,\"MinorVersion\":7,\"PatchVersion\":4}",
+          "buildMetadataPath": "I:\\Epic Games\\Engine\\Build\\Build.version",
+          "buildMetadataSha256": "f4acff8af146d5d02f7618a4e988724d70f3b720c70e68d090bb90a240ae51f6"
+        }
+      ],
+      "blockers": [
+        {
+          "code": "RUNTIME_INSPECTION_FAILED",
+          "message": "unreal: ENOENT: no such file or directory, stat 'C:\\Program Files\\Epic Games\\UE_5.7\\Engine\\Build\\Build.version'"
+        }
+      ]
+    }
+  },
+  "unrealEnrollments": [
+    {
+      "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-lXsXvA\\unreal-0",
+      "filesystemIdentity": "bddeb4bd74280b53b78860b43477a5de72cebeea6ac7041664ed57830f8d98ad",
+      "physicalKey": "382aff1acd0ea324f4e6158791c0956903fe23d50f90398d3794cf6583f34b6a",
+      "ownerId": "native-enrollment-fixture",
+      "tenantId": "local",
+      "projectId": "project-382aff1acd0ea324f4e6158791c0956903fe23d50f90398d3794cf6583f34b6a",
+      "profile": {
+        "schemaVersion": 1,
+        "facts": {
+          "engine": "unreal",
+          "descriptors": {
+            "Fixture.uproject": "4849db1bc066a8561a624a357b2d0cb59213761446175aa08267deb2421d2a74"
+          },
+          "projectVersion": null,
+          "association": "5.8.4",
+          "features": [],
+          "language": "cpp-or-blueprint",
+          "renderer": null,
+          "languageEvidence": {
+            "source": "Fixture.uproject module/plugin metadata; source/Blueprint classification remains unresolved.",
+            "confidence": "inferred"
+          },
+          "buildTarget": null,
+          "packages": {
+            "plugins": [],
+            "modules": []
+          },
+          "unknowns": [
+            "Export target/modules/templates are not qualified by enrollment.",
+            "Native compiler/toolchain and project plugin compatibility require separate qualification.",
+            "Another installation could not be inspected: RUNTIME_INSPECTION_FAILED"
+          ]
+        },
+        "runtime": {
+          "runtimeId": "61a2babd5f9e233ee0ad3e3ba1f5d023f4398302c4b39404825c02dcddb1eb8f",
+          "engine": "unreal",
+          "exactVersion": "5.8.4",
+          "executableSha256": "a423ab94410aa4f4cc34d99a2af75240c5d0e376a33d903a3e819fecf1177143",
+          "executablePath": "C:\\Program Files\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+          "evidenceId": "68390542324590f05d140083cc6b6cdcaeb015b6f56fc7b790681b41c4afb3b4",
+          "associations": [
+            "5.8"
+          ],
+          "observedAt": "2026-11-03T21:59:58.883Z",
+          "versionSource": "file-version-resource",
+          "versionOutput": "++UE5+Release-5.8-CL-58902052",
+          "buildIdentityDigest": "6f55b4fe7ba02a026b1b88d2f872d9b4f80aa727805d20eda46a0da978b93c61",
+          "buildMetadata": "{\"BranchName\":\"++UE5+Release-5.8\",\"Changelist\":58902052,\"CompatibleChangelist\":55116800,\"IsLicenseeVersion\":0,\"IsPromotedBuild\":1,\"MajorVersion\":5,\"MinorVersion\":8,\"PatchVersion\":4}",
+          "buildMetadataPath": "C:\\Program Files\\UE_5.8\\Engine\\Build\\Build.version",
+          "buildMetadataSha256": "80a6af0f427f373b43a1c373082acf2b3de07305d215a67c27f18272e6dff24f"
+        },
+        "selection": {
+          "expectedBuildDigest": "6f55b4fe7ba02a026b1b88d2f872d9b4f80aa727805d20eda46a0da978b93c61",
+          "selectedRuntimeId": "61a2babd5f9e233ee0ad3e3ba1f5d023f4398302c4b39404825c02dcddb1eb8f"
+        },
+        "targetId": "5580b2bb5c4207693e4350a5111390f9276975089d69233099e1b523214bb2c6",
+        "blockers": [],
+        "resolution": "resolved",
+        "profileDigest": "87e1bef8ce2ea7a0605337209d62974433b0f4457e5950634e68aa1e2de195cb",
+        "observedAt": "2026-11-03T21:59:59.192Z"
+      },
+      "revision": 1,
+      "createdAt": "2026-11-03T21:59:59.192Z",
+      "updatedAt": "2026-11-03T21:59:59.192Z"
+    },
+    {
+      "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-lXsXvA\\unreal-1",
+      "filesystemIdentity": "26197e7f41db3adc9039b60a754a9ae4ebaa093fa437dbee7caff56dd2429ed3",
+      "physicalKey": "a2a4171cc77ee0caf1512ca176c3b7b80f56ad8fc37f744d9dc72c28c6b78ce8",
+      "ownerId": "native-enrollment-fixture",
+      "tenantId": "local",
+      "projectId": "project-a2a4171cc77ee0caf1512ca176c3b7b80f56ad8fc37f744d9dc72c28c6b78ce8",
+      "profile": {
+        "schemaVersion": 1,
+        "facts": {
+          "engine": "unreal",
+          "descriptors": {
+            "Fixture.uproject": "027e3652dc84a78c8abb7ad6fe4a306a1a4209f3d79c7d22f84c6ccc0efc267a"
+          },
+          "projectVersion": null,
+          "association": "5.7.4",
+          "features": [],
+          "language": "cpp-or-blueprint",
+          "renderer": null,
+          "languageEvidence": {
+            "source": "Fixture.uproject module/plugin metadata; source/Blueprint classification remains unresolved.",
+            "confidence": "inferred"
+          },
+          "buildTarget": null,
+          "packages": {
+            "plugins": [],
+            "modules": []
+          },
+          "unknowns": [
+            "Export target/modules/templates are not qualified by enrollment.",
+            "Native compiler/toolchain and project plugin compatibility require separate qualification.",
+            "Another installation could not be inspected: RUNTIME_INSPECTION_FAILED"
+          ]
+        },
+        "runtime": {
+          "runtimeId": "d17c978cdbf4cf9403899f7d906b85fa031ad125e2e6dc843bdeb0d8b721b2c1",
+          "engine": "unreal",
+          "exactVersion": "5.7.4",
+          "executableSha256": "46cfb8dc2f0ba04e970f169c335cce99545ede02b577e6666fe158ceef774bc9",
+          "executablePath": "I:\\Epic Games\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+          "evidenceId": "cfd00e875b6866c188301d8cc436af392268a7913fd78ae9d9b8179aebb27a99",
+          "associations": [
+            "5.7"
+          ],
+          "observedAt": "2026-11-03T22:00:00.871Z",
+          "versionSource": "file-version-resource",
+          "versionOutput": "++UE5+Release-5.7-CL-51494982",
+          "buildIdentityDigest": "178c6305e684c748890799866db465ad6b7cef890e4a808525c723b004c6aa3c",
+          "buildMetadata": "{\"BranchName\":\"++UE5+Release-5.7\",\"Changelist\":51494982,\"CompatibleChangelist\":47537391,\"IsLicenseeVersion\":0,\"IsPromotedBuild\":1,\"MajorVersion\":5,\"MinorVersion\":7,\"PatchVersion\":4}",
+          "buildMetadataPath": "I:\\Epic Games\\Engine\\Build\\Build.version",
+          "buildMetadataSha256": "f4acff8af146d5d02f7618a4e988724d70f3b720c70e68d090bb90a240ae51f6"
+        },
+        "selection": {
+          "expectedBuildDigest": "178c6305e684c748890799866db465ad6b7cef890e4a808525c723b004c6aa3c",
+          "selectedRuntimeId": "d17c978cdbf4cf9403899f7d906b85fa031ad125e2e6dc843bdeb0d8b721b2c1"
+        },
+        "targetId": "76a69e7be9263a1d9d39687fbcdf18462031816fc3998b8fce3279eb98fac7bb",
+        "blockers": [],
+        "resolution": "resolved",
+        "profileDigest": "3297397fa0f9c138280e3f7ef95c2562ba4b05d515e0ee850899257b9ec7f9a5",
+        "observedAt": "2026-11-03T22:00:00.872Z"
+      },
+      "revision": 1,
+      "createdAt": "2026-11-03T22:00:00.872Z",
+      "updatedAt": "2026-11-03T22:00:00.872Z"
+    }
+  ],
+  "discoveredUnrealEditor": "C:\\Program Files\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+  "gates": [
+    "exact runtime observation",
+    "distinct physical/profile identity",
+    "shared compatibility target",
+    "wrong-version blocker",
+    "server/database restart persistence",
+    "stale descriptor rejection",
+    "revision-checked refresh",
+    "exact Unreal metadata/profile enrollment with fresh descriptor/executable/build checks"
+  ]
+}

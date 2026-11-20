@@ -1,0 +1,34 @@
+Command: git diff --check
+Exit: 0
+G00 snapshot files intentionally changed: ["src/server/routes/game-studio/gameStudioRoutes.ts", "docs/implementation/GAME_DEVELOPMENT_STATUS.md", "docs/architecture/large-file-register.md"]
+Previously modified tracked files intentionally changed: ["docs/architecture/large-file-register.md", "src/core/initialization/ServiceInitializer.ts", "src/server/routeManifest.ts", "src/server/routes/game-studio/gameStudioRoutes.ts"]
+Unexpected preservation changes: none
+warning: in the working copy of 'THIRD_PARTY_NOTICES.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'client/src/App.css', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'client/src/App.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'client/src/__tests__/App.workflow.test.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/architecture/large-file-register.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/native/godot_runtime_probe.gd', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/agents/gamedev/GameDevGeniusAgent.test.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/agents/gamedev/GameDevGeniusAgent.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/chat/ChatRuntimeFactory.test.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/chat/ChatRuntimeStages.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/gaming/__tests__/GodotBridge.eval.test.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/gaming/engine/GameEngineBridge.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/gaming/engine/GameEngineTypes.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/gaming/engine/ProjectMutationStore.test.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/gaming/godot/GodotCliBackend.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/gaming/godot/GodotMcpXAdapter.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/gaming/godot/GodotRuntimeRunner.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/gaming/godot/GodotSceneMutator.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/gaming/godot/GodotScriptMutator.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/gaming/godot/GodotTransactionManager.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/initialization/ServiceInitializer.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/native-runtime/GameEditorInstrumentationSources.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/native-runtime/NativeGameEditorBackends.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/native-runtime/__tests__/NativeGameEditorBackends.test.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/rag/RAGDocumentStore.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/core/rag/__tests__/RAGDocumentStore.natural-query.test.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/server/routeManifest.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/server/routes/__tests__/game-studio-routes.test.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/server/routes/game-studio/gameStudioRoutes.ts', LF will be replaced by CRLF the next time Git touches it

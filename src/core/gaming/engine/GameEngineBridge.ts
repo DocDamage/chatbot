@@ -26,6 +26,8 @@ import {
 } from './GameEngineTypes';
 import { resolveDeploymentMode, RuntimeProfile } from '../../config/EnvironmentDefinitions';
 import { ENGINE_CERTIFICATION_PROFILES, EngineCertificationProfile } from './EngineCertificationProfile';
+import { checkedScenarioReport } from './NativeScenarioEvidence';
+import { resolveProjectPath } from './ProjectPathGuard';
 
 export interface IGameEngineAdapter {
   readonly engine: EngineType;
@@ -90,10 +92,8 @@ export class GameEngineBridge {
     if (this.approvedRoots.size > 0) {
       let isAllowed = false;
       for (const root of this.approvedRoots) {
-        if (resolved === root || resolved.startsWith(root + path.sep)) {
-          isAllowed = true;
-          break;
-        }
+        try { resolveProjectPath(root, resolved); isAllowed = true; break; }
+        catch { /* A lexical child resolving through an external junction is not approved. */ }
       }
       if (!isAllowed) {
         throw new GameEngineError(
@@ -104,7 +104,7 @@ export class GameEngineBridge {
       }
     }
 
-    return resolved;
+    return fs.existsSync(resolved) ? fs.realpathSync.native(resolved) : resolved;
   }
 
   /**
@@ -256,7 +256,7 @@ export class GameEngineBridge {
     options: EngineRuntimeOptions,
     assertions?: any[]
   ): Promise<EngineAssertionReport> {
-    return this.getAdapter(engine).runRuntimeScenario(options, assertions);
+    return checkedScenarioReport(await this.getAdapter(engine).runRuntimeScenario(options, assertions), assertions || []);
   }
 
   /**

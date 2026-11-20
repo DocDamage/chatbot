@@ -286,6 +286,17 @@
   overflow: auto;
 }
 
+.chat-space {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.chat-space[hidden] {
+  display: none;
+}
+
 @media (max-width: 720px) {
   .app-header {
     padding: 14px 16px;

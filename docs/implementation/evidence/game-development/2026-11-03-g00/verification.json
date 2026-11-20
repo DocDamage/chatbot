@@ -1,0 +1,80 @@
+{
+  "baselineCommit": "c26d767345bd65e5192ed99e1213f8a1a0a7b110",
+  "headCommit": "c26d767345bd65e5192ed99e1213f8a1a0a7b110",
+  "branch": "codex/dnd-campaign-integration",
+  "completedTasks": [
+    "G00.1",
+    "G00.2",
+    "G00.3",
+    "G00.4"
+  ],
+  "runtime": {
+    "node": "24.14.1",
+    "npm": "11.12.1",
+    "typescript": "5.9.3",
+    "jest": "30.5.2",
+    "platform": "Windows x64"
+  },
+  "finalChecks": {
+    "jest": {
+      "passed": 205,
+      "suites": 17,
+      "failed": 0,
+      "skipped": 0
+    },
+    "serverTypeCheck": "passed",
+    "testTypeCheck": "passed",
+    "serverLint": "passed",
+    "fileSize": "passed",
+    "domainMetadataCases": 8,
+    "nativeSceneObservationGates": 5,
+    "diffCheck": "passed"
+  },
+  "databaseChanges": false,
+  "nativeGameplayCertified": false,
+  "newDependencies": [],
+  "nextGate": "G01.1 exact project/runtime enrollment",
+  "changedFileSha256": {
+    "src/core/gaming/engine/CanonicalJson.ts": "b92c4dfeaf2e4c00452acc7962871e3a7e1227b9343d9b48e89496883d4ad2ce",
+    "src/core/gaming/engine/EngineProposalIntegrity.ts": "9bc2b0a06a3324d37a662ce83b9e7ec6085847973880e7bb7f45644e58d0b1e8",
+    "src/core/gaming/engine/EngineTextMutationPolicy.ts": "f69a6868398663153d208783980584cb0f8906636da11beb9c658b1ce65332de",
+    "src/core/gaming/engine/NativeScenarioEvidence.ts": "f54f936a20a31e990edfb90c48ba8be10a9f75e240ddf9c3cb3f3c7c7eebacbc",
+    "src/core/gaming/engine/GameEngineBridge.ts": "f93235e6f0a71c66fa45dc32fcaa933865f511d40402630024b4031f78ef8956",
+    "src/core/gaming/engine/GameEngineTypes.ts": "65b7f1d30ec5ff28a68ad751d32f5fb009ce0e538659e452245b1b3c4293399f",
+    "src/core/gaming/engine/ProjectMutationStore.ts": "c1c62007b9fb70af010d64db444e3453a23b969c4f263957299e5ca717b25186",
+    "src/core/gaming/engine/ProjectMutationStore.test.ts": "73cf834f025d7787c2cb72476e27d77e2a82ff3731dba773dd6820e9ef16349b",
+    "src/core/gaming/godot/GodotTransactionManager.ts": "0d04bedd59a2360234a46b8b646c08235ad26aff5352b37cae8db03c9990f347",
+    "src/core/gaming/godot/GodotTransactionManager.test.ts": "433e0a8757c1caddbcd05f3f749e2601645320ddc921291ba61cfd9e7f568f22",
+    "src/core/gaming/godot/GodotMcpXAdapter.ts": "f350a07ce7bd08141a2e651a7c280fdfb6d2883e565048d7050d8972972100d7",
+    "src/core/gaming/godot/GodotSceneMutator.ts": "d1bcaa82ec9fb4f08d92602894be4fe50de30551a2d916b1f872cb9a7ae54737",
+    "src/core/gaming/godot/GodotScriptMutator.ts": "10038c9ed756b93d86566e2f4bbf370199edf85689ba46b18256ea4845cf7809",
+    "src/core/gaming/godot/GodotRuntimeRunner.ts": "2da477e17fe1b3161676a27136ff068dee42c731ec6b5ba1ebe998322aa50220",
+    "src/core/gaming/godot/GodotCliBackend.ts": "f98e353dc472196f8dbcb22f81f4000238c3a5d3d1d107604c9e65dbec492cd2",
+    "src/core/gaming/godot/GodotCliBackend.test.ts": "021f36f71c2768b2e57fb5be6ec04bfa07a1d090f4640d60e3170978df9c2a7e",
+    "src/core/gaming/__tests__/GodotBridge.eval.test.ts": "70c2739a60b7bb0ca4bef0e0bebf73ed6d04638a72f370cf9a4d7913eeeff3f9",
+    "src/core/native-runtime/NativeGameEditorBackends.ts": "2cd3decac07203f587bc2e03e0483fd39a094c63c9fde06ccafa3d5d0b77e7e9",
+    "src/core/native-runtime/GameEditorInstrumentationSources.ts": "9a0e20b2db799316dfbcb427f2e5a23d6d487c959806ae30ff255bd211f468ee",
+    "src/core/native-runtime/__tests__/NativeGameEditorBackends.test.ts": "67eadcea1aa60d91f2d018c6a9deaf8d59602ce72ccc2a2f96e6d47f1638f238",
+    "src/core/agents/gamedev/GameDevGeniusAgent.ts": "e57f5057a56f4d29f368d0b689f74076497ff757cacef2dae2d2a31268fb043e",
+    "src/core/agents/gamedev/GameDevGeniusAgent.test.ts": "97e3aaf923ccc53c04de15e1eb57d6b9f5310abb9d03fd370697545e7ecf6987",
+    "src/server/routes/game-studio/gameStudioRoutes.ts": "4413f3ac0231679b2eaed8c6a3fbfc5bf1664e300ec77b37154a46b052070464",
+    "src/server/routes/__tests__/game-studio-routes.test.ts": "f59227f684aeafad02a214cbd5aebf42cb85768a5840fe2c895067b0a29034cc",
+    "scripts/native/godot_runtime_probe.gd": "148537eee5808247b3d63e8dc13450875efd219d04e1010e5d136edbc10b7e2d",
+    "scripts/native/verify-godot-evidence.ts": "6a5cbe73af9662bb87f7939ff7fbc5ad34006b49b9facf9716821c98ada3a8a3",
+    "docs/implementation/GAME_DEVELOPMENT_STATUS.md": "1f417c9eeca09688eaa50838cb229628aa7f7570b039c062e5880bd5e2608d48",
+    "docs/architecture/large-file-register.md": "a4b3ea3a48b97b9ea2407c243f31baf98e8391b5cd86bed8eda0c04758bc7586"
+  },
+  "retainedArtifactSha256": {
+    "baseline-tests.txt": "37248e6ee0186d3bdb76d14ef9dbff5b1fbf33b29112a4e474812e75abfed151",
+    "baseline-type-server.txt": "209e02ae2385f5f76afec43e5e07d193ac0f6e580a8d822244b277547d73d12f",
+    "diff-check.txt": "78ea4dc689493226e745f2f65cddde85a6572245de5d2770a068be24c6bcdb62",
+    "file-size.txt": "46deb1433613c8c3964d9b62fd8f8c0b181ea599014018cb3343052f11502497",
+    "final-tests.txt": "64dad7fb9ccbdc86a234c6a82c0d4952aea8e97a76199868650df32cdc6c7718",
+    "lint-server.txt": "44a286b105c730974001d34e9c0bbefb3e0c5b5c603a65e6b81281f77aa0be8f",
+    "metadata-validation.txt": "f60ceb854fd45b56169cc792cee227ab5c9e4f027f85e9b9b4cbb8710d9a530b",
+    "native-observations.json": "66914ef613f608747325846a2bdec0737d0299fce69e9fa38232ca413a582dda",
+    "native-observations.txt": "5646b7c44d8a5dcaa671bf49c481a45f2752d4405470d3046d7b4c59c14adaf9",
+    "type-server.txt": "209e02ae2385f5f76afec43e5e07d193ac0f6e580a8d822244b277547d73d12f",
+    "type-tests.txt": "769c8e6af9da93212cc554503e1f4d7d744a7df953abf4b201372c4ffbb38eb7"
+  }
+}

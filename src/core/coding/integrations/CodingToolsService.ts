@@ -11,6 +11,7 @@ import { StructuredEditEngine } from '../editing/StructuredEditEngine';
 import { selectAutomaticContext } from './AutomaticContext';
 import { validatePatchDraft } from './PatchDraftValidator';
 import { CodingJobHistory } from './CodingJobHistory';
+import { WorkspaceFilePolicy } from '../security/WorkspaceFilePolicy';
 
 export class CodingToolsService {
   private readonly active = new Set<AbortController>();
@@ -18,7 +19,7 @@ export class CodingToolsService {
   private stopped = false;
   private readonly history: CodingJobHistory;
   private readonly cleanupTimer?: NodeJS.Timeout;
-  constructor(readonly workspaceRoot = process.cwd(), readonly config: CodingToolConfig = codingToolConfig()) {
+  constructor(readonly workspaceRoot = process.cwd(), readonly config: CodingToolConfig = codingToolConfig(), private readonly filePolicy?: WorkspaceFilePolicy) {
     this.history = new CodingJobHistory(config.dataRoot);
     if (config.enabled) {
       this.history.cleanup();
@@ -61,15 +62,15 @@ export class CodingToolsService {
   }
   references(owner: string, input: { files: string[]; file: string; symbol: string }, signal?: AbortSignal) {
     if (!input.symbol?.trim() || input.symbol.length > 200 || !input.files.includes(input.file)) throw new CodingToolError('Select the definition file and a bounded symbol name.');
-    const files = captureFiles(this.workspaceRoot, input.files, 512 * 1024, 64);
+    const files = captureFiles(this.workspaceRoot, input.files, 512 * 1024, 64, this.filePolicy);
     return this.run(owner, 'serena', (directory, abort) => new SerenaAdapter(this.config).references(directory, files, input.file, input.symbol, abort), signal);
   }
   structural(owner: string, input: { files: string[]; pattern: string; language: string; rewrite?: string }, signal?: AbortSignal) {
-    const files = captureFiles(this.workspaceRoot, input.files);
+    const files = captureFiles(this.workspaceRoot, input.files, undefined, undefined, this.filePolicy);
     return this.run(owner, 'ast-grep', async (directory, abort) => {
       const result = await new AstGrepAdapter(this.config).search(directory, files, input.pattern, input.language, input.rewrite, abort);
       const checks = result.operations.length ? await validatePatchDraft(this.config, this.workspaceRoot, files, result.operations, abort) : undefined;
-      const patch = new StructuredEditEngine(this.workspaceRoot).createPatch(result.operations, { requireAuthorization: false });
+      const patch = new StructuredEditEngine(this.workspaceRoot, this.filePolicy).createPatch(result.operations, { requireAuthorization: false });
       if (checks?.errors.length) patch.conflicts.push(...checks.errors.map(reason => ({ path: '(static checks)', reason })));
       return { ...result, draftChecks: checks ? { status: checks.errors.length ? 'failed' : 'passed', ...checks } : undefined, patch };
     }, signal);
@@ -82,13 +83,13 @@ export class CodingToolsService {
     this.aiderBusy = true;
     try {
       return await this.run(owner, 'aider', async (directory, abort) => {
-        const selection = selectAutomaticContext(this.workspaceRoot, input.files.length ? captureFiles(this.workspaceRoot, input.files, 16000, 12) : [],
-          captureNewFiles(this.workspaceRoot, input.newFiles), input.message, input.automaticContext !== false);
+        const selection = selectAutomaticContext(this.workspaceRoot, input.files.length ? captureFiles(this.workspaceRoot, input.files, 16000, 12, this.filePolicy) : [],
+          captureNewFiles(this.workspaceRoot, input.newFiles, this.filePolicy), input.message, input.automaticContext !== false, { filePolicy: this.filePolicy });
         const docs = input.documentation ? await new Context7Adapter(this.config).query(input.documentation.query, input.documentation.library, abort) : undefined;
         const result = await new AiderAdapter(this.config).propose(directory, selection.editable, input.message, docs?.content, abort,
           { repositoryRoot: this.workspaceRoot, readOnly: selection.readOnly, propertyTests: input.propertyTests });
-        return { ...result, selection: { files: selection.summary, scannedFiles: selection.scannedFiles, scannedBytes: selection.scannedBytes, omitted: selection.omitted, limitations: selection.limitations },
-          documentation: docs, patch: new StructuredEditEngine(this.workspaceRoot).createPatch(result.operations, { requireAuthorization: false }) };
+        return { ...result, selection: { files: selection.summary, scannedFiles: selection.scannedFiles, scannedBytes: selection.scannedBytes, omitted: selection.omitted, omissions: selection.omissions, dependencies: selection.dependencies, limitations: selection.limitations },
+          documentation: docs, patch: new StructuredEditEngine(this.workspaceRoot, this.filePolicy).createPatch(result.operations, { requireAuthorization: false }) };
       }, signal);
     } finally { this.aiderBusy = false; }
   }

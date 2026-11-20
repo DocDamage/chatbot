@@ -320,11 +320,44 @@ export class RAGDocumentStore {
     }
 
     try {
-      return await this.searchKeywordSqliteFts(queryTokens, topK, filters);
+      const mapMatches = await this.searchSqliteMaps(query, queryTokens, topK, filters);
+      const textMatches = await this.searchKeywordSqliteFts(queryTokens, topK, filters);
+      return this.mergeKeywordResults([...mapMatches, ...textMatches], topK);
     } catch (error: any) {
       logger.warn('SQLite FTS keyword search failed, using LIKE fallback', { error: error.message });
       return this.searchKeywordSqliteLike(queryTokens, topK, filters);
     }
+  }
+
+  private async searchSqliteMaps(
+    query: string, queryTokens: string[], topK: number, filters: RetrievalFilters
+  ): Promise<RetrievalResult[]> {
+    if (!/\b(?:maps?|diagrams?|floor[ -]?plans?|deck[ -]?plans?)\b/i.test(query)) return [];
+    // Preserve identifiers before tokenization, which intentionally drops single digits.
+    const identifier = query.match(/\bmap\s+(\d+(?:\.\d+)?)\b/i)?.[1];
+    const framing = new Set(['map', 'maps', 'diagram', 'diagrams', 'pdf', 'page', 'pages', 'find', 'give', 'number', 'printed', 'scale', 'floor', 'plan', 'plans', 'deck', 'show', 'showing', 'contain', 'contains', 'located', 'open']);
+    const terms = [...new Set(queryTokens)].filter(term => !framing.has(term) && !/^\d+$/.test(term));
+    const rows = await this.database.query(
+      `SELECT dc.id, dc.content, dc.metadata, dc.parent_id
+       FROM document_chunks dc WHERE json_extract(dc.metadata, '$.mapIndex') = 1
+       ORDER BY dc.rowid LIMIT 2000`
+    );
+    return rows.rows.flatMap(row => {
+      const chunk = this.rowToChunk(row);
+      if (!this.matchesFilters(chunk, filters)) return [];
+      const title = String(chunk.metadata.mapTitle || '');
+      const mapId = title.match(/^map\s+(\d+(?:\.\d+)?)\b/i)?.[1];
+      if (identifier && mapId !== identifier) return [];
+      const book = new Set(this.tokenize(String(chunk.metadata.fileName || chunk.metadata.source || '')));
+      const subject = terms.filter(term => !book.has(term));
+      const titleTokens = new Set(this.tokenize(title));
+      const titleHits = subject.filter(term => titleTokens.has(term)).length;
+      const contentHits = this.keywordScore(subject, this.tokenize(chunk.content));
+      // A book name or generic request for a map alone cannot establish map identity.
+      if (!identifier && titleHits === 0) return [];
+      const bookHits = terms.filter(term => book.has(term)).length;
+      return [{ chunk, score: 4 + titleHits + contentHits + bookHits * 0.25, retrievalMethod: 'keyword+map' }];
+    }).sort((a, b) => b.score - a.score).slice(0, topK);
   }
 
   async searchSimilar(queryEmbedding: number[], topK: number = 10, filters: RetrievalFilters = {}): Promise<RetrievalResult[]> {

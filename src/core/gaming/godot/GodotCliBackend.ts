@@ -4,6 +4,7 @@ import { EngineAssertion, EngineAssertionReport, EngineExportPreset, EngineExpor
 import { GodotExportBackend } from './GodotAssetPipeline';
 import { GodotRuntimeBackend } from './GodotRuntimeRunner';
 import { runNativeCommand } from '../../native-runtime/NativeCommandRunner';
+import { evaluateScenarioPayload, scenarioBinding, validateAssertions } from '../engine/NativeScenarioEvidence';
 
 function parseTaggedJson<T>(output: string, tag: string): T | undefined {
   const line = output.split(/\r?\n/).find(value => value.startsWith(tag));
@@ -15,6 +16,8 @@ export class GodotCliBackend implements GodotRuntimeBackend, GodotExportBackend 
 
   public async runScenario(projectRoot: string, options: EngineRuntimeOptions, assertions: EngineAssertion[]): Promise<EngineAssertionReport> {
     const startedAt = Date.now();
+    validateAssertions(assertions);
+    const evidence = scenarioBinding('godot', projectRoot, options.scenePath || '', assertions, options.scopeDigest);
     const result = await runNativeCommand(this.godotPath, [
       '--headless', '--path', projectRoot, '--script', path.join(this.workspaceRoot, 'scripts', 'native', 'godot_runtime_probe.gd')
     ], {
@@ -22,18 +25,32 @@ export class GodotCliBackend implements GodotRuntimeBackend, GodotExportBackend 
       env: {
         ...process.env,
         CHATBOT_GODOT_SCENE: options.scenePath || '',
-        CHATBOT_GODOT_ASSERTIONS: JSON.stringify(assertions)
+        CHATBOT_GODOT_ASSERTIONS: JSON.stringify(assertions),
+        CHATBOT_GODOT_EVIDENCE: JSON.stringify(evidence)
       }
     });
-    const payload = parseTaggedJson<{ assertions: EngineAssertion[]; scene: string }>(`${result.stdout}\n${result.stderr}`, 'CHATBOT_RUNTIME_JSON:');
-    const evaluated = payload?.assertions || assertions.map(assertion => ({ ...assertion, actual: 'Godot probe produced no assertion payload.', passed: false }));
+    let evaluated: EngineAssertion[] = assertions.map(assertion => ({ ...assertion, passed: false }));
+    let error: string | undefined;
+    try {
+      // Exactly one stdout report is accepted. Editor logs and stderr are diagnostics only.
+      const lines = result.stdout.split(/\r?\n/).filter(line => line.startsWith('CHATBOT_RUNTIME_JSON:'));
+      if (lines.length !== 1) throw new Error('Godot probe must produce exactly one assertion report.');
+      const payload = JSON.parse(lines[0].slice('CHATBOT_RUNTIME_JSON:'.length)) as unknown;
+      evaluated = evaluateScenarioPayload(payload, evidence, assertions);
+    } catch (failure) {
+      error = failure instanceof Error ? failure.message : String(failure);
+    }
+    if (result.exitCode !== 0) error = `Godot exited with code ${result.exitCode}. ${error || ''}`.trim();
+    if (error) evaluated = evaluated.map(assertion => ({ ...assertion, passed: false }));
     return {
-      scenarioName: options.scenePath || payload?.scene || 'Godot main scene',
-      passed: result.exitCode === 0 && evaluated.every(assertion => assertion.passed === true),
+      checkKind: 'scene_observation',
+      evidence,
+      scenarioName: options.scenePath || 'Godot main scene',
+      passed: !error && evaluated.length > 0 && evaluated.every(assertion => assertion.passed === true),
       durationMs: Date.now() - startedAt,
       assertions: evaluated,
       capturedLogs: `${result.stdout}\n${result.stderr}`.split(/\r?\n/).filter(Boolean).slice(-500),
-      error: result.exitCode === 0 ? undefined : `Godot exited with code ${result.exitCode}.`
+      error
     };
   }
 

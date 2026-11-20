@@ -1,0 +1,360 @@
+{
+  "recordedAt": "2026-11-03T21:39:35.879Z",
+  "scope": "Native Godot --version, exact executable hash, HTTP enrollment and SQLite/server restart on synthetic projects only.",
+  "inventory": {
+    "runtimes": [
+      {
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "engine": "godot",
+        "exactVersion": "4.7.1.stable.official.a13da4feb",
+        "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+        "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+        "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+        "associations": [],
+        "observedAt": "2026-11-03T21:39:27.342Z",
+        "versionSource": "executable-stdout",
+        "versionOutput": "4.7.1.stable.official.a13da4feb"
+      }
+    ],
+    "blockers": []
+  },
+  "first": {
+    "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-1izFDY\\one",
+    "filesystemIdentity": "734d65f6295598883aa7819fdd0686292d746f1411e724a222161e1d617f55ea",
+    "physicalKey": "68fa5a60a516d5bf04f17b9b93634b71f32e1259880c093b0e20606dbda5d2b0",
+    "ownerId": "native-enrollment-fixture",
+    "tenantId": "local",
+    "projectId": "project-68fa5a60a516d5bf04f17b9b93634b71f32e1259880c093b0e20606dbda5d2b0",
+    "profile": {
+      "schemaVersion": 1,
+      "facts": {
+        "engine": "godot",
+        "descriptors": {
+          "project.godot": "2f9946eb83d4dadf9faefe8267bfe73292020ba9d8f6672c477b6c0343ce690b"
+        },
+        "projectVersion": null,
+        "association": null,
+        "features": [
+          "4.7"
+        ],
+        "language": "gdscript",
+        "renderer": null,
+        "languageEvidence": {
+          "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+          "confidence": "inferred"
+        },
+        "buildTarget": null,
+        "packages": {
+          "dotnet": [],
+          "plugins": []
+        },
+        "unknowns": [
+          "Export target/modules/templates are not qualified by enrollment.",
+          "No renderer setting was observed; no renderer was inferred."
+        ]
+      },
+      "runtime": {
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "engine": "godot",
+        "exactVersion": "4.7.1.stable.official.a13da4feb",
+        "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+        "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+        "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+        "associations": [],
+        "observedAt": "2026-11-03T21:39:28.629Z",
+        "versionSource": "executable-stdout",
+        "versionOutput": "4.7.1.stable.official.a13da4feb"
+      },
+      "selection": {
+        "selectedRuntimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+      },
+      "targetId": "a9107e8f9621ff7a7deabd99dba33e87f335d96334af446bac74179324446768",
+      "blockers": [],
+      "resolution": "resolved",
+      "profileDigest": "07a245bbef145a2e69aa9a117c359cdc4defbdc6d59ebe46f76dacc37a051073",
+      "observedAt": "2026-11-03T21:39:28.630Z"
+    },
+    "revision": 1,
+    "createdAt": "2026-11-03T21:39:28.630Z",
+    "updatedAt": "2026-11-03T21:39:28.630Z"
+  },
+  "second": {
+    "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-1izFDY\\two",
+    "filesystemIdentity": "9bcc9b43714507b35fd17a5ebe9eb628fffa3b357b17b7cfbdb2961e7cdc31b0",
+    "physicalKey": "0029e8cb95496e0d1def6c8839975163a0e77aa0cbbe6f25de2578dbad3e30dd",
+    "ownerId": "native-enrollment-fixture",
+    "tenantId": "local",
+    "projectId": "project-0029e8cb95496e0d1def6c8839975163a0e77aa0cbbe6f25de2578dbad3e30dd",
+    "profile": {
+      "schemaVersion": 1,
+      "facts": {
+        "engine": "godot",
+        "descriptors": {
+          "project.godot": "2f9946eb83d4dadf9faefe8267bfe73292020ba9d8f6672c477b6c0343ce690b"
+        },
+        "projectVersion": null,
+        "association": null,
+        "features": [
+          "4.7"
+        ],
+        "language": "gdscript",
+        "renderer": null,
+        "languageEvidence": {
+          "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+          "confidence": "inferred"
+        },
+        "buildTarget": null,
+        "packages": {
+          "dotnet": [],
+          "plugins": []
+        },
+        "unknowns": [
+          "Export target/modules/templates are not qualified by enrollment.",
+          "No renderer setting was observed; no renderer was inferred."
+        ]
+      },
+      "runtime": {
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "engine": "godot",
+        "exactVersion": "4.7.1.stable.official.a13da4feb",
+        "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+        "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+        "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+        "associations": [],
+        "observedAt": "2026-11-03T21:39:29.869Z",
+        "versionSource": "executable-stdout",
+        "versionOutput": "4.7.1.stable.official.a13da4feb"
+      },
+      "selection": {
+        "selectedRuntimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+      },
+      "targetId": "a9107e8f9621ff7a7deabd99dba33e87f335d96334af446bac74179324446768",
+      "blockers": [],
+      "resolution": "resolved",
+      "profileDigest": "a86edcee60a7e020376fc1425650cd8d7b3595415ecae591a8f33bebd9f0e0c1",
+      "observedAt": "2026-11-03T21:39:29.869Z"
+    },
+    "revision": 1,
+    "createdAt": "2026-11-03T21:39:29.869Z",
+    "updatedAt": "2026-11-03T21:39:29.869Z"
+  },
+  "wrong": {
+    "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-1izFDY\\wrong",
+    "filesystemIdentity": "bd53ffe00f89095d106b47f7ccbb805bdd2ddecae8fdba5cb1049e5ec741af2b",
+    "physicalKey": "3dac86391f4e158868c4215b54089cc15d1ab069d6f9f13b4e8cdd721062446e",
+    "ownerId": "native-enrollment-fixture",
+    "tenantId": "local",
+    "projectId": "project-3dac86391f4e158868c4215b54089cc15d1ab069d6f9f13b4e8cdd721062446e",
+    "profile": {
+      "schemaVersion": 1,
+      "facts": {
+        "engine": "godot",
+        "descriptors": {
+          "project.godot": "2f9946eb83d4dadf9faefe8267bfe73292020ba9d8f6672c477b6c0343ce690b"
+        },
+        "projectVersion": null,
+        "association": null,
+        "features": [
+          "4.7"
+        ],
+        "language": "gdscript",
+        "renderer": null,
+        "languageEvidence": {
+          "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+          "confidence": "inferred"
+        },
+        "buildTarget": null,
+        "packages": {
+          "dotnet": [],
+          "plugins": []
+        },
+        "unknowns": [
+          "Export target/modules/templates are not qualified by enrollment.",
+          "No renderer setting was observed; no renderer was inferred."
+        ]
+      },
+      "runtime": null,
+      "selection": {
+        "expectedVersion": "4.0.0.stable.official.fixture"
+      },
+      "targetId": null,
+      "blockers": [
+        {
+          "code": "PROJECT_RUNTIME_VERSION_MISMATCH",
+          "message": "The selected runtime conflicts with the project metadata. Select a compatible runtime; do not migrate the project implicitly."
+        }
+      ],
+      "resolution": "blocked",
+      "profileDigest": "f856f85d148781693f6dc8a3bcdefd0285ca7587fa67df505a50516b868cb635",
+      "observedAt": "2026-11-03T21:39:31.127Z"
+    },
+    "revision": 1,
+    "createdAt": "2026-11-03T21:39:31.127Z",
+    "updatedAt": "2026-11-03T21:39:31.127Z"
+  },
+  "restored": {
+    "ownerId": "native-enrollment-fixture",
+    "tenantId": "local",
+    "projectId": "project-68fa5a60a516d5bf04f17b9b93634b71f32e1259880c093b0e20606dbda5d2b0",
+    "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-1izFDY\\one",
+    "physicalKey": "68fa5a60a516d5bf04f17b9b93634b71f32e1259880c093b0e20606dbda5d2b0",
+    "filesystemIdentity": "734d65f6295598883aa7819fdd0686292d746f1411e724a222161e1d617f55ea",
+    "profile": {
+      "schemaVersion": 1,
+      "facts": {
+        "engine": "godot",
+        "descriptors": {
+          "project.godot": "2f9946eb83d4dadf9faefe8267bfe73292020ba9d8f6672c477b6c0343ce690b"
+        },
+        "projectVersion": null,
+        "association": null,
+        "features": [
+          "4.7"
+        ],
+        "language": "gdscript",
+        "renderer": null,
+        "languageEvidence": {
+          "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+          "confidence": "inferred"
+        },
+        "buildTarget": null,
+        "packages": {
+          "dotnet": [],
+          "plugins": []
+        },
+        "unknowns": [
+          "Export target/modules/templates are not qualified by enrollment.",
+          "No renderer setting was observed; no renderer was inferred."
+        ]
+      },
+      "runtime": {
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "engine": "godot",
+        "exactVersion": "4.7.1.stable.official.a13da4feb",
+        "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+        "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+        "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+        "associations": [],
+        "observedAt": "2026-11-03T21:39:28.629Z",
+        "versionSource": "executable-stdout",
+        "versionOutput": "4.7.1.stable.official.a13da4feb"
+      },
+      "selection": {
+        "selectedRuntimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+      },
+      "targetId": "a9107e8f9621ff7a7deabd99dba33e87f335d96334af446bac74179324446768",
+      "blockers": [],
+      "resolution": "resolved",
+      "profileDigest": "07a245bbef145a2e69aa9a117c359cdc4defbdc6d59ebe46f76dacc37a051073",
+      "observedAt": "2026-11-03T21:39:28.630Z"
+    },
+    "revision": 1,
+    "createdAt": "2026-11-03T21:39:28.630Z",
+    "updatedAt": "2026-11-03T21:39:28.630Z"
+  },
+  "stale": {
+    "success": false,
+    "error": {
+      "message": "Project configuration changed; refresh the profile using its current revision.",
+      "code": "PROJECT_PROFILE_STALE"
+    }
+  },
+  "refreshed": {
+    "ownerId": "native-enrollment-fixture",
+    "tenantId": "local",
+    "projectId": "project-68fa5a60a516d5bf04f17b9b93634b71f32e1259880c093b0e20606dbda5d2b0",
+    "canonicalRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-1izFDY\\one",
+    "physicalKey": "68fa5a60a516d5bf04f17b9b93634b71f32e1259880c093b0e20606dbda5d2b0",
+    "filesystemIdentity": "734d65f6295598883aa7819fdd0686292d746f1411e724a222161e1d617f55ea",
+    "profile": {
+      "schemaVersion": 1,
+      "facts": {
+        "engine": "godot",
+        "descriptors": {
+          "project.godot": "ad50d5637d23fe799484afde7abedf91fbae50ac3642822f85a153d09967e202"
+        },
+        "projectVersion": null,
+        "association": null,
+        "features": [
+          "4.7"
+        ],
+        "language": "gdscript",
+        "renderer": null,
+        "languageEvidence": {
+          "source": "project.godot features and root .csproj presence/absence; mixed/external scripts still require source classification.",
+          "confidence": "inferred"
+        },
+        "buildTarget": null,
+        "packages": {
+          "dotnet": [],
+          "plugins": []
+        },
+        "unknowns": [
+          "Export target/modules/templates are not qualified by enrollment.",
+          "No renderer setting was observed; no renderer was inferred."
+        ]
+      },
+      "runtime": {
+        "runtimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497",
+        "engine": "godot",
+        "exactVersion": "4.7.1.stable.official.a13da4feb",
+        "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+        "executablePath": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+        "evidenceId": "b305df7a9e9f80653762f714e99ee3a0cc401addf0e21f02b58871b8f2325fa3",
+        "associations": [],
+        "observedAt": "2026-11-03T21:39:33.360Z",
+        "versionSource": "executable-stdout",
+        "versionOutput": "4.7.1.stable.official.a13da4feb"
+      },
+      "selection": {
+        "selectedRuntimeId": "d30a6c106d6a5d3172ed35514e7401235f6754db6573441e29b7b9e90d458497"
+      },
+      "targetId": "a9107e8f9621ff7a7deabd99dba33e87f335d96334af446bac74179324446768",
+      "blockers": [],
+      "resolution": "resolved",
+      "profileDigest": "be4a24b0e5a207e95e2a655df574db158239c8dab98fec9abdabcd3083221647",
+      "observedAt": "2026-11-03T21:39:33.360Z"
+    },
+    "revision": 2,
+    "createdAt": "2026-11-03T21:39:28.630Z",
+    "updatedAt": "2026-11-03T21:39:33.360Z"
+  },
+  "otherEditorMetadata": {
+    "unityInventory": {
+      "runtimes": [
+        {
+          "runtimeId": "4ef9fec6c3c0456177a6af276cb309ab574f67e0da62410517b45d3c4fb58bc2",
+          "engine": "unity",
+          "exactVersion": "6000.4.5f1",
+          "executableSha256": "9e1e4996c1478e395502702e2fd3834a20da24715755a1e35960a96815f83094",
+          "executablePath": "C:\\Program Files\\Unity\\Hub\\Editor\\6000.4.5f1\\Editor\\Unity.exe",
+          "evidenceId": "1900e7daf4e160a7a4e1be72a96142d03d0cabb6b17e813f28bb4fbf608b31ce",
+          "associations": [],
+          "observedAt": "2026-11-03T21:39:35.878Z",
+          "versionSource": "file-version-resource",
+          "versionOutput": "6000.4.5f1_cc83ebd631f8",
+          "buildIdentityDigest": "81b254dca81c1285f4d60c866246402f1ec38a02f8efeac69cc19121f157cd75"
+        }
+      ],
+      "blockers": []
+    },
+    "unrealInventory": {
+      "runtimes": [],
+      "blockers": [
+        {
+          "code": "RUNTIME_INSPECTION_FAILED",
+          "message": "unreal: ENOENT: no such file or directory, stat 'C:\\Program Files\\Epic Games\\UE_5.7\\Engine\\Build\\Build.version'"
+        }
+      ]
+    }
+  },
+  "gates": [
+    "exact runtime observation",
+    "distinct physical/profile identity",
+    "shared compatibility target",
+    "wrong-version blocker",
+    "server/database restart persistence",
+    "stale descriptor rejection",
+    "revision-checked refresh"
+  ]
+}

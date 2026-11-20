@@ -5,6 +5,7 @@
 
 import { logger } from '../observability/logger';
 import { getDatasetMigrations } from './DatasetMigrations';
+import { getGameProjectMigrations } from './GameProjectMigrations';
 
 export interface DatabaseConfig {
   type: 'sqlite' | 'postgresql';
@@ -525,6 +526,7 @@ export class Database {
       ...ragMigrations,
       ...knowledgeOsMigrations,
       ...getDatasetMigrations(this.config.type),
+      ...getGameProjectMigrations(this.config.type),
     ];
 
     if (this.config.type === 'sqlite') {

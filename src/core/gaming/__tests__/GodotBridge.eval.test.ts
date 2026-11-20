@@ -53,7 +53,7 @@ describe('Phase PX-08: Godot Editor/Runtime Bridge and Game Studio', () => {
             scenarioName: options.scenePath || 'Main',
             passed: true,
             durationMs: 1,
-            assertions: assertions.map(assertion => ({ ...assertion, actual: assertion.expected, passed: true })),
+            assertions: assertions.map(assertion => ({ ...assertion, actual: assertion.type === 'fps_above' ? assertion.expected + 1 : assertion.expected, passed: true })),
             capturedLogs: ['Fixture Godot runtime completed.']
           };
         }
@@ -240,19 +240,18 @@ describe('Phase PX-08: Godot Editor/Runtime Bridge and Game Studio', () => {
 
     it('rejects unapproved proposals and mutation paths outside the project root', async () => {
       const txManager = new GodotTransactionManager(tempDir);
-      const proposal = txManager.createProposal({
+      const escapeOptions = {
         projectId: 'TestGame',
         title: 'Escape attempt',
         description: 'Must never write outside the project',
-        actions: [{ type: 'create_scene', targetPath: '../escape.tscn', params: {} }]
-      });
+        actions: [{ type: 'create_scene' as const, targetPath: '../escape.tscn', params: {} }]
+      };
+      expect(() => txManager.createProposal(escapeOptions)).toThrow(/outside/i);
+      const proposal = txManager.createProposal({ ...escapeOptions, actions: [{ type: 'create_scene', targetPath: 'Safe.tscn', params: {} }] });
 
       await expect(txManager.executeTransaction(proposal.id, 'anything', async () => {}, { callerId: 'developer' }))
         .rejects.toThrow(/cannot be applied/i);
 
-      const approved = txManager.approveProposal(proposal.id, 'developer');
-      await expect(txManager.executeTransaction(proposal.id, approved.approvalDigest!, async () => {}, { callerId: 'developer' }))
-        .rejects.toThrow(/outside/i);
     });
   });
 

@@ -1,0 +1,165 @@
+{
+  "recordedAt": "2026-11-03T20:58:12.504Z",
+  "scope": "Synthetic headless scene observations only; no input/death/respawn gameplay scenario or export.",
+  "executable": "C:\\Users\\dferr\\bin\\godot-v4.7.1\\Godot_v4.7.1-stable_win64_console.exe",
+  "executableSha256": "35dab11e04ece16a2b93035e65204f4a944a3e00b020d43e54409193379d5eef",
+  "version": "4.7.1.stable.official.a13da4feb",
+  "matching": {
+    "checkKind": "scene_observation",
+    "evidence": {
+      "runId": "452b346e-2b55-4d58-9fe7-0ca51b4820c0",
+      "engine": "godot",
+      "projectRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-g00-native-onKxTN",
+      "scenePath": "res://Main.tscn",
+      "requestDigest": "9e8127ea4b2579c84adcadda574d354f4a5126425390163e391eae7eb3d02191"
+    },
+    "scenarioName": "res://Main.tscn",
+    "passed": true,
+    "durationMs": 218,
+    "assertions": [
+      {
+        "type": "node_exists",
+        "target": "Player",
+        "expected": true,
+        "actual": true,
+        "passed": true
+      },
+      {
+        "type": "node_exists",
+        "target": "Missing",
+        "expected": false,
+        "actual": false,
+        "passed": true
+      },
+      {
+        "type": "property_equals",
+        "target": "Player",
+        "property": "process_priority",
+        "expected": 7,
+        "actual": 7,
+        "passed": true
+      },
+      {
+        "type": "screen_text",
+        "target": "Status",
+        "expected": "Ready",
+        "actual": "Ready",
+        "passed": true
+      }
+    ],
+    "capturedLogs": [
+      "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org",
+      "CHATBOT_RUNTIME_JSON:{\"assertions\":[{\"actual\":true,\"assertionId\":0,\"expected\":true,\"passed\":true,\"target\":\"Player\",\"type\":\"node_exists\"},{\"actual\":false,\"assertionId\":1,\"expected\":false,\"passed\":true,\"target\":\"Missing\",\"type\":\"node_exists\"},{\"actual\":7,\"assertionId\":2,\"expected\":7.0,\"passed\":true,\"property\":\"process_priority\",\"target\":\"Player\",\"type\":\"property_equals\"},{\"actual\":\"Ready\",\"assertionId\":3,\"expected\":\"Ready\",\"passed\":true,\"target\":\"Status\",\"type\":\"screen_text\"}],\"evidence\":{\"engine\":\"godot\",\"projectRoot\":\"C:\\\\Users\\\\dferr\\\\AppData\\\\Local\\\\Temp\\\\godot-g00-native-onKxTN\",\"requestDigest\":\"9e8127ea4b2579c84adcadda574d354f4a5126425390163e391eae7eb3d02191\",\"runId\":\"452b346e-2b55-4d58-9fe7-0ca51b4820c0\",\"scenePath\":\"res://Main.tscn\"},\"mode\":\"scenario\",\"scene\":\"res://Main.tscn\"}"
+    ]
+  },
+  "mismatched": {
+    "checkKind": "scene_observation",
+    "evidence": {
+      "runId": "629d3ef3-b075-45ae-b0a6-5be68da107c2",
+      "engine": "godot",
+      "projectRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-g00-native-onKxTN",
+      "scenePath": "res://Main.tscn",
+      "requestDigest": "4b0a7afdea84adc085c52c05f47f1f4e4fc2341d37fb48aea2701aa06a369408"
+    },
+    "scenarioName": "res://Main.tscn",
+    "passed": false,
+    "durationMs": 205,
+    "assertions": [
+      {
+        "type": "screen_text",
+        "target": "Status",
+        "expected": "Wrong",
+        "actual": "Ready",
+        "passed": false
+      }
+    ],
+    "capturedLogs": [
+      "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org",
+      "CHATBOT_RUNTIME_JSON:{\"assertions\":[{\"actual\":\"Ready\",\"assertionId\":0,\"expected\":\"Wrong\",\"passed\":false,\"target\":\"Status\",\"type\":\"screen_text\"}],\"evidence\":{\"engine\":\"godot\",\"projectRoot\":\"C:\\\\Users\\\\dferr\\\\AppData\\\\Local\\\\Temp\\\\godot-g00-native-onKxTN\",\"requestDigest\":\"4b0a7afdea84adc085c52c05f47f1f4e4fc2341d37fb48aea2701aa06a369408\",\"runId\":\"629d3ef3-b075-45ae-b0a6-5be68da107c2\",\"scenePath\":\"res://Main.tscn\"},\"mode\":\"scenario\",\"scene\":\"res://Main.tscn\"}"
+    ],
+    "error": "Godot exited with code 2."
+  },
+  "empty": {
+    "checkKind": "scene_observation",
+    "evidence": {
+      "runId": "3fd974ec-8635-4aa0-8195-97516f76883c",
+      "engine": "godot",
+      "projectRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-g00-native-onKxTN",
+      "scenePath": "res://Main.tscn",
+      "requestDigest": "0af75856f95be1a94ec3851534b5272bfa1c301d45e48226004d21a5ec2b1ce0"
+    },
+    "scenarioName": "res://Main.tscn",
+    "passed": false,
+    "durationMs": 202,
+    "assertions": [],
+    "capturedLogs": [
+      "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org",
+      "CHATBOT_RUNTIME_JSON:{\"assertions\":[],\"evidence\":{\"engine\":\"godot\",\"projectRoot\":\"C:\\\\Users\\\\dferr\\\\AppData\\\\Local\\\\Temp\\\\godot-g00-native-onKxTN\",\"requestDigest\":\"0af75856f95be1a94ec3851534b5272bfa1c301d45e48226004d21a5ec2b1ce0\",\"runId\":\"3fd974ec-8635-4aa0-8195-97516f76883c\",\"scenePath\":\"res://Main.tscn\"},\"mode\":\"scenario\",\"scene\":\"res://Main.tscn\"}"
+    ],
+    "error": "Godot exited with code 2. Native scenario requires a nonempty, complete assertion report."
+  },
+  "missingScene": {
+    "checkKind": "scene_observation",
+    "evidence": {
+      "runId": "ac5728a5-ebb5-44d1-978d-c6b2550253c1",
+      "engine": "godot",
+      "projectRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-g00-native-onKxTN",
+      "scenePath": "res://Absent.tscn",
+      "requestDigest": "70be20ddca6ee987205e976c28c9b9f8bd5de1fe66a0be35ce5d84e17321d2a0"
+    },
+    "scenarioName": "res://Absent.tscn",
+    "passed": false,
+    "durationMs": 219,
+    "assertions": [
+      {
+        "type": "node_exists",
+        "target": "Missing",
+        "expected": false,
+        "passed": false
+      }
+    ],
+    "capturedLogs": [
+      "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org",
+      "ERROR: Cannot open file 'res://Absent.tscn'.",
+      "   at: load (scene/resources/resource_format_text.cpp:1442)",
+      "   GDScript backtrace (most recent call first):",
+      "       [0] _run_probe (G:/dev/Chatbot/scripts/native/godot_runtime_probe.gd:11)",
+      "ERROR: Failed loading resource: res://Absent.tscn.",
+      "   at: _load (core/io/resource_loader.cpp:317)",
+      "   GDScript backtrace (most recent call first):",
+      "       [0] _run_probe (G:/dev/Chatbot/scripts/native/godot_runtime_probe.gd:11)",
+      "ERROR: Godot observation probe could not instantiate the requested scene.",
+      "   at: push_error (core/variant/variant_utility.cpp:1023)",
+      "   GDScript backtrace (most recent call first):",
+      "       [0] _run_probe (G:/dev/Chatbot/scripts/native/godot_runtime_probe.gd:16)"
+    ],
+    "error": "Godot exited with code 2. Godot probe must produce exactly one assertion report."
+  },
+  "unsupported": {
+    "checkKind": "scene_observation",
+    "evidence": {
+      "runId": "400cde0c-c96c-4c70-8150-20320b49855b",
+      "engine": "godot",
+      "projectRoot": "C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-g00-native-onKxTN",
+      "scenePath": "res://Main.tscn",
+      "requestDigest": "b774d0162c944a2f7989b05c5835f95583352d82e200b6ee8195403785a90862"
+    },
+    "scenarioName": "res://Main.tscn",
+    "passed": false,
+    "durationMs": 203,
+    "assertions": [
+      {
+        "type": "custom",
+        "target": "Player",
+        "expected": true,
+        "actual": "unsupported assertion type",
+        "passed": false
+      }
+    ],
+    "capturedLogs": [
+      "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org",
+      "CHATBOT_RUNTIME_JSON:{\"assertions\":[{\"actual\":\"unsupported assertion type\",\"assertionId\":0,\"expected\":true,\"passed\":false,\"target\":\"Player\",\"type\":\"custom\"}],\"evidence\":{\"engine\":\"godot\",\"projectRoot\":\"C:\\\\Users\\\\dferr\\\\AppData\\\\Local\\\\Temp\\\\godot-g00-native-onKxTN\",\"requestDigest\":\"b774d0162c944a2f7989b05c5835f95583352d82e200b6ee8195403785a90862\",\"runId\":\"400cde0c-c96c-4c70-8150-20320b49855b\",\"scenePath\":\"res://Main.tscn\"},\"mode\":\"scenario\",\"scene\":\"res://Main.tscn\"}"
+    ],
+    "error": "Godot exited with code 2."
+  }
+}
