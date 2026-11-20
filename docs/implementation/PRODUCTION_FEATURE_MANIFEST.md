@@ -1,5 +1,7 @@
 # Production Feature Manifest
 
+The D&D campaign panel and Game Studio project routes are `LOCAL_ONLY_EXPERIMENTAL`. Campaigns store their state in the local database. Game Studio requires developer access to enroll a project. See the [campaign guide](TABLETOP_CAMPAIGNS.md) and [Game Studio verification status](GAME_DEVELOPMENT_STATUS.md).
+
 ## Coding tools addition (2026-10-31)
 
 `CODE-TOOLS-002` is `LOCAL_ONLY_EXPERIMENTAL`: automatic source selection/read-only context, TypeScript baseline compiler diagnostics, isolated fixed ESLint checks, and fast-check test-authoring guidance extend the existing coding tool routes and panel. New files and patch application still require explicit paths/review. Diagnostics compare captured snapshots and do not certify the complete repository. Evidence: [coding validation](evidence/coding-validation/2026-10-31/verification.json).

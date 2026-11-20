@@ -3,7 +3,7 @@
 ## Document control
 
 - Owner: Engineering / release governance
-- Review date: 2026-11-05
+- Next review due: 2027-02-05
 - Applies to: Phase 2 and all later production-completion work
 
 ## Enforced sources of truth

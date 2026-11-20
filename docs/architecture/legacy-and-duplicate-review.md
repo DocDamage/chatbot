@@ -3,7 +3,7 @@
 ## Document control
 
 - Owner: Architecture
-- Review date: 2026-11-05
+- Next review due: 2027-02-05
 - Task: P02-T03
 
 ## Decisions

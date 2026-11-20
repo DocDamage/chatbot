@@ -1,5 +1,7 @@
 # Release Evidence Index
 
+The [Game Studio G01.3 report](evidence/game-development/2026-11-03-g01-context/README.md) records project enrollment, source-context and Godot session checks. Its scope and remaining engine coverage are listed in the [implementation status](GAME_DEVELOPMENT_STATUS.md).
+
 Compiler/context/property-test upgrade (2026-10-31): [verification record](evidence/coding-validation/2026-10-31/verification.json) covers baseline compiler/lint comparisons, automatic read-only source selection, seeded fast-check properties, actual Ollama-authored property tests and deliberate implementation mutations. Classification remains `LOCAL_ONLY_EXPERIMENTAL`.
 
 Coding tools (2026-10-31): [verification record](evidence/coding-tools/2026-10-31/verification.json) records installed Serena, Aider, ast-grep and Context7 workflows, actual Ollama outcomes including failed intermediate runs, scoped patch/repair regressions and browser checks. Classification remains `LOCAL_ONLY_EXPERIMENTAL`; see [setup and limits](../CODING_TOOLS.md).

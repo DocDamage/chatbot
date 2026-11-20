@@ -41,6 +41,9 @@ All native adaptations retain upstream copyright and license notices in accordan
 
 | Source Name | Upstream Repository | License | Integration Mode | Attribution Notice |
 |---|---|---|---|---|
+| Open Game Master tabletop mechanics | ``DocDamage/open-game-master` / `Lebbitheplow/open-game-master`` | MIT | `NATIVE_ADAPTATION` | Copyright 2026 Jacob Ferrari and Kaleb Lutterman; retained `services/tabletop/LICENSE.open-game-master`; file manifest `services/tabletop/sources.json` |
+| Campfire tabletop mechanics | ``DocDamage/campfire` / `AwsomeFox/campfire`` | MIT | `NATIVE_ADAPTATION` | Copyright 2026 AwsomeFox; retained `services/tabletop/LICENSE.campfire`; file manifest `services/tabletop/sources.json` |
+| Dungeon Master Tool data format | ``DocDamage/dungeon-master-tool` / `elymsyr/dungeon-master-tool`` | CC BY-NC 4.0 | `CLEAN_ROOM_IMPLEMENTATION` | No code/assets copied; private user export data only |
 | fast-check | `dubzzz/fast-check` | MIT | `PACKAGE_DEPENDENCY` | Copyright 2017 Nicolas DUBIEN; full license in `services/coding-tools/LICENSE.fast-check`; root development dependency/SBOM |
 | ESLint draft runtime | `eslint/eslint` | MIT | `EXTERNAL_SERVICE_ADAPTER` | OpenJS Foundation and other contributors; full license in `services/coding-tools/LICENSE.eslint` |
 | TypeScript compiler API | `microsoft/TypeScript` | Apache-2.0 | `PACKAGE_DEPENDENCY` | Full license in `services/coding-tools/LICENSE.typescript`; existing core API dependency plus isolated parser dependency |

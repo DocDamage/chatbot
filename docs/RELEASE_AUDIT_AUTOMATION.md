@@ -3,7 +3,7 @@
 ## Document control
 
 - Owner: Release governance
-- Review date: 2026-11-05
+- Next review due: 2027-02-05
 - Governing checklist: [Comprehensive Codebase Audit & Release Validation Handbook](COMPREHENSIVE_CODEBASE_AUDIT_AND_RELEASE_VALIDATION_HANDBOOK.md)
 
 ## Local audit commands
