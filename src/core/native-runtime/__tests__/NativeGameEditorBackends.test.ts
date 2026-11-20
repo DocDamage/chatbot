@@ -11,7 +11,13 @@ const mockedRunNativeCommand = jest.mocked(runNativeCommand);
 function emitInstrumentationResult(options: any, payload: unknown): void {
   const resultPath = options?.env?.CHATBOT_ENGINE_RESULT;
   if (!resultPath) throw new Error('Instrumentation result path was not supplied to the editor.');
-  fs.writeFileSync(resultPath, JSON.stringify(payload));
+  const request = JSON.parse(fs.readFileSync(options.env.CHATBOT_ENGINE_REQUEST, 'utf8'));
+  const result = payload as any;
+  fs.writeFileSync(resultPath, JSON.stringify({
+    ...result,
+    evidence: result.evidence ?? request.evidence,
+    assertions: result.assertions?.map((assertion: any, index: number) => ({ assertionId: index, ...assertion }))
+  }));
 }
 
 describe('InstalledGameEditorBackend', () => {
@@ -36,7 +42,8 @@ describe('InstalledGameEditorBackend', () => {
 
     const report = await backend.runScenario('unreal', root, { headless: true }, []);
 
-    expect(report.passed).toBe(true);
+    expect(report).toMatchObject({ passed: false, checkKind: 'editor_inspection' });
+    expect(report.error).toContain('no gameplay assertions');
     expect(mockedRunNativeCommand).toHaveBeenCalledWith(
       commandlet,
       expect.arrayContaining(['-run=ResavePackages', '-ProjectOnly', '-SkipSave']),
@@ -57,6 +64,53 @@ describe('InstalledGameEditorBackend', () => {
 
     await expect(backend.profile('unity', root, 1_000)).resolves.toMatchObject({ fps: 60, nodeCount: 4, memoryMb: 128 });
     expect(fs.readFileSync(path.join(root, 'Assets', 'Editor', 'ChatBotHubInstrumentationBridge.cs'), 'utf8')).toContain('Profiler.GetTotalAllocatedMemoryLong');
+  });
+
+  it.each(['foreign binding', 'empty observations', 'malformed actual', 'reordered assertions', 'missing result', 'invalid JSON', 'nonzero success', 'false actual'])('rejects %s evidence from installed editors', async kind => {
+    const unity = path.join(root, 'Unity.exe');
+    fs.writeFileSync(unity, 'fixture');
+    const backend = new InstalledGameEditorBackend({ unity, ollamaEndpoint: 'http://127.0.0.1:11434' });
+    mockedRunNativeCommand.mockImplementationOnce(async (_editor, _args, options) => {
+      if (kind === 'missing result') return { exitCode: 0, stdout: '', stderr: '', durationMs: 1 };
+      if (kind === 'invalid JSON') {
+        fs.writeFileSync(options!.env!.CHATBOT_ENGINE_RESULT!, '{broken');
+        return { exitCode: 0, stdout: '', stderr: '', durationMs: 1 };
+      }
+      emitInstrumentationResult(options, {
+        mode: 'scenario',
+        ...(kind === 'foreign binding' ? { evidence: { runId: 'old-run' } } : {}),
+        assertions: kind === 'empty observations' ? [] : [{
+          assertionId: kind === 'reordered assertions' ? 1 : 0,
+          ...(kind === 'malformed actual' ? { actualJson: 'not-json' } : { actual: kind !== 'false actual' }), passed: true
+        }]
+      });
+      return { exitCode: kind === 'nonzero success' ? 7 : 0, stdout: '', stderr: '', durationMs: 1 };
+    });
+    const operation = backend.runScenario('unity', root, {}, [{ type: 'node_exists', target: 'Hero', expected: true }]);
+    if (['nonzero success', 'false actual'].includes(kind)) {
+      expect((await operation).passed).toBe(false);
+    } else {
+      await expect(operation).rejects.toThrow();
+    }
+  });
+
+  it('rejects a prior report replayed into a new result file', async () => {
+    const unity = path.join(root, 'Unity.exe');
+    fs.writeFileSync(unity, 'fixture');
+    const backend = new InstalledGameEditorBackend({ unity, ollamaEndpoint: 'http://127.0.0.1:11434' });
+    let saved = '';
+    mockedRunNativeCommand.mockImplementationOnce(async (_editor, _args, options) => {
+      emitInstrumentationResult(options, { mode: 'scenario', assertions: [{ actual: true, passed: true }] });
+      saved = fs.readFileSync(options!.env!.CHATBOT_ENGINE_RESULT!, 'utf8');
+      return { exitCode: 0, stdout: '', stderr: '', durationMs: 1 };
+    });
+    const assertions = [{ type: 'node_exists' as const, target: 'Hero', expected: true }];
+    expect((await backend.runScenario('unity', root, {}, assertions)).passed).toBe(true);
+    mockedRunNativeCommand.mockImplementationOnce(async (_editor, _args, options) => {
+      fs.writeFileSync(options!.env!.CHATBOT_ENGINE_RESULT!, saved);
+      return { exitCode: 0, stdout: '', stderr: '', durationMs: 1 };
+    });
+    await expect(backend.runScenario('unity', root, {}, assertions)).rejects.toThrow('stale');
   });
 
   it('surfaces an Unreal CSV profiler process failure without synthetic metrics', async () => {

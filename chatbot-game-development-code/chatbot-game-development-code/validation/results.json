@@ -1,0 +1,31 @@
+{
+  "preparedAtUtc": "2026-11-03T16:39:09.084261+00:00",
+  "repository": "https://github.com/DocDamage/chatbot",
+  "reviewedCommit": "c26d767345bd65e5192ed99e1213f8a1a0a7b110",
+  "applicationModified": false,
+  "typeScript": {
+    "version": "5.7.3",
+    "strict": true,
+    "target": "ES2022",
+    "module": "CommonJS"
+  },
+  "runtime": {
+    "node": "24.22.1",
+    "nodeTypes": "22.10.2",
+    "python": "3.12.14",
+    "sqlite": "3.53.1",
+    "os": "Linux x86_64"
+  },
+  "tests": {
+    "nodePassed": 109,
+    "nodeFailed": 0,
+    "project": 20,
+    "knowledge": 30,
+    "engine": 28,
+    "rom": 31,
+    "sqliteRun": 7,
+    "sqliteKnowledge": 11
+  },
+  "nativeExecutionPerformed": false,
+  "productionIntegrationPerformed": false
+}

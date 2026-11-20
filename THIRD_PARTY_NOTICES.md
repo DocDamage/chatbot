@@ -2,6 +2,12 @@
 
 **Source register review date:** 2026-08-25
 
+## Tabletop campaign components (2026-11-02)
+
+Selected MIT components are adapted from [Open Game Master](https://github.com/DocDamage/open-game-master) at `281928336f8f88353d224d4293ef79c2422aa0fc` (copyright 2026 Jacob Ferrari and Kaleb Lutterman) and [Campfire](https://github.com/DocDamage/campfire) at `f0dd871f5d2ab0b949db8c8a15a90ec56d40d3dc` (copyright 2026 AwsomeFox). Full notices are retained in [LICENSE.open-game-master](services/tabletop/LICENSE.open-game-master) and [LICENSE.campfire](services/tabletop/LICENSE.campfire), including in packaged distributions. File-level adaptation details are in [sources.json](services/tabletop/sources.json). These integrations contain selected dice, spell-slot and initiative code; they do not include the upstream applications' full engines or game content.
+
+[Dungeon Master Tool](https://github.com/DocDamage/dungeon-master-tool) is CC BY-NC 4.0. The Chatbot import reader is independently written against its world-archive/data contracts; no upstream Dart code, UI, media or rules packages are copied. Imported user content remains private local data and retains its own rights.
+
 ## Compiler, linter and property-test dependencies (2026-10-31)
 
 `fast-check@4.10.2` is a root development dependency (MIT, copyright 2017 Nicolas DUBIEN), included in the core dependency SBOM. Its full notice is retained in [LICENSE.fast-check](services/coding-tools/LICENSE.fast-check). The optional coding environment additionally pins ESLint 10.14.0 (MIT, OpenJS Foundation and other contributors), typescript-eslint/parser 8.59.4 (MIT, copyright 2019 typescript-eslint and other contributors), TypeScript 5.9.3 (Apache-2.0) and globals 17.13.0 (MIT, Sindre Sorhus). Their full notices are retained in [LICENSE.eslint](services/coding-tools/LICENSE.eslint), [LICENSE.typescript-eslint](services/coding-tools/LICENSE.typescript-eslint), [LICENSE.typescript](services/coding-tools/LICENSE.typescript), and [LICENSE.globals](services/coding-tools/LICENSE.globals). These unmodified optional packages and their transitive notices remain separate from the base runtime SBOM; TypeScript is also an existing core dependency.
@@ -35,6 +41,9 @@ All native adaptations retain upstream copyright and license notices in accordan
 
 | Source Name | Upstream Repository | License | Integration Mode | Attribution Notice |
 |---|---|---|---|---|
+| Open Game Master tabletop mechanics | ``DocDamage/open-game-master` / `Lebbitheplow/open-game-master`` | MIT | `NATIVE_ADAPTATION` | Copyright 2026 Jacob Ferrari and Kaleb Lutterman; retained `services/tabletop/LICENSE.open-game-master`; file manifest `services/tabletop/sources.json` |
+| Campfire tabletop mechanics | ``DocDamage/campfire` / `AwsomeFox/campfire`` | MIT | `NATIVE_ADAPTATION` | Copyright 2026 AwsomeFox; retained `services/tabletop/LICENSE.campfire`; file manifest `services/tabletop/sources.json` |
+| Dungeon Master Tool data format | ``DocDamage/dungeon-master-tool` / `elymsyr/dungeon-master-tool`` | CC BY-NC 4.0 | `CLEAN_ROOM_IMPLEMENTATION` | No code/assets copied; private user export data only |
 | fast-check | `dubzzz/fast-check` | MIT | `PACKAGE_DEPENDENCY` | Copyright 2017 Nicolas DUBIEN; full license in `services/coding-tools/LICENSE.fast-check`; root development dependency/SBOM |
 | ESLint draft runtime | `eslint/eslint` | MIT | `EXTERNAL_SERVICE_ADAPTER` | OpenJS Foundation and other contributors; full license in `services/coding-tools/LICENSE.eslint` |
 | TypeScript compiler API | `microsoft/TypeScript` | Apache-2.0 | `PACKAGE_DEPENDENCY` | Full license in `services/coding-tools/LICENSE.typescript`; existing core API dependency plus isolated parser dependency |

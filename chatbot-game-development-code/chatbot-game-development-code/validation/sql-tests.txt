@@ -1,0 +1,28 @@
+
+> chatbot-game-development-reference@1.0.0 test:sql
+> node scripts/run-sql-tests.cjs
+
+SQLite 3.53.1; synthetic parent contract; shipped SQL from /workspace/scratch/13727cc5e93e/deliverables/chatbot-game-development-code/sql
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.082s
+
+OK
+test_additive_migration_is_repeatable_and_references_are_sound (__main__.KnowledgeSqlContractTests.test_additive_migration_is_repeatable_and_references_are_sound) ... ok
+test_another_connection_observes_complete_old_or_new_activation (__main__.KnowledgeSqlContractTests.test_another_connection_observes_complete_old_or_new_activation) ... ok
+test_chunk_cannot_be_deleted_or_reassigned_while_owned (__main__.KnowledgeSqlContractTests.test_chunk_cannot_be_deleted_or_reassigned_while_owned) ... ok
+test_failed_activation_rolls_back_pointer_membership_and_readiness (__main__.KnowledgeSqlContractTests.test_failed_activation_rolls_back_pointer_membership_and_readiness) ... ok
+test_fts_tracks_insert_update_and_deletion (__main__.KnowledgeSqlContractTests.test_fts_tracks_insert_update_and_deletion) ... ok
+test_head_cas_rejects_stale_writer_and_cross_dataset_pointer (__main__.KnowledgeSqlContractTests.test_head_cas_rejects_stale_writer_and_cross_dataset_pointer) ... ok
+test_job_pin_and_head_survive_connection_restart (__main__.KnowledgeSqlContractTests.test_job_pin_and_head_survive_connection_restart) ... ok
+test_scope_is_applied_before_limit (__main__.KnowledgeSqlContractTests.test_scope_is_applied_before_limit) ... ok
+test_shared_membership_and_even_expired_pins_require_explicit_collection (__main__.KnowledgeSqlContractTests.test_shared_membership_and_even_expired_pins_require_explicit_collection) ... ok
+test_target_pairs_are_exact_and_empty_selection_does_not_broaden (__main__.KnowledgeSqlContractTests.test_target_pairs_are_exact_and_empty_selection_does_not_broaden) ... ok
+test_unready_private_unapproved_and_unindexed_content_are_invisible (__main__.KnowledgeSqlContractTests.test_unready_private_unapproved_and_unindexed_content_are_invisible) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.614s
+
+OK

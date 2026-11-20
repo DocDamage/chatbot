@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { resolveDabookConfig } from '../dabook/DabookConfig';
+import { discoverEpicUnrealInstallations, discoverUnrealLibraryInstallations, unrealBuildRank } from './EpicUnrealInstallations';
 
 function commandPath(name: string): string | undefined {
   try {
@@ -41,13 +42,18 @@ export function isCompleteUnrealEditor(editor: string | undefined): editor is st
 
 function discoverUnrealEditor(programFiles: string): string | undefined {
   const roots = [path.join(programFiles, 'Epic Games'), 'D:\\Unreal'];
-  const candidates = roots.flatMap(root => fs.existsSync(root)
+  const candidates = [...discoverEpicUnrealInstallations().map(item => item.executablePath), ...discoverUnrealLibraryInstallations().map(item => item.executablePath), ...roots.flatMap(root => fs.existsSync(root)
     ? fs.readdirSync(root, { withFileTypes: true })
       .filter(entry => entry.isDirectory() && /^UE_/i.test(entry.name))
       .map(entry => path.join(root, entry.name, 'Engine', 'Binaries', 'Win64', 'UnrealEditor.exe'))
-    : []);
+    : [])];
   const configured = process.env.UNREAL_EDITOR_PATH;
-  return [configured, ...candidates.sort((left, right) => right.localeCompare(left, undefined, { numeric: true }))]
+  const ranked = [...new Set(candidates)].map(executable => ({ executable, rank: unrealBuildRank(executable) }))
+    .sort((left, right) => {
+      for (let index = 0; index < 4; index++) if (left.rank[index] !== right.rank[index]) return right.rank[index] - left.rank[index];
+      return left.executable.localeCompare(right.executable);
+    });
+  return [configured, ...ranked.map(item => item.executable)]
     .find(isCompleteUnrealEditor);
 }
 

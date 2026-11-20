@@ -1,0 +1,5 @@
+Test Suites: 4 passed, 4 total
+Tests:       37 passed, 37 total
+Snapshots:   0 total
+Time:        5.738 s, estimated 36 s
+Ran all test suites within paths "src/core/native-runtime/__tests__/EpicUnrealInstallations.test.ts", "src/core/native-runtime/__tests__/RuntimeDiscovery.test.ts", "src/core/gaming/project/EngineVersions.test.ts", "src/core/gaming/project/ProjectRuntimeCatalog.test.ts".

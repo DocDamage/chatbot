@@ -1,0 +1,8 @@
+16:59:43 [[32MINFO[39M] SQLite database initialized {"service":"ai-chatbot-hub","path":"C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-lXsXvA\\profiles.db"}
+16:59:44 [[32MINFO[39M] Database migrations completed {"service":"ai-chatbot-hub"}
+16:59:52 [[32MINFO[39M] Database connection closed {"service":"ai-chatbot-hub"}
+16:59:52 [[32MINFO[39M] SQLite database initialized {"service":"ai-chatbot-hub","path":"C:\\Users\\dferr\\AppData\\Local\\Temp\\godot-enrollment-native-lXsXvA\\profiles.db"}
+16:59:52 [[32MINFO[39M] Database migrations completed {"service":"ai-chatbot-hub"}
+16:59:53 [[31MERROR[39M] Request error {"service":"ai-chatbot-hub","error":"Project configuration changed; refresh the profile using its current revision.","stack":"ProjectEnrollmentError: Project configuration changed; refresh the profile using its current revision.\n    at GameProjectRegistry.validateCurrent (G:\\dev\\Chatbot\\src\\core\\gaming\\project\\GameProjectRegistry.ts:77:105)\n    at GameProjectRegistry.get (G:\\dev\\Chatbot\\src\\core\\gaming\\project\\GameProjectRegistry.ts:52:16)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async <anonymous> (G:\\dev\\Chatbot\\src\\server\\routes\\game-studio\\projectEnrollmentRoutes.ts:54:14)","path":"/api/game-studio/projects/project-c2f0f59f9ab144259a38feef1f9039c74035806a27647b9b8bd00dd5695537ad","method":"GET","ip":"127.0.0.1"}
+Godot 4.7.1.stable.official.a13da4feb: 8 enrollment gates passed. Evidence: G:\dev\Chatbot\docs\implementation\evidence\game-development\2026-11-03-unreal-discovery\native-enrollment.json
+17:00:02 [[32MINFO[39M] Database connection closed {"service":"ai-chatbot-hub"}

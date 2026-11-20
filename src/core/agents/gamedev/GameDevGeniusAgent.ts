@@ -39,11 +39,11 @@ export class GameDevGeniusAgent implements SpecialistAgent {
     return [{ tool: 'EngineAdvisor', success: true, data: this.engines.advise(input), timestamp: new Date().toISOString() }];
   }
 
-  async verify(answer: DraftAnswer) {
+  async verify(_answer: DraftAnswer) {
     return {
-      verified: /test|playtest|verification|time-to-kill/i.test(answer.content),
-      method: 'game-dev implementation checklist',
-      warnings: []
+      verified: false,
+      method: 'planning and advice only',
+      warnings: ['No native project execution or gameplay evidence was collected.']
     };
   }
 

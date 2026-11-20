@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "definitionCount": 274,
-  "templateCount": 274,
-  "usageCount": 250,
+  "definitionCount": 275,
+  "templateCount": 275,
+  "usageCount": 251,
   "duplicateDefinitions": [],
   "duplicateTemplateEntries": [],
   "missingFromTemplate": [],
@@ -157,6 +157,9 @@
       "src/core/native-runtime/RuntimeDiscovery.ts",
       "src/server/routes/__tests__/knowledge-base-dabook.test.ts"
     ],
+    "CHATBOT_TEST_PYTHON": [
+      "chatbot-game-development-code/chatbot-game-development-code/scripts/run-sql-tests.cjs"
+    ],
     "CI": [
       "scripts/canonical-cli.ts"
     ],
@@ -186,12 +189,14 @@
       "src/core/agents/CodingAgent.ts"
     ],
     "CODING_OLLAMA_MODEL": [
+      "scripts/local/doctor.mjs",
       "src/core/coding/integrations/CodingToolConfig.ts"
     ],
     "CODING_TOOL_TIMEOUT_MS": [
       "src/core/coding/integrations/CodingToolConfig.ts"
     ],
     "CODING_TOOLS_ENABLED": [
+      "scripts/local/doctor.mjs",
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/verification/ModelRepairProposal.test.ts",
       "src/core/coding/verification/ModelRepairProposal.ts"
@@ -223,7 +228,6 @@
       "src/middleware/auth.ts",
       "src/server/__tests__/auth-middleware.security.test.ts",
       "src/server/__tests__/index.test.ts",
-      "src/server/__tests__/server.entrypoint.lifecycle.test.ts",
       "src/server/routes/setup.test.ts"
     ],
     "CUDA_VISIBLE_DEVICES": [
@@ -255,8 +259,8 @@
       "src/core/rag/ingestion/__tests__/DabookPdfExtractor.integration.test.ts"
     ],
     "DATABASE_URL": [
-      "scripts/backup-knowledge-db.ts",
       "scripts/import-books.ts",
+      "scripts/local/backup.mjs",
       "scripts/ocr-queue.ts",
       "src/core/governance/CanonicalCommandOperations.ts",
       "src/core/governance/KnowledgeBundleOperations.ts",
@@ -285,6 +289,7 @@
       "src/core/native-runtime/RuntimeDiscovery.ts"
     ],
     "DEPLOYMENT_MODE": [
+      "scripts/local/supervise.mjs",
       "src/core/capabilities/observability/CapabilityObservabilityService.test.ts",
       "src/core/capabilities/observability/CapabilityObservabilityService.ts",
       "src/core/initialization/ServiceInitializer.test.ts",
@@ -379,7 +384,6 @@
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "ENABLE_WEBSOCKET": [
-      "src/server/__tests__/server.entrypoint.lifecycle.test.ts",
       "src/server/index.ts"
     ],
     "EVAL_TARGET_URL": [
@@ -531,6 +535,7 @@
       "src/server/index.ts"
     ],
     "HOST": [
+      "scripts/local/supervise.mjs",
       "src/server/index.ts",
       "src/server/routes/local-session.test.ts",
       "src/server/routes/local-session.ts"
@@ -553,11 +558,12 @@
       "src/server/__tests__/index.test.ts",
       "src/server/__tests__/permission-profile-matrix.test.ts",
       "src/server/__tests__/release-security.test.ts",
-      "src/server/__tests__/server.entrypoint.lifecycle.test.ts",
       "src/server/__tests__/server.index.test.ts",
       "src/server/routes/__tests__/admin.security.test.ts",
+      "src/server/routes/__tests__/project-context-routes.test.ts",
       "src/server/routes/__tests__/route-core-services-matrices.test.ts",
       "src/server/routes/__tests__/route-workspace-persistence.test.ts",
+      "src/server/routes/campaigns.test.ts",
       "src/server/routes/coding-tools.test.ts",
       "src/server/routes/local-session.test.ts",
       "src/server/routes/rea.test.ts",
@@ -653,6 +659,7 @@
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "LOCALAPPDATA": [
+      "scripts/local/backups.mjs",
       "scripts/local/setup.mjs"
     ],
     "LOG_LEVEL": [
@@ -672,7 +679,7 @@
       "src/__tests__/setup.ts",
       "src/core/__tests__/branch-coverage-tail-services.test.ts",
       "src/core/debug/DebugMode.ts",
-      "src/core/gaming/engine/ProjectMutationStore.ts",
+      "src/core/gaming/engine/EngineProposalIntegrity.ts",
       "src/core/native-runtime/NativeVoiceBackends.ts",
       "src/core/observability/logger.ts",
       "src/middleware/errorHandler.ts",
@@ -733,6 +740,7 @@
       "src/core/providers/OllamaAdapter.ts"
     ],
     "OLLAMA_URL": [
+      "scripts/coding/compare-models.mjs",
       "scripts/import-books.ts",
       "scripts/local/doctor.mjs",
       "scripts/local/setup.mjs",
@@ -830,6 +838,7 @@
     ],
     "PORT": [
       "scripts/local/doctor.mjs",
+      "scripts/local/supervise.mjs",
       "scripts/release/__tests__/phase2-scanners.test.mjs",
       "src/server/index.ts",
       "src/server/routes/local-session.test.ts",
@@ -873,7 +882,8 @@
       "src/core/research/PyScrappyService.ts"
     ],
     "RAG_BACKUP_DIR": [
-      "scripts/backup-knowledge-db.ts"
+      "scripts/local/backup.mjs",
+      "scripts/local/doctor.mjs"
     ],
     "RAG_CHUNK_SIZE": [
       "scripts/import-books.ts",
@@ -881,8 +891,8 @@
       "src/core/initialization/ServiceInitializer.ts"
     ],
     "RAG_DATABASE_URL": [
-      "scripts/backup-knowledge-db.ts",
       "scripts/import-books.ts",
+      "scripts/local/backup.mjs",
       "scripts/ocr-queue.ts",
       "src/core/governance/CanonicalCommandOperations.ts",
       "src/core/governance/KnowledgeBundleOperations.ts",
@@ -931,8 +941,8 @@
       "src/core/rag/RAGDocumentStore.ts"
     ],
     "RAG_SQLITE_PATH": [
-      "scripts/backup-knowledge-db.ts",
       "scripts/import-books.ts",
+      "scripts/local/backup.mjs",
       "scripts/local/doctor.mjs",
       "scripts/ocr-queue.ts",
       "src/core/governance/CanonicalCommandOperations.ts",

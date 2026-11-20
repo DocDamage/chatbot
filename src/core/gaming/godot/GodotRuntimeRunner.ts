@@ -12,6 +12,7 @@ import {
   GameEngineError,
   EngineProfileSnapshot
 } from '../engine/GameEngineTypes';
+import { checkedScenarioReport } from '../engine/NativeScenarioEvidence';
 
 export class GodotRuntimeRunner {
   constructor(private readonly projectRoot: string, private readonly backend?: GodotRuntimeBackend) {}
@@ -26,7 +27,7 @@ export class GodotRuntimeRunner {
     if (!this.backend) {
       throw new GameEngineError('RUNTIME_EXECUTION_FAILED', 'GODOT_RUNTIME_BACKEND_UNAVAILABLE: configure a verified Godot runtime backend.');
     }
-    return this.backend.runScenario(this.projectRoot, options, assertions);
+    return checkedScenarioReport(await this.backend.runScenario(this.projectRoot, options, assertions), assertions);
   }
 }
 

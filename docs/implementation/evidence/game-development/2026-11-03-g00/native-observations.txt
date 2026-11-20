@@ -1,0 +1,1 @@
+Godot 4.7.1.stable.official.a13da4feb: 5 scene-observation gates passed. Evidence: G:\dev\Chatbot\docs\implementation\evidence\game-development\2026-11-03-g00\native-observations.json

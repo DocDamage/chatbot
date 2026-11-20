@@ -10,6 +10,7 @@ import { CodingToolsService } from '../coding/integrations/CodingToolsService';
 import { RAGService } from '../rag/RAGService';
 import { DocumentManager } from '../rag/DocumentManager';
 import { Database } from '../database/Database';
+import { GameProjectStore } from '../gaming/project/GameProjectStore';
 import { RAGDocumentStore } from '../rag/RAGDocumentStore';
 import { AnalyticsService } from '../analytics/AnalyticsService';
 import { ModelRouter, ModelProvider } from '../providers/ModelRouter';
@@ -86,6 +87,8 @@ import { GitHubRepoKnowledgeImporter } from '../importers/GitHubRepoKnowledgeImp
 import { ConversationManager } from '../conversation/ConversationManager';
 import { ChatRuntimeFactory } from '../chat/ChatRuntimeFactory';
 import { DailyChatService } from '../chat/DailyChatService';
+import { CampaignRepository } from '../campaign/CampaignRepository';
+import { CampaignService } from '../campaign/CampaignService';
 import { resolveDeploymentMode } from '../config/EnvironmentDefinitions';
 import { PyScrappyService } from '../research/PyScrappyService';
 import * as fs from 'fs';
@@ -94,6 +97,7 @@ import * as path from 'path';
 export interface InitializedServices {
   orchestrator: EnhancedOrchestrator;
   dailyChat?: DailyChatService;
+  campaignService?: CampaignService;
   reaService?: ReaService;
   codingTools?: CodingToolsService;
   codingModelAdapter?: import('../providers/LLMAdapter').LLMAdapter;
@@ -132,6 +136,7 @@ export interface InitializedServices {
   visionAdapter?: any;
   embeddingService?: EmbeddingService;
   database?: Database;
+  gameProjectStore?: GameProjectStore;
   ragDocumentStore?: RAGDocumentStore;
   entityLinkingService?: EntityLinkingService;
   knowledgeGraphIndexer?: KnowledgeGraphIndexer;
@@ -307,6 +312,7 @@ export class ServiceInitializer {
     logger.info('Analytics service initialized');
     const conversationManager = new ConversationManager(database, Boolean(database));
     const reaService = new ReaService();
+    const campaignService = database ? new CampaignService(new CampaignRepository(database), primaryAdapter, ragDocumentStore) : undefined;
     const dailyChat = process.env.CHAT_RUNTIME_ENABLED === 'false' ? undefined : new DailyChatService(
       ChatRuntimeFactory.create({
         database, conversationManager, llmAdapter: primaryAdapter, ragService,
@@ -390,8 +396,10 @@ export class ServiceInitializer {
       initialization,
       orchestrator,
       dailyChat,
+      campaignService,
       reaService,
       codingTools,
+      gameProjectStore: database ? new GameProjectStore(database) : undefined,
       codingModelAdapter: codingTools.config.enabled ? new OllamaAdapter(codingTools.config.ollamaUrl, codingTools.config.model) : primaryAdapter,
       ragService,
       documentManager,

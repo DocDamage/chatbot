@@ -1,0 +1,5 @@
+
+> ai-chatbot-hub@1.0.0 check:file-size
+> node scripts/release/check-file-size.mjs
+
+File-size policy passed; 95 registered production files exceed 300 lines.

@@ -1,10 +1,13 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import { isSensitiveWorkspacePath } from './WorkspacePathPolicy';
+import { WorkspaceFilePolicy } from './WorkspaceFilePolicy';
 
 export type RepositoryPathKind = 'any' | 'file' | 'directory';
 
 export interface RepositoryGatewayOptions {
+  filePolicy?: WorkspaceFilePolicy;
   ignoredDirectories?: Iterable<string>;
   maxFiles?: number;
   maxReadBytes?: number;
@@ -13,6 +16,7 @@ export interface RepositoryGatewayOptions {
 }
 
 export interface RepositoryReadResult {
+  sha256: string;
   path: string;
   content: string;
   size: number;
@@ -67,6 +71,7 @@ function clamp(value: number, minimum: number, maximum: number): number {
 }
 
 export class ApprovedRepositoryGateway {
+  private readonly filePolicy?: WorkspaceFilePolicy;
   private readonly root: string;
   private readonly realRoot: string;
   private readonly ignoredDirectories: Set<string>;
@@ -76,6 +81,7 @@ export class ApprovedRepositoryGateway {
   private readonly maxSearchResults: number;
 
   constructor(workspaceRoot = process.cwd(), options: RepositoryGatewayOptions = {}) {
+    this.filePolicy = options.filePolicy;
     this.root = path.resolve(workspaceRoot);
     const rootStats = fs.statSync(this.root);
     if (!rootStats.isDirectory()) {
@@ -115,12 +121,12 @@ export class ApprovedRepositoryGateway {
 
       for (const entry of entries) {
         if (results.length >= maximum) break;
-        if (this.ignoredDirectories.has(entry.name) || entry.name.startsWith('.tmp')) continue;
+        if ((this.ignoredDirectories.has(entry.name.toLowerCase()) && !(this.filePolicy && entry.name.toLowerCase() === 'data')) || entry.name.startsWith('.tmp')) continue;
         const absolute = path.join(current, entry.name);
         const relative = this.relative(absolute);
-        if (isSensitiveWorkspacePath(relative) || entry.isSymbolicLink()) continue;
-        if (entry.isDirectory()) walk(absolute);
-        else if (entry.isFile()) results.push(relative);
+        if (isSensitiveWorkspacePath(relative, this.filePolicy?.kind) || entry.isSymbolicLink()) continue;
+        if (entry.isDirectory()) { if (!this.filePolicy || this.filePolicy.allowsDirectory(relative)) walk(absolute); }
+        else if (entry.isFile() && (!this.filePolicy || this.filePolicy.classify(relative).role !== 'excluded')) results.push(relative);
       }
     };
 
@@ -130,6 +136,7 @@ export class ApprovedRepositoryGateway {
 
   readTextFile(file: string, requestedMaxBytes = this.maxReadBytes): RepositoryReadResult {
     const absolute = this.resolveExisting(file, 'file');
+    if (this.filePolicy && !this.filePolicy.canReadText(this.relative(absolute))) throw new RepositoryAccessError('BINARY_FILE', 'This file role does not permit text capture.');
     const stats = fs.statSync(absolute);
     const maximum = clamp(requestedMaxBytes, 1024, this.maxReadBytes);
     const length = Math.min(stats.size, maximum);
@@ -142,13 +149,15 @@ export class ApprovedRepositoryGateway {
       fs.closeSync(descriptor);
     }
 
-    if (buffer.subarray(0, Math.min(buffer.length, 4096)).includes(0)) {
+    const content = buffer.toString('utf8');
+    if (buffer.includes(0) || (stats.size <= maximum && !Buffer.from(content, 'utf8').equals(buffer))) {
       throw new RepositoryAccessError('BINARY_FILE', `Binary files are not readable through repository tools: ${file}`);
     }
 
     return {
       path: this.relative(absolute),
-      content: buffer.toString('utf8'),
+      content,
+      sha256: crypto.createHash('sha256').update(buffer).digest('hex'),
       size: stats.size,
       truncated: stats.size > maximum
     };
@@ -175,7 +184,9 @@ export class ApprovedRepositoryGateway {
         continue;
       }
 
-      const result = this.readTextFile(file, maximumBytes);
+      let result: RepositoryReadResult;
+      try { result = this.readTextFile(file, maximumBytes); }
+      catch { skippedFiles += 1; continue; }
       if (result.truncated) {
         skippedFiles += 1;
         continue;
@@ -198,7 +209,7 @@ export class ApprovedRepositoryGateway {
 
   resolveExisting(inputPath: string, expectedKind: RepositoryPathKind = 'any'): string {
     const normalizedInput = this.normalizeInput(inputPath);
-    if (isSensitiveWorkspacePath(normalizedInput)) {
+    if (isSensitiveWorkspacePath(normalizedInput, this.filePolicy?.kind)) {
       throw new RepositoryAccessError('SENSITIVE_PATH', `Sensitive repository path is not available: ${inputPath}`);
     }
 
@@ -208,7 +219,8 @@ export class ApprovedRepositoryGateway {
     const real = fs.realpathSync.native(absolute);
     this.assertInside(real, this.realRoot, 'OUTSIDE_ROOT');
     const relative = this.relative(real);
-    if (isSensitiveWorkspacePath(relative)) {
+    if (isSensitiveWorkspacePath(relative, this.filePolicy?.kind) || (this.filePolicy && relative &&
+      !(fs.statSync(real).isDirectory() ? this.filePolicy.allowsDirectory(relative) : this.filePolicy.classify(relative).role !== 'excluded'))) {
       throw new RepositoryAccessError('SENSITIVE_PATH', `Sensitive repository path is not available: ${inputPath}`);
     }
 
@@ -254,6 +266,7 @@ export class ApprovedRepositoryGateway {
   }
 
   private isTextCandidate(file: string): boolean {
+    if (this.filePolicy) return this.filePolicy.canReadText(file);
     const basename = path.basename(file);
     if (/^(?:Dockerfile|Makefile|CMakeLists\.txt)$/i.test(basename)) return true;
     if (/\.env\.example$/i.test(basename)) return true;

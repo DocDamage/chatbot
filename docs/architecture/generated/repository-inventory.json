@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "summary": {
-    "sourceFiles": 2005,
-    "productionSourceFiles": 1273,
-    "reachableProductionFiles": 913,
+    "sourceFiles": 2098,
+    "productionSourceFiles": 1313,
+    "reachableProductionFiles": 953,
     "unreachableProductionFiles": 360,
-    "routes": 535,
-    "environmentVariables": 245,
+    "routes": 550,
+    "environmentVariables": 246,
     "featureFlags": 18,
     "oversizedProductionFiles": 100
   },
@@ -771,6 +771,55 @@
       "receiver": "router",
       "method": "GET",
       "path": "/",
+      "line": 21,
+      "file": "src/server/routes/campaigns.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/",
+      "line": 22,
+      "file": "src/server/routes/campaigns.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/import",
+      "line": 23,
+      "file": "src/server/routes/campaigns.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/:id",
+      "line": 33,
+      "file": "src/server/routes/campaigns.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/:id/export",
+      "line": 34,
+      "file": "src/server/routes/campaigns.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/:id/actions",
+      "line": 35,
+      "file": "src/server/routes/campaigns.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/:id/turn",
+      "line": 39,
+      "file": "src/server/routes/campaigns.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/",
       "line": 49,
       "file": "src/server/routes/capabilities.ts"
     },
@@ -1478,7 +1527,7 @@
       "receiver": "router",
       "method": "GET",
       "path": "/api/game-studio/summary",
-      "line": 47,
+      "line": 45,
       "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
     },
     {
@@ -1491,107 +1540,163 @@
     {
       "receiver": "router",
       "method": "POST",
-      "path": "/api/game-studio/connect",
+      "path": "/api/game-studio/mast/layout",
       "line": 66,
       "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
-      "path": "/api/game-studio/disconnect",
-      "line": 80,
-      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
-    },
-    {
-      "receiver": "router",
-      "method": "GET",
-      "path": "/api/game-studio/project",
-      "line": 87,
-      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
-    },
-    {
-      "receiver": "router",
-      "method": "GET",
-      "path": "/api/game-studio/scene",
-      "line": 93,
-      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
-    },
-    {
-      "receiver": "router",
-      "method": "GET",
-      "path": "/api/game-studio/script",
-      "line": 100,
-      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
-    },
-    {
-      "receiver": "router",
-      "method": "POST",
-      "path": "/api/game-studio/proposals",
-      "line": 108,
-      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
-    },
-    {
-      "receiver": "router",
-      "method": "POST",
-      "path": "/api/game-studio/proposals/:id/approve",
-      "line": 121,
-      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
-    },
-    {
-      "receiver": "router",
-      "method": "POST",
-      "path": "/api/game-studio/proposals/:id/apply",
-      "line": 128,
-      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
-    },
-    {
-      "receiver": "router",
-      "method": "POST",
-      "path": "/api/game-studio/transactions/:id/rollback",
-      "line": 141,
-      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
-    },
-    {
-      "receiver": "router",
-      "method": "POST",
-      "path": "/api/game-studio/runtime/scenario",
-      "line": 149,
-      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
-    },
-    {
-      "receiver": "router",
-      "method": "GET",
-      "path": "/api/game-studio/profiler",
-      "line": 163,
-      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
-    },
-    {
-      "receiver": "router",
-      "method": "POST",
-      "path": "/api/game-studio/export",
-      "line": 169,
-      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
-    },
-    {
-      "receiver": "router",
-      "method": "POST",
-      "path": "/api/game-studio/mast/layout",
-      "line": 182,
-      "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
-    },
-    {
-      "receiver": "router",
-      "method": "POST",
       "path": "/api/game-studio/slicing/profile",
-      "line": 192,
+      "line": 76,
       "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
     },
     {
       "receiver": "router",
       "method": "POST",
       "path": "/api/game-studio/asset-cook",
-      "line": 201,
+      "line": 85,
       "file": "src/server/routes/game-studio/gameStudioRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/projects/:id/files",
+      "line": 16,
+      "file": "src/server/routes/game-studio/projectContextRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/projects/:id/files/search",
+      "line": 19,
+      "file": "src/server/routes/game-studio/projectContextRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/projects/:id/context",
+      "line": 24,
+      "file": "src/server/routes/game-studio/projectContextRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/runtimes",
+      "line": 35,
+      "file": "src/server/routes/game-studio/projectEnrollmentRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/projects",
+      "line": 40,
+      "file": "src/server/routes/game-studio/projectEnrollmentRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/projects",
+      "line": 47,
+      "file": "src/server/routes/game-studio/projectEnrollmentRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/projects/:id",
+      "line": 52,
+      "file": "src/server/routes/game-studio/projectEnrollmentRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/projects/:id/refresh",
+      "line": 56,
+      "file": "src/server/routes/game-studio/projectEnrollmentRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/connect",
+      "line": 17,
+      "file": "src/server/routes/game-studio/projectSessionRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/sessions",
+      "line": 22,
+      "file": "src/server/routes/game-studio/projectSessionRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/sessions/:id",
+      "line": 26,
+      "file": "src/server/routes/game-studio/projectSessionRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/disconnect",
+      "line": 30,
+      "file": "src/server/routes/game-studio/projectSessionRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/${kind}",
+      "line": 34,
+      "file": "src/server/routes/game-studio/projectSessionRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/proposals",
+      "line": 38,
+      "file": "src/server/routes/game-studio/projectSessionRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/proposals/:id/approve",
+      "line": 42,
+      "file": "src/server/routes/game-studio/projectSessionRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/proposals/:id/apply",
+      "line": 46,
+      "file": "src/server/routes/game-studio/projectSessionRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/transactions/:id/rollback",
+      "line": 50,
+      "file": "src/server/routes/game-studio/projectSessionRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/runtime/scenario",
+      "line": 54,
+      "file": "src/server/routes/game-studio/projectSessionRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "GET",
+      "path": "/api/game-studio/profiler",
+      "line": 60,
+      "file": "src/server/routes/game-studio/projectSessionRoutes.ts"
+    },
+    {
+      "receiver": "router",
+      "method": "POST",
+      "path": "/api/game-studio/export",
+      "line": 63,
+      "file": "src/server/routes/game-studio/projectSessionRoutes.ts"
     },
     {
       "receiver": "router",
@@ -3759,6 +3864,7 @@
   ],
   "clientPanels": [
     "client/src/components/AudioPreviewBrowser.tsx",
+    "client/src/components/CampaignPanel.tsx",
     "client/src/components/CapabilityHubPanel.tsx",
     "client/src/components/CodeWorkflowPanel.tsx",
     "client/src/components/CodingToolsPanel.tsx",
@@ -3843,6 +3949,10 @@
     {
       "name": "UserService",
       "file": "src/core/auth/UserService.ts"
+    },
+    {
+      "name": "CampaignService",
+      "file": "src/core/campaign/CampaignService.ts"
     },
     {
       "name": "CapabilityJobManager",
@@ -4059,6 +4169,10 @@
     {
       "name": "GodotTransactionManager",
       "file": "src/core/gaming/godot/GodotTransactionManager.ts"
+    },
+    {
+      "name": "GameProjectRegistry",
+      "file": "src/core/gaming/project/GameProjectRegistry.ts"
     },
     {
       "name": "UnityMastService",
@@ -5838,6 +5952,14 @@
         "file": "scripts/certification/production-like.mjs"
       },
       {
+        "name": "tabletop_campaigns",
+        "file": "src/core/campaign/CampaignRepository.ts"
+      },
+      {
+        "name": "tabletop_events",
+        "file": "src/core/campaign/CampaignRepository.ts"
+      },
+      {
         "name": "capability_approvals",
         "file": "src/core/capabilities/persistence/CapabilityMigrations.ts"
       },
@@ -6068,6 +6190,10 @@
       {
         "name": "tool_user_overrides",
         "file": "src/core/database/ExpansionMigrations.ts"
+      },
+      {
+        "name": "game_enrolled_projects",
+        "file": "src/core/database/GameProjectMigrations.ts"
       }
     ],
     "migrations": [
@@ -6643,6 +6769,7 @@
     "CF_ACCESSIBILITY_CERTIFIED",
     "CF_RELEASE_CERTIFIED",
     "CHATBOT_NATIVE_PYTHON",
+    "CHATBOT_TEST_PYTHON",
     "CHAT_RUNTIME_ENABLED",
     "CHAT_RUNTIME_V2_SHADOW",
     "CHAT_SHADOW_REPORT_PATH",
@@ -7068,7 +7195,7 @@
     },
     {
       "file": "src/core/config/EnvironmentDefinitions.ts",
-      "lines": 319
+      "lines": 320
     },
     {
       "file": "src/core/config/ProfileManager.ts",
@@ -7088,7 +7215,7 @@
     },
     {
       "file": "src/core/database/Database.ts",
-      "lines": 562
+      "lines": 564
     },
     {
       "file": "src/core/database/ExpansionMigrations.ts",
@@ -7116,7 +7243,7 @@
     },
     {
       "file": "src/core/initialization/ServiceInitializer.ts",
-      "lines": 911
+      "lines": 919
     },
     {
       "file": "src/core/knowledge/GitHubSource.ts",
@@ -7172,7 +7299,7 @@
     },
     {
       "file": "src/core/native-runtime/NativeGameEditorBackends.ts",
-      "lines": 380
+      "lines": 376
     },
     {
       "file": "src/core/notifications/TwilioAdapter.ts",
@@ -7228,7 +7355,7 @@
     },
     {
       "file": "src/core/rag/RAGDocumentStore.ts",
-      "lines": 1251
+      "lines": 1284
     },
     {
       "file": "src/core/rag/RAGRouter.ts",

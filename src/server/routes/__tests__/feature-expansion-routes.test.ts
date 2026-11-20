@@ -1,3 +1,4 @@
+import { createSessionFixture } from '../../../core/gaming/project/__tests__/SessionFixture';
 import express from 'express';
 import fs from 'fs';
 import os from 'os';
@@ -170,12 +171,15 @@ describe('feature expansion routes', () => {
 
   it('serves Game Studio discovery and an explicit proposal approval/apply/rollback workflow', async () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'game-studio-route-'));
-    fs.writeFileSync(path.join(root, 'project.godot'), '[application]\nconfig/name="Route Test"\nrun/main_scene="res://Main.tscn"\n');
+    fs.writeFileSync(path.join(root, 'project.godot'), 'config_version=5\n[application]\nconfig/name="Route Test"\nrun/main_scene="res://Main.tscn"\n');
     fs.writeFileSync(path.join(root, 'Main.tscn'), '[gd_scene format=3]\n\n[node name="Main" type="Node"]\n');
     fs.writeFileSync(path.join(root, 'Player.gd'), 'extends Node\n\nfunc ready_for_test():\n\tpass\n');
+    const fixture = await createSessionFixture(root);
+    const enrolled = await fixture.enroll(root);
     const app = express();
     app.use(express.json());
-    app.use(createGameStudioRouter(root));
+    app.use((req, _res, next) => { req.user = { userId: 'local-operator' }; next(); });
+    app.use(createGameStudioRouter(root, { projectRegistry: fixture.registry, bridgeFactory: fixture.bridgeFactory }));
 
     const summaryRes = await request(app).get('/api/game-studio/summary').expect(200);
     expect(summaryRes.body.supportedTools).toContain('mast_analyze_occupancy');
@@ -191,21 +195,22 @@ describe('feature expansion routes', () => {
     expect(sliceRes.body.sliceMode).toBe('9-slice');
     expect(sliceRes.body.margins.top).toBe(16);
 
-    await request(app).post('/api/game-studio/connect').send({ engine: 'godot', projectRoot: root }).expect(200);
-    await request(app).get('/api/game-studio/project?engine=godot').expect(200).expect(response => {
+    const connected = await request(app).post('/api/game-studio/connect').send({ projectId: enrolled.projectId }).expect(200);
+    const sessionId = connected.body.sessionId;
+    await request(app).get('/api/game-studio/project?engine=godot').query({ sessionId }).expect(200).expect(response => {
       expect(response.body.engine).toBe('godot');
       expect(response.body.scenes).toContain('Main.tscn');
     });
-    await request(app).get('/api/game-studio/scene?engine=godot&path=Main.tscn').expect(200).expect(response => {
+    await request(app).get('/api/game-studio/scene?engine=godot&path=Main.tscn').query({ sessionId }).expect(200).expect(response => {
       expect(response.body.rootNode.name).toBe('Main');
     });
-    await request(app).get('/api/game-studio/script?engine=godot&path=Player.gd').expect(200).expect(response => {
+    await request(app).get('/api/game-studio/script?engine=godot&path=Player.gd').query({ sessionId }).expect(200).expect(response => {
       expect(response.body.language).toBe('gdscript');
     });
 
     const proposed = await request(app).post('/api/game-studio/proposals').send({
       engine: 'godot',
-      projectId: 'route-test',
+      projectId: enrolled.projectId, sessionId,
       title: 'Create reviewed helper',
       risk: 'low',
       actions: [{
@@ -219,12 +224,12 @@ describe('feature expansion routes', () => {
 
     await request(app)
       .post(`/api/game-studio/proposals/${proposed.body.id}/apply`)
-      .send({ engine: 'godot', approvalDigest: proposed.body.inputDigest, callerId: 'route-reviewer' })
+      .send({ sessionId, engine: 'godot', approvalDigest: proposed.body.inputDigest, callerId: 'route-reviewer' })
       .expect(400);
 
     const approved = await request(app)
       .post(`/api/game-studio/proposals/${proposed.body.id}/approve`)
-      .send({ engine: 'godot', approverId: 'route-reviewer' })
+      .send({ sessionId, engine: 'godot', approverId: 'route-reviewer' })
       .expect(200);
     expect(approved.body.status).toBe('approved');
     expect(approved.body.approvalDigest).toMatch(/^[a-f0-9]{64}$/);
@@ -232,16 +237,17 @@ describe('feature expansion routes', () => {
 
     const applied = await request(app)
       .post(`/api/game-studio/proposals/${proposed.body.id}/apply`)
-      .send({ engine: 'godot', approvalDigest: approved.body.approvalDigest, callerId: 'route-reviewer' })
+      .send({ sessionId, engine: 'godot', approvalDigest: approved.body.approvalDigest, callerId: 'route-reviewer' })
       .expect(200);
     expect(fs.existsSync(path.join(root, 'Generated.gd'))).toBe(true);
 
     await request(app)
       .post(`/api/game-studio/transactions/${applied.body.id}/rollback`)
-      .send({ engine: 'godot' })
+      .send({ sessionId, engine: 'godot' })
       .expect(200)
       .expect(response => expect(response.body.success).toBe(true));
     expect(fs.existsSync(path.join(root, 'Generated.gd'))).toBe(false);
-    await request(app).post('/api/game-studio/disconnect').send({ engine: 'godot' }).expect(200);
+    await request(app).post('/api/game-studio/disconnect').send({ sessionId, engine: 'godot' }).expect(200);
+    await fixture.close();
   });
 });

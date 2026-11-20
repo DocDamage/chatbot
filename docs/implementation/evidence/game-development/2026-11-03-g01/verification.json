@@ -1,0 +1,100 @@
+{
+  "completedTasks": [
+    "G01.1"
+  ],
+  "remainingPhaseTasks": [
+    "G01.2",
+    "G01.3"
+  ],
+  "baselineCommit": "c26d767345bd65e5192ed99e1213f8a1a0a7b110",
+  "branch": "codex/dnd-campaign-integration",
+  "checks": {
+    "jestPassed": 276,
+    "jestSuites": 25,
+    "jestSkipped": 1,
+    "skipReason": "Unconfigured existing PostgreSQL/pgvector integration test",
+    "serverTypeCheck": "passed",
+    "testTypeCheck": "passed",
+    "serverLint": "passed",
+    "fileSize": "passed",
+    "nativeEnrollmentGates": 7,
+    "diffCheck": "passed",
+    "preservation": "passed"
+  },
+  "nativeIdentities": {
+    "godot": "4.7.1.stable.official.a13da4feb",
+    "unity": [
+      "6000.4.5f1_cc83ebd631f8"
+    ],
+    "unrealBlockers": [
+      {
+        "code": "RUNTIME_INSPECTION_FAILED",
+        "message": "unreal: ENOENT: no such file or directory, stat 'C:\\Program Files\\Epic Games\\UE_5.7\\Engine\\Build\\Build.version'"
+      }
+    ]
+  },
+  "schemaChanges": [
+    "game_enrolled_projects",
+    "idx_game_projects_owner"
+  ],
+  "liveDatabaseChanged": false,
+  "newDependencies": [],
+  "nextGate": "G01.2 owner/project/runtime-scoped sessions",
+  "changedFileSha256": {
+    "src/core/gaming/project/EngineVersions.test.ts": "5ed590fbaffaa4de854a2cb1094ebef298e2b2bf6f939d27f2b958b5799ca087",
+    "src/core/gaming/project/EngineVersions.ts": "49dc8582adc94a80e66fe5ea7ac25fb05a86fc11679a6693ff9d5e3ae045fd47",
+    "src/core/gaming/project/GameProjectRegistry.test.ts": "3e53fba91ec7acf8ad222709a3762d35f9518155714b5337c96b2a70cdcde7e3",
+    "src/core/gaming/project/GameProjectRegistry.ts": "cf2f559918f2f9b50a4dd7f8f3e88542742c0ef6ce9ffede7b113d0814e09feb",
+    "src/core/gaming/project/GameProjectStore.ts": "40182d654a5b7ed8197bb6b8b6f3052a7199e1be398b5cd1ea95ef283a25c8a4",
+    "src/core/gaming/project/ProjectEnrollmentTypes.ts": "3a3eaad23593db1f26adce937505ef5ca7713898ffbeb24e7fe00158c1908df2",
+    "src/core/gaming/project/ProjectFactsReader.ts": "6dbef0bff7ebb11838958ead789f0bb7091db2015cb5bd16bcae1717b7780fdc",
+    "src/core/gaming/project/ProjectIdentity.ts": "80e47c789834e295831c2099bb297f37851ebe269012f3a1ca5135336bdc44dd",
+    "src/core/gaming/project/ProjectProfileResolver.test.ts": "822048c625e382516dc4bd1652d67abac749a43ac9009099cd5ce99c7b8a2e41",
+    "src/core/gaming/project/ProjectProfileResolver.ts": "9d679450d2c74e438801f60ab11d00421fd5d7dea0b6ad5685318e606eda3d57",
+    "src/core/gaming/project/ProjectRuntimeCatalog.test.ts": "88a39da445c169ac965770796dc86b386fc069a63cce9938b5f43773a8a0c2ad",
+    "src/core/gaming/project/ProjectRuntimeCatalog.ts": "5ab5135e1f35dded6d9c8f696bfda22a40d99e2d6ec0324003a6900f3d50af52",
+    "src/core/gaming/project/Unicode.ts": "64ea9cf53f0f84990395bcdcd496b170811d6434b910b6d834757fa75afd9ea1",
+    "src/core/native-runtime/GameRuntimeCandidates.ts": "9ce69ef688a5b413a3ca0e42a7e712184e9d4d67adc3af6ef24763168a93e7b1",
+    "src/core/database/GameProjectMigrations.ts": "29c6743b6d84ff1fa21bf6549045e041a78e36dc8cd53a7606452b08f8bd6898",
+    "src/core/database/Database.ts": "a4fdfb64198b2c75402bfa935ff67cb604be35998a5c2b0e3617ade937f14ea7",
+    "src/core/initialization/ServiceInitializer.ts": "a19a001d62af419fb58cc5a1abee6ba613df3ea005744cdf1dfef8a7f2e581fa",
+    "src/server/routeManifest.ts": "a994956f0d2a12df4c40eaa933ab523acbaef0571cb32e60cffe0ad99e143486",
+    "src/server/routes/game-studio/projectEnrollmentRoutes.ts": "61fd73c35cc36b4dbca34211ccff51a121a2bbb52bf4357c1d02d664fc132093",
+    "src/server/routes/game-studio/gameStudioRoutes.ts": "30da858312b889be8f4e03ea6ea001f46462af631da9c3413fd819803efb4d4a",
+    "src/server/routes/__tests__/project-enrollment-routes.test.ts": "37e0fbcd6c4834d3cd31317d14ecf7a004ff31f9f187a8bf53273a0ebc83491a",
+    "scripts/native/verify-project-enrollment.ts": "b57c60ff97e679500b5e4dff82479da3745de732521b124f9fc61bca099031bc",
+    "docs/implementation/GAME_DEVELOPMENT_STATUS.md": "966bc895311357a1577f8d6365771ad1c12d3807dfbd80f9ab8f928e17812740",
+    "docs/architecture/large-file-register.md": "2ac7ab1da9abd8ca9d95aeaf384b0b09272d36f0faa2d8092ea839e21d9f7b67"
+  },
+  "preservation": {
+    "intentionalPriorChanges": [
+      "docs/architecture/large-file-register.md",
+      "src/core/initialization/ServiceInitializer.ts",
+      "src/server/routeManifest.ts",
+      "src/server/routes/game-studio/gameStudioRoutes.ts"
+    ],
+    "intentionalG00SnapshotChanges": [
+      "src/server/routes/game-studio/gameStudioRoutes.ts",
+      "docs/implementation/GAME_DEVELOPMENT_STATUS.md",
+      "docs/architecture/large-file-register.md"
+    ],
+    "unexpectedChanges": []
+  },
+  "retainedArtifactSha256": {
+    "baseline-tests.txt": "27b4b2cd597d5bc4f6632b7fdc3bfc0a85b4639247110efb73f46450beb64f17",
+    "baseline-type-server.txt": "209e02ae2385f5f76afec43e5e07d193ac0f6e580a8d822244b277547d73d12f",
+    "baseline.json": "81c35c62f219c4c2e2e93a42efd121076f519236310b5ea43c27e6089741ec86",
+    "file-size.txt": "46deb1433613c8c3964d9b62fd8f8c0b181ea599014018cb3343052f11502497",
+    "final-tests.txt": "d8ee00b8a26b740423120142ac08ff88ea2ba6ff6d62c8490216c760bf4dbc39",
+    "lint-server.txt": "44a286b105c730974001d34e9c0bbefb3e0c5b5c603a65e6b81281f77aa0be8f",
+    "native-enrollment.json": "3aef3578d8b7daa4fbb2d15fddabc5f390244eaa616a6cfa6c6b5b6f3695abfe",
+    "native-enrollment.txt": "43e7baf1cad1496b471a2debda60ef830c46046ececd901a78bf5ffa6615b4e0",
+    "preservation-and-diff.txt": "7d3b524754fef7fe41f9124c690e7f02c873668d2cd31383a6b80c45390e1319",
+    "type-server.txt": "209e02ae2385f5f76afec43e5e07d193ac0f6e580a8d822244b277547d73d12f",
+    "type-tests.txt": "769c8e6af9da93212cc554503e1f4d7d744a7df953abf4b201372c4ffbb38eb7"
+  },
+  "finalVerifiedSourceNotes": [
+    "Unreal association GUIDs normalize braces/case.",
+    "Inferred language labels retain explicit source/confidence."
+  ]
+}

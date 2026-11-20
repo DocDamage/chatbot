@@ -3,7 +3,7 @@
 ## Document control
 
 - Owner: Engineering
-- Review date: 2026-11-05
+- Next review due: 2027-02-05
 - Supported baseline: Node.js 22.12 or newer (Node.js 22 and 24 LTS) with npm 10 or newer on Windows, macOS, or Linux
 
 ## Clean clone

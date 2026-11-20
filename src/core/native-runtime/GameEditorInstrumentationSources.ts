@@ -10,11 +10,12 @@ using UnityEngine;
 using UnityEngine.Profiling;
 
 public static class ChatBotHubInstrumentationBridge {
-  [Serializable] private sealed class Request { public string mode; public string scenePath; public int durationMs; public Assertion[] assertions; }
-  [Serializable] private sealed class Assertion { public string type; public string target; public string property; public string expectedJson; }
-  [Serializable] private sealed class AssertionResult { public string actualJson; public bool passed; }
+  [Serializable] private sealed class Evidence { public string runId; public string requestDigest; public string engine; public string projectRoot; public string scenePath; }
+  [Serializable] private sealed class Request { public Evidence evidence; public string mode; public string scenePath; public int durationMs; public Assertion[] assertions; }
+  [Serializable] private sealed class Assertion { public int assertionId; public string type; public string target; public string property; public string expectedJson; }
+  [Serializable] private sealed class AssertionResult { public int assertionId; public string actualJson; public bool passed; }
   [Serializable] private sealed class ProfileResult { public string timestamp; public float fps; public float frameTimeMs; public int drawCalls; public int nodeCount; public float memoryMb; public float vramMb; public float physicsTickRate; }
-  [Serializable] private sealed class Result { public string mode; public string scenarioName; public long durationMs; public AssertionResult[] assertions; public ProfileResult profile; public string error; }
+  [Serializable] private sealed class Result { public Evidence evidence; public string mode; public string scenarioName; public long durationMs; public AssertionResult[] assertions; public ProfileResult profile; public string error; }
 
   private static Request request;
   private static string resultPath;
@@ -68,7 +69,7 @@ public static class ChatBotHubInstrumentationBridge {
       }
 
       var requested = request.assertions ?? new Assertion[0];
-      var evaluated = requested.Select(Evaluate).ToArray();
+      var evaluated = requested.Select(item => { var result = Evaluate(item); result.assertionId = item.assertionId; return result; }).ToArray();
       Finish(new Result {
         mode = "scenario", scenarioName = String.IsNullOrWhiteSpace(request.scenePath) ? "active scene" : request.scenePath,
         durationMs = stopwatch.ElapsedMilliseconds, assertions = evaluated,
@@ -122,6 +123,7 @@ public static class ChatBotHubInstrumentationBridge {
 
   private static void Finish(Result result, int exitCode) {
     try {
+      result.evidence = request == null ? null : request.evidence;
       EditorApplication.update -= Tick;
       if (EditorApplication.isPlaying) EditorApplication.ExitPlaymode();
       EditorSettings.enterPlayModeOptionsEnabled = originalEnterPlayModeOptionsEnabled;
@@ -242,11 +244,12 @@ try:
     if request.get("mode") == "profile":
         output = {"mode": "profile", "scenarioName": scene_path or "active level", "durationMs": round((time.perf_counter() - began) * 1000), "profile": {"timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(), "fps": fps, "frameTimeMs": frame_ms, "nodeCount": len(actors()), "memoryMb": working_set_mb()}}
     else:
-        evaluated = [evaluate(assertion, fps) for assertion in request.get("assertions", [])]
+        evaluated = [dict(evaluate(assertion, fps), assertionId=assertion.get("assertionId")) for assertion in request.get("assertions", [])]
         output = {"mode": "scenario", "scenarioName": scene_path or "active level", "durationMs": round((time.perf_counter() - began) * 1000), "assertions": evaluated, "error": None if all(item["passed"] for item in evaluated) else "One or more project-side assertions failed."}
 except Exception as error:
     output = {"mode": "error", "error": str(error), "traceback": traceback.format_exc()}
 
+output["evidence"] = request.get("evidence") if "request" in globals() else None
 with open(result_path, "w", encoding="utf-8") as handle:
     json.dump(output, handle, indent=2)
 if output.get("mode") == "error":

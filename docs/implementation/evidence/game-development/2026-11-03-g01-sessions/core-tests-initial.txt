@@ -1,0 +1,5 @@
+Test Suites: 4 passed, 4 total
+Tests:       85 passed, 85 total
+Snapshots:   0 total
+Time:        6.491 s
+Ran all test suites within paths "src/core/gaming/project/GameProjectSessions.test.ts", "src/core/gaming/godot/GodotTransactionManager.test.ts", "src/core/gaming/engine/ProjectMutationStore.test.ts", "src/core/gaming/project/GameProjectRegistry.test.ts".

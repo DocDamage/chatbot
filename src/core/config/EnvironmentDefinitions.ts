@@ -103,6 +103,7 @@ export const ENVIRONMENT_DEFINITIONS: EnvironmentDefinition[] = [
   localOnly('LOCAL_MODEL_TIMEOUT_MS', 'providers', 'Timeout in milliseconds for local model requests.', '60000'),
   localOnly('LOCAL_MODEL_ROUTING_PRIVACY_MODE', 'providers', 'Privacy routing mode: strict_local, prefer_local, cloud_allowed, or local_disabled.', 'prefer_local'),
   localOnly('CHATBOT_NATIVE_PYTHON', 'native-runtime', 'Python executable containing the faster-whisper runtime.'),
+  optional('CHATBOT_TEST_PYTHON', 'testing', 'Python executable with SQLite FTS5 for the game development reference SQL tests.'),
   localOnly('DABOOK_PYTHON', 'native-runtime', 'Python 3.11+ executable used to create the DABOOK venv and, when it can import dabook, to run it (falls back to CHATBOT_NATIVE_PYTHON, then services/dabook/.venv).'),
   optional('DABOOK_ENABLED', 'knowledge', 'Ingest PDFs through the DABOOK structure-aware pipeline (page and chapter citations). Falls back to pdf-parse on any failure.', 'false'),
   localOnly('DABOOK_WORKSPACE', 'knowledge', 'DABOOK workspace directory: content-addressed stage cache and generated datasets.', './data/dabook_workspace'),

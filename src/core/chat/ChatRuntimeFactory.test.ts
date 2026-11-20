@@ -84,4 +84,32 @@ describe('ChatRuntimeFactory (CRK-P01-T04)', () => {
       process.env.DEFAULT_BOT_PROFILE_ID = prevProfile;
     }
   });
+
+  it('repairs an omitted citation once using the same supplied evidence', async () => {
+    const generate = jest.fn()
+      .mockResolvedValueOnce({ content: 'Use the formatter.' })
+      .mockResolvedValueOnce({ content: 'Use the formatter [1].' });
+    const retrieveContext = jest.fn().mockResolvedValue([
+      { id: 'guide', content: 'Use the formatter.', metadata: { source: 'guide.txt', title: 'Formatter Guide' } },
+    ]);
+    const runtime = ChatRuntimeFactory.create({ llmAdapter: { generate }, ragService: { retrieveContext } });
+    const result = await runtime.execute(sampleRequest);
+    expect(generate).toHaveBeenCalledTimes(2);
+    expect(retrieveContext).toHaveBeenCalledTimes(1);
+    expect(generate.mock.calls[1][0].systemPrompt).toContain('[1] Formatter Guide');
+    expect(result.citations[0].chunkId).toBe('guide');
+  });
+
+  it('keeps an uncited draft and insufficient grounding when citation repair fails', async () => {
+    const generate = jest.fn().mockResolvedValueOnce({ content: 'Use the formatter.' }).mockRejectedValueOnce(new Error('offline'));
+    const runtime = ChatRuntimeFactory.create({
+      llmAdapter: { generate },
+      ragService: { retrieveContext: async () => [{ id: 'guide', content: 'Use the formatter.', metadata: { source: 'guide.txt' } }] },
+    });
+    const result = await runtime.execute(sampleRequest);
+    expect(generate).toHaveBeenCalledTimes(2);
+    expect(result.response).toBe('Use the formatter.');
+    expect(result.citations).toEqual([]);
+    expect(result.grounding.sufficient).toBe(false);
+  });
 });

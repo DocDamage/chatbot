@@ -3,6 +3,11 @@ import { GameDevGeniusAgent } from './GameDevGeniusAgent';
 import { GameIntentClassifier } from './GameIntentClassifier';
 
 describe('RT-AGENT-GD-001: GameDevGeniusAgent and Intent Classifier Suite', () => {
+  it.each(['test', 'playtest', 'verification', 'time-to-kill', 'All tests passed'])('does not verify advice containing "%s"', async content => {
+    const result = await new GameDevGeniusAgent().verify({ content });
+    expect(result.verified).toBe(false);
+    expect(result.warnings).toContain('No native project execution or gameplay evidence was collected.');
+  });
   it('classifies balance, engine code, prototype, shader, level, and design intents', () => {
     const classifier = new GameIntentClassifier();
     expect(classifier.classify('Calculate time-to-kill TTK with HP and DPS').kind).toBe('balance');

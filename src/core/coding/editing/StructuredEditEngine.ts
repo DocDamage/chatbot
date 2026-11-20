@@ -2,10 +2,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { EditOperation, StructuredPatch } from '../types';
 import { PatchConflictDetector } from './PatchConflictDetector';
+import { WorkspaceFilePolicy } from '../security/WorkspaceFilePolicy';
 
 export class StructuredEditEngine {
   private readonly conflicts: PatchConflictDetector;
-  constructor(private readonly workspaceRoot: string) { this.conflicts = new PatchConflictDetector(workspaceRoot); }
+  constructor(private readonly workspaceRoot: string, filePolicy?: WorkspaceFilePolicy) { this.conflicts = new PatchConflictDetector(workspaceRoot, filePolicy); }
 
   createPatch(operations: EditOperation[], options: { requireAuthorization?: boolean } = {}): StructuredPatch {
     const requireAuthorization = options.requireAuthorization !== false;

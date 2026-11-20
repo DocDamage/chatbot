@@ -9,12 +9,17 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { EngineMutationAction, GameEngineError } from '../engine/GameEngineTypes';
 import { resolveProjectPath } from '../engine/ProjectPathGuard';
+import { validateGodotAction } from '../engine/EngineTextMutationPolicy';
 
 export class GodotSceneMutator {
   /**
    * Apply an engine mutation action to a scene or resource file
    */
   public static async applyAction(action: EngineMutationAction, projectRoot: string): Promise<void> {
+    validateGodotAction(projectRoot, action);
+    if (action.type === 'create_script' || action.type === 'update_script') {
+      throw new GameEngineError('SCRIPT_VALIDATION_FAILED', 'Script actions require GodotScriptMutator.');
+    }
     const fullPath = resolveProjectPath(projectRoot, action.targetPath);
 
     const dir = path.dirname(fullPath);
@@ -106,8 +111,7 @@ export class GodotSceneMutator {
       }
 
       default:
-        // Let other handlers or scripts process
-        break;
+        throw new GameEngineError('SCRIPT_VALIDATION_FAILED', `Godot scene mutator does not support action type '${action.type}'.`);
     }
   }
 }

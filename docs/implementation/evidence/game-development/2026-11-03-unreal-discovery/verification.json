@@ -1,0 +1,72 @@
+{
+  "completedWork": "G01.1 Unreal installation-discovery follow-up",
+  "tests": {
+    "passed": 284,
+    "suites": 26,
+    "skipped": 1,
+    "nativeEnrollmentGates": 8,
+    "serverTypes": "passed",
+    "testTypes": "passed",
+    "serverLint": "passed",
+    "fileSize": "passed",
+    "diffCheck": "passed"
+  },
+  "observedUnrealVersions": [
+    {
+      "exactVersion": "5.8.4",
+      "executablePath": "C:\\Program Files\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+      "versionOutput": "++UE5+Release-5.8-CL-58902052",
+      "executableSha256": "a423ab94410aa4f4cc34d99a2af75240c5d0e376a33d903a3e819fecf1177143",
+      "buildIdentityDigest": "6f55b4fe7ba02a026b1b88d2f872d9b4f80aa727805d20eda46a0da978b93c61",
+      "buildMetadataSha256": "80a6af0f427f373b43a1c373082acf2b3de07305d215a67c27f18272e6dff24f"
+    },
+    {
+      "exactVersion": "5.7.4",
+      "executablePath": "I:\\Epic Games\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+      "versionOutput": "++UE5+Release-5.7-CL-51494982",
+      "executableSha256": "46cfb8dc2f0ba04e970f169c335cce99545ede02b577e6666fe158ceef774bc9",
+      "buildIdentityDigest": "178c6305e684c748890799866db465ad6b7cef890e4a808525c723b004c6aa3c",
+      "buildMetadataSha256": "f4acff8af146d5d02f7618a4e988724d70f3b720c70e68d090bb90a240ae51f6"
+    }
+  ],
+  "discoveredDefault": "C:\\Program Files\\UE_5.8\\Engine\\Binaries\\Win64\\UnrealEditor.exe",
+  "schemaChanges": [],
+  "newDependencies": [],
+  "engineInstallationModified": false,
+  "nativeGameplayQualified": false,
+  "nextGate": "G01.2 project-scoped sessions",
+  "intentionalParentSnapshotChanges": [
+    "src/core/gaming/project/EngineVersions.test.ts",
+    "src/core/gaming/project/EngineVersions.ts",
+    "src/core/gaming/project/ProjectRuntimeCatalog.test.ts",
+    "src/core/gaming/project/ProjectRuntimeCatalog.ts",
+    "src/core/native-runtime/GameRuntimeCandidates.ts",
+    "scripts/native/verify-project-enrollment.ts",
+    "docs/implementation/GAME_DEVELOPMENT_STATUS.md"
+  ],
+  "unexpectedParentSnapshotChanges": [],
+  "changedFileSha256": {
+    "docs/architecture/large-file-register.md": "2ac7ab1da9abd8ca9d95aeaf384b0b09272d36f0faa2d8092ea839e21d9f7b67",
+    "docs/implementation/GAME_DEVELOPMENT_STATUS.md": "392acd6e5a0c4db1d26ee615fab6147c8bfbd10b2024a0bd665c3bae1b97fe6d",
+    "scripts/native/verify-project-enrollment.ts": "7d51f0d8406bbafe123e1af3eb860d4fc7305f8fb2f8370d8a6c5d50bb16ae94",
+    "src/core/gaming/project/EngineVersions.test.ts": "c96daa727849c251271643b38a8bb1b4aca96b3e0f8ec447fa8af1349605ad39",
+    "src/core/gaming/project/EngineVersions.ts": "88ded71c1d11888960db60e100f3bdd938f4ee3c4fae0b656f4be9f2049b2ee9",
+    "src/core/gaming/project/ProjectRuntimeCatalog.test.ts": "c4ea76aec8e591ee28dbb7d01ca02c3e671ab2ded6d6d3227684d05dab4e9aa5",
+    "src/core/gaming/project/ProjectRuntimeCatalog.ts": "b44dcc928954696202fdbb468c42519bfcd7fac9677711061db30443f8026476",
+    "src/core/native-runtime/EpicUnrealInstallations.ts": "def01e9361e6ce5f4cb86ed4f5f2b6ec77e49a9df0da6c798e5004abf7b8df09",
+    "src/core/native-runtime/GameRuntimeCandidates.ts": "082c2653e53e410e196ea6a14da0c2f197a1b79052bd03d63499701fe1874a8f",
+    "src/core/native-runtime/RuntimeDiscovery.ts": "a981376f04d978018f640007c5b68806d4bed7e0888701fa158903ccb16ca7be",
+    "src/core/native-runtime/__tests__/EpicUnrealInstallations.test.ts": "a96df944054634938a4948bec4a7ddbb2992b35b88b015d0acca3410753d687f"
+  },
+  "artifactSha256": {
+    "file-size.txt": "46deb1433613c8c3964d9b62fd8f8c0b181ea599014018cb3343052f11502497",
+    "final-tests.txt": "4d1e853a7645e94ded58000f0163111793c2fcbfc45b19db05ab197a107495db",
+    "focused-tests.txt": "5c51c34c9c65b069c103ccfff42d1124b3cc06491144d62a47ecdbed80dee714",
+    "launcher-records.json": "d48b46ceef6f32ce013a729b9494d3360f12460c7e3ca0a90e25c29f82146e8f",
+    "lint-server.txt": "44a286b105c730974001d34e9c0bbefb3e0c5b5c603a65e6b81281f77aa0be8f",
+    "native-enrollment.json": "62c527268c287726e7c50bdf293f6f0fa7e334b2ce566de40d0c13fa7deb59c5",
+    "native-enrollment.txt": "8fe5d8f7d2087350ef14ca7fa07fc3da4d2d96f59054a97174baca0454e7cd97",
+    "type-server.txt": "209e02ae2385f5f76afec43e5e07d193ac0f6e580a8d822244b277547d73d12f",
+    "type-tests.txt": "769c8e6af9da93212cc554503e1f4d7d744a7df953abf4b201372c4ffbb38eb7"
+  }
+}

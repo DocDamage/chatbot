@@ -13,6 +13,9 @@ describe('RT-UI-003 / RT-COV-003 / RT-CLIENT-005: Critical Client Coverage & Wor
   beforeEach(() => {
     vi.restoreAllMocks();
     globalThis.fetch = vi.fn().mockImplementation(async (url: string) => {
+      if (typeof url === 'string' && url.endsWith('/api/campaigns')) {
+        return { ok: true, json: async () => [] };
+      }
       if (typeof url === 'string' && url.includes('/api/settings')) {
         return {
           ok: true,
@@ -65,5 +68,17 @@ describe('RT-UI-003 / RT-COV-003 / RT-CLIENT-005: Critical Client Coverage & Wor
       expect(document.querySelector('.app-main.advanced-open')).toBeTruthy();
       expect(screen.getByLabelText('Workspace files')).toBeTruthy();
     });
+  });
+
+  it('preserves the chat draft and conversation when switching to campaigns', async () => {
+    render(<App />);
+    const composer = screen.getByRole('textbox') as HTMLTextAreaElement;
+    fireEvent.change(composer, { target: { value: 'Keep this idea for later' } });
+    fireEvent.click(screen.getByRole('button', { name: 'D&D campaigns' }));
+    await screen.findByRole('heading', { name: 'Begin a campaign' });
+    expect(screen.queryByRole('region', { name: 'AI chat' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Chat' }));
+    expect(screen.getByRole('textbox')).toBe(composer);
+    expect(composer.value).toBe('Keep this idea for later');
   });
 });

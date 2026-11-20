@@ -93,6 +93,7 @@
   "reachable": [
     "client/src/App.tsx",
     "client/src/api/audio.ts",
+    "client/src/api/campaigns.ts",
     "client/src/api/code.ts",
     "client/src/api/conversations.ts",
     "client/src/api/errors.ts",
@@ -107,6 +108,7 @@
     "client/src/clipboard.ts",
     "client/src/components/AssistantChat.tsx",
     "client/src/components/AudioPreviewBrowser.tsx",
+    "client/src/components/CampaignPanel.tsx",
     "client/src/components/CapabilityHubPanel.tsx",
     "client/src/components/CapabilityPromotionView.tsx",
     "client/src/components/CodeWorkflowPanel.tsx",
@@ -267,6 +269,11 @@
     "src/core/auth/AuthService.ts",
     "src/core/auth/UserService.ts",
     "src/core/browser/AuthorizedBrowserJob.ts",
+    "src/core/campaign/CampaignImports.ts",
+    "src/core/campaign/CampaignMechanics.ts",
+    "src/core/campaign/CampaignRepository.ts",
+    "src/core/campaign/CampaignService.ts",
+    "src/core/campaign/CampaignTypes.ts",
     "src/core/capabilities/CapabilityJobManager.ts",
     "src/core/capabilities/CapabilityRegistry.ts",
     "src/core/capabilities/ReaCapability.ts",
@@ -343,9 +350,13 @@
     "src/core/coding/integrations/DraftDiagnostics.ts",
     "src/core/coding/integrations/FastCheckGuidance.ts",
     "src/core/coding/integrations/PatchDraftValidator.ts",
+    "src/core/coding/integrations/ProjectDependencies.ts",
     "src/core/coding/integrations/SerenaAdapter.ts",
     "src/core/coding/integrations/ToolProcess.ts",
     "src/core/coding/integrations/ToolWorkspace.ts",
+    "src/core/coding/integrations/dependencies/GodotDependencies.ts",
+    "src/core/coding/integrations/dependencies/MzDependencies.ts",
+    "src/core/coding/integrations/dependencies/SourceDependencies.ts",
     "src/core/coding/languages/LanguageCapability.ts",
     "src/core/coding/languages/LanguageCapabilityRegistry.ts",
     "src/core/coding/repository/BuildSystemDetector.ts",
@@ -360,6 +371,7 @@
     "src/core/coding/retrieval/StructuralRetriever.ts",
     "src/core/coding/review/ReviewPipeline.ts",
     "src/core/coding/security/ApprovedRepositoryGateway.ts",
+    "src/core/coding/security/WorkspaceFilePolicy.ts",
     "src/core/coding/security/WorkspacePathPolicy.ts",
     "src/core/coding/teams/AgentTeamRoles.ts",
     "src/core/coding/teams/ProcessTreeSupervisor.ts",
@@ -411,6 +423,7 @@
     "src/core/database/DatasetMigrations.ts",
     "src/core/database/ExpansionDatabase.ts",
     "src/core/database/ExpansionMigrations.ts",
+    "src/core/database/GameProjectMigrations.ts",
     "src/core/database/SafeDatabaseQuestionAgent.ts",
     "src/core/debug/DebugMode.ts",
     "src/core/developer/CapabilityPackScaffolder.ts",
@@ -431,11 +444,16 @@
     "src/core/files/FileExplorerService.ts",
     "src/core/gaming/asset-cooker/AssetCookerAdapter.ts",
     "src/core/gaming/asset-cooker/LocalAssetCookerExecutor.ts",
+    "src/core/gaming/engine/CanonicalJson.ts",
     "src/core/gaming/engine/EngineCertificationProfile.ts",
+    "src/core/gaming/engine/EngineProposalIntegrity.ts",
+    "src/core/gaming/engine/EngineSnapshotRestore.ts",
+    "src/core/gaming/engine/EngineTextMutationPolicy.ts",
     "src/core/gaming/engine/GameEngineBridge.ts",
     "src/core/gaming/engine/GameEngineTypes.ts",
     "src/core/gaming/engine/MultiEngineStudioService.ts",
     "src/core/gaming/engine/NativeEditorBackend.ts",
+    "src/core/gaming/engine/NativeScenarioEvidence.ts",
     "src/core/gaming/engine/ProjectMutationStore.ts",
     "src/core/gaming/engine/ProjectPathGuard.ts",
     "src/core/gaming/godot/GodotAssetPipeline.ts",
@@ -452,6 +470,22 @@
     "src/core/gaming/lattice/LatticeSimulationEngine.ts",
     "src/core/gaming/lattice/LatticeVisualizer.ts",
     "src/core/gaming/lattice/LatticeWorldSchema.ts",
+    "src/core/gaming/project/EngineVersions.ts",
+    "src/core/gaming/project/GameProjectContext.ts",
+    "src/core/gaming/project/GameProjectRegistry.ts",
+    "src/core/gaming/project/GameProjectSessions.ts",
+    "src/core/gaming/project/GameProjectStore.ts",
+    "src/core/gaming/project/ProjectBridgeFactory.ts",
+    "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+    "src/core/gaming/project/ProjectFactsReader.ts",
+    "src/core/gaming/project/ProjectFilePolicy.ts",
+    "src/core/gaming/project/ProjectIdentity.ts",
+    "src/core/gaming/project/ProjectOperationLocks.ts",
+    "src/core/gaming/project/ProjectProfileResolver.ts",
+    "src/core/gaming/project/ProjectRuntimeCatalog.ts",
+    "src/core/gaming/project/ProjectSessionGuards.ts",
+    "src/core/gaming/project/ProjectSessionTypes.ts",
+    "src/core/gaming/project/Unicode.ts",
     "src/core/gaming/slicing/SpriteSlicingBridge.ts",
     "src/core/gaming/unity/UnityEngineAdapter.ts",
     "src/core/gaming/unity/UnityMastService.ts",
@@ -561,7 +595,9 @@
     "src/core/modes/ModePolicy.ts",
     "src/core/multimodal/localization/MediaConsentRecord.ts",
     "src/core/multimodal/localization/VideoLocalizationJob.ts",
+    "src/core/native-runtime/EpicUnrealInstallations.ts",
     "src/core/native-runtime/GameEditorInstrumentationSources.ts",
+    "src/core/native-runtime/GameRuntimeCandidates.ts",
     "src/core/native-runtime/LocalAIBackends.ts",
     "src/core/native-runtime/NativeAudioBackends.ts",
     "src/core/native-runtime/NativeCommandRunner.ts",
@@ -916,6 +952,7 @@
     "src/server/routes/agent-operations.ts",
     "src/server/routes/audio.ts",
     "src/server/routes/business.ts",
+    "src/server/routes/campaigns.ts",
     "src/server/routes/capabilities.ts",
     "src/server/routes/chat-stream.ts",
     "src/server/routes/chrono.ts",
@@ -932,6 +969,9 @@
     "src/server/routes/flstudio.ts",
     "src/server/routes/game-studio/gameStudioRoutes.ts",
     "src/server/routes/game-studio/index.ts",
+    "src/server/routes/game-studio/projectContextRoutes.ts",
+    "src/server/routes/game-studio/projectEnrollmentRoutes.ts",
+    "src/server/routes/game-studio/projectSessionRoutes.ts",
     "src/server/routes/gamedev.ts",
     "src/server/routes/gaming.ts",
     "src/server/routes/geography.ts",
@@ -1008,6 +1048,7 @@
   "reachableProduction": [
     "client/src/App.tsx",
     "client/src/api/audio.ts",
+    "client/src/api/campaigns.ts",
     "client/src/api/code.ts",
     "client/src/api/conversations.ts",
     "client/src/api/errors.ts",
@@ -1022,6 +1063,7 @@
     "client/src/clipboard.ts",
     "client/src/components/AssistantChat.tsx",
     "client/src/components/AudioPreviewBrowser.tsx",
+    "client/src/components/CampaignPanel.tsx",
     "client/src/components/CapabilityHubPanel.tsx",
     "client/src/components/CapabilityPromotionView.tsx",
     "client/src/components/CodeWorkflowPanel.tsx",
@@ -1182,6 +1224,11 @@
     "src/core/auth/AuthService.ts",
     "src/core/auth/UserService.ts",
     "src/core/browser/AuthorizedBrowserJob.ts",
+    "src/core/campaign/CampaignImports.ts",
+    "src/core/campaign/CampaignMechanics.ts",
+    "src/core/campaign/CampaignRepository.ts",
+    "src/core/campaign/CampaignService.ts",
+    "src/core/campaign/CampaignTypes.ts",
     "src/core/capabilities/CapabilityJobManager.ts",
     "src/core/capabilities/CapabilityRegistry.ts",
     "src/core/capabilities/ReaCapability.ts",
@@ -1258,9 +1305,13 @@
     "src/core/coding/integrations/DraftDiagnostics.ts",
     "src/core/coding/integrations/FastCheckGuidance.ts",
     "src/core/coding/integrations/PatchDraftValidator.ts",
+    "src/core/coding/integrations/ProjectDependencies.ts",
     "src/core/coding/integrations/SerenaAdapter.ts",
     "src/core/coding/integrations/ToolProcess.ts",
     "src/core/coding/integrations/ToolWorkspace.ts",
+    "src/core/coding/integrations/dependencies/GodotDependencies.ts",
+    "src/core/coding/integrations/dependencies/MzDependencies.ts",
+    "src/core/coding/integrations/dependencies/SourceDependencies.ts",
     "src/core/coding/languages/LanguageCapability.ts",
     "src/core/coding/languages/LanguageCapabilityRegistry.ts",
     "src/core/coding/repository/BuildSystemDetector.ts",
@@ -1275,6 +1326,7 @@
     "src/core/coding/retrieval/StructuralRetriever.ts",
     "src/core/coding/review/ReviewPipeline.ts",
     "src/core/coding/security/ApprovedRepositoryGateway.ts",
+    "src/core/coding/security/WorkspaceFilePolicy.ts",
     "src/core/coding/security/WorkspacePathPolicy.ts",
     "src/core/coding/teams/AgentTeamRoles.ts",
     "src/core/coding/teams/ProcessTreeSupervisor.ts",
@@ -1326,6 +1378,7 @@
     "src/core/database/DatasetMigrations.ts",
     "src/core/database/ExpansionDatabase.ts",
     "src/core/database/ExpansionMigrations.ts",
+    "src/core/database/GameProjectMigrations.ts",
     "src/core/database/SafeDatabaseQuestionAgent.ts",
     "src/core/debug/DebugMode.ts",
     "src/core/developer/CapabilityPackScaffolder.ts",
@@ -1346,11 +1399,16 @@
     "src/core/files/FileExplorerService.ts",
     "src/core/gaming/asset-cooker/AssetCookerAdapter.ts",
     "src/core/gaming/asset-cooker/LocalAssetCookerExecutor.ts",
+    "src/core/gaming/engine/CanonicalJson.ts",
     "src/core/gaming/engine/EngineCertificationProfile.ts",
+    "src/core/gaming/engine/EngineProposalIntegrity.ts",
+    "src/core/gaming/engine/EngineSnapshotRestore.ts",
+    "src/core/gaming/engine/EngineTextMutationPolicy.ts",
     "src/core/gaming/engine/GameEngineBridge.ts",
     "src/core/gaming/engine/GameEngineTypes.ts",
     "src/core/gaming/engine/MultiEngineStudioService.ts",
     "src/core/gaming/engine/NativeEditorBackend.ts",
+    "src/core/gaming/engine/NativeScenarioEvidence.ts",
     "src/core/gaming/engine/ProjectMutationStore.ts",
     "src/core/gaming/engine/ProjectPathGuard.ts",
     "src/core/gaming/godot/GodotAssetPipeline.ts",
@@ -1367,6 +1425,22 @@
     "src/core/gaming/lattice/LatticeSimulationEngine.ts",
     "src/core/gaming/lattice/LatticeVisualizer.ts",
     "src/core/gaming/lattice/LatticeWorldSchema.ts",
+    "src/core/gaming/project/EngineVersions.ts",
+    "src/core/gaming/project/GameProjectContext.ts",
+    "src/core/gaming/project/GameProjectRegistry.ts",
+    "src/core/gaming/project/GameProjectSessions.ts",
+    "src/core/gaming/project/GameProjectStore.ts",
+    "src/core/gaming/project/ProjectBridgeFactory.ts",
+    "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+    "src/core/gaming/project/ProjectFactsReader.ts",
+    "src/core/gaming/project/ProjectFilePolicy.ts",
+    "src/core/gaming/project/ProjectIdentity.ts",
+    "src/core/gaming/project/ProjectOperationLocks.ts",
+    "src/core/gaming/project/ProjectProfileResolver.ts",
+    "src/core/gaming/project/ProjectRuntimeCatalog.ts",
+    "src/core/gaming/project/ProjectSessionGuards.ts",
+    "src/core/gaming/project/ProjectSessionTypes.ts",
+    "src/core/gaming/project/Unicode.ts",
     "src/core/gaming/slicing/SpriteSlicingBridge.ts",
     "src/core/gaming/unity/UnityEngineAdapter.ts",
     "src/core/gaming/unity/UnityMastService.ts",
@@ -1476,7 +1550,9 @@
     "src/core/modes/ModePolicy.ts",
     "src/core/multimodal/localization/MediaConsentRecord.ts",
     "src/core/multimodal/localization/VideoLocalizationJob.ts",
+    "src/core/native-runtime/EpicUnrealInstallations.ts",
     "src/core/native-runtime/GameEditorInstrumentationSources.ts",
+    "src/core/native-runtime/GameRuntimeCandidates.ts",
     "src/core/native-runtime/LocalAIBackends.ts",
     "src/core/native-runtime/NativeAudioBackends.ts",
     "src/core/native-runtime/NativeCommandRunner.ts",
@@ -1831,6 +1907,7 @@
     "src/server/routes/agent-operations.ts",
     "src/server/routes/audio.ts",
     "src/server/routes/business.ts",
+    "src/server/routes/campaigns.ts",
     "src/server/routes/capabilities.ts",
     "src/server/routes/chat-stream.ts",
     "src/server/routes/chrono.ts",
@@ -1847,6 +1924,9 @@
     "src/server/routes/flstudio.ts",
     "src/server/routes/game-studio/gameStudioRoutes.ts",
     "src/server/routes/game-studio/index.ts",
+    "src/server/routes/game-studio/projectContextRoutes.ts",
+    "src/server/routes/game-studio/projectEnrollmentRoutes.ts",
+    "src/server/routes/game-studio/projectSessionRoutes.ts",
     "src/server/routes/gamedev.ts",
     "src/server/routes/gaming.ts",
     "src/server/routes/geography.ts",
@@ -2284,6 +2364,78 @@
   ],
   "unresolvedRelativeImports": [
     {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/src/engine/capability-guard.ts",
+      "specifier": "./proposal-integrity.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/src/engine/run-state.ts",
+      "specifier": "./proposal-integrity.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/src/engine/verification-evidence.ts",
+      "specifier": "./proposal-integrity.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/src/rom/CheckedByteEdits.ts",
+      "specifier": "./RomIdentity.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/src/rom/PatchRoundTrip.ts",
+      "specifier": "./RomIdentity.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/src/rom/RomAddressMap.ts",
+      "specifier": "./RomIdentity.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/tests/engine/capability-guard.test.ts",
+      "specifier": "../../src/engine/capability-guard.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/tests/engine/capability-guard.test.ts",
+      "specifier": "../../src/engine/proposal-integrity.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/tests/engine/proposal-integrity.test.ts",
+      "specifier": "../../src/engine/proposal-integrity.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/tests/engine/run-state.test.ts",
+      "specifier": "../../src/engine/proposal-integrity.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/tests/engine/run-state.test.ts",
+      "specifier": "../../src/engine/run-state.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/tests/engine/verification-evidence.test.ts",
+      "specifier": "../../src/engine/proposal-integrity.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/tests/engine/verification-evidence.test.ts",
+      "specifier": "../../src/engine/verification-evidence.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/tests/rom/PatchRoundTrip.test.ts",
+      "specifier": "../../src/rom/PatchRoundTrip.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/tests/rom/PatchRoundTrip.test.ts",
+      "specifier": "../../src/rom/RomIdentity.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/tests/rom/RomIdentityAndEdits.test.ts",
+      "specifier": "../../src/rom/CheckedByteEdits.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/tests/rom/RomIdentityAndEdits.test.ts",
+      "specifier": "../../src/rom/RomAddressMap.js"
+    },
+    {
+      "importer": "chatbot-game-development-code/chatbot-game-development-code/tests/rom/RomIdentityAndEdits.test.ts",
+      "specifier": "../../src/rom/RomIdentity.js"
+    },
+    {
       "importer": "client/src/App.tsx",
       "specifier": "./App.css"
     },
@@ -2294,6 +2446,10 @@
     {
       "importer": "client/src/components/AudioPreviewBrowser.tsx",
       "specifier": "./AudioPreviewBrowser.css"
+    },
+    {
+      "importer": "client/src/components/CampaignPanel.tsx",
+      "specifier": "./CampaignPanel.css"
     },
     {
       "importer": "client/src/components/CapabilityHubPanel.tsx",
@@ -2458,6 +2614,18 @@
     {
       "importer": "src/core/__tests__/branch-coverage-tail-services.test.ts",
       "specifier": "../cache/PredictiveCache"
+    },
+    {
+      "importer": "src/core/campaign/CampaignMechanics.ts",
+      "specifier": "./vendor/campfireInitiative"
+    },
+    {
+      "importer": "src/core/campaign/CampaignMechanics.ts",
+      "specifier": "./vendor/campfireSpellSlots"
+    },
+    {
+      "importer": "src/core/campaign/CampaignMechanics.ts",
+      "specifier": "./vendor/openGameMasterDice"
     },
     {
       "importer": "src/core/capabilities/__tests__/CapabilityPlatformContract.test.ts",
@@ -2625,6 +2793,72 @@
     }
   ],
   "importGraph": {
+    "chatbot-game-development-code/chatbot-game-development-code/scripts/run-sql-tests.cjs": [],
+    "chatbot-game-development-code/chatbot-game-development-code/scripts/run-tests.cjs": [],
+    "chatbot-game-development-code/chatbot-game-development-code/src/common/CanonicalJson.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/src/common/Unicode.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/src/engine/capability-guard.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/src/engine/proposal-integrity.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/common/CanonicalJson.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/src/engine/run-state.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/src/engine/verification-evidence.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/src/knowledge/Eligibility.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/common/Unicode.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/src/knowledge/EmbeddingSpace.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/common/Unicode.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/src/knowledge/ImmutableIdentity.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/common/Unicode.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/src/knowledge/ReciprocalRankFusion.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/knowledge/Eligibility.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/src/project/EngineVersions.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/common/CanonicalJson.ts",
+      "chatbot-game-development-code/chatbot-game-development-code/src/common/Unicode.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/src/project/ProjectFilePolicy.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/common/Unicode.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/src/rom/CheckedByteEdits.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/src/rom/PatchRoundTrip.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/src/rom/RomAddressMap.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/src/rom/RomIdentity.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/tests/engine/capability-guard.test.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/tests/engine/proposal-integrity.test.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/tests/engine/run-state.test.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/tests/engine/verification-evidence.test.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/tests/knowledge/BoundaryRegression.test.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/knowledge/Eligibility.ts",
+      "chatbot-game-development-code/chatbot-game-development-code/src/knowledge/ImmutableIdentity.ts",
+      "chatbot-game-development-code/chatbot-game-development-code/src/knowledge/ReciprocalRankFusion.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/tests/knowledge/Eligibility.test.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/knowledge/Eligibility.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/tests/knowledge/EmbeddingSpace.test.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/knowledge/EmbeddingSpace.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/tests/knowledge/ImmutableIdentity.test.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/knowledge/ImmutableIdentity.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/tests/knowledge/ReciprocalRankFusion.test.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/knowledge/Eligibility.ts",
+      "chatbot-game-development-code/chatbot-game-development-code/src/knowledge/ReciprocalRankFusion.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/tests/project/ProjectEdgeCases.test.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/project/EngineVersions.ts",
+      "chatbot-game-development-code/chatbot-game-development-code/src/project/ProjectFilePolicy.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/tests/project/RootContracts.test.ts": [
+      "chatbot-game-development-code/chatbot-game-development-code/src/common/CanonicalJson.ts",
+      "chatbot-game-development-code/chatbot-game-development-code/src/project/EngineVersions.ts",
+      "chatbot-game-development-code/chatbot-game-development-code/src/project/ProjectFilePolicy.ts"
+    ],
+    "chatbot-game-development-code/chatbot-game-development-code/tests/rom/PatchRoundTrip.test.ts": [],
+    "chatbot-game-development-code/chatbot-game-development-code/tests/rom/RomIdentityAndEdits.test.ts": [],
     "client/playwright.a11y.config.mjs": [],
     "client/playwright.browser.config.mjs": [],
     "client/scripts/prepare-a11y-tools.mjs": [],
@@ -2635,6 +2869,10 @@
       "client/src/api/audio.ts"
     ],
     "client/src/api/audio.ts": [
+      "client/src/api/errors.ts",
+      "client/src/api/http.ts"
+    ],
+    "client/src/api/campaigns.ts": [
       "client/src/api/errors.ts",
       "client/src/api/http.ts"
     ],
@@ -2718,6 +2956,7 @@
     "client/src/App.tsx": [
       "client/src/api/runtime.ts",
       "client/src/components/AssistantChat.tsx",
+      "client/src/components/CampaignPanel.tsx",
       "client/src/components/LocalToolsWorkspace.tsx",
       "client/src/components/SettingsMenu.tsx",
       "client/src/components/StaticDemo.tsx"
@@ -2814,6 +3053,14 @@
     "client/src/components/AudioPreviewBrowser.tsx": [
       "client/src/api/audio.ts",
       "client/src/api/runtime.ts"
+    ],
+    "client/src/components/CampaignPanel.test.tsx": [
+      "client/src/api/campaigns.ts",
+      "client/src/components/CampaignPanel.tsx"
+    ],
+    "client/src/components/CampaignPanel.tsx": [
+      "client/src/api/campaigns.ts",
+      "client/src/api/http.ts"
     ],
     "client/src/components/CapabilityHubPanel.test.tsx": [
       "client/src/components/CapabilityHubPanel.tsx"
@@ -3208,6 +3455,31 @@
       "src/core/native-runtime/RuntimeDiscovery.ts"
     ],
     "scripts/native/setup-local-runtime.mjs": [],
+    "scripts/native/verify-godot-evidence.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/godot/GodotCliBackend.ts",
+      "src/core/native-runtime/NativeCommandRunner.ts",
+      "src/core/native-runtime/RuntimeDiscovery.ts"
+    ],
+    "scripts/native/verify-project-context.ts": [
+      "src/core/database/Database.ts",
+      "src/core/gaming/project/GameProjectStore.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/game-studio/gameStudioRoutes.ts"
+    ],
+    "scripts/native/verify-project-enrollment.ts": [
+      "src/core/database/Database.ts",
+      "src/core/gaming/project/GameProjectStore.ts",
+      "src/core/native-runtime/RuntimeDiscovery.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/game-studio/gameStudioRoutes.ts"
+    ],
+    "scripts/native/verify-project-sessions.ts": [
+      "src/core/database/Database.ts",
+      "src/core/gaming/project/GameProjectStore.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/game-studio/gameStudioRoutes.ts"
+    ],
     "scripts/ocr-queue.ts": [
       "src/core/database/Database.ts",
       "src/core/embeddings/EmbeddingService.ts",
@@ -4115,6 +4387,37 @@
     "src/core/browser/PydollAdapter.ts": [
       "src/core/browser/AuthorizedBrowserJob.ts"
     ],
+    "src/core/campaign/Campaign.test.ts": [
+      "src/core/campaign/CampaignImports.ts",
+      "src/core/campaign/CampaignMechanics.ts",
+      "src/core/campaign/CampaignRepository.ts",
+      "src/core/campaign/CampaignService.ts",
+      "src/core/campaign/CampaignTypes.ts",
+      "src/core/database/Database.ts"
+    ],
+    "src/core/campaign/CampaignImports.ts": [
+      "src/core/campaign/CampaignTypes.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/core/campaign/CampaignMechanics.ts": [
+      "src/core/campaign/CampaignTypes.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/core/campaign/CampaignRepository.ts": [
+      "src/core/campaign/CampaignTypes.ts",
+      "src/core/database/Database.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/core/campaign/CampaignService.ts": [
+      "src/core/campaign/CampaignImports.ts",
+      "src/core/campaign/CampaignMechanics.ts",
+      "src/core/campaign/CampaignRepository.ts",
+      "src/core/campaign/CampaignTypes.ts",
+      "src/core/providers/LLMAdapter.ts",
+      "src/core/rag/RAGDocumentStore.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/core/campaign/CampaignTypes.ts": [],
     "src/core/capabilities/__tests__/capability-evaluation-suite-matrix.test.ts": [
       "src/core/capabilities/evaluation/CapabilityEvaluationSuite.ts"
     ],
@@ -4730,11 +5033,13 @@
       "src/core/coding/verification/DiagnosticParser.ts"
     ],
     "src/core/coding/editing/PatchConflictDetector.ts": [
+      "src/core/coding/security/WorkspaceFilePolicy.ts",
       "src/core/coding/security/WorkspacePathPolicy.ts",
       "src/core/coding/types.ts"
     ],
     "src/core/coding/editing/StructuredEditEngine.ts": [
       "src/core/coding/editing/PatchConflictDetector.ts",
+      "src/core/coding/security/WorkspaceFilePolicy.ts",
       "src/core/coding/types.ts"
     ],
     "src/core/coding/editing/WorkspaceWriteGate.ts": [
@@ -4874,8 +5179,10 @@
     "src/core/coding/integrations/AutomaticContext.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/integrations/ContextAliases.ts",
+      "src/core/coding/integrations/ProjectDependencies.ts",
       "src/core/coding/integrations/ToolWorkspace.ts",
-      "src/core/coding/security/ApprovedRepositoryGateway.ts"
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
+      "src/core/coding/security/WorkspaceFilePolicy.ts"
     ],
     "src/core/coding/integrations/CodingJobHistory.test.ts": [
       "src/core/coding/integrations/CodingJobHistory.ts"
@@ -4912,7 +5219,8 @@
       "src/core/coding/integrations/Context7Adapter.ts",
       "src/core/coding/integrations/PatchDraftValidator.ts",
       "src/core/coding/integrations/SerenaAdapter.ts",
-      "src/core/coding/integrations/ToolWorkspace.ts"
+      "src/core/coding/integrations/ToolWorkspace.ts",
+      "src/core/coding/security/WorkspaceFilePolicy.ts"
     ],
     "src/core/coding/integrations/CompilerChecks.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
@@ -4942,6 +5250,19 @@
       "src/core/coding/integrations/ToolWorkspace.ts",
       "src/core/coding/security/ApprovedRepositoryGateway.ts"
     ],
+    "src/core/coding/integrations/dependencies/GodotDependencies.ts": [
+      "src/core/coding/integrations/ProjectDependencies.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts"
+    ],
+    "src/core/coding/integrations/dependencies/MzDependencies.ts": [
+      "src/core/coding/integrations/ProjectDependencies.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts"
+    ],
+    "src/core/coding/integrations/dependencies/SourceDependencies.ts": [
+      "src/core/coding/integrations/ProjectDependencies.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts",
+      "src/core/coding/security/WorkspaceFilePolicy.ts"
+    ],
     "src/core/coding/integrations/DraftChecks.test.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/integrations/DraftChecks.ts",
@@ -4963,6 +5284,19 @@
       "src/core/coding/integrations/ToolWorkspace.ts",
       "src/core/coding/types.ts"
     ],
+    "src/core/coding/integrations/ProjectDependencies.test.ts": [
+      "src/core/coding/integrations/AutomaticContext.ts",
+      "src/core/coding/integrations/ProjectDependencies.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts",
+      "src/core/gaming/project/ProjectFilePolicy.ts"
+    ],
+    "src/core/coding/integrations/ProjectDependencies.ts": [
+      "src/core/coding/integrations/ToolWorkspace.ts",
+      "src/core/coding/integrations/dependencies/GodotDependencies.ts",
+      "src/core/coding/integrations/dependencies/MzDependencies.ts",
+      "src/core/coding/integrations/dependencies/SourceDependencies.ts",
+      "src/core/coding/security/WorkspaceFilePolicy.ts"
+    ],
     "src/core/coding/integrations/SerenaAdapter.ts": [
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/integrations/ToolProcess.ts",
@@ -4976,6 +5310,7 @@
       "src/core/coding/editing/PatchConflictDetector.ts",
       "src/core/coding/integrations/CodingToolConfig.ts",
       "src/core/coding/security/ApprovedRepositoryGateway.ts",
+      "src/core/coding/security/WorkspaceFilePolicy.ts",
       "src/core/coding/security/WorkspacePathPolicy.ts"
     ],
     "src/core/coding/knowledge/CodingKnowledgeAuthority.ts": [
@@ -5076,8 +5411,10 @@
       "src/core/tools/RepoTools.ts"
     ],
     "src/core/coding/security/ApprovedRepositoryGateway.ts": [
+      "src/core/coding/security/WorkspaceFilePolicy.ts",
       "src/core/coding/security/WorkspacePathPolicy.ts"
     ],
+    "src/core/coding/security/WorkspaceFilePolicy.ts": [],
     "src/core/coding/security/WorkspacePathPolicy.test.ts": [
       "src/core/agents/CodingAgent.ts",
       "src/core/coding/security/WorkspacePathPolicy.ts",
@@ -5460,6 +5797,7 @@
     ],
     "src/core/database/Database.ts": [
       "src/core/database/DatasetMigrations.ts",
+      "src/core/database/GameProjectMigrations.ts",
       "src/core/observability/logger.ts"
     ],
     "src/core/database/DatasetMigrations.ts": [
@@ -5475,6 +5813,9 @@
       "src/core/observability/logger.ts"
     ],
     "src/core/database/ExpansionMigrations.ts": [
+      "src/core/database/Database.ts"
+    ],
+    "src/core/database/GameProjectMigrations.ts": [
       "src/core/database/Database.ts"
     ],
     "src/core/database/SafeDatabaseQuestionAgent.test.ts": [
@@ -5756,15 +6097,33 @@
     "src/core/gaming/asset-cooker/LocalAssetCookerExecutor.ts": [
       "src/core/gaming/asset-cooker/AssetCookerAdapter.ts"
     ],
+    "src/core/gaming/engine/CanonicalJson.ts": [],
     "src/core/gaming/engine/EngineCertificationProfile.ts": [
       "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
+    "src/core/gaming/engine/EngineProposalIntegrity.ts": [
+      "src/core/gaming/engine/CanonicalJson.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/ProjectPathGuard.ts"
+    ],
+    "src/core/gaming/engine/EngineSnapshotRestore.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/ProjectPathGuard.ts"
+    ],
+    "src/core/gaming/engine/EngineTextMutationPolicy.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/ProjectPathGuard.ts"
     ],
     "src/core/gaming/engine/GameEngineBridge.ts": [
       "src/core/config/EnvironmentDefinitions.ts",
       "src/core/gaming/engine/EngineCertificationProfile.ts",
-      "src/core/gaming/engine/GameEngineTypes.ts"
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/NativeScenarioEvidence.ts",
+      "src/core/gaming/engine/ProjectPathGuard.ts"
     ],
-    "src/core/gaming/engine/GameEngineTypes.ts": [],
+    "src/core/gaming/engine/GameEngineTypes.ts": [
+      "src/core/gaming/project/ProjectSessionTypes.ts"
+    ],
     "src/core/gaming/engine/index.ts": [
       "src/core/gaming/engine/EngineCertificationProfile.ts",
       "src/core/gaming/engine/GameEngineBridge.ts",
@@ -5781,13 +6140,19 @@
     "src/core/gaming/engine/NativeEditorBackend.ts": [
       "src/core/gaming/engine/GameEngineTypes.ts"
     ],
+    "src/core/gaming/engine/NativeScenarioEvidence.ts": [
+      "src/core/gaming/engine/CanonicalJson.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
     "src/core/gaming/engine/ProjectMutationStore.test.ts": [
       "src/core/gaming/engine/GameEngineTypes.ts",
       "src/core/gaming/engine/ProjectMutationStore.ts"
     ],
     "src/core/gaming/engine/ProjectMutationStore.ts": [
-      "src/core/gaming/engine/GameEngineTypes.ts",
-      "src/core/gaming/engine/ProjectPathGuard.ts"
+      "src/core/gaming/engine/EngineProposalIntegrity.ts",
+      "src/core/gaming/engine/EngineSnapshotRestore.ts",
+      "src/core/gaming/engine/EngineTextMutationPolicy.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts"
     ],
     "src/core/gaming/engine/ProjectPathGuard.ts": [
       "src/core/gaming/engine/GameEngineTypes.ts"
@@ -5801,13 +6166,20 @@
       "src/core/gaming/godot/GodotProjectManifest.ts"
     ],
     "src/core/gaming/godot/GodotClassDbValidator.ts": [],
+    "src/core/gaming/godot/GodotCliBackend.test.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/godot/GodotCliBackend.ts",
+      "src/core/native-runtime/NativeCommandRunner.ts"
+    ],
     "src/core/gaming/godot/GodotCliBackend.ts": [
       "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/NativeScenarioEvidence.ts",
       "src/core/gaming/godot/GodotAssetPipeline.ts",
       "src/core/gaming/godot/GodotRuntimeRunner.ts",
       "src/core/native-runtime/NativeCommandRunner.ts"
     ],
     "src/core/gaming/godot/GodotMcpXAdapter.ts": [
+      "src/core/gaming/engine/EngineTextMutationPolicy.ts",
       "src/core/gaming/engine/GameEngineBridge.ts",
       "src/core/gaming/engine/GameEngineTypes.ts",
       "src/core/gaming/godot/GodotAssetPipeline.ts",
@@ -5829,18 +6201,32 @@
       "src/core/gaming/engine/GameEngineTypes.ts"
     ],
     "src/core/gaming/godot/GodotRuntimeRunner.ts": [
-      "src/core/gaming/engine/GameEngineTypes.ts"
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/NativeScenarioEvidence.ts"
     ],
     "src/core/gaming/godot/GodotSceneMutator.ts": [
+      "src/core/gaming/engine/EngineTextMutationPolicy.ts",
       "src/core/gaming/engine/GameEngineTypes.ts",
       "src/core/gaming/engine/ProjectPathGuard.ts"
     ],
     "src/core/gaming/godot/GodotScriptMutator.ts": [
+      "src/core/gaming/engine/EngineTextMutationPolicy.ts",
       "src/core/gaming/engine/GameEngineTypes.ts",
       "src/core/gaming/engine/ProjectPathGuard.ts",
       "src/core/gaming/godot/GodotClassDbValidator.ts"
     ],
+    "src/core/gaming/godot/GodotTransactionManager.test.ts": [
+      "src/core/gaming/engine/EngineProposalIntegrity.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/godot/GodotMcpXAdapter.ts",
+      "src/core/gaming/godot/GodotSceneMutator.ts",
+      "src/core/gaming/godot/GodotTransactionManager.ts"
+    ],
     "src/core/gaming/godot/GodotTransactionManager.ts": [
+      "src/core/gaming/engine/CanonicalJson.ts",
+      "src/core/gaming/engine/EngineProposalIntegrity.ts",
+      "src/core/gaming/engine/EngineSnapshotRestore.ts",
+      "src/core/gaming/engine/EngineTextMutationPolicy.ts",
       "src/core/gaming/engine/GameEngineTypes.ts",
       "src/core/gaming/engine/ProjectPathGuard.ts"
     ],
@@ -5891,6 +6277,173 @@
       "src/core/gaming/lattice/LatticeWorldSchema.ts"
     ],
     "src/core/gaming/lattice/LatticeWorldSchema.ts": [],
+    "src/core/gaming/project/__tests__/SessionFixture.ts": [
+      "src/core/database/Database.ts",
+      "src/core/gaming/engine/GameEngineBridge.ts",
+      "src/core/gaming/godot/GodotAssetPipeline.ts",
+      "src/core/gaming/godot/GodotMcpXAdapter.ts",
+      "src/core/gaming/godot/GodotRuntimeRunner.ts",
+      "src/core/gaming/project/GameProjectRegistry.ts",
+      "src/core/gaming/project/GameProjectStore.ts",
+      "src/core/gaming/project/ProjectBridgeFactory.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/project/ProjectProfileResolver.ts",
+      "src/core/gaming/project/ProjectRuntimeCatalog.ts",
+      "src/core/gaming/unity/UnityEngineAdapter.ts",
+      "src/core/gaming/unreal/UnrealEngineAdapter.ts"
+    ],
+    "src/core/gaming/project/EngineVersions.test.ts": [
+      "src/core/gaming/project/EngineVersions.ts"
+    ],
+    "src/core/gaming/project/EngineVersions.ts": [
+      "src/core/gaming/engine/CanonicalJson.ts",
+      "src/core/gaming/project/Unicode.ts"
+    ],
+    "src/core/gaming/project/GameProjectContext.test.ts": [
+      "src/core/coding/integrations/AutomaticContext.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
+      "src/core/gaming/project/GameProjectContext.ts",
+      "src/core/gaming/project/GameProjectSessions.ts",
+      "src/core/gaming/project/ProjectFilePolicy.ts",
+      "src/core/gaming/project/ProjectOperationLocks.ts",
+      "src/core/gaming/project/__tests__/SessionFixture.ts"
+    ],
+    "src/core/gaming/project/GameProjectContext.ts": [
+      "src/core/coding/integrations/AutomaticContext.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
+      "src/core/gaming/engine/CanonicalJson.ts",
+      "src/core/gaming/project/GameProjectRegistry.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/project/ProjectFilePolicy.ts",
+      "src/core/gaming/project/ProjectOperationLocks.ts"
+    ],
+    "src/core/gaming/project/GameProjectRegistry.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/gaming/project/GameProjectRegistry.ts",
+      "src/core/gaming/project/GameProjectStore.ts",
+      "src/core/gaming/project/ProjectIdentity.ts",
+      "src/core/gaming/project/ProjectProfileResolver.ts",
+      "src/core/gaming/project/ProjectRuntimeCatalog.ts",
+      "src/core/native-runtime/NativeCommandRunner.ts"
+    ],
+    "src/core/gaming/project/GameProjectRegistry.ts": [
+      "src/core/config/EnvironmentDefinitions.ts",
+      "src/core/gaming/engine/CanonicalJson.ts",
+      "src/core/gaming/engine/EngineProposalIntegrity.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/project/EngineVersions.ts",
+      "src/core/gaming/project/GameProjectStore.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/project/ProjectFactsReader.ts",
+      "src/core/gaming/project/ProjectIdentity.ts",
+      "src/core/gaming/project/ProjectOperationLocks.ts",
+      "src/core/gaming/project/ProjectProfileResolver.ts",
+      "src/core/gaming/project/ProjectRuntimeCatalog.ts"
+    ],
+    "src/core/gaming/project/GameProjectSessions.test.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/NativeScenarioEvidence.ts",
+      "src/core/gaming/godot/GodotMcpXAdapter.ts",
+      "src/core/gaming/project/GameProjectSessions.ts",
+      "src/core/gaming/project/ProjectBridgeFactory.ts",
+      "src/core/gaming/project/__tests__/SessionFixture.ts"
+    ],
+    "src/core/gaming/project/GameProjectSessions.ts": [
+      "src/core/gaming/engine/CanonicalJson.ts",
+      "src/core/gaming/engine/EngineProposalIntegrity.ts",
+      "src/core/gaming/engine/GameEngineBridge.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/project/GameProjectRegistry.ts",
+      "src/core/gaming/project/ProjectBridgeFactory.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/project/ProjectOperationLocks.ts",
+      "src/core/gaming/project/ProjectSessionGuards.ts",
+      "src/core/gaming/project/ProjectSessionTypes.ts"
+    ],
+    "src/core/gaming/project/GameProjectStore.ts": [
+      "src/core/database/Database.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/project/ProjectProfileResolver.ts"
+    ],
+    "src/core/gaming/project/ProjectBridgeFactory.ts": [
+      "src/core/gaming/engine/GameEngineBridge.ts",
+      "src/core/gaming/godot/GodotCliBackend.ts",
+      "src/core/gaming/godot/GodotMcpXAdapter.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/unity/UnityEngineAdapter.ts",
+      "src/core/gaming/unreal/UnrealEngineAdapter.ts",
+      "src/core/native-runtime/NativeGameEditorBackends.ts"
+    ],
+    "src/core/gaming/project/ProjectEnrollmentTypes.ts": [
+      "src/core/gaming/project/EngineVersions.ts",
+      "src/utils/errors.ts"
+    ],
+    "src/core/gaming/project/ProjectFactsReader.ts": [
+      "src/core/gaming/project/EngineVersions.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/project/ProjectIdentity.ts"
+    ],
+    "src/core/gaming/project/ProjectFilePolicy.test.ts": [
+      "src/core/coding/editing/PatchConflictDetector.ts",
+      "src/core/coding/integrations/ToolWorkspace.ts",
+      "src/core/coding/security/ApprovedRepositoryGateway.ts",
+      "src/core/gaming/project/ProjectFilePolicy.ts"
+    ],
+    "src/core/gaming/project/ProjectFilePolicy.ts": [
+      "src/core/coding/security/WorkspaceFilePolicy.ts",
+      "src/core/coding/security/WorkspacePathPolicy.ts",
+      "src/core/gaming/project/Unicode.ts"
+    ],
+    "src/core/gaming/project/ProjectIdentity.ts": [
+      "src/core/gaming/engine/CanonicalJson.ts",
+      "src/core/gaming/engine/ProjectPathGuard.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/project/Unicode.ts"
+    ],
+    "src/core/gaming/project/ProjectOperationLocks.ts": [
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts"
+    ],
+    "src/core/gaming/project/ProjectProfileResolver.test.ts": [
+      "src/core/gaming/project/EngineVersions.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/project/ProjectIdentity.ts",
+      "src/core/gaming/project/ProjectProfileResolver.ts",
+      "src/core/gaming/project/ProjectRuntimeCatalog.ts"
+    ],
+    "src/core/gaming/project/ProjectProfileResolver.ts": [
+      "src/core/gaming/engine/CanonicalJson.ts",
+      "src/core/gaming/project/EngineVersions.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/project/ProjectFactsReader.ts",
+      "src/core/gaming/project/ProjectRuntimeCatalog.ts"
+    ],
+    "src/core/gaming/project/ProjectRuntimeCatalog.test.ts": [
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/project/ProjectRuntimeCatalog.ts",
+      "src/core/native-runtime/NativeCommandRunner.ts"
+    ],
+    "src/core/gaming/project/ProjectRuntimeCatalog.ts": [
+      "src/core/gaming/engine/CanonicalJson.ts",
+      "src/core/gaming/project/EngineVersions.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/native-runtime/GameRuntimeCandidates.ts",
+      "src/core/native-runtime/NativeCommandRunner.ts"
+    ],
+    "src/core/gaming/project/ProjectSessionGuards.ts": [
+      "src/core/coding/editing/PatchConflictDetector.ts",
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/engine/NativeScenarioEvidence.ts",
+      "src/core/gaming/engine/ProjectPathGuard.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/project/ProjectFilePolicy.ts",
+      "src/core/gaming/project/ProjectIdentity.ts"
+    ],
+    "src/core/gaming/project/ProjectSessionTypes.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts"
+    ],
+    "src/core/gaming/project/Unicode.ts": [],
     "src/core/gaming/slicing/index.ts": [
       "src/core/gaming/slicing/SpriteSlicingBridge.ts"
     ],
@@ -6263,6 +6816,8 @@
       "src/core/agents/sixsigma/SixSigmaBlackBeltAgent.ts",
       "src/core/agents/story/StoryGeniusAgent.ts",
       "src/core/analytics/AnalyticsService.ts",
+      "src/core/campaign/CampaignRepository.ts",
+      "src/core/campaign/CampaignService.ts",
       "src/core/chat/ChatRuntimeFactory.ts",
       "src/core/chat/DailyChatService.ts",
       "src/core/chrono/ChronoKnowledgeEngine.ts",
@@ -6274,6 +6829,7 @@
       "src/core/database/SafeDatabaseQuestionAgent.ts",
       "src/core/embeddings/EmbeddingService.ts",
       "src/core/entity/EntityLinkingService.ts",
+      "src/core/gaming/project/GameProjectStore.ts",
       "src/core/governance/GovernanceEvidenceService.ts",
       "src/core/graph/KnowledgeGraphIndexer.ts",
       "src/core/importers/GitHubRepoKnowledgeImporter.ts",
@@ -7262,6 +7818,9 @@
     "src/core/multimodal/VisualSearch.ts": [
       "src/core/observability/logger.ts"
     ],
+    "src/core/native-runtime/__tests__/EpicUnrealInstallations.test.ts": [
+      "src/core/native-runtime/EpicUnrealInstallations.ts"
+    ],
     "src/core/native-runtime/__tests__/NativeBackends.test.ts": [
       "src/core/gaming/godot/GodotCliBackend.ts",
       "src/core/native-runtime/LocalAIBackends.ts",
@@ -7287,7 +7846,15 @@
     "src/core/native-runtime/__tests__/RuntimeDiscovery.test.ts": [
       "src/core/native-runtime/RuntimeDiscovery.ts"
     ],
+    "src/core/native-runtime/EpicUnrealInstallations.ts": [
+      "src/core/gaming/project/EngineVersions.ts"
+    ],
     "src/core/native-runtime/GameEditorInstrumentationSources.ts": [],
+    "src/core/native-runtime/GameRuntimeCandidates.ts": [
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/native-runtime/EpicUnrealInstallations.ts",
+      "src/core/native-runtime/RuntimeDiscovery.ts"
+    ],
     "src/core/native-runtime/index.ts": [
       "src/core/native-runtime/LocalAIBackends.ts",
       "src/core/native-runtime/NativeAudioBackends.ts",
@@ -7311,6 +7878,7 @@
     "src/core/native-runtime/NativeGameEditorBackends.ts": [
       "src/core/gaming/engine/GameEngineTypes.ts",
       "src/core/gaming/engine/NativeEditorBackend.ts",
+      "src/core/gaming/engine/NativeScenarioEvidence.ts",
       "src/core/native-runtime/GameEditorInstrumentationSources.ts",
       "src/core/native-runtime/NativeCommandRunner.ts",
       "src/core/native-runtime/RuntimeDiscovery.ts"
@@ -7331,7 +7899,8 @@
       "src/core/voice-companion/VoiceCompanionTypes.ts"
     ],
     "src/core/native-runtime/RuntimeDiscovery.ts": [
-      "src/core/dabook/DabookConfig.ts"
+      "src/core/dabook/DabookConfig.ts",
+      "src/core/native-runtime/EpicUnrealInstallations.ts"
     ],
     "src/core/nlu/__tests__/CrossDomainAmbiguity.test.ts": [
       "src/core/nlu/HumanLanguageRouter.ts"
@@ -9538,6 +10107,7 @@
       "src/server/routes/agent-operations.ts",
       "src/server/routes/audio.ts",
       "src/server/routes/business.ts",
+      "src/server/routes/campaigns.ts",
       "src/server/routes/capabilities.ts",
       "src/server/routes/chrono.ts",
       "src/server/routes/code.ts",
@@ -9628,6 +10198,7 @@
       "src/server/routes/desktop-companion.ts"
     ],
     "src/server/routes/__tests__/feature-expansion-routes.test.ts": [
+      "src/core/gaming/project/__tests__/SessionFixture.ts",
       "src/server/routes/audio.ts",
       "src/server/routes/files.ts",
       "src/server/routes/game-studio/index.ts",
@@ -9639,6 +10210,7 @@
       "src/server/routes/flstudio.ts"
     ],
     "src/server/routes/__tests__/game-studio-routes.test.ts": [
+      "src/core/gaming/project/__tests__/SessionFixture.ts",
       "src/middleware/errorHandler.ts",
       "src/server/routes/game-studio/gameStudioRoutes.ts"
     ],
@@ -9695,6 +10267,33 @@
       "src/server/routes/media-accessibility/mediaAccessibilityRoutes.ts",
       "src/server/routes/music-studio/musicStudioRoutes.ts",
       "src/server/routes/writing-studio.ts"
+    ],
+    "src/server/routes/__tests__/project-context-routes.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/core/coding/integrations/AiderAdapter.ts",
+      "src/core/coding/integrations/CodingToolConfig.ts",
+      "src/core/coding/integrations/CodingToolsService.ts",
+      "src/core/gaming/project/ProjectFilePolicy.ts",
+      "src/core/gaming/project/__tests__/SessionFixture.ts",
+      "src/middleware/auth.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/coding-tools.ts",
+      "src/server/routes/game-studio/gameStudioRoutes.ts"
+    ],
+    "src/server/routes/__tests__/project-enrollment-routes.test.ts": [
+      "src/core/database/Database.ts",
+      "src/core/gaming/project/GameProjectRegistry.ts",
+      "src/core/gaming/project/GameProjectStore.ts",
+      "src/core/gaming/project/ProjectProfileResolver.ts",
+      "src/core/gaming/project/ProjectRuntimeCatalog.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/game-studio/gameStudioRoutes.ts"
+    ],
+    "src/server/routes/__tests__/project-session-routes.test.ts": [
+      "src/core/gaming/engine/NativeScenarioEvidence.ts",
+      "src/core/gaming/project/__tests__/SessionFixture.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/game-studio/gameStudioRoutes.ts"
     ],
     "src/server/routes/__tests__/rag-query.test.ts": [
       "src/server/routes/rag-query.ts"
@@ -9848,6 +10447,21 @@
       "src/core/agents/business/BusinessGeniusAgent.ts",
       "src/middleware/errorHandler.ts"
     ],
+    "src/server/routes/campaigns.test.ts": [
+      "src/core/auth/AuthService.ts",
+      "src/core/campaign/CampaignRepository.ts",
+      "src/core/campaign/CampaignService.ts",
+      "src/core/database/Database.ts",
+      "src/middleware/errorHandler.ts",
+      "src/server/routes/campaigns.ts"
+    ],
+    "src/server/routes/campaigns.ts": [
+      "src/core/campaign/CampaignService.ts",
+      "src/core/campaign/CampaignTypes.ts",
+      "src/middleware/auth.ts",
+      "src/middleware/errorHandler.ts",
+      "src/utils/errors.ts"
+    ],
     "src/server/routes/capabilities.ts": [
       "src/core/capabilities/CapabilityJobManager.ts",
       "src/core/capabilities/CapabilityRegistry.ts",
@@ -9939,21 +10553,46 @@
     "src/server/routes/game-studio/gameStudioRoutes.ts": [
       "src/core/gaming/asset-cooker/AssetCookerAdapter.ts",
       "src/core/gaming/asset-cooker/LocalAssetCookerExecutor.ts",
+      "src/core/gaming/engine/EngineTextMutationPolicy.ts",
       "src/core/gaming/engine/GameEngineBridge.ts",
-      "src/core/gaming/engine/GameEngineTypes.ts",
       "src/core/gaming/engine/MultiEngineStudioService.ts",
-      "src/core/gaming/godot/GodotCliBackend.ts",
-      "src/core/gaming/godot/GodotMcpXAdapter.ts",
+      "src/core/gaming/project/GameProjectRegistry.ts",
+      "src/core/gaming/project/GameProjectSessions.ts",
+      "src/core/gaming/project/GameProjectStore.ts",
+      "src/core/gaming/project/ProjectBridgeFactory.ts",
+      "src/core/gaming/project/ProjectProfileResolver.ts",
+      "src/core/gaming/project/ProjectRuntimeCatalog.ts",
       "src/core/gaming/slicing/SpriteSlicingBridge.ts",
-      "src/core/gaming/unity/UnityEngineAdapter.ts",
       "src/core/gaming/unity/UnityMastService.ts",
-      "src/core/gaming/unreal/UnrealEngineAdapter.ts",
       "src/core/native-runtime/index.ts",
       "src/middleware/errorHandler.ts",
+      "src/server/routes/game-studio/projectContextRoutes.ts",
+      "src/server/routes/game-studio/projectEnrollmentRoutes.ts",
+      "src/server/routes/game-studio/projectSessionRoutes.ts",
       "src/server/routes/localPathGuard.ts"
     ],
     "src/server/routes/game-studio/index.ts": [
       "src/server/routes/game-studio/gameStudioRoutes.ts"
+    ],
+    "src/server/routes/game-studio/projectContextRoutes.ts": [
+      "src/core/gaming/project/GameProjectContext.ts",
+      "src/core/gaming/project/GameProjectRegistry.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/project/ProjectFilePolicy.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/game-studio/projectEnrollmentRoutes.ts": [
+      "src/core/gaming/project/EngineVersions.ts",
+      "src/core/gaming/project/GameProjectRegistry.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/core/gaming/project/Unicode.ts",
+      "src/middleware/errorHandler.ts"
+    ],
+    "src/server/routes/game-studio/projectSessionRoutes.ts": [
+      "src/core/gaming/engine/GameEngineTypes.ts",
+      "src/core/gaming/project/GameProjectSessions.ts",
+      "src/core/gaming/project/ProjectEnrollmentTypes.ts",
+      "src/middleware/errorHandler.ts"
     ],
     "src/server/routes/gamedev.ts": [
       "src/middleware/errorHandler.ts"
@@ -10486,5 +11125,5 @@
       "src/core/observability/logger.ts"
     ]
   },
-  "sourceRecordCount": 2005
+  "sourceRecordCount": 2098
 }

@@ -4,11 +4,12 @@ const SENSITIVE_DIRECTORIES = new Set(['api keys', 'credentials', 'private', 'se
 const SENSITIVE_FILE_NAMES = new Set(['credentials.json', 'secrets.json', 'api_keys.json', 'auth.json', '.npmrc', '.netrc', '.git-credentials', 'id_rsa', 'id_ed25519']);
 
 /** Repository discovery and editing must never expose credential material. */
-export function isSensitiveWorkspacePath(file: string): boolean {
+export function isSensitiveWorkspacePath(file: string, projectKind?: string): boolean {
   const normalized = file.replace(/\\/g, '/').replace(/^\.\//, '');
   const segments = normalized.split('/').filter(Boolean).map(segment => segment.toLowerCase());
   const basename = path.posix.basename(normalized).toLowerCase();
-  if (segments.some(segment => SENSITIVE_DIRECTORIES.has(segment))) return true;
+  if (segments.some((segment, index) => SENSITIVE_DIRECTORIES.has(segment) && !(segment === 'private' && projectKind === 'unreal' &&
+    ((segments[0] === 'source' && index === 2) || (segments[0] === 'plugins' && index >= 4 && segments[index - 2] === 'source'))))) return true;
   if (SENSITIVE_FILE_NAMES.has(basename)) return true;
   if (/^\.env(?:\.(?!example$).*)?$/i.test(basename)) return true;
   if (/\.(?:pem|key|p12|pfx)$/i.test(basename)) return true;

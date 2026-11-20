@@ -1,11 +1,13 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import { NativeEditorBackend } from '../gaming/engine/NativeEditorBackend';
 import { EngineAssertion, EngineAssertionReport, EngineExportPreset, EngineExportResult, EngineProfileSnapshot, EngineRuntimeOptions, EngineType } from '../gaming/engine/GameEngineTypes';
 import { LocalRuntimeInventory } from './RuntimeDiscovery';
 import { runNativeCommand } from './NativeCommandRunner';
 import { UNITY_INSTRUMENTATION_BRIDGE, UNREAL_INSTRUMENTATION_BRIDGE } from './GameEditorInstrumentationSources';
+import { evaluateScenarioPayload, ScenarioBinding, scenarioBinding, validateAssertions } from '../gaming/engine/NativeScenarioEvidence';
 
 interface InstrumentationAssertionResult {
   actual?: unknown;
@@ -14,6 +16,7 @@ interface InstrumentationAssertionResult {
 }
 
 interface InstrumentationResult {
+  evidence?: ScenarioBinding;
   mode: 'scenario' | 'profile' | 'error';
   scenarioName?: string;
   durationMs?: number;
@@ -39,23 +42,20 @@ export class InstalledGameEditorBackend implements NativeEditorBackend {
 
   public async runScenario(engine: EngineType, projectRoot: string, options: EngineRuntimeOptions, assertions: EngineAssertion[]): Promise<EngineAssertionReport> {
     const startedAt = Date.now();
+    validateAssertions(assertions);
     if (assertions.length > 0 && (engine === 'unity' || engine === 'unreal')) {
       const instrumented = await this.runInstrumentation(engine, projectRoot, 'scenario', options, assertions);
-      const evaluated = assertions.map((assertion, index) => {
-        const result = instrumented.output.assertions?.[index];
-        return {
-          ...assertion,
-          actual: result?.actualJson === undefined ? result?.actual : this.parseJsonValue(result.actualJson),
-          passed: result?.passed === true
-        };
-      });
+      const evaluated = evaluateScenarioPayload(instrumented.output, instrumented.evidence, assertions)
+        .map(assertion => ({ ...assertion, passed: instrumented.exitCode === 0 && assertion.passed === true }));
       return {
+        checkKind: engine === 'unreal' ? 'editor_inspection' : 'scene_observation',
+        evidence: instrumented.evidence,
         scenarioName: instrumented.output.scenarioName || options.scenePath || `${engine} gameplay scenario`,
-        passed: instrumented.output.mode === 'scenario' && evaluated.every(assertion => assertion.passed),
+        passed: instrumented.exitCode === 0 && !instrumented.output.error && instrumented.output.mode === 'scenario' && evaluated.length > 0 && evaluated.every(assertion => assertion.passed),
         durationMs: instrumented.output.durationMs ?? Date.now() - startedAt,
         assertions: evaluated,
         capturedLogs: instrumented.logs,
-        error: instrumented.output.error
+        error: instrumented.output.error || (instrumented.exitCode !== 0 ? `${engine} exited with code ${instrumented.exitCode}.` : undefined)
       };
     }
     const result = engine === 'unity'
@@ -71,16 +71,15 @@ export class InstalledGameEditorBackend implements NativeEditorBackend {
       passed: false
     }));
     return {
+      checkKind: 'editor_inspection',
       scenarioName: options.scenePath || `${engine} project validation`,
-      passed: result.exitCode === 0 && evaluated.length === 0,
+      passed: false,
       durationMs: Date.now() - startedAt,
       assertions: evaluated,
       capturedLogs: `${result.stdout}\n${result.stderr}\n${editorLogs}`.split(/\r?\n/).filter(Boolean).slice(-500),
-      error: result.exitCode === 0 && evaluated.length === 0
-        ? undefined
-        : result.exitCode !== 0
+      error: result.exitCode !== 0
           ? this.executionFailure(engine, result.exitCode, result.stderr || result.stdout || editorLogs)
-          : 'One or more assertions require project instrumentation.'
+          : 'Editor inspection completed; no gameplay assertions were verified.'
     };
   }
 
@@ -261,17 +260,18 @@ export class InstalledGameEditorBackend implements NativeEditorBackend {
     options: EngineRuntimeOptions,
     assertions: EngineAssertion[],
     durationMs = 1_000
-  ): Promise<{ output: InstrumentationResult; logs: string[] }> {
+  ): Promise<{ output: InstrumentationResult; logs: string[]; exitCode: number; evidence: ScenarioBinding }> {
     const instrumentationRoot = path.join(projectRoot, '.chatbot-instrumentation');
     fs.mkdirSync(instrumentationRoot, { recursive: true });
-    const runId = `${process.pid}-${Date.now()}`;
+    const runId = crypto.randomUUID();
     const requestPath = path.join(instrumentationRoot, `request-${runId}.json`);
     const resultPath = path.join(instrumentationRoot, `result-${runId}.json`);
     const request = {
+      evidence: scenarioBinding(engine, projectRoot, options.scenePath || '', assertions, options.scopeDigest),
       mode,
       scenePath: options.scenePath || '',
       durationMs,
-      assertions: assertions.map(assertion => ({ ...assertion, expectedJson: JSON.stringify(assertion.expected) }))
+      assertions: assertions.map((assertion, assertionId) => ({ ...assertion, assertionId, expectedJson: JSON.stringify(assertion.expected) }))
     };
     fs.writeFileSync(requestPath, `${JSON.stringify(request, null, 2)}\n`, 'utf8');
     const bridgePath = engine === 'unity'
@@ -295,20 +295,16 @@ export class InstalledGameEditorBackend implements NativeEditorBackend {
     }
     const output = JSON.parse(fs.readFileSync(resultPath, 'utf8')) as InstrumentationResult;
     if (output.mode === 'error') throw new Error(`${engine.toUpperCase()}_INSTRUMENTATION_FAILED: ${output.error || 'unknown bridge error'}`);
-    if (result.exitCode !== 0 && !(mode === 'scenario' && output.assertions?.some(assertion => !assertion.passed))) {
+    if (result.exitCode !== 0 && mode !== 'scenario') {
       throw new Error(this.executionFailure(engine, result.exitCode, result.stderr || result.stdout || editorLogs));
     }
-    return { output, logs };
+    return { output, logs, exitCode: result.exitCode, evidence: request.evidence };
   }
 
   private ensureBridge(bridgePath: string, source: string): string {
     fs.mkdirSync(path.dirname(bridgePath), { recursive: true });
     if (!fs.existsSync(bridgePath) || fs.readFileSync(bridgePath, 'utf8') !== source) fs.writeFileSync(bridgePath, source, 'utf8');
     return bridgePath;
-  }
-
-  private parseJsonValue(value: string): unknown {
-    try { return JSON.parse(value); } catch { return value; }
   }
 
   private requireEditor(engine: 'unity' | 'unreal'): string {

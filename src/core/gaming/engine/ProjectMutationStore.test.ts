@@ -84,7 +84,7 @@ describe('ProjectMutationStore', () => {
       { type: 'update_script', targetPath: 'repeat.txt', params: { content: 'first' } },
       { type: 'update_script', targetPath: 'repeat.txt', params: { content: 'second' } },
       { type: 'delete_scene', targetPath: 'delete.txt', params: {} },
-      { type: 'remove_node', targetPath: 'already-absent.txt', params: {} }
+      { type: 'delete_scene', targetPath: 'already-absent.txt', params: {} }
     ]);
     const approved = store.approve(pending.id, 'reviewer');
     const transaction = store.apply(pending.id, approved.approvalDigest!, { callerId: 'reviewer' });
@@ -103,13 +103,55 @@ describe('ProjectMutationStore', () => {
     expect(store.rollback('missing')).toBe(false);
 
     const expired = proposal(store, []);
-    expired.expiresAt = new Date(0).toISOString();
+    const clock = jest.spyOn(Date, 'now').mockReturnValue(Date.parse(expired.expiresAt));
     expect(() => store.approve(expired.id, 'reviewer')).toThrow('expired');
+    clock.mockRestore();
 
     const pending = proposal(store, []);
     const approved = store.approve(pending.id, 'reviewer');
     expect(() => store.approve(pending.id, 'another-reviewer')).toThrow('status is approved');
     store.apply(pending.id, approved.approvalDigest!, { callerId: 'reviewer' });
     expect(() => store.apply(pending.id, approved.approvalDigest!, { callerId: 'reviewer' })).toThrow('status is applied');
+  });
+
+  it.each(['remove_node', 'attach_script'] as const)('never treats semantic %s as a file operation', type => {
+    const store = new ProjectMutationStore('unity', root);
+    fs.writeFileSync(path.join(root, 'scene.txt'), 'keep');
+    const pending = proposal(store, [
+      { type: 'create_script', targetPath: 'first.cs', params: { content: 'first' } },
+      { type, targetPath: 'scene.txt', params: {} }
+    ]);
+    const approved = store.approve(pending.id, 'reviewer');
+    expect(() => store.apply(pending.id, approved.approvalDigest!, { callerId: 'reviewer' })).toThrow('does not support action type');
+    expect(fs.readFileSync(path.join(root, 'scene.txt'), 'utf8')).toBe('keep');
+    expect(fs.existsSync(path.join(root, 'first.cs'))).toBe(false);
+  });
+
+  it.each(['texture.png', 'mesh.res', 'scene.scn', 'scene.unity', 'object.prefab', 'material.asset', 'map.umap', 'object.uasset'])('keeps %s out of generic UTF-8 writers', targetPath => {
+    const store = new ProjectMutationStore('unreal', root);
+    const original = Buffer.from([0x80, 0, 0xff]);
+    fs.writeFileSync(path.join(root, targetPath), original);
+    const pending = proposal(store, [
+      { type: 'create_script', targetPath: 'first.cpp', params: { content: 'first' } },
+      { type: 'modify_resource', targetPath, params: { content: 'replacement' } }
+    ]);
+    const approved = store.approve(pending.id, 'reviewer');
+    expect(() => store.apply(pending.id, approved.approvalDigest!, { callerId: 'reviewer' })).toThrow('UTF-8 writer');
+    expect(fs.readFileSync(path.join(root, targetPath))).toEqual(original);
+    expect(fs.existsSync(path.join(root, 'first.cpp'))).toBe(false);
+  });
+
+  it('isolates approval records from returned objects and rejects changed input bytes', () => {
+    const store = new ProjectMutationStore('unity', root);
+    fs.writeFileSync(path.join(root, 'script.cs'), 'before');
+    const pending = proposal(store, [{ type: 'update_script', targetPath: 'script.cs', params: { content: 'approved' } }]);
+    const approved = store.approve(pending.id, 'reviewer');
+    pending.actions[0].params.content = 'tampered';
+    approved.actions[0].params.content = 'also tampered';
+    fs.writeFileSync(path.join(root, 'script.cs'), 'external edit');
+    expect(() => store.apply(pending.id, approved.approvalDigest!, { callerId: 'reviewer' })).toThrow('modified since proposal');
+    fs.writeFileSync(path.join(root, 'script.cs'), 'before');
+    store.apply(pending.id, approved.approvalDigest!, { callerId: 'reviewer' });
+    expect(fs.readFileSync(path.join(root, 'script.cs'), 'utf8')).toBe('approved');
   });
 });

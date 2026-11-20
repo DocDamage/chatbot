@@ -1,0 +1,41 @@
+.campaign-workspace { overflow: auto; flex: 1; padding: 24px; color: #e9e6de; background: #0c0c0b; min-width: 0; }
+.campaign-heading, .campaign-toolbar, .campaign-button-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.campaign-heading { justify-content: space-between; margin-bottom: 20px; }
+.campaign-heading h2 { margin: 4px 0; font-size: 1.6rem; }
+.campaign-heading p, .campaign-note, .campaign-setup p { color: #aaa69e; line-height: 1.6; }
+.campaign-eyebrow { color: #cbaa70; text-transform: uppercase; letter-spacing: .15em; font-size: .7rem; }
+.campaign-workspace label { display: grid; gap: 6px; font-size: .82rem; margin: 10px 0; color: #d3cfc6; }
+.campaign-workspace input, .campaign-workspace textarea, .campaign-workspace select { border: 1px solid #393730; border-radius: 8px; background: #151411; color: #f5f1e9; padding: 10px; width: 100%; box-sizing: border-box; font: inherit; }
+.campaign-workspace input[type=checkbox] { width: auto; }
+.campaign-workspace textarea { min-height: 85px; resize: vertical; }
+.campaign-workspace button { border: 1px solid #4b4639; border-radius: 8px; background: #242118; color: #f5f1e9; padding: 9px 12px; cursor: pointer; font-size: .8rem; }
+.campaign-workspace button:disabled { opacity: .45; cursor: not-allowed; }
+.campaign-workspace button:focus-visible, .campaign-workspace input:focus-visible, .campaign-workspace textarea:focus-visible, .campaign-workspace select:focus-visible { outline: 2px solid #d5b67d; outline-offset: 2px; }
+.campaign-workspace .campaign-primary { background: #d6bb83; color: #18150e; font-weight: 700; }
+.campaign-setup, .campaign-columns { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(280px, 1fr); gap: 24px; }
+.campaign-setup > *, .campaign-controls, .campaign-dm, .campaign-sheet-editor { padding: 18px; border: 1px solid #302e27; border-radius: 12px; background: #11110f; }
+.campaign-toolbar { padding-bottom: 16px; border-bottom: 1px solid #302e27; margin-bottom: 18px; }
+.campaign-toolbar > span { color: #99978e; font-size: .75rem; margin-right: auto; }
+.campaign-transcript { padding-bottom: 16px; }
+.campaign-transcript article { margin-bottom: 14px; padding: 16px; background: #141411; border-radius: 10px; line-height: 1.7; }
+.campaign-transcript .campaign-player-turn { border-left: 2px solid #b99c65; }
+.campaign-transcript p, .campaign-prose { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.7; }
+.campaign-story form { background: #0c0c0b; padding: 10px 0; }
+.campaign-workspace summary { cursor: pointer; padding: 12px 0; color: #cdbb99; }
+.campaign-character-card { border: 1px solid #302e27; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+.campaign-character-card > strong, .campaign-character-card > span { display: block; margin-bottom: 8px; }
+.campaign-character-card > span, .campaign-workspace li { font-size: .8rem; line-height: 1.6; }
+.campaign-slot { display: flex; align-items: center; gap: 10px; margin: 8px 0; font-size: .8rem; }
+.campaign-error { border: 1px solid #8f4c43; padding: 14px; border-radius: 8px; color: #f3b7a8; }
+.campaign-notice { padding: 14px; background: #242218; border-left: 3px solid #bca36d; white-space: pre-wrap; font-size: .85rem; }
+.campaign-sheet-editor { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 20px; }
+.campaign-sheet-editor h3, .campaign-sheet-editor fieldset, .campaign-sheet-editor .campaign-button-row { grid-column: 1 / -1; }
+.campaign-slot-edit { display: inline-flex; width: 30%; gap: 6px; align-items: center; margin-right: 3%; }
+.campaign-slot-edit input { max-width: 70px; }
+.campaign-dm { margin-top: 20px; }
+.campaign-dm article { border-top: 1px solid #363025; padding: 15px 0; }
+.app-mode-nav { display: flex; justify-content: center; gap: 8px; }
+.app-mode-nav button { padding: 7px 14px; border: 1px solid #34332c; border-radius: 20px; color: #d7d3c8; background: #131310; cursor: pointer; white-space: nowrap; }
+.app-mode-nav button[aria-pressed=true] { border-color: #ac9568; color: #eed8aa; background: #292519; }
+@media(max-width: 800px) { .campaign-workspace { padding: 15px; } .campaign-setup, .campaign-columns { grid-template-columns: 1fr; } .campaign-sheet-editor { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+@media(max-width: 720px) { .app-header { flex-wrap: wrap; gap: 12px; } .app-mode-nav { width: 100%; } }

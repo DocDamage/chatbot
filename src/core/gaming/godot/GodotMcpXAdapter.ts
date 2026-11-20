@@ -30,11 +30,13 @@ import { GodotProjectManifest } from './GodotProjectManifest';
 import { GodotTransactionManager } from './GodotTransactionManager';
 import { GodotSceneMutator } from './GodotSceneMutator';
 import { GodotScriptMutator } from './GodotScriptMutator';
+import { GODOT_MUTATION_ACTIONS } from '../engine/EngineTextMutationPolicy';
 import { GodotRuntimeBackend, GodotRuntimeRunner } from './GodotRuntimeRunner';
 import { GodotAssetPipeline, GodotExportBackend } from './GodotAssetPipeline';
 
 export class GodotMcpXAdapter implements IGameEngineAdapter {
   public readonly engine: EngineType = 'godot';
+  public readonly supportedMutationActions = GODOT_MUTATION_ACTIONS;
 
   private projectRoot = '';
   private toolMode: ToolMode = 'all';
@@ -103,7 +105,7 @@ export class GodotMcpXAdapter implements IGameEngineAdapter {
    */
   public async inspectProject(): Promise<EngineProjectInfo> {
     this.ensureConnected();
-    return GodotProjectInspector.inspectProject(this.projectRoot);
+    return { ...GodotProjectInspector.inspectProject(this.projectRoot), engineVersion: this.version };
   }
 
   /**
@@ -130,6 +132,7 @@ export class GodotMcpXAdapter implements IGameEngineAdapter {
   ): Promise<EngineMutationProposal> {
     this.ensureConnected();
     return this.transactionManager!.createProposal({
+      ...proposal,
       projectId: proposal.projectId,
       title: proposal.title,
       description: proposal.description,
