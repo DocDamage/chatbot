@@ -424,7 +424,14 @@ describe('native capability backends', () => {
     it('parses runtime assertions and real profiler payloads and exports an existing artifact', async () => {
       const output = path.join(root, 'game.exe');
       mockNativeCommand
-        .mockResolvedValueOnce(commandResult({ stdout: `CHATBOT_RUNTIME_JSON:${JSON.stringify({ scene: 'Main.tscn', assertions: [{ type: 'node_exists', target: 'Hero', expected: true, actual: true, passed: true }] })}` }))
+        .mockImplementationOnce(async (_executable, _args, { env }) => {
+          const payload = {
+            mode: 'scenario',
+            evidence: JSON.parse(env.CHATBOT_GODOT_EVIDENCE),
+            assertions: [{ assertionId: 0, actual: true, passed: true }]
+          };
+          return commandResult({ stdout: `CHATBOT_RUNTIME_JSON:${JSON.stringify(payload)}` });
+        })
         .mockResolvedValueOnce(commandResult({ stdout: `CHATBOT_PROFILE_JSON:${JSON.stringify({ fps: 60, frameTimeMs: 16.67, nodeCount: 4, memoryMb: 32 })}` }))
         .mockImplementationOnce(async () => { fs.writeFileSync(output, 'game'); return commandResult(); });
       const backend = new GodotCliBackend('godot', root);
@@ -450,7 +457,10 @@ describe('native capability backends', () => {
         .mockResolvedValueOnce(commandResult({ stdout: 'no profile payload' }));
       const backend = new GodotCliBackend('godot', root);
       const runtime = await backend.runScenario(root, {}, [{ type: 'screen_text', target: 'Label', expected: 'Hello' }]);
-      expect(runtime).toMatchObject({ passed: false, error: 'Godot exited with code 2.' });
+      expect(runtime).toMatchObject({
+        passed: false,
+        error: 'Godot exited with code 2. Godot probe must produce exactly one assertion report.'
+      });
       await expect(backend.profileProject(root)).rejects.toThrow('Godot profiler probe failed');
 
       mockNativeCommand.mockResolvedValueOnce(commandResult({ exitCode: 5, stderr: 'export failed' }));

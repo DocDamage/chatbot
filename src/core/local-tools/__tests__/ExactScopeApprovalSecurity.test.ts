@@ -118,8 +118,8 @@ describe('RT-PLAT-005 — Exact-Scope Approval Security Suite', () => {
     expect(fs.existsSync(writtenFile)).toBe(false);
   });
 
-  it('rejects path traversal attempts outside project root', () => {
-    const proposal = store.createProposal({
+  it('rejects an out-of-bounds target before recording the proposal', () => {
+    expect(() => store.createProposal({
       engine: 'godot',
       projectId: 'proj-1',
       title: 'Malicious Path Traversal',
@@ -129,12 +129,9 @@ describe('RT-PLAT-005 — Exact-Scope Approval Security Suite', () => {
         {
           type: 'create_script',
           targetPath: '../../outside-root-evil.sh',
-          params: { content: 'rm -rf /' },
+          params: { content: '# fixture' },
         },
       ],
-    });
-
-    const approved = store.approve(proposal.id, 'admin-user');
-    expect(() => store.apply(proposal.id, approved.approvalDigest!, { callerId: 'admin-user' })).toThrow();
+    })).toThrow(/OUT_OF_BOUNDS_PATH/);
   });
 });
